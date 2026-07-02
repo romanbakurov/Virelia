@@ -52,7 +52,7 @@ export default [
   {
     files: [
       'packages/**/*.{ts,tsx,js,jsx}',
-      'apps/test-app/**/*.{ts,tsx,js,jsx}',
+      'apps/web-playground/**/*.{ts,tsx,js,jsx}',
       'apps/web-storybook/**/*.{ts,tsx,js,jsx}',
     ],
 

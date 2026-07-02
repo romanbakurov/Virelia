@@ -1,4 +1,4 @@
-# Test App
+# Web playground
 
 Vite app for local testing of `@romanbakurov/vellira-web`.
 
@@ -7,17 +7,17 @@ This app is intentionally small. Use it to verify package consumption outside St
 ## Development
 
 ```bash
-pnpm --filter test-app dev
+pnpm --filter web-playground dev
 ```
 
 ## Build
 
 ```bash
-pnpm --filter test-app build
+pnpm --filter web-playground build
 ```
 
 ## Preview
 
 ```bash
-pnpm --filter test-app preview
+pnpm --filter web-playground preview
 ```
