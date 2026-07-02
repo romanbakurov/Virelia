@@ -4,6 +4,11 @@
   "description": "Shared TypeScript types for Vellira Design System",
   "author": "Roman Bakurov",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romanbakurov/Vellira",
+    "directory": "packages/vellira-types"
+  },
   "private": false,
   "type": "module",
   "sideEffects": false,

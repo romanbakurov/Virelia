@@ -4,6 +4,11 @@
   "description": "React Native components for Vellira Design System",
   "author": "Roman Bakurov",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romanbakurov/Vellira",
+    "directory": "packages/vellira-native"
+  },
   "private": false,
   "type": "module",
   "sideEffects": false,
