@@ -71,7 +71,7 @@ jobs:
             pnpm-lock.yaml
             packages/*/package.json
           branch: chore/sync-release-versions
-          commit-message: 'chore(release): sync package versions [skip ci]'
+          commit-message: 'chore(release): sync package versions'
           delete-branch: true
           title: 'chore(release): sync package versions'
           body: |
