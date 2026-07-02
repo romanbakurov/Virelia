@@ -1,4 +1,4 @@
-import { action } from '../../highContrast/semantic';
+import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { navigation } from '../semantic/navigation.js';
