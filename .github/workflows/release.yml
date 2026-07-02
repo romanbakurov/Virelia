@@ -56,8 +56,8 @@ jobs:
 
       - name: Verify npm authentication
         env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm whoami --registry=https://registry.npmjs.org
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          run: npm whoami --registry=https://registry.npmjs.org
 
       - name: Release
         env:
