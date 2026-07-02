@@ -63,7 +63,7 @@ Project documentation:
 | `apps/web-storybook`     | Web Storybook         |
 | `apps/native-playground` | Expo playground       |
 | `apps/native-storybook`  | on-device Storybook   |
-| `apps/web-playground`          | Local Vite playground |
+| `apps/web-playground`    | Local Vite playground |
 
 ---
 
