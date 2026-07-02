@@ -7,7 +7,7 @@
     { "path": "./packages/vellira-tokens" },
     { "path": "./packages/vellira-types" },
     { "path": "./packages/vellira-web" },
-    { "path": "./apps/test-app" },
+    { "path": "./apps/web-playground" },
     { "path": "./apps/native-playground" },
     { "path": "./apps/web-storybook" }
   ]

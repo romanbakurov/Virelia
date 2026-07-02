@@ -20,6 +20,61 @@ const optionsWithDisabled = [
 const meta = {
   title: 'Components/RadioGroup',
   component: RadioGroup,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component: `
+### RadioGroup Component
+
+Accessible radio button group for selecting a single option in React Native.
+
+**Features**
+- Single selection
+- Label and description
+- Required indicator
+- Error message
+- Disabled state
+- Controlled and uncontrolled usage
+
+### Usage
+
+Use RadioGroup when users must choose exactly one option from a predefined list.
+
+Correct usage:
+
+\`\`\`tsx
+<RadioGroup
+  label="Plan"
+  options={[
+    { label: 'Starter', value: 'starter' },
+    { label: 'Pro', value: 'pro' },
+    { label: 'Enterprise', value: 'enterprise' },
+  ]}
+  value={value}
+  onChange={setValue}
+/>
+\`\`\`
+
+### Accessibility
+
+- Accessible radio group
+- Individual radio button semantics
+- Keyboard and screen reader support
+- Disabled state support
+- Validation message support
+
+### Common use cases
+
+- Subscription plans
+- Payment methods
+- Account preferences
+- Shipping options
+- Settings
+`,
+      },
+    },
+  },
   args: {
     label: 'Plan',
     defaultValue: 'pro',

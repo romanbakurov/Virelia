@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Text, View } from 'react-native';
 
+import { useTheme } from '../../theme/useTheme';
+
 import { Tooltip } from './Tooltip';
 
 const placements = [
@@ -30,6 +32,22 @@ const Trigger = ({ label = 'Press and hold' }: { label?: string }) => (
   </View>
 );
 
+const CustomTooltipContent = () => {
+  const { theme } = useTheme();
+
+  return (
+    <Text
+      style={{
+        color: theme.components.tooltip.content.fg,
+        fontFamily: theme.tokens.typography.family.regular,
+        fontSize: theme.tokens.typography.size.sm,
+      }}
+    >
+      Custom tooltip node
+    </Text>
+  );
+};
+
 const meta = {
   title: 'Components/Tooltip',
   component: Tooltip,
@@ -40,18 +58,41 @@ const meta = {
         component: `
 ### Tooltip Component
 
-Native tooltip displayed on long press.
+Contextual helper displayed on long press in React Native.
 
 **Features**
 - Long press interaction
-- Auto hide
+- Automatic show and hide
+- Custom content
 - Disabled state
-- Custom content support
-- Max width control
+- Configurable maximum width
 
 ### Usage
 
-Press and hold the trigger element to reveal the tooltip.
+Use Tooltip to provide additional context or guidance without permanently occupying screen space.
+
+Correct usage:
+
+\`\`\`tsx
+<Tooltip content="Additional information">
+  <Button>Long press me</Button>
+</Tooltip>
+\`\`\`
+
+### Accessibility
+
+- Long press activation
+- Accessible trigger
+- Disabled state support
+- Custom tooltip content
+
+### Common use cases
+
+- Explain icons
+- Additional field guidance
+- Action descriptions
+- Contextual help
+- Short usage hints
 `,
       },
     },
@@ -102,7 +143,7 @@ export const LongContent: Story = {
 
 export const CustomContent: Story = {
   args: {
-    content: <Text style={{ color: 'white' }}>Custom tooltip node</Text>,
+    content: <CustomTooltipContent />,
     children: <Trigger label='Custom content' />,
   },
 };

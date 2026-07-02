@@ -63,7 +63,7 @@ Project documentation:
 | `apps/web-storybook`     | Web Storybook         |
 | `apps/native-playground` | Expo playground       |
 | `apps/native-storybook`  | on-device Storybook   |
-| `apps/test-app`          | Local Vite playground |
+| `apps/web-playground`    | Local Vite playground |
 
 ---
 
@@ -74,7 +74,7 @@ apps/
 ├── web-storybook
 ├── native-playground
 ├── native-storybook
-└── test-app
+└── web-playground
 
 packages/
 ├── vellira-web
@@ -292,7 +292,7 @@ pnpm --filter native-storybook android
 Run the local Vite playground:
 
 ```bash
-pnpm --filter test-app dev
+pnpm --filter web-playground dev
 ```
 
 ---

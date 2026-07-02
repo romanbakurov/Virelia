@@ -14,8 +14,14 @@ export const radio = {
   hover: control.hover,
 
   checked: {
-    default: control.selected.default,
-    hover: control.selected.hover,
+    default: {
+      ...control.selected.default,
+      fg: text.brand,
+    },
+    hover: {
+      ...control.selected.hover,
+      fg: text.brand,
+    },
     pressed: control.selected.active,
   },
 

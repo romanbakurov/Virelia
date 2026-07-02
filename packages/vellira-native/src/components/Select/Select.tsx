@@ -123,6 +123,9 @@ export function Select({
               onValueChange={handleValueChange}
               enabled={!disabled}
               style={[styles.picker, pickerStyle]}
+              itemStyle={{
+                color: theme.components.select.option.default.fg,
+              }}
             >
               <Picker.Item
                 label={placeholder}
