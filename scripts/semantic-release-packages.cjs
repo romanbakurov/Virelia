@@ -34,8 +34,17 @@ exports.publish = async () => {
   for (const packageName of publicPackages) {
     execFileSync(
       'pnpm',
-      ['--filter', packageName, 'publish', '--no-git-checks'],
-      { stdio: 'inherit' }
+      [
+        '--filter',
+        packageName,
+        'publish',
+        '--no-git-checks',
+        '--access',
+        'public',
+      ],
+      {
+        stdio: 'inherit',
+      }
     );
   }
 };
