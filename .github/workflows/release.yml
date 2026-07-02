@@ -61,5 +61,18 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm exec semantic-release
+
+      - name: Create version sync PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+          add-paths: |
+            package.json
+            pnpm-lock.yaml
+            packages/*/package.json
+          branch: chore/sync-release-versions
+          commit-message: 'chore(release): sync package versions [skip ci]'
+          delete-branch: true
+          title: 'chore(release): sync package versions'
+          body: |
+            Sync package manifests and lockfile with the version prepared by semantic-release.
