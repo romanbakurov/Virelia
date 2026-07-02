@@ -4,6 +4,11 @@
   "description": "Shared logic and hooks for Vellira Design System",
   "author": "Roman Bakurov",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romanbakurov/Vellira",
+    "directory": "packages/vellira-core"
+  },
   "private": false,
   "type": "module",
   "main": "./dist/index.js",

@@ -4,6 +4,11 @@
   "description": "Design tokens for Vellira Design System",
   "author": "Roman Bakurov",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romanbakurov/Vellira",
+    "directory": "packages/vellira-tokens"
+  },
   "private": false,
   "type": "module",
   "sideEffects": [
