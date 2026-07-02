@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
   issues: write
   packages: write
   pull-requests: write
@@ -23,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.13
+          node-version: 22.14
           cache: pnpm
           registry-url: https://registry.npmjs.org
           scope: '@romanbakurov'
@@ -54,10 +55,8 @@ jobs:
       - name: Smoke packages
         run: pnpm ci:smoke
 
-      - name: Verify npm authentication
-        run: npm whoami --registry=https://registry.npmjs.org
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Verify npm registry
+        run: npm ping --registry=https://registry.npmjs.org
 
       - name: Release
         env:
