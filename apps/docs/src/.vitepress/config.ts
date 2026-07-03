@@ -18,6 +18,7 @@ export default defineConfig({
       { text: 'Web', link: '/web' },
       { text: 'Native', link: '/native' },
       { text: 'Tokens', link: '/tokens' },
+      { text: 'Production', link: '/production' },
     ],
     sidebar: [
       {
@@ -26,6 +27,7 @@ export default defineConfig({
           { text: 'Overview', link: '/' },
           { text: 'Quick Start', link: '/getting-started' },
           { text: 'Component Gallery', link: '/component-examples' },
+          { text: 'Production', link: '/production' },
           { text: 'Project Sites', link: '/project-sites' },
         ],
       },
@@ -34,6 +36,7 @@ export default defineConfig({
         items: [
           { text: 'Tokens', link: '/tokens' },
           { text: 'Theme Architecture', link: '/theme-architecture' },
+          { text: 'Accessibility', link: '/accessibility' },
         ],
       },
       {
@@ -41,6 +44,13 @@ export default defineConfig({
         items: [
           { text: 'Web', link: '/web' },
           { text: 'Native', link: '/native' },
+        ],
+      },
+      {
+        text: 'Project',
+        items: [
+          { text: 'Quality', link: '/quality' },
+          { text: 'Contributing', link: '/contributing' },
         ],
       },
     ],
