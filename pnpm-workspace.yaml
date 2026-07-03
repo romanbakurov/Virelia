@@ -5,7 +5,9 @@ allowBuilds:
   '@parcel/watcher': true
   deasync: true
   esbuild: true
+  sharp: true
   unrs-resolver: true
+  workerd: true
 minimumReleaseAgeExclude:
   - '@storybook/addon-ondevice-actions@10.4.5'
   - '@storybook/addon-ondevice-controls@10.4.5'
