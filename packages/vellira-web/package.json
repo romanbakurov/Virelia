@@ -59,7 +59,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.3",
     "@vitest/coverage-v8": "^4.1.9",
     "axe-core": "^4.12.1",
     "jsdom": "^28.1.0",
