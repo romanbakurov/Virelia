@@ -15,7 +15,7 @@
     "@romanbakurov/vellira-web": "workspace:*",
     "clsx": "^2.1.1",
     "focus-trap-react": "^12.0.2",
-    "react": "19.2.3",
+    "react": "19.2.7",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
