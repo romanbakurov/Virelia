@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: 22.13
+  NODE_VERSION: 22.14
   DOCS_DIST_DIR: apps/docs/src/.vitepress/dist
   CLOUDFLARE_PAGES_PROJECT: vellira-docs
 
