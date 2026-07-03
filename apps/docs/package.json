@@ -1,0 +1,17 @@
+{
+  "name": "@romanbakurov/vellira-docs",
+  "private": true,
+  "version": "2.18.4",
+  "description": "Documentation website for Vellira Design System",
+  "author": "Roman Bakurov",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev src",
+    "build": "vitepress build src",
+    "preview": "vitepress preview src"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

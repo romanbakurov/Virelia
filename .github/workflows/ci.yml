@@ -33,6 +33,9 @@ jobs:
       - name: Build packages and apps
         run: pnpm ci:build
 
+      - name: Build docs
+        run: pnpm docs:build
+
       - name: Typecheck
         run: pnpm ci:typecheck
 

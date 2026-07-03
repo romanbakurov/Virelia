@@ -27,6 +27,8 @@ dist-ssr
 
 *storybook.log
 storybook-static
+**/.vitepress/cache/
+**/.vitepress/dist/
 .idea
 package-lock.json
 
