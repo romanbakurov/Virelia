@@ -170,21 +170,11 @@ export function ScreenShell({ children }: { children: React.ReactNode }) {
 
 ## Storybook and Playground
 
-Native stories live next to components in `packages/vellira-native/src` and are
-consumed by the dedicated on-device Storybook app at `apps/native-storybook`.
+Native stories live next to components in the native package and are used for
+on-device review during development.
 
-```bash
-pnpm --filter native-storybook start
-pnpm --filter native-storybook ios
-pnpm --filter native-storybook android
-```
-
-Use `apps/native-playground` for manual Expo checks while building product
-flows outside Storybook.
-
-```bash
-pnpm --filter native-playground start
-```
+Use Storybook to inspect component states. Use an Expo or product app shell for
+manual checks of screen-level flows outside Storybook.
 
 ## Testing
 
@@ -201,5 +191,4 @@ simulator.
 ```bash
 pnpm --filter @romanbakurov/vellira-native build
 pnpm --filter @romanbakurov/vellira-native test
-pnpm --filter native-playground start
 ```

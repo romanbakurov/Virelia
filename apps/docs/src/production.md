@@ -27,7 +27,7 @@ packages your application actually uses.
 ## Native Application Checklist
 
 - Install required React Native peer dependencies.
-- Test component behavior in `apps/native-playground` or your app shell.
+- Test component behavior in Storybook, an Expo playground, or your app shell.
 - Verify screen-reader labels, disabled states, and validation text on real
   devices where possible.
 - Keep layout spacing and surfaces tied to `@romanbakurov/vellira-tokens`.
