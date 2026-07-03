@@ -6,6 +6,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "skipLibCheck": true,
+    "types": ["node"],
 
     "paths": {
       "@/*": ["*"],
