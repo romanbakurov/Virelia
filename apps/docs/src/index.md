@@ -36,6 +36,10 @@ and interaction logic are shared. Rendering stays platform-specific.
     <strong>Fast adoption</strong>
     <span>Install a renderer, import styles where needed, and render your first component.</span>
   </a>
+  <a class="docs-card" href="/production">
+    <strong>Production path</strong>
+    <span>Use the install, theming, accessibility, quality, and deploy guidance before shipping.</span>
+  </a>
 </div>
 
 ## Quick Start
@@ -100,6 +104,7 @@ Use the docs as the main path through the system.
 | Install and render a component | [Quick Start](/getting-started)           |
 | Browse component previews      | [Component Gallery](/component-examples)  |
 | Understand tokens              | [Theme Architecture](/theme-architecture) |
+| Prepare for production         | [Production](/production)                 |
 | Use React DOM                  | [Web](/web)                               |
 | Use React Native               | [Native](/native)                         |
 
