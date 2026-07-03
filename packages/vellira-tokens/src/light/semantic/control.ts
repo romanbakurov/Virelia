@@ -25,7 +25,7 @@ export const control = {
       border: colors.primary[950],
     },
     muted: {
-      bg: colors.primary[500],
+      bg: colors.primary[700],
       fg: text.inverse,
       border: colors.primary[500],
     },
