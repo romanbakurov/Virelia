@@ -15,7 +15,6 @@ const packageFiles = [
   'packages/types/package.json',
   'packages/tokens/package.json',
   'packages/icons/package.json',
-  'packages/assets/package.json',
 ];
 
 for (const file of packageFiles) {
