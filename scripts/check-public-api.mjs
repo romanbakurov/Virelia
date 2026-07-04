@@ -8,21 +8,17 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(dirname, '..');
 
 const packageExportContracts = {
-  'packages/vellira-assets/package.json': [
-    './fonts/*',
-    './styles',
-    './styles/*',
-  ],
-  'packages/vellira-core/package.json': ['.'],
-  'packages/vellira-icons/package.json': ['.', './native', './web'],
-  'packages/vellira-native/package.json': ['.'],
-  'packages/vellira-tokens/package.json': ['.', './css'],
-  'packages/vellira-types/package.json': ['.'],
-  'packages/vellira-web/package.json': ['.', './styles'],
+  'packages/assets/package.json': ['./fonts/*', './styles', './styles/*'],
+  'packages/core/package.json': ['.'],
+  'packages/icons/package.json': ['.', './native', './web'],
+  'packages/react-native/package.json': ['.'],
+  'packages/tokens/package.json': ['.', './css'],
+  'packages/types/package.json': ['.'],
+  'packages/react/package.json': ['.', './styles'],
 };
 
 const publicSymbolContracts = {
-  'packages/vellira-core/src/index.ts': [
+  'packages/core/src/index.ts': [
     'KeyboardNavigationEvent',
     'NavigableItem',
     'TabKeyboardItem',
@@ -33,7 +29,7 @@ const publicSymbolContracts = {
     'useKeyboardNavigation',
     'useTabsKeyboard',
   ],
-  'packages/vellira-icons/src/native.ts': [
+  'packages/icons/src/native.ts': [
     'Alarm',
     'Check',
     'ChevronDown',
@@ -56,7 +52,7 @@ const publicSymbolContracts = {
     'Search',
     'Settings',
   ],
-  'packages/vellira-icons/src/web.ts': [
+  'packages/icons/src/web.ts': [
     'Alarm',
     'Check',
     'ChevronDown',
@@ -79,7 +75,7 @@ const publicSymbolContracts = {
     'Search',
     'Settings',
   ],
-  'packages/vellira-native/src/index.ts': [
+  'packages/react-native/src/index.ts': [
     'Button',
     'ButtonProps',
     'Checkbox',
@@ -111,7 +107,7 @@ const publicSymbolContracts = {
     'nativeThemes',
     'useTheme',
   ],
-  'packages/vellira-tokens/src/index.ts': [
+  'packages/tokens/src/index.ts': [
     'BaseCssVariableName',
     'BaseTokenPath',
     'ColorTokenPath',
@@ -145,7 +141,7 @@ const publicSymbolContracts = {
     'themeNames',
     'tokenPaths',
   ],
-  'packages/vellira-types/src/index.ts': [
+  'packages/types/src/index.ts': [
     'BaseButtonProps',
     'BaseCheckboxProps',
     'BaseDropdownContentProps',
@@ -188,7 +184,7 @@ const publicSymbolContracts = {
     'TextWrap',
     'TooltipDelay',
   ],
-  'packages/vellira-web/src/index.ts': [
+  'packages/react/src/index.ts': [
     'Button',
     'ButtonProps',
     'Checkbox',

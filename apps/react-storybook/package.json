@@ -1,0 +1,47 @@
+{
+  "name": "@vellira-ui/react-storybook",
+  "private": true,
+  "scripts": {
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
+    "build-storybook": "storybook build",
+    "playwright:install": "playwright install --with-deps chromium",
+    "test:e2e": "playwright test",
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@floating-ui/react": "^0.27.19",
+    "@vellira-ui/tokens": "workspace:*",
+    "@vellira-ui/react": "workspace:*",
+    "clsx": "^2.1.1",
+    "focus-trap-react": "^12.0.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
+    "@vellira-ui/assets": "workspace:*",
+    "@vellira-ui/icons": "workspace:*",
+    "@storybook/addon-a11y": "^10.4.0",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/addon-vitest": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "@playwright/test": "1.61.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/browser-playwright": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.9",
+    "chromatic": "^16.10.0",
+    "eslint-plugin-storybook": "^10.4.6",
+    "playwright": "1.61.0",
+    "sass": "^1.99.0",
+    "storybook": "^10.4.0",
+    "typescript": "6.0.3",
+    "typescript-plugin-css-modules": "^5.2.0",
+    "vite": "^8.0.13",
+    "vite-plugin-dts": "^5.0.0",
+    "vite-plugin-svgr": "^5.2.0",
+    "vitest": "^4.1.9"
+  }
+}

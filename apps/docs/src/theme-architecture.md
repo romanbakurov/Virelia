@@ -26,7 +26,7 @@ Primitive values are useful inside the token package, but product code should
 rarely depend on them directly.
 
 ```ts
-import { theme } from '@romanbakurov/vellira-tokens';
+import { theme } from '@vellira-ui/tokens';
 
 theme.colors.primary[500];
 theme.colors.vellira[950];
@@ -69,10 +69,10 @@ Native.
 
 Renderer packages consume the token layers and expose stable components.
 
-| Renderer | Package                        | Responsibility                                |
-| -------- | ------------------------------ | --------------------------------------------- |
-| Web      | `@romanbakurov/vellira-web`    | DOM components, CSS modules, browser behavior |
-| Native   | `@romanbakurov/vellira-native` | React Native primitives and platform styles   |
+| Renderer | Package                    | Responsibility                                |
+| -------- | -------------------------- | --------------------------------------------- |
+| Web      | `@vellira-ui/react`        | DOM components, CSS modules, browser behavior |
+| Native   | `@vellira-ui/react-native` | React Native primitives and platform styles   |
 
 The components should depend on semantic and component tokens, not on raw
 palette decisions. This keeps visual changes centralized inside the token

@@ -3,13 +3,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const publicPackages = [
-  '@romanbakurov/vellira-core',
-  '@romanbakurov/vellira-tokens',
-  '@romanbakurov/vellira-types',
-  '@romanbakurov/vellira-icons',
-  '@romanbakurov/vellira-assets',
-  '@romanbakurov/vellira-web',
-  '@romanbakurov/vellira-native',
+  '@vellira-ui/core',
+  '@vellira-ui/tokens',
+  '@vellira-ui/types',
+  '@vellira-ui/icons',
+  '@vellira-ui/assets',
+  '@vellira-ui/react',
+  '@vellira-ui/react-native',
 ];
 
 function updateVersion(packagePath, version) {
@@ -22,7 +22,7 @@ exports.prepare = async (_pluginConfig, context) => {
   updateVersion(path.resolve('package.json'), context.nextRelease.version);
 
   for (const packageName of publicPackages) {
-    const directory = packageName.replace('@romanbakurov/', '');
+    const directory = packageName.replace('@vellira-ui/', '');
     updateVersion(
       path.resolve('packages', directory, 'package.json'),
       context.nextRelease.version

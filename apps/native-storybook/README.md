@@ -1,8 +1,8 @@
 # Native Storybook
 
-Expo app for running on-device React Native Storybook for `@romanbakurov/vellira-native`.
+Expo app for running on-device React Native Storybook for `@vellira-ui/react-native`.
 
-Native Storybook reads stories from `packages/vellira-native/src/**/*.stories.@(ts|tsx)`, so package-level stories appear here automatically after running the Storybook generation step.
+Native Storybook reads stories from `packages/react-native/src/**/*.stories.@(ts|tsx)`, so package-level stories appear here automatically after running the Storybook generation step.
 
 ## Start
 
@@ -28,7 +28,7 @@ pnpm --filter native-storybook exec sb-rn-get-stories
 Native package unit tests run outside the simulator:
 
 ```bash
-pnpm --filter @romanbakurov/vellira-native test
+pnpm --filter @vellira-ui/react-native test
 ```
 
 The Storybook app is mainly for manual Expo and on-device component checks.
@@ -37,5 +37,5 @@ The Storybook app is mainly for manual Expo and on-device component checks.
 
 - Built with Expo `56`.
 - Uses React Native `0.85`.
-- Consumes `@romanbakurov/vellira-native` from the workspace.
+- Consumes `@vellira-ui/react-native` from the workspace.
 - Native stories cover Button, Checkbox, Input, FormField, RadioGroup, Select, Dropdown, Tabs, Tooltip, and Modal.

@@ -134,7 +134,7 @@ hover, focus, disabled, error, loading, danger, and narrow mobile layouts.
 ### Form
 
 ```tsx
-import { Button, Checkbox, Input } from '@romanbakurov/vellira-web';
+import { Button, Checkbox, Input } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function FormExample() {
@@ -158,7 +158,7 @@ export function FormExample() {
 ### Selection
 
 ```tsx
-import { RadioGroup, Select } from '@romanbakurov/vellira-web';
+import { RadioGroup, Select } from '@vellira-ui/react';
 
 export function SelectionExample() {
   return (
@@ -187,7 +187,7 @@ export function SelectionExample() {
 ### Overlay
 
 ```tsx
-import { Dropdown } from '@romanbakurov/vellira-web';
+import { Dropdown } from '@vellira-ui/react';
 
 export function OverlayExample() {
   return (

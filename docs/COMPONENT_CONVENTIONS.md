@@ -136,7 +136,7 @@ onValueChange;
 Shared component contracts belong in:
 
 ```
-@romanbakurov/vellira-types
+@vellira-ui/types
 ```
 
 Platform-specific props stay inside each renderer.
@@ -221,7 +221,7 @@ Accessibility is considered part of the component API.
 Icons should come only from:
 
 ```
-@romanbakurov/vellira-icons
+@vellira-ui/icons
 ```
 
 Do not import SVGs directly inside components.
@@ -235,7 +235,7 @@ Icons must inherit component color automatically.
 Prefer reusable hooks from:
 
 ```
-@romanbakurov/vellira-core
+@vellira-ui/core
 ```
 
 Examples:

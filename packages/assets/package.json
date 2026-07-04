@@ -1,0 +1,33 @@
+{
+  "name": "@vellira-ui/assets",
+  "version": "2.18.4",
+  "description": "Shared static assets for Vellira Design System",
+  "author": "Roman Bakurov",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vellira-dev/vellira",
+    "directory": "packages/assets"
+  },
+  "private": false,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "exports": {
+    "./styles": "./styles/fonts.scss",
+    "./styles/*": "./styles/*",
+    "./fonts/*": "./fonts/*"
+  },
+  "files": [
+    "fonts",
+    "styles",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

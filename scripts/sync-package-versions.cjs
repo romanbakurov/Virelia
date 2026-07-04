@@ -9,13 +9,13 @@ if (!version) {
 
 const packageFiles = [
   'package.json',
-  'packages/vellira-web/package.json',
-  'packages/vellira-native/package.json',
-  'packages/vellira-core/package.json',
-  'packages/vellira-types/package.json',
-  'packages/vellira-tokens/package.json',
-  'packages/vellira-icons/package.json',
-  'packages/vellira-assets/package.json',
+  'packages/react/package.json',
+  'packages/react-native/package.json',
+  'packages/core/package.json',
+  'packages/types/package.json',
+  'packages/tokens/package.json',
+  'packages/icons/package.json',
+  'packages/assets/package.json',
 ];
 
 for (const file of packageFiles) {
