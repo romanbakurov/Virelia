@@ -55,11 +55,11 @@ export function AccountPanel() {
 }
 ```
 
-## API Surface
+## Available Components
 
 Every component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/react/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/react/API.md).
+[`packages/react/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react/API.md).
 
 | Component    | Core props                                                                   | State model                   |
 | ------------ | ---------------------------------------------------------------------------- | ----------------------------- |
@@ -75,6 +75,8 @@ generated reference lives in
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections      | controlled                    |
 
 ## Controlled and Uncontrolled
+
+Most form components support both controlled and uncontrolled usage.
 
 Use controlled props when application state owns the current value.
 
@@ -142,10 +144,11 @@ export function UncontrolledPreferences() {
 
 ## Accessibility
 
-Vellira Web components keep renderer-specific accessibility behavior inside the
-DOM package.
+Vellira Web components implement browser-specific accessibility behavior while
+keeping the public API platform-independent.
 
-- `Button` supports `ariaLabel` for icon-only or ambiguous actions.
+- `Button` supports accessible labels for icon-only or ambiguous actions through
+  the `ariaLabel` prop.
 - `Input`, `Select`, `RadioGroup`, and `FormField` wire labels, descriptions,
   required state, disabled state, and error text.
 - `RadioGroup`, `Tabs`, menus, tooltips, and overlays include keyboard behavior
@@ -187,25 +190,23 @@ controlled `theme`/`onThemeChange` pair for application-level theme switching.
 
 ## Storybook
 
-Use Storybook for live controls, interaction states, and visual review.
+Explore every component with interactive controls, accessibility states, and
+live examples.
 
-| Component    | Storybook                                                                                                             |
-| ------------ | --------------------------------------------------------------------------------------------------------------------- |
-| `Button`     | [Primitives/Button](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-button--docs)         |
-| `Checkbox`   | [Primitives/Checkbox](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-checkbox--docs)     |
-| `Input`      | [Primitives/Input](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-input--docs)           |
-| `FormField`  | [Patterns/FormField](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/patterns-formfield--docs)       |
-| `RadioGroup` | [Components/RadioGroup](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-radiogroup--docs) |
-| `Select`     | [Components/Select](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-select--docs)         |
-| `Dropdown`   | [Components/Dropdown](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-dropdown--docs)     |
-| `Tabs`       | [Components/Tabs](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-tabs--docs)             |
-| `Tooltip`    | [Components/Tooltip](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-tooltip--docs)       |
-| `Modal`      | [Components/Modal](https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-modal--docs)           |
+[Open Storybook](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
 
 ## Development
 
 ```bash
+pnpm --filter @vellira-ui/react typecheck
 pnpm --filter @vellira-ui/react build
 pnpm --filter @vellira-ui/react test
 pnpm --filter @vellira-ui/react-storybook dev
 ```
+
+## Browser Support
+
+Vellira targets modern evergreen browsers supported by React.
+
+The library relies on standard browser APIs and does not require additional
+polyfills in modern environments.

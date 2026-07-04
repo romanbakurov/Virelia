@@ -17,24 +17,21 @@ pnpm add @vellira-ui/react
 pnpm add @vellira-ui/react-native
 ```
 
+:::
+
+Optional packages are available when you need icons or direct token access.
+
+::: code-group
+
+```bash [Icons]
+pnpm add @vellira-ui/icons
+```
+
 ```bash [Tokens]
 pnpm add @vellira-ui/tokens
 ```
 
 :::
-
-Install shared packages when you need icons or direct token access.
-
-```bash
-pnpm add @vellira-ui/icons @vellira-ui/tokens
-```
-
-If your project consumes packages from GitHub Packages, configure the scope
-registry first.
-
-```bash
-@romanbakurov:registry=https://npm.pkg.github.com
-```
 
 ## 2. Add Web Styles
 

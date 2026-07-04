@@ -3,25 +3,27 @@ layout: home
 
 hero:
   name: Vellira
-  text: Cross-platform design system for React and React Native apps.
-  tagline: Shared tokens, stable APIs, platform-native rendering.
+  text: Cross-platform UI components for React and React Native.
+  tagline: Accessible components, shared design tokens, and native rendering.
   actions:
     - theme: brand
       text: Get Started
       link: /getting-started
     - theme: alt
-      text: Component Gallery
+      text: Component
       link: /component-examples
     - theme: alt
       text: GitHub
-      link: https://github.com/romanbakurov/Vellira
+      link: https://github.com/vellira-dev/vellira
 ---
 
 ## Why Vellira
 
-Vellira keeps product interfaces consistent across Web and React Native without
-forcing both renderers into the same implementation. Tokens, public contracts,
-and interaction logic are shared. Rendering stays platform-specific.
+Vellira provides a consistent UI foundation for React and React Native while
+keeping each renderer platform-native.
+
+Tokens, interaction logic, and public APIs are shared. Rendering stays
+platform-specific.
 
 <div class="docs-card-grid docs-card-grid-three">
   <a class="docs-card" href="/theme-architecture">
@@ -82,27 +84,32 @@ export function Example() {
     <span>Design Tokens</span>
     <code>@vellira-ui/tokens</code>
   </a>
+  <a class="docs-package-card" href="/icons">
+    <strong>Icons</strong>
+    <span>Cross-platform Icons</span>
+    <code>@vellira-ui/icons</code>
+  </a>
 </div>
 
 ## Features
 
 <div class="docs-feature-list">
+  <div>Accessible components</div>
   <div>Shared design tokens</div>
-  <div>React and React Native renderers</div>
-  <div>TypeScript-first public APIs</div>
-  <div>Modular packages</div>
-  <div>Tested components</div>
-  <div>Automated releases</div>
+  <div>React & React Native</div>
+  <div>TypeScript-first APIs</div>
+  <div>Tree-shakeable packages</div>
+  <div>Automated CI/CD pipeline</div>
 </div>
 
-## Documentation
+## Documentation Overview
 
 Use the docs as the main path through the system.
 
 | Goal                           | Page                                      |
 | ------------------------------ | ----------------------------------------- |
 | Install and render a component | [Quick Start](/getting-started)           |
-| Browse component previews      | [Component Gallery](/component-examples)  |
+| Browse component               | [Component](/component-examples)          |
 | Understand tokens              | [Theme Architecture](/theme-architecture) |
 | Prepare for production         | [Production](/production)                 |
 | Use React DOM                  | [Web](/web)                               |
@@ -113,4 +120,7 @@ Use the docs as the main path through the system.
 Vellira is developed as a monorepo with package builds, tests, Storybook, smoke
 checks, documentation builds, and release automation.
 
-[Open GitHub Repository](https://github.com/romanbakurov/Vellira)
+The repository includes Storybook, automated testing, semantic releases, and
+fully automated npm publishing.
+
+[Open GitHub Repository](https://github.com/vellira-dev/vellira)

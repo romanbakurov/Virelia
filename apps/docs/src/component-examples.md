@@ -1,12 +1,16 @@
-# Component Gallery
+# Component Overview
 
-Browse the main Vellira components before opening the renderer-specific API
-pages. These previews focus on states that matter in product UI: default,
-hover, focus, disabled, error, loading, danger, and narrow mobile layouts.
+Explore the available Vellira components and their common states before diving
+into the renderer-specific API documentation.
 
-[Open Storybook](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
+Use this page as a visual overview of the component library.
 
-## State Matrix
+> 💡 Looking for interactive examples?
+>
+> Open Storybook →
+> [Open Storybook](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
+
+## Visual States
 
 <div class="docs-state-gallery">
   <section class="docs-state-card">
@@ -96,7 +100,7 @@ hover, focus, disabled, error, loading, danger, and narrow mobile layouts.
       <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-dropdown--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
-      <div><span>Closed</span><button class="docs-button docs-button-secondary">Actions</button></div>
+      <div><span>Default</span><button class="docs-button docs-button-secondary">Actions</button></div>
       <div><span>Open</span><div class="docs-menu docs-menu-static"><div>Edit</div><div>Duplicate</div><div class="docs-menu-danger">Delete</div></div></div>
       <div><span>Danger item</span><div class="docs-menu docs-menu-static"><div>Archive</div><div class="docs-menu-danger">Delete</div></div></div>
       <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Actions</button></div>
@@ -109,9 +113,9 @@ hover, focus, disabled, error, loading, danger, and narrow mobile layouts.
       <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-tooltip--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
-      <div><span>Trigger</span><button class="docs-button docs-button-secondary">Info</button></div>
+      <div><span>Default</span><button class="docs-button docs-button-secondary">Info</button></div>
       <div><span>Open</span><div class="docs-tooltip">Helpful context</div></div>
-      <div><span>Focus</span><button class="docs-button docs-button-secondary docs-is-focus">Info</button></div>
+      <div><span>Focused</span><button class="docs-button docs-button-secondary docs-is-focus">Info</button></div>
       <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Info</button></div>
     </div>
   </section>
@@ -122,14 +126,35 @@ hover, focus, disabled, error, loading, danger, and narrow mobile layouts.
       <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-modal--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
-      <div><span>Trigger</span><button class="docs-button">Open modal</button></div>
-      <div><span>Open</span><div class="docs-modal-preview"><strong>Confirm action</strong><span>This dialog needs a decision.</span><button class="docs-button docs-button-danger">Delete</button></div></div>
-      <div><span>Mobile width</span><div class="docs-mobile-frame"><div class="docs-modal-preview"><strong>Delete item</strong><span>Confirm this change.</span></div></div></div>
+      <div>
+        <span>Default</span>
+        <div class="docs-modal-preview">
+          <strong>Confirm action</strong>
+          <span>This dialog needs a decision.</span>
+          <div class="docs-modal-actions">
+            <button class="docs-button docs-button-secondary">Cancel</button>
+            <button class="docs-button docs-button-danger">Delete</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span>Mobile</span>
+        <div class="docs-mobile-frame">
+          <div class="docs-modal-preview">
+            <strong>Delete item</strong>
+            <span>Confirm this change.</span>
+            <div class="docs-modal-actions">
+              <button class="docs-button docs-button-secondary">Cancel</button>
+              <button class="docs-button docs-button-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </div>
 
-## Usage Examples
+## Common Patterns
 
 ### Form
 
@@ -190,6 +215,10 @@ export function SelectionExample() {
 import { Dropdown } from '@vellira-ui/react';
 
 export function OverlayExample() {
+  const handleAction = (value: string) => {
+    // Handle selected action.
+  };
+
   return (
     <Dropdown
       label='Open menu'
@@ -198,7 +227,7 @@ export function OverlayExample() {
         { label: 'Rename', value: 'rename' },
         { label: 'Delete', value: 'delete', danger: true },
       ]}
-      onSelect={(value) => console.log(value)}
+      onSelect={handleAction}
     />
   );
 }
@@ -212,3 +241,17 @@ export function OverlayExample() {
 | Learn Web package details              | [Web](/web)                               |
 | Learn Native package details           | [Native](/native)                         |
 | Understand token layers                | [Theme Architecture](/theme-architecture) |
+
+## Supported Components
+
+- Button
+- Checkbox
+- Dropdown
+- Input
+- Modal
+- RadioGroup
+- Select
+- Tabs
+- Tooltip
+
+More components are added continuously.
