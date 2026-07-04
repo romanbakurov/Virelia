@@ -1,6 +1,6 @@
 module.exports = {
   branches: ['main'],
-  repositoryUrl: 'https://github.com/romanbakurov/Vellira.git',
+  repositoryUrl: 'https://github.com/vellira-dev/vellira.git',
   plugins: [
     '@semantic-release/commit-analyzer',
     '@semantic-release/release-notes-generator',
