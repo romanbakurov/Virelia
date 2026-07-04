@@ -310,7 +310,11 @@ function section(
   interfaceName: string,
   sourceFile: string
 ): ApiSection {
-  const packageDir = `packages/vellira-${packageName}`;
+  const packageDirByName = {
+    web: 'packages/react',
+    native: 'packages/react-native',
+  } satisfies Record<typeof packageName, string>;
+  const packageDir = packageDirByName[packageName];
 
   return {
     docPath: `${packageDir}/API.md`,
@@ -424,10 +428,10 @@ function isDocumentedPropDeclaration(declaration: ts.Declaration) {
   const fileName = normalizePath(declaration.getSourceFile().fileName);
 
   return (
-    fileName.includes('/packages/vellira-web/') ||
-    fileName.includes('/packages/vellira-native/') ||
-    fileName.includes('/packages/vellira-types/') ||
-    fileName.includes('/node_modules/@romanbakurov/vellira-types/')
+    fileName.includes('/packages/react/') ||
+    fileName.includes('/packages/react-native/') ||
+    fileName.includes('/packages/types/') ||
+    fileName.includes('/node_modules/@vellira-ui/types/')
   );
 }
 

@@ -6,7 +6,7 @@ import {
   ThemeProvider,
   nativeThemes,
   type NativeThemeName,
-} from '@romanbakurov/vellira-native';
+} from '@vellira-ui/react-native';
 
 import { DeveloperPanel } from './DeveloperPanel';
 

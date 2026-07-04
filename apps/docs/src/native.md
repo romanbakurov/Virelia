@@ -1,13 +1,13 @@
 # Native
 
-`@romanbakurov/vellira-native` is the React Native renderer for Vellira. It uses
+`@vellira-ui/react-native` is the React Native renderer for Vellira. It uses
 React Native primitives and `StyleSheet`, but follows the same public component
 language as the web package.
 
 ## Install
 
 ```bash
-pnpm add @romanbakurov/vellira-native
+pnpm add @vellira-ui/react-native
 ```
 
 Peer dependencies:
@@ -19,12 +19,7 @@ pnpm add react react-native
 ## Example
 
 ```tsx
-import {
-  Button,
-  Checkbox,
-  Input,
-  RadioGroup,
-} from '@romanbakurov/vellira-native';
+import { Button, Checkbox, Input, RadioGroup } from '@vellira-ui/react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -58,7 +53,7 @@ export function PreferencesScreen() {
 
 Every native component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/vellira-native/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/vellira-native/API.md).
+[`packages/react-native/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/react-native/API.md).
 
 | Component    | Role                                                                 |
 | ------------ | -------------------------------------------------------------------- |
@@ -78,7 +73,7 @@ generated reference lives in
 Use controlled props when application state owns the value.
 
 ```tsx
-import { Checkbox, RadioGroup } from '@romanbakurov/vellira-native';
+import { Checkbox, RadioGroup } from '@vellira-ui/react-native';
 import { useState } from 'react';
 
 export function ControlledPreferences() {
@@ -110,7 +105,7 @@ export function ControlledPreferences() {
 Use default props when the component can own its initial state.
 
 ```tsx
-import { Checkbox, Tabs } from '@romanbakurov/vellira-native';
+import { Checkbox, Tabs } from '@vellira-ui/react-native';
 
 export function UncontrolledPreferences() {
   return (
@@ -150,7 +145,7 @@ styles. Product code can also import theme objects directly when building
 screens around Vellira components.
 
 ```tsx
-import { theme } from '@romanbakurov/vellira-tokens';
+import { theme } from '@vellira-ui/tokens';
 import { View } from 'react-native';
 
 export function ScreenShell({ children }: { children: React.ReactNode }) {
@@ -179,7 +174,7 @@ manual checks of screen-level flows outside Storybook.
 ## Testing
 
 ```bash
-pnpm --filter @romanbakurov/vellira-native test
+pnpm --filter @vellira-ui/react-native test
 ```
 
 The package uses Vitest with a lightweight React Native mock to validate state,
@@ -189,6 +184,6 @@ simulator.
 ## Development
 
 ```bash
-pnpm --filter @romanbakurov/vellira-native build
-pnpm --filter @romanbakurov/vellira-native test
+pnpm --filter @vellira-ui/react-native build
+pnpm --filter @vellira-ui/react-native test
 ```

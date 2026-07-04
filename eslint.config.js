@@ -52,8 +52,8 @@ export default [
   {
     files: [
       'packages/**/*.{ts,tsx,js,jsx}',
-      'apps/web-playground/**/*.{ts,tsx,js,jsx}',
-      'apps/web-storybook/**/*.{ts,tsx,js,jsx}',
+      'apps/react-playground/**/*.{ts,tsx,js,jsx}',
+      'apps/react-storybook/**/*.{ts,tsx,js,jsx}',
     ],
 
     languageOptions: {

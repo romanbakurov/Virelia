@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 
-import type { NativeThemeName } from '@romanbakurov/vellira-native';
+import type { NativeThemeName } from '@vellira-ui/react-native';
 
 type DeveloperPanelProps = {
   themeName: NativeThemeName;

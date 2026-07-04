@@ -47,13 +47,13 @@ and interaction logic are shared. Rendering stays platform-specific.
 Install the Web renderer and import styles once in your app entry.
 
 ```bash
-pnpm add @romanbakurov/vellira-web
+pnpm add @vellira-ui/react
 ```
 
 ```tsx
-import '@romanbakurov/vellira-web/styles';
+import '@vellira-ui/react/styles';
 
-import { Button } from '@romanbakurov/vellira-web';
+import { Button } from '@vellira-ui/react';
 
 export function Example() {
   return <Button variant='primary'>Continue</Button>;
@@ -70,17 +70,17 @@ export function Example() {
   <a class="docs-package-card" href="/web">
     <strong>Web</strong>
     <span>React</span>
-    <code>@romanbakurov/vellira-web</code>
+    <code>@vellira-ui/react</code>
   </a>
   <a class="docs-package-card" href="/native">
     <strong>Native</strong>
     <span>React Native</span>
-    <code>@romanbakurov/vellira-native</code>
+    <code>@vellira-ui/react-native</code>
   </a>
   <a class="docs-package-card" href="/tokens">
     <strong>Tokens</strong>
     <span>Design Tokens</span>
-    <code>@romanbakurov/vellira-tokens</code>
+    <code>@vellira-ui/tokens</code>
   </a>
 </div>
 

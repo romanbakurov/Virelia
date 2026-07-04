@@ -7,16 +7,16 @@ Use this checklist before shipping Vellira in an application.
 Vellira is split into focused packages. Install the renderer and supporting
 packages your application actually uses.
 
-| Target        | Package                        |
-| ------------- | ------------------------------ |
-| React DOM     | `@romanbakurov/vellira-web`    |
-| React Native  | `@romanbakurov/vellira-native` |
-| Shared tokens | `@romanbakurov/vellira-tokens` |
-| Icons         | `@romanbakurov/vellira-icons`  |
+| Target        | Package                    |
+| ------------- | -------------------------- |
+| React DOM     | `@vellira-ui/react`        |
+| React Native  | `@vellira-ui/react-native` |
+| Shared tokens | `@vellira-ui/tokens`       |
+| Icons         | `@vellira-ui/icons`        |
 
 ## Web Application Checklist
 
-- Import `@romanbakurov/vellira-web/styles` once in the app entry.
+- Import `@vellira-ui/react/styles` once in the app entry.
 - Wrap app-level theme switching in `ThemeProvider` when the product exposes
   light, dark, or high-contrast modes.
 - Use semantic CSS variables for product surfaces instead of raw palette
@@ -30,7 +30,7 @@ packages your application actually uses.
 - Test component behavior in Storybook, an Expo playground, or your app shell.
 - Verify screen-reader labels, disabled states, and validation text on real
   devices where possible.
-- Keep layout spacing and surfaces tied to `@romanbakurov/vellira-tokens`.
+- Keep layout spacing and surfaces tied to `@vellira-ui/tokens`.
 
 ## Release Confidence
 
@@ -44,9 +44,9 @@ pnpm ci
 For focused checks:
 
 ```bash
-pnpm --filter @romanbakurov/vellira-web test
-pnpm --filter @romanbakurov/vellira-native test
-pnpm --filter @romanbakurov/vellira-tokens test
+pnpm --filter @vellira-ui/react test
+pnpm --filter @vellira-ui/react-native test
+pnpm --filter @vellira-ui/tokens test
 pnpm check:public-api
 ```
 

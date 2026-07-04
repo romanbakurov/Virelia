@@ -1,5 +1,5 @@
 {
-  "name": "native-playground",
+  "name": "@vellira-ui/native-playground",
   "version": "1.0.0",
   "main": "index.ts",
   "private": true,
@@ -17,8 +17,8 @@
     "@react-native-community/datetimepicker": "^9.1.0",
     "@react-native-community/slider": "^5.2.0",
     "@react-native-picker/picker": "2.11.4",
-    "@romanbakurov/vellira-icons": "workspace:*",
-    "@romanbakurov/vellira-native": "workspace:*",
+    "@vellira-ui/icons": "workspace:*",
+    "@vellira-ui/react-native": "workspace:*",
     "babel-loader": "^8.4.1",
     "expo": "~56.0.11",
     "expo-font": "^56.0.6",
@@ -29,7 +29,7 @@
     "react-native-reanimated": "~4.3.1",
     "react-native-safe-area-context": "^5.7.0",
     "react-native-svg": "^15.15.4",
-    "react-native-worklets": "0.8.3"
+    "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
     "@types/react": "~19.2.3",

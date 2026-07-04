@@ -6,8 +6,8 @@ Vellira is a TypeScript-first design system for React and React Native.
 
 It provides shared design tokens, renderer-neutral contracts, reusable interaction logic, and platform-specific component packages.
 
-[![npm version](https://img.shields.io/npm/v/@romanbakurov/vellira-web)](https://www.npmjs.com/package/@romanbakurov/vellira-web)
-[![npm downloads](https://img.shields.io/npm/dm/@romanbakurov/vellira-web)](https://www.npmjs.com/package/@romanbakurov/vellira-web)
+[![npm version](https://img.shields.io/npm/v/@vellira-ui/react)](https://www.npmjs.com/package/@vellira-ui/react)
+[![npm downloads](https://img.shields.io/npm/dm/@vellira-ui/react)](https://www.npmjs.com/package/@vellira-ui/react)
 [![GitHub Release](https://img.shields.io/github/v/release/romanbakurov/Vellira)](https://github.com/romanbakurov/Vellira/releases)
 [![CI](https://github.com/romanbakurov/Vellira/actions/workflows/ci.yml/badge.svg)](https://github.com/romanbakurov/Vellira/actions/workflows/ci.yml)
 ![React](https://img.shields.io/badge/React-19.2.3-blue)
@@ -31,32 +31,32 @@ Choose the package that matches your target platform.
 ### Web
 
 ```bash
-pnpm add @romanbakurov/vellira-web
+pnpm add @vellira-ui/react
 ```
 
 ### React Native
 
 ```bash
-pnpm add @romanbakurov/vellira-native
+pnpm add @vellira-ui/react-native
 ```
 
 ### Design Tokens
 
 ```bash
-pnpm add @romanbakurov/vellira-tokens
+pnpm add @vellira-ui/tokens
 ```
 
 ## Packages
 
 Vellira is split into focused packages that can be installed independently.
 
-- [`@romanbakurov/vellira-web`](https://www.npmjs.com/package/@romanbakurov/vellira-web)
-- [`@romanbakurov/vellira-native`](https://www.npmjs.com/package/@romanbakurov/vellira-native)
-- [`@romanbakurov/vellira-tokens`](https://www.npmjs.com/package/@romanbakurov/vellira-tokens)
-- [`@romanbakurov/vellira-icons`](https://www.npmjs.com/package/@romanbakurov/vellira-icons)
-- [`@romanbakurov/vellira-core`](https://www.npmjs.com/package/@romanbakurov/vellira-core)
-- [`@romanbakurov/vellira-types`](https://www.npmjs.com/package/@romanbakurov/vellira-types)
-- [`@romanbakurov/vellira-assets`](https://www.npmjs.com/package/@romanbakurov/vellira-assets)
+- [`@vellira-ui/react`](https://www.npmjs.com/package/@vellira-ui/react)
+- [`@vellira-ui/react-native`](https://www.npmjs.com/package/@vellira-ui/react-native)
+- [`@vellira-ui/tokens`](https://www.npmjs.com/package/@vellira-ui/tokens)
+- [`@vellira-ui/icons`](https://www.npmjs.com/package/@vellira-ui/icons)
+- [`@vellira-ui/core`](https://www.npmjs.com/package/@vellira-ui/core)
+- [`@vellira-ui/types`](https://www.npmjs.com/package/@vellira-ui/types)
+- [`@vellira-ui/assets`](https://www.npmjs.com/package/@vellira-ui/assets)
 
 ## Links
 

@@ -14,12 +14,12 @@ const root = process.cwd();
 const tempDir = path.join(root, '.tmp-package-smoke-web');
 
 const packageNames = [
-  '@romanbakurov/vellira-web',
-  '@romanbakurov/vellira-core',
-  '@romanbakurov/vellira-icons',
-  '@romanbakurov/vellira-tokens',
-  '@romanbakurov/vellira-types',
-  '@romanbakurov/vellira-assets',
+  '@vellira-ui/react',
+  '@vellira-ui/core',
+  '@vellira-ui/icons',
+  '@vellira-ui/tokens',
+  '@vellira-ui/types',
+  '@vellira-ui/assets',
 ];
 
 rmSync(tempDir, { recursive: true, force: true });
@@ -33,7 +33,7 @@ const dependencies = packPackages(packageNames, tempDir);
 const externalDependencies = linkWorkspaceDependencies(
   root,
   tempDir,
-  'packages/vellira-web',
+  'packages/react',
   ['@floating-ui/react', 'clsx', 'focus-trap-react', 'react', 'react-dom']
 );
 
@@ -76,11 +76,11 @@ writeFileSync(
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-import * as web from '@romanbakurov/vellira-web';
-import * as core from '@romanbakurov/vellira-core';
-import * as icons from '@romanbakurov/vellira-icons';
-import * as tokens from '@romanbakurov/vellira-tokens';
-import '@romanbakurov/vellira-assets/styles';
+import * as web from '@vellira-ui/react';
+import * as core from '@vellira-ui/core';
+import * as icons from '@vellira-ui/icons';
+import * as tokens from '@vellira-ui/tokens';
+import '@vellira-ui/assets/styles';
 
 const componentTypes = new Set([
   Symbol.for('react.forward_ref'),
@@ -113,57 +113,57 @@ const actualWebApi = Object.keys(web).sort();
 
 if (JSON.stringify(actualWebApi) !== JSON.stringify(expectedWebApi)) {
   throw new Error(
-    \`vellira-web public API mismatch. Expected \${expectedWebApi.join(', ')}, got \${actualWebApi.join(', ')}\`
+    \`react public API mismatch. Expected \${expectedWebApi.join(', ')}, got \${actualWebApi.join(', ')}\`
   );
 }
 
 if (!isComponentExport(web.Button)) {
-  throw new Error('vellira-web Button export invalid');
+  throw new Error('react Button export invalid');
 }
 
 if (!isComponentExport(web.Input)) {
-  throw new Error('vellira-web Input export invalid');
+  throw new Error('react Input export invalid');
 }
 
 if (!isComponentExport(web.Tabs)) {
-  throw new Error('vellira-web Tabs export invalid');
+  throw new Error('react Tabs export invalid');
 }
 
 if (!isComponentExport(web.ThemeProvider)) {
-  throw new Error('vellira-web ThemeProvider export invalid');
+  throw new Error('react ThemeProvider export invalid');
 }
 
 if (typeof web.useTheme !== 'function') {
-  throw new Error('vellira-web useTheme export invalid');
+  throw new Error('react useTheme export invalid');
 }
 
 if (typeof core.useControllableState !== 'function') {
-  throw new Error('vellira-core useControllableState export invalid');
+  throw new Error('core useControllableState export invalid');
 }
 
 if (typeof icons.Check !== 'function') {
-  throw new Error('vellira-icons Check export invalid');
+  throw new Error('icons Check export invalid');
 }
 
 if (typeof icons.Search !== 'function') {
-  throw new Error('vellira-icons Search export invalid');
+  throw new Error('icons Search export invalid');
 }
 
 const { colors } = tokens.theme;
 
 if (typeof tokens.darkTheme !== 'object' || tokens.darkTheme === null) {
-  throw new Error('vellira-tokens darkTheme export invalid');
+  throw new Error('tokens darkTheme export invalid');
 }
 
 if (typeof tokens.lightTheme !== 'object' || tokens.lightTheme === null) {
-  throw new Error('vellira-tokens lightTheme export invalid');
+  throw new Error('tokens lightTheme export invalid');
 }
 
 if (
   typeof tokens.highContrastTheme !== 'object' ||
   tokens.highContrastTheme === null
 ) {
-  throw new Error('vellira-tokens highContrastTheme export invalid');
+  throw new Error('tokens highContrastTheme export invalid');
 }
 
 const theme = tokens.darkTheme;
@@ -247,17 +247,17 @@ assertColor(
 );
 assertColor(theme.components.input.default.bg, 'components.input.default.bg');
 
-await import('@romanbakurov/vellira-web/styles');
+await import('@vellira-ui/react/styles');
 
 const assetFiles = [
-  '@romanbakurov/vellira-assets/styles/fonts.scss',
-  '@romanbakurov/vellira-assets/fonts/KantumruyPro-Regular.ttf',
+  '@vellira-ui/assets/styles/fonts.scss',
+  '@vellira-ui/assets/fonts/KantumruyPro-Regular.ttf',
 ];
 
 for (const assetFile of assetFiles) {
   const assetPath = fileURLToPath(import.meta.resolve(assetFile));
 
-  if (!assetPath.includes('node_modules/@romanbakurov/vellira-assets/')) {
+  if (!assetPath.includes('node_modules/@vellira-ui/assets/')) {
     throw new Error(assetFile + ' did not resolve from the installed assets package');
   }
 

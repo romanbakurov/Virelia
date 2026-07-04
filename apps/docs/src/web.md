@@ -1,25 +1,25 @@
 # Web
 
-`@romanbakurov/vellira-web` contains the React DOM implementation of Vellira.
+`@vellira-ui/react` contains the React DOM implementation of Vellira.
 It owns DOM structure, CSS modules, browser events, accessibility ids, and web
 overlay behavior while reusing shared tokens, types, and core hooks.
 
 ## Install
 
 ```bash
-pnpm add @romanbakurov/vellira-web
+pnpm add @vellira-ui/react
 ```
 
 Import the stylesheet once.
 
 ```tsx
-import '@romanbakurov/vellira-web/styles';
+import '@vellira-ui/react/styles';
 ```
 
 ## Example
 
 ```tsx
-import { Button, Input, Select, Tabs } from '@romanbakurov/vellira-web';
+import { Button, Input, Select, Tabs } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function AccountPanel() {
@@ -59,7 +59,7 @@ export function AccountPanel() {
 
 Every component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/vellira-web/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/vellira-web/API.md).
+[`packages/react/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/react/API.md).
 
 | Component    | Core props                                                                   | State model                   |
 | ------------ | ---------------------------------------------------------------------------- | ----------------------------- |
@@ -80,7 +80,7 @@ Use controlled props when application state owns the current value.
 
 ```tsx
 import { useState } from 'react';
-import { Checkbox, Select } from '@romanbakurov/vellira-web';
+import { Checkbox, Select } from '@vellira-ui/react';
 
 export function ControlledSettings() {
   const [enabled, setEnabled] = useState(false);
@@ -111,7 +111,7 @@ export function ControlledSettings() {
 Use default props when the component can own its initial state.
 
 ```tsx
-import { Checkbox, RadioGroup, Tabs } from '@romanbakurov/vellira-web';
+import { Checkbox, RadioGroup, Tabs } from '@vellira-ui/react';
 
 export function UncontrolledPreferences() {
   return (
@@ -157,13 +157,13 @@ DOM package.
 
 ## Theming
 
-Import `@romanbakurov/vellira-web/styles` once for base component styles.
+Import `@vellira-ui/react/styles` once for base component styles.
 Theme values come from the shared token package and are exposed as CSS
 variables.
 
 ```tsx
-import '@romanbakurov/vellira-web/styles';
-import { ThemeProvider } from '@romanbakurov/vellira-web';
+import '@vellira-ui/react/styles';
+import { ThemeProvider } from '@vellira-ui/react';
 
 export function Root() {
   return (
@@ -205,7 +205,7 @@ Use Storybook for live controls, interaction states, and visual review.
 ## Development
 
 ```bash
-pnpm --filter @romanbakurov/vellira-web build
-pnpm --filter @romanbakurov/vellira-web test
-pnpm --filter @vellira/web-storybook dev
+pnpm --filter @vellira-ui/react build
+pnpm --filter @vellira-ui/react test
+pnpm --filter @vellira-ui/react-storybook dev
 ```

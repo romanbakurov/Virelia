@@ -1,14 +1,14 @@
 {
   "files": [],
   "references": [
-    { "path": "./packages/vellira-core" },
-    { "path": "./packages/vellira-icons" },
-    { "path": "./packages/vellira-native" },
-    { "path": "./packages/vellira-tokens" },
-    { "path": "./packages/vellira-types" },
-    { "path": "./packages/vellira-web" },
-    { "path": "./apps/web-playground" },
+    { "path": "./packages/core" },
+    { "path": "./packages/icons" },
+    { "path": "./packages/react-native" },
+    { "path": "./packages/tokens" },
+    { "path": "./packages/types" },
+    { "path": "./packages/react" },
+    { "path": "./apps/react-playground" },
     { "path": "./apps/native-playground" },
-    { "path": "./apps/web-storybook" }
+    { "path": "./apps/react-storybook" }
   ]
 }

@@ -30,11 +30,11 @@ if (!componentName || !platform || !layer) {
 function getTargetPackages(platform: Platform): string[] {
   switch (platform) {
     case 'web':
-      return ['vellira-web'];
+      return ['react'];
     case 'native':
-      return ['vellira-native'];
+      return ['react-native'];
     case 'both':
-      return ['vellira-web', 'vellira-native'];
+      return ['react', 'react-native'];
   }
 }
 
@@ -44,7 +44,7 @@ function createComponent(params: {
   layer: Layer;
 }) {
   const { packageName, componentName, layer } = params;
-  const isNative = packageName === 'vellira-native';
+  const isNative = packageName === 'react-native';
 
   const componentDir = path.join(
     process.cwd(),

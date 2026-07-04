@@ -1,8 +1,8 @@
 # Native Playground
 
-Expo app for developing and testing `@romanbakurov/vellira-native`.
+Expo app for developing and testing `@vellira-ui/react-native`.
 
-The app runs as a normal Expo playground for `@romanbakurov/vellira-native`. Use `apps/native-storybook` for on-device React Native Storybook.
+The app runs as a normal Expo playground for `@vellira-ui/react-native`. Use `apps/native-storybook` for on-device React Native Storybook.
 
 ## Start
 
@@ -33,7 +33,7 @@ pnpm --filter native-storybook android
 Native package unit tests run outside the simulator:
 
 ```bash
-pnpm --filter @romanbakurov/vellira-native test
+pnpm --filter @vellira-ui/react-native test
 ```
 
 The playground itself is mainly for manual Expo and on-device Storybook checks.
@@ -42,5 +42,5 @@ The playground itself is mainly for manual Expo and on-device Storybook checks.
 
 - Built with Expo `56`.
 - Uses React Native `0.85`.
-- Consumes `@romanbakurov/vellira-native` from the workspace.
+- Consumes `@vellira-ui/react-native` from the workspace.
 - Manual playground screens cover the native package in an Expo app context.

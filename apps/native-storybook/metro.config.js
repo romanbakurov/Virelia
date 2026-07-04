@@ -8,7 +8,7 @@ const workspaceRoot = path.resolve(projectRoot, '../..');
 
 const velliraNativeEntry = path.resolve(
   workspaceRoot,
-  'packages/vellira-native/src/index.ts'
+  'packages/react-native/src/index.ts'
 );
 
 const config = getDefaultConfig(projectRoot);
@@ -20,7 +20,7 @@ const defaultResolveRequest = config.resolver.resolveRequest;
 // Use source files in native Storybook to avoid duplicate ThemeContext
 // between package dist and local stories.
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName === '@romanbakurov/vellira-native') {
+  if (moduleName === '@vellira-ui/react-native') {
     return {
       type: 'sourceFile',
       filePath: velliraNativeEntry,
