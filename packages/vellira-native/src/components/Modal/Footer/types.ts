@@ -1,8 +1,9 @@
 import type { BaseModalFooterProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface ModalFooterProps extends BaseModalFooterProps {
+import type { NativeComponentProps } from '../../../types';
+
+export interface ModalFooterProps
+  extends BaseModalFooterProps, NativeComponentProps {
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
 }

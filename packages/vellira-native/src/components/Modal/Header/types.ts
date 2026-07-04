@@ -1,9 +1,11 @@
 import type { BaseModalHeaderProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import type { StyleProp, TextStyle } from 'react-native';
 
-export interface ModalHeaderProps extends BaseModalHeaderProps {
+import type { NativeComponentProps } from '../../../types';
+
+export interface ModalHeaderProps
+  extends BaseModalHeaderProps, NativeComponentProps {
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }

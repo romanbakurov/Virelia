@@ -1,8 +1,9 @@
 import type { BaseModalBodyProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface ModalBodyProps extends BaseModalBodyProps {
+import type { NativeComponentProps } from '../../../types';
+
+export interface ModalBodyProps
+  extends BaseModalBodyProps, NativeComponentProps {
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
 }

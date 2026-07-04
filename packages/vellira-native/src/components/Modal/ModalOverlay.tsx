@@ -9,6 +9,7 @@ export const ModalOverlay = ({
   isOpen,
   onClose,
   closeOnBackdrop = true,
+  closeOnEsc = true,
   children,
   overlayStyle,
 }: ModalOverlayProps) => {
@@ -19,7 +20,7 @@ export const ModalOverlay = ({
       visible={isOpen}
       transparent
       animationType='fade'
-      onRequestClose={onClose}
+      onRequestClose={closeOnEsc ? onClose : undefined}
     >
       <View style={[styles.overlay, overlayStyle]}>
         <Pressable

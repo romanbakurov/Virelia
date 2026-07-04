@@ -1,7 +1,9 @@
 import type { BaseTabsPanelProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 
-export interface TabsPanelProps extends BaseTabsPanelProps {
+import type { WebComponentProps } from '../../../types';
+
+export interface TabsPanelProps
+  extends BaseTabsPanelProps, WebComponentProps<'div', 'children'> {
   children: ReactNode;
-  className?: string;
 }

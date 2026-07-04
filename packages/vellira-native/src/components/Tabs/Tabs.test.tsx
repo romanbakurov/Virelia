@@ -3,6 +3,7 @@ import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes } from '../../theme';
 
 import { Tabs } from '.';
 
@@ -10,7 +11,42 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+const toCssRgb = (hex: string) => {
+  if (!hex.startsWith('#')) {
+    return hex;
+  }
+
+  const value = hex.replace('#', '');
+  const red = parseInt(value.slice(0, 2), 16);
+  const green = parseInt(value.slice(2, 4), 16);
+  const blue = parseInt(value.slice(4, 6), 16);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+};
+
 describe('Native Tabs', () => {
+  it('uses the shared default appearance unless appearance is provided', () => {
+    const { container, unmount } = render(
+      <Tabs>
+        <Tabs.List>
+          <Tabs.Tab index={0}>Overview</Tabs.Tab>
+          <Tabs.Tab index={1}>Usage</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
+        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+      </Tabs>
+    );
+
+    const activeTab =
+      container.querySelectorAll<HTMLButtonElement>('[role="tab"]')[0];
+
+    expect(activeTab.style.backgroundColor).toBe(
+      toCssRgb(nativeThemes.light.components.tabs.trigger.active.bg)
+    );
+
+    unmount();
+  });
+
   it('switches active panel when tab is pressed', () => {
     const { container, unmount } = render(
       <Tabs>

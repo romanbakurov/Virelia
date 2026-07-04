@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement } from 'react';
+import { Children, cloneElement, forwardRef, isValidElement } from 'react';
 
 import type { ReactElement, ReactNode } from 'react';
 import type { TextProps } from 'react-native';
@@ -30,14 +30,16 @@ const renderBodyChildren = (
     });
   });
 
-export const ModalBody = ({ children, style }: ModalBodyProps) => {
-  const styles = useThemeStyles(createStyles);
+export const ModalBody = forwardRef<View, ModalBodyProps>(
+  ({ children, style, testID }, ref) => {
+    const styles = useThemeStyles(createStyles);
 
-  return (
-    <View style={[styles.body, style]}>
-      {renderBodyChildren(children, styles.text)}
-    </View>
-  );
-};
+    return (
+      <View ref={ref} testID={testID} style={[styles.body, style]}>
+        {renderBodyChildren(children, styles.text)}
+      </View>
+    );
+  }
+);
 
 ModalBody.displayName = 'ModalBody';

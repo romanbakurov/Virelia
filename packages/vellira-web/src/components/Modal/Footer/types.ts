@@ -1,6 +1,9 @@
 import type { BaseModalFooterProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 
-export interface ModalFooterProps extends BaseModalFooterProps {
+import type { WebComponentProps } from '../../../types';
+
+export interface ModalFooterProps
+  extends BaseModalFooterProps, WebComponentProps<'div', 'children'> {
   children: ReactNode;
 }

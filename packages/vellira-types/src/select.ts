@@ -1,3 +1,7 @@
+import type { ControlSize } from './common';
+
+export type SelectSize = ControlSize;
+
 export interface BaseSelectOption {
   value: string;
   disabled?: boolean;
@@ -8,6 +12,7 @@ export interface BaseSelectProps {
   defaultValue?: string;
   onChange?: (value: string) => void;
   options: BaseSelectOption[];
+  size?: SelectSize;
   required?: boolean;
   disabled?: boolean;
 }
@@ -29,6 +34,7 @@ export interface BaseSelectOptionProps {
 
 export interface BaseSelectTriggerProps {
   isOpen: boolean;
+  size?: SelectSize;
   disabled?: boolean;
   required?: boolean;
 }

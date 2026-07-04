@@ -5,7 +5,7 @@ import { text } from './text.js';
 export const navigation = {
   hover: {
     bg: colors.vellira[100],
-    fg: text.primary,
+    fg: colors.primary[500],
   },
   active: {
     bg: colors.vellira[150],

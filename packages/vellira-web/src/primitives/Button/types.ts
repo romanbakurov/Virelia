@@ -1,12 +1,17 @@
 import type { BaseButtonProps } from '@romanbakurov/vellira-types';
-import type { MouseEventHandler, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-export interface ButtonProps extends BaseButtonProps {
+import type { WebComponentProps } from '../../types';
+
+export type { ButtonColor, ButtonSize } from '@romanbakurov/vellira-types';
+
+export interface ButtonProps
+  extends
+    BaseButtonProps,
+    WebComponentProps<'button', 'children' | 'disabled' | 'onChange' | 'size'> {
   ariaLabel?: string | false;
   children?: ReactNode;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   fullWidth?: boolean;
-  className?: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
 }

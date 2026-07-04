@@ -1,4 +1,5 @@
 export type Orientation = 'vertical' | 'horizontal';
+export type ControlSize = 'sm' | 'md' | 'lg';
 export type TextWrap = 'nowrap' | 'wrap' | 'truncate';
 export type FloatingPlacement =
   | 'top'

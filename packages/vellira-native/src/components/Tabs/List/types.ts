@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface TabsListProps {
+import type { NativeComponentProps } from '../../../types';
+
+export interface TabsListProps extends NativeComponentProps {
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
 }

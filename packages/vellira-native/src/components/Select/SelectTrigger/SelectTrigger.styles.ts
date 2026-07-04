@@ -31,6 +31,24 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.select.trigger.disabled.border,
     },
 
+    sm: {
+      minHeight: 36,
+      paddingHorizontal: theme.tokens.spacing[3],
+      paddingVertical: theme.tokens.spacing[2],
+    },
+
+    md: {
+      minHeight: 44,
+      paddingHorizontal: theme.tokens.spacing[4],
+      paddingVertical: theme.tokens.spacing[3],
+    },
+
+    lg: {
+      minHeight: 52,
+      paddingHorizontal: theme.tokens.spacing[5],
+      paddingVertical: theme.tokens.spacing[4],
+    },
+
     text: {
       flex: 1,
       minWidth: 0,
@@ -38,6 +56,18 @@ export const createStyles = (theme: NativeTheme) =>
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.md,
       lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    smText: {
+      fontSize: theme.tokens.typography.size.sm,
+    },
+
+    mdText: {
+      fontSize: theme.tokens.typography.size.md,
+    },
+
+    lgText: {
+      fontSize: theme.tokens.typography.size.lg,
     },
 
     textDisabled: {

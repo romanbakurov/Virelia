@@ -94,15 +94,6 @@ Correct usage:
         defaultValue: { summary: 'true' },
       },
     },
-    closeOnClick: {
-      description:
-        'Deprecated. Use closeOnBackdrop instead. Allows closing the modal by clicking the backdrop.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
-      },
-    },
   },
 } satisfies Meta<typeof Modal>;
 

@@ -41,6 +41,21 @@ describe('RadioGroup', () => {
     unmount();
   });
 
+  it('generates a radio name when one is not provided', () => {
+    const { container, unmount } = render(
+      <RadioGroup options={options} defaultValue='starter' />
+    );
+
+    const radios = container.querySelectorAll<HTMLInputElement>(
+      'input[type="radio"]'
+    );
+
+    expect(radios[0].name).toBeTruthy();
+    expect(radios[1].name).toBe(radios[0].name);
+
+    unmount();
+  });
+
   it('does not select disabled options', () => {
     const onChange = vi.fn();
     const { container, unmount } = render(

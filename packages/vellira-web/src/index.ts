@@ -4,8 +4,12 @@ export type { ModalProps } from './components/Modal';
 export { Modal } from './components/Modal';
 export type { RadioGroupProps } from './components/RadioGroup';
 export { RadioGroup } from './components/RadioGroup';
-export type { SelectOption, SelectProps } from './components/Select';
 export { Select } from './components/Select';
+export type {
+  SelectOption,
+  SelectProps,
+  SelectSize,
+} from './components/Select/types';
 export type {
   TabProps,
   TabsListProps,
@@ -17,10 +21,10 @@ export type { TooltipProps } from './components/Tooltip';
 export { Tooltip } from './components/Tooltip';
 export type { FormFieldProps } from './patterns/FormField';
 export { FormField } from './patterns/FormField';
-export type { ButtonProps } from './primitives/Button';
+export type { ButtonColor, ButtonProps, ButtonSize } from './primitives/Button';
 export { Button } from './primitives/Button';
 export type { CheckboxProps } from './primitives/Checkbox';
 export { Checkbox } from './primitives/Checkbox';
-export type { InputProps } from './primitives/Input';
+export type { InputProps, InputSize, InputType } from './primitives/Input';
 export { Input } from './primitives/Input';
 export * from './theme';

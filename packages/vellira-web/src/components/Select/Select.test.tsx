@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -24,6 +24,38 @@ afterEach(() => {
 });
 
 describe('Select', () => {
+  it('passes through standard button props and forwards ref to the trigger', () => {
+    const ref = createRef<HTMLButtonElement>();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          ref={ref}
+          id='country'
+          label='Country'
+          data-testid='country-select'
+          style={{ minWidth: 120 }}
+          options={options}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(ref.current).toBe(trigger);
+    expect(trigger?.id).toBe('country');
+    expect(trigger?.dataset.testid).toBe('country-select');
+    expect(trigger?.style.minWidth).toBe('120px');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('submits its selected value and connects error text', () => {
     const form = document.createElement('form');
     document.body.append(form);
@@ -235,6 +267,27 @@ describe('Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.querySelector('[role="listbox"]')).toBeNull();
     expect(new FormData(form).get('country')).toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('uses the shared control size prop on the trigger', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' size='lg' options={options} />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.className).toContain('lg');
 
     act(() => {
       root.unmount();

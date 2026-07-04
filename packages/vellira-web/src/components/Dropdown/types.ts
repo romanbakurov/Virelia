@@ -8,6 +8,8 @@ import type {
 } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 
+import type { WebComponentProps } from '../../types';
+
 export interface DropdownMenuItem extends BaseDropdownMenuItem {
   icon?: ReactNode;
   danger?: boolean;
@@ -19,14 +21,16 @@ export type DropdownGroup = BaseDropdownGroup;
 export type DropdownSeparator = BaseDropdownSeparator;
 export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
 
-export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
+export interface DropdownProps
+  extends
+    Omit<BaseDropdownProps, 'items'>,
+    WebComponentProps<'button', 'children' | 'disabled' | 'onSelect'> {
   label?: string;
   trigger?: ReactNode;
   icon?: ReactNode;
   arrowIcon?: ReactNode;
   items: DropdownItem[];
   placement?: Placement;
-  className?: string;
   rotateAngle?: number;
   matchTriggerWidth?: boolean;
   showArrow?: boolean;

@@ -1,7 +1,18 @@
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import type {
+  PressableProps,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
-export interface SelectTriggerProps {
+import type { SelectSize } from '../types';
+
+export interface SelectTriggerProps extends Omit<
+  PressableProps,
+  'children' | 'disabled' | 'onPress' | 'style'
+> {
   displayText: string;
+  size?: SelectSize;
   isPlaceholder: boolean;
   isOpen: boolean;
   disabled?: boolean;

@@ -9,6 +9,7 @@ export const SelectTrigger = ({
   id,
   errorId,
   isOpen,
+  size = 'md',
   disabled,
   required,
   listboxId,
@@ -20,9 +21,12 @@ export const SelectTrigger = ({
   buttonRef,
   onClick,
   onKeyDown,
+  className,
+  ...props
 }: SelectTriggerProps) => {
   return (
     <button
+      {...props}
       id={id}
       ref={buttonRef}
       type='button'
@@ -40,10 +44,15 @@ export const SelectTrigger = ({
           ? `${listboxId}-option-${activeIndex}`
           : undefined
       }
-      className={cn(styles.control, {
-        [styles.error]: !!error,
-        [styles.disabled]: disabled,
-      })}
+      className={cn(
+        styles.control,
+        {
+          [styles[size]]: true,
+          [styles.error]: !!error,
+          [styles.disabled]: disabled,
+        },
+        className
+      )}
       onClick={onClick}
       onKeyDown={onKeyDown}
     >

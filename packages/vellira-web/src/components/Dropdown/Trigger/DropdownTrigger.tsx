@@ -29,8 +29,8 @@ export const DropdownTrigger = forwardRef<
     const hasIcon = Boolean(icon);
     const hasContent = Boolean(children);
 
-    const isOnlyIcon = hasIcon && !hasContent;
-    const shouldShowArrow = showArrow && hasContent;
+    const isOnlyIcon = hasIcon && !hasContent && !showArrow;
+    const shouldShowArrow = showArrow && !isOnlyIcon;
     const arrow = arrowIcon ?? <ChevronDown />;
     const ariaLabel = isOnlyIcon ? (label ?? 'Open menu') : undefined;
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 
 import { cn } from '@utils/cn';
 
@@ -8,39 +8,43 @@ import type { TabsPanelProps } from './types';
 
 import styles from './TabsPanel.module.scss';
 
-export const TabsPanel = ({ index, children, className }: TabsPanelProps) => {
-  const { activeIndex, orientation } = useTabs();
-  const [isVisible, setIsVisible] = useState(false);
-  const isActive = activeIndex === index;
+export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(
+  ({ index, children, className, ...props }, ref) => {
+    const { activeIndex, orientation } = useTabs();
+    const [isVisible, setIsVisible] = useState(false);
+    const isActive = activeIndex === index;
 
-  useEffect(() => {
-    if (!isActive) {
-      setIsVisible(false);
-      return;
-    }
+    useEffect(() => {
+      if (!isActive) {
+        setIsVisible(false);
+        return;
+      }
 
-    const timer = setTimeout(() => setIsVisible(true), 10);
+      const timer = setTimeout(() => setIsVisible(true), 10);
 
-    return () => clearTimeout(timer);
-  }, [isActive]);
+      return () => clearTimeout(timer);
+    }, [isActive]);
 
-  return (
-    <div
-      role='tabpanel'
-      id={`tab-panel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      hidden={!isActive}
-      tabIndex={0}
-      className={cn(
-        styles.panel,
-        isVisible && styles.visible,
-        orientation === 'vertical' && styles.vertical,
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-};
+    return (
+      <div
+        {...props}
+        ref={ref}
+        role='tabpanel'
+        id={`tab-panel-${index}`}
+        aria-labelledby={`tab-${index}`}
+        hidden={!isActive}
+        tabIndex={0}
+        className={cn(
+          styles.panel,
+          isVisible && styles.visible,
+          orientation === 'vertical' && styles.vertical,
+          className
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 TabsPanel.displayName = 'TabsPanel';

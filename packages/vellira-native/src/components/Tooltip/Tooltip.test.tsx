@@ -79,4 +79,31 @@ describe('Native Tooltip', () => {
 
     unmount();
   });
+
+  it('calls onOpenChange when visibility changes', () => {
+    vi.useFakeTimers();
+    const onOpenChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tooltip content='Helpful text' onOpenChange={onOpenChange}>
+        <span>Show help</span>
+      </Tooltip>
+    );
+
+    const trigger = container.querySelector('button');
+
+    act(() => {
+      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+
+    act(() => {
+      vi.advanceTimersByTime(2500);
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    unmount();
+  });
 });

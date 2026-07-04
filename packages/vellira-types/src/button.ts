@@ -1,4 +1,6 @@
-export type ButtonSize = 'sm' | 'md' | 'lg';
+import type { ControlSize } from './common';
+
+export type ButtonSize = ControlSize;
 export type ButtonColor = 'primary' | 'secondary' | 'danger';
 
 export interface BaseButtonProps {

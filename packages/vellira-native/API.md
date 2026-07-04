@@ -77,19 +77,20 @@ import { Button } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.ButtonProps.Button -->
 
-| Prop                 | Type                | Required | Description                                   |
-| -------------------- | ------------------- | -------- | --------------------------------------------- |
-| `children`           | `ReactNode`         | No       | Button content.                               |
-| `leftIcon`           | `ButtonIconElement` | No       | Icon rendered before content.                 |
-| `rightIcon`          | `ButtonIconElement` | No       | Icon rendered after content.                  |
-| `fullWidth`          | `boolean`           | No       | Makes the component fill its container width. |
-| `onPress`            | `() => void`        | No       | React Native press handler.                   |
-| `style`              | `ViewStyle`         | No       | Extra root style.                             |
-| `accessibilityLabel` | `string`            | No       | Accessible label for screen readers.          |
-| `iconSize`           | `number`            | No       | Icon size in pixels.                          |
-| `variant`            | `ButtonColor`       | No       | Visual color variant.                         |
-| `size`               | `ButtonSize`        | No       | Button size.                                  |
-| `disabled`           | `boolean`           | No       | Disables interaction.                         |
+| Prop                 | Type                   | Required | Description                                           |
+| -------------------- | ---------------------- | -------- | ----------------------------------------------------- |
+| `children`           | `ReactNode`            | No       | Button content.                                       |
+| `leftIcon`           | `ButtonIconElement`    | No       | Icon rendered before content.                         |
+| `rightIcon`          | `ButtonIconElement`    | No       | Icon rendered after content.                          |
+| `fullWidth`          | `boolean`              | No       | Makes the component fill its container width.         |
+| `onPress`            | `() => void`           | No       | React Native press handler.                           |
+| `style`              | `StyleProp<ViewStyle>` | No       | Extra root style.                                     |
+| `accessibilityLabel` | `string`               | No       | Accessible label for screen readers.                  |
+| `iconSize`           | `number`               | No       | Icon size in pixels.                                  |
+| `variant`            | `ButtonColor`          | No       | Visual color variant.                                 |
+| `size`               | `ControlSize`          | No       | Button size.                                          |
+| `disabled`           | `boolean`              | No       | Disables interaction.                                 |
+| `testID`             | `string`               | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.ButtonProps.Button -->
 
@@ -109,15 +110,16 @@ import { Checkbox } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.CheckboxProps.Checkbox -->
 
-| Prop              | Type                         | Required | Description                                   |
-| ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Text label rendered next to the control.      |
-| `style`           | `StyleProp<ViewStyle>`       | No       | Extra container style.                        |
-| `error`           | `string`                     | No       | Error message rendered for invalid state.     |
-| `checked`         | `boolean`                    | No       | Controlled checked state.                     |
-| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
-| `disabled`        | `boolean`                    | No       | Disables interaction.                         |
-| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
+| Prop              | Type                         | Required | Description                                           |
+| ----------------- | ---------------------------- | -------- | ----------------------------------------------------- |
+| `label`           | `string`                     | No       | Text label rendered next to the control.              |
+| `style`           | `StyleProp<ViewStyle>`       | No       | Extra container style.                                |
+| `error`           | `string`                     | No       | Error message rendered for invalid state.             |
+| `checked`         | `boolean`                    | No       | Controlled checked state.                             |
+| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage.         |
+| `disabled`        | `boolean`                    | No       | Disables interaction.                                 |
+| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.               |
+| `testID`          | `string`                     | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.CheckboxProps.Checkbox -->
 
@@ -145,7 +147,7 @@ import { Input } from '@romanbakurov/vellira-native';
 | ---------------- | ------------------------- | -------- | ------------------------------------------ |
 | `label`          | `string`                  | Yes      | Visible label.                             |
 | `placeholder`    | `string`                  | No       | Placeholder text.                          |
-| `size`           | `InputSize`               | No       | Input size.                                |
+| `size`           | `ControlSize`             | No       | Input size.                                |
 | `error`          | `string`                  | No       | Error message rendered under the input.    |
 | `type`           | `InputType`               | No       | Semantic input type used by the component. |
 | `containerStyle` | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.       |
@@ -173,19 +175,20 @@ import { FormField, Input } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.FormFieldProps.FormField -->
 
-| Prop               | Type                   | Required | Description                       |
-| ------------------ | ---------------------- | -------- | --------------------------------- |
-| `label`            | `string`               | No       | Field label.                      |
-| `error`            | `string`               | No       | Error message.                    |
-| `children`         | `ReactNode`            | Yes      | Field control or custom content.  |
-| `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.            |
-| `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.           |
-| `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.           |
-| `required`         | `boolean`              | No       | Marks the field as required.      |
-| `disabled`         | `boolean`              | No       | Renders the disabled field state. |
-| `description`      | `string`               | No       | Additional descriptive text.      |
-| `controlStyle`     | `StyleProp<ViewStyle>` | No       | —                                 |
-| `descriptionStyle` | `StyleProp<TextStyle>` | No       | —                                 |
+| Prop               | Type                   | Required | Description                                           |
+| ------------------ | ---------------------- | -------- | ----------------------------------------------------- |
+| `label`            | `string`               | No       | Field label.                                          |
+| `error`            | `string`               | No       | Error message.                                        |
+| `children`         | `ReactNode`            | Yes      | Field control or custom content.                      |
+| `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.                                |
+| `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.                               |
+| `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.                               |
+| `required`         | `boolean`              | No       | Marks the field as required.                          |
+| `disabled`         | `boolean`              | No       | Renders the disabled field state.                     |
+| `description`      | `string`               | No       | Additional descriptive text.                          |
+| `controlStyle`     | `StyleProp<ViewStyle>` | No       | —                                                     |
+| `descriptionStyle` | `StyleProp<TextStyle>` | No       | —                                                     |
+| `testID`           | `string`               | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 
@@ -211,21 +214,22 @@ import { RadioGroup } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.RadioGroupProps.RadioGroupProps -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `label`        | `string`                  | No       | Group label.                          |
-| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.        |
-| `error`        | `string`                  | No       | Error message.                        |
-| `orientation`  | `Orientation`             | No       | Layout direction.                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra group style.                    |
-| `optionStyle`  | `StyleProp<ViewStyle>`    | No       | Extra option style.                   |
-| `labelStyle`   | `StyleProp<TextStyle>`    | No       | Extra label text style.               |
-| `value`        | `string`                  | No       | Controlled selected value.            |
-| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when selection changes.        |
-| `required`     | `boolean`                 | No       | Marks the group as required.          |
-| `disabled`     | `boolean`                 | No       | Disables the whole group.             |
-| `description`  | `string`                  | No       | Additional descriptive text.          |
+| Prop           | Type                      | Required | Description                                           |
+| -------------- | ------------------------- | -------- | ----------------------------------------------------- |
+| `label`        | `string`                  | No       | Group label.                                          |
+| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.                        |
+| `error`        | `string`                  | No       | Error message.                                        |
+| `orientation`  | `Orientation`             | No       | Layout direction.                                     |
+| `style`        | `StyleProp<ViewStyle>`    | No       | Extra group style.                                    |
+| `optionStyle`  | `StyleProp<ViewStyle>`    | No       | Extra option style.                                   |
+| `labelStyle`   | `StyleProp<TextStyle>`    | No       | Extra label text style.                               |
+| `value`        | `string`                  | No       | Controlled selected value.                            |
+| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage.                 |
+| `onChange`     | `(value: string) => void` | No       | Called when selection changes.                        |
+| `required`     | `boolean`                 | No       | Marks the group as required.                          |
+| `disabled`     | `boolean`                 | No       | Disables the whole group.                             |
+| `description`  | `string`                  | No       | Additional descriptive text.                          |
+| `testID`       | `string`                  | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 
@@ -264,23 +268,25 @@ import { Select } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                      | Required | Description                                    |
-| -------------------- | ------------------------- | -------- | ---------------------------------------------- |
-| `label`              | `string`                  | No       | Visible field label.                           |
-| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
-| `placeholder`        | `string`                  | No       | Text shown when no value is selected.          |
-| `error`              | `string`                  | No       | Error message.                                 |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                         |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                           |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                              |
-| `value`              | `string`                  | No       | Controlled selected value.                     |
-| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage. |
-| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.        |
-| `required`           | `boolean`                 | No       | Marks the field as required.                   |
-| `disabled`           | `boolean`                 | No       | Disables interaction.                          |
-| `description`        | `string`                  | No       | Additional descriptive text.                   |
-| `pickerStyle`        | `StyleProp<TextStyle>`    | No       | —                                              |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.           |
+| Prop                 | Type                      | Required | Description                                           |
+| -------------------- | ------------------------- | -------- | ----------------------------------------------------- |
+| `label`              | `string`                  | No       | Visible field label.                                  |
+| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.                     |
+| `placeholder`        | `string`                  | No       | Text shown when no value is selected.                 |
+| `error`              | `string`                  | No       | Error message.                                        |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                                |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                                  |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                     |
+| `value`              | `string`                  | No       | Controlled selected value.                            |
+| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage.        |
+| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.               |
+| `required`           | `boolean`                 | No       | Marks the field as required.                          |
+| `disabled`           | `boolean`                 | No       | Disables interaction.                                 |
+| `description`        | `string`                  | No       | Additional descriptive text.                          |
+| `pickerStyle`        | `StyleProp<TextStyle>`    | No       | —                                                     |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.                  |
+| `size`               | `ControlSize`             | No       | —                                                     |
+| `testID`             | `string`                  | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -318,20 +324,22 @@ import { Dropdown } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->
 
-| Prop           | Type                      | Required | Description                                     |
-| -------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`        | `string`                  | No       | Default trigger label.                          |
-| `trigger`      | `ReactNode`               | No       | Custom trigger content.                         |
-| `items`        | `DropdownItem[]`          | Yes      | Menu model.                                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                               |
-| `triggerStyle` | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                            |
-| `itemStyle`    | `StyleProp<ViewStyle>`    | No       | Extra item style.                               |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra text style.                               |
-| `disabled`     | `boolean`                 | No       | Disables the trigger.                           |
-| `onSelect`     | `(value: string) => void` | No       | Called when a menu item is selected.            |
-| `icon`         | `ReactNode`               | No       | Icon rendered inside the component.             |
-| `arrowIcon`    | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
-| `showArrow`    | `boolean`                 | No       | Controls whether the trigger arrow is rendered. |
+| Prop           | Type                      | Required | Description                                           |
+| -------------- | ------------------------- | -------- | ----------------------------------------------------- |
+| `label`        | `string`                  | No       | Default trigger label.                                |
+| `trigger`      | `ReactNode`               | No       | Custom trigger content.                               |
+| `items`        | `DropdownItem[]`          | Yes      | Menu model.                                           |
+| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                                     |
+| `triggerStyle` | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                                  |
+| `itemStyle`    | `StyleProp<ViewStyle>`    | No       | Extra item style.                                     |
+| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra text style.                                     |
+| `disabled`     | `boolean`                 | No       | Disables the trigger.                                 |
+| `onSelect`     | `(value: string) => void` | No       | Called when a menu item is selected.                  |
+| `icon`         | `ReactNode`               | No       | Icon rendered inside the component.                   |
+| `arrowIcon`    | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.            |
+| `showArrow`    | `boolean`                 | No       | Controls whether the trigger arrow is rendered.       |
+| `textWrap`     | `TextWrap`                | No       | —                                                     |
+| `testID`       | `string`                  | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 
@@ -364,15 +372,16 @@ import { Tabs } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.TabsProps.TabsProps -->
 
-| Prop                 | Type                      | Required | Description                                        |
-| -------------------- | ------------------------- | -------- | -------------------------------------------------- |
-| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
-| `appearance`         | `TabsAppearance`          | No       | Visual style.                                      |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
-| `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
-| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
-| `orientation`        | `Orientation`             | No       | Layout orientation.                                |
+| Prop                 | Type                      | Required | Description                                           |
+| -------------------- | ------------------------- | -------- | ----------------------------------------------------- |
+| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content.    |
+| `appearance`         | `TabsAppearance`          | No       | Visual style.                                         |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                     |
+| `activeIndex`        | `number`                  | No       | Currently active tab index.                           |
+| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                           |
+| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                        |
+| `orientation`        | `Orientation`             | No       | Layout orientation.                                   |
+| `testID`             | `string`                  | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
@@ -380,10 +389,11 @@ import { Tabs } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.TabsListProps.TabsListProps -->
 
-| Prop       | Type                   | Required | Description       |
-| ---------- | ---------------------- | -------- | ----------------- |
-| `children` | `ReactNode`            | Yes      | Tab buttons.      |
-| `style`    | `StyleProp<ViewStyle>` | No       | Extra list style. |
+| Prop       | Type                   | Required | Description                                           |
+| ---------- | ---------------------- | -------- | ----------------------------------------------------- |
+| `children` | `ReactNode`            | Yes      | Tab buttons.                                          |
+| `style`    | `StyleProp<ViewStyle>` | No       | Extra list style.                                     |
+| `testID`   | `string`               | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.TabsListProps.TabsListProps -->
 
@@ -406,11 +416,12 @@ import { Tabs } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.TabsPanelProps.TabsPanelProps -->
 
-| Prop       | Type                   | Required | Description                      |
-| ---------- | ---------------------- | -------- | -------------------------------- |
-| `children` | `ReactNode`            | No       | Panel content.                   |
-| `style`    | `StyleProp<ViewStyle>` | No       | Extra panel style.               |
-| `index`    | `number`               | Yes      | Panel index matching `Tabs.Tab`. |
+| Prop       | Type                   | Required | Description                                           |
+| ---------- | ---------------------- | -------- | ----------------------------------------------------- |
+| `children` | `ReactNode`            | No       | Panel content.                                        |
+| `style`    | `StyleProp<ViewStyle>` | No       | Extra panel style.                                    |
+| `index`    | `number`               | Yes      | Panel index matching `Tabs.Tab`.                      |
+| `testID`   | `string`               | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.TabsPanelProps.TabsPanelProps -->
 
@@ -428,18 +439,19 @@ import { Tooltip, Button } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.TooltipProps.Tooltip -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `content`      | `ReactNode`               | Yes      | Tooltip content.                      |
-| `children`     | `ReactNode`               | Yes      | Trigger element.                      |
-| `maxWidth`     | `number`                  | No       | Maximum tooltip width.                |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                     |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra tooltip text style.             |
-| `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.          |
-| `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.    |
-| `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds. |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                     |
-| `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                  |
+| Prop           | Type                      | Required | Description                                           |
+| -------------- | ------------------------- | -------- | ----------------------------------------------------- |
+| `content`      | `ReactNode`               | Yes      | Tooltip content.                                      |
+| `children`     | `ReactNode`               | Yes      | Trigger element.                                      |
+| `maxWidth`     | `number`                  | No       | Maximum tooltip width.                                |
+| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                                     |
+| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra tooltip text style.                             |
+| `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.                          |
+| `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.                    |
+| `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds.                 |
+| `onOpenChange` | `(open: boolean) => void` | No       | —                                                     |
+| `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                                  |
+| `testID`       | `string`                  | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->
 
@@ -467,16 +479,17 @@ import { Button, Modal } from '@romanbakurov/vellira-native';
 
 <!-- api-docgen:start native.ModalProps.ModalProps -->
 
-| Prop              | Type                   | Required | Description                                       |
-| ----------------- | ---------------------- | -------- | ------------------------------------------------- |
-| `children`        | `ReactNode`            | Yes      | Modal content.                                    |
-| `overlayStyle`    | `StyleProp<ViewStyle>` | No       | Extra overlay style.                              |
-| `contentStyle`    | `StyleProp<ViewStyle>` | No       | Extra content style.                              |
-| `isOpen`          | `boolean`              | Yes      | Controls dialog visibility.                       |
-| `onClose`         | `() => void`           | Yes      | Called when the modal requests to close.          |
-| `closeOnBackdrop` | `boolean`              | No       | Allows closing by pressing the backdrop.          |
-| `closeOnEsc`      | `boolean`              | No       | Shared contract prop. Useful for parity with web. |
-| `closeOnClick`    | `boolean`              | No       | Deprecated alias kept for compatibility.          |
+| Prop              | Type                   | Required | Description                                           |
+| ----------------- | ---------------------- | -------- | ----------------------------------------------------- |
+| `children`        | `ReactNode`            | Yes      | Modal content.                                        |
+| `overlayStyle`    | `StyleProp<ViewStyle>` | No       | Extra overlay style.                                  |
+| `contentStyle`    | `StyleProp<ViewStyle>` | No       | Extra content style.                                  |
+| `isOpen`          | `boolean`              | Yes      | Controls dialog visibility.                           |
+| `onClose`         | `() => void`           | Yes      | Called when the modal requests to close.              |
+| `closeOnBackdrop` | `boolean`              | No       | Allows closing by pressing the backdrop.              |
+| `closeOnEsc`      | `boolean`              | No       | Shared contract prop. Useful for parity with web.     |
+| `style`           | `StyleProp<ViewStyle>` | No       | Extra root style.                                     |
+| `testID`          | `string`               | No       | Test identifier forwarded to the native root element. |
 
 <!-- api-docgen:end native.ModalProps.ModalProps -->
 

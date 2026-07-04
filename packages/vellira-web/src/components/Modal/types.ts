@@ -4,13 +4,18 @@ import type {
 } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 
-export interface ModalOverlayProps extends BaseModalOverlayProps {
+import type { WebComponentProps } from '../../types';
+
+export interface ModalOverlayProps
+  extends
+    BaseModalOverlayProps,
+    WebComponentProps<'div', 'children' | 'onClick'> {
   children: ReactNode;
-  className?: string;
   zIndex?: number;
   animated?: boolean;
 }
 
-export interface ModalProps extends BaseModalProps {
+export interface ModalProps
+  extends BaseModalProps, WebComponentProps<'div', 'children' | 'onClick'> {
   children: ReactNode;
 }

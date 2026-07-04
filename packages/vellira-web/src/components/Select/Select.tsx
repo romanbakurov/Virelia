@@ -1,4 +1,11 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { useOutsideClick } from '@hooks/useOutsideClick';
@@ -12,176 +19,194 @@ import { SelectDropdown } from './SelectDropdown/SelectDropdown';
 import { SelectTrigger } from './SelectTrigger/SelectTrigger';
 import type { SelectProps } from './types';
 
-export const Select = ({
-  label,
-  description,
-  id,
-  name,
-  value: controlledValue,
-  defaultValue,
-  onChange,
-  options,
-  placeholder = 'Select...',
-  required = false,
-  disabled = false,
-  error,
-  className,
-}: SelectProps) => {
-  const generatedId = useId();
-  const triggerId = id ?? generatedId;
-  const listboxId = `${triggerId}-listbox`;
-  const errorId = error ? `${triggerId}-error` : undefined;
+export const Select = forwardRef<HTMLButtonElement, SelectProps>(
+  (
+    {
+      label,
+      description,
+      id,
+      name,
+      value: controlledValue,
+      defaultValue,
+      onChange,
+      options,
+      placeholder = 'Select...',
+      size = 'md',
+      required = false,
+      disabled = false,
+      error,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const generatedId = useId();
+    const triggerId = id ?? generatedId;
+    const listboxId = `${triggerId}-listbox`;
+    const errorId = error ? `${triggerId}-error` : undefined;
 
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
+    const buttonRef = useRef<HTMLButtonElement | null>(null);
+    const listRef = useRef<HTMLUListElement | null>(null);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value: controlledValue,
-    defaultValue: defaultValue ?? '',
-    onChange,
-  });
+    const [selectedValue, setSelectedValue] = useControllableState({
+      value: controlledValue,
+      defaultValue: defaultValue ?? '',
+      onChange,
+    });
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(-1);
+    const [isOpen, setIsOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
 
-  const selectedOption = useMemo(
-    () => options.find((option) => option.value === selectedValue),
-    [options, selectedValue]
-  );
-
-  const hasSelectedOption = !!selectedOption;
-
-  const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
-    open: isOpen,
-    matchTriggerWidth: true,
-    mobileSheetBreakpoint: 640,
-  });
-
-  const getInitialActiveIndex = useCallback(() => {
-    const selectedIndex = options.findIndex(
-      (option) => option.value === selectedValue && !option.disabled
+    const selectedOption = useMemo(
+      () => options.find((option) => option.value === selectedValue),
+      [options, selectedValue]
     );
 
-    if (selectedIndex >= 0) return selectedIndex;
+    const hasSelectedOption = !!selectedOption;
 
-    return options.findIndex((option) => !option.disabled);
-  }, [options, selectedValue]);
+    const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
+      open: isOpen,
+      matchTriggerWidth: true,
+      mobileSheetBreakpoint: 640,
+    });
 
-  const openDropdown = useCallback(() => {
-    if (disabled) return;
+    const getInitialActiveIndex = useCallback(() => {
+      const selectedIndex = options.findIndex(
+        (option) => option.value === selectedValue && !option.disabled
+      );
 
-    setActiveIndex(getInitialActiveIndex());
-    setIsOpen(true);
-  }, [disabled, getInitialActiveIndex]);
+      if (selectedIndex >= 0) return selectedIndex;
 
-  const closeDropdown = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+      return options.findIndex((option) => !option.disabled);
+    }, [options, selectedValue]);
 
-  const toggleDropdown = useCallback(() => {
-    if (disabled) return;
+    const openDropdown = useCallback(() => {
+      if (disabled) return;
 
-    if (isOpen) {
-      closeDropdown();
-      return;
-    }
+      setActiveIndex(getInitialActiveIndex());
+      setIsOpen(true);
+    }, [disabled, getInitialActiveIndex]);
 
-    openDropdown();
-  }, [closeDropdown, disabled, isOpen, openDropdown]);
+    const closeDropdown = useCallback(() => {
+      setIsOpen(false);
+    }, []);
 
-  const handleSelect = useCallback(
-    (value: string) => {
-      setSelectedValue(value);
-      closeDropdown();
-      buttonRef.current?.focus();
-    },
-    [closeDropdown, setSelectedValue]
-  );
+    const toggleDropdown = useCallback(() => {
+      if (disabled) return;
 
-  const { onKeyDown } = useKeyboardNavigation({
-    activeIndex,
-    setActiveIndex,
-    items: options,
-    isOpen,
-    onOpen: openDropdown,
-    onClose: closeDropdown,
-    onSelect: () => {
-      const activeOption = options[activeIndex];
+      if (isOpen) {
+        closeDropdown();
+        return;
+      }
 
-      if (!activeOption || activeOption.disabled) return;
+      openDropdown();
+    }, [closeDropdown, disabled, isOpen, openDropdown]);
 
-      handleSelect(activeOption.value);
-    },
-  });
+    const handleSelect = useCallback(
+      (value: string) => {
+        setSelectedValue(value);
+        closeDropdown();
+        buttonRef.current?.focus();
+      },
+      [closeDropdown, setSelectedValue]
+    );
 
-  useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
+    const { onKeyDown } = useKeyboardNavigation({
+      activeIndex,
+      setActiveIndex,
+      items: options,
+      isOpen,
+      onOpen: openDropdown,
+      onClose: closeDropdown,
+      onSelect: () => {
+        const activeOption = options[activeIndex];
 
-  const setTriggerRef = useCallback(
-    (node: HTMLButtonElement | null) => {
-      buttonRef.current = node;
-      setRef(node);
-    },
-    [setRef]
-  );
+        if (!activeOption || activeOption.disabled) return;
 
-  const setDropdownRef = useCallback(
-    (node: HTMLUListElement | null) => {
-      listRef.current = node;
-      setFloatingRef(node);
-    },
-    [setFloatingRef]
-  );
+        handleSelect(activeOption.value);
+      },
+    });
 
-  return (
-    <FormField
-      id={triggerId}
-      label={label}
-      description={description}
-      error={error}
-      required={required}
-      disabled={disabled}
-      className={className}
-    >
-      <SelectTrigger
+    useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
+
+    const setTriggerRef = useCallback(
+      (node: HTMLButtonElement | null) => {
+        buttonRef.current = node;
+        setRef(node);
+
+        if (typeof ref === 'function') {
+          ref(node);
+          return;
+        }
+
+        if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref, setRef]
+    );
+
+    const setDropdownRef = useCallback(
+      (node: HTMLUListElement | null) => {
+        listRef.current = node;
+        setFloatingRef(node);
+      },
+      [setFloatingRef]
+    );
+
+    return (
+      <FormField
         id={triggerId}
-        errorId={errorId}
-        isOpen={isOpen}
-        disabled={disabled}
-        required={required}
-        listboxId={listboxId}
-        activeIndex={activeIndex}
-        ariaLabel={!label ? selectedOption?.label || placeholder : undefined}
+        label={label}
+        description={description}
         error={error}
-        displayText={selectedOption?.label ?? placeholder}
-        isPlaceholder={!hasSelectedOption}
-        buttonRef={setTriggerRef}
-        onClick={toggleDropdown}
-        onKeyDown={onKeyDown}
-      />
-
-      {name && (
-        <input
-          type='hidden'
-          name={name}
-          value={selectedValue}
+        required={required}
+        disabled={disabled}
+        className={className}
+      >
+        <SelectTrigger
+          {...props}
+          id={triggerId}
+          errorId={errorId}
+          isOpen={isOpen}
+          size={size}
           disabled={disabled}
+          required={required}
+          listboxId={listboxId}
+          activeIndex={activeIndex}
+          ariaLabel={!label ? selectedOption?.label || placeholder : undefined}
+          error={error}
+          displayText={selectedOption?.label ?? placeholder}
+          isPlaceholder={!hasSelectedOption}
+          buttonRef={setTriggerRef}
+          onClick={toggleDropdown}
+          onKeyDown={onKeyDown}
         />
-      )}
 
-      <SelectDropdown
-        isOpen={isOpen}
-        listboxId={listboxId}
-        labelledById={triggerId}
-        style={floatingStyles}
-        options={options}
-        selectedValue={selectedValue}
-        activeIndex={activeIndex}
-        setDropdownRef={setDropdownRef}
-        onSelect={handleSelect}
-        onMouseEnter={setActiveIndex}
-      />
-    </FormField>
-  );
-};
+        {name && (
+          <input
+            type='hidden'
+            name={name}
+            value={selectedValue}
+            disabled={disabled}
+          />
+        )}
+
+        <SelectDropdown
+          isOpen={isOpen}
+          listboxId={listboxId}
+          labelledById={triggerId}
+          style={floatingStyles}
+          options={options}
+          selectedValue={selectedValue}
+          activeIndex={activeIndex}
+          setDropdownRef={setDropdownRef}
+          onSelect={handleSelect}
+          onMouseEnter={setActiveIndex}
+        />
+      </FormField>
+    );
+  }
+);
 
 Select.displayName = 'Select';

@@ -3,8 +3,6 @@ export interface BaseModalProps {
   onClose: () => void;
   closeOnBackdrop?: boolean;
   closeOnEsc?: boolean;
-  /** @deprecated Use closeOnBackdrop instead. */
-  closeOnClick?: boolean;
 }
 
 export interface BaseModalOverlayProps {
@@ -12,8 +10,6 @@ export interface BaseModalOverlayProps {
   onClose?: () => void;
   closeOnBackdrop?: boolean;
   closeOnEsc?: boolean;
-  /** @deprecated Use closeOnBackdrop instead. */
-  closeOnClick?: boolean;
 }
 
 export type BaseModalBodyProps = Record<never, never>;

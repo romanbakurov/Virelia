@@ -1,10 +1,23 @@
 import type { BaseSelectTriggerProps } from '@romanbakurov/vellira-types';
 import type { KeyboardEvent, ReactNode, Ref } from 'react';
 
-export interface SelectTriggerProps extends BaseSelectTriggerProps {
+import type { WebComponentProps } from '../../../types';
+
+export interface SelectTriggerProps
+  extends
+    BaseSelectTriggerProps,
+    WebComponentProps<
+      'button',
+      | 'children'
+      | 'disabled'
+      | 'onChange'
+      | 'onClick'
+      | 'onKeyDown'
+      | 'required'
+      | 'size'
+    > {
   displayText: ReactNode;
   isPlaceholder: boolean;
-  id?: string;
   errorId?: string;
   listboxId: string;
   activeIndex: number;

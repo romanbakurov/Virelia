@@ -4,16 +4,27 @@ import type {
   InputType,
 } from '@romanbakurov/vellira-types';
 
+import type { WebComponentProps } from '../../types';
+
 export type { InputSize, InputType } from '@romanbakurov/vellira-types';
 
-export interface InputProps extends BaseInputProps {
+export interface InputProps
+  extends
+    BaseInputProps,
+    WebComponentProps<
+      'input',
+      | 'children'
+      | 'defaultValue'
+      | 'disabled'
+      | 'onChange'
+      | 'required'
+      | 'size'
+      | 'type'
+      | 'value'
+    > {
   label: string;
-  placeholder?: string;
   size?: InputSize;
   error?: string;
   type?: InputType;
-  id?: string;
-  className?: string;
-  autoComplete?: string;
   showOverflowTooltip?: boolean;
 }

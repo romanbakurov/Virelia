@@ -19,7 +19,7 @@ export const tabs = {
 
     hover: {
       bg: 'transparent',
-      fg: navigation.hover.bg,
+      fg: navigation.hover.fg,
       border: navigation.hover.bg,
     },
 

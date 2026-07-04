@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { forwardRef, useCallback, useRef, useState } from 'react';
 
 import { useTabsKeyboard } from '@romanbakurov/vellira-core';
 import { cn } from '@utils/cn';
@@ -9,73 +9,81 @@ import type { TabsProps } from './types';
 
 import styles from './Tabs.module.scss';
 
-export const Tabs = ({
-  children,
-  activeIndex: controlledActiveIndex,
-  defaultActiveIndex = 0,
-  onChange,
-  orientation = 'horizontal',
-  appearance = 'default',
-  className,
-}: TabsProps) => {
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] =
-    useState(defaultActiveIndex);
-  const isControlled = controlledActiveIndex !== undefined;
-  const activeIndex = isControlled
-    ? controlledActiveIndex
-    : uncontrolledActiveIndex;
-
-  const setActiveIndex = useCallback(
-    (nextIndex: number) => {
-      if (!isControlled) {
-        setUncontrolledActiveIndex(nextIndex);
-      }
-
-      onChange?.(nextIndex);
+export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
+  (
+    {
+      children,
+      activeIndex: controlledActiveIndex,
+      defaultActiveIndex = 0,
+      onChange,
+      orientation = 'horizontal',
+      appearance = 'default',
+      className,
+      ...props
     },
-    [isControlled, onChange]
-  );
+    ref
+  ) => {
+    const [uncontrolledActiveIndex, setUncontrolledActiveIndex] =
+      useState(defaultActiveIndex);
+    const isControlled = controlledActiveIndex !== undefined;
+    const activeIndex = isControlled
+      ? controlledActiveIndex
+      : uncontrolledActiveIndex;
 
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const setActiveIndex = useCallback(
+      (nextIndex: number) => {
+        if (!isControlled) {
+          setUncontrolledActiveIndex(nextIndex);
+        }
 
-  const registerTab = useCallback(
-    (index: number, el: HTMLButtonElement | null) => {
-      tabRefs.current[index] = el;
-    },
-    []
-  );
+        onChange?.(nextIndex);
+      },
+      [isControlled, onChange]
+    );
 
-  const { onKeyDown } = useTabsKeyboard<HTMLButtonElement>({
-    activeIndex,
-    setActiveIndex,
-    tabRefs,
-    orientation,
-  });
+    const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const contextValue: TabsContextValue = {
-    activeIndex,
-    setActiveIndex,
-    orientation,
-    appearance,
+    const registerTab = useCallback(
+      (index: number, el: HTMLButtonElement | null) => {
+        tabRefs.current[index] = el;
+      },
+      []
+    );
 
-    registerTab,
-    onTabKeyDown: onKeyDown,
-  };
+    const { onKeyDown } = useTabsKeyboard<HTMLButtonElement>({
+      activeIndex,
+      setActiveIndex,
+      tabRefs,
+      orientation,
+    });
 
-  return (
-    <TabsContext.Provider value={contextValue}>
-      <div
-        className={cn(
-          styles.tabs,
-          orientation === 'vertical' && styles.vertical,
-          className
-        )}
-      >
-        {children}
-      </div>
-    </TabsContext.Provider>
-  );
-};
+    const contextValue: TabsContextValue = {
+      activeIndex,
+      setActiveIndex,
+      orientation,
+      appearance,
+
+      registerTab,
+      onTabKeyDown: onKeyDown,
+    };
+
+    return (
+      <TabsContext.Provider value={contextValue}>
+        <div
+          {...props}
+          ref={ref}
+          className={cn(
+            styles.tabs,
+            orientation === 'vertical' && styles.vertical,
+            className
+          )}
+        >
+          {children}
+        </div>
+      </TabsContext.Provider>
+    );
+  }
+);
 
 Tabs.displayName = 'Tabs';
 

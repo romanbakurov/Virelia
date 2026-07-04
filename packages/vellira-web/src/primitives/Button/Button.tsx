@@ -19,6 +19,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       onClick,
       ariaLabel,
+      type = 'button',
+      ...props
     },
     ref
   ) => {
@@ -30,11 +32,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
+        {...props}
         ref={ref}
-        type='button'
+        type={type}
         disabled={disabled}
         onClick={onClick}
-        aria-label={ariaLabel || undefined}
+        aria-label={ariaLabel || props['aria-label']}
         className={cn(styles.button, styles[variant], styles[size], className, {
           [styles.disabled]: disabled,
           [styles.fullWidth]: fullWidth,

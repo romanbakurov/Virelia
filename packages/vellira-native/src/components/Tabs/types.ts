@@ -4,12 +4,12 @@ import type {
   TabsAppearance,
 } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface TabsProps extends BaseTabsProps {
+import type { NativeComponentProps } from '../../types';
+
+export interface TabsProps extends BaseTabsProps, NativeComponentProps {
   children: ReactNode;
   appearance?: TabsAppearance;
-  style?: StyleProp<ViewStyle>;
 }
 
 export interface TabsContextValue {

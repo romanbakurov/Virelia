@@ -2,12 +2,14 @@ import type { BaseFormFieldProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-export interface FormFieldProps extends BaseFormFieldProps {
+import type { NativeComponentProps } from '../../types';
+
+export interface FormFieldProps
+  extends BaseFormFieldProps, NativeComponentProps {
   label?: string;
   description?: string;
   error?: string;
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
   controlStyle?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
   descriptionStyle?: StyleProp<TextStyle>;

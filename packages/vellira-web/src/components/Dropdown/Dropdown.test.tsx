@@ -50,6 +50,18 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('uses label as the visible trigger when trigger is omitted', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' items={items} />
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+
+    expect(trigger?.textContent).toContain('Actions');
+
+    unmount();
+  });
+
   it('opens and selects the active item from keyboard', async () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

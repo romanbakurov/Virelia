@@ -8,6 +8,8 @@ import type {
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
+import type { NativeComponentProps } from '../../types';
+
 export interface DropdownMenuItem extends BaseDropdownMenuItem {
   icon?: ReactNode;
   danger?: boolean;
@@ -18,17 +20,18 @@ export type DropdownGroup = BaseDropdownGroup;
 export type DropdownSeparator = BaseDropdownSeparator;
 export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
 
-export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
+export interface DropdownProps
+  extends Omit<BaseDropdownProps, 'items'>, NativeComponentProps {
   label?: string;
   trigger?: ReactNode;
   icon?: ReactNode;
   arrowIcon?: ReactNode;
   showArrow?: boolean;
   items: DropdownItem[];
-  style?: StyleProp<ViewStyle>;
   triggerStyle?: StyleProp<ViewStyle>;
   itemStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  textWrap?: TextWrap;
 }
 
 export const isMenuItem = (item: DropdownItem): item is DropdownMenuItem =>

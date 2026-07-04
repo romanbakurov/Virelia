@@ -1,8 +1,16 @@
 import type { BaseCheckboxProps } from '@romanbakurov/vellira-types';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { PressableProps } from 'react-native';
 
-export interface CheckboxProps extends BaseCheckboxProps {
+import type { NativeComponentProps } from '../../types';
+
+export interface CheckboxProps
+  extends
+    BaseCheckboxProps,
+    NativeComponentProps,
+    Omit<
+      PressableProps,
+      'children' | 'disabled' | 'onPress' | 'style' | 'testID'
+    > {
   label?: string;
-  style?: StyleProp<ViewStyle>;
   error?: string;
 }

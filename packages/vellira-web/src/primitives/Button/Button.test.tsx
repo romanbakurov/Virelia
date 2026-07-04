@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -12,6 +12,36 @@ afterEach(() => {
 });
 
 describe('Button', () => {
+  it('passes through standard button props and forwards ref', () => {
+    const ref = createRef<HTMLButtonElement>();
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+
+    act(() =>
+      root.render(
+        <Button
+          ref={ref}
+          id='save'
+          data-testid='save-button'
+          aria-label='Save changes'
+          style={{ marginTop: 4 }}
+        >
+          Save
+        </Button>
+      )
+    );
+
+    const button = container.querySelector<HTMLButtonElement>('#save');
+
+    expect(ref.current).toBe(button);
+    expect(button?.dataset.testid).toBe('save-button');
+    expect(button?.getAttribute('aria-label')).toBe('Save changes');
+    expect(button?.style.marginTop).toBe('4px');
+
+    act(() => root.unmount());
+  });
+
   it('calls onClick when enabled', async () => {
     const onClick = vi.fn();
     const container = document.createElement('div');

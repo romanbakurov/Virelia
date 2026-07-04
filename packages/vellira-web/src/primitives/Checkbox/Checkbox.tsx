@@ -19,10 +19,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       className,
       onCheckedChange,
       error,
+      id,
+      ...props
     },
     ref
   ) => {
     const generatedId = useId();
+    const checkboxId = id ?? generatedId;
     const hasError = Boolean(error);
 
     const [isChecked, setIsChecked] = useControllableState({
@@ -38,20 +41,21 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     return (
       <div className={styles.container}>
         <label
-          htmlFor={generatedId}
+          {...props}
+          htmlFor={checkboxId}
           className={cn(styles.wrapper, disabled && styles.disabled, className)}
         >
           <input
             ref={ref}
-            id={generatedId}
+            id={checkboxId}
             type='checkbox'
             checked={isChecked}
             disabled={disabled}
             onChange={handleChange}
             className={styles.input}
             aria-invalid={hasError || undefined}
-            aria-describedby={hasError ? `${generatedId}-error` : undefined}
-            aria-label={!label ? 'Checkbox' : undefined}
+            aria-describedby={hasError ? `${checkboxId}-error` : undefined}
+            aria-label={!label ? props['aria-label'] || 'Checkbox' : undefined}
           />
 
           <span
@@ -69,7 +73,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
 
         {hasError && (
-          <span id={`${generatedId}-error`} className={styles.errorText}>
+          <span id={`${checkboxId}-error`} className={styles.errorText}>
             {error}
           </span>
         )}

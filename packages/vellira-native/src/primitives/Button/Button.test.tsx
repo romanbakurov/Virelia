@@ -1,5 +1,6 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 
+import type { View } from 'react-native';
 import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +14,22 @@ afterEach(() => {
 });
 
 describe('Native Button', () => {
+  it('passes through native props and forwards ref', () => {
+    const ref = createRef<View>();
+    const { container, unmount } = render(
+      <Button ref={ref} testID='save-button'>
+        Save
+      </Button>
+    );
+
+    expect(ref.current).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="save-button"]')
+    ).not.toBeNull();
+
+    unmount();
+  });
+
   it('calls onPress when enabled', () => {
     const onPress = vi.fn();
     const { container, unmount } = render(

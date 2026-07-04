@@ -1,5 +1,6 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 
+import type { View } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
@@ -27,6 +28,25 @@ afterEach(() => {
 });
 
 describe('Native Select', () => {
+  it('passes testID to the trigger and forwards ref', () => {
+    const ref = createRef<View>();
+    const { container, unmount } = render(
+      <Select
+        ref={ref}
+        label='Country'
+        options={options}
+        testID='country-select'
+      />
+    );
+
+    expect(ref.current).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="country-select"]')
+    ).not.toBeNull();
+
+    unmount();
+  });
+
   it('opens options and selects a value after confirmation', () => {
     const onChange = vi.fn();
 
@@ -209,6 +229,19 @@ describe('Native Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.body.textContent).not.toContain('Cancel');
     expect(container.textContent).toContain('Required');
+
+    unmount();
+  });
+
+  it('uses the shared control size prop on the trigger', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={options} size='lg' />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.style.minHeight).toBe('52px');
 
     unmount();
   });

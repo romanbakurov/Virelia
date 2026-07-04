@@ -1,4 +1,6 @@
-export type InputSize = 'sm' | 'md' | 'lg';
+import type { ControlSize } from './common';
+
+export type InputSize = ControlSize;
 export type InputType =
   | 'text'
   | 'email'
@@ -11,6 +13,7 @@ export type InputType =
 export interface BaseInputProps {
   value: string;
   onChange: (value: string) => void;
+  size?: InputSize;
   disabled?: boolean;
   required?: boolean;
 }

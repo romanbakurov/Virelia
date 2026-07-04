@@ -45,6 +45,7 @@ const fallbackDescriptions: Record<string, string> = {
   showArrow: 'Controls whether the trigger arrow is rendered.',
   style: 'Extra root style.',
   textStyle: 'Extra text style.',
+  testID: 'Test identifier forwarded to the native root element.',
   triggerStyle: 'Extra trigger style.',
   children: 'Content rendered inside the component.',
   theme: 'Controlled theme value.',
@@ -454,6 +455,7 @@ function normalizeType(type: string) {
     .replace(/import\(["'][^"']*\/@types\+react@[^"']*\/index["']\)\./g, '')
     .replace(/import\("react"\)\./g, '')
     .replace(/import\("react-native"\)\./g, '')
+    .replace(/import\("@romanbakurov\/vellira-types"\)\./g, '')
     .replace(/Readonly<(.+)>/g, '$1')
     .replace(/\s+/g, ' ')
     .trim();

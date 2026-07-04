@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
 import { useControllableState } from '@romanbakurov/vellira-core';
@@ -11,152 +11,162 @@ import { SelectTrigger } from './SelectTrigger/SelectTrigger';
 import { createStyles } from './Select.styles';
 import type { SelectProps } from './types';
 
-export function Select({
-  label,
-  description,
-  value,
-  defaultValue,
-  onChange,
-  options,
-  placeholder = 'Select...',
-  required = false,
-  disabled = false,
-  error,
-  style,
-  triggerStyle,
-  textStyle,
-  pickerStyle,
-  accessibilityLabel,
-}: SelectProps) {
-  const { theme } = useTheme();
-  const styles = useThemeStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
+export const Select = forwardRef<View, SelectProps>(
+  (
+    {
+      label,
+      description,
+      value,
+      defaultValue,
+      onChange,
+      options,
+      placeholder = 'Select...',
+      size = 'md',
+      required = false,
+      disabled = false,
+      error,
+      style,
+      testID,
+      triggerStyle,
+      textStyle,
+      pickerStyle,
+      accessibilityLabel,
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemeStyles(createStyles);
+    const [isOpen, setIsOpen] = useState(false);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value,
-    defaultValue: defaultValue ?? '',
-    onChange,
-  });
+    const [selectedValue, setSelectedValue] = useControllableState({
+      value,
+      defaultValue: defaultValue ?? '',
+      onChange,
+    });
 
-  const [draftValue, setDraftValue] = useState(selectedValue);
+    const [draftValue, setDraftValue] = useState(selectedValue);
 
-  const selectedOption = options.find((o) => o.value === selectedValue);
+    const selectedOption = options.find((o) => o.value === selectedValue);
 
-  const resolvedLabel =
-    accessibilityLabel ??
-    label ??
-    selectedOption?.label ??
-    placeholder ??
-    'Select';
+    const resolvedLabel =
+      accessibilityLabel ??
+      label ??
+      selectedOption?.label ??
+      placeholder ??
+      'Select';
 
-  const openPicker = () => {
-    if (disabled) return;
+    const openPicker = () => {
+      if (disabled) return;
 
-    setDraftValue(selectedValue);
-    setIsOpen(true);
-  };
+      setDraftValue(selectedValue);
+      setIsOpen(true);
+    };
 
-  const closePicker = () => {
-    setIsOpen(false);
-  };
+    const closePicker = () => {
+      setIsOpen(false);
+    };
 
-  const handleValueChange = (nextValue: string) => {
-    const nextOption = options.find((option) => option.value === nextValue);
+    const handleValueChange = (nextValue: string) => {
+      const nextOption = options.find((option) => option.value === nextValue);
 
-    if (!nextOption || nextOption.disabled) {
-      return;
-    }
+      if (!nextOption || nextOption.disabled) {
+        return;
+      }
 
-    setDraftValue(nextValue);
-  };
+      setDraftValue(nextValue);
+    };
 
-  const confirmPicker = () => {
-    setSelectedValue(draftValue);
-    setIsOpen(false);
-  };
+    const confirmPicker = () => {
+      setSelectedValue(draftValue);
+      setIsOpen(false);
+    };
 
-  return (
-    <FormField
-      label={label}
-      description={description}
-      error={error}
-      required={required}
-      disabled={disabled}
-      style={style}
-    >
-      <SelectTrigger
-        displayText={selectedOption?.label ?? placeholder}
-        isPlaceholder={!selectedOption}
-        isOpen={isOpen}
+    return (
+      <FormField
+        label={label}
+        description={description}
+        error={error}
+        required={required}
         disabled={disabled}
-        hasError={!!error}
-        accessibilityLabel={resolvedLabel}
-        triggerStyle={triggerStyle}
-        textStyle={textStyle}
-        onPress={openPicker}
-      />
-
-      <Modal
-        transparent
-        visible={isOpen}
-        animationType='slide'
-        onRequestClose={closePicker}
+        style={style}
       >
-        <View style={styles.modalRoot}>
-          <Pressable style={styles.backdrop} onPress={closePicker} />
+        <SelectTrigger
+          ref={ref}
+          testID={testID}
+          displayText={selectedOption?.label ?? placeholder}
+          size={size}
+          isPlaceholder={!selectedOption}
+          isOpen={isOpen}
+          disabled={disabled}
+          hasError={!!error}
+          accessibilityLabel={resolvedLabel}
+          triggerStyle={triggerStyle}
+          textStyle={textStyle}
+          onPress={openPicker}
+        />
 
-          <View style={styles.sheet}>
-            <View style={styles.toolbar}>
-              <Pressable onPress={closePicker} hitSlop={8}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </Pressable>
+        <Modal
+          transparent
+          visible={isOpen}
+          animationType='slide'
+          onRequestClose={closePicker}
+        >
+          <View style={styles.modalRoot}>
+            <Pressable style={styles.backdrop} onPress={closePicker} />
 
-              <Text style={styles.title}>{resolvedLabel}</Text>
+            <View style={styles.sheet}>
+              <View style={styles.toolbar}>
+                <Pressable onPress={closePicker} hitSlop={8}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </Pressable>
 
-              <Pressable onPress={confirmPicker} hitSlop={8}>
-                <Text style={styles.doneText}>Done</Text>
-              </Pressable>
-            </View>
+                <Text style={styles.title}>{resolvedLabel}</Text>
 
-            <Picker
-              selectedValue={draftValue}
-              onValueChange={handleValueChange}
-              enabled={!disabled}
-              style={[styles.picker, pickerStyle]}
-              itemStyle={{
-                color: theme.components.select.option.default.fg,
-              }}
-            >
-              <Picker.Item
-                label={placeholder}
-                value=''
-                enabled={false}
-                color={theme.components.select.option.disabled.fg}
-              />
+                <Pressable onPress={confirmPicker} hitSlop={8}>
+                  <Text style={styles.doneText}>Done</Text>
+                </Pressable>
+              </View>
 
-              {options.map((option) => (
+              <Picker
+                selectedValue={draftValue}
+                onValueChange={handleValueChange}
+                enabled={!disabled}
+                style={[styles.picker, pickerStyle]}
+                itemStyle={{
+                  color: theme.components.select.option.default.fg,
+                }}
+              >
                 <Picker.Item
-                  key={option.value}
-                  label={
-                    option.disabled
-                      ? `${option.label} - unavailable`
-                      : option.label
-                  }
-                  value={option.value}
-                  enabled={!option.disabled}
-                  color={
-                    option.disabled
-                      ? theme.components.select.option.disabled.fg
-                      : theme.components.select.option.default.fg
-                  }
+                  label={placeholder}
+                  value=''
+                  enabled={false}
+                  color={theme.components.select.option.disabled.fg}
                 />
-              ))}
-            </Picker>
+
+                {options.map((option) => (
+                  <Picker.Item
+                    key={option.value}
+                    label={
+                      option.disabled
+                        ? `${option.label} - unavailable`
+                        : option.label
+                    }
+                    value={option.value}
+                    enabled={!option.disabled}
+                    color={
+                      option.disabled
+                        ? theme.components.select.option.disabled.fg
+                        : theme.components.select.option.default.fg
+                    }
+                  />
+                ))}
+              </Picker>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </FormField>
-  );
-}
+        </Modal>
+      </FormField>
+    );
+  }
+);
 
 Select.displayName = 'Select';

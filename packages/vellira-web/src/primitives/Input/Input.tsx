@@ -31,6 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       autoComplete,
       type = 'text',
       showOverflowTooltip = false,
+      ...props
     },
     ref
   ) => {
@@ -133,6 +134,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       >
         <div className={styles.inputWrapper}>
           <input
+            {...props}
             ref={setRefs}
             id={id}
             type={type}

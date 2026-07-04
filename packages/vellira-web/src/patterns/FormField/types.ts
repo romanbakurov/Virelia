@@ -1,11 +1,12 @@
 import type { BaseFormFieldProps } from '@romanbakurov/vellira-types';
 import type { ReactNode } from 'react';
 
-export interface FormFieldProps extends BaseFormFieldProps {
-  id?: string;
+import type { WebComponentProps } from '../../types';
+
+export interface FormFieldProps
+  extends BaseFormFieldProps, WebComponentProps<'div', 'children'> {
   label?: string;
   description?: string;
   error?: string;
   children: ReactNode;
-  className?: string;
 }
