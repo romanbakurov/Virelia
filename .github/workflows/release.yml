@@ -58,6 +58,13 @@ jobs:
       - name: Verify npm registry
         run: npm ping --registry=https://registry.npmjs.org
 
+      - name: Configure npm auth
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          echo "@vellira-ui:registry=https://registry.npmjs.org/" >> ~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
