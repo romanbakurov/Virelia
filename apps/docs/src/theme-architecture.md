@@ -70,10 +70,10 @@ Native.
 
 Renderer packages consume the token layers and expose stable components.
 
-| Renderer | Package                    | Responsibility                     |
-| -------- | -------------------------- |------------------------------------|
-| Web      | `@vellira-ui/react`        | React components for the browser   |
-| Native   | `@vellira-ui/react-native` | React Native components            |
+| Renderer | Package                    | Responsibility                   |
+| -------- | -------------------------- | -------------------------------- |
+| Web      | `@vellira-ui/react`        | React components for the browser |
+| Native   | `@vellira-ui/react-native` | React Native components          |
 
 The components should depend on semantic and component tokens, not on raw
 palette decisions. This keeps visual changes centralized inside the token

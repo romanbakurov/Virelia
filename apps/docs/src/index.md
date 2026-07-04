@@ -91,7 +91,6 @@ export function Example() {
   </a>
 </div>
 
-
 ## Features
 
 <div class="docs-feature-list">
@@ -107,14 +106,14 @@ export function Example() {
 
 Use the docs as the main path through the system.
 
-| Goal                           | Page                                     |
-|--------------------------------| ---------------------------------------- |
-| Install and render a component | [Quick Start](/getting-started)          |
-| Browse component               | [Component](/component-examples)  |
+| Goal                           | Page                                      |
+| ------------------------------ | ----------------------------------------- |
+| Install and render a component | [Quick Start](/getting-started)           |
+| Browse component               | [Component](/component-examples)          |
 | Understand tokens              | [Theme Architecture](/theme-architecture) |
-| Prepare for production         | [Production](/production)                |
-| Use React DOM                  | [Web](/web)                              |
-| Use React Native               | [Native](/native)                        |
+| Prepare for production         | [Production](/production)                 |
+| Use React DOM                  | [Web](/web)                               |
+| Use React Native               | [Native](/native)                         |
 
 ## GitHub
 

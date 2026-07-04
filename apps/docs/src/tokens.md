@@ -95,7 +95,7 @@ The same variables can be used inline when a component needs a local style.
 ## Token Groups
 
 | Group        | Description               |
-| ------------ |---------------------------|
+| ------------ | ------------------------- |
 | `colors`     | Primitive color palettes  |
 | `semantic`   | UI meaning                |
 | `components` | Component states          |

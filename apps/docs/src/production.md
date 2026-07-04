@@ -58,12 +58,11 @@ generated artifact, and deploys it to Cloudflare Pages.
 
 Storybook remains the live component review surface. The target public split is:
 
-| Site                    | Description                                        |
+| Site                    | Description                                    |
 | ----------------------- | ---------------------------------------------- |
 | `www.vellira.dev`       | Marketing and product positioning              |
 | `docs.vellira.dev`      | Documentation, guides, API references, theming |
 | `storybook.vellira.dev` | Live component states and visual review        |
-
 
 Following this checklist helps keep applications consistent with the Vellira
 design system while maintaining accessibility, performance, and predictable

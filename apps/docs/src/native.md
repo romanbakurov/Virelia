@@ -55,18 +55,18 @@ Every native component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/api.md).
 
-| Component      | Role                       |
-|----------------|----------------------------|
-| `Button`       | Buttons and actions        |
-| `Checkbox`     | Boolean input              |
-| `Input`        | Text input                 |
-| `FormField`    | Labels and validation      |
-| `RadioGroup`   | Single selection           |
-| `Select`       | Selection control          |
-| `Dropdown`     | Context menu               |
-| `Tabs`         | Tab navigation             |
-| `Tooltip`      | Contextual helper          |
-| `Modal`        | Dialog and overlay         |
+| Component    | Role                  |
+| ------------ | --------------------- |
+| `Button`     | Buttons and actions   |
+| `Checkbox`   | Boolean input         |
+| `Input`      | Text input            |
+| `FormField`  | Labels and validation |
+| `RadioGroup` | Single selection      |
+| `Select`     | Selection control     |
+| `Dropdown`   | Context menu          |
+| `Tabs`       | Tab navigation        |
+| `Tooltip`    | Contextual helper     |
+| `Modal`      | Dialog and overlay    |
 
 ## Controlled and Uncontrolled
 
