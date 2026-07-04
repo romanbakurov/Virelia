@@ -10,15 +10,15 @@ Use the package that matches your application.
 ::: code-group
 
 ```bash [Web]
-pnpm add @romanbakurov/vellira-web
+pnpm add @vellira-ui/react
 ```
 
 ```bash [React Native]
-pnpm add @romanbakurov/vellira-native
+pnpm add @vellira-ui/react-native
 ```
 
 ```bash [Tokens]
-pnpm add @romanbakurov/vellira-tokens
+pnpm add @vellira-ui/tokens
 ```
 
 :::
@@ -26,7 +26,7 @@ pnpm add @romanbakurov/vellira-tokens
 Install shared packages when you need icons or direct token access.
 
 ```bash
-pnpm add @romanbakurov/vellira-icons @romanbakurov/vellira-tokens
+pnpm add @vellira-ui/icons @vellira-ui/tokens
 ```
 
 If your project consumes packages from GitHub Packages, configure the scope
@@ -41,7 +41,7 @@ registry first.
 Web apps should import Vellira styles once in the application entry point.
 
 ```tsx
-import '@romanbakurov/vellira-web/styles';
+import '@vellira-ui/react/styles';
 ```
 
 React Native apps do not need a stylesheet import. Native components use React
@@ -52,9 +52,9 @@ Native styles and shared theme values internally.
 ### React Web
 
 ```tsx
-import '@romanbakurov/vellira-web/styles';
+import '@vellira-ui/react/styles';
 
-import { Button, Checkbox, Input } from '@romanbakurov/vellira-web';
+import { Button, Checkbox, Input } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function SignInForm() {
@@ -78,7 +78,7 @@ export function SignInForm() {
 ### React Native
 
 ```tsx
-import { Button, Checkbox, Input } from '@romanbakurov/vellira-native';
+import { Button, Checkbox, Input } from '@vellira-ui/react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 

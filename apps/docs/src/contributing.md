@@ -44,8 +44,8 @@ code.
 
 ```bash
 pnpm docs:build
-pnpm --filter @romanbakurov/vellira-web test
-pnpm --filter @romanbakurov/vellira-native test
+pnpm --filter @vellira-ui/react test
+pnpm --filter @vellira-ui/react-native test
 pnpm check:public-api
 ```
 

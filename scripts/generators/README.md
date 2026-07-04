@@ -20,11 +20,11 @@ pnpm create:component Badge both primitives
 
 ## Platforms
 
-| Platform | Description                            |
-| -------- | -------------------------------------- |
-| web      | Generate component in `vellira-web`    |
-| native   | Generate component in `vellira-native` |
-| both     | Generate component in both packages    |
+| Platform | Description                          |
+| -------- | ------------------------------------ |
+| web      | Generate component in `react`        |
+| native   | Generate component in `react-native` |
+| both     | Generate component in both packages  |
 
 ## Layers
 
@@ -100,8 +100,8 @@ The generator automatically:
 
 ```txt
 packages/
-├── vellira-web
-└── vellira-native
+├── react
+└── react-native
 ```
 
 ## Notes

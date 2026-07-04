@@ -14,11 +14,11 @@ const root = process.cwd();
 const tempDir = path.join(root, '.tmp-package-smoke-native');
 
 const packageNames = [
-  '@romanbakurov/vellira-native',
-  '@romanbakurov/vellira-core',
-  '@romanbakurov/vellira-icons',
-  '@romanbakurov/vellira-tokens',
-  '@romanbakurov/vellira-types',
+  '@vellira-ui/react-native',
+  '@vellira-ui/core',
+  '@vellira-ui/icons',
+  '@vellira-ui/tokens',
+  '@vellira-ui/types',
 ];
 
 rmSync(tempDir, { recursive: true, force: true });
@@ -32,7 +32,7 @@ const dependencies = packPackages(packageNames, tempDir);
 const externalDependencies = linkWorkspaceDependencies(
   root,
   tempDir,
-  'packages/vellira-native',
+  'packages/react-native',
   ['@react-native-picker/picker', 'react', 'react-native']
 );
 
@@ -163,10 +163,10 @@ export async function resolve(specifier, context, defaultResolve) {
 writeFileSync(
   path.join(tempDir, 'smoke.mjs'),
   `
-import * as native from '@romanbakurov/vellira-native';
-import * as core from '@romanbakurov/vellira-core';
-import * as icons from '@romanbakurov/vellira-icons';
-import * as tokens from '@romanbakurov/vellira-tokens';
+import * as native from '@vellira-ui/react-native';
+import * as core from '@vellira-ui/core';
+import * as icons from '@vellira-ui/icons';
+import * as tokens from '@vellira-ui/tokens';
 
 const componentTypes = new Set([
   Symbol.for('react.forward_ref'),
@@ -200,28 +200,28 @@ const actualNativeApi = Object.keys(native).sort();
 
 if (JSON.stringify(actualNativeApi) !== JSON.stringify(expectedNativeApi)) {
   throw new Error(
-    \`vellira-native public API mismatch. Expected \${expectedNativeApi.join(', ')}, got \${actualNativeApi.join(', ')}\`
+    \`react-native public API mismatch. Expected \${expectedNativeApi.join(', ')}, got \${actualNativeApi.join(', ')}\`
   );
 }
 
 if (!isComponentExport(native.Button)) {
-  throw new Error('vellira-native Button export invalid');
+  throw new Error('react-native Button export invalid');
 }
 
 if (!isComponentExport(native.Input)) {
-  throw new Error('vellira-native Input export invalid');
+  throw new Error('react-native Input export invalid');
 }
 
 if (!isComponentExport(native.Tabs)) {
-  throw new Error('vellira-native Tabs export invalid');
+  throw new Error('react-native Tabs export invalid');
 }
 
 if (!isComponentExport(native.ThemeProvider)) {
-  throw new Error('vellira-native ThemeProvider export invalid');
+  throw new Error('react-native ThemeProvider export invalid');
 }
 
 if (typeof native.useTheme !== 'function') {
-  throw new Error('vellira-native useTheme export invalid');
+  throw new Error('react-native useTheme export invalid');
 }
 
 const expectedThemeNames = ['dark', 'highContrast', 'light'];
@@ -229,35 +229,35 @@ const actualThemeNames = Object.keys(native.nativeThemes ?? {}).sort();
 
 if (JSON.stringify(actualThemeNames) !== JSON.stringify(expectedThemeNames)) {
   throw new Error(
-    \`vellira-native nativeThemes export invalid. Expected \${expectedThemeNames.join(', ')}, got \${actualThemeNames.join(', ')}\`
+    \`react-native nativeThemes export invalid. Expected \${expectedThemeNames.join(', ')}, got \${actualThemeNames.join(', ')}\`
   );
 }
 
 if (typeof core.useControllableState !== 'function') {
-  throw new Error('vellira-core useControllableState export invalid');
+  throw new Error('core useControllableState export invalid');
 }
 
 if (typeof icons.Check !== 'function') {
-  throw new Error('vellira-icons Check export invalid');
+  throw new Error('icons Check export invalid');
 }
 
 if (typeof icons.Search !== 'function') {
-  throw new Error('vellira-icons Search export invalid');
+  throw new Error('icons Search export invalid');
 }
 
 if (typeof tokens.darkTheme !== 'object' || tokens.darkTheme === null) {
-  throw new Error('vellira-tokens darkTheme export invalid');
+  throw new Error('tokens darkTheme export invalid');
 }
 
 if (typeof tokens.lightTheme !== 'object' || tokens.lightTheme === null) {
-  throw new Error('vellira-tokens lightTheme export invalid');
+  throw new Error('tokens lightTheme export invalid');
 }
 
 if (
   typeof tokens.highContrastTheme !== 'object' ||
   tokens.highContrastTheme === null
 ) {
-  throw new Error('vellira-tokens highContrastTheme export invalid');
+  throw new Error('tokens highContrastTheme export invalid');
 }
 
 const theme = tokens.darkTheme;

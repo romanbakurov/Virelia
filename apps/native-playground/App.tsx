@@ -2,7 +2,7 @@ import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Alert } from 'react-native';
 
-import { Button, Checkbox } from '@romanbakurov/vellira-native';
+import { Button, Checkbox } from '@vellira-ui/react-native';
 
 export default function App() {
   const [loaded] = useFonts({

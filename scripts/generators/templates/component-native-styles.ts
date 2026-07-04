@@ -5,7 +5,7 @@ export function renderNativeStylesTemplate({
 }: ComponentTemplateParams) {
   const className = `${componentName[0].toLowerCase()}${componentName.slice(1)}`;
 
-  return `import { theme } from '@romanbakurov/virelia-tokens';
+  return `import { theme } from '@@vellira-ui/tokens';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({

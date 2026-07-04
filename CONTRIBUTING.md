@@ -194,8 +194,8 @@ General principles:
 - Keep components focused.
 - Prefer composition over configuration.
 - Keep APIs predictable.
-- Reuse shared logic from `@romanbakurov/vellira-core`.
-- Reuse shared types from `@romanbakurov/vellira-types`.
+- Reuse shared logic from `@vellira-ui/core`.
+- Reuse shared types from `@vellira-ui/types`.
 - Use design tokens instead of hardcoded values.
 - Treat accessibility as a first-class feature.
 - Preserve backward compatibility whenever possible.

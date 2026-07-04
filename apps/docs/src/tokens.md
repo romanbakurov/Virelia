@@ -1,6 +1,6 @@
 # Tokens
 
-`@romanbakurov/vellira-tokens` is the single source of truth for the Vellira
+`@vellira-ui/tokens` is the single source of truth for the Vellira
 design language.
 
 It provides:
@@ -14,15 +14,15 @@ It provides:
 ## Installation
 
 ```bash
-pnpm add @romanbakurov/vellira-tokens
+pnpm add @vellira-ui/tokens
 ```
 
 ```bash
-npm install @romanbakurov/vellira-tokens
+npm install @vellira-ui/tokens
 ```
 
 ```bash
-yarn add @romanbakurov/vellira-tokens
+yarn add @vellira-ui/tokens
 ```
 
 ## Theme Objects
@@ -31,7 +31,7 @@ Import a ready-to-use theme object and access semantic or component tokens
 directly.
 
 ```ts
-import { theme } from '@romanbakurov/vellira-tokens';
+import { theme } from '@vellira-ui/tokens';
 
 theme.semantic.surface.default;
 theme.semantic.text.primary;
@@ -44,11 +44,7 @@ theme.tokens.radius.md;
 Import a specific theme when your application needs explicit theme selection.
 
 ```ts
-import {
-  darkTheme,
-  highContrastTheme,
-  lightTheme,
-} from '@romanbakurov/vellira-tokens';
+import { darkTheme, highContrastTheme, lightTheme } from '@vellira-ui/tokens';
 
 lightTheme.name;
 darkTheme.name;
@@ -60,7 +56,7 @@ highContrastTheme.name;
 Import generated CSS variables into any web application.
 
 ```ts
-import '@romanbakurov/vellira-tokens/css';
+import '@vellira-ui/tokens/css';
 ```
 
 Use semantic variables in CSS when styling application surfaces.

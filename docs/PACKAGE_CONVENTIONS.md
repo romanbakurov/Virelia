@@ -12,15 +12,15 @@ Each package should have a single responsibility.
 
 Current packages:
 
-| Package                        | Responsibility                 |
-| ------------------------------ | ------------------------------ |
-| `@romanbakurov/vellira-web`    | Web components                 |
-| `@romanbakurov/vellira-native` | React Native components        |
-| `@romanbakurov/vellira-core`   | Shared hooks and runtime logic |
-| `@romanbakurov/vellira-types`  | Shared TypeScript contracts    |
-| `@romanbakurov/vellira-icons`  | Cross-platform icon library    |
-| `@romanbakurov/vellira-tokens` | Design tokens                  |
-| `@romanbakurov/vellira-assets` | Shared fonts and static assets |
+| Package                    | Responsibility                 |
+| -------------------------- | ------------------------------ |
+| `@vellira-ui/react`        | Web components                 |
+| `@vellira-ui/react-native` | React Native components        |
+| `@vellira-ui/core`         | Shared hooks and runtime logic |
+| `@vellira-ui/types`        | Shared TypeScript contracts    |
+| `@vellira-ui/icons`        | Cross-platform icon library    |
+| `@vellira-ui/tokens`       | Design tokens                  |
+| `@vellira-ui/assets`       | Shared fonts and static assets |
 
 A package should not take responsibilities that belong to another package.
 
@@ -51,15 +51,15 @@ Generated files must never be edited manually.
 All public packages use the following naming convention:
 
 ```text
-@romanbakurov/vellira-*
+@vellira-ui/*
 ```
 
 Examples:
 
 ```text
-@romanbakurov/vellira-web
-@romanbakurov/vellira-native
-@romanbakurov/vellira-core
+@vellira-ui/react
+@vellira-ui/react-native
+@vellira-ui/core
 ```
 
 ---
