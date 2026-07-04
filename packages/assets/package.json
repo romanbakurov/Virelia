@@ -9,7 +9,7 @@
     "url": "https://github.com/vellira-dev/vellira",
     "directory": "packages/assets"
   },
-  "private": false,
+  "private": true,
   "type": "module",
   "sideEffects": [
     "**/*.css",
