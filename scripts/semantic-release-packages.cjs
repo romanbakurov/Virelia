@@ -7,7 +7,6 @@ const publicPackages = [
   '@vellira-ui/tokens',
   '@vellira-ui/types',
   '@vellira-ui/icons',
-  '@vellira-ui/assets',
   '@vellira-ui/react',
   '@vellira-ui/react-native',
 ];
