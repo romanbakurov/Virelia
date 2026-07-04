@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -229,6 +229,66 @@ describe('Modal', () => {
     pressDocumentKey('Escape');
 
     expect(onClose).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('closes on backdrop click when enabled', () => {
+    const onClose = vi.fn();
+    const { unmount } = render(
+      <Modal isOpen onClose={onClose}>
+        <ModalHeader>Delete file</ModalHeader>
+        <ModalBody>Are you sure?</ModalBody>
+      </Modal>
+    );
+
+    const overlay = document.querySelector<HTMLElement>(
+      '[role="presentation"]'
+    );
+
+    act(() => {
+      overlay?.click();
+    });
+
+    expect(onClose).toHaveBeenCalledOnce();
+
+    unmount();
+  });
+
+  it('does not close from dialog clicks or disabled backdrop clicks', () => {
+    const onClose = vi.fn();
+    const { unmount } = render(
+      <Modal isOpen closeOnBackdrop={false} onClose={onClose}>
+        <ModalHeader>Delete file</ModalHeader>
+        <ModalBody>Are you sure?</ModalBody>
+      </Modal>
+    );
+
+    const overlay = document.querySelector<HTMLElement>(
+      '[role="presentation"]'
+    );
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"]');
+
+    act(() => {
+      dialog?.click();
+      overlay?.click();
+    });
+
+    expect(onClose).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('forwards ref to the dialog element', () => {
+    const ref = createRef<HTMLDivElement>();
+    const { unmount } = render(
+      <Modal isOpen ref={ref} onClose={() => undefined}>
+        <ModalHeader>Delete file</ModalHeader>
+        <ModalBody>Are you sure?</ModalBody>
+      </Modal>
+    );
+
+    expect(ref.current).toBe(document.querySelector('[role="dialog"]'));
 
     unmount();
   });

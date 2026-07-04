@@ -56,4 +56,28 @@ describe('Button', () => {
     expect(onClick).toHaveBeenCalledOnce();
     act(() => root.unmount());
   });
+
+  it('warns for icon-only buttons without an accessible name', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const container = document.createElement('div');
+    document.body.append(container);
+    const root = createRoot(container);
+
+    act(() =>
+      root.render(
+        <Button leftIcon={<span data-testid='icon' />} type='submit' />
+      )
+    );
+
+    const button = container.querySelector<HTMLButtonElement>('button');
+
+    expect(warn).toHaveBeenCalledWith(
+      'Button: icon-only buttons must provide ariaLabel.'
+    );
+    expect(button?.type).toBe('submit');
+    expect(button?.querySelector('[data-testid="icon"]')).not.toBeNull();
+
+    act(() => root.unmount());
+    warn.mockRestore();
+  });
 });

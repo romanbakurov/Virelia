@@ -240,6 +240,53 @@ describe('Select', () => {
     });
   });
 
+  it('updates the active option on enabled option hover only', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultValue='de'
+          options={options}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const france = document.getElementById('country-listbox-option-0');
+    const spain = document.getElementById('country-listbox-option-2');
+
+    act(() => {
+      france?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    });
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+
+    act(() => {
+      spain?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    });
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-2'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('does not open or submit a value when disabled', () => {
     const form = document.createElement('form');
     document.body.append(form);
