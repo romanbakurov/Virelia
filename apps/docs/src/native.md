@@ -10,7 +10,7 @@ language as the web package.
 pnpm add @vellira-ui/react-native
 ```
 
-Peer dependencies:
+Required peer dependencies:
 
 ```bash
 pnpm add react react-native
@@ -49,26 +49,28 @@ export function PreferencesScreen() {
 }
 ```
 
-## API Surface
+## Available Components
 
 Every native component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/react-native/API.md`](https://github.com/romanbakurov/Vellira/blob/main/packages/react-native/API.md).
+[`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/api.md).
 
-| Component    | Role                                                                 |
-| ------------ | -------------------------------------------------------------------- |
-| `Button`     | Primary, secondary, danger, size, disabled, and full-width actions   |
-| `Checkbox`   | Binary choice with controlled and uncontrolled state                 |
-| `Input`      | Text entry with label, placeholder, state, and accessibility support |
-| `FormField`  | Field composition for labels, descriptions, and error text           |
-| `RadioGroup` | Single choice control using shared state contracts                   |
-| `Select`     | Native selection trigger and option handling                         |
-| `Dropdown`   | Trigger, content, groups, items, and separators                      |
-| `Tabs`       | Tab list, tab items, panels, and shared keyboard state logic         |
-| `Tooltip`    | Anchored helper content                                              |
-| `Modal`      | Overlay, content, header, body, and footer primitives                |
+| Component      | Role                       |
+|----------------|----------------------------|
+| `Button`       | Buttons and actions        |
+| `Checkbox`     | Boolean input              |
+| `Input`        | Text input                 |
+| `FormField`    | Labels and validation      |
+| `RadioGroup`   | Single selection           |
+| `Select`       | Selection control          |
+| `Dropdown`     | Context menu               |
+| `Tabs`         | Tab navigation             |
+| `Tooltip`      | Contextual helper          |
+| `Modal`        | Dialog and overlay         |
 
 ## Controlled and Uncontrolled
+
+Most form components support both controlled and uncontrolled usage.
 
 Use controlled props when application state owns the value.
 
@@ -130,7 +132,7 @@ Vellira Native components map shared component contracts to React Native
 accessibility props where the platform supports them.
 
 - Inputs, selection controls, and field wrappers expose labels, disabled state,
-  required state, and error text through native-friendly props.
+  required state, and error text through React Native accessibility APIs.
 - Interactive components keep press handling and disabled behavior inside the
   renderer package.
 - Modal and overlay components keep platform rendering details out of
@@ -140,9 +142,7 @@ accessibility props where the platform supports them.
 
 ## Theming
 
-Native components consume the shared token package through renderer-native
-styles. Product code can also import theme objects directly when building
-screens around Vellira components.
+Applications can import shared design tokens to build layouts that visually match Vellira components.
 
 ```tsx
 import { theme } from '@vellira-ui/tokens';
@@ -165,8 +165,8 @@ export function ScreenShell({ children }: { children: React.ReactNode }) {
 
 ## Storybook and Playground
 
-Native stories live next to components in the native package and are used for
-on-device review during development.
+Native stories live alongside their components and are used for on-device
+development and review.
 
 Use Storybook to inspect component states. Use an Expo or product app shell for
 manual checks of screen-level flows outside Storybook.
@@ -184,6 +184,14 @@ simulator.
 ## Development
 
 ```bash
+pnpm --filter @vellira-ui/react-native typecheck
 pnpm --filter @vellira-ui/react-native build
 pnpm --filter @vellira-ui/react-native test
 ```
+
+## Platform Support
+
+Vellira Native targets modern React Native applications built with the current
+supported React Native releases.
+
+Vellira supports both Expo and bare React Native projects.

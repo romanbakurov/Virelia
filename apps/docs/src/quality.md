@@ -1,7 +1,7 @@
 # Quality
 
-Vellira treats documentation, type definitions, component behavior, and package
-publishing as one quality surface.
+Quality in Vellira covers documentation, type definitions, component behavior,
+testing, and package publishing.
 
 ## CI Gates
 
@@ -9,17 +9,17 @@ The main CI workflow validates:
 
 - formatting and linting;
 - package builds;
-- documentation build;
-- TypeScript checks;
-- generated API docs;
-- public API snapshots;
+- documentation builds;
+- TypeScript type checking;
+- generated API documentation;
+- public API snapshot verification;
 - unit tests and coverage;
-- Storybook and web end-to-end checks;
+- Storybook and end-to-end tests;
 - package smoke tests.
 
 ## Local Commands
 
-Run the full pipeline before opening a high-impact pull request.
+Run the full pipeline before opening a significant pull request.
 
 ```bash
 pnpm ci
@@ -41,7 +41,7 @@ Documentation should explain:
 
 - why a package exists;
 - how to install it;
-- how to render the first useful component;
+- how to build the first working example;
 - how state is controlled;
 - how tokens and themes are applied;
 - how to test and review the result.
@@ -51,6 +51,15 @@ same pull request.
 
 ## Release Quality
 
-Published packages are validated with smoke tests and public export checks.
-This protects consumers from broken package entry points, missing declarations,
-and accidental API drift.
+Published packages are validated through smoke tests, public export checks,
+and automated release verification.
+
+These checks help prevent broken package entry points, missing type
+declarations, and unintended API changes.
+
+## Principles
+
+Quality checks should be automated whenever possible.
+
+Every public change should be validated before release through documentation,
+tests, type checking, and CI.

@@ -1,8 +1,7 @@
-# Project Sites
+# Vellira Ecosystem
 
-Vellira can grow into three focused public surfaces. The goal is to keep each
-site responsible for one job instead of mixing marketing, documentation, and
-component review in the same place.
+Vellira is designed around three focused public surfaces. Each serves a single
+purpose, keeping marketing, documentation, and component development separate.
 
 | Domain                  | Purpose                                                    |
 | ----------------------- | ---------------------------------------------------------- |
@@ -12,31 +11,33 @@ component review in the same place.
 
 ## Current State
 
-The documentation is currently developed as the VitePress app in this
-repository. Storybook is available through Chromatic.
+The documentation currently lives in this repository as a VitePress site.
+Interactive component examples are available through Storybook on Chromatic.
 
 ## Target Shape
 
 ```text
 www.vellira.dev
   Landing page
-  Product positioning
+  Features
+  Getting started
   Calls to action
 
 docs.vellira.dev
-  Quick Start
-  Component docs
-  Token architecture
-  Package guides
+  Guides
+  API reference
+  Component documentation
+  Theme architecture
 
 storybook.vellira.dev
-  Live stories
-  Component states
-  Visual regression review
+  Interactive components
+  Visual states
+  Accessibility review
+  Regression testing
 ```
 
-This split keeps the developer path clear:
+The recommended developer journey is:
 
 1. Discover Vellira on the marketing site.
-2. Learn and integrate from the documentation site.
-3. Inspect live component states in Storybook.
+2. Learn the library through the documentation.
+3. Explore live components and states in Storybook.

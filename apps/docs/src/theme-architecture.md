@@ -6,20 +6,23 @@ visual language evolves.
 
 ```text
 Primitive colors
-        |
-        v
+        │
+        ▼
 Semantic tokens
-        |
-        v
+        │
+        ▼
 Component tokens
-        |
-        v
-React components
+        │
+        ▼
+Renderer components
+        │
+        ▼
+Application
 ```
 
 ## Primitive Colors
 
-Primitive colors are raw palette values. They describe color families such as
+Primitive colors define the raw color palette. They describe color families such as
 brand, status, neutral, gray, and mono values.
 
 Primitive values are useful inside the token package, but product code should
@@ -46,14 +49,12 @@ theme.semantic.border.default;
 theme.semantic.status.success.fg;
 ```
 
-This layer is what makes theme changes manageable. A palette can evolve while
-the semantic contract stays readable.
+This layer isolates design decisions from implementation details.
 
 ## Component Tokens
 
-Component tokens turn semantic decisions into component states. A button does
-not need to know how a brand palette is arranged. It only needs values for
-default, hover, pressed, disabled, and other states.
+Component tokens turn semantic decisions into component states. Components should not depend on palette values directly. They consume semantic
+and component tokens that describe UI states.
 
 ```ts
 theme.components.button.primary.default.bg;
@@ -65,14 +66,14 @@ theme.components.dropdown.content.bg;
 Component tokens keep renderer implementations aligned across Web and React
 Native.
 
-## React Components
+## Renderer Components
 
 Renderer packages consume the token layers and expose stable components.
 
-| Renderer | Package                    | Responsibility                                |
-| -------- | -------------------------- | --------------------------------------------- |
-| Web      | `@vellira-ui/react`        | DOM components, CSS modules, browser behavior |
-| Native   | `@vellira-ui/react-native` | React Native primitives and platform styles   |
+| Renderer | Package                    | Responsibility                     |
+| -------- | -------------------------- |------------------------------------|
+| Web      | `@vellira-ui/react`        | React components for the browser   |
+| Native   | `@vellira-ui/react-native` | React Native components            |
 
 The components should depend on semantic and component tokens, not on raw
 palette decisions. This keeps visual changes centralized inside the token
@@ -86,6 +87,17 @@ This architecture gives Vellira three useful properties:
 - renderer packages stay visually consistent;
 - token changes can be made without rewriting component APIs.
 
-When extending the system, add the lowest-level value that matches the decision.
-Use primitive colors for palette work, semantic tokens for shared UI meaning,
-and component tokens for stateful component behavior.
+When introducing a new design decision, add it at the lowest appropriate layer.
+
+Use primitive colors for palettes, semantic tokens for reusable UI meaning,
+and component tokens for component-specific states.
+
+## Design Flow
+
+When creating a new component, the recommended flow is:
+
+1. Define or reuse primitive colors.
+2. Create semantic meanings where needed.
+3. Map semantics to component tokens.
+4. Build renderer-specific implementations.
+5. Expose a stable public API.
