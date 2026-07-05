@@ -1,8 +1,8 @@
 # Production
 
-Use this checklist before shipping Vellira in an application.
+Install only the renderer and supporting packages your application requires.
 
-## Install Only What You Need
+## Installation
 
 Vellira is split into focused packages. Install the renderer and supporting
 packages your application actually uses.
@@ -22,7 +22,7 @@ packages your application actually uses.
 - Use semantic CSS variables for product surfaces instead of raw palette
   values.
 - Verify keyboard interaction for forms, tabs, menus, tooltips, and dialogs.
-- Keep Storybook links close to product review for visual states.
+- Use Storybook during design review to verify visual states and interactions.
 
 ## Native Application Checklist
 
@@ -30,11 +30,11 @@ packages your application actually uses.
 - Test component behavior in Storybook, an Expo playground, or your app shell.
 - Verify screen-reader labels, disabled states, and validation text on real
   devices where possible.
-- Keep layout spacing and surfaces tied to `@vellira-ui/tokens`.
+- Build layouts with the shared design tokens whenever possible.
 
 ## Release Confidence
 
-Before publishing or merging a significant change, run the same checks CI uses.
+Before publishing a release or merging significant changes, run the same checks as CI.
 
 ```bash
 pnpm docs:build
@@ -58,8 +58,12 @@ generated artifact, and deploys it to Cloudflare Pages.
 
 Storybook remains the live component review surface. The target public split is:
 
-| Site                    | Purpose                                        |
+| Site                    | Description                                    |
 | ----------------------- | ---------------------------------------------- |
 | `www.vellira.dev`       | Marketing and product positioning              |
 | `docs.vellira.dev`      | Documentation, guides, API references, theming |
 | `storybook.vellira.dev` | Live component states and visual review        |
+
+Following this checklist helps keep applications consistent with the Vellira
+design system while maintaining accessibility, performance, and predictable
+releases.

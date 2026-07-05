@@ -13,17 +13,21 @@ It provides:
 
 ## Installation
 
-```bash
+::: code-group
+
+```bash [pnpm]
 pnpm add @vellira-ui/tokens
 ```
 
-```bash
+```bash [npm]
 npm install @vellira-ui/tokens
 ```
 
-```bash
+```bash [yarn]
 yarn add @vellira-ui/tokens
 ```
+
+:::
 
 ## Theme Objects
 
@@ -41,7 +45,7 @@ theme.components.button.primary.default.bg;
 theme.tokens.radius.md;
 ```
 
-Import a specific theme when your application needs explicit theme selection.
+Import the shared theme object to access semantic and component tokens.
 
 ```ts
 import { darkTheme, highContrastTheme, lightTheme } from '@vellira-ui/tokens';
@@ -51,9 +55,17 @@ darkTheme.name;
 highContrastTheme.name;
 ```
 
+## Available Themes
+
+Vellira ships with three built-in themes:
+
+- Light
+- Dark
+- High Contrast
+
 ## CSS Variables
 
-Import generated CSS variables into any web application.
+Import the generated CSS variables once in your application entry point.
 
 ```ts
 import '@vellira-ui/tokens/css';
@@ -82,12 +94,12 @@ The same variables can be used inline when a component needs a local style.
 
 ## Token Groups
 
-| Group        | Description                                   |
-| ------------ | --------------------------------------------- |
-| `colors`     | Primitive color palettes                      |
-| `semantic`   | Semantic aliases for UI meaning               |
-| `components` | Component-specific tokens                     |
-| `tokens`     | Spacing, radius, typography, shadows, z-index |
+| Group        | Description               |
+| ------------ | ------------------------- |
+| `colors`     | Primitive color palettes  |
+| `semantic`   | UI meaning                |
+| `components` | Component states          |
+| `tokens`     | Shared design foundations |
 
 ### `colors`
 
@@ -120,12 +132,13 @@ hardcoding palette references.
 The `tokens` group contains non-color foundations such as spacing, radius,
 typography, shadows, and z-index values.
 
-## Principle
+## Best Practice
 
 Always prefer semantic tokens over raw colors in application code.
 
-Primitive palettes exist to build semantic tokens. Product code should consume
-semantic meanings such as surface, text, border, status, and component tokens
-instead of directly referencing palette values.
+Primitive palettes should rarely be referenced directly in application code.
+
+Instead, prefer semantic and component tokens so that visual changes remain
+centralized inside the design system.
 
 For the full layering model, see [Theme Architecture](/theme-architecture).
