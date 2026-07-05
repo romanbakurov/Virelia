@@ -51,6 +51,6 @@ pnpm check:public-api
 
 ## Detailed Guides
 
-- [Contributing Guide](https://github.com/romanbakurov/Vellira/blob/main/CONTRIBUTING.md)
-- [Component Conventions](https://github.com/romanbakurov/Vellira/blob/main/docs/COMPONENT_CONVENTIONS.md)
-- [Package Conventions](https://github.com/romanbakurov/Vellira/blob/main/docs/PACKAGE_CONVENTIONS.md)
+- [Contributing Guide](https://github.com/vellira-dev/vellira/blob/main/CONTRIBUTING.md)
+- [Component Conventions](https://github.com/vellira-dev/vellira/blob/main/docs/COMPONENT_CONVENTIONS.md)
+- [Package Conventions](https://github.com/vellira-dev/vellira/blob/main/docs/PACKAGE_CONVENTIONS.md)
