@@ -1,42 +1,68 @@
 # Accessibility
 
-Accessibility is part of the component contract. Vellira handles renderer-level
-accessibility wiring where a component can do that reliably, while product code
-keeps responsibility for context, copy, and user flow.
+Accessibility is a core part of Vellira's component API.
+
+The library provides accessible defaults wherever the renderer can guarantee
+consistent behavior. Application code remains responsible for product-specific
+content, workflows, and user experience.
+
+## Principles
+
+Vellira follows these principles across supported platforms:
+
+- Accessible by default.
+- Keyboard-first interactions on the web.
+- Semantic APIs over implementation details.
+- Consistent behavior across components.
+- WCAG-conscious component design.
 
 ## What Vellira Handles
 
-| Area     | Responsibility                                                                                     |
-| -------- | -------------------------------------------------------------------------------------------------- |
-| Labels   | Inputs, fields, selection controls, and grouped controls expose label APIs                         |
-| State    | Disabled, required, invalid, checked, selected, and open states are represented in component props |
-| Keyboard | Web tabs, menus, overlays, and selection controls use shared interaction logic where appropriate   |
-| Focus    | Web overlays and dialogs keep focus management inside the renderer package                         |
-| Errors   | Field-level error text is part of component composition                                            |
+| Area      | Responsibility                                                                                                 |
+| --------- | -------------------------------------------------------------------------------------------------------------- |
+| Labels    | Inputs, fields, selection controls, and grouped controls expose accessible labeling APIs                       |
+| State     | Disabled, required, invalid, checked, selected, expanded, and open states are reflected through component APIs |
+| Keyboard  | Menus, tabs, dialogs, dropdowns, and selection controls support expected keyboard interaction                  |
+| Focus     | Dialogs, overlays, and other focus-managed components restore and trap focus where appropriate                 |
+| Errors    | Components expose APIs for associating validation text with form controls                                      |
+| Semantics | Components render appropriate roles and accessibility attributes whenever possible                             |
 
 ## What Product Code Owns
 
-- Clear labels and button text.
-- Validation timing and error messages.
-- Focus target after submit, route changes, or destructive actions.
-- Screen-reader announcements for product-specific async work.
-- Real-device verification for React Native flows.
+- Writing meaningful labels and button text.
+- Validation logic and error messaging.
+- Focus management after navigation or business workflows.
+- Screen reader announcements for asynchronous operations.
+- Color contrast of custom themes.
+- Testing important user journeys on real devices.
 
 ## Web Review Checklist
 
-- Every form control has a visible label or intentional accessible name.
-- Keyboard users can reach and operate each interactive element.
-- Focus indicators are visible in light and dark themes.
-- Dialogs can be closed with the expected actions.
-- Error states include text, not color alone.
+- Every interactive element has an accessible name.
+- Every form control has an associated label.
+- Keyboard users can complete every workflow.
+- Focus indicators remain visible.
+- Dialogs trap focus and restore it on close.
+- Interactive controls can be operated without a mouse.
+- Errors are communicated with text, not color alone.
 
 ## Native Review Checklist
 
-- Interactive elements have meaningful labels.
-- Disabled state is visible and exposed through the component.
-- Validation messages are readable in the screen context.
-- Touch targets remain usable in dense layouts.
-- Important flows are checked on real devices when possible.
+- Interactive elements expose meaningful accessibility labels.
+- Accessibility roles and states are correctly announced.
+- Disabled controls are visually and programmatically disabled.
+- Validation messages are understandable in context.
+- Touch targets remain comfortable on mobile devices.
+- Critical flows are verified with VoiceOver and TalkBack when possible.
+
+## Standards
+
+Vellira aims to align with:
+
+- WCAG 2.2 AA
+- WAI-ARIA Authoring Practices
+- React Accessibility recommendations
+- React Native Accessibility APIs
 
 ## Related Pages
 

@@ -202,7 +202,7 @@ body {
   padding: 0 18px;
   color: #fff;
   font-weight: 700;
-  background: var(--vp-c-brand-1);
+  background: var(--vp-button-brand-bg);
   border-radius: 8px;
   min-height: 44px;
   text-decoration: none;
@@ -215,7 +215,7 @@ body {
 }
 
 .vp-doc .docs-cta:hover {
-  background: var(--vp-c-brand-2);
+  background: var(--vp-button-brand-hover-bg);
 }
 
 .docs-example {
