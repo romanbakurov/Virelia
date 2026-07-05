@@ -62,7 +62,7 @@ Vellira is split into focused packages that can be installed independently.
 
 - [Documentation](https://docs.vellira.dev)
 - [GitHub Repository](https://github.com/romanbakurov/Vellira)
-- [Storybook Demo](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
+- [Storybook Demo](https://storybook.vellira.dev)
 - [Chromatic Library](https://www.chromatic.com/library?appId=6a07269cf7126a71ef2f62ca&branch=main)
 
 ## Documentation
