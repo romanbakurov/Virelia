@@ -89,7 +89,7 @@
     "stylelint-config-standard-scss": "^17.0.0",
     "stylelint-order": "^8.1.1",
     "stylelint-scss": "^7.1.1",
-    "tsx": "^4.22.4",
+    "tsx": "^4.23.0",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.61.0",
     "wrangler": "^4.106.0"
