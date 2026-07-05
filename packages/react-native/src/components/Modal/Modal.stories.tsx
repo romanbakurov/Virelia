@@ -33,10 +33,18 @@ function ModalDemo({
           <Text>Are you sure you want to continue?</Text>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='secondary' onPress={() => setIsOpen(false)}>
+          <Button
+            color='secondary'
+            variant='solid'
+            onPress={() => setIsOpen(false)}
+          >
             Cancel
           </Button>
-          <Button variant='danger' onPress={() => setIsOpen(false)}>
+          <Button
+            color='danger'
+            variant='solid'
+            onPress={() => setIsOpen(false)}
+          >
             Delete
           </Button>
         </Modal.Footer>

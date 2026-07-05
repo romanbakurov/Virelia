@@ -11,160 +11,131 @@ const meta: Meta<typeof Button> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
-    docs: {
-      description: {
-        component: `
-### Button Component
-
-Native pressable action for React Native screens.
-
-**Features**
-- Primary, secondary, and danger variants
-- Native \`onPress\` handling
-- Token-based colors and typography
-- Touch-friendly visual states
-
-### Usage
-
-Use Button for screen actions, form submits, and destructive confirmations.
-
-Correct usage:
-
-\`\`\`tsx
-<Button variant='primary' onPress={handleSave}>
-  Save changes
-</Button>
-\`\`\`
-`,
-      },
-    },
   },
   args: {
+    children: 'Button',
+    color: 'primary',
+    variant: 'solid',
+    size: 'md',
+    disabled: false,
+    loading: false,
+    fullWidth: false,
     onPress: fn(),
   },
   argTypes: {
-    children: {
-      description: 'Button label.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-
-    variant: {
-      description: 'Visual style of the button.',
+    color: {
       control: 'select',
-      options: ['primary', 'secondary', 'danger'],
-      table: {
-        type: { summary: `'primary' | 'secondary' | 'danger'` },
-        defaultValue: { summary: 'primary' },
-      },
+      options: ['primary', 'secondary', 'close', 'danger'],
     },
-
+    variant: {
+      control: 'select',
+      options: ['solid', 'outline', 'ghost'],
+    },
     size: {
-      description: 'Button size.',
       control: 'radio',
       options: ['sm', 'md', 'lg'],
-      table: {
-        type: { summary: `'sm' | 'md' | 'lg'` },
-        defaultValue: { summary: 'md' },
-      },
     },
-
-    disabled: {
-      description: 'Disables the button.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-
-    fullWidth: {
-      description: 'Expands button to full container width.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-
-    onPress: {
-      description: 'Called when the button is pressed.',
-      action: 'pressed',
-      table: {
-        type: { summary: '() => void' },
-      },
-    },
-    leftIcon: {
-      description: 'Icon rendered before the button label.',
-      control: true,
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-
-    rightIcon: {
-      description: 'Icon rendered after the button label.',
-      control: true,
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-
-    accessibilityLabel: {
-      description: 'Accessible label for icon-only or non-text buttons.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
+    disabled: { control: 'boolean' },
+    loading: { control: 'boolean' },
+    loadingText: { control: 'text' },
+    fullWidth: { control: 'boolean' },
+    iconOnly: { control: 'boolean' },
+    accessibilityLabel: { control: 'text' },
+    onPress: { action: 'pressed' },
+    leftIcon: { control: false },
+    rightIcon: { control: false },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const Primary: Story = {
+const rowStyle = {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: 12,
+  alignItems: 'center',
+} as const;
+
+const stackStyle = {
+  gap: 16,
+  alignItems: 'flex-start',
+} as const;
+
+export const Basic: Story = {
   args: {
-    variant: 'primary',
-    children: 'Click me',
-    size: 'md',
+    children: 'Search',
+    color: 'primary',
+    variant: 'solid',
     leftIcon: <Search />,
   },
 };
 
-export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    children: 'Cancel',
-  },
+export const Colors: Story = {
+  render: () => (
+    <View style={rowStyle}>
+      <Button color='primary'>Primary</Button>
+      <Button color='secondary'>Secondary</Button>
+      <Button color='close'>Close</Button>
+      <Button color='danger'>Danger</Button>
+    </View>
+  ),
 };
 
-export const Danger: Story = {
-  args: {
-    variant: 'danger',
-    children: 'Delete',
-  },
-};
+export const Variants: Story = {
+  render: () => (
+    <View style={stackStyle}>
+      <View style={rowStyle}>
+        <Button color='primary' variant='solid'>
+          Primary solid
+        </Button>
+        <Button color='secondary' variant='solid'>
+          Secondary solid
+        </Button>
+        <Button color='close' variant='solid'>
+          Close solid
+        </Button>
+        <Button color='danger' variant='solid'>
+          Danger solid
+        </Button>
+      </View>
 
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    children: 'Disabled',
-  },
-};
+      <View style={rowStyle}>
+        <Button color='primary' variant='outline'>
+          Primary outline
+        </Button>
+        <Button color='secondary' variant='outline'>
+          Secondary outline
+        </Button>
+        <Button color='close' variant='outline'>
+          Close outline
+        </Button>
+        <Button color='danger' variant='outline'>
+          Danger outline
+        </Button>
+      </View>
 
-export const FullWidth: Story = {
-  args: {
-    fullWidth: true,
-    children: 'Continue',
-  },
+      <View style={rowStyle}>
+        <Button color='primary' variant='ghost'>
+          Primary ghost
+        </Button>
+        <Button color='secondary' variant='ghost'>
+          Secondary ghost
+        </Button>
+        <Button color='close' variant='ghost'>
+          Close ghost
+        </Button>
+        <Button color='danger' variant='ghost'>
+          Danger ghost
+        </Button>
+      </View>
+    </View>
+  ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <View style={{ gap: 12 }}>
+    <View style={rowStyle}>
       <Button size='sm'>Small</Button>
       <Button size='md'>Medium</Button>
       <Button size='lg'>Large</Button>
@@ -172,17 +143,31 @@ export const Sizes: Story = {
   ),
 };
 
+export const States: Story = {
+  render: () => (
+    <View style={stackStyle}>
+      <View style={rowStyle}>
+        <Button disabled>Disabled</Button>
+        <Button loading>Loading</Button>
+        <Button loading loadingText='Saving...'>
+          Save
+        </Button>
+      </View>
+
+      <View style={{ width: 280 }}>
+        <Button fullWidth>Full width</Button>
+      </View>
+    </View>
+  ),
+};
+
 export const WithIcons: Story = {
   render: () => (
-    <View style={{ gap: 12 }}>
-      <Button leftIcon={<Search />}>Search</Button>
-
-      <Button variant='secondary' rightIcon={<Search />}>
-        Next
-      </Button>
-
-      <Button variant='danger' leftIcon={<Search />} rightIcon={<Search />}>
-        Delete
+    <View style={rowStyle}>
+      <Button leftIcon={<Search />}>Left icon</Button>
+      <Button rightIcon={<Search />}>Right icon</Button>
+      <Button leftIcon={<Search />} rightIcon={<Search />}>
+        Both icons
       </Button>
     </View>
   ),
@@ -190,25 +175,8 @@ export const WithIcons: Story = {
 
 export const IconOnly: Story = {
   args: {
+    iconOnly: true,
     leftIcon: <Search />,
     accessibilityLabel: 'Search',
   },
 };
-
-// export const CustomIconSize: Story = {
-//   render: () => (
-//     <View style={{ gap: 12 }}>
-//       <Button leftIcon={<Search />} iconSize={16}>
-//         Icon 16
-//       </Button>
-//
-//       <Button leftIcon={<Search />} iconSize={24}>
-//         Icon 24
-//       </Button>
-//
-//       <Button leftIcon={<Search />} iconSize={32}>
-//         Icon 32
-//       </Button>
-//     </View>
-//   ),
-// };

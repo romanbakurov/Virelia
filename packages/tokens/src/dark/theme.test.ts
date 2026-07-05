@@ -1,40 +1,44 @@
 import { describe, expect, it } from 'vitest';
 
+import { highContrastTheme } from '../highContrast/theme';
+import { lightTheme } from '../light/theme';
+
 import { darkTheme } from './theme';
 
-describe('darkTheme', () => {
+describe.each([
+  ['light', lightTheme],
+  ['dark', darkTheme],
+  ['high-contrast', highContrastTheme],
+])('%s theme', (themeName, theme) => {
   it('exposes theme metadata', () => {
-    expect(darkTheme.name).toBe('dark');
+    expect(theme.name).toBe(themeName);
   });
 
-  it('exposes theme token groups', () => {
-    expect(darkTheme.colors).toBeDefined();
-    expect(darkTheme.semantic).toBeDefined();
-    expect(darkTheme.components).toBeDefined();
-    expect(darkTheme.tokens).toBeDefined();
-  });
+  it('exposes theme contract', () => {
+    expect(theme.colors).toBeDefined();
+    expect(theme.semantic).toBeDefined();
+    expect(theme.components).toBeDefined();
+    expect(theme.tokens).toBeDefined();
 
-  it('exposes shared base tokens', () => {
-    expect(darkTheme.tokens.spacing).toBeDefined();
-    expect(darkTheme.tokens.radius).toBeDefined();
-    expect(darkTheme.tokens.shadows).toBeDefined();
-    expect(darkTheme.tokens.typography).toBeDefined();
-    expect(darkTheme.tokens.zIndex).toBeDefined();
-  });
+    expect(theme.tokens.spacing).toBeDefined();
+    expect(theme.tokens.radius).toBeDefined();
+    expect(theme.tokens.shadows).toBeDefined();
+    expect(theme.tokens.typography).toBeDefined();
+    expect(theme.tokens.zIndex).toBeDefined();
 
-  it('exposes semantic tokens', () => {
-    expect(darkTheme.semantic.surface.default).toBeDefined();
-    expect(darkTheme.semantic.text.primary).toBeDefined();
-    expect(darkTheme.semantic.border.default).toBeDefined();
-    expect(darkTheme.semantic.focus.ring).toBeDefined();
-    expect(darkTheme.semantic.status.error.fg).toBeDefined();
-  });
+    expect(theme.semantic.surface.default).toBeDefined();
+    expect(theme.semantic.text.primary).toBeDefined();
+    expect(theme.semantic.border.default).toBeDefined();
+    expect(theme.semantic.focus.ring).toBeDefined();
+    expect(theme.semantic.status.error.fg).toBeDefined();
 
-  it('exposes component tokens', () => {
-    expect(darkTheme.components.button.primary.default.bg).toBeDefined();
-    expect(darkTheme.components.input.default.bg).toBeDefined();
-    expect(darkTheme.components.checkbox.checked.default.bg).toBeDefined();
-    expect(darkTheme.components.select.trigger.default.bg).toBeDefined();
-    expect(darkTheme.components.tooltip.content.bg).toBeDefined();
+    expect(theme.components.button.primary.solid.default.bg).toBeDefined();
+    expect(theme.components.button.primary.outline.default.bg).toBeDefined();
+    expect(theme.components.button.primary.ghost.default.bg).toBeDefined();
+
+    expect(theme.components.input.default.bg).toBeDefined();
+    expect(theme.components.checkbox.checked.default.bg).toBeDefined();
+    expect(theme.components.select.trigger.default.bg).toBeDefined();
+    expect(theme.components.tooltip.content.bg).toBeDefined();
   });
 });

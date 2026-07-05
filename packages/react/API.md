@@ -81,25 +81,27 @@ Clickable action component with variants, sizes, optional icons, and full-width 
 ```tsx
 import { Button } from '@vellira-ui/react';
 
-<Button variant='primary' size='md' onClick={handleSave}>
+<Button color='primary' variant='solid' size='md' onClick={handleSave}>
   Save
 </Button>;
 ```
 
 <!-- api-docgen:start web.ButtonProps.Button -->
 
-| Prop        | Type                                   | Required | Description                                                   |
-| ----------- | -------------------------------------- | -------- | ------------------------------------------------------------- |
-| `ariaLabel` | `string \| false`                      | No       | Accessible label for icon-only or visually ambiguous buttons. |
-| `children`  | `ReactNode`                            | No       | Button content.                                               |
-| `leftIcon`  | `ReactNode`                            | No       | Icon rendered before content.                                 |
-| `rightIcon` | `ReactNode`                            | No       | Icon rendered after content.                                  |
-| `fullWidth` | `boolean`                              | No       | Makes the button fill its container width.                    |
-| `className` | `string`                               | No       | Extra CSS class for the root element.                         |
-| `onClick`   | `MouseEventHandler<HTMLButtonElement>` | No       | Click handler for web.                                        |
-| `variant`   | `ButtonColor`                          | No       | Visual color variant.                                         |
-| `size`      | `ButtonSize`                           | No       | Button size.                                                  |
-| `disabled`  | `boolean`                              | No       | Disables interaction.                                         |
+| Prop          | Type              | Required | Description                                                   |
+| ------------- | ----------------- | -------- | ------------------------------------------------------------- |
+| `ariaLabel`   | `string \| false` | No       | Accessible label for icon-only or visually ambiguous buttons. |
+| `children`    | `ReactNode`       | No       | Button content.                                               |
+| `leftIcon`    | `ReactNode`       | No       | Icon rendered before content.                                 |
+| `rightIcon`   | `ReactNode`       | No       | Icon rendered after content.                                  |
+| `fullWidth`   | `boolean`         | No       | Makes the button fill its container width.                    |
+| `variant`     | `ButtonVariant`   | No       | Visual color variant.                                         |
+| `size`        | `ButtonSize`      | No       | Button size.                                                  |
+| `disabled`    | `boolean`         | No       | Disables interaction.                                         |
+| `color`       | `ButtonColor`     | No       | —                                                             |
+| `loading`     | `boolean`         | No       | —                                                             |
+| `loadingText` | `string`          | No       | —                                                             |
+| `iconOnly`    | `boolean`         | No       | —                                                             |
 
 <!-- api-docgen:end web.ButtonProps.Button -->
 
@@ -457,7 +459,7 @@ import { Button, Modal } from '@vellira-ui/react';
     <Modal.Header>Delete file</Modal.Header>
     <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
     <Modal.Footer>
-      <Button variant='secondary' onClick={closeModal}>
+      <Button color='secondary' variant='solid' onClick={closeModal}>
         Cancel
       </Button>
     </Modal.Footer>

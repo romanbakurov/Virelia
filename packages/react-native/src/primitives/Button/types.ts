@@ -1,6 +1,11 @@
 import type { BaseButtonProps } from '@vellira-ui/types';
 import type { ReactElement, ReactNode } from 'react';
-import type { ViewStyle } from 'react-native';
+import type {
+  GestureResponderEvent,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
 export type ButtonIconElement = ReactElement<{
   color?: string;
@@ -11,9 +16,10 @@ export interface ButtonProps extends BaseButtonProps {
   children?: ReactNode;
   leftIcon?: ButtonIconElement;
   rightIcon?: ButtonIconElement;
-  fullWidth?: boolean;
-  onPress?: () => void;
-  style?: ViewStyle;
+  onPress?: (event: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   accessibilityLabel?: string;
   iconSize?: number;
+  testID?: string;
 }

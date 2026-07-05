@@ -43,7 +43,9 @@ export function PreferencesScreen() {
         ]}
       />
       <Checkbox label='Send product updates' />
-      <Button variant='primary'>Apply</Button>
+      <Button color='primary' variant='solid'>
+        Apply
+      </Button>
     </View>
   );
 }

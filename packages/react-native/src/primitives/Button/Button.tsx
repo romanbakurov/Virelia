@@ -1,6 +1,6 @@
 import { cloneElement, useState } from 'react';
 
-import { Pressable, Text } from 'react-native';
+import { ActivityIndicator, Pressable, Text } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 
@@ -40,24 +40,34 @@ const sizeMap: Record<
 
 export function Button({
   children,
+  color = 'primary',
+  variant = 'solid',
   disabled = false,
+  loading = false,
+  loadingText,
   onPress,
-  variant = 'primary',
   size = 'md',
   leftIcon,
   rightIcon,
   fullWidth = false,
+  iconOnly: iconOnlyProp = false,
   style,
+  textStyle,
   accessibilityLabel,
   iconSize,
+  testID,
 }: ButtonProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const config = sizeMap[size];
-  const variantTheme = theme.components.button[variant];
+
+  const variantTheme = theme.components.button[color][variant];
   const [isPressed, setIsPressed] = useState(false);
 
-  const iconOnly = !children && Boolean(leftIcon || rightIcon);
+  const isDisabled = disabled || loading;
+  const iconOnly =
+    iconOnlyProp || (!children && Boolean(leftIcon || rightIcon));
+  const content = loading && loadingText ? loadingText : children;
 
   if (iconOnly && !accessibilityLabel) {
     console.warn(
@@ -65,51 +75,59 @@ export function Button({
     );
   }
 
-  const contentColor = disabled
-    ? theme.components.button.disabled.fg
+  const stateTheme = isDisabled
+    ? theme.components.button.disabled
     : isPressed
-      ? variantTheme.pressed.fg
-      : variantTheme.default.fg;
+      ? variantTheme.pressed
+      : variantTheme.default;
+
+  const contentColor = stateTheme.fg;
   const resolvedIconSize = iconSize ?? config.iconSize;
 
-  const renderIcon = (icon: ButtonIconElement, color: string) => {
+  const renderIcon = (icon: ButtonIconElement, iconColor: string) => {
     return cloneElement(icon, {
-      color,
+      color: iconColor,
       size: resolvedIconSize,
     });
   };
 
   return (
     <Pressable
-      disabled={disabled}
-      onPress={onPress}
+      testID={testID}
+      disabled={isDisabled}
+      onPress={isDisabled ? undefined : onPress}
       accessibilityRole='button'
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       accessibilityLabel={
         accessibilityLabel ??
-        (typeof children === 'string' ? children : undefined)
+        (typeof content === 'string' ? content : undefined)
       }
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
-      style={({ pressed }) => [
-        styles.button,
-        {
-          backgroundColor: disabled
-            ? theme.components.button.disabled.bg
-            : pressed
-              ? variantTheme.pressed.bg
-              : variantTheme.default.bg,
-          paddingHorizontal: iconOnly ? config.py : config.px,
-          paddingVertical: config.py,
-        },
-        fullWidth && styles.fullWidth,
-        disabled && styles.disabled,
-        pressed && !disabled && styles.pressed,
-        style,
-      ]}
+      style={({ pressed }) => {
+        const pressedTheme =
+          !isDisabled && pressed ? variantTheme.pressed : stateTheme;
+
+        return [
+          styles.button,
+          {
+            backgroundColor: pressedTheme.bg,
+            borderColor: pressedTheme.border,
+            paddingHorizontal: iconOnly ? config.py : config.px,
+            paddingVertical: config.py,
+          },
+          fullWidth && styles.fullWidth,
+          isDisabled && styles.disabled,
+          pressed && !isDisabled && styles.pressed,
+          style,
+        ];
+      }}
     >
-      {leftIcon && renderIcon(leftIcon, contentColor)}
-      {children && (
+      {loading && <ActivityIndicator size='small' color={contentColor} />}
+
+      {!loading && leftIcon && renderIcon(leftIcon, contentColor)}
+
+      {content && !iconOnly && (
         <Text
           style={[
             styles.text,
@@ -117,12 +135,14 @@ export function Button({
               fontSize: config.fontSize,
               color: contentColor,
             },
+            textStyle,
           ]}
         >
-          {children}
+          {content}
         </Text>
       )}
-      {rightIcon && renderIcon(rightIcon, contentColor)}
+
+      {!loading && rightIcon && renderIcon(rightIcon, contentColor)}
     </Pressable>
   );
 }

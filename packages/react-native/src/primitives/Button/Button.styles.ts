@@ -13,7 +13,7 @@ export const createStyles = (theme: NativeTheme) =>
       justifyContent: 'center',
       gap: 8,
       borderRadius: theme.tokens.radius.md,
-      borderWidth: 0,
+      borderWidth: 1,
     },
 
     fullWidth: {
@@ -26,14 +26,17 @@ export const createStyles = (theme: NativeTheme) =>
       fontWeight: fontWeight(theme.tokens.typography.weight.regular),
       lineHeight: theme.tokens.typography.lineHeight.md,
 
-      // Кнопка сама задает цвет текста через props,
-      // поэтому это значение используется как fallback.
-      color: theme.components.button.primary.default.fg,
+      // Fallback color.
+      color: theme.components.button.primary.solid.default.fg,
+    },
+
+    spinner: {
+      fontSize: 12,
+      lineHeight: theme.tokens.typography.lineHeight.md,
     },
 
     disabled: {
       borderColor: theme.components.button.disabled.border,
-      borderWidth: 1,
     },
 
     pressed: {

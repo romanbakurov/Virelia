@@ -174,7 +174,9 @@ export function FormExample() {
         placeholder='name@example.com'
       />
       <Checkbox label='Remember this device' defaultChecked />
-      <Button variant='primary'>Continue</Button>
+      <Button color='primary' variant='solid'>
+        Continue
+      </Button>
     </form>
   );
 }

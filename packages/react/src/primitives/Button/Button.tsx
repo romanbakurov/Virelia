@@ -10,19 +10,27 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
-      variant = 'primary',
+      color = 'primary',
+      variant = 'solid',
       size = 'md',
+      type = 'button',
       disabled = false,
+      loading = false,
+      loadingText,
       leftIcon,
       rightIcon,
       fullWidth = false,
+      iconOnly: iconOnlyProp = false,
       className,
       onClick,
       ariaLabel,
+      ...props
     },
     ref
   ) => {
-    const iconOnly = !children && (leftIcon || rightIcon);
+    const iconOnly = iconOnlyProp || (!children && (leftIcon || rightIcon));
+    const isDisabled = disabled || loading;
+    const content = loading && loadingText ? loadingText : children;
 
     if (iconOnly && !ariaLabel && process.env.NODE_ENV !== 'production') {
       console.warn('Button: icon-only buttons must provide ariaLabel.');
@@ -30,20 +38,35 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
+        {...props}
         ref={ref}
-        type='button'
-        disabled={disabled}
-        onClick={onClick}
+        type={type}
+        disabled={isDisabled}
+        onClick={isDisabled ? undefined : onClick}
         aria-label={ariaLabel || undefined}
-        className={cn(styles.button, styles[variant], styles[size], className, {
-          [styles.disabled]: disabled,
-          [styles.fullWidth]: fullWidth,
-          [styles.iconOnly]: iconOnly,
-        })}
+        aria-busy={loading || undefined}
+        className={cn(
+          styles.button,
+          styles[color],
+          styles[variant],
+          styles[size],
+          className,
+          {
+            [styles.disabled]: isDisabled,
+            [styles.loading]: loading,
+            [styles.fullWidth]: fullWidth,
+            [styles.iconOnly]: iconOnly,
+          }
+        )}
       >
-        {leftIcon && <span className={styles.icon}>{leftIcon}</span>}
-        {children && <span className={styles.label}>{children}</span>}
-        {rightIcon && <span className={styles.icon}>{rightIcon}</span>}
+        {loading && <span className={styles.spinner} aria-hidden='true' />}
+        {!loading && leftIcon && (
+          <span className={styles.icon}>{leftIcon}</span>
+        )}
+        {content && <span className={styles.label}>{content}</span>}
+        {!loading && rightIcon && (
+          <span className={styles.icon}>{rightIcon}</span>
+        )}
       </button>
     );
   }

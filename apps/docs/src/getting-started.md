@@ -66,7 +66,9 @@ export function SignInForm() {
         placeholder='name@example.com'
       />
       <Checkbox label='Remember me' />
-      <Button variant='primary'>Continue</Button>
+      <Button color='primary' variant='solid'>
+        Continue
+      </Button>
     </form>
   );
 }
@@ -86,7 +88,9 @@ export function SignInScreen() {
     <View style={{ gap: 16, padding: 24 }}>
       <Input label='Email' value={email} onChange={setEmail} />
       <Checkbox label='Remember me' />
-      <Button variant='primary'>Continue</Button>
+      <Button color='primary' variant='solid'>
+        Continue
+      </Button>
     </View>
   );
 }

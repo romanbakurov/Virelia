@@ -3,23 +3,177 @@ import { border } from '../semantic/border.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
+const transparent = {
+  bg: 'transparent',
+};
+
 export const button = {
   primary: {
-    default: action.primary.default,
-    hover: action.primary.hover,
-    pressed: action.primary.active,
+    solid: {
+      default: action.primary.default,
+      hover: action.primary.hover,
+      pressed: action.primary.active,
+    },
+    outline: {
+      default: {
+        ...transparent,
+        fg: action.primary.muted.bg,
+        border: action.primary.muted.border,
+      },
+      hover: {
+        ...transparent,
+        fg: action.primary.hover.bg,
+        border: action.primary.hover.border,
+      },
+      pressed: {
+        ...transparent,
+        fg: action.primary.active.bg,
+        border: action.primary.active.border,
+      },
+    },
+    ghost: {
+      default: {
+        ...transparent,
+        fg: action.primary.default.bg,
+        border: 'transparent',
+      },
+      hover: {
+        ...transparent,
+        fg: action.primary.hover.bg,
+        border: 'transparent',
+      },
+      pressed: {
+        ...transparent,
+        fg: action.primary.active.bg,
+        border: 'transparent',
+      },
+    },
   },
 
   secondary: {
-    default: action.secondary.default,
-    hover: action.secondary.hover,
-    pressed: action.secondary.active,
+    solid: {
+      default: action.secondary.default,
+      hover: action.secondary.hover,
+      pressed: action.secondary.active,
+    },
+    outline: {
+      default: {
+        ...transparent,
+        fg: action.secondary.default.bg,
+        border: action.secondary.default.border,
+      },
+      hover: {
+        bg: surface.hover,
+        fg: action.secondary.hover.bg,
+        border: action.secondary.hover.border,
+      },
+      pressed: {
+        bg: surface.pressed,
+        fg: action.secondary.active.bg,
+        border: action.secondary.active.border,
+      },
+    },
+    ghost: {
+      default: {
+        ...transparent,
+        fg: action.secondary.default.bg,
+        border: 'transparent',
+      },
+      hover: {
+        bg: surface.hover,
+        fg: action.secondary.hover.bg,
+        border: 'transparent',
+      },
+      pressed: {
+        bg: surface.pressed,
+        fg: action.secondary.active.bg,
+        border: 'transparent',
+      },
+    },
+  },
+
+  close: {
+    solid: {
+      default: action.close.default,
+      hover: action.close.hover,
+      pressed: action.close.active,
+    },
+    outline: {
+      default: {
+        ...transparent,
+        fg: action.close.default.bg,
+        border: action.close.default.border,
+      },
+      hover: {
+        bg: surface.hover,
+        fg: action.close.hover.bg,
+        border: action.close.hover.border,
+      },
+      pressed: {
+        bg: surface.pressed,
+        fg: action.close.active.bg,
+        border: action.close.active.border,
+      },
+    },
+    ghost: {
+      default: {
+        ...transparent,
+        fg: action.close.default.bg,
+        border: 'transparent',
+      },
+      hover: {
+        bg: surface.hover,
+        fg: action.close.hover.bg,
+        border: 'transparent',
+      },
+      pressed: {
+        bg: surface.pressed,
+        fg: action.close.active.bg,
+        border: 'transparent',
+      },
+    },
   },
 
   danger: {
-    default: action.danger.default,
-    hover: action.danger.hover,
-    pressed: action.danger.active,
+    solid: {
+      default: action.danger.default,
+      hover: action.danger.hover,
+      pressed: action.danger.active,
+    },
+    outline: {
+      default: {
+        ...transparent,
+        fg: action.danger.default.bg,
+        border: action.danger.default.border,
+      },
+      hover: {
+        bg: action.danger.subtle.bg,
+        fg: action.danger.hover.bg,
+        border: action.danger.hover.border,
+      },
+      pressed: {
+        bg: action.danger.subtle.bg,
+        fg: action.danger.active.bg,
+        border: action.danger.active.border,
+      },
+    },
+    ghost: {
+      default: {
+        ...transparent,
+        fg: action.danger.default.bg,
+        border: 'transparent',
+      },
+      hover: {
+        bg: action.danger.subtle.bg,
+        fg: action.danger.hover.bg,
+        border: 'transparent',
+      },
+      pressed: {
+        bg: action.danger.subtle.bg,
+        fg: action.danger.active.bg,
+        border: 'transparent',
+      },
+    },
   },
 
   disabled: {
