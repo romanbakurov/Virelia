@@ -8,7 +8,7 @@ Use this page as a visual overview of the component library.
 > 💡 Looking for interactive examples?
 >
 > Open Storybook →
-> [Open Storybook](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
+> [Open Storybook](https://storybook.vellira.dev)
 
 ## Visual States
 
@@ -16,7 +16,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Button</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-button--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/primitives-button--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><button class="docs-button">Save</button></div>
@@ -31,7 +31,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Input</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-input--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/primitives-input--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><input class="docs-input" value="name@example.com" /></div>
@@ -44,7 +44,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Checkbox</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/primitives-checkbox--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/primitives-checkbox--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><label class="docs-check"><input type="checkbox" />Remember</label></div>
@@ -58,7 +58,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Select</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-select--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-select--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><div class="docs-select">Admin <span>v</span></div></div>
@@ -71,7 +71,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>RadioGroup</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-radiogroup--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-radiogroup--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><div class="docs-radio-row"><i class="docs-radio docs-radio-active"></i>System</div></div>
@@ -84,7 +84,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Tabs</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-tabs--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-tabs--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><div class="docs-tabs"><button class="docs-tab docs-tab-active">Profile</button><button class="docs-tab">Security</button></div></div>
@@ -97,7 +97,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Dropdown</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-dropdown--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-dropdown--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><button class="docs-button docs-button-secondary">Actions</button></div>
@@ -110,7 +110,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Tooltip</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-tooltip--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-tooltip--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div><span>Default</span><button class="docs-button docs-button-secondary">Info</button></div>
@@ -123,7 +123,7 @@ Use this page as a visual overview of the component library.
   <section class="docs-state-card">
     <header>
       <h3>Modal</h3>
-      <a href="https://main--6a07269cf7126a71ef2f62ca.chromatic.com/?path=/docs/components-modal--docs">Storybook</a>
+      <a href="https://storybook.vellira.dev/?path=/docs/components-modal--docs">Storybook</a>
     </header>
     <div class="docs-state-grid">
       <div>

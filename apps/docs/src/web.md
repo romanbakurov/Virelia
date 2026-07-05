@@ -193,7 +193,7 @@ controlled `theme`/`onThemeChange` pair for application-level theme switching.
 Explore every component with interactive controls, accessibility states, and
 live examples.
 
-[Open Storybook](https://main--6a07269cf7126a71ef2f62ca.chromatic.com)
+[Open Storybook](https://storybook.vellira.dev)
 
 ## Development
 
