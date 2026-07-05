@@ -26,7 +26,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/' },
           { text: 'Quick Start', link: '/getting-started' },
-          { text: 'Component Gallery', link: '/component-examples' },
+          { text: 'Component', link: '/component-examples' },
           { text: 'Production', link: '/production' },
           { text: 'Project Sites', link: '/project-sites' },
         ],
@@ -55,7 +55,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/romanbakurov/Vellira' },
+      { icon: 'github', link: 'https://github.com/vellira-dev/vellira' },
     ],
     search: {
       provider: 'local',
