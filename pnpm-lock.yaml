@@ -312,7 +312,7 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.0.12
+        specifier: ^8.1.3
         version: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
 
   apps/react-storybook:
@@ -486,7 +486,7 @@ importers:
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: ^6.0.3
-        version: 6.0.3(babel-plugin-react-compiler@1.0.0)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+        version: 6.0.3(babel-plugin-react-compiler@1.0.0)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
       '@vitest/coverage-v8':
         specifier: ^4.1.9
         version: 4.1.9(@vitest/browser@4.1.9)(vitest@4.1.9)
@@ -503,20 +503,20 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
       vite:
-        specifier: ^8.0.16
-        version: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+        specifier: ^8.1.3
+        version: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
       vite-plugin-dts:
         specifier: ^5.0.0
-        version: 5.0.3(esbuild@0.28.1)(rolldown@1.1.4)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(postcss@8.5.16))
+        version: 5.0.3(esbuild@0.28.1)(rolldown@1.1.4)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(postcss@8.5.16))
       vite-plugin-lib-inject-css:
         specifier: ^2.2.2
-        version: 2.2.2(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+        version: 2.2.2(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
       vite-plugin-svgr:
         specifier: ^5.2.0
-        version: 5.2.0(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+        version: 5.2.0(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
       vitest:
         specifier: ^4.1.9
-        version: 4.1.9(@types/node@24.13.2)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(jsdom@28.1.0)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
+        version: 4.1.9(@types/node@24.13.2)(@vitest/browser-playwright@4.1.9)(@vitest/coverage-v8@4.1.9)(jsdom@28.1.0)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))
 
   packages/react-native:
     dependencies:
@@ -12208,6 +12208,13 @@ snapshots:
     optionalDependencies:
       babel-plugin-react-compiler: 1.0.0
 
+  '@vitejs/plugin-react@6.0.3(babel-plugin-react-compiler@1.0.0)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))':
+    dependencies:
+      '@rolldown/pluginutils': 1.0.1
+      vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+    optionalDependencies:
+      babel-plugin-react-compiler: 1.0.0
+
   '@vitejs/plugin-vue@5.2.4(vite@5.4.21(@types/node@24.13.2)(less@4.6.7)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       vite: 5.4.21(@types/node@24.13.2)(less@4.6.7)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)
@@ -17544,6 +17551,26 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  unplugin-dts@1.0.3(esbuild@0.28.1)(rolldown@1.1.4)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(postcss@8.5.16)):
+    dependencies:
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
+      '@volar/typescript': 2.4.28
+      compare-versions: 6.1.1
+      debug: 4.4.3
+      kolorist: 1.8.0
+      local-pkg: 1.2.1
+      magic-string: 0.30.21
+      typescript: 6.0.3
+      unplugin: 2.3.11
+    optionalDependencies:
+      esbuild: 0.28.1
+      rolldown: 1.1.4
+      rollup: 4.62.2
+      vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+      webpack: 5.108.3(esbuild@0.28.1)(postcss@8.5.16)
+    transitivePeerDependencies:
+      - supports-color
+
   unplugin@2.3.11:
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -17644,12 +17671,27 @@ snapshots:
       - typescript
       - webpack
 
-  vite-plugin-lib-inject-css@2.2.2(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)):
+  vite-plugin-dts@5.0.3(esbuild@0.28.1)(rolldown@1.1.4)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(postcss@8.5.16)):
+    dependencies:
+      unplugin-dts: 1.0.3(esbuild@0.28.1)(rolldown@1.1.4)(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(postcss@8.5.16))
+    optionalDependencies:
+      rollup: 4.62.2
+      vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - '@rspack/core'
+      - '@vue/language-core'
+      - esbuild
+      - rolldown
+      - supports-color
+      - typescript
+      - webpack
+
+  vite-plugin-lib-inject-css@2.2.2(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)):
     dependencies:
       '@ast-grep/napi': 0.36.3
       magic-string: 0.30.21
       picocolors: 1.1.1
-      vite: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+      vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
 
   vite-plugin-svgr@5.2.0(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)):
     dependencies:
@@ -17657,6 +17699,17 @@ snapshots:
       '@svgr/core': 8.1.0(typescript@6.0.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@6.0.3))
       vite: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+      - typescript
+
+  vite-plugin-svgr@5.2.0(rollup@4.62.2)(typescript@6.0.3)(vite@8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)):
+    dependencies:
+      '@rollup/pluginutils': 5.4.0(rollup@4.62.2)
+      '@svgr/core': 8.1.0(typescript@6.0.3)
+      '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@6.0.3))
+      vite: 8.1.3(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.6.7)(sass@1.101.0)(stylus@0.62.0)(terser@5.48.0)(tsx@4.23.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
