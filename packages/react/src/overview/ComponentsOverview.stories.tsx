@@ -57,9 +57,9 @@ const sectionStyle = {
   gap: 16,
   minWidth: 0,
   padding: 20,
-  border: '1px solid var(--border-default)',
+  border: '1px solid var(--border-muted)',
   borderRadius: 8,
-  background: 'var(--surface-elevated)',
+  background: 'var(--surface-subtle)',
 } satisfies CSSProperties;
 
 const sectionTitleStyle = {
@@ -68,13 +68,6 @@ const sectionTitleStyle = {
   fontSize: 16,
   fontWeight: 600,
 } satisfies CSSProperties;
-
-// const rowStyle: React.CSSProperties = {
-//   display: 'flex',
-//   flexWrap: 'wrap',
-//   gap: 12,
-//   alignItems: 'center',
-// };
 
 const stackStyle: React.CSSProperties = {
   display: 'flex',
@@ -339,7 +332,7 @@ function WebComponentsOverview() {
             </Modal.Body>
             <Modal.Footer>
               <Button
-                color='secondary'
+                color='close'
                 variant='solid'
                 onClick={() => setModalOpen(false)}
               >

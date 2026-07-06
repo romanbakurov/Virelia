@@ -9,17 +9,17 @@ export const status = {
   },
 
   error: {
-    fg: colors.error[300],
+    fg: colors.error[400],
     bg: colors.gray[900],
-    border: colors.error[300],
+    border: colors.error[400],
     strong: colors.error[300],
   },
 
   warning: {
-    fg: colors.warning[500],
+    fg: colors.warning[400],
     bg: colors.gray[900],
-    border: colors.warning[500],
-    strong: colors.warning[500],
+    border: colors.warning[400],
+    strong: colors.warning[400],
   },
 
   info: {

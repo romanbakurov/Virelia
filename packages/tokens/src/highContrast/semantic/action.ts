@@ -10,42 +10,52 @@ export const action = {
       border: colors.primary[600],
     },
     hover: {
-      bg: colors.primary[700],
+      bg: colors.primary[500],
       fg: text.primary,
-      border: colors.primary[700],
+      border: colors.primary[500],
     },
     active: {
-      bg: colors.primary[600],
+      bg: colors.primary[400],
       fg: text.primary,
-      border: colors.primary[600],
+      border: colors.primary[400],
     },
     muted: {
-      bg: colors.primary[600],
+      bg: colors.primary[300],
       fg: colors.mono[50],
-      border: colors.primary[600],
+      border: colors.primary[300],
     },
     subtle: {
-      bg: colors.gray[900],
+      bg: colors.primary[200],
       fg: text.inverse,
-      border: colors.primary[500],
+      border: colors.primary[200],
     },
   },
 
   secondary: {
     default: {
-      bg: colors.info[700],
-      fg: text.primary,
-      border: colors.info[700],
+      bg: colors.secondary[400],
+      fg: text.inverse,
+      border: colors.secondary[400],
     },
     hover: {
-      bg: colors.info[800],
-      fg: text.primary,
-      border: colors.info[800],
+      bg: colors.secondary[300],
+      fg: text.inverse,
+      border: colors.secondary[300],
     },
     active: {
-      bg: colors.info[700],
-      fg: text.primary,
-      border: colors.info[700],
+      bg: colors.secondary[200],
+      fg: text.inverse,
+      border: colors.secondary[200],
+    },
+    muted: {
+      bg: colors.secondary[300],
+      fg: colors.mono[50],
+      border: colors.secondary[300],
+    },
+    subtle: {
+      bg: colors.secondary[200],
+      fg: text.inverse,
+      border: colors.secondary[200],
     },
   },
 
@@ -83,13 +93,15 @@ export const action = {
       fg: text.primary,
       border: colors.error[800],
     },
-    subtle: {
-      bg: colors.gray[900],
-      fg: colors.error[300],
-    },
     muted: {
-      bg: colors.error[950],
+      bg: colors.error[400],
+      fg: colors.error[400],
+      border: colors.error[400],
+    },
+    subtle: {
+      bg: colors.error[300],
       fg: colors.error[300],
+      border: colors.error[300],
     },
   },
 } as const;

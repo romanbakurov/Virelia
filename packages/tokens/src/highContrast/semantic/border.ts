@@ -6,7 +6,7 @@ export const border = {
   subtle: colors.gray[700],
   elevated: colors.gray[300],
   strong: colors.mono[100],
-  disabled: colors.gray[700],
+  disabled: colors.gray[600],
 
-  focus: colors.warning[500],
+  focus: colors.warning[400],
 } as const;

@@ -7,7 +7,7 @@ export const formField = {
   },
 
   description: {
-    fg: text.muted,
+    fg: text.secondary,
   },
 
   helperText: {

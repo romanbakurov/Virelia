@@ -1,5 +1,6 @@
 import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
+import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -21,12 +22,12 @@ export const button = {
         border: action.primary.default.border,
       },
       hover: {
-        bg: action.primary.subtle.bg,
+        bg: surface.hover,
         fg: action.primary.hover.bg,
         border: action.primary.hover.border,
       },
       pressed: {
-        bg: action.primary.subtle.bg,
+        bg: surface.pressed,
         fg: action.primary.active.bg,
         border: action.primary.active.border,
       },
@@ -63,7 +64,7 @@ export const button = {
         border: action.secondary.default.border,
       },
       hover: {
-        bg: surface.hover,
+        bg: surface.elevated,
         fg: action.secondary.hover.bg,
         border: action.secondary.hover.border,
       },
@@ -80,7 +81,7 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: surface.hover,
+        bg: surface.elevated,
         fg: action.secondary.hover.bg,
         border: 'transparent',
       },
@@ -101,13 +102,13 @@ export const button = {
     outline: {
       default: {
         ...transparent,
-        fg: action.close.default.bg,
-        border: action.close.default.border,
+        fg: action.close.muted.bg,
+        border: action.close.muted.border,
       },
       hover: {
         bg: surface.hover,
-        fg: action.close.hover.bg,
-        border: action.close.hover.border,
+        fg: action.close.subtle.bg,
+        border: action.close.subtle.border,
       },
       pressed: {
         bg: surface.pressed,
@@ -118,17 +119,17 @@ export const button = {
     ghost: {
       default: {
         ...transparent,
-        fg: action.close.default.bg,
+        fg: text.primary,
         border: 'transparent',
       },
       hover: {
-        bg: surface.hover,
-        fg: action.close.hover.bg,
+        bg: action.primary.subtle.bg,
+        fg: text.primary,
         border: 'transparent',
       },
       pressed: {
-        bg: surface.pressed,
-        fg: action.close.active.bg,
+        bg: action.primary.subtle.bg,
+        fg: text.primary,
         border: 'transparent',
       },
     },
@@ -147,12 +148,12 @@ export const button = {
         border: action.danger.default.border,
       },
       hover: {
-        bg: action.danger.subtle.bg,
+        bg: status.error.bg,
         fg: action.danger.hover.bg,
         border: action.danger.hover.border,
       },
       pressed: {
-        bg: action.danger.subtle.bg,
+        bg: status.error.bg,
         fg: action.danger.active.bg,
         border: action.danger.active.border,
       },
@@ -164,12 +165,12 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: action.danger.subtle.bg,
+        bg: status.error.bg,
         fg: action.danger.hover.bg,
         border: 'transparent',
       },
       pressed: {
-        bg: action.danger.subtle.bg,
+        bg: status.error.bg,
         fg: action.danger.active.bg,
         border: 'transparent',
       },
@@ -177,7 +178,7 @@ export const button = {
   },
 
   disabled: {
-    bg: surface.subtle,
+    bg: surface.disabled,
     fg: text.disabled,
     border: border.default,
   },

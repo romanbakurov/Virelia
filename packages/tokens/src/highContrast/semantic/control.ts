@@ -10,7 +10,7 @@ export const control = {
   },
   radioHover: {
     bg: colors.gray[900],
-    fg: colors.primary[500],
+    fg: colors.primary[300],
     border: colors.primary[300],
   },
   selected: {
@@ -36,8 +36,8 @@ export const control = {
     },
     radioDefault: {
       bg: colors.primary[400],
-      fg: colors.primary[600],
-      border: colors.primary[500],
+      fg: colors.primary[500],
+      border: colors.primary[300],
     },
   },
 } as const;

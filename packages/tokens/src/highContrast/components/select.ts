@@ -9,13 +9,13 @@ import { text } from '../semantic/text.js';
 export const select = {
   trigger: {
     default: {
-      bg: surface.default,
+      bg: 'transparent',
       fg: text.primary,
       border: border.default,
     },
 
     hover: {
-      bg: 'transparent',
+      bg: surface.muted,
       fg: text.primary,
       border: navigation.hover.bg,
     },

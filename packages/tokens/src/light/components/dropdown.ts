@@ -28,14 +28,14 @@ export const dropdown = {
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
       border: border.muted,
     },
   },
 
   content: {
-    bg: surface.elevated,
+    bg: surface.subtle,
     fg: text.primary,
     border: navigation.border,
   },
