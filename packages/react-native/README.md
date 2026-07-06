@@ -47,7 +47,9 @@ export function Example() {
     <View style={{ gap: 16 }}>
       <Input label='Email' value={email} onChange={setEmail} />
       <Checkbox label='Accept terms' />
-      <Button variant='primary'>Continue</Button>
+      <Button color='primary' variant='solid'>
+        Continue
+      </Button>
     </View>
   );
 }

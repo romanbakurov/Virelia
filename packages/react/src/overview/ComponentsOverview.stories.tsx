@@ -69,11 +69,37 @@ const sectionTitleStyle = {
   fontWeight: 600,
 } satisfies CSSProperties;
 
+// const rowStyle: React.CSSProperties = {
+//   display: 'flex',
+//   flexWrap: 'wrap',
+//   gap: 12,
+//   alignItems: 'center',
+// };
+
+const stackStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+};
+
 const rowStyle = {
   display: 'flex',
   flexWrap: 'wrap',
-  alignItems: 'center',
   gap: 12,
+  alignItems: 'center',
+} satisfies CSSProperties;
+
+const groupStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+} satisfies CSSProperties;
+
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
 } satisfies CSSProperties;
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -110,23 +136,101 @@ function WebComponentsOverview() {
         }}
       >
         <Section title='Button'>
-          <div style={rowStyle}>
-            <Button variant='primary' leftIcon={<Download />}>
-              Primary
-            </Button>
-            <Button variant='secondary'>Secondary</Button>
-            <Button variant='danger'>Danger</Button>
-            <Button
-              variant='secondary'
-              ariaLabel='Search'
-              leftIcon={<Search />}
-            />
-          </div>
-          <div style={rowStyle}>
-            <Button size='sm'>Small</Button>
-            <Button size='md'>Medium</Button>
-            <Button size='lg'>Large</Button>
-            <Button disabled>Disabled</Button>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Colors</h3>
+              <div style={rowStyle}>
+                <Button color='primary'>Primary</Button>
+                <Button color='secondary'>Secondary</Button>
+                <Button color='close'>Close</Button>
+                <Button color='danger'>Danger</Button>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Variants</h3>
+              <div style={stackStyle}>
+                <div style={rowStyle}>
+                  <Button color='primary' variant='solid'>
+                    Primary solid
+                  </Button>
+                  <Button color='secondary' variant='solid'>
+                    Secondary solid
+                  </Button>
+                  <Button color='close' variant='solid'>
+                    Close solid
+                  </Button>
+                  <Button color='danger' variant='solid'>
+                    Danger solid
+                  </Button>
+                </div>
+
+                <div style={rowStyle}>
+                  <Button color='primary' variant='outline'>
+                    Primary outline
+                  </Button>
+                  <Button color='secondary' variant='outline'>
+                    Secondary outline
+                  </Button>
+                  <Button color='close' variant='outline'>
+                    Close outline
+                  </Button>
+                  <Button color='danger' variant='outline'>
+                    Danger outline
+                  </Button>
+                </div>
+
+                <div style={rowStyle}>
+                  <Button color='primary' variant='ghost'>
+                    Primary ghost
+                  </Button>
+                  <Button color='secondary' variant='ghost'>
+                    Secondary ghost
+                  </Button>
+                  <Button color='close' variant='ghost'>
+                    Close ghost
+                  </Button>
+                  <Button color='danger' variant='ghost'>
+                    Danger ghost
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <div style={rowStyle}>
+                <Button size='sm'>Small</Button>
+                <Button size='md'>Medium</Button>
+                <Button size='lg'>Large</Button>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <div style={rowStyle}>
+                <Button disabled>Disabled</Button>
+                <Button loading>Loading</Button>
+                <Button loading loadingText='Saving...'>
+                  Save
+                </Button>
+              </div>
+              <div style={{ width: '100%' }}>
+                <Button fullWidth>Full width</Button>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Icons</h3>
+              <div style={rowStyle}>
+                <Button leftIcon={<Download />}>Left icon</Button>
+                <Button rightIcon={<Download />}>Right icon</Button>
+                <Button leftIcon={<Download />} rightIcon={<Search />}>
+                  Both icons
+                </Button>
+                <Button iconOnly ariaLabel='Search' leftIcon={<Search />} />
+              </div>
+            </div>
           </div>
         </Section>
 
@@ -211,11 +315,14 @@ function WebComponentsOverview() {
         <Section title='Tooltip'>
           <div style={rowStyle}>
             <Tooltip content='Tooltip text is shown on hover or focus.'>
-              <Button variant='secondary'>Hover me</Button>
+              <Button color='secondary' variant='solid'>
+                Hover me
+              </Button>
             </Tooltip>
             <Tooltip content='Icon buttons also expose tooltip content.'>
               <Button
-                variant='secondary'
+                color='secondary'
+                variant='solid'
                 ariaLabel='Open filters'
                 leftIcon={<Filter />}
               />
@@ -231,10 +338,18 @@ function WebComponentsOverview() {
               Confirm the changes before applying them to the workspace.
             </Modal.Body>
             <Modal.Footer>
-              <Button variant='secondary' onClick={() => setModalOpen(false)}>
+              <Button
+                color='secondary'
+                variant='solid'
+                onClick={() => setModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button variant='primary' onClick={() => setModalOpen(false)}>
+              <Button
+                color='primary'
+                variant='solid'
+                onClick={() => setModalOpen(false)}
+              >
                 Apply
               </Button>
             </Modal.Footer>

@@ -124,10 +124,10 @@ const BasicModalDemo = ({ onClose }: { onClose?: () => void }) => {
         <Modal.Header>Delete file</Modal.Header>
         <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
         <Modal.Footer>
-          <Button variant='primary' onClick={handleClose}>
+          <Button color='primary' variant='solid' onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant='danger' onClick={handleClose}>
+          <Button color='danger' variant='solid' onClick={handleClose}>
             Delete
           </Button>
         </Modal.Footer>
@@ -152,7 +152,11 @@ const WithoutBackdropCloseDemo = () => {
           You cannot close this modal by clicking on the backdrop.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='primary' onClick={() => setIsOpen(false)}>
+          <Button
+            color='primary'
+            variant='solid'
+            onClick={() => setIsOpen(false)}
+          >
             Got it
           </Button>
         </Modal.Footer>
@@ -181,7 +185,11 @@ const LongContentDemo = () => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant='primary' onClick={() => setIsOpen(false)}>
+          <Button
+            color='primary'
+            variant='solid'
+            onClick={() => setIsOpen(false)}
+          >
             Accept
           </Button>
         </Modal.Footer>

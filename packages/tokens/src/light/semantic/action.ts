@@ -49,6 +49,24 @@ export const action = {
     },
   },
 
+  close: {
+    default: {
+      bg: colors.vellira[200],
+      fg: text.onInverse,
+      border: colors.vellira[200],
+    },
+    hover: {
+      bg: colors.vellira[250],
+      fg: text.onInverse,
+      border: colors.vellira[250],
+    },
+    active: {
+      bg: colors.vellira[300],
+      fg: text.onInverse,
+      border: colors.vellira[300],
+    },
+  },
+
   danger: {
     default: {
       bg: colors.error[700],

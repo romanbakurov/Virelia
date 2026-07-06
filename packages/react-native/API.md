@@ -70,26 +70,32 @@ Pressable action component with variants and sizes.
 ```tsx
 import { Button } from '@vellira-ui/react-native';
 
-<Button variant='primary' size='md' onPress={handleSave}>
+<Button color='primary' variant='solid' size='md' onPress={handleSave}>
   Save
 </Button>;
 ```
 
 <!-- api-docgen:start native.ButtonProps.Button -->
 
-| Prop                 | Type                | Required | Description                                   |
-| -------------------- | ------------------- | -------- | --------------------------------------------- |
-| `children`           | `ReactNode`         | No       | Button content.                               |
-| `leftIcon`           | `ButtonIconElement` | No       | Icon rendered before content.                 |
-| `rightIcon`          | `ButtonIconElement` | No       | Icon rendered after content.                  |
-| `fullWidth`          | `boolean`           | No       | Makes the component fill its container width. |
-| `onPress`            | `() => void`        | No       | React Native press handler.                   |
-| `style`              | `ViewStyle`         | No       | Extra root style.                             |
-| `accessibilityLabel` | `string`            | No       | Accessible label for screen readers.          |
-| `iconSize`           | `number`            | No       | Icon size in pixels.                          |
-| `variant`            | `ButtonColor`       | No       | Visual color variant.                         |
-| `size`               | `ButtonSize`        | No       | Button size.                                  |
-| `disabled`           | `boolean`           | No       | Disables interaction.                         |
+| Prop                 | Type                                     | Required | Description                                   |
+| -------------------- | ---------------------------------------- | -------- | --------------------------------------------- |
+| `children`           | `ReactNode`                              | No       | Button content.                               |
+| `leftIcon`           | `ButtonIconElement`                      | No       | Icon rendered before content.                 |
+| `rightIcon`          | `ButtonIconElement`                      | No       | Icon rendered after content.                  |
+| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width. |
+| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                   |
+| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                             |
+| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.          |
+| `iconSize`           | `number`                                 | No       | Icon size in pixels.                          |
+| `variant`            | `ButtonVariant`                          | No       | Visual color variant.                         |
+| `size`               | `ButtonSize`                             | No       | Button size.                                  |
+| `disabled`           | `boolean`                                | No       | Disables interaction.                         |
+| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                             |
+| `testID`             | `string`                                 | No       | —                                             |
+| `color`              | `ButtonColor`                            | No       | —                                             |
+| `loading`            | `boolean`                                | No       | —                                             |
+| `loadingText`        | `string`                                 | No       | —                                             |
+| `iconOnly`           | `boolean`                                | No       | —                                             |
 
 <!-- api-docgen:end native.ButtonProps.Button -->
 
@@ -455,7 +461,7 @@ import { Button, Modal } from '@vellira-ui/react-native';
     <Modal.Header title='Delete file' />
     <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
     <Modal.Footer>
-      <Button variant='secondary' onPress={closeModal}>
+      <Button color='secondary' variant='solid' onPress={closeModal}>
         Cancel
       </Button>
     </Modal.Footer>

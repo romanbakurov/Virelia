@@ -1,8 +1,7 @@
 import { useFonts } from 'expo-font';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Alert } from 'react-native';
 
-import { Button, Checkbox } from '@vellira-ui/react-native';
+import { Button } from '@vellira-ui/react-native';
 
 export default function App() {
   const [loaded] = useFonts({
@@ -18,14 +17,13 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Button
-        variant='primary'
+        color='primary'
+        variant='solid'
         size='md'
         onPress={() => Alert.alert('Vellira!')}
       >
         Click me
       </Button>
-      <Checkbox label='Enable updates' />
-      <StatusBar style='auto' />
     </View>
   );
 }

@@ -60,7 +60,9 @@ export function Example() {
         placeholder='name@example.com'
       />
       <Checkbox label='Accept terms' />
-      <Button variant='primary'>Submit</Button>
+      <Button color='primary' variant='solid'>
+        Submit
+      </Button>
     </form>
   );
 }

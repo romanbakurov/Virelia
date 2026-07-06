@@ -8,7 +8,7 @@ import { text } from '../semantic/text.js';
 export const select = {
   trigger: {
     default: {
-      bg: surface.default,
+      bg: 'transparent',
       fg: text.subtle,
       border: border.subtle,
     },

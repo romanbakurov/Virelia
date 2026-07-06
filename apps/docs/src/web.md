@@ -47,7 +47,9 @@ export function AccountPanel() {
             { label: 'Viewer', value: 'viewer' },
           ]}
         />
-        <Button variant='primary'>Save changes</Button>
+        <Button color='primary' variant='solid'>
+          Save changes
+        </Button>
       </Tabs.Panel>
       <Tabs.Panel index={1}>Security settings</Tabs.Panel>
     </Tabs>

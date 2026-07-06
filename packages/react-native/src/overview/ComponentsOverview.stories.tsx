@@ -97,18 +97,23 @@ function NativeComponentsOverview() {
       <View style={styles.content}>
         <Section title='Button'>
           <View style={styles.row}>
-            <Button variant='primary' leftIcon={<Download />}>
+            <Button color='primary' variant='solid' leftIcon={<Download />}>
               Primary
             </Button>
-            <Button variant='secondary'>Secondary</Button>
-            <Button variant='danger'>Danger</Button>
+            <Button color='secondary' variant='solid'>
+              Secondary
+            </Button>
+            <Button color='danger' variant='solid'>
+              Danger
+            </Button>
           </View>
           <View style={styles.row}>
             <Button size='sm'>Small</Button>
             <Button size='md'>Medium</Button>
             <Button size='lg'>Large</Button>
             <Button
-              variant='secondary'
+              color='secondary'
+              variant='solid'
               accessibilityLabel='Search'
               leftIcon={<Search />}
             />
@@ -221,11 +226,14 @@ function NativeComponentsOverview() {
         <Section title='Tooltip'>
           <View style={styles.row}>
             <Tooltip content='Long press to show tooltip content.'>
-              <Button variant='secondary'>Long press</Button>
+              <Button color='secondary' variant='solid'>
+                Long press
+              </Button>
             </Tooltip>
             <Tooltip content='Icon buttons also expose tooltip content.'>
               <Button
-                variant='secondary'
+                color='secondary'
+                variant='solid'
                 accessibilityLabel='Open filters'
                 leftIcon={<Filter />}
               />
@@ -248,10 +256,18 @@ function NativeComponentsOverview() {
               </Text>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant='secondary' onPress={() => setModalOpen(false)}>
+              <Button
+                color='secondary'
+                variant='solid'
+                onPress={() => setModalOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button variant='primary' onPress={() => setModalOpen(false)}>
+              <Button
+                color='primary'
+                variant='solid'
+                onPress={() => setModalOpen(false)}
+              >
                 Apply
               </Button>
             </Modal.Footer>

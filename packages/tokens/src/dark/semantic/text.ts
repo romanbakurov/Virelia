@@ -4,7 +4,7 @@ export const text = {
   primary: colors.vellira[100],
   secondary: colors.vellira[300],
   muted: colors.vellira[500],
-  disabled: colors.vellira[500],
+  disabled: colors.vellira[400],
   subtle: colors.mono[50],
 
   hover: colors.primary[400],

@@ -176,6 +176,7 @@ const publicSymbolContracts = {
     'BaseTooltipProps',
     'ButtonColor',
     'ButtonSize',
+    'ButtonVariant',
     'FloatingPlacement',
     'InputSize',
     'InputType',

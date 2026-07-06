@@ -6,7 +6,7 @@ import { text } from '../semantic/text.js';
 
 export const radio = {
   default: {
-    bg: surface.default,
+    bg: surface.elevated,
     fg: text.primary,
     border: border.subtle,
   },

@@ -13,12 +13,12 @@ import '@storybook/addon-ondevice-actions/register';
 const normalizedStories = [
   {
     titlePrefix: '',
-    directory: '../../packages/vellira-native/src',
+    directory: '../../packages/react-native/src',
     files: '**/*.stories.@(ts|tsx)',
     importPathMatcher:
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(ts|tsx))$/,
     req: require.context(
-      '../../../packages/vellira-native/src',
+      '../../../packages/react-native/src',
       true,
       /^\.(?:(?:^|\/|(?:(?:(?!(?:^|\/)\.).)*?)\/)(?!\.)(?=.)[^/]*?\.stories\.(ts|tsx))$/
     ),
