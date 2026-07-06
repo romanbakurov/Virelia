@@ -190,6 +190,21 @@ const rowStyle = {
   alignItems: 'center',
 } as const;
 
+const sectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+  minWidth: 0,
+  padding: 20,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 8,
+  background: 'var(--surface-subtle)',
+} satisfies CSSProperties;
+
+function Section({ children }: { title: string; children: ReactNode }) {
+  return <section style={sectionStyle}>{children}</section>;
+}
+
 export const Basic: Story = {
   args: {
     children: 'Download',
@@ -199,6 +214,13 @@ export const Basic: Story = {
     ariaLabel: 'Download',
     leftIcon: <Download />,
   },
+  render: (args) => (
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args}>Primary</Button>
+      </div>
+    </Section>
+  ),
 };
 
 export const Colors: Story = {
@@ -207,20 +229,22 @@ export const Colors: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={rowStyle}>
-      <Button {...args} color='primary'>
-        Primary
-      </Button>
-      <Button {...args} color='secondary'>
-        Secondary
-      </Button>
-      <Button {...args} color='close'>
-        Close
-      </Button>
-      <Button {...args} color='danger'>
-        Danger
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} color='primary'>
+          Primary
+        </Button>
+        <Button {...args} color='secondary'>
+          Secondary
+        </Button>
+        <Button {...args} color='close'>
+          Close
+        </Button>
+        <Button {...args} color='danger'>
+          Danger
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
@@ -230,17 +254,19 @@ export const Variants: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={rowStyle}>
-      <Button {...args} variant='solid'>
-        Solid
-      </Button>
-      <Button {...args} variant='outline'>
-        Outline
-      </Button>
-      <Button {...args} variant='ghost'>
-        Ghost
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} variant='solid'>
+          Solid
+        </Button>
+        <Button {...args} variant='outline'>
+          Outline
+        </Button>
+        <Button {...args} variant='ghost'>
+          Ghost
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
@@ -253,22 +279,24 @@ export const Matrix: Story = {
     const variants = ['solid', 'outline', 'ghost'] as const;
 
     return (
-      <div style={stackStyle}>
-        {colors.map((color) => (
-          <div key={color} style={rowStyle}>
-            {variants.map((variant) => (
-              <Button
-                key={`${color}-${variant}`}
-                {...args}
-                color={color}
-                variant={variant}
-              >
-                {color} {variant}
-              </Button>
-            ))}
-          </div>
-        ))}
-      </div>
+      <Section>
+        <div style={stackStyle}>
+          {colors.map((color) => (
+            <div key={color} style={rowStyle}>
+              {variants.map((variant) => (
+                <Button
+                  key={`${color}-${variant}`}
+                  {...args}
+                  color={color}
+                  variant={variant}
+                >
+                  {color} {variant}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
+      </Section>
     );
   },
 };
@@ -279,17 +307,19 @@ export const Sizes: Story = {
     variant: 'solid',
   },
   render: (args) => (
-    <div style={rowStyle}>
-      <Button {...args} size='sm'>
-        Small
-      </Button>
-      <Button {...args} size='md'>
-        Medium
-      </Button>
-      <Button {...args} size='lg'>
-        Large
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} size='sm'>
+          Small
+        </Button>
+        <Button {...args} size='md'>
+          Medium
+        </Button>
+        <Button {...args} size='lg'>
+          Large
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
@@ -300,19 +330,21 @@ export const WithIcons: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={stackStyle}>
-      <div style={rowStyle}>
-        <Button {...args} leftIcon={<Download />}>
-          Left icon
-        </Button>
-        <Button {...args} rightIcon={<Download />}>
-          Right icon
-        </Button>
-        <Button {...args} leftIcon={<Save />} rightIcon={<Download />}>
-          Both icons
-        </Button>
+    <Section>
+      <div style={stackStyle}>
+        <div style={rowStyle}>
+          <Button {...args} leftIcon={<Download />}>
+            Left icon
+          </Button>
+          <Button {...args} rightIcon={<Download />}>
+            Right icon
+          </Button>
+          <Button {...args} leftIcon={<Save />} rightIcon={<Download />}>
+            Both icons
+          </Button>
+        </div>
       </div>
-    </div>
+    </Section>
   ),
 };
 
@@ -327,7 +359,13 @@ export const IconOnly: Story = {
     iconOnly: true,
     ariaLabel: 'Filter',
   },
-  render: (args) => <Button {...args} leftIcon={<Filter />} />,
+  render: (args) => (
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} leftIcon={<Filter />} />
+      </div>
+    </Section>
+  ),
 };
 
 export const Loading: Story = {
@@ -337,17 +375,19 @@ export const Loading: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={rowStyle}>
-      <Button {...args} loading>
-        Saving
-      </Button>
-      <Button {...args} loading loadingText='Saving...'>
-        Save
-      </Button>
-      <Button {...args} loading leftIcon={<Save />}>
-        Uploading
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} loading>
+          Saving
+        </Button>
+        <Button {...args} loading loadingText='Saving...'>
+          Save
+        </Button>
+        <Button {...args} loading leftIcon={<Save />}>
+          Uploading
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
@@ -359,6 +399,13 @@ export const Disabled: Story = {
     disabled: true,
     children: 'Disabled',
   },
+  render: (args) => (
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args}>Disabled</Button>
+      </div>
+    </Section>
+  ),
 };
 
 export const FullWidth: Story = {
@@ -368,11 +415,13 @@ export const FullWidth: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={{ width: 400 }}>
-      <Button {...args} fullWidth>
-        Full width
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} fullWidth>
+          Full width
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
@@ -383,44 +432,48 @@ export const ButtonTypes: Story = {
     size: 'md',
   },
   render: (args) => (
-    <div style={rowStyle}>
-      <Button {...args} type='button'>
-        Button
-      </Button>
-      <Button {...args} type='submit'>
-        Submit
-      </Button>
-      <Button {...args} type='reset'>
-        Reset
-      </Button>
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button {...args} type='button'>
+          Button
+        </Button>
+        <Button {...args} type='submit'>
+          Submit
+        </Button>
+        <Button {...args} type='reset'>
+          Reset
+        </Button>
+      </div>
+    </Section>
   ),
 };
 
 export const AccessibleIconActions: Story = {
   render: () => (
-    <div style={rowStyle}>
-      <Button
-        ariaLabel='Search'
-        color='primary'
-        iconOnly
-        leftIcon={<Search />}
-        variant='ghost'
-      />
-      <Button
-        ariaLabel='Filter results'
-        color='secondary'
-        iconOnly
-        leftIcon={<Filter />}
-        variant='outline'
-      />
-      <Button
-        ariaLabel='Save'
-        color='primary'
-        iconOnly
-        leftIcon={<Save />}
-        variant='solid'
-      />
-    </div>
+    <Section>
+      <div style={rowStyle}>
+        <Button
+          ariaLabel='Search'
+          color='primary'
+          iconOnly
+          leftIcon={<Search />}
+          variant='ghost'
+        />
+        <Button
+          ariaLabel='Filter results'
+          color='secondary'
+          iconOnly
+          leftIcon={<Filter />}
+          variant='outline'
+        />
+        <Button
+          ariaLabel='Save'
+          color='primary'
+          iconOnly
+          leftIcon={<Save />}
+          variant='solid'
+        />
+      </div>
+    </Section>
   ),
 };

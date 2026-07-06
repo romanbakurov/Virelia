@@ -5,19 +5,19 @@ import { text } from './text.js';
 export const action = {
   primary: {
     default: {
+      bg: colors.primary[600],
+      fg: text.inverse,
+      border: colors.primary[600],
+    },
+    hover: {
       bg: colors.primary[700],
       fg: text.inverse,
       border: colors.primary[700],
     },
-    hover: {
+    active: {
       bg: colors.primary[800],
       fg: text.inverse,
       border: colors.primary[800],
-    },
-    active: {
-      bg: colors.primary[950],
-      fg: text.inverse,
-      border: colors.primary[950],
     },
     muted: {
       bg: colors.primary[500],
@@ -33,37 +33,57 @@ export const action = {
 
   secondary: {
     default: {
-      bg: colors.secondary[500],
+      bg: colors.secondary[700],
       fg: text.inverse,
-      border: colors.secondary[500],
+      border: colors.secondary[700],
     },
     hover: {
+      bg: colors.secondary[800],
+      fg: text.inverse,
+      border: colors.secondary[800],
+    },
+    active: {
       bg: colors.secondary[900],
       fg: text.inverse,
       border: colors.secondary[900],
     },
-    active: {
-      bg: colors.secondary[950],
+    muted: {
+      bg: colors.secondary[500],
       fg: text.inverse,
-      border: colors.secondary[950],
+      border: colors.secondary[500],
+    },
+    subtle: {
+      bg: colors.secondary[50],
+      fg: text.inverse,
+      border: colors.secondary[700],
     },
   },
 
   close: {
     default: {
-      bg: colors.vellira[200],
+      bg: colors.grayBlue[200],
       fg: text.onInverse,
-      border: colors.vellira[200],
+      border: colors.grayBlue[200],
     },
     hover: {
-      bg: colors.vellira[250],
+      bg: colors.grayBlue[300],
       fg: text.onInverse,
-      border: colors.vellira[250],
+      border: colors.grayBlue[300],
     },
     active: {
-      bg: colors.vellira[300],
+      bg: colors.grayBlue[400],
       fg: text.onInverse,
-      border: colors.vellira[300],
+      border: colors.grayBlue[400],
+    },
+    muted: {
+      bg: colors.grayBlue[600],
+      fg: text.inverse,
+      border: colors.grayBlue[600],
+    },
+    subtle: {
+      bg: colors.grayBlue[500],
+      fg: text.inverse,
+      border: colors.grayBlue[500],
     },
   },
 
@@ -79,9 +99,9 @@ export const action = {
       border: colors.error[800],
     },
     active: {
-      bg: colors.error[800],
+      bg: colors.error[900],
       fg: text.inverse,
-      border: colors.error[800],
+      border: colors.error[900],
     },
     subtle: {
       bg: colors.error[50],

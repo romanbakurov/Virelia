@@ -5,11 +5,11 @@ import { text } from './text.js';
 
 export const navigation = {
   hover: {
-    bg: colors.warning[500],
+    bg: colors.warning[400],
     fg: colors.mono[950],
   },
   active: {
-    bg: colors.warning[500],
+    bg: colors.warning[400],
     fg: colors.mono[950],
   },
   brandHover: {

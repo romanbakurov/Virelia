@@ -124,7 +124,7 @@ const BasicModalDemo = ({ onClose }: { onClose?: () => void }) => {
         <Modal.Header>Delete file</Modal.Header>
         <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
         <Modal.Footer>
-          <Button color='primary' variant='solid' onClick={handleClose}>
+          <Button color='close' variant='solid' onClick={handleClose}>
             Cancel
           </Button>
           <Button color='danger' variant='solid' onClick={handleClose}>
@@ -153,7 +153,7 @@ const WithoutBackdropCloseDemo = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            color='primary'
+            color='secondary'
             variant='solid'
             onClick={() => setIsOpen(false)}
           >

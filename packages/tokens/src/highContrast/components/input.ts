@@ -36,7 +36,7 @@ export const input = {
   },
 
   error: {
-    border: status.error.strong,
+    border: status.error.border,
     ring: status.error.fg,
   },
 

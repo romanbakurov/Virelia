@@ -7,7 +7,7 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-md);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   box-shadow: inset 0 0 0 1px transparent;
   transition:
     background-color 0.2s ease,
@@ -273,22 +273,22 @@
 .sm {
   --icon-size: 16px;
 
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--font-size-xs);
+  padding: var(--space-2) var(--space-6);
+  font-size: var(--font-size-sm);
 }
 
 .md {
   --icon-size: 20px;
 
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--font-size-sm);
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--font-size-md);
 }
 
 .lg {
   --icon-size: 24px;
 
-  padding: var(--space-4) var(--space-5);
-  font-size: var(--font-size-md);
+  padding: var(--space-4) var(--space-10);
+  font-size: var(--font-size-xl);
 }
 
 .fullWidth {

@@ -9,7 +9,7 @@ export const modal = {
   },
 
   content: {
-    bg: surface.elevated,
+    bg: surface.subtle,
     fg: text.primary,
     border: border.default,
   },

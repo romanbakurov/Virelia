@@ -30,7 +30,7 @@ export const select = {
     },
 
     placeholder: {
-      fg: text.muted,
+      fg: text.secondary,
     },
 
     error: {
@@ -40,7 +40,7 @@ export const select = {
   },
 
   dropdown: {
-    bg: surface.elevated,
+    bg: surface.subtle,
     fg: text.primary,
     border: border.muted,
   },
@@ -52,10 +52,10 @@ export const select = {
       border: border.muted,
     },
 
-    hover: navigation.optionHover,
+    hover: navigation.brandHover,
 
     active: {
-      ...navigation.optionActive,
+      ...navigation.brandHover,
       ring: 'transparent',
     },
 

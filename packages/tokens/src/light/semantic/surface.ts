@@ -1,14 +1,15 @@
 import { colors } from '../../primitives/colors.js';
 
 export const surface = {
-  default: colors.vellira[25],
+  default: colors.vellira[100],
   muted: colors.vellira[50],
-  subtle: colors.vellira[100],
-  elevated: colors.mono[50],
-  pressed: colors.vellira[150],
+  subtle: colors.mono[50],
+  elevated: colors.secondary[100],
+  pressed: colors.vellira[200],
+  disabled: colors.vellira[100],
 
   hover: colors.vellira[150],
-  active: colors.vellira[500],
+  active: colors.vellira[300],
 
   inverse: colors.vellira[950],
 } as const;
