@@ -56,14 +56,14 @@ export const action = {
       border: colors.vellira[200],
     },
     hover: {
-      bg: colors.vellira[300],
+      bg: colors.grayBlue[300],
       fg: text.onInverse,
-      border: colors.vellira[300],
+      border: colors.grayBlue[300],
     },
     active: {
-      bg: colors.vellira[400],
+      bg: colors.grayBlue[200],
       fg: text.onInverse,
-      border: colors.vellira[400],
+      border: colors.grayBlue[200],
     },
   },
 
@@ -84,8 +84,9 @@ export const action = {
       border: colors.error[800],
     },
     subtle: {
-      bg: colors.error[950],
-      fg: colors.error[300],
+      bg: colors.error[400],
+      fg: colors.error[400],
+      border: colors.error[400],
     },
     muted: {
       bg: colors.error[900],

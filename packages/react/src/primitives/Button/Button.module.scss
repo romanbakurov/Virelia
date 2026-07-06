@@ -33,73 +33,73 @@
   cursor: progress;
 }
 
-.solid.primary {
+.solid.primary:not(:disabled) {
   color: var(--button-primary-solid-default-fg);
   background-color: var(--button-primary-solid-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-primary-solid-default-border);
 }
 
-.solid.secondary {
+.solid.secondary:not(:disabled) {
   color: var(--button-secondary-solid-default-fg);
   background-color: var(--button-secondary-solid-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-secondary-solid-default-border);
 }
 
-.solid.danger {
+.solid.danger:not(:disabled) {
   color: var(--button-danger-solid-default-fg);
   background-color: var(--button-danger-solid-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-danger-solid-default-border);
 }
 
-.solid.close {
+.solid.close:not(:disabled) {
   color: var(--button-close-solid-default-fg);
   background-color: var(--button-close-solid-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-close-solid-default-border);
 }
 
-.outline.primary {
+.outline.primary:not(:disabled) {
   color: var(--button-primary-outline-default-fg);
   background-color: var(--button-primary-outline-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-primary-outline-default-border);
 }
 
-.outline.secondary {
+.outline.secondary:not(:disabled) {
   color: var(--button-secondary-outline-default-fg);
   background-color: var(--button-secondary-outline-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-secondary-outline-default-border);
 }
 
-.outline.danger {
+.outline.danger:not(:disabled) {
   color: var(--button-danger-outline-default-fg);
   background-color: var(--button-danger-outline-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-danger-outline-default-border);
 }
 
-.outline.close {
+.outline.close:not(:disabled) {
   color: var(--button-close-outline-default-fg);
   background-color: var(--button-close-outline-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-close-outline-default-border);
 }
 
-.ghost.primary {
+.ghost.primary:not(:disabled) {
   color: var(--button-primary-ghost-default-fg);
   background-color: var(--button-primary-ghost-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-primary-ghost-default-border);
 }
 
-.ghost.secondary {
+.ghost.secondary:not(:disabled) {
   color: var(--button-secondary-ghost-default-fg);
   background-color: var(--button-secondary-ghost-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-secondary-ghost-default-border);
 }
 
-.ghost.danger {
+.ghost.danger:not(:disabled) {
   color: var(--button-danger-ghost-default-fg);
   background-color: var(--button-danger-ghost-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-danger-ghost-default-border);
 }
 
-.ghost.close {
+.ghost.close:not(:disabled) {
   color: var(--button-close-ghost-default-fg);
   background-color: var(--button-close-ghost-default-bg);
   box-shadow: inset 0 0 0 1px var(--button-close-ghost-default-border);

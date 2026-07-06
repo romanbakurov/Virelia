@@ -34,7 +34,7 @@ export const button = {
     ghost: {
       default: {
         ...transparent,
-        fg: action.primary.default.bg,
+        fg: action.primary.muted.bg,
         border: 'transparent',
       },
       hover: {
@@ -63,12 +63,12 @@ export const button = {
         border: action.secondary.default.border,
       },
       hover: {
-        bg: surface.hover,
+        ...transparent,
         fg: action.secondary.hover.bg,
         border: action.secondary.hover.border,
       },
       pressed: {
-        bg: surface.pressed,
+        ...transparent,
         fg: action.secondary.active.bg,
         border: action.secondary.active.border,
       },
@@ -80,12 +80,12 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: surface.hover,
+        ...transparent,
         fg: action.secondary.hover.bg,
         border: 'transparent',
       },
       pressed: {
-        bg: surface.pressed,
+        ...transparent,
         fg: action.secondary.active.bg,
         border: 'transparent',
       },
@@ -105,12 +105,12 @@ export const button = {
         border: action.close.default.border,
       },
       hover: {
-        bg: surface.hover,
+        ...transparent,
         fg: action.close.hover.bg,
         border: action.close.hover.border,
       },
       pressed: {
-        bg: surface.pressed,
+        ...transparent,
         fg: action.close.active.bg,
         border: action.close.active.border,
       },
@@ -122,12 +122,12 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: surface.hover,
+        ...transparent,
         fg: action.close.hover.bg,
         border: 'transparent',
       },
       pressed: {
-        bg: surface.pressed,
+        ...transparent,
         fg: action.close.active.bg,
         border: 'transparent',
       },
@@ -143,16 +143,16 @@ export const button = {
     outline: {
       default: {
         ...transparent,
-        fg: action.danger.default.bg,
-        border: action.danger.default.border,
+        fg: action.danger.subtle.bg,
+        border: action.danger.subtle.border,
       },
       hover: {
-        bg: action.danger.subtle.bg,
+        ...transparent,
         fg: action.danger.hover.bg,
         border: action.danger.hover.border,
       },
       pressed: {
-        bg: action.danger.subtle.bg,
+        ...transparent,
         fg: action.danger.active.bg,
         border: action.danger.active.border,
       },
@@ -160,16 +160,16 @@ export const button = {
     ghost: {
       default: {
         ...transparent,
-        fg: action.danger.default.bg,
+        fg: action.danger.subtle.bg,
         border: 'transparent',
       },
       hover: {
-        bg: action.danger.subtle.bg,
+        ...transparent,
         fg: action.danger.hover.bg,
         border: 'transparent',
       },
       pressed: {
-        bg: action.danger.subtle.bg,
+        ...transparent,
         fg: action.danger.active.bg,
         border: 'transparent',
       },

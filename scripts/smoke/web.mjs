@@ -242,8 +242,8 @@ assertColor(theme.semantic.surface.default, 'semantic.surface.default');
 assertColor(theme.semantic.text.primary, 'semantic.text.primary');
 assertColor(theme.semantic.status.success.fg, 'semantic.status.success.fg');
 assertColor(
-  theme.components.button.primary.default.bg,
-  'components.button.primary.default.bg'
+  theme.components.button.primary.solid.default.bg,
+  'components.button.primary.solid.default.bg'
 );
 assertColor(theme.components.input.default.bg, 'components.input.default.bg');
 

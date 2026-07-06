@@ -71,22 +71,32 @@ export const Animated = {
     return { start() {} };
   },
 };
+
 export const Dimensions = {
   get() {
     return { width: 1024, height: 768 };
   },
 };
-export const Modal = Component;
+
+export const View = Component;
+export const Text = Component;
+export const TextInput = Component;
 export const Pressable = Component;
+export const Modal = Component;
+export const ActivityIndicator = Component;
+export const ScrollView = Component;
+export const FlatList = Component;
+export const SectionList = Component;
+export const Image = Component;
+export const Switch = Component;
+export const SafeAreaView = Component;
+
 export const StyleSheet = {
   absoluteFill: {},
   create(styles) {
     return styles;
   },
 };
-export const Text = Component;
-export const TextInput = Component;
-export const View = Component;
 `
 );
 
@@ -339,8 +349,8 @@ assertColorToken(theme.semantic.surface.default, 'semantic.surface.default');
 assertColorToken(theme.semantic.text.primary, 'semantic.text.primary');
 assertColorToken(theme.semantic.status.success.fg, 'semantic.status.success.fg');
 assertColorToken(
-  theme.components.button.primary.default.bg,
-  'components.button.primary.default.bg'
+  theme.components.button.primary.solid.default.bg,
+  'components.button.primary.solid.default.bg'
 );
 assertColorToken(theme.components.input.default.bg, 'components.input.default.bg');
 

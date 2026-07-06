@@ -7,7 +7,7 @@ import { text } from '../semantic/text.js';
 
 export const checkbox = {
   default: {
-    bg: surface.default,
+    bg: surface.elevated,
     fg: text.inverse,
     border: border.subtle,
   },
