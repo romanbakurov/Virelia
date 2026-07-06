@@ -1,6 +1,6 @@
-import { status } from '../../dark/semantic';
 import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
+import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
