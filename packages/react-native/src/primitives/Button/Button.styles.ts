@@ -39,6 +39,17 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.button.disabled.border,
     },
 
+    focused: {
+      borderColor: theme.semantic.focus.ring,
+      shadowColor: theme.semantic.focus.ring,
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.35,
+      shadowRadius: 4,
+    },
+
     pressed: {
       transform: [{ scale: 0.98 }],
     },

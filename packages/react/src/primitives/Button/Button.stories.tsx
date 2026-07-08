@@ -34,7 +34,7 @@ Correct usage:
   Save changes
 </Button>
 
-<Button ariaLabel='Search' leftIcon={<Search />} />
+<Button aria-label='Search' leftIcon={<Search />} />
 \`\`\`
 `,
       },
@@ -124,13 +124,6 @@ Correct usage:
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
-      },
-    },
-    ariaLabel: {
-      description: 'Accessible label for icon-only or non-text buttons.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
       },
     },
     children: {
@@ -224,7 +217,7 @@ export const Basic: Story = {
     color: 'primary',
     variant: 'solid',
     size: 'md',
-    ariaLabel: 'Download',
+    'aria-label': 'Download',
     leftIcon: <Download />,
   },
   render: (args) => (
@@ -370,7 +363,7 @@ export const IconOnly: Story = {
     variant: 'solid',
     size: 'md',
     iconOnly: true,
-    ariaLabel: 'Filter',
+    'aria-label': 'Filter',
   },
   render: (args) => (
     <Section title='IconOnly'>
@@ -466,21 +459,21 @@ export const AccessibleIconActions: Story = {
     <Section title='AccessibleIconActions'>
       <div style={rowStyle}>
         <Button
-          ariaLabel='Search'
+          aria-label='Search'
           color='primary'
           iconOnly
           leftIcon={<Search />}
           variant='ghost'
         />
         <Button
-          ariaLabel='Filter results'
+          aria-label='Filter results'
           color='secondary'
           iconOnly
           leftIcon={<Filter />}
           variant='outline'
         />
         <Button
-          ariaLabel='Save'
+          aria-label='Save'
           color='primary'
           iconOnly
           leftIcon={<Save />}

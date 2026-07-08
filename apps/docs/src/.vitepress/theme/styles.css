@@ -297,6 +297,11 @@ body {
   background: #dc2626;
 }
 
+.docs-button-icon {
+  width: 40px;
+  padding: 0;
+}
+
 .docs-button:hover,
 .docs-button.docs-is-hover {
   background: var(--vp-c-brand-2);

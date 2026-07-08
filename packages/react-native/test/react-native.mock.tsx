@@ -12,6 +12,10 @@ type NativeProps = {
   onPress?: () => void;
   onPressIn?: () => void;
   onPressOut?: () => void;
+  onHoverIn?: () => void;
+  onHoverOut?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   onLongPress?: () => void;
   onChangeText?: (value: string) => void;
   value?: string;
@@ -20,6 +24,8 @@ type NativeProps = {
   secureTextEntry?: boolean;
   keyboardType?: string;
   testID?: string;
+  color?: string;
+  size?: string | number;
   onLayout?: (event: {
     nativeEvent: { layout: { width: number; height: number } };
   }) => void;
@@ -129,6 +135,16 @@ export const Text = forwardRef<HTMLSpanElement, NativeProps>(
 );
 Text.displayName = 'Text';
 
+export const ActivityIndicator = ({ color, size, testID }: NativeProps) => (
+  <span
+    data-testid={testID ?? 'activity-indicator'}
+    role='progressbar'
+    style={{ color }}
+  >
+    {size}
+  </span>
+);
+
 export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
   (
     {
@@ -141,6 +157,10 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
       onPress,
       onPressIn,
       onPressOut,
+      onHoverIn,
+      onHoverOut,
+      onFocus,
+      onBlur,
       onLongPress,
       testID,
     },
@@ -161,6 +181,10 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         role={roleFromAccessibility(accessibilityRole)}
         style={flattenStyle(resolvedStyle)}
         onClick={onPress}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onMouseEnter={onHoverIn}
+        onMouseLeave={onHoverOut}
         onMouseDown={onPressIn}
         onMouseUp={onPressOut}
         onDoubleClick={onLongPress}

@@ -223,7 +223,7 @@ function WebComponentsOverview() {
                 <Button leftIcon={<Download />} rightIcon={<Search />}>
                   Both icons
                 </Button>
-                <Button iconOnly ariaLabel='Search' leftIcon={<Search />} />
+                <Button iconOnly aria-label='Search' leftIcon={<Search />} />
               </div>
             </div>
           </div>
@@ -348,7 +348,7 @@ function WebComponentsOverview() {
               <Button
                 color='secondary'
                 variant='solid'
-                ariaLabel='Open filters'
+                aria-label='Open filters'
                 leftIcon={<Filter />}
               />
             </Tooltip>

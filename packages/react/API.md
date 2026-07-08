@@ -55,7 +55,7 @@ import {
 
 | Type                | Values                                                                      |
 | ------------------- | --------------------------------------------------------------------------- |
-| `ButtonColor`       | `'primary'`, `'secondary'`, `'danger'`                                      |
+| `ButtonColor`       | `'primary'`, `'secondary'`, `'close'`, `'danger'`                           |
 | `ButtonSize`        | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputSize`         | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
@@ -76,34 +76,42 @@ type TooltipDelay = {
 
 ## Button
 
-Clickable action component with variants, sizes, optional icons, and full-width layout support.
+Clickable action component with variants, sizes, optional icons, loading state,
+and full-width layout support.
 
 ```tsx
+import { Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react';
 
 <Button color='primary' variant='solid' size='md' onClick={handleSave}>
   Save
 </Button>;
+
+<Button aria-label='Search' iconOnly leftIcon={<Search />} />;
 ```
 
 <!-- api-docgen:start web.ButtonProps.Button -->
 
-| Prop          | Type              | Required | Description                                                   |
-| ------------- | ----------------- | -------- | ------------------------------------------------------------- |
-| `ariaLabel`   | `string \| false` | No       | Accessible label for icon-only or visually ambiguous buttons. |
-| `children`    | `ReactNode`       | No       | Button content.                                               |
-| `leftIcon`    | `ReactNode`       | No       | Icon rendered before content.                                 |
-| `rightIcon`   | `ReactNode`       | No       | Icon rendered after content.                                  |
-| `fullWidth`   | `boolean`         | No       | Makes the button fill its container width.                    |
-| `variant`     | `ButtonVariant`   | No       | Visual color variant.                                         |
-| `size`        | `ButtonSize`      | No       | Button size.                                                  |
-| `disabled`    | `boolean`         | No       | Disables interaction.                                         |
-| `color`       | `ButtonColor`     | No       | —                                                             |
-| `loading`     | `boolean`         | No       | —                                                             |
-| `loadingText` | `string`          | No       | —                                                             |
-| `iconOnly`    | `boolean`         | No       | —                                                             |
+| Prop          | Type            | Required | Description                                             |
+| ------------- | --------------- | -------- | ------------------------------------------------------- |
+| `children`    | `ReactNode`     | No       | Button content.                                         |
+| `leftIcon`    | `ReactNode`     | No       | Icon rendered before content.                           |
+| `rightIcon`   | `ReactNode`     | No       | Icon rendered after content.                            |
+| `fullWidth`   | `boolean`       | No       | Makes the button fill its container width.              |
+| `variant`     | `ButtonVariant` | No       | Visual variant: `solid`, `outline`, or `ghost`.         |
+| `size`        | `ButtonSize`    | No       | Button size.                                            |
+| `disabled`    | `boolean`       | No       | Disables interaction.                                   |
+| `color`       | `ButtonColor`   | No       | Visual tone: `primary`, `secondary`, `close`, `danger`. |
+| `loading`     | `boolean`       | No       | Shows a spinner and disables interaction.               |
+| `loadingText` | `string`        | No       | Replaces visible content while loading.                 |
+| `iconOnly`    | `boolean`       | No       | Hides visible text for icon-only actions.               |
 
 <!-- api-docgen:end web.ButtonProps.Button -->
+
+Icon-only buttons must provide the standard `aria-label` attribute. Web Button
+does not expose a camelCase accessible-label alias. Button also accepts standard
+`button` attributes such as `type`, `className`, and `onClick`; its default
+`type` is `button`.
 
 ## Checkbox
 
@@ -441,7 +449,7 @@ Floating helper text that appears around a target element.
 import { Tooltip, Button } from '@vellira-ui/react';
 
 <Tooltip content='More actions' placement='top' className=''>
-  <Button ariaLabel='More actions'>...</Button>
+  <Button aria-label='More actions'>...</Button>
 </Tooltip>;
 ```
 

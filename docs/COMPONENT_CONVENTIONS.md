@@ -214,6 +214,9 @@ Required:
 
 Accessibility is considered part of the component API.
 
+Icon-only actions must expose an accessible name. Use standard `aria-label` on
+web components and `accessibilityLabel` on native components.
+
 ---
 
 # Icons

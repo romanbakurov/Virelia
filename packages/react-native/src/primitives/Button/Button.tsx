@@ -3,6 +3,7 @@ import { cloneElement, useState } from 'react';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
+import { devWarning } from '../../utils/devWarning';
 
 import { createStyles } from './Button.styles';
 import type { ButtonIconElement, ButtonProps } from './types';
@@ -63,23 +64,26 @@ export function Button({
 
   const variantTheme = theme.components.button[color][variant];
   const [isPressed, setIsPressed] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const isDisabled = disabled || loading;
   const iconOnly =
     iconOnlyProp || (!children && Boolean(leftIcon || rightIcon));
   const content = loading && loadingText ? loadingText : children;
 
-  if (iconOnly && !accessibilityLabel) {
-    console.warn(
-      'Vellira Button: icon-only buttons must provide an accessibilityLabel.'
-    );
-  }
+  devWarning(
+    !iconOnly || Boolean(accessibilityLabel),
+    'Button: icon-only buttons must provide an accessibilityLabel.'
+  );
 
   const stateTheme = isDisabled
     ? theme.components.button.disabled
     : isPressed
       ? variantTheme.pressed
-      : variantTheme.default;
+      : isHovered
+        ? variantTheme.hover
+        : variantTheme.default;
 
   const contentColor = stateTheme.fg;
   const resolvedIconSize = iconSize ?? config.iconSize;
@@ -102,11 +106,19 @@ export function Button({
         accessibilityLabel ??
         (typeof content === 'string' ? content : undefined)
       }
+      onBlur={() => setIsFocused(false)}
+      onFocus={() => setIsFocused(true)}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       style={({ pressed }) => {
         const pressedTheme =
-          !isDisabled && pressed ? variantTheme.pressed : stateTheme;
+          !isDisabled && pressed
+            ? variantTheme.pressed
+            : !isDisabled && isHovered
+              ? variantTheme.hover
+              : stateTheme;
 
         return [
           styles.button,
@@ -119,6 +131,7 @@ export function Button({
           fullWidth && styles.fullWidth,
           isDisabled && styles.disabled,
           pressed && !isDisabled && styles.pressed,
+          isFocused && !isDisabled && styles.focused,
           style,
         ];
       }}

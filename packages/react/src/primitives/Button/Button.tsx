@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 
 import { cn } from '@utils/cn';
+import { devWarning } from '@utils/devWarning';
 
 import type { ButtonProps } from './types';
 
@@ -23,7 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       iconOnly: iconOnlyProp = false,
       className,
       onClick,
-      ariaLabel,
+      'aria-label': ariaLabel,
       ...props
     },
     ref
@@ -32,9 +33,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const isDisabled = disabled || loading;
     const content = loading && loadingText ? loadingText : children;
 
-    if (iconOnly && !ariaLabel && process.env.NODE_ENV !== 'production') {
-      console.warn('Button: icon-only buttons must provide ariaLabel.');
-    }
+    devWarning(
+      !iconOnly || Boolean(ariaLabel),
+      'Button: icon-only buttons must provide aria-label.'
+    );
 
     return (
       <button
