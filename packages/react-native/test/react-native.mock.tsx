@@ -206,14 +206,19 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
       secureTextEntry,
       keyboardType,
       onChangeText,
+      onFocus,
+      onBlur,
       style,
       testID,
+      accessibilityLabel,
+      accessibilityState,
     },
     ref
   ) => (
     <input
       ref={ref}
       data-testid={testID}
+      aria-label={accessibilityLabel}
       value={value ?? ''}
       placeholder={placeholder}
       disabled={!editable}
@@ -221,6 +226,9 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
       inputMode={keyboardType === 'numeric' ? 'numeric' : undefined}
       style={flattenStyle(style)}
       onChange={(event) => onChangeText?.(event.currentTarget.value)}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      {...stateProps(accessibilityState)}
     />
   )
 );
