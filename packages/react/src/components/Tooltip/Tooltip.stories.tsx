@@ -48,7 +48,7 @@ Correct usage:
 
 \`\`\`tsx
 <Tooltip content='Search all projects' placement='top'>
-  <Button ariaLabel='Search' leftIcon={<Search />} />
+  <Button aria-label='Search' leftIcon={<Search />} />
 </Tooltip>
 \`\`\`
 `,
@@ -250,7 +250,7 @@ export const DifferentTriggers: Story = {
       </Tooltip>
 
       <Tooltip content='Icon only'>
-        <Button ariaLabel='Search' leftIcon={<Search />} />
+        <Button aria-label='Search' leftIcon={<Search />} />
       </Tooltip>
     </div>
   ),

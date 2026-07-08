@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, createRef } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -175,6 +175,114 @@ describe('Input', () => {
     });
 
     expect(container.querySelector('[role="tooltip"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports uncontrolled changes, function refs, and adornments', () => {
+    const change = vi.fn();
+    const ref = vi.fn();
+    const { container, unmount } = render(
+      <Input
+        ref={ref}
+        id='search'
+        label='Search'
+        defaultValue='theme'
+        onChange={change}
+        leftAdornment={<span data-testid='left-icon'>L</span>}
+        rightAdornment={<span data-testid='right-icon'>R</span>}
+        leftAdornmentTone='primary'
+        rightAdornmentTone='success'
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    )?.set;
+
+    expect(ref).toHaveBeenCalledWith(input);
+    expect(input?.value).toBe('theme');
+    expect(container.querySelector('[data-testid="left-icon"]')).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="right-icon"]')
+    ).not.toBeNull();
+
+    act(() => {
+      valueSetter?.call(input, 'tokens');
+      input?.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      input?.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(change).toHaveBeenCalledWith('tokens');
+    expect(input?.value).toBe('tokens');
+
+    unmount();
+  });
+
+  it('clears uncontrolled values and restores focus', () => {
+    const change = vi.fn();
+    const clear = vi.fn();
+    const inputRef = createRef<HTMLInputElement>();
+    const { container, unmount } = render(
+      <Input
+        ref={inputRef}
+        id='clearable'
+        label='Clearable'
+        defaultValue='Clear me'
+        onChange={change}
+        onClear={clear}
+        clearable
+        clearIcon={<span data-testid='clear-icon'>clear</span>}
+      />
+    );
+
+    const clearButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Clear input"]'
+    );
+
+    expect(clearButton).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="clear-icon"]')
+    ).not.toBeNull();
+
+    act(() => {
+      clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(change).toHaveBeenCalledWith('');
+    expect(clear).toHaveBeenCalledTimes(1);
+    expect(inputRef.current?.value).toBe('');
+    expect(document.activeElement).toBe(inputRef.current);
+
+    unmount();
+  });
+
+  it('hides the clear action for controlled empty, disabled, and read-only inputs', () => {
+    const { container, rerender, unmount } = render(
+      <Input id='empty' label='Empty' value='' clearable />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
+
+    rerender(
+      <Input id='disabled' label='Disabled' value='value' disabled clearable />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
+
+    rerender(
+      <Input id='readonly' label='Read only' value='value' readOnly clearable />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
 
     unmount();
   });

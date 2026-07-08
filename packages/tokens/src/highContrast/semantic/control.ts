@@ -1,8 +1,15 @@
 import { colors } from '../../primitives/colors.js';
 
+import { border } from './border.js';
+import { surface } from './surface.js';
 import { text } from './text.js';
 
 export const control = {
+  default: {
+    bg: surface.default,
+    fg: text.primary,
+    border: border.muted,
+  },
   hover: {
     bg: colors.gray[900],
     fg: text.inverse,

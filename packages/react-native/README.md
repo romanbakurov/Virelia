@@ -55,6 +55,20 @@ export function Example() {
 }
 ```
 
+### Button Notes
+
+Use `accessibilityLabel` for icon-only native buttons:
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+
+<Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />;
+```
+
+Button icons are React elements from `@vellira-ui/icons`; the component injects
+the current icon color and size. `loading` disables interaction and can replace
+the visible label with `loadingText`.
+
 ## Testing
 
 Run only native tests:

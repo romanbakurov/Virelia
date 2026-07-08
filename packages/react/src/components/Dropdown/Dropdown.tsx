@@ -19,7 +19,7 @@ export const Dropdown = ({
   label,
   icon,
   trigger,
-  items,
+  items = [],
   onSelect,
   className,
   disabled,

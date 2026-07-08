@@ -1,4 +1,4 @@
-import type { BaseInputProps, InputSize, InputType } from '@vellira-ui/types';
+import type { BaseInputProps, InputAdornmentTone } from '@vellira-ui/types';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -6,8 +6,6 @@ import type {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-
-export type { InputSize, InputType } from '@vellira-ui/types';
 
 export type NativeInputKeyboardType = TextInputProps['keyboardType'];
 
@@ -29,13 +27,15 @@ export interface InputProps
       | 'style'
       | 'placeholder'
     > {
-  label: string;
-  placeholder?: string;
-  size?: InputSize;
-  error?: string;
-  type?: InputType;
-  leftIcon?: InputIconElement;
+  leftAdornment?: InputIconElement;
+  rightAdornment?: InputIconElement;
+  leftAdornmentTone?: InputAdornmentTone;
+  rightAdornmentTone?: InputAdornmentTone;
+  clearIcon?: InputIconElement;
   iconSize?: number;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  testID?: string;
+  keyboardType?: NativeInputKeyboardType;
+  secureTextEntry?: boolean;
 }

@@ -5,7 +5,6 @@ export interface ButtonProps
   extends
     BaseButtonProps,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'> {
-  ariaLabel?: string | false;
   children?: ReactNode;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;

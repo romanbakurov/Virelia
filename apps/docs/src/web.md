@@ -65,7 +65,7 @@ generated reference lives in
 
 | Component    | Core props                                                                   | State model                   |
 | ------------ | ---------------------------------------------------------------------------- | ----------------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `ariaLabel`         | disabled                      |
+| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`        | disabled, loading             |
 | `Checkbox`   | `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`             | controlled or uncontrolled    |
 | `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`        | controlled                    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`          | presentation wrapper          |
@@ -75,6 +75,33 @@ generated reference lives in
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance` | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`      | open state managed internally |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections      | controlled                    |
+
+## Button
+
+Web Button uses native button semantics, defaults to `type="button"`, and
+accepts standard DOM attributes such as `className`, `onClick`, and
+`aria-label`.
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+import { Button } from '@vellira-ui/react';
+
+export function ButtonExamples() {
+  return (
+    <>
+      <Button color='primary' variant='solid' onClick={handleSave}>
+        Save
+      </Button>
+
+      <Button loading loadingText='Saving...'>
+        Save
+      </Button>
+
+      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+    </>
+  );
+}
+```
 
 ## Controlled and Uncontrolled
 
@@ -150,7 +177,8 @@ Vellira Web components implement browser-specific accessibility behavior while
 keeping the public API platform-independent.
 
 - `Button` supports accessible labels for icon-only or ambiguous actions through
-  the `ariaLabel` prop.
+  the standard `aria-label` attribute. It does not expose a camelCase
+  accessible-label alias.
 - `Input`, `Select`, `RadioGroup`, and `FormField` wire labels, descriptions,
   required state, disabled state, and error text.
 - `RadioGroup`, `Tabs`, menus, tooltips, and overlays include keyboard behavior

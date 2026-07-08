@@ -66,6 +66,9 @@ export function Example() {
 }
 ```
 
+For icon-only web actions, use the standard `aria-label` attribute. Native
+actions use `accessibilityLabel`.
+
 <p>
   <a class="docs-cta" href="/getting-started">Get Started</a>
 </p>

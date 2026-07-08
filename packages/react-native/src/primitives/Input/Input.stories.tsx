@@ -1,7 +1,11 @@
 import { useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
-import { Search as SearchIcon } from '@vellira-ui/icons';
+import type { Meta, StoryObj } from '@storybook/react-native';
+import { Check, Close, Search } from '@vellira-ui/icons';
+import type { ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+import { useTheme } from '../../theme';
 
 import { Input } from './Input';
 import type { InputProps } from './types';
@@ -20,42 +24,12 @@ Text input primitive for collecting user data in forms.
 
 **Features**
 - Controlled and uncontrolled usage
-- Multiple input types
-- Three size variants
-- Required state
-- Disabled state
-- Validation error message
-- Accessible label support
-
-### Usage
-
-Use Input when users need to enter text, email addresses, passwords, numbers, or search queries.
-
-Correct usage:
-
-\`\`\`tsx
-<Input
-  label="Email"
-  placeholder="name@company.com"
-  value={email}
-  onChange={setEmail}
-/>
-\`\`\`
-
-### Accessibility
-
-- Associated form label
-- Required state support
-- Error state support
-- Native keyboard and screen reader support
-
-### Common use cases
-
-- Login and registration forms
-- Search fields
-- Profile settings
-- Contact forms
-- Data entry forms
+- Smart input type behavior
+- Sizes: sm, md, lg
+- Description, required, disabled, read-only and error states
+- Left and right icon support
+- Clearable input
+- Optional overflow tooltip
 `,
       },
     },
@@ -65,54 +39,45 @@ Correct usage:
     placeholder: 'name@company.com',
     size: 'md',
     type: 'email',
+    disabled: false,
+    required: false,
+    readOnly: false,
+    clearable: false,
+    showOverflowTooltip: false,
   },
   argTypes: {
-    label: {
-      description: 'Label displayed above the input.',
-      control: 'text',
-    },
-
-    value: {
-      description: 'Current input value.',
-      control: 'text',
-    },
-
-    placeholder: {
-      description: 'Placeholder text displayed when empty.',
-      control: 'text',
-    },
+    id: { control: 'text' },
+    name: { control: 'text' },
+    label: { control: 'text' },
+    description: { control: 'text' },
+    value: { control: 'text' },
+    defaultValue: { control: 'text' },
+    placeholder: { control: 'text' },
 
     size: {
-      description: 'Input size variant.',
-      control: 'select',
+      control: 'radio',
       options: ['sm', 'md', 'lg'],
     },
 
     type: {
-      description: 'Native input type.',
       control: 'select',
       options: ['text', 'email', 'password', 'number', 'tel', 'url', 'search'],
     },
 
-    required: {
-      description: 'Marks the input as required.',
-      control: 'boolean',
-    },
+    required: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    readOnly: { control: 'boolean' },
+    clearable: { control: 'boolean' },
+    error: { control: 'text' },
+    autoFocus: { control: 'boolean' },
+    maxLength: { control: 'number' },
+    showOverflowTooltip: { control: 'boolean' },
 
-    disabled: {
-      description: 'Disables user interaction.',
-      control: 'boolean',
-    },
+    onChange: { action: 'changed' },
+    onClear: { action: 'cleared' },
 
-    error: {
-      description: 'Validation error message.',
-      control: 'text',
-    },
-
-    onChange: {
-      description: 'Called when the input value changes.',
-      action: 'changed',
-    },
+    leftIcon: { control: false },
+    rightIcon: { control: false },
   },
 } satisfies Meta<typeof Input>;
 
@@ -120,7 +85,43 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const ControlledInputDemo = (args: InputProps) => {
+const storyStyles = StyleSheet.create({
+  column: {
+    width: '100%',
+    gap: 12,
+  },
+});
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    section: {
+      width: '100%',
+      padding: 20,
+      gap: 16,
+      borderWidth: 1,
+      borderColor: theme.semantic.border.muted,
+      borderRadius: 20,
+      backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    subtitle: {
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+      fontWeight: '600',
+    },
+  });
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.subtitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function ControlledInputDemo(args: InputProps) {
   const [value, setValue] = useState(args.value ?? '');
 
   const handleChange = (nextValue: string) => {
@@ -129,82 +130,184 @@ const ControlledInputDemo = (args: InputProps) => {
   };
 
   return <Input {...args} value={value} onChange={handleChange} />;
+}
+
+function ClearableInputDemo() {
+  const [value, setValue] = useState('Clear me');
+
+  return (
+    <Input
+      label='Clearable input'
+      description='Shows a clear action when the field has a value.'
+      value={value}
+      onChange={setValue}
+      clearable
+      clearIcon={<Close />}
+      clearIconTone='danger'
+      onClear={() => setValue('')}
+      placeholder='Type something'
+    />
+  );
+}
+
+export const Playground: Story = {
+  render: (args) => (
+    <Section title='Playground'>
+      <ControlledInputDemo {...args} />
+    </Section>
+  ),
 };
 
-export const Default: Story = {
-  render: (args) => <ControlledInputDemo {...args} />,
+export const Uncontrolled: Story = {
+  render: () => (
+    <Section title='Controlled and uncontrolled'>
+      <View style={storyStyles.column}>
+        <ControlledInputDemo
+          label='Controlled'
+          value='Controlled value'
+          onChange={() => undefined}
+        />
+
+        <Input
+          label='Uncontrolled'
+          defaultValue='Uncontrolled value'
+          placeholder='Type something'
+        />
+      </View>
+    </Section>
+  ),
 };
 
-export const WithValue: Story = {
-  args: {
-    value: 'hello@vellira.dev',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <View style={storyStyles.column}>
+        <Input label='Small' size='sm' placeholder='Small input' />
+        <Input label='Medium' size='md' placeholder='Medium input' />
+        <Input label='Large' size='lg' placeholder='Large input' />
+      </View>
+    </Section>
+  ),
 };
 
-export const Required: Story = {
-  args: {
-    required: true,
-    label: 'Full name',
-    placeholder: 'Alex Johnson',
-    type: 'text',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const Types: Story = {
+  render: () => (
+    <Section title='Types'>
+      <View style={storyStyles.column}>
+        <Input label='Text' type='text' placeholder='Ada Lovelace' />
+        <Input label='Email' type='email' placeholder='name@company.com' />
+        <Input label='Password' type='password' placeholder='Password' />
+        <Input label='Number' type='number' placeholder='42' />
+        <Input label='Phone' type='tel' placeholder='+33 6 00 00 00 00' />
+        <Input label='URL' type='url' placeholder='https://vellira.dev' />
+        <Input
+          label='Search'
+          type='search'
+          placeholder='Search components'
+          leftIcon={<Search />}
+        />
+      </View>
+    </Section>
+  ),
 };
 
-export const WithError: Story = {
-  args: {
-    label: 'Password',
-    placeholder: 'Enter password',
-    type: 'password',
-    error: 'Password is required',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const Adornments: Story = {
+  render: () => (
+    <Section title='Icons'>
+      <View style={storyStyles.column}>
+        <Input
+          label='Search'
+          leftAdornment={<Search />}
+          leftAdornmentTone='primary'
+          placeholder='Search components'
+          type='search'
+        />
+
+        <Input
+          label='Verified email'
+          defaultValue='hello@vellira.dev'
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
+          placeholder='name@company.com'
+          type='email'
+        />
+
+        <Input
+          label='Search settings'
+          leftAdornment={<Search />}
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
+          leftAdornmentTone='primary'
+          defaultValue='Theme'
+        />
+
+        <ClearableInputDemo />
+      </View>
+    </Section>
+  ),
 };
 
-export const Disabled: Story = {
-  args: {
-    label: 'Disabled input',
-    value: 'Not editable',
-    disabled: true,
-    type: 'text',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const States: Story = {
+  render: () => (
+    <Section title='States'>
+      <View style={storyStyles.column}>
+        <Input label='Required' required placeholder='Required input' />
+
+        <Input label='Disabled' disabled value='Disabled value' />
+
+        <Input label='Read only' readOnly value='Read only value' />
+
+        <Input
+          label='Error'
+          required
+          error='This field is required'
+          placeholder='Invalid value'
+          value=''
+        />
+      </View>
+    </Section>
+  ),
 };
 
-export const Search: Story = {
-  args: {
-    label: 'Search',
-    placeholder: 'Search components...',
-    type: 'search',
-    leftIcon: <SearchIcon />,
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const Validation: Story = {
+  render: () => (
+    <Section title='Validation'>
+      <View style={storyStyles.column}>
+        <Input
+          label='Email'
+          type='email'
+          required
+          error='Enter a valid email address'
+          value='wrong-email'
+        />
+
+        <Input
+          label='Password'
+          type='password'
+          required
+          error='Password must contain at least 8 characters'
+          value=''
+        />
+      </View>
+    </Section>
+  ),
 };
 
-export const Number: Story = {
-  args: {
-    label: 'Age',
-    placeholder: '32',
-    type: 'number',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
-};
-
-export const Small: Story = {
-  args: {
-    size: 'sm',
-    label: 'Small input',
-    type: 'text',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
-};
-
-export const Large: Story = {
-  args: {
-    size: 'lg',
-    label: 'Large input',
-    type: 'text',
-  },
-  render: (args) => <ControlledInputDemo {...args} />,
+export const WithOverflowTooltip: Story = {
+  decorators: [
+    (Story) => (
+      <View style={{ width: 300 }}>
+        <Story />
+      </View>
+    ),
+  ],
+  render: () => (
+    <Section title='Overflow tooltip'>
+      <ControlledInputDemo
+        label='Company name'
+        value='Very long company name that does not fit into the input field'
+        showOverflowTooltip
+      />
+    </Section>
+  ),
 };

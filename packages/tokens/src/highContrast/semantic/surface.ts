@@ -1,4 +1,5 @@
 import { colors } from '../../primitives/colors.js';
+import { withAlpha } from '../../utils/color.js';
 
 export const surface = {
   default: colors.mono[950],
@@ -6,6 +7,7 @@ export const surface = {
   subtle: colors.gray[900],
   elevated: colors.gray[700],
   pressed: colors.gray[900],
+  danger: withAlpha(colors.error[800], 0.5),
 
   hover: colors.gray[800],
   active: colors.gray[900],

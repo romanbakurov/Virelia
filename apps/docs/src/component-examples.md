@@ -24,6 +24,7 @@ Use this page as a visual overview of the component library.
       <div><span>Focus</span><button class="docs-button docs-is-focus">Save</button></div>
       <div><span>Disabled</span><button class="docs-button" disabled>Save</button></div>
       <div><span>Loading</span><button class="docs-button docs-is-loading">Saving</button></div>
+      <div><span>Icon-only</span><button class="docs-button docs-button-icon" aria-label="Search">⌕</button></div>
       <div><span>Danger</span><button class="docs-button docs-button-danger">Delete</button></div>
     </div>
   </section>
@@ -178,6 +179,27 @@ export function FormExample() {
         Continue
       </Button>
     </form>
+  );
+}
+```
+
+### Button Actions
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+import { Button } from '@vellira-ui/react';
+
+export function ButtonActions() {
+  return (
+    <>
+      <Button color='primary' variant='solid'>
+        Save
+      </Button>
+      <Button loading loadingText='Saving...'>
+        Save
+      </Button>
+      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+    </>
   );
 }
 ```

@@ -29,7 +29,7 @@ theme.semantic.text.primary;
 theme.semantic.border.default;
 theme.semantic.status.success.fg;
 
-theme.components.button.primary.default.bg;
+theme.components.button.primary.solid.default.bg;
 theme.components.input.default.bg; // may be a hex color or transparent
 
 theme.tokens.typography.family.regular;
@@ -82,7 +82,7 @@ Using semantic tokens instead of raw palette values makes components easier to m
 Component tokens define renderer-neutral values for component states.
 
 ```ts
-theme.components.button.primary.default.bg;
+theme.components.button.primary.solid.default.bg;
 theme.components.input.focus.border;
 theme.components.dropdown.content.bg;
 ```
@@ -106,7 +106,7 @@ Examples:
 --surface-default
 --text-primary
 --border-default
---button-primary-default-bg
+--button-primary-solid-default-bg
 ```
 
 ---

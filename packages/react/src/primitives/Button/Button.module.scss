@@ -1,3 +1,13 @@
+$button-colors: primary, secondary, danger, close;
+$button-variants: solid, outline, ghost;
+
+@mixin button-state($color, $variant, $state) {
+  color: var(--button-#{$color}-#{$variant}-#{$state}-fg);
+  background-color: var(--button-#{$color}-#{$variant}-#{$state}-bg);
+  box-shadow: inset 0 0 0 1px
+    var(--button-#{$color}-#{$variant}-#{$state}-border);
+}
+
 .button {
   position: relative;
   display: inline-flex;
@@ -33,232 +43,22 @@
   cursor: progress;
 }
 
-.solid.primary:not(:disabled) {
-  color: var(--button-primary-solid-default-fg);
-  background-color: var(--button-primary-solid-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-solid-default-border);
-}
+@each $variant in $button-variants {
+  @each $color in $button-colors {
+    .#{$variant}.#{$color}:not(:disabled) {
+      @include button-state($color, $variant, default);
+    }
 
-.solid.secondary:not(:disabled) {
-  color: var(--button-secondary-solid-default-fg);
-  background-color: var(--button-secondary-solid-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-solid-default-border);
-}
+    .button:not(:disabled).#{$variant}.#{$color}:hover {
+      @include button-state($color, $variant, hover);
 
-.solid.danger:not(:disabled) {
-  color: var(--button-danger-solid-default-fg);
-  background-color: var(--button-danger-solid-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-solid-default-border);
-}
+      transform: translateY(-1px);
+    }
 
-.solid.close:not(:disabled) {
-  color: var(--button-close-solid-default-fg);
-  background-color: var(--button-close-solid-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-solid-default-border);
-}
-
-.outline.primary:not(:disabled) {
-  color: var(--button-primary-outline-default-fg);
-  background-color: var(--button-primary-outline-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-outline-default-border);
-}
-
-.outline.secondary:not(:disabled) {
-  color: var(--button-secondary-outline-default-fg);
-  background-color: var(--button-secondary-outline-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-outline-default-border);
-}
-
-.outline.danger:not(:disabled) {
-  color: var(--button-danger-outline-default-fg);
-  background-color: var(--button-danger-outline-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-outline-default-border);
-}
-
-.outline.close:not(:disabled) {
-  color: var(--button-close-outline-default-fg);
-  background-color: var(--button-close-outline-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-outline-default-border);
-}
-
-.ghost.primary:not(:disabled) {
-  color: var(--button-primary-ghost-default-fg);
-  background-color: var(--button-primary-ghost-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-ghost-default-border);
-}
-
-.ghost.secondary:not(:disabled) {
-  color: var(--button-secondary-ghost-default-fg);
-  background-color: var(--button-secondary-ghost-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-ghost-default-border);
-}
-
-.ghost.danger:not(:disabled) {
-  color: var(--button-danger-ghost-default-fg);
-  background-color: var(--button-danger-ghost-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-ghost-default-border);
-}
-
-.ghost.close:not(:disabled) {
-  color: var(--button-close-ghost-default-fg);
-  background-color: var(--button-close-ghost-default-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-ghost-default-border);
-}
-
-.button:not(:disabled).solid.primary:hover {
-  color: var(--button-primary-solid-hover-fg);
-  background-color: var(--button-primary-solid-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-solid-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).solid.secondary:hover {
-  color: var(--button-secondary-solid-hover-fg);
-  background-color: var(--button-secondary-solid-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-solid-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).solid.danger:hover {
-  color: var(--button-danger-solid-hover-fg);
-  background-color: var(--button-danger-solid-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-solid-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).solid.close:hover {
-  color: var(--button-close-solid-hover-fg);
-  background-color: var(--button-close-solid-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-solid-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).outline.primary:hover {
-  color: var(--button-primary-outline-hover-fg);
-  background-color: var(--button-primary-outline-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-outline-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).outline.secondary:hover {
-  color: var(--button-secondary-outline-hover-fg);
-  background-color: var(--button-secondary-outline-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-outline-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).outline.danger:hover {
-  color: var(--button-danger-outline-hover-fg);
-  background-color: var(--button-danger-outline-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-outline-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).outline.close:hover {
-  color: var(--button-close-outline-hover-fg);
-  background-color: var(--button-close-outline-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-outline-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).ghost.primary:hover {
-  color: var(--button-primary-ghost-hover-fg);
-  background-color: var(--button-primary-ghost-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-ghost-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).ghost.secondary:hover {
-  color: var(--button-secondary-ghost-hover-fg);
-  background-color: var(--button-secondary-ghost-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-ghost-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).ghost.danger:hover {
-  color: var(--button-danger-ghost-hover-fg);
-  background-color: var(--button-danger-ghost-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-ghost-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).ghost.close:hover {
-  color: var(--button-close-ghost-hover-fg);
-  background-color: var(--button-close-ghost-hover-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-ghost-hover-border);
-  transform: translateY(-1px);
-}
-
-.button:not(:disabled).solid.primary:active {
-  color: var(--button-primary-solid-pressed-fg);
-  background-color: var(--button-primary-solid-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-solid-pressed-border);
-}
-
-.button:not(:disabled).solid.secondary:active {
-  color: var(--button-secondary-solid-pressed-fg);
-  background-color: var(--button-secondary-solid-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-solid-pressed-border);
-}
-
-.button:not(:disabled).solid.danger:active {
-  color: var(--button-danger-solid-pressed-fg);
-  background-color: var(--button-danger-solid-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-solid-pressed-border);
-}
-
-.button:not(:disabled).solid.close:active {
-  color: var(--button-close-solid-pressed-fg);
-  background-color: var(--button-close-solid-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-solid-pressed-border);
-}
-
-.button:not(:disabled).outline.primary:active {
-  color: var(--button-primary-outline-pressed-fg);
-  background-color: var(--button-primary-outline-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-outline-pressed-border);
-}
-
-.button:not(:disabled).outline.secondary:active {
-  color: var(--button-secondary-outline-pressed-fg);
-  background-color: var(--button-secondary-outline-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-outline-pressed-border);
-}
-
-.button:not(:disabled).outline.danger:active {
-  color: var(--button-danger-outline-pressed-fg);
-  background-color: var(--button-danger-outline-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-outline-pressed-border);
-}
-
-.button:not(:disabled).outline.close:active {
-  color: var(--button-close-outline-pressed-fg);
-  background-color: var(--button-close-outline-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-outline-pressed-border);
-}
-
-.button:not(:disabled).ghost.primary:active {
-  color: var(--button-primary-ghost-pressed-fg);
-  background-color: var(--button-primary-ghost-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-primary-ghost-pressed-border);
-}
-
-.button:not(:disabled).ghost.secondary:active {
-  color: var(--button-secondary-ghost-pressed-fg);
-  background-color: var(--button-secondary-ghost-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-secondary-ghost-pressed-border);
-}
-
-.button:not(:disabled).ghost.danger:active {
-  color: var(--button-danger-ghost-pressed-fg);
-  background-color: var(--button-danger-ghost-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-danger-ghost-pressed-border);
-}
-
-.button:not(:disabled).ghost.close:active {
-  color: var(--button-close-ghost-pressed-fg);
-  background-color: var(--button-close-ghost-pressed-bg);
-  box-shadow: inset 0 0 0 1px var(--button-close-ghost-pressed-border);
+    .button:not(:disabled).#{$variant}.#{$color}:active {
+      @include button-state($color, $variant, pressed);
+    }
+  }
 }
 
 .button:focus-visible {
@@ -356,18 +156,14 @@
     animation: none;
   }
 
-  .button:not(:disabled).solid.primary:hover,
-  .button:not(:disabled).solid.secondary:hover,
-  .button:not(:disabled).solid.danger:hover,
-  .button:not(:disabled).solid.close:hover,
-  .button:not(:disabled).outline.primary:hover,
-  .button:not(:disabled).outline.secondary:hover,
-  .button:not(:disabled).outline.danger:hover,
-  .button:not(:disabled).outline.close:hover,
-  .button:not(:disabled).ghost.primary:hover,
-  .button:not(:disabled).ghost.secondary:hover,
-  .button:not(:disabled).ghost.danger:hover,
-  .button:not(:disabled).ghost.close:hover,
+  @each $variant in $button-variants {
+    @each $color in $button-colors {
+      .button:not(:disabled).#{$variant}.#{$color}:hover {
+        transform: none;
+      }
+    }
+  }
+
   .button:not(:disabled):active {
     transform: none;
   }

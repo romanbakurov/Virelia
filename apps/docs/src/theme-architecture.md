@@ -57,8 +57,8 @@ Component tokens turn semantic decisions into component states. Components shoul
 and component tokens that describe UI states.
 
 ```ts
-theme.components.button.primary.default.bg;
-theme.components.button.primary.hover.bg;
+theme.components.button.primary.solid.default.bg;
+theme.components.button.primary.solid.hover.bg;
 theme.components.input.focus.border;
 theme.components.dropdown.content.bg;
 ```

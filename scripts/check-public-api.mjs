@@ -178,6 +178,7 @@ const publicSymbolContracts = {
     'ButtonSize',
     'ButtonVariant',
     'FloatingPlacement',
+    'InputAdornmentTone',
     'InputSize',
     'InputType',
     'Orientation',

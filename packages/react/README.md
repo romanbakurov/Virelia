@@ -68,6 +68,19 @@ export function Example() {
 }
 ```
 
+### Button Notes
+
+Use the standard `aria-label` attribute for icon-only web buttons:
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+
+<Button aria-label='Search' iconOnly leftIcon={<Search />} />;
+```
+
+`loading` disables interaction and can replace the visible label with
+`loadingText`.
+
 ## Testing
 
 Run only web tests:

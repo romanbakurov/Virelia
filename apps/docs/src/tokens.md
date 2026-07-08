@@ -40,7 +40,7 @@ import { theme } from '@vellira-ui/tokens';
 theme.semantic.surface.default;
 theme.semantic.text.primary;
 
-theme.components.button.primary.default.bg;
+theme.components.button.primary.solid.default.bg;
 
 theme.tokens.radius.md;
 ```

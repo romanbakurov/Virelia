@@ -70,6 +70,33 @@ generated reference lives in
 | `Tooltip`    | Contextual helper     |
 | `Modal`      | Dialog and overlay    |
 
+## Button
+
+Native Button maps to React Native `Pressable`, uses `onPress`, and accepts
+native styling hooks through `style` and `textStyle`. Use Vellira icon elements
+for `leftIcon` and `rightIcon`; Button injects the active icon color and size.
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+import { Button } from '@vellira-ui/react-native';
+
+export function ButtonExamples() {
+  return (
+    <>
+      <Button color='primary' variant='solid' onPress={handleSave}>
+        Save
+      </Button>
+
+      <Button loading loadingText='Saving...'>
+        Save
+      </Button>
+
+      <Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />
+    </>
+  );
+}
+```
+
 ## Controlled and Uncontrolled
 
 Most form components support both controlled and uncontrolled usage.
@@ -133,6 +160,9 @@ export function UncontrolledPreferences() {
 Vellira Native components map shared component contracts to React Native
 accessibility props where the platform supports them.
 
+- `Button` uses `accessibilityLabel` for icon-only or ambiguous actions. Its
+  hover state changes background on web-compatible targets; focus adds a ring
+  without changing the background.
 - Inputs, selection controls, and field wrappers expose labels, disabled state,
   required state, and error text through React Native accessibility APIs.
 - Interactive components keep press handling and disabled behavior inside the
