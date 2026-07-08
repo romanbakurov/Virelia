@@ -183,6 +183,13 @@ const stackStyle = {
   alignItems: 'flex-start',
 } as const;
 
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
+
 const rowStyle = {
   display: 'flex',
   flexWrap: 'wrap',
@@ -196,13 +203,19 @@ const sectionStyle = {
   gap: 16,
   minWidth: 0,
   padding: 20,
+  maxWidth: 760,
   border: '1px solid var(--border-muted)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-xl)',
   background: 'var(--surface-subtle)',
 } satisfies CSSProperties;
 
-function Section({ children }: { title: string; children: ReactNode }) {
-  return <section style={sectionStyle}>{children}</section>;
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section style={sectionStyle}>
+      <h3 style={subtitleStyle}>{title}</h3>
+      {children}
+    </section>
+  );
 }
 
 export const Basic: Story = {
@@ -215,7 +228,7 @@ export const Basic: Story = {
     leftIcon: <Download />,
   },
   render: (args) => (
-    <Section>
+    <Section title='Basic'>
       <div style={rowStyle}>
         <Button {...args}>Primary</Button>
       </div>
@@ -229,7 +242,7 @@ export const Colors: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='Colors'>
       <div style={rowStyle}>
         <Button {...args} color='primary'>
           Primary
@@ -254,7 +267,7 @@ export const Variants: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='Variants'>
       <div style={rowStyle}>
         <Button {...args} variant='solid'>
           Solid
@@ -279,7 +292,7 @@ export const Matrix: Story = {
     const variants = ['solid', 'outline', 'ghost'] as const;
 
     return (
-      <Section>
+      <Section title='Matrix'>
         <div style={stackStyle}>
           {colors.map((color) => (
             <div key={color} style={rowStyle}>
@@ -307,7 +320,7 @@ export const Sizes: Story = {
     variant: 'solid',
   },
   render: (args) => (
-    <Section>
+    <Section title='Sizes'>
       <div style={rowStyle}>
         <Button {...args} size='sm'>
           Small
@@ -330,7 +343,7 @@ export const WithIcons: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='WithIcons'>
       <div style={stackStyle}>
         <div style={rowStyle}>
           <Button {...args} leftIcon={<Download />}>
@@ -360,7 +373,7 @@ export const IconOnly: Story = {
     ariaLabel: 'Filter',
   },
   render: (args) => (
-    <Section>
+    <Section title='IconOnly'>
       <div style={rowStyle}>
         <Button {...args} leftIcon={<Filter />} />
       </div>
@@ -375,7 +388,7 @@ export const Loading: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='Loading'>
       <div style={rowStyle}>
         <Button {...args} loading>
           Saving
@@ -400,7 +413,7 @@ export const Disabled: Story = {
     children: 'Disabled',
   },
   render: (args) => (
-    <Section>
+    <Section title='Disabled'>
       <div style={rowStyle}>
         <Button {...args}>Disabled</Button>
       </div>
@@ -415,7 +428,7 @@ export const FullWidth: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='FullWidth'>
       <div style={rowStyle}>
         <Button {...args} fullWidth>
           Full width
@@ -432,7 +445,7 @@ export const ButtonTypes: Story = {
     size: 'md',
   },
   render: (args) => (
-    <Section>
+    <Section title='ButtonTypes'>
       <div style={rowStyle}>
         <Button {...args} type='button'>
           Button
@@ -450,7 +463,7 @@ export const ButtonTypes: Story = {
 
 export const AccessibleIconActions: Story = {
   render: () => (
-    <Section>
+    <Section title='AccessibleIconActions'>
       <div style={rowStyle}>
         <Button
           ariaLabel='Search'

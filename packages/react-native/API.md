@@ -147,21 +147,32 @@ import { Input } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.InputProps.Input -->
 
-| Prop             | Type                      | Required | Description                                |
-| ---------------- | ------------------------- | -------- | ------------------------------------------ |
-| `label`          | `string`                  | Yes      | Visible label.                             |
-| `placeholder`    | `string`                  | No       | Placeholder text.                          |
-| `size`           | `InputSize`               | No       | Input size.                                |
-| `error`          | `string`                  | No       | Error message rendered under the input.    |
-| `type`           | `InputType`               | No       | Semantic input type used by the component. |
-| `containerStyle` | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.       |
-| `inputStyle`     | `StyleProp<TextStyle>`    | No       | Extra style for the input element.         |
-| `value`          | `string`                  | Yes      | Controlled value.                          |
-| `onChange`       | `(value: string) => void` | Yes      | Called with the next value.                |
-| `disabled`       | `boolean`                 | No       | Disables the input.                        |
-| `required`       | `boolean`                 | No       | Marks the field as required.               |
-| `leftIcon`       | `InputIconElement`        | No       | Icon rendered before content.              |
-| `iconSize`       | `number`                  | No       | Icon size in pixels.                       |
+| Prop              | Type                      | Required | Description                                |
+| ----------------- | ------------------------- | -------- | ------------------------------------------ |
+| `label`           | `string`                  | No       | Visible label.                             |
+| `placeholder`     | `string`                  | No       | Placeholder text.                          |
+| `size`            | `InputSize`               | No       | Input size.                                |
+| `error`           | `string`                  | No       | Error message rendered under the input.    |
+| `type`            | `InputType`               | No       | Semantic input type used by the component. |
+| `containerStyle`  | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.       |
+| `inputStyle`      | `StyleProp<TextStyle>`    | No       | Extra style for the input element.         |
+| `value`           | `string`                  | No       | Controlled value.                          |
+| `onChange`        | `(value: string) => void` | No       | Called with the next value.                |
+| `disabled`        | `boolean`                 | No       | Disables the input.                        |
+| `required`        | `boolean`                 | No       | Marks the field as required.               |
+| `iconSize`        | `number`                  | No       | Icon size in pixels.                       |
+| `leftAdornment`   | `InputIconElement`        | No       | —                                          |
+| `rightAdornment`  | `InputIconElement`        | No       | —                                          |
+| `clearIcon`       | `InputIconElement`        | No       | —                                          |
+| `testID`          | `string`                  | No       | —                                          |
+| `keyboardType`    | `KeyboardTypeOptions`     | No       | —                                          |
+| `secureTextEntry` | `boolean`                 | No       | —                                          |
+| `defaultValue`    | `string`                  | No       | —                                          |
+| `readOnly`        | `boolean`                 | No       | —                                          |
+| `autoFocus`       | `boolean`                 | No       | —                                          |
+| `maxLength`       | `number`                  | No       | —                                          |
+| `clearable`       | `boolean`                 | No       | —                                          |
+| `onClear`         | `() => void`              | No       | —                                          |
 
 <!-- api-docgen:end native.InputProps.Input -->
 

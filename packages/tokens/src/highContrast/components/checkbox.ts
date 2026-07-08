@@ -6,11 +6,7 @@ import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const checkbox = {
-  default: {
-    bg: surface.default,
-    fg: text.primary,
-    border: border.muted,
-  },
+  default: control.default,
 
   hover: control.hover,
 
@@ -31,7 +27,7 @@ export const checkbox = {
   },
 
   error: {
-    border: status.error.fg,
     fg: status.error.fg,
+    border: status.error.fg,
   },
 } as const;

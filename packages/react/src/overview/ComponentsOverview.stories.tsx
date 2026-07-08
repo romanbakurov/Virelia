@@ -58,7 +58,7 @@ const sectionStyle = {
   minWidth: 0,
   padding: 20,
   border: '1px solid var(--border-muted)',
-  borderRadius: 8,
+  borderRadius: 'var(--radius-xl)',
   background: 'var(--surface-subtle)',
 } satisfies CSSProperties;
 

@@ -1,3 +1,4 @@
+import { icons } from '../../dark/semantic/icons.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { navigation } from '../semantic/navigation.js';
@@ -11,13 +12,15 @@ export const input = {
     fg: text.primary,
     border: border.default,
     placeholder: text.muted,
+    icon: icons.brand,
   },
 
   hover: {
-    bg: navigation.hover.bg,
+    bg: surface.hover,
     fg: navigation.hover.fg,
     border: navigation.hover.bg,
     placeholder: navigation.hover.fg,
+    icon: icons.hover,
   },
 
   focus: {
@@ -26,6 +29,7 @@ export const input = {
     border: border.focus,
     ring: focus.ring,
     placeholder: text.muted,
+    icon: icons.subtle,
   },
 
   disabled: {
@@ -33,6 +37,7 @@ export const input = {
     fg: text.disabled,
     border: border.muted,
     placeholder: text.disabled,
+    icon: icons.disabled,
   },
 
   error: {

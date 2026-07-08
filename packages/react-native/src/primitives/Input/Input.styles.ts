@@ -35,14 +35,51 @@ export const createStyles = (theme: NativeTheme) =>
       paddingLeft: theme.tokens.spacing[5] + 20,
     },
 
-    leftIcon: {
+    inputWithRightIcon: {
+      paddingRight: theme.tokens.spacing[5] + 20,
+    },
+
+    rightAdornment: {
       position: 'absolute',
-      left: theme.tokens.spacing[4],
-      top: 0,
-      bottom: 0,
+      right: theme.tokens.spacing[4],
+      top: '50%',
       zIndex: 1,
+      width: 20,
+      height: 20,
+      marginTop: -10,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+
+    leftAdornment: {
+      position: 'absolute',
+      left: theme.tokens.spacing[4],
+      top: '50%',
+      zIndex: 1,
+      width: 20,
+      height: 20,
+      marginTop: -10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    clearButton: {
+      position: 'absolute',
+      right: theme.tokens.spacing[4],
+      top: '50%',
+      zIndex: 1,
+      width: 24,
+      height: 24,
+      marginTop: -12,
+      borderRadius: 999,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    clearButtonText: {
+      color: theme.components.input.default.placeholder,
+      fontSize: 16,
+      lineHeight: 20,
     },
 
     sm: {
@@ -79,6 +116,8 @@ export const createStyles = (theme: NativeTheme) =>
     errorFocused: {
       borderColor: theme.components.input.error.border,
     },
+
+    readOnly: {},
 
     disabled: {
       opacity: 1,

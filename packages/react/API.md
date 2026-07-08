@@ -153,7 +153,7 @@ import { Input } from '@vellira-ui/react';
 
 | Prop                  | Type                      | Required | Description                                  |
 | --------------------- | ------------------------- | -------- | -------------------------------------------- |
-| `label`               | `string`                  | Yes      | Visible label.                               |
+| `label`               | `string`                  | No       | Visible label.                               |
 | `placeholder`         | `string`                  | No       | Placeholder text.                            |
 | `size`                | `InputSize`               | No       | Input size.                                  |
 | `error`               | `string`                  | No       | Error message rendered under the input.      |
@@ -161,11 +161,22 @@ import { Input } from '@vellira-ui/react';
 | `id`                  | `string`                  | No       | Input id. Generated internally when omitted. |
 | `className`           | `string`                  | No       | Extra CSS class for the root element.        |
 | `autoComplete`        | `string`                  | No       | HTML autocomplete value.                     |
-| `value`               | `string`                  | Yes      | Controlled value.                            |
-| `onChange`            | `(value: string) => void` | Yes      | Called with the next value.                  |
+| `value`               | `string`                  | No       | Controlled value.                            |
+| `onChange`            | `(value: string) => void` | No       | Called with the next value.                  |
 | `disabled`            | `boolean`                 | No       | Disables the input.                          |
 | `required`            | `boolean`                 | No       | Marks the field as required.                 |
 | `showOverflowTooltip` | `boolean`                 | No       | —                                            |
+| `name`                | `string`                  | No       | —                                            |
+| `description`         | `string`                  | No       | Additional descriptive text.                 |
+| `leftAdornment`       | `ReactNode`               | No       | —                                            |
+| `rightAdornment`      | `ReactNode`               | No       | —                                            |
+| `clearIcon`           | `ReactNode`               | No       | —                                            |
+| `defaultValue`        | `string`                  | No       | —                                            |
+| `readOnly`            | `boolean`                 | No       | —                                            |
+| `autoFocus`           | `boolean`                 | No       | —                                            |
+| `maxLength`           | `number`                  | No       | —                                            |
+| `clearable`           | `boolean`                 | No       | —                                            |
+| `onClear`             | `() => void`              | No       | —                                            |
 
 <!-- api-docgen:end web.InputProps.Input -->
 

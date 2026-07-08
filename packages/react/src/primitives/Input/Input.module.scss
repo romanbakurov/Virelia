@@ -2,6 +2,8 @@
 
 .inputWrapper {
   position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
 }
 
@@ -9,16 +11,19 @@
   width: 100%;
   padding: var(--space-3) var(--space-4);
   color: var(--input-default-fg);
-  font: inherit;
   font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-md);
   background-color: var(--input-default-bg);
   border: 1px solid var(--input-default-border);
   border-radius: var(--radius-md);
-  outline: none;
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
+  font-family: var(--font-family-base);
+  outline: none;
 
   &::placeholder {
     color: var(--input-default-placeholder);
@@ -36,6 +41,7 @@
     background-color: var(--input-disabled-bg);
     border-color: var(--input-disabled-border);
     cursor: not-allowed;
+    pointer-events: none;
 
     &::placeholder {
       color: var(--input-disabled-placeholder);
@@ -71,6 +77,99 @@
     padding: var(--space-4) var(--space-5);
     font-size: var(--font-size-lg);
   }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--input-default-fg);
+    caret-color: var(--input-default-fg);
+    box-shadow: 0 0 0 1000px var(--input-default-bg) inset;
+    transition: background-color 9999s ease-out;
+  }
+
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--input-focus-fg);
+    caret-color: var(--input-focus-fg);
+    box-shadow: 0 0 0 1000px var(--input-focus-bg) inset;
+  }
+}
+
+.input:not(:disabled, :focus-visible):hover {
+  border-color: var(--input-hover-border);
+  background: var(--input-hover-bg);
+}
+
+.hasLeftAdornment .input {
+  padding-left: var(--space-12);
+}
+
+.hasRightAdornment .input {
+  padding-right: var(--space-12);
+}
+
+.leftAdornment,
+.rightAdornment {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  color: var(--input-default-icon);
+  transform: translateY(-50%);
+}
+
+.leftAdornment svg,
+.rightAdornment svg {
+  width: var(--space-5);
+  height: var(--space-5);
+  fill: currentcolor;
+  flex-shrink: 0;
+}
+
+.leftAdornment {
+  left: var(--space-3);
+}
+
+.rightAdornment {
+  right: var(--space-3);
+}
+
+.clearButton {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  padding: 0;
+  color: var(--input-default-icon);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.clearButton svg {
+  width: var(--space-5);
+  height: var(--space-5);
+  flex-shrink: 0;
+}
+
+.clearButton:not(:disabled):hover {
+  color: var(--input-default-fg);
+  background: var(--surface-hover);
+}
+
+.clearButton:focus-visible {
+  outline: 2px solid var(--input-focus-ring);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -97,7 +196,7 @@
   background-color: var(--tooltip-content-bg);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  animation: fadeIn 0.15s ease-out;
+  animation: fadeIn 120ms ease-out;
 
   &::before {
     content: '';

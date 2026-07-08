@@ -11,7 +11,7 @@ export const status = {
   error: {
     fg: colors.error[400],
     bg: 'rgba(251, 113, 133, 0.16)',
-    border: colors.error[300],
+    border: colors.error[400],
     strong: colors.error[600],
   },
 

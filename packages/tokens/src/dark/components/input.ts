@@ -1,5 +1,6 @@
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
+import { icons } from '../semantic/icons.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -10,6 +11,7 @@ export const input = {
     fg: text.primary,
     border: border.elevated,
     placeholder: text.secondary,
+    icon: icons.brand,
   },
 
   hover: {
@@ -17,6 +19,7 @@ export const input = {
     fg: text.primary,
     border: border.focus,
     placeholder: text.muted,
+    icon: icons.hover,
   },
 
   focus: {
@@ -25,13 +28,15 @@ export const input = {
     border: border.focus,
     ring: focus.ring,
     placeholder: text.muted,
+    icon: icons.subtle,
   },
 
   disabled: {
-    bg: surface.subtle,
+    bg: surface.elevated,
     fg: text.disabled,
     border: border.default,
     placeholder: text.disabled,
+    icon: icons.disabled,
   },
 
   error: {

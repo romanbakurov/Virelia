@@ -34,7 +34,7 @@ export const checkbox = {
   },
 
   error: {
-    border: status.error.fg,
     fg: status.error.fg,
+    border: status.error.fg,
   },
 } as const;

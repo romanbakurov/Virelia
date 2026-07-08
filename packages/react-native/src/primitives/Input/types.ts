@@ -1,4 +1,4 @@
-import type { BaseInputProps, InputSize, InputType } from '@vellira-ui/types';
+import type { BaseInputProps } from '@vellira-ui/types';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -29,13 +29,13 @@ export interface InputProps
       | 'style'
       | 'placeholder'
     > {
-  label: string;
-  placeholder?: string;
-  size?: InputSize;
-  error?: string;
-  type?: InputType;
-  leftIcon?: InputIconElement;
+  leftAdornment?: InputIconElement;
+  rightAdornment?: InputIconElement;
+  clearIcon?: InputIconElement;
   iconSize?: number;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  testID?: string;
+  keyboardType?: NativeInputKeyboardType;
+  secureTextEntry?: boolean;
 }
