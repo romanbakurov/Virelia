@@ -9,7 +9,7 @@ export const status = {
   },
 
   error: {
-    fg: colors.error[700],
+    fg: colors.error[500],
     bg: colors.error[100],
     border: colors.error[300],
     strong: colors.error[700],

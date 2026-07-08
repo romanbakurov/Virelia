@@ -48,4 +48,30 @@ export const input = {
     border: status.success.strong,
     ring: status.success.fg,
   },
+
+  readOnly: {
+    bg: surface.subtle,
+    fg: text.secondary,
+    border: border.default,
+    placeholder: text.muted,
+    icon: icons.muted,
+  },
+
+  icon: {
+    default: icons.default,
+    primary: icons.primary,
+    secondary: icons.secondary,
+    success: icons.success,
+    danger: icons.danger,
+    muted: icons.muted,
+    inverse: icons.inverse,
+  },
+
+  clearButton: {
+    fg: status.error.fg,
+    hoverFg: status.error.fg,
+    hoverBg: surface.danger,
+    focusBg: surface.inverse,
+    pressedBg: surface.active,
+  },
 } as const;

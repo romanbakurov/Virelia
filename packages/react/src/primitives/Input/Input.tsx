@@ -59,6 +59,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       leftAdornment,
       rightAdornment,
       clearIcon,
+      leftAdornmentTone = 'default',
+      rightAdornmentTone = 'default',
       showOverflowTooltip = false,
       autoFocus,
       maxLength,
@@ -179,6 +181,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       setShowTooltip(false);
     }, []);
 
+    const toneClassNameByTone = {
+      default: styles.toneDefault,
+      primary: styles.tonePrimary,
+      secondary: styles.toneSecondary,
+      success: styles.toneSuccess,
+      danger: styles.toneDanger,
+      muted: styles.toneMuted,
+      inverse: styles.toneInverse,
+    } as const;
+
+    const showRightAdornment = !showClearButton && Boolean(rightAdornment);
+
     return (
       <FormField
         id={id}
@@ -195,7 +209,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           })}
         >
           {leftAdornment && (
-            <span className={styles.leftAdornment}>{leftAdornment}</span>
+            <span
+              className={cn(
+                styles.leftAdornment,
+                toneClassNameByTone[leftAdornmentTone]
+              )}
+            >
+              {leftAdornment}
+            </span>
           )}
 
           <input
@@ -227,19 +248,29 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             onMouseLeave={handleMouseLeave}
           />
 
-          {showClearButton ? (
+          {showClearButton && (
             <button
               type='button'
-              className={styles.clearButton}
+              className={cn(
+                styles.clearButton,
+                toneClassNameByTone[rightAdornmentTone]
+              )}
               onClick={handleClear}
               aria-label='Clear input'
             >
               {clearIconNode}
             </button>
-          ) : (
-            rightAdornment && (
-              <div className={styles.rightAdornment}>{rightAdornment}</div>
-            )
+          )}
+
+          {showRightAdornment && (
+            <div
+              className={cn(
+                styles.rightAdornment,
+                toneClassNameByTone[rightAdornmentTone]
+              )}
+            >
+              {rightAdornment}
+            </div>
           )}
 
           {showOverflowTooltip && showTooltip && isOverflowing && hasValue && (

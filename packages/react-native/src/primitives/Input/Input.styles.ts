@@ -31,11 +31,11 @@ export const createStyles = (theme: NativeTheme) =>
       borderWidth: 1,
     },
 
-    inputWithLeftIcon: {
+    inputWithLeftAdornment: {
       paddingLeft: theme.tokens.spacing[5] + 20,
     },
 
-    inputWithRightIcon: {
+    inputWithRightAdornment: {
       paddingRight: theme.tokens.spacing[5] + 20,
     },
 
@@ -68,16 +68,16 @@ export const createStyles = (theme: NativeTheme) =>
       right: theme.tokens.spacing[4],
       top: '50%',
       zIndex: 1,
-      width: 24,
-      height: 24,
-      marginTop: -12,
+      width: 20,
+      height: 20,
+      marginTop: -10,
       borderRadius: 999,
       alignItems: 'center',
       justifyContent: 'center',
     },
 
     clearButtonText: {
-      color: theme.components.input.default.placeholder,
+      color: theme.components.input.icon.danger,
       fontSize: 16,
       lineHeight: 20,
     },
@@ -117,7 +117,11 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.input.error.border,
     },
 
-    readOnly: {},
+    readOnly: {
+      color: theme.components.input.readOnly.fg,
+      borderColor: theme.components.input.readOnly.border,
+      backgroundColor: theme.components.input.readOnly.bg,
+    },
 
     disabled: {
       opacity: 1,

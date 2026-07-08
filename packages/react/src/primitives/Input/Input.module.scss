@@ -99,6 +99,13 @@
   background: var(--input-hover-bg);
 }
 
+.input:read-only:not(:disabled) {
+  color: var(--input-read-only-fg);
+  background-color: var(--input-read-only-bg);
+  border-color: var(--input-read-only-border);
+  cursor: default;
+}
+
 .hasLeftAdornment .input {
   padding-left: var(--space-12);
 }
@@ -122,11 +129,11 @@
 }
 
 .leftAdornment svg,
-.rightAdornment svg {
+.rightAdornment svg .clearButton {
   width: var(--space-5);
   height: var(--space-5);
-  fill: currentcolor;
   flex-shrink: 0;
+  fill: currentcolor;
 }
 
 .leftAdornment {
@@ -140,13 +147,13 @@
 .clearButton {
   position: absolute;
   top: 50%;
-  right: var(--space-3);
+  right: var(--space-2);
   z-index: 1;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: var(--space-6);
-  height: var(--space-6);
+  width: var(--space-8);
+  height: var(--space-8);
   padding: 0;
   color: var(--input-default-icon);
   background: transparent;
@@ -163,13 +170,45 @@
 }
 
 .clearButton:not(:disabled):hover {
-  color: var(--input-default-fg);
-  background: var(--surface-hover);
+  color: var(--input-clear-button-hover-fg);
+  background: var(--input-clear-button-hover-bg);
+}
+
+.clearButton:active {
+  background: var(--input-clear-button-pressed-bg);
 }
 
 .clearButton:focus-visible {
   outline: 2px solid var(--input-focus-ring);
   outline-offset: 2px;
+}
+
+.toneDefault {
+  color: var(--input-icon-default);
+}
+
+.tonePrimary {
+  color: var(--input-icon-primary);
+}
+
+.toneSecondary {
+  color: var(--input-icon-secondary);
+}
+
+.toneSuccess {
+  color: var(--input-icon-success);
+}
+
+.toneDanger {
+  color: var(--input-icon-danger);
+}
+
+.toneMuted {
+  color: var(--input-icon-muted);
+}
+
+.toneInverse {
+  color: var(--input-icon-inverse);
 }
 
 @media (prefers-reduced-motion: reduce) {

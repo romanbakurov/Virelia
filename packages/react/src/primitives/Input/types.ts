@@ -1,4 +1,4 @@
-import type { BaseInputProps } from '@vellira-ui/types';
+import type { BaseInputProps, InputAdornmentTone } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
 export interface InputProps extends BaseInputProps {
@@ -9,6 +9,9 @@ export interface InputProps extends BaseInputProps {
   leftAdornment?: ReactNode;
   rightAdornment?: ReactNode;
   clearIcon?: ReactNode;
+
+  leftAdornmentTone?: InputAdornmentTone;
+  rightAdornmentTone?: InputAdornmentTone;
 
   className?: string;
   autoComplete?: string;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Close, Search as SearchIcon, Settings } from '@vellira-ui/icons';
+import { Check, Close, Search } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -137,12 +137,13 @@ function ClearableInputDemo() {
 
   return (
     <Input
-      label='Clearable'
+      label='Clearable input'
       description='Shows a clear action when the field has a value.'
       value={value}
       onChange={setValue}
       clearable
       clearIcon={<Close />}
+      clearIconTone='danger'
       onClear={() => setValue('')}
       placeholder='Type something'
     />
@@ -157,7 +158,7 @@ export const Playground: Story = {
   ),
 };
 
-export const ControlledAndUncontrolled: Story = {
+export const Uncontrolled: Story = {
   render: () => (
     <Section title='Controlled and uncontrolled'>
       <View style={storyStyles.column}>
@@ -203,8 +204,44 @@ export const Types: Story = {
           label='Search'
           type='search'
           placeholder='Search components'
-          leftIcon={<SearchIcon />}
+          leftIcon={<Search />}
         />
+      </View>
+    </Section>
+  ),
+};
+
+export const Adornments: Story = {
+  render: () => (
+    <Section title='Icons'>
+      <View style={storyStyles.column}>
+        <Input
+          label='Search'
+          leftAdornment={<Search />}
+          leftAdornmentTone='primary'
+          placeholder='Search components'
+          type='search'
+        />
+
+        <Input
+          label='Verified email'
+          defaultValue='hello@vellira.dev'
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
+          placeholder='name@company.com'
+          type='email'
+        />
+
+        <Input
+          label='Search settings'
+          leftAdornment={<Search />}
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
+          leftAdornmentTone='primary'
+          defaultValue='Theme'
+        />
+
+        <ClearableInputDemo />
       </View>
     </Section>
   ),
@@ -228,44 +265,6 @@ export const States: Story = {
           value=''
         />
       </View>
-    </Section>
-  ),
-};
-
-export const Icons: Story = {
-  render: () => (
-    <Section title='Icons'>
-      <View style={storyStyles.column}>
-        <Input
-          label='Left icon'
-          leftIcon={<SearchIcon />}
-          placeholder='Search components'
-          type='search'
-        />
-
-        <Input
-          label='Right icon'
-          rightIcon={<Settings />}
-          placeholder='Project settings'
-        />
-
-        <Input
-          label='Search settings'
-          defaultValue='Theme'
-          leftIcon={<SearchIcon />}
-          rightIcon={<Settings />}
-          clearable
-          clearIcon={<Close />}
-        />
-      </View>
-    </Section>
-  ),
-};
-
-export const Clearable: Story = {
-  render: () => (
-    <Section title='Clearable'>
-      <ClearableInputDemo />
     </Section>
   ),
 };
@@ -294,7 +293,7 @@ export const Validation: Story = {
   ),
 };
 
-export const OverflowTooltip: Story = {
+export const WithOverflowTooltip: Story = {
   decorators: [
     (Story) => (
       <View style={{ width: 300 }}>

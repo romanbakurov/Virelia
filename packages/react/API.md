@@ -177,6 +177,8 @@ import { Input } from '@vellira-ui/react';
 | `maxLength`           | `number`                  | No       | —                                            |
 | `clearable`           | `boolean`                 | No       | —                                            |
 | `onClear`             | `() => void`              | No       | —                                            |
+| `leftAdornmentTone`   | `InputAdornmentTone`      | No       | —                                            |
+| `rightAdornmentTone`  | `InputAdornmentTone`      | No       | —                                            |
 
 <!-- api-docgen:end web.InputProps.Input -->
 

@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
+  Check,
+  Close,
   Download,
   DropdownMenu,
   Filter,
@@ -228,11 +230,41 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Input'>
-          <Input label='Name' placeholder='Ada Lovelace' />
-          <Input label='Search' placeholder='Find component' size='sm' />
+          <Input
+            label='Name'
+            description='Basic uncontrolled input.'
+            placeholder='Ada Lovelace'
+          />
+
+          <Input
+            label='Search'
+            placeholder='Find component'
+            type='search'
+            size='sm'
+            leftAdornment={<Search />}
+          />
+
           <Input
             label='Email'
             placeholder='name@example.com'
+            type='email'
+            rightAdornment={<Check />}
+            rightAdornmentTone='success'
+            defaultValue='name@example.com'
+          />
+
+          <Input
+            label='Clearable'
+            placeholder='Type something'
+            defaultValue='Theme'
+            clearable
+            clearIcon={<Close />}
+          />
+
+          <Input
+            label='Invalid email'
+            placeholder='name@example.com'
+            type='email'
             error='Use a valid email address'
           />
         </Section>

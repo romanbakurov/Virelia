@@ -68,6 +68,8 @@ export const Input = forwardRef<TextInput, InputProps>(
       type = 'text',
       leftAdornment,
       rightAdornment,
+      leftAdornmentTone = 'default',
+      rightAdornmentTone = 'default',
       clearIcon,
       iconSize,
       containerStyle,
@@ -101,14 +103,12 @@ export const Input = forwardRef<TextInput, InputProps>(
     const hasValue = currentValue !== '';
     const placeholderTextColor = disabled
       ? getDisabledPlaceholderTextColor(theme)
-      : getPlaceholderTextColor(theme);
+      : readOnly
+        ? theme.components.input.readOnly.placeholder
+        : getPlaceholderTextColor(theme);
+
     const isPassword = type === 'password';
     const resolvedIconSize = iconSize ?? 16;
-    const iconColor = disabled
-      ? theme.components.input.disabled.fg
-      : isFocused
-        ? theme.components.input.focus.fg
-        : theme.components.input.default.placeholder;
 
     const handleFocus: NonNullable<TextInputProps['onFocus']> = (event) => {
       setIsFocused(true);
@@ -140,6 +140,18 @@ export const Input = forwardRef<TextInput, InputProps>(
     const showClearButton = clearable && hasValue && !disabled && !readOnly;
     const showRightIcon = !showClearButton && Boolean(rightAdornment);
 
+    const leftIconColor = disabled
+      ? theme.components.input.disabled.icon
+      : theme.components.input.icon[leftAdornmentTone];
+
+    const rightIconColor = disabled
+      ? theme.components.input.disabled.icon
+      : theme.components.input.icon[rightAdornmentTone];
+
+    const clearIconColor = disabled
+      ? theme.components.input.disabled.icon
+      : theme.components.input.icon.danger;
+
     return (
       <FormField
         label={label}
@@ -157,7 +169,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               importantForAccessibility='no'
             >
               {cloneElement(leftAdornment, {
-                color: iconColor,
+                color: leftIconColor,
                 size: resolvedIconSize,
               })}
             </View>
@@ -187,13 +199,18 @@ export const Input = forwardRef<TextInput, InputProps>(
               styles.input,
               styles[size],
               inputStyle,
-              leftAdornment && styles.inputWithLeftIcon,
-              (showRightIcon || showClearButton) && styles.inputWithRightIcon,
-              isFocused && !disabled && styles.focused,
+              leftAdornment && styles.inputWithLeftAdornment,
+              (showRightIcon || showClearButton) &&
+                styles.inputWithRightAdornment,
+              isFocused && !disabled && !readOnly && styles.focused,
               error && styles.error,
-              isFocused && error && !disabled && styles.errorFocused,
+              isFocused &&
+                error &&
+                !disabled &&
+                !readOnly &&
+                styles.errorFocused,
+              readOnly && !disabled && styles.readOnly,
               disabled && styles.disabled,
-              readOnly && styles.readOnly,
             ]}
           />
 
@@ -207,11 +224,11 @@ export const Input = forwardRef<TextInput, InputProps>(
             >
               {clearIcon ? (
                 cloneElement(clearIcon, {
-                  color: iconColor,
+                  color: clearIconColor,
                   size: resolvedIconSize,
                 })
               ) : (
-                <Text style={styles.clearButtonText}>x</Text>
+                <Text style={styles.clearButtonText}>×</Text>
               )}
             </Pressable>
           ) : (
@@ -224,7 +241,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                 importantForAccessibility='no'
               >
                 {cloneElement(rightAdornment, {
-                  color: iconColor,
+                  color: rightIconColor,
                   size: resolvedIconSize,
                 })}
               </View>

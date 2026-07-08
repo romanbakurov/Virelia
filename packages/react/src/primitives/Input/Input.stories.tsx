@@ -62,6 +62,30 @@ Labeled text input primitive for short form values.
       control: 'select',
       options: ['text', 'email', 'password', 'number', 'tel', 'url', 'search'],
     },
+    leftAdornmentTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    rightAdornmentTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
     required: { control: 'boolean' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
@@ -73,8 +97,8 @@ Labeled text input primitive for short form values.
     showOverflowTooltip: { control: 'boolean' },
     onChange: { action: 'changed' },
     onClear: { action: 'cleared' },
-    leftIcon: { control: false },
-    rightIcon: { control: false },
+    leftAdornment: { control: false },
+    rightAdornment: { control: false },
     className: { control: false },
   },
 } satisfies Meta<typeof Input>;
@@ -142,7 +166,8 @@ const ClearableInputDemo = () => {
       value={value}
       onChange={setValue}
       clearable
-      clearIcon={<Close style={{ color: '#F43F5E', hover: '#FB7185' }} />}
+      clearIcon={<Close />}
+      rightAdornmentTone='danger'
       onClear={() => setValue('')}
       placeholder='Type something'
     />
@@ -214,6 +239,7 @@ export const Adornments: Story = {
         <Input
           label='Search'
           leftAdornment={<Search />}
+          leftAdornmentTone='primary'
           placeholder='Search components'
           type='search'
         />
@@ -221,7 +247,8 @@ export const Adornments: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          rightAdornment={<Check style={{ color: '#10B981' }} />}
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
           placeholder='name@company.com'
           type='email'
         />
@@ -229,7 +256,9 @@ export const Adornments: Story = {
         <Input
           label='Search settings'
           leftAdornment={<Search />}
-          rightAdornment={<Check style={{ color: '#10B981' }} />}
+          rightAdornment={<Check />}
+          rightAdornmentTone='success'
+          leftAdornmentTone='primary'
           defaultValue='Theme'
         />
 
