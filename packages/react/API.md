@@ -157,6 +157,9 @@ import { Input } from '@vellira-ui/react';
 />;
 ```
 
+For controlled clearable inputs, update the controlled value in `onClear`.
+`onChange` is reserved for input value changes from the input element.
+
 <!-- api-docgen:start web.InputProps.Input -->
 
 | Prop                  | Type                                                     | Required | Description                                      |

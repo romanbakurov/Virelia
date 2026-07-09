@@ -34,16 +34,6 @@ const getAutoComplete = (type = 'text', autoComplete?: string) => {
   }
 };
 
-const setInputValue = (input: HTMLInputElement, nextValue: string) => {
-  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype,
-    'value'
-  )?.set;
-
-  nativeInputValueSetter?.call(input, nextValue);
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-};
-
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -179,17 +169,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     );
 
     const handleClear = useCallback(() => {
-      const input = inputRef.current;
-
-      if (!input) return;
-
       if (!isControlled) {
         setUncontrolledValue('');
       }
 
-      setInputValue(input, '');
       onClear?.();
-      input.focus();
+      inputRef.current?.focus();
     }, [isControlled, onClear]);
 
     const handleMouseEnter = useCallback(

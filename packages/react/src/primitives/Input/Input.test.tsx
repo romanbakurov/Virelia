@@ -330,11 +330,8 @@ describe('Input', () => {
     unmount();
   });
 
-  it('clears uncontrolled values, emits change, and restores focus', () => {
-    const changedValues: string[] = [];
-    const change = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
-      changedValues.push(event.target.value);
-    });
+  it('clears uncontrolled values and restores focus without emitting change', () => {
+    const change = vi.fn();
     const clear = vi.fn();
     const inputRef = createRef<HTMLInputElement>();
     const { container, unmount } = render(
@@ -363,8 +360,7 @@ describe('Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).toHaveBeenCalledTimes(1);
-    expect(changedValues).toEqual(['']);
+    expect(change).not.toHaveBeenCalled();
     expect(clear).toHaveBeenCalledTimes(1);
     expect(inputRef.current?.value).toBe('');
     expect(document.activeElement).toBe(inputRef.current);
@@ -372,7 +368,7 @@ describe('Input', () => {
     unmount();
   });
 
-  it('clears controlled values through the standard change callback', () => {
+  it('lets controlled values clear through onClear', () => {
     const clear = vi.fn();
 
     const ControlledInput = () => {
@@ -383,8 +379,11 @@ describe('Input', () => {
           id='controlled-clearable'
           label='Controlled clearable'
           value={value}
-          onChange={(event) => setValue(event.target.value)}
-          onClear={clear}
+          onChange={vi.fn()}
+          onClear={() => {
+            clear();
+            setValue('');
+          }}
           clearable
         />
       );
