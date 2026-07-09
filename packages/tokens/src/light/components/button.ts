@@ -180,6 +180,6 @@ export const button = {
   disabled: {
     bg: surface.disabled,
     fg: text.disabled,
-    border: border.default,
+    border: border.disabled,
   },
 } as const;

@@ -13,6 +13,7 @@ const sizeMap: Record<
   {
     px: number;
     py: number;
+    height: number;
     fontSize: number;
     iconSize: number;
   }
@@ -20,6 +21,7 @@ const sizeMap: Record<
   sm: {
     px: 12,
     py: 8,
+    height: 36,
     fontSize: 12,
     iconSize: 16,
   },
@@ -27,6 +29,7 @@ const sizeMap: Record<
   md: {
     px: 16,
     py: 12,
+    height: 44,
     fontSize: 14,
     iconSize: 20,
   },
@@ -34,6 +37,7 @@ const sizeMap: Record<
   lg: {
     px: 20,
     py: 16,
+    height: 52,
     fontSize: 16,
     iconSize: 24,
   },
@@ -125,10 +129,12 @@ export function Button({
           {
             backgroundColor: pressedTheme.bg,
             borderColor: pressedTheme.border,
-            paddingHorizontal: iconOnly ? config.py : config.px,
-            paddingVertical: config.py,
+            paddingHorizontal: iconOnly ? 0 : config.px,
+            paddingVertical: iconOnly ? 0 : config.py,
+            width: iconOnly ? config.height : undefined,
+            height: iconOnly ? config.height : undefined,
           },
-          fullWidth && styles.fullWidth,
+          fullWidth && !iconOnly && styles.fullWidth,
           isDisabled && styles.disabled,
           pressed && !isDisabled && styles.pressed,
           isFocused && !isDisabled && styles.focused,
