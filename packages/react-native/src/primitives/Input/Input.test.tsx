@@ -39,6 +39,7 @@ describe('Native Input', () => {
     const { container, unmount } = render(
       <Input
         label='Email'
+        description='Use your work email.'
         value='hello@vellira.dev'
         placeholder='name@company.com'
         error='Email is required'
@@ -50,6 +51,7 @@ describe('Native Input', () => {
 
     expect(input?.value).toBe('hello@vellira.dev');
     expect(input?.placeholder).toBe('name@company.com');
+    expect(container.textContent).toContain('Use your work email.');
     expect(container.textContent).toContain('Email is required');
 
     unmount();

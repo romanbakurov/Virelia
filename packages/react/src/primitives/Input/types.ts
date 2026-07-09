@@ -10,7 +10,6 @@ export interface InputProps
 
   id?: string;
   name?: string;
-  description?: string;
 
   leftAdornment?: ReactNode;
   rightAdornment?: ReactNode;

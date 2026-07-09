@@ -181,6 +181,7 @@ import { Input } from '@vellira-ui/react-native';
 | `error`              | `string`                  | No       | Error message rendered for invalid state.        |
 | `leftAdornmentTone`  | `InputAdornmentTone`      | No       | Color tone for the left adornment.               |
 | `rightAdornmentTone` | `InputAdornmentTone`      | No       | Color tone for the right adornment.              |
+| `description`        | `string`                  | No       | Additional descriptive text.                     |
 
 <!-- api-docgen:end native.InputProps.Input -->
 

@@ -12,6 +12,7 @@ export type InputAdornmentTone =
 
 export interface InputBaseProps {
   label?: string;
+  description?: string;
   placeholder?: string;
 
   size?: InputSize;

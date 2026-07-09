@@ -56,6 +56,7 @@ export const Input = forwardRef<TextInput, InputProps>(
   (
     {
       label,
+      description,
       value,
       defaultValue,
       onChange,
@@ -155,6 +156,7 @@ export const Input = forwardRef<TextInput, InputProps>(
     return (
       <FormField
         label={label}
+        description={description}
         error={error}
         required={required}
         disabled={disabled}
