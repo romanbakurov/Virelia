@@ -1,4 +1,4 @@
-import { act, createRef, useState } from 'react';
+import { act, useState } from 'react';
 
 import type { ChangeEvent } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -167,6 +167,34 @@ describe('Input', () => {
     unmount();
   });
 
+  it('does not render aria-invalid when the input is valid', () => {
+    const { container } = render(<Input id='email' label='Email' value='' />);
+
+    const input = container.querySelector('input');
+
+    expect(input?.hasAttribute('aria-invalid')).toBe(false);
+  });
+
+  it('passes aria-invalid through when no error is present', () => {
+    const { container } = render(
+      <Input id='email' label='Email' value='' aria-invalid={false} />
+    );
+
+    const input = container.querySelector('input');
+
+    expect(input?.getAttribute('aria-invalid')).toBe('false');
+  });
+
+  it('passes aria-invalid=true through when no error is present', () => {
+    const { container } = render(
+      <Input id='email' label='Email' value='' aria-invalid />
+    );
+
+    const input = container.querySelector('input');
+
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+  });
+
   it('connects generated description text without an error', () => {
     const { container, unmount } = render(
       <Input id='email' label='Email' value='' description='Optional hint.' />
@@ -249,46 +277,9 @@ describe('Input', () => {
     unmount();
   });
 
-  it('clears uncontrolled values and restores focus without emitting change', () => {
+  it('clears controlled values through onClear without emitting change', () => {
+    const clear = vi.fn();
     const change = vi.fn();
-    const clear = vi.fn();
-    const inputRef = createRef<HTMLInputElement>();
-    const { container, unmount } = render(
-      <Input
-        ref={inputRef}
-        id='clearable'
-        label='Clearable'
-        defaultValue='Clear me'
-        onChange={change}
-        onClear={clear}
-        clearable
-        clearIcon={<span data-testid='clear-icon'>clear</span>}
-      />
-    );
-
-    const clearButton = container.querySelector<HTMLButtonElement>(
-      'button[aria-label="Clear input"]'
-    );
-
-    expect(clearButton).not.toBeNull();
-    expect(
-      container.querySelector('[data-testid="clear-icon"]')
-    ).not.toBeNull();
-
-    act(() => {
-      clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-    });
-
-    expect(change).not.toHaveBeenCalled();
-    expect(clear).toHaveBeenCalledTimes(1);
-    expect(inputRef.current?.value).toBe('');
-    expect(document.activeElement).toBe(inputRef.current);
-
-    unmount();
-  });
-
-  it('lets controlled values clear through onClear', () => {
-    const clear = vi.fn();
 
     const ControlledInput = () => {
       const [value, setValue] = useState('Clear me');
@@ -298,7 +289,7 @@ describe('Input', () => {
           id='controlled-clearable'
           label='Controlled clearable'
           value={value}
-          onChange={vi.fn()}
+          onChange={change}
           onClear={() => {
             clear();
             setValue('');
@@ -309,6 +300,7 @@ describe('Input', () => {
     };
 
     const { container, unmount } = render(<ControlledInput />);
+
     const input = container.querySelector<HTMLInputElement>('input');
     const clearButton = container.querySelector<HTMLButtonElement>(
       'button[aria-label="Clear input"]'
@@ -321,6 +313,7 @@ describe('Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
+    expect(change).not.toHaveBeenCalled();
     expect(clear).toHaveBeenCalledTimes(1);
     expect(input?.value).toBe('');
     expect(

@@ -142,7 +142,7 @@ describe('Native Input', () => {
     unmount();
   });
 
-  it('renders adornments with resolved icon color and size', () => {
+  it('renders icons with resolved icon color and size', () => {
     const theme = nativeThemes.light;
     const { container, unmount } = render(
       <Input

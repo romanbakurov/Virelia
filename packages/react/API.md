@@ -162,32 +162,32 @@ For controlled clearable inputs, update the controlled value in `onClear`.
 
 <!-- api-docgen:start web.InputProps.Input -->
 
-| Prop                  | Type                                                     | Required | Description                                      |
-| --------------------- | -------------------------------------------------------- | -------- | ------------------------------------------------ |
-| `id`                  | `string`                                                 | No       | Input id. Generated internally when omitted.     |
-| `className`           | `string`                                                 | No       | Extra CSS class for the root element.            |
-| `autoComplete`        | `string`                                                 | No       | HTML autocomplete value.                         |
-| `showOverflowTooltip` | `boolean`                                                | No       | Shows a tooltip when the input value overflows.  |
-| `name`                | `string`                                                 | No       | —                                                |
-| `description`         | `string`                                                 | No       | Additional descriptive text.                     |
-| `leftAdornment`       | `ReactNode`                                              | No       | —                                                |
-| `rightAdornment`      | `ReactNode`                                              | No       | —                                                |
-| `clearIcon`           | `ReactNode`                                              | No       | —                                                |
-| `type`                | `HTMLInputTypeAttribute`                                 | No       | HTML input type.                                 |
-| `value`               | `string \| number \| readonly string[]`                  | No       | Controlled value.                                |
-| `defaultValue`        | `string \| number \| readonly string[]`                  | No       | Initial uncontrolled value.                      |
-| `onChange`            | `ChangeEventHandler<HTMLInputElement, HTMLInputElement>` | No       | Called when the value changes.                   |
-| `label`               | `string`                                                 | No       | Visible label.                                   |
-| `placeholder`         | `string`                                                 | No       | Placeholder text.                                |
-| `size`                | `InputSize`                                              | No       | Input size.                                      |
-| `disabled`            | `boolean`                                                | No       | Disables interaction.                            |
-| `readOnly`            | `boolean`                                                | No       | Marks the input as read-only.                    |
-| `required`            | `boolean`                                                | No       | Marks the field as required.                     |
-| `clearable`           | `boolean`                                                | No       | Shows a clear action when the input has a value. |
-| `onClear`             | `() => void`                                             | No       | Called when the clear action is pressed.         |
-| `error`               | `string`                                                 | No       | Error message rendered for invalid state.        |
-| `leftAdornmentTone`   | `InputAdornmentTone`                                     | No       | Color tone for the left adornment.               |
-| `rightAdornmentTone`  | `InputAdornmentTone`                                     | No       | Color tone for the right adornment.              |
+| Prop                 | Type                                                     | Required | Description                                      |
+| -------------------- | -------------------------------------------------------- | -------- | ------------------------------------------------ |
+| `id`                 | `string`                                                 | No       | Input id. Generated internally when omitted.     |
+| `className`          | `string`                                                 | No       | Extra CSS class for the root element.            |
+| `autoComplete`       | `string`                                                 | No       | HTML autocomplete value.                         |
+| `name`               | `string`                                                 | No       | —                                                |
+| `description`        | `string`                                                 | No       | Additional descriptive text.                     |
+| `leftAdornment`      | `ReactNode`                                              | No       | —                                                |
+| `rightAdornment`     | `ReactNode`                                              | No       | —                                                |
+| `clearIcon`          | `ReactNode`                                              | No       | —                                                |
+| `type`               | `HTMLInputTypeAttribute`                                 | No       | HTML input type.                                 |
+| `value`              | `string \| number \| readonly string[]`                  | No       | Controlled value.                                |
+| `defaultValue`       | `string \| number \| readonly string[]`                  | No       | Initial uncontrolled value.                      |
+| `onChange`           | `ChangeEventHandler<HTMLInputElement, HTMLInputElement>` | No       | Called when the value changes.                   |
+| `label`              | `string`                                                 | No       | Visible label.                                   |
+| `placeholder`        | `string`                                                 | No       | Placeholder text.                                |
+| `size`               | `InputSize`                                              | No       | Input size.                                      |
+| `disabled`           | `boolean`                                                | No       | Disables interaction.                            |
+| `readOnly`           | `boolean`                                                | No       | Marks the input as read-only.                    |
+| `required`           | `boolean`                                                | No       | Marks the field as required.                     |
+| `clearable`          | `boolean`                                                | No       | Shows a clear action when the input has a value. |
+| `onClear`            | `() => void`                                             | No       | Called when the clear action is pressed.         |
+| `error`              | `string`                                                 | No       | Error message rendered for invalid state.        |
+| `leftAdornmentTone`  | `InputAdornmentTone`                                     | No       | Color tone for the left adornment.               |
+| `rightAdornmentTone` | `InputAdornmentTone`                                     | No       | Color tone for the right adornment.              |
+| `clearIconTone`      | `InputAdornmentTone`                                     | No       | Color tone for the clear icon.                   |
 
 <!-- api-docgen:end web.InputProps.Input -->
 

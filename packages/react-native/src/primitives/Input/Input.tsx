@@ -231,7 +231,11 @@ export const Input = forwardRef<TextInput, InputProps>(
                   size: resolvedIconSize,
                 })
               ) : (
-                <Text style={styles.clearButtonText}>×</Text>
+                <Text
+                  style={[styles.clearButtonText, { color: clearIconColor }]}
+                >
+                  ×
+                </Text>
               )}
             </Pressable>
           ) : (

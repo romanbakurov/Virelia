@@ -245,7 +245,7 @@ export const Types: Story = {
   ),
 };
 
-export const Adornments: Story = {
+export const WithIcons: Story = {
   render: () => (
     <Section title='Icons'>
       <View style={storyStyles.column}>

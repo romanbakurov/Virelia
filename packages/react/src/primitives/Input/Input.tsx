@@ -8,6 +8,16 @@ import type { InputProps } from './types';
 
 import styles from './Input.module.scss';
 
+const toneClassNameByTone = {
+  default: styles.toneDefault,
+  primary: styles.tonePrimary,
+  secondary: styles.toneSecondary,
+  success: styles.toneSuccess,
+  danger: styles.toneDanger,
+  muted: styles.toneMuted,
+  inverse: styles.toneInverse,
+} as const;
+
 const getAutoComplete = (
   type: InputHTMLAttributes<HTMLInputElement>['type'] = 'text',
   autoComplete?: string
@@ -128,16 +138,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       inputRef.current?.focus();
     }, [isControlled, onClear]);
 
-    const toneClassNameByTone = {
-      default: styles.toneDefault,
-      primary: styles.tonePrimary,
-      secondary: styles.toneSecondary,
-      success: styles.toneSuccess,
-      danger: styles.toneDanger,
-      muted: styles.toneMuted,
-      inverse: styles.toneInverse,
-    } as const;
-
     const showRightAdornment = !showClearButton && Boolean(rightAdornment);
 
     return (
@@ -189,7 +189,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             required={required}
             autoFocus={autoFocus}
             maxLength={maxLength}
-            aria-invalid={error ? true : (ariaInvalid ?? false)}
+            aria-invalid={error ? true : ariaInvalid}
             aria-describedby={describedBy || undefined}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
