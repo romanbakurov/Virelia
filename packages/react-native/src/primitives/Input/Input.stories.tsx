@@ -27,7 +27,7 @@ Text input primitive for collecting user data in forms.
 - Smart input type behavior
 - Sizes: sm, md, lg
 - Description, required, disabled, read-only and error states
-- Left and right adornment support
+- Left and right icon support
 - Clearable input
 `,
       },
@@ -73,9 +73,45 @@ Text input primitive for collecting user data in forms.
     onChange: { action: 'changed' },
     onClear: { action: 'cleared' },
 
-    leftAdornment: { control: false },
-    rightAdornment: { control: false },
+    leftIcon: { control: false },
+    rightIcon: { control: false },
     clearIcon: { control: false },
+    leftIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    rightIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    clearIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
   },
 } satisfies Meta<typeof Input>;
 
@@ -141,6 +177,7 @@ function ClearableInputDemo() {
       onChange={setValue}
       clearable
       clearIcon={<Close />}
+      clearIconTone='danger'
       onClear={() => setValue('')}
       placeholder='Type something'
     />
@@ -201,7 +238,7 @@ export const Types: Story = {
           label='Search'
           type='search'
           placeholder='Search components'
-          leftAdornment={<Search />}
+          leftIcon={<Search />}
         />
       </View>
     </Section>
@@ -214,8 +251,8 @@ export const Adornments: Story = {
       <View style={storyStyles.column}>
         <Input
           label='Search'
-          leftAdornment={<Search />}
-          leftAdornmentTone='primary'
+          leftIcon={<Search />}
+          leftIconTone='primary'
           placeholder='Search components'
           type='search'
         />
@@ -223,18 +260,18 @@ export const Adornments: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
+          rightIcon={<Check />}
+          rightIconTone='success'
           placeholder='name@company.com'
           type='email'
         />
 
         <Input
           label='Search settings'
-          leftAdornment={<Search />}
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
-          leftAdornmentTone='primary'
+          leftIcon={<Search />}
+          rightIcon={<Check />}
+          rightIconTone='success'
+          leftIconTone='primary'
           defaultValue='Theme'
         />
 

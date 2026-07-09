@@ -1,4 +1,8 @@
-import type { InputBaseProps, InputType } from '@vellira-ui/types';
+import type {
+  InputAdornmentTone,
+  InputBaseProps,
+  InputType,
+} from '@vellira-ui/types';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -32,9 +36,12 @@ export interface InputProps
   onChange?: (value: string) => void;
   type?: InputType;
 
-  leftAdornment?: InputIconElement;
-  rightAdornment?: InputIconElement;
+  leftIcon?: InputIconElement;
+  rightIcon?: InputIconElement;
   clearIcon?: InputIconElement;
+  leftIconTone?: InputAdornmentTone;
+  rightIconTone?: InputAdornmentTone;
+  clearIconTone?: InputAdornmentTone;
   iconSize?: number;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;

@@ -148,10 +148,10 @@ describe('Native Input', () => {
       <Input
         label='Search'
         value='Theme'
-        leftAdornment={<TestIcon testID='left-icon' />}
-        rightAdornment={<TestIcon testID='right-icon' />}
-        leftAdornmentTone='primary'
-        rightAdornmentTone='success'
+        leftIcon={<TestIcon testID='left-icon' />}
+        rightIcon={<TestIcon testID='right-icon' />}
+        leftIconTone='primary'
+        rightIconTone='success'
         iconSize={24}
       />
     );
@@ -182,7 +182,8 @@ describe('Native Input', () => {
         onClear={clear}
         clearable
         clearIcon={<TestIcon testID='clear-icon' />}
-        rightAdornment={<TestIcon testID='right-icon' />}
+        clearIconTone='secondary'
+        rightIcon={<TestIcon testID='right-icon' />}
       />
     );
 
@@ -194,6 +195,11 @@ describe('Native Input', () => {
     expect(
       container.querySelector('[data-testid="clear-icon"]')
     ).not.toBeNull();
+    expect(
+      container
+        .querySelector('[data-testid="clear-icon"]')
+        ?.getAttribute('data-color')
+    ).toBe(nativeThemes.light.components.input.icon.secondary);
     expect(container.querySelector('[data-testid="right-icon"]')).toBeNull();
 
     act(() => {

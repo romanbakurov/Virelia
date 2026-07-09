@@ -67,11 +67,12 @@ export const Input = forwardRef<TextInput, InputProps>(
       required = false,
       readOnly = false,
       type = 'text',
-      leftAdornment,
-      rightAdornment,
-      leftAdornmentTone = 'default',
-      rightAdornmentTone = 'default',
+      leftIcon,
+      rightIcon,
+      leftIconTone = 'default',
+      rightIconTone = 'default',
       clearIcon,
+      clearIconTone = 'danger',
       iconSize,
       containerStyle,
       inputStyle,
@@ -139,19 +140,19 @@ export const Input = forwardRef<TextInput, InputProps>(
     };
 
     const showClearButton = clearable && hasValue && !disabled && !readOnly;
-    const showRightIcon = !showClearButton && Boolean(rightAdornment);
+    const showRightIcon = !showClearButton && Boolean(rightIcon);
 
     const leftIconColor = disabled
       ? theme.components.input.disabled.icon
-      : theme.components.input.icon[leftAdornmentTone];
+      : theme.components.input.icon[leftIconTone];
 
     const rightIconColor = disabled
       ? theme.components.input.disabled.icon
-      : theme.components.input.icon[rightAdornmentTone];
+      : theme.components.input.icon[rightIconTone];
 
     const clearIconColor = disabled
       ? theme.components.input.disabled.icon
-      : theme.components.input.icon.danger;
+      : theme.components.input.icon[clearIconTone];
 
     return (
       <FormField
@@ -163,14 +164,14 @@ export const Input = forwardRef<TextInput, InputProps>(
         style={containerStyle}
       >
         <View style={styles.inputWrapper}>
-          {leftAdornment && (
+          {leftIcon && (
             <View
               pointerEvents='none'
-              style={styles.leftAdornment}
+              style={styles.leftIcon}
               accessibilityElementsHidden
               importantForAccessibility='no'
             >
-              {cloneElement(leftAdornment, {
+              {cloneElement(leftIcon, {
                 color: leftIconColor,
                 size: resolvedIconSize,
               })}
@@ -201,7 +202,7 @@ export const Input = forwardRef<TextInput, InputProps>(
               styles.input,
               styles[size],
               inputStyle,
-              leftAdornment && styles.inputWithLeftAdornment,
+              leftIcon && styles.inputWithLeftAdornment,
               (showRightIcon || showClearButton) &&
                 styles.inputWithRightAdornment,
               isFocused && !disabled && !readOnly && styles.focused,
@@ -235,14 +236,14 @@ export const Input = forwardRef<TextInput, InputProps>(
             </Pressable>
           ) : (
             showRightIcon &&
-            rightAdornment && (
+            rightIcon && (
               <View
                 pointerEvents='none'
-                style={styles.rightAdornment}
+                style={styles.rightIcon}
                 accessibilityElementsHidden
                 importantForAccessibility='no'
               >
-                {cloneElement(rightAdornment, {
+                {cloneElement(rightIcon, {
                   color: rightIconColor,
                   size: resolvedIconSize,
                 })}

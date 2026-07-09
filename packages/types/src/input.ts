@@ -25,7 +25,4 @@ export interface InputBaseProps {
   onClear?: () => void;
 
   error?: string;
-
-  leftAdornmentTone?: InputAdornmentTone;
-  rightAdornmentTone?: InputAdornmentTone;
 }
