@@ -151,7 +151,7 @@ import { Input } from '@vellira-ui/react';
 <Input
   label='Email'
   value={email}
-  onChange={setEmail}
+  onChange={(event) => setEmail(event.target.value)}
   type='email'
   placeholder='name@example.com'
 />;
