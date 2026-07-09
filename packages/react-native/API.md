@@ -175,7 +175,7 @@ import { Input } from '@vellira-ui/react-native';
 | `testID`             | `string`                  | No       | —                                          |
 | `keyboardType`       | `KeyboardTypeOptions`     | No       | —                                          |
 | `secureTextEntry`    | `boolean`                 | No       | —                                          |
-| `defaultValue`       | `string`                  | No       | —                                          |
+| `defaultValue`       | `string`                  | No       | Initial uncontrolled value.                |
 | `readOnly`           | `boolean`                 | No       | —                                          |
 | `autoFocus`          | `boolean`                 | No       | —                                          |
 | `maxLength`          | `number`                  | No       | —                                          |

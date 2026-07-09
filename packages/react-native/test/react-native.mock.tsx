@@ -218,6 +218,7 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
     <input
       ref={ref}
       data-testid={testID}
+      data-keyboard-type={keyboardType}
       aria-label={accessibilityLabel}
       value={value ?? ''}
       placeholder={placeholder}

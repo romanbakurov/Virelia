@@ -159,34 +159,34 @@ import { Input } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.InputProps.Input -->
 
-| Prop                  | Type                      | Required | Description                                  |
-| --------------------- | ------------------------- | -------- | -------------------------------------------- |
-| `label`               | `string`                  | No       | Visible label.                               |
-| `placeholder`         | `string`                  | No       | Placeholder text.                            |
-| `size`                | `InputSize`               | No       | Input size.                                  |
-| `error`               | `string`                  | No       | Error message rendered under the input.      |
-| `type`                | `InputType`               | No       | HTML input type.                             |
-| `id`                  | `string`                  | No       | Input id. Generated internally when omitted. |
-| `className`           | `string`                  | No       | Extra CSS class for the root element.        |
-| `autoComplete`        | `string`                  | No       | HTML autocomplete value.                     |
-| `value`               | `string`                  | No       | Controlled value.                            |
-| `onChange`            | `(value: string) => void` | No       | Called with the next value.                  |
-| `disabled`            | `boolean`                 | No       | Disables the input.                          |
-| `required`            | `boolean`                 | No       | Marks the field as required.                 |
-| `showOverflowTooltip` | `boolean`                 | No       | —                                            |
-| `name`                | `string`                  | No       | —                                            |
-| `description`         | `string`                  | No       | Additional descriptive text.                 |
-| `leftAdornment`       | `ReactNode`               | No       | —                                            |
-| `rightAdornment`      | `ReactNode`               | No       | —                                            |
-| `clearIcon`           | `ReactNode`               | No       | —                                            |
-| `defaultValue`        | `string`                  | No       | —                                            |
-| `readOnly`            | `boolean`                 | No       | —                                            |
-| `autoFocus`           | `boolean`                 | No       | —                                            |
-| `maxLength`           | `number`                  | No       | —                                            |
-| `clearable`           | `boolean`                 | No       | —                                            |
-| `onClear`             | `() => void`              | No       | —                                            |
-| `leftAdornmentTone`   | `InputAdornmentTone`      | No       | —                                            |
-| `rightAdornmentTone`  | `InputAdornmentTone`      | No       | —                                            |
+| Prop                  | Type                                                     | Required | Description                                  |
+| --------------------- | -------------------------------------------------------- | -------- | -------------------------------------------- |
+| `label`               | `string`                                                 | No       | Visible label.                               |
+| `placeholder`         | `string`                                                 | No       | Placeholder text.                            |
+| `size`                | `InputSize`                                              | No       | Input size.                                  |
+| `error`               | `string`                                                 | No       | Error message rendered under the input.      |
+| `id`                  | `string`                                                 | No       | Input id. Generated internally when omitted. |
+| `className`           | `string`                                                 | No       | Extra CSS class for the root element.        |
+| `autoComplete`        | `string`                                                 | No       | HTML autocomplete value.                     |
+| `disabled`            | `boolean`                                                | No       | Disables the input.                          |
+| `required`            | `boolean`                                                | No       | Marks the field as required.                 |
+| `showOverflowTooltip` | `boolean`                                                | No       | —                                            |
+| `name`                | `string`                                                 | No       | —                                            |
+| `description`         | `string`                                                 | No       | Additional descriptive text.                 |
+| `leftAdornment`       | `ReactNode`                                              | No       | —                                            |
+| `rightAdornment`      | `ReactNode`                                              | No       | —                                            |
+| `clearIcon`           | `ReactNode`                                              | No       | —                                            |
+| `readOnly`            | `boolean`                                                | No       | —                                            |
+| `autoFocus`           | `boolean`                                                | No       | —                                            |
+| `maxLength`           | `number`                                                 | No       | —                                            |
+| `clearable`           | `boolean`                                                | No       | —                                            |
+| `onClear`             | `() => void`                                             | No       | —                                            |
+| `leftAdornmentTone`   | `InputAdornmentTone`                                     | No       | —                                            |
+| `rightAdornmentTone`  | `InputAdornmentTone`                                     | No       | —                                            |
+| `type`                | `HTMLInputTypeAttribute`                                 | No       | HTML input type.                             |
+| `value`               | `string \| number \| readonly string[]`                  | No       | Controlled value.                            |
+| `defaultValue`        | `string \| number \| readonly string[]`                  | No       | Initial uncontrolled value.                  |
+| `onChange`            | `ChangeEventHandler<HTMLInputElement, HTMLInputElement>` | No       | Called when the value changes.               |
 
 <!-- api-docgen:end web.InputProps.Input -->
 

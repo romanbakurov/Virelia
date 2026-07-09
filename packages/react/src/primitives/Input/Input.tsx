@@ -9,14 +9,13 @@ import {
 
 import { FormField } from '@patterns/FormField';
 import { cn } from '@utils/cn';
-import type { InputType } from '@vellira-ui/types';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 
 import type { InputProps } from './types';
 
 import styles from './Input.module.scss';
 
-const getAutoComplete = (type: InputType = 'text', autoComplete?: string) => {
+const getAutoComplete = (type = 'text', autoComplete?: string) => {
   if (autoComplete) return autoComplete;
 
   switch (type) {
@@ -64,6 +63,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       showOverflowTooltip = false,
       autoFocus,
       maxLength,
+      onMouseEnter,
+      onMouseLeave,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': ariaInvalid,
+      ...inputProps
     },
     ref
   ) => {
@@ -84,6 +88,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const resolvedAutoComplete = getAutoComplete(type, autoComplete);
     const showClearButton = clearable && hasValue && !disabled && !readOnly;
+    const descriptionId = description ? `${id}-description` : undefined;
+    const errorId = error ? `${id}-error` : undefined;
+    const describedBy = [ariaDescribedBy, descriptionId, errorId]
+      .filter(Boolean)
+      .join(' ');
 
     const clearIconNode = clearIcon ?? '×';
 
@@ -154,7 +163,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           setUncontrolledValue(nextValue);
         }
 
-        onChange?.(nextValue);
+        onChange?.(event);
       },
       [isControlled, onChange]
     );
@@ -164,22 +173,30 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         setUncontrolledValue('');
       }
 
-      onChange?.('');
       onClear?.();
       inputRef.current?.focus();
-    }, [isControlled, onChange, onClear]);
+    }, [isControlled, onClear]);
 
-    const handleMouseEnter = useCallback(() => {
-      if (!showOverflowTooltip) return;
+    const handleMouseEnter = useCallback(
+      (event: MouseEvent<HTMLInputElement>) => {
+        onMouseEnter?.(event);
 
-      if (isOverflowing && hasValue) {
-        setShowTooltip(true);
-      }
-    }, [hasValue, isOverflowing, showOverflowTooltip]);
+        if (!showOverflowTooltip) return;
 
-    const handleMouseLeave = useCallback(() => {
-      setShowTooltip(false);
-    }, []);
+        if (isOverflowing && hasValue) {
+          setShowTooltip(true);
+        }
+      },
+      [hasValue, isOverflowing, onMouseEnter, showOverflowTooltip]
+    );
+
+    const handleMouseLeave = useCallback(
+      (event: MouseEvent<HTMLInputElement>) => {
+        onMouseLeave?.(event);
+        setShowTooltip(false);
+      },
+      [onMouseLeave]
+    );
 
     const toneClassNameByTone = {
       default: styles.toneDefault,
@@ -220,6 +237,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
 
           <input
+            {...inputProps}
             ref={setRefs}
             id={id}
             name={name}
@@ -242,8 +260,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             required={required}
             autoFocus={autoFocus}
             maxLength={maxLength}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${id}-error` : undefined}
+            aria-invalid={error ? true : (ariaInvalid ?? false)}
+            aria-describedby={describedBy || undefined}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />

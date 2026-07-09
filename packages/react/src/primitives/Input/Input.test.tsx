@@ -1,5 +1,6 @@
 import { act, createRef } from 'react';
 
+import type { ChangeEvent } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { expectNoA11yViolations } from '../../test-utils/a11y';
@@ -18,6 +19,7 @@ describe('Input', () => {
       <Input
         id='email'
         label='Email'
+        description='Use your work email.'
         value='hello@vellira.dev'
         placeholder='name@company.com'
         error='Email is required'
@@ -33,7 +35,12 @@ describe('Input', () => {
     expect(input?.type).toBe('email');
     expect(input?.placeholder).toBe('name@company.com');
     expect(input?.getAttribute('aria-invalid')).toBe('true');
-    expect(input?.getAttribute('aria-describedby')).toBe('email-error');
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      'email-description email-error'
+    );
+    expect(document.getElementById('email-description')?.textContent).toBe(
+      'Use your work email.'
+    );
     expect(document.getElementById('email-error')?.textContent).toBe(
       'Email is required'
     );
@@ -42,7 +49,10 @@ describe('Input', () => {
   });
 
   it('handles changes, disabled state, and object refs', () => {
-    const enabledChange = vi.fn();
+    const enabledValues: string[] = [];
+    const enabledChange = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
+      enabledValues.push(event.target.value);
+    });
     const { container: enabledContainer, unmount: unmountEnabled } = render(
       <Input id='nickname' label='Nickname' value='' onChange={enabledChange} />
     );
@@ -59,7 +69,8 @@ describe('Input', () => {
       enabledInput?.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
-    expect(enabledChange).toHaveBeenCalledWith('Roman');
+    expect(enabledChange).toHaveBeenCalledTimes(1);
+    expect(enabledValues).toEqual(['Roman']);
 
     unmountEnabled();
 
@@ -94,6 +105,100 @@ describe('Input', () => {
     });
 
     expect(disabledChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('passes standard input props and DOM event handlers through', () => {
+    const focus = vi.fn();
+    const blur = vi.fn();
+    const keyDown = vi.fn();
+    const mouseEnter = vi.fn();
+    const mouseLeave = vi.fn();
+
+    const { container, unmount } = render(
+      <Input
+        id='amount'
+        label='Amount'
+        value='10'
+        aria-label='Transfer amount'
+        aria-describedby='amount-hint'
+        data-testid='amount-input'
+        inputMode='decimal'
+        pattern='[0-9]*'
+        min={1}
+        max={100}
+        step={0.5}
+        onFocus={focus}
+        onBlur={blur}
+        onKeyDown={keyDown}
+        onMouseEnter={mouseEnter}
+        onMouseLeave={mouseLeave}
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-label')).toBe('Transfer amount');
+    expect(input?.getAttribute('aria-describedby')).toBe('amount-hint');
+    expect(input?.getAttribute('data-testid')).toBe('amount-input');
+    expect(input?.getAttribute('inputmode')).toBe('decimal');
+    expect(input?.getAttribute('pattern')).toBe('[0-9]*');
+    expect(input?.getAttribute('min')).toBe('1');
+    expect(input?.getAttribute('max')).toBe('100');
+    expect(input?.getAttribute('step')).toBe('0.5');
+
+    act(() => {
+      input?.focus();
+      input?.dispatchEvent(
+        new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' })
+      );
+      input?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      input?.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
+      input?.blur();
+    });
+
+    expect(focus).toHaveBeenCalledTimes(1);
+    expect(keyDown).toHaveBeenCalledTimes(1);
+    expect(mouseEnter).toHaveBeenCalledTimes(1);
+    expect(mouseLeave).toHaveBeenCalledTimes(1);
+    expect(blur).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  it('connects generated description text without an error', () => {
+    const { container, unmount } = render(
+      <Input id='email' label='Email' value='' description='Optional hint.' />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-describedby')).toBe('email-description');
+    expect(document.getElementById('email-description')?.textContent).toBe(
+      'Optional hint.'
+    );
+
+    unmount();
+  });
+
+  it('merges external aria-describedby with generated description and error text', () => {
+    const { container, unmount } = render(
+      <Input
+        id='email'
+        label='Email'
+        value=''
+        description='Use your work email.'
+        aria-describedby='email-hint'
+        error='Email is required'
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      'email-hint email-description email-error'
+    );
 
     unmount();
   });
@@ -180,7 +285,10 @@ describe('Input', () => {
   });
 
   it('supports uncontrolled changes, function refs, and adornments', () => {
-    const change = vi.fn();
+    const changedValues: string[] = [];
+    const change = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
+      changedValues.push(event.target.value);
+    });
     const ref = vi.fn();
     const { container, unmount } = render(
       <Input
@@ -215,7 +323,8 @@ describe('Input', () => {
       input?.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
-    expect(change).toHaveBeenCalledWith('tokens');
+    expect(change).toHaveBeenCalledTimes(1);
+    expect(changedValues).toEqual(['tokens']);
     expect(input?.value).toBe('tokens');
 
     unmount();
@@ -251,7 +360,7 @@ describe('Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).toHaveBeenCalledWith('');
+    expect(change).not.toHaveBeenCalled();
     expect(clear).toHaveBeenCalledTimes(1);
     expect(inputRef.current?.value).toBe('');
     expect(document.activeElement).toBe(inputRef.current);

@@ -27,9 +27,8 @@ Text input primitive for collecting user data in forms.
 - Smart input type behavior
 - Sizes: sm, md, lg
 - Description, required, disabled, read-only and error states
-- Left and right icon support
+- Left and right adornment support
 - Clearable input
-- Optional overflow tooltip
 `,
       },
     },
@@ -43,7 +42,6 @@ Text input primitive for collecting user data in forms.
     required: false,
     readOnly: false,
     clearable: false,
-    showOverflowTooltip: false,
   },
   argTypes: {
     id: { control: 'text' },
@@ -71,13 +69,13 @@ Text input primitive for collecting user data in forms.
     error: { control: 'text' },
     autoFocus: { control: 'boolean' },
     maxLength: { control: 'number' },
-    showOverflowTooltip: { control: 'boolean' },
 
     onChange: { action: 'changed' },
     onClear: { action: 'cleared' },
 
-    leftIcon: { control: false },
-    rightIcon: { control: false },
+    leftAdornment: { control: false },
+    rightAdornment: { control: false },
+    clearIcon: { control: false },
   },
 } satisfies Meta<typeof Input>;
 
@@ -143,7 +141,6 @@ function ClearableInputDemo() {
       onChange={setValue}
       clearable
       clearIcon={<Close />}
-      clearIconTone='danger'
       onClear={() => setValue('')}
       placeholder='Type something'
     />
@@ -204,7 +201,7 @@ export const Types: Story = {
           label='Search'
           type='search'
           placeholder='Search components'
-          leftIcon={<Search />}
+          leftAdornment={<Search />}
         />
       </View>
     </Section>
@@ -289,25 +286,6 @@ export const Validation: Story = {
           value=''
         />
       </View>
-    </Section>
-  ),
-};
-
-export const WithOverflowTooltip: Story = {
-  decorators: [
-    (Story) => (
-      <View style={{ width: 300 }}>
-        <Story />
-      </View>
-    ),
-  ],
-  render: () => (
-    <Section title='Overflow tooltip'>
-      <ControlledInputDemo
-        label='Company name'
-        value='Very long company name that does not fit into the input field'
-        showOverflowTooltip
-      />
     </Section>
   ),
 };

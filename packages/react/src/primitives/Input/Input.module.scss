@@ -128,14 +128,6 @@
   transform: translateY(-50%);
 }
 
-.leftAdornment svg,
-.rightAdornment svg .clearButton {
-  width: var(--space-5);
-  height: var(--space-5);
-  flex-shrink: 0;
-  fill: currentcolor;
-}
-
 .leftAdornment {
   left: var(--space-3);
 }

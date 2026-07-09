@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Check, Close, Search } from '@vellira-ui/icons';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ChangeEvent, CSSProperties, ReactNode } from 'react';
 import { fn } from 'storybook/test';
 
 import { Input } from '../Input';
@@ -149,9 +149,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 const ControlledInputDemo = (args: InputProps) => {
   const [value, setValue] = useState(args.value ?? '');
 
-  const handleChange = (nextValue: string) => {
-    setValue(nextValue);
-    args.onChange?.(nextValue);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+    args.onChange?.(event);
   };
 
   return <Input {...args} value={value} onChange={handleChange} />;
@@ -164,7 +164,7 @@ const ClearableInputDemo = () => {
     <Input
       label='Clearable input'
       value={value}
-      onChange={setValue}
+      onChange={(event) => setValue(event.target.value)}
       clearable
       clearIcon={<Close />}
       rightAdornmentTone='danger'
