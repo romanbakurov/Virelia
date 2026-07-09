@@ -1,4 +1,4 @@
-import type { BaseInputVisualProps, InputType } from '@vellira-ui/types';
+import type { InputBaseProps, InputType } from '@vellira-ui/types';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -16,7 +16,7 @@ export type InputIconElement = ReactElement<{
 
 export interface InputProps
   extends
-    BaseInputVisualProps,
+    InputBaseProps,
     Omit<
       TextInputProps,
       | 'value'

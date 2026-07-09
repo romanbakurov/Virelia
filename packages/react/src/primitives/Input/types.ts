@@ -1,10 +1,8 @@
-import type { BaseInputVisualProps } from '@vellira-ui/types';
+import type { InputBaseProps } from '@vellira-ui/types';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export interface InputProps
-  extends
-    BaseInputVisualProps,
-    Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
+  extends InputBaseProps, Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
   type?: ComponentPropsWithoutRef<'input'>['type'];
   value?: ComponentPropsWithoutRef<'input'>['value'];
   defaultValue?: ComponentPropsWithoutRef<'input'>['defaultValue'];

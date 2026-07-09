@@ -10,7 +10,7 @@ export type InputAdornmentTone =
   | 'muted'
   | 'inverse';
 
-export interface BaseInputVisualProps {
+export interface InputBaseProps {
   label?: string;
   placeholder?: string;
 
