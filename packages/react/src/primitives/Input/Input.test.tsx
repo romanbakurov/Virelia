@@ -1,4 +1,4 @@
-import { act, createRef } from 'react';
+import { act, createRef, useState } from 'react';
 
 import type { ChangeEvent } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -330,8 +330,11 @@ describe('Input', () => {
     unmount();
   });
 
-  it('clears uncontrolled values and restores focus', () => {
-    const change = vi.fn();
+  it('clears uncontrolled values, emits change, and restores focus', () => {
+    const changedValues: string[] = [];
+    const change = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
+      changedValues.push(event.target.value);
+    });
     const clear = vi.fn();
     const inputRef = createRef<HTMLInputElement>();
     const { container, unmount } = render(
@@ -360,10 +363,51 @@ describe('Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledTimes(1);
+    expect(changedValues).toEqual(['']);
     expect(clear).toHaveBeenCalledTimes(1);
     expect(inputRef.current?.value).toBe('');
     expect(document.activeElement).toBe(inputRef.current);
+
+    unmount();
+  });
+
+  it('clears controlled values through the standard change callback', () => {
+    const clear = vi.fn();
+
+    const ControlledInput = () => {
+      const [value, setValue] = useState('Clear me');
+
+      return (
+        <Input
+          id='controlled-clearable'
+          label='Controlled clearable'
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
+          onClear={clear}
+          clearable
+        />
+      );
+    };
+
+    const { container, unmount } = render(<ControlledInput />);
+    const input = container.querySelector<HTMLInputElement>('input');
+    const clearButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Clear input"]'
+    );
+
+    expect(input?.value).toBe('Clear me');
+    expect(clearButton).not.toBeNull();
+
+    act(() => {
+      clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(clear).toHaveBeenCalledTimes(1);
+    expect(input?.value).toBe('');
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
 
     unmount();
   });
