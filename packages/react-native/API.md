@@ -155,34 +155,34 @@ import { Input } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.InputProps.Input -->
 
-| Prop                 | Type                      | Required | Description                                |
-| -------------------- | ------------------------- | -------- | ------------------------------------------ |
-| `label`              | `string`                  | No       | Visible label.                             |
-| `placeholder`        | `string`                  | No       | Placeholder text.                          |
-| `size`               | `InputSize`               | No       | Input size.                                |
-| `error`              | `string`                  | No       | Error message rendered under the input.    |
-| `type`               | `InputType`               | No       | Semantic input type used by the component. |
-| `containerStyle`     | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.       |
-| `inputStyle`         | `StyleProp<TextStyle>`    | No       | Extra style for the input element.         |
-| `value`              | `string`                  | No       | Controlled value.                          |
-| `onChange`           | `(value: string) => void` | No       | Called with the next value.                |
-| `disabled`           | `boolean`                 | No       | Disables the input.                        |
-| `required`           | `boolean`                 | No       | Marks the field as required.               |
-| `iconSize`           | `number`                  | No       | Icon size in pixels.                       |
-| `leftAdornment`      | `InputIconElement`        | No       | —                                          |
-| `rightAdornment`     | `InputIconElement`        | No       | —                                          |
-| `clearIcon`          | `InputIconElement`        | No       | —                                          |
-| `testID`             | `string`                  | No       | —                                          |
-| `keyboardType`       | `KeyboardTypeOptions`     | No       | —                                          |
-| `secureTextEntry`    | `boolean`                 | No       | —                                          |
-| `defaultValue`       | `string`                  | No       | —                                          |
-| `readOnly`           | `boolean`                 | No       | —                                          |
-| `autoFocus`          | `boolean`                 | No       | —                                          |
-| `maxLength`          | `number`                  | No       | —                                          |
-| `clearable`          | `boolean`                 | No       | —                                          |
-| `onClear`            | `() => void`              | No       | —                                          |
-| `leftAdornmentTone`  | `InputAdornmentTone`      | No       | —                                          |
-| `rightAdornmentTone` | `InputAdornmentTone`      | No       | —                                          |
+| Prop              | Type                      | Required | Description                                      |
+| ----------------- | ------------------------- | -------- | ------------------------------------------------ |
+| `type`            | `InputType`               | No       | Semantic input type used by the component.       |
+| `containerStyle`  | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.             |
+| `inputStyle`      | `StyleProp<TextStyle>`    | No       | Extra style for the input element.               |
+| `value`           | `string`                  | No       | Controlled value.                                |
+| `onChange`        | `(value: string) => void` | No       | Called with the next value.                      |
+| `iconSize`        | `number`                  | No       | Icon size in pixels.                             |
+| `clearIcon`       | `InputIconElement`        | No       | —                                                |
+| `testID`          | `string`                  | No       | —                                                |
+| `keyboardType`    | `KeyboardTypeOptions`     | No       | —                                                |
+| `secureTextEntry` | `boolean`                 | No       | —                                                |
+| `defaultValue`    | `string`                  | No       | Initial uncontrolled value.                      |
+| `label`           | `string`                  | No       | Visible label.                                   |
+| `placeholder`     | `string`                  | No       | Placeholder text.                                |
+| `size`            | `InputSize`               | No       | Input size.                                      |
+| `disabled`        | `boolean`                 | No       | Disables interaction.                            |
+| `readOnly`        | `boolean`                 | No       | Marks the input as read-only.                    |
+| `required`        | `boolean`                 | No       | Marks the field as required.                     |
+| `clearable`       | `boolean`                 | No       | Shows a clear action when the input has a value. |
+| `onClear`         | `() => void`              | No       | Called when the clear action is pressed.         |
+| `error`           | `string`                  | No       | Error message rendered for invalid state.        |
+| `description`     | `string`                  | No       | Additional descriptive text.                     |
+| `leftIcon`        | `InputIconElement`        | No       | Icon rendered before content.                    |
+| `rightIcon`       | `InputIconElement`        | No       | Icon rendered after content.                     |
+| `leftIconTone`    | `InputAdornmentTone`      | No       | Color tone for the left icon.                    |
+| `rightIconTone`   | `InputAdornmentTone`      | No       | Color tone for the right icon.                   |
+| `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
 
 <!-- api-docgen:end native.InputProps.Input -->
 

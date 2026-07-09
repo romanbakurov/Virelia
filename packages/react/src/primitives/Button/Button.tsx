@@ -29,7 +29,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const iconOnly = iconOnlyProp || (!children && (leftIcon || rightIcon));
+    const iconOnly =
+      iconOnlyProp || (!children && Boolean(leftIcon || rightIcon));
+
     const isDisabled = disabled || loading;
     const content = loading && loadingText ? loadingText : children;
 

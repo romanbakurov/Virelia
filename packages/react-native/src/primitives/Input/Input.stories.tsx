@@ -29,7 +29,6 @@ Text input primitive for collecting user data in forms.
 - Description, required, disabled, read-only and error states
 - Left and right icon support
 - Clearable input
-- Optional overflow tooltip
 `,
       },
     },
@@ -43,7 +42,6 @@ Text input primitive for collecting user data in forms.
     required: false,
     readOnly: false,
     clearable: false,
-    showOverflowTooltip: false,
   },
   argTypes: {
     id: { control: 'text' },
@@ -71,13 +69,49 @@ Text input primitive for collecting user data in forms.
     error: { control: 'text' },
     autoFocus: { control: 'boolean' },
     maxLength: { control: 'number' },
-    showOverflowTooltip: { control: 'boolean' },
 
     onChange: { action: 'changed' },
     onClear: { action: 'cleared' },
 
     leftIcon: { control: false },
     rightIcon: { control: false },
+    clearIcon: { control: false },
+    leftIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    rightIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    clearIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
   },
 } satisfies Meta<typeof Input>;
 
@@ -211,14 +245,14 @@ export const Types: Story = {
   ),
 };
 
-export const Adornments: Story = {
+export const WithIcons: Story = {
   render: () => (
     <Section title='Icons'>
       <View style={storyStyles.column}>
         <Input
           label='Search'
-          leftAdornment={<Search />}
-          leftAdornmentTone='primary'
+          leftIcon={<Search />}
+          leftIconTone='primary'
           placeholder='Search components'
           type='search'
         />
@@ -226,18 +260,18 @@ export const Adornments: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
+          rightIcon={<Check />}
+          rightIconTone='success'
           placeholder='name@company.com'
           type='email'
         />
 
         <Input
           label='Search settings'
-          leftAdornment={<Search />}
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
-          leftAdornmentTone='primary'
+          leftIcon={<Search />}
+          rightIcon={<Check />}
+          rightIconTone='success'
+          leftIconTone='primary'
           defaultValue='Theme'
         />
 
@@ -289,25 +323,6 @@ export const Validation: Story = {
           value=''
         />
       </View>
-    </Section>
-  ),
-};
-
-export const WithOverflowTooltip: Story = {
-  decorators: [
-    (Story) => (
-      <View style={{ width: 300 }}>
-        <Story />
-      </View>
-    ),
-  ],
-  render: () => (
-    <Section title='Overflow tooltip'>
-      <ControlledInputDemo
-        label='Company name'
-        value='Very long company name that does not fit into the input field'
-        showOverflowTooltip
-      />
     </Section>
   ),
 };
