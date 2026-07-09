@@ -1,5 +1,6 @@
 import { cloneElement, useState } from 'react';
 
+import type { PressableProps } from 'react-native';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
@@ -51,6 +52,10 @@ export function Button({
   loading = false,
   loadingText,
   onPress,
+  onFocus,
+  onBlur,
+  onHoverIn,
+  onHoverOut,
   size = 'md',
   leftIcon,
   rightIcon,
@@ -61,13 +66,14 @@ export function Button({
   accessibilityLabel,
   iconSize,
   testID,
+  ...props
 }: ButtonProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const config = sizeMap[size];
 
   const variantTheme = theme.components.button[color][variant];
-  const [isPressed, setIsPressed] = useState(false);
+
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -81,26 +87,46 @@ export function Button({
     'Button: icon-only buttons must provide an accessibilityLabel.'
   );
 
-  const stateTheme = isDisabled
-    ? theme.components.button.disabled
-    : isPressed
-      ? variantTheme.pressed
-      : isHovered
-        ? variantTheme.hover
-        : variantTheme.default;
-
-  const contentColor = stateTheme.fg;
   const resolvedIconSize = iconSize ?? config.iconSize;
 
-  const renderIcon = (icon: ButtonIconElement, iconColor: string) => {
-    return cloneElement(icon, {
+  const handleFocus: NonNullable<PressableProps['onFocus']> = (event) => {
+    setIsFocused(true);
+    onFocus?.(event);
+  };
+
+  const handleBlur: NonNullable<PressableProps['onBlur']> = (event) => {
+    setIsFocused(false);
+    onBlur?.(event);
+  };
+
+  const handleHoverIn: NonNullable<PressableProps['onHoverIn']> = (event) => {
+    setIsHovered(true);
+    onHoverIn?.(event);
+  };
+
+  const handleHoverOut: NonNullable<PressableProps['onHoverOut']> = (event) => {
+    setIsHovered(false);
+    onHoverOut?.(event);
+  };
+
+  const renderIcon = (icon: ButtonIconElement, iconColor: string) =>
+    cloneElement(icon, {
       color: iconColor,
       size: resolvedIconSize,
     });
-  };
+
+  const getInteractionTheme = (pressed: boolean) =>
+    isDisabled
+      ? theme.components.button.disabled
+      : pressed
+        ? variantTheme.pressed
+        : isHovered
+          ? variantTheme.hover
+          : variantTheme.default;
 
   return (
     <Pressable
+      {...props}
       testID={testID}
       disabled={isDisabled}
       onPress={isDisabled ? undefined : onPress}
@@ -110,25 +136,18 @@ export function Button({
         accessibilityLabel ??
         (typeof content === 'string' ? content : undefined)
       }
-      onBlur={() => setIsFocused(false)}
-      onFocus={() => setIsFocused(true)}
-      onHoverIn={() => setIsHovered(true)}
-      onHoverOut={() => setIsHovered(false)}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
+      onHoverIn={handleHoverIn}
+      onHoverOut={handleHoverOut}
       style={({ pressed }) => {
-        const pressedTheme =
-          !isDisabled && pressed
-            ? variantTheme.pressed
-            : !isDisabled && isHovered
-              ? variantTheme.hover
-              : stateTheme;
+        const interactionTheme = getInteractionTheme(pressed);
 
         return [
           styles.button,
           {
-            backgroundColor: pressedTheme.bg,
-            borderColor: pressedTheme.border,
+            backgroundColor: interactionTheme.bg,
+            borderColor: interactionTheme.border,
             paddingHorizontal: iconOnly ? 0 : config.px,
             paddingVertical: iconOnly ? 0 : config.py,
             width: iconOnly ? config.height : undefined,
@@ -142,26 +161,35 @@ export function Button({
         ];
       }}
     >
-      {loading && <ActivityIndicator size='small' color={contentColor} />}
+      {({ pressed }) => {
+        const interactionTheme = getInteractionTheme(pressed);
+        const contentColor = interactionTheme.fg;
 
-      {!loading && leftIcon && renderIcon(leftIcon, contentColor)}
+        return (
+          <>
+            {loading && <ActivityIndicator size='small' color={contentColor} />}
 
-      {content && !iconOnly && (
-        <Text
-          style={[
-            styles.text,
-            {
-              fontSize: config.fontSize,
-              color: contentColor,
-            },
-            textStyle,
-          ]}
-        >
-          {content}
-        </Text>
-      )}
+            {!loading && leftIcon && renderIcon(leftIcon, contentColor)}
 
-      {!loading && rightIcon && renderIcon(rightIcon, contentColor)}
+            {content && !iconOnly && (
+              <Text
+                style={[
+                  styles.text,
+                  {
+                    fontSize: config.fontSize,
+                    color: contentColor,
+                  },
+                  textStyle,
+                ]}
+              >
+                {content}
+              </Text>
+            )}
+
+            {!loading && rightIcon && renderIcon(rightIcon, contentColor)}
+          </>
+        );
+      }}
     </Pressable>
   );
 }
