@@ -28,5 +28,3 @@ export interface BaseInputVisualProps {
   leftAdornmentTone?: InputAdornmentTone;
   rightAdornmentTone?: InputAdornmentTone;
 }
-
-export type BaseInputProps = BaseInputVisualProps;

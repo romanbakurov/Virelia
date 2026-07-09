@@ -154,7 +154,6 @@ const publicSymbolContracts = {
     'BaseDropdownSeparator',
     'BaseDropdownTriggerProps',
     'BaseFormFieldProps',
-    'BaseInputProps',
     'BaseInputVisualProps',
     'BaseModalBodyProps',
     'BaseModalContentProps',
