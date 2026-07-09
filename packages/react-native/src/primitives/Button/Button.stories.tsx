@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Search } from '@vellira-ui/icons';
-import { View } from 'react-native';
+import { Download, Search, Settings } from '@vellira-ui/icons';
+import type { ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
+
+import { useTheme } from '../../theme';
 
 import { Button } from './Button';
 
@@ -50,42 +53,59 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-const rowStyle = {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  gap: 12,
-  alignItems: 'center',
-} as const;
-
-const stackStyle = {
-  gap: 16,
-  alignItems: 'flex-start',
-} as const;
-
-export const Basic: Story = {
-  args: {
-    children: 'Search',
-    color: 'primary',
-    variant: 'solid',
-    leftIcon: <Search />,
+const storyStyles = StyleSheet.create({
+  column: {
+    width: '100%',
+    gap: 12,
   },
-};
+});
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    section: {
+      width: '100%',
+      padding: 20,
+      gap: 16,
+      borderWidth: 1,
+      borderColor: theme.semantic.border.muted,
+      borderRadius: 20,
+      backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    subtitle: {
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+      fontWeight: '600',
+    },
+  });
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.subtitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
 
 export const Colors: Story = {
   render: () => (
-    <View style={rowStyle}>
-      <Button color='primary'>Primary</Button>
-      <Button color='secondary'>Secondary</Button>
-      <Button color='close'>Close</Button>
-      <Button color='danger'>Danger</Button>
-    </View>
+    <Section title='Colors'>
+      <View style={storyStyles.column}>
+        <Button color='primary'>Primary</Button>
+        <Button color='secondary'>Secondary</Button>
+        <Button color='close'>Close</Button>
+        <Button color='danger'>Danger</Button>
+      </View>
+    </Section>
   ),
 };
 
 export const Variants: Story = {
   render: () => (
-    <View style={stackStyle}>
-      <View style={rowStyle}>
+    <Section title='Variants'>
+      <View style={storyStyles.column}>
         <Button color='primary' variant='solid'>
           Primary solid
         </Button>
@@ -100,7 +120,7 @@ export const Variants: Story = {
         </Button>
       </View>
 
-      <View style={rowStyle}>
+      <View style={storyStyles.column}>
         <Button color='primary' variant='outline'>
           Primary outline
         </Button>
@@ -115,7 +135,7 @@ export const Variants: Story = {
         </Button>
       </View>
 
-      <View style={rowStyle}>
+      <View style={storyStyles.column}>
         <Button color='primary' variant='ghost'>
           Primary ghost
         </Button>
@@ -129,24 +149,26 @@ export const Variants: Story = {
           Danger ghost
         </Button>
       </View>
-    </View>
+    </Section>
   ),
 };
 
 export const Sizes: Story = {
   render: () => (
-    <View style={rowStyle}>
-      <Button size='sm'>Small</Button>
-      <Button size='md'>Medium</Button>
-      <Button size='lg'>Large</Button>
-    </View>
+    <Section title='Sizes'>
+      <View style={storyStyles.column}>
+        <Button size='sm'>Small</Button>
+        <Button size='md'>Medium</Button>
+        <Button size='lg'>Large</Button>
+      </View>
+    </Section>
   ),
 };
 
 export const States: Story = {
   render: () => (
-    <View style={stackStyle}>
-      <View style={rowStyle}>
+    <Section title='States'>
+      <View style={storyStyles.column}>
         <Button disabled>Disabled</Button>
         <Button loading>Loading</Button>
         <Button loading loadingText='Saving...'>
@@ -157,19 +179,21 @@ export const States: Story = {
       <View style={{ width: 280 }}>
         <Button fullWidth>Full width</Button>
       </View>
-    </View>
+    </Section>
   ),
 };
 
 export const WithIcons: Story = {
   render: () => (
-    <View style={rowStyle}>
-      <Button leftIcon={<Search />}>Left icon</Button>
-      <Button rightIcon={<Search />}>Right icon</Button>
-      <Button leftIcon={<Search />} rightIcon={<Search />}>
-        Both icons
-      </Button>
-    </View>
+    <Section title='WithIcons'>
+      <View style={storyStyles.column}>
+        <Button leftIcon={<Search />}>Left icon</Button>
+        <Button rightIcon={<Search />}>Right icon</Button>
+        <Button leftIcon={<Search />} rightIcon={<Search />}>
+          Both icons
+        </Button>
+      </View>
+    </Section>
   ),
 };
 
@@ -179,4 +203,13 @@ export const IconOnly: Story = {
     leftIcon: <Search />,
     accessibilityLabel: 'Search',
   },
+  render: () => (
+    <Section title='IconOnly'>
+      <View style={{ flexDirection: 'row', gap: 16 }}>
+        <Button leftIcon={<Search />} accessibilityLabel='Search' />
+        <Button leftIcon={<Settings />} accessibilityLabel='Settings' />
+        <Button leftIcon={<Download />} accessibilityLabel='Download' />
+      </View>
+    </Section>
+  ),
 };

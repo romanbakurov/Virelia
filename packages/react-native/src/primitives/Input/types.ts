@@ -1,4 +1,8 @@
-import type { BaseInputProps, InputAdornmentTone } from '@vellira-ui/types';
+import type {
+  InputAdornmentTone,
+  InputBaseProps,
+  InputType,
+} from '@vellira-ui/types';
 import type { ReactElement } from 'react';
 import type {
   StyleProp,
@@ -16,7 +20,7 @@ export type InputIconElement = ReactElement<{
 
 export interface InputProps
   extends
-    BaseInputProps,
+    InputBaseProps,
     Omit<
       TextInputProps,
       | 'value'
@@ -27,11 +31,17 @@ export interface InputProps
       | 'style'
       | 'placeholder'
     > {
-  leftAdornment?: InputIconElement;
-  rightAdornment?: InputIconElement;
-  leftAdornmentTone?: InputAdornmentTone;
-  rightAdornmentTone?: InputAdornmentTone;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  type?: InputType;
+
+  leftIcon?: InputIconElement;
+  rightIcon?: InputIconElement;
   clearIcon?: InputIconElement;
+  leftIconTone?: InputAdornmentTone;
+  rightIconTone?: InputAdornmentTone;
+  clearIconTone?: InputAdornmentTone;
   iconSize?: number;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;

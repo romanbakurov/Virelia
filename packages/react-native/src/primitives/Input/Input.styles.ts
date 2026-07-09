@@ -39,7 +39,7 @@ export const createStyles = (theme: NativeTheme) =>
       paddingRight: theme.tokens.spacing[5] + 20,
     },
 
-    rightAdornment: {
+    rightIcon: {
       position: 'absolute',
       right: theme.tokens.spacing[4],
       top: '50%',
@@ -51,7 +51,7 @@ export const createStyles = (theme: NativeTheme) =>
       justifyContent: 'center',
     },
 
-    leftAdornment: {
+    leftIcon: {
       position: 'absolute',
       left: theme.tokens.spacing[4],
       top: '50%',

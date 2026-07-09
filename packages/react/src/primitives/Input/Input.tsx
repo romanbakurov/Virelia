@@ -1,22 +1,27 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 
 import { FormField } from '@patterns/FormField';
 import { cn } from '@utils/cn';
-import type { InputType } from '@vellira-ui/types';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
 import type { InputProps } from './types';
 
 import styles from './Input.module.scss';
 
-const getAutoComplete = (type: InputType = 'text', autoComplete?: string) => {
+const toneClassNameByTone = {
+  default: styles.toneDefault,
+  primary: styles.tonePrimary,
+  secondary: styles.toneSecondary,
+  success: styles.toneSuccess,
+  danger: styles.toneDanger,
+  muted: styles.toneMuted,
+  inverse: styles.toneInverse,
+} as const;
+
+const getAutoComplete = (
+  type: InputHTMLAttributes<HTMLInputElement>['type'] = 'text',
+  autoComplete?: string
+) => {
   if (autoComplete) return autoComplete;
 
   switch (type) {
@@ -61,9 +66,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       clearIcon,
       leftAdornmentTone = 'default',
       rightAdornmentTone = 'default',
-      showOverflowTooltip = false,
+      clearIconTone = 'danger',
       autoFocus,
       maxLength,
+      onMouseEnter,
+      onMouseLeave,
+      'aria-describedby': ariaDescribedBy,
+      'aria-invalid': ariaInvalid,
+      ...inputProps
     },
     ref
   ) => {
@@ -75,8 +85,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const [uncontrolledValue, setUncontrolledValue] = useState(
       defaultValue ?? ''
     );
-    const [isOverflowing, setIsOverflowing] = useState(false);
-    const [showTooltip, setShowTooltip] = useState(false);
 
     const isControlled = value !== undefined;
     const currentValue = isControlled ? value : uncontrolledValue;
@@ -84,51 +92,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const resolvedAutoComplete = getAutoComplete(type, autoComplete);
     const showClearButton = clearable && hasValue && !disabled && !readOnly;
+    const descriptionId = description ? `${id}-description` : undefined;
+    const errorId = error ? `${id}-error` : undefined;
+    const describedBy = [ariaDescribedBy, descriptionId, errorId]
+      .filter(Boolean)
+      .join(' ');
 
     const clearIconNode = clearIcon ?? '×';
-
-    const checkOverflow = useCallback(() => {
-      const input = inputRef.current;
-
-      if (!input) {
-        setIsOverflowing(false);
-        return;
-      }
-
-      setIsOverflowing(input.scrollWidth > input.clientWidth);
-    }, []);
-
-    useEffect(() => {
-      if (!showOverflowTooltip) return;
-
-      checkOverflow();
-
-      if (typeof ResizeObserver === 'undefined') {
-        window.addEventListener('resize', checkOverflow);
-
-        return () => {
-          window.removeEventListener('resize', checkOverflow);
-        };
-      }
-
-      const resizeObserver = new ResizeObserver(checkOverflow);
-
-      if (inputRef.current) {
-        resizeObserver.observe(inputRef.current);
-      }
-
-      window.addEventListener('resize', checkOverflow);
-
-      return () => {
-        resizeObserver.disconnect();
-        window.removeEventListener('resize', checkOverflow);
-      };
-    }, [checkOverflow, showOverflowTooltip]);
-
-    useEffect(() => {
-      if (!showOverflowTooltip) return;
-      checkOverflow();
-    }, [currentValue, checkOverflow, showOverflowTooltip]);
 
     const setRefs = useCallback(
       (element: HTMLInputElement | null) => {
@@ -154,7 +124,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           setUncontrolledValue(nextValue);
         }
 
-        onChange?.(nextValue);
+        onChange?.(event);
       },
       [isControlled, onChange]
     );
@@ -164,32 +134,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         setUncontrolledValue('');
       }
 
-      onChange?.('');
       onClear?.();
       inputRef.current?.focus();
-    }, [isControlled, onChange, onClear]);
-
-    const handleMouseEnter = useCallback(() => {
-      if (!showOverflowTooltip) return;
-
-      if (isOverflowing && hasValue) {
-        setShowTooltip(true);
-      }
-    }, [hasValue, isOverflowing, showOverflowTooltip]);
-
-    const handleMouseLeave = useCallback(() => {
-      setShowTooltip(false);
-    }, []);
-
-    const toneClassNameByTone = {
-      default: styles.toneDefault,
-      primary: styles.tonePrimary,
-      secondary: styles.toneSecondary,
-      success: styles.toneSuccess,
-      danger: styles.toneDanger,
-      muted: styles.toneMuted,
-      inverse: styles.toneInverse,
-    } as const;
+    }, [isControlled, onClear]);
 
     const showRightAdornment = !showClearButton && Boolean(rightAdornment);
 
@@ -220,6 +167,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
 
           <input
+            {...inputProps}
             ref={setRefs}
             id={id}
             name={name}
@@ -230,7 +178,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               styles[size],
               {
                 [styles.error]: !!error,
-                [styles.withEllipsis]: showOverflowTooltip,
               },
               className
             )}
@@ -242,10 +189,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             required={required}
             autoFocus={autoFocus}
             maxLength={maxLength}
-            aria-invalid={!!error}
-            aria-describedby={error ? `${id}-error` : undefined}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            aria-invalid={error ? true : ariaInvalid}
+            aria-describedby={describedBy || undefined}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
           />
 
           {showClearButton && (
@@ -253,7 +200,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               type='button'
               className={cn(
                 styles.clearButton,
-                toneClassNameByTone[rightAdornmentTone]
+                toneClassNameByTone[clearIconTone]
               )}
               onClick={handleClear}
               aria-label='Clear input'
@@ -270,12 +217,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               )}
             >
               {rightAdornment}
-            </div>
-          )}
-
-          {showOverflowTooltip && showTooltip && isOverflowing && hasValue && (
-            <div className={styles.tooltip} role='tooltip'>
-              {currentValue}
             </div>
           )}
         </div>

@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useRef } from 'react';
 
-type PressableState = { pressed: boolean };
+type PressableState = { pressed: boolean; hovered: boolean; focused: boolean };
 
 type NativeProps = {
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((state: PressableState) => React.ReactNode);
   style?: unknown;
   disabled?: boolean;
   accessibilityRole?: string;
@@ -166,10 +166,16 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
     },
     ref
   ) => {
-    const resolvedStyle =
-      typeof style === 'function'
-        ? style({ pressed: false } satisfies PressableState)
-        : style;
+    const state: PressableState = {
+      pressed: false,
+      hovered: false,
+      focused: false,
+    };
+
+    const resolvedStyle = typeof style === 'function' ? style(state) : style;
+
+    const resolvedChildren =
+      typeof children === 'function' ? children(state) : children;
 
     return (
       <button
@@ -190,7 +196,7 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         onDoubleClick={onLongPress}
         {...stateProps(accessibilityState)}
       >
-        {children}
+        {resolvedChildren}
       </button>
     );
   }
@@ -218,6 +224,7 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
     <input
       ref={ref}
       data-testid={testID}
+      data-keyboard-type={keyboardType}
       aria-label={accessibilityLabel}
       value={value ?? ''}
       placeholder={placeholder}
