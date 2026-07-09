@@ -155,6 +155,7 @@ const publicSymbolContracts = {
     'BaseDropdownTriggerProps',
     'BaseFormFieldProps',
     'BaseInputProps',
+    'BaseInputVisualProps',
     'BaseModalBodyProps',
     'BaseModalContentProps',
     'BaseModalFooterProps',

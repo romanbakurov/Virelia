@@ -10,26 +10,23 @@ export type InputAdornmentTone =
   | 'muted'
   | 'inverse';
 
-export interface BaseInputProps {
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
-
+export interface BaseInputVisualProps {
   label?: string;
   placeholder?: string;
 
-  type?: InputType;
   size?: InputSize;
 
   disabled?: boolean;
   readOnly?: boolean;
   required?: boolean;
 
-  autoFocus?: boolean;
-  maxLength?: number;
-
   clearable?: boolean;
   onClear?: () => void;
 
   error?: string;
+
+  leftAdornmentTone?: InputAdornmentTone;
+  rightAdornmentTone?: InputAdornmentTone;
 }
+
+export type BaseInputProps = BaseInputVisualProps;

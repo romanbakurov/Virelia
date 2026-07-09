@@ -34,15 +34,22 @@ const fallbackDescriptions: Record<string, string> = {
   iconSize: 'Icon size in pixels.',
   inputStyle: 'Extra style for the input element.',
   itemStyle: 'Extra item style.',
+  label: 'Visible label.',
   labelStyle: 'Extra label text style.',
   leftIcon: 'Icon rendered before content.',
+  leftAdornmentTone: 'Color tone for the left adornment.',
   onChange: 'Called when the value changes.',
   onClick: 'Click handler.',
+  onClear: 'Called when the clear action is pressed.',
   onKeyDown: 'Keyboard handler.',
   optionStyle: 'Extra option style.',
   overlayStyle: 'Extra overlay style.',
+  readOnly: 'Marks the input as read-only.',
   rightIcon: 'Icon rendered after content.',
+  rightAdornmentTone: 'Color tone for the right adornment.',
   showArrow: 'Controls whether the trigger arrow is rendered.',
+  showOverflowTooltip: 'Shows a tooltip when the input value overflows.',
+  size: 'Input size.',
   style: 'Extra root style.',
   textStyle: 'Extra text style.',
   triggerStyle: 'Extra trigger style.',
@@ -58,6 +65,7 @@ const fallbackDescriptions: Record<string, string> = {
   disabled: 'Disables interaction.',
   required: 'Marks the field as required.',
   placeholder: 'Placeholder text.',
+  clearable: 'Shows a clear action when the input has a value.',
 };
 
 const sections: ApiSection[] = [
@@ -240,6 +248,7 @@ const sourceFiles = Array.from(
 ).map((sourceFile) => path.join(rootDir, sourceFile));
 
 const program = ts.createProgram(sourceFiles, {
+  baseUrl: rootDir,
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.ESNext,
   moduleResolution: ts.ModuleResolutionKind.Bundler,
@@ -248,6 +257,16 @@ const program = ts.createProgram(sourceFiles, {
   strict: true,
   esModuleInterop: true,
   allowSyntheticDefaultImports: true,
+  paths: {
+    '@vellira-ui/core': ['packages/core/src/index.ts'],
+    '@vellira-ui/icons': ['packages/icons/src/web.ts'],
+    '@vellira-ui/icons/native': ['packages/icons/src/native.ts'],
+    '@vellira-ui/icons/web': ['packages/icons/src/web.ts'],
+    '@vellira-ui/react': ['packages/react/src/index.ts'],
+    '@vellira-ui/react-native': ['packages/react-native/src/index.ts'],
+    '@vellira-ui/tokens': ['packages/tokens/src/index.ts'],
+    '@vellira-ui/types': ['packages/types/src/index.ts'],
+  },
 });
 
 const checker = program.getTypeChecker();

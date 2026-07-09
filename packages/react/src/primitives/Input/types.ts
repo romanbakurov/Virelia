@@ -1,9 +1,9 @@
-import type { BaseInputProps, InputAdornmentTone } from '@vellira-ui/types';
+import type { BaseInputVisualProps } from '@vellira-ui/types';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export interface InputProps
   extends
-    Omit<BaseInputProps, 'type' | 'value' | 'defaultValue' | 'onChange'>,
+    BaseInputVisualProps,
     Omit<ComponentPropsWithoutRef<'input'>, 'size'> {
   type?: ComponentPropsWithoutRef<'input'>['type'];
   value?: ComponentPropsWithoutRef<'input'>['value'];
@@ -17,9 +17,6 @@ export interface InputProps
   leftAdornment?: ReactNode;
   rightAdornment?: ReactNode;
   clearIcon?: ReactNode;
-
-  leftAdornmentTone?: InputAdornmentTone;
-  rightAdornmentTone?: InputAdornmentTone;
 
   className?: string;
   autoComplete?: string;
