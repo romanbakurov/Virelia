@@ -30,8 +30,8 @@
     "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/icons": "workspace:*",
     "@vitejs/plugin-react": "^6.0.3",
-    "@vitest/browser-playwright": "^4.1.9",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
     "chromatic": "^16.10.0",
     "eslint-plugin-storybook": "^10.4.6",
     "sass": "^1.99.0",
@@ -41,6 +41,6 @@
     "vite": "^8.0.13",
     "vite-plugin-dts": "^5.0.0",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   }
 }

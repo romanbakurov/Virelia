@@ -60,7 +60,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.10",
     "axe-core": "^4.12.1",
     "jsdom": "^28.1.0",
     "react": "19.2.7",
@@ -69,7 +69,7 @@
     "vite-plugin-dts": "^5.0.0",
     "vite-plugin-lib-inject-css": "^2.2.2",
     "vite-plugin-svgr": "^5.2.0",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "publishConfig": {
     "access": "public"
