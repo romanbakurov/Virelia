@@ -57,12 +57,6 @@
     }
   }
 
-  &.withEllipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   &.sm {
     padding: var(--space-2) var(--space-3);
     font-size: var(--font-size-sm);
@@ -204,49 +198,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .input,
-  .tooltip {
+  .input {
     transition: none;
     animation: none;
-  }
-}
-
-.tooltip {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: var(--z-index-tooltip);
-  max-width: 300px;
-  padding: var(--space-2) var(--space-3);
-  margin-top: var(--space-2);
-  color: var(--tooltip-content-fg);
-  font-size: var(--font-size-sm);
-  overflow-wrap: break-word;
-  white-space: normal;
-  pointer-events: none;
-  background-color: var(--tooltip-content-bg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  animation: fadeIn 120ms ease-out;
-
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: var(--space-3);
-    border: 6px solid transparent;
-    border-bottom-color: var(--tooltip-arrow-bg);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

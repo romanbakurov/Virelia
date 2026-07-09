@@ -17,8 +17,8 @@ export interface InputProps
 
   leftAdornmentTone?: InputAdornmentTone;
   rightAdornmentTone?: InputAdornmentTone;
+  clearIconTone?: InputAdornmentTone;
 
   className?: string;
   autoComplete?: string;
-  showOverflowTooltip?: boolean;
 }

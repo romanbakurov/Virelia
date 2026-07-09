@@ -29,7 +29,6 @@ Labeled text input primitive for short form values.
 - Left and right icon support
 - Clearable state
 - Disabled, read-only, required and error states
-- Optional overflow tooltip
 `,
       },
     },
@@ -43,7 +42,6 @@ Labeled text input primitive for short form values.
     required: false,
     readOnly: false,
     clearable: false,
-    showOverflowTooltip: false,
     onChange: fn(),
   },
   argTypes: {
@@ -94,7 +92,6 @@ Labeled text input primitive for short form values.
     autoComplete: { control: 'text' },
     autoFocus: { control: 'boolean' },
     maxLength: { control: 'number' },
-    showOverflowTooltip: { control: 'boolean' },
     onChange: { action: 'changed' },
     onClear: { action: 'cleared' },
     leftAdornment: { control: false },
@@ -283,28 +280,6 @@ export const States: Story = {
           placeholder='Invalid value'
         />
       </div>
-    </Section>
-  ),
-};
-
-export const WithOverflowTooltip: Story = {
-  args: {
-    label: 'Company name',
-    value:
-      'Very long company name that does not fit into the input field and should be shown inside tooltip',
-    size: 'md',
-    showOverflowTooltip: true,
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ width: 300 }}>
-        <Story />
-      </div>
-    ),
-  ],
-  render: (args) => (
-    <Section title='Overflow tooltip'>
-      <ControlledInputDemo {...args} />
     </Section>
   ),
 };
