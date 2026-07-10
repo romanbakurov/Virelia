@@ -71,6 +71,12 @@ const fallbackDescriptions: Record<string, string> = {
   clearable: 'Shows a clear action when the input has a value.',
 };
 
+const descriptionOverrides: Record<string, Record<string, string>> = {
+  'web.InputProps.Input': {
+    className: 'Extra CSS class for the input element.',
+  },
+};
+
 const sections: ApiSection[] = [
   section('web', '## Button', 'ButtonProps', 'src/primitives/Button/types.ts'),
   section(
@@ -287,7 +293,7 @@ for (const item of sections) {
   const rows = sortRows(
     readInterfaceRows(item).map((row) => ({
       ...row,
-      description: getDescription(row.name, descriptions),
+      description: getDescription(row.name, descriptions, item),
     })),
     descriptions
   );
@@ -350,7 +356,17 @@ function section(
   };
 }
 
-function getDescription(propName: string, descriptions: Map<string, string>) {
+function getDescription(
+  propName: string,
+  descriptions: Map<string, string>,
+  item: ApiSection
+) {
+  const override = descriptionOverrides[item.id]?.[propName];
+
+  if (override) {
+    return override;
+  }
+
   const existing = descriptions.get(propName);
 
   if (existing && existing !== '—') {
