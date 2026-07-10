@@ -184,6 +184,21 @@ function ClearableInputDemo() {
   );
 }
 
+export const Basic: Story = {
+  args: {
+    label: 'Email',
+    description: 'Semantic type maps to native keyboard and text behavior.',
+    placeholder: 'name@company.com',
+    value: '',
+    type: 'email',
+  },
+  render: (args) => (
+    <Section title='Basic'>
+      <ControlledInputDemo {...args} />
+    </Section>
+  ),
+};
+
 export const Playground: Story = {
   render: (args) => (
     <Section title='Playground'>

@@ -298,6 +298,10 @@ function WebComponentsOverview() {
             clearIcon={<Close />}
           />
 
+          <Input label='Disabled' disabled value='Disabled value' />
+
+          <Input label='Read only' readOnly value='Read only value' />
+
           <Input
             label='Invalid email'
             placeholder='name@example.com'
