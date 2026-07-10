@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Download, Search, Settings } from '@vellira-ui/icons';
+import { Download, Filter, Save, Search, Settings } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
@@ -58,6 +58,12 @@ const storyStyles = StyleSheet.create({
     width: '100%',
     gap: 12,
   },
+
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
 });
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -88,6 +94,24 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </View>
   );
 }
+
+export const Basic: Story = {
+  args: {
+    children: 'Download',
+    color: 'primary',
+    variant: 'solid',
+    size: 'md',
+    accessibilityLabel: 'Download',
+    leftIcon: <Download />,
+  },
+  render: (args) => (
+    <Section title='Basic'>
+      <View style={storyStyles.row}>
+        <Button {...args}>Download</Button>
+      </View>
+    </Section>
+  ),
+};
 
 export const Colors: Story = {
   render: () => (
@@ -205,10 +229,46 @@ export const IconOnly: Story = {
   },
   render: () => (
     <Section title='IconOnly'>
-      <View style={{ flexDirection: 'row', gap: 16 }}>
-        <Button leftIcon={<Search />} accessibilityLabel='Search' />
-        <Button leftIcon={<Settings />} accessibilityLabel='Settings' />
-        <Button leftIcon={<Download />} accessibilityLabel='Download' />
+      <View style={storyStyles.row}>
+        <Button iconOnly leftIcon={<Search />} accessibilityLabel='Search'>
+          Search
+        </Button>
+        <Button iconOnly leftIcon={<Settings />} accessibilityLabel='Settings'>
+          Settings
+        </Button>
+        <Button iconOnly leftIcon={<Download />} accessibilityLabel='Download'>
+          Download
+        </Button>
+      </View>
+    </Section>
+  ),
+};
+
+export const AccessibleIconActions: Story = {
+  render: () => (
+    <Section title='AccessibleIconActions'>
+      <View style={storyStyles.row}>
+        <Button
+          accessibilityLabel='Search'
+          color='primary'
+          iconOnly
+          leftIcon={<Search />}
+          variant='ghost'
+        />
+        <Button
+          accessibilityLabel='Filter results'
+          color='secondary'
+          iconOnly
+          leftIcon={<Filter />}
+          variant='outline'
+        />
+        <Button
+          accessibilityLabel='Save'
+          color='primary'
+          iconOnly
+          leftIcon={<Save />}
+          variant='solid'
+        />
       </View>
     </Section>
   ),

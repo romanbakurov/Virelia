@@ -5,6 +5,7 @@ import {
   Download,
   DropdownMenu,
   Filter,
+  Save,
   Search,
   Settings,
 } from '@vellira-ui/icons';
@@ -61,8 +62,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       style={[
         styles.section,
         {
-          borderColor: theme.semantic.border.default,
-          backgroundColor: theme.semantic.surface.elevated,
+          borderColor: theme.semantic.border.muted,
+          backgroundColor: theme.semantic.surface.subtle,
         },
       ]}
     >
@@ -96,28 +97,139 @@ function NativeComponentsOverview() {
     >
       <View style={styles.content}>
         <Section title='Button'>
-          <View style={styles.row}>
-            <Button color='primary' variant='solid' leftIcon={<Download />}>
-              Primary
-            </Button>
-            <Button color='secondary' variant='solid'>
-              Secondary
-            </Button>
-            <Button color='danger' variant='solid'>
-              Danger
-            </Button>
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Colors
+            </Text>
+            <View style={styles.row}>
+              <Button color='primary'>Primary</Button>
+              <Button color='secondary'>Secondary</Button>
+              <Button color='close'>Close</Button>
+              <Button color='danger'>Danger</Button>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Button size='sm'>Small</Button>
-            <Button size='md'>Medium</Button>
-            <Button size='lg'>Large</Button>
-            <Button
-              color='secondary'
-              variant='solid'
-              accessibilityLabel='Search'
-              leftIcon={<Search />}
-            />
-            <Button disabled>Disabled</Button>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Variants
+            </Text>
+            <View style={styles.row}>
+              <Button color='primary' variant='solid'>
+                Solid
+              </Button>
+              <Button color='primary' variant='outline'>
+                Outline
+              </Button>
+              <Button color='primary' variant='ghost'>
+                Ghost
+              </Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Button size='sm'>Small</Button>
+              <Button size='md'>Medium</Button>
+              <Button size='lg'>Large</Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <View style={styles.row}>
+              <Button disabled>Disabled</Button>
+              <Button loading>Loading</Button>
+              <Button loading loadingText='Saving...'>
+                Save
+              </Button>
+            </View>
+            <View style={styles.fullWidthDemo}>
+              <Button fullWidth>Full width</Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Icons
+            </Text>
+            <View style={styles.row}>
+              <Button leftIcon={<Download />}>Left icon</Button>
+              <Button rightIcon={<Download />}>Right icon</Button>
+              <Button leftIcon={<Download />} rightIcon={<Search />}>
+                Both icons
+              </Button>
+              <Button
+                iconOnly
+                accessibilityLabel='Search'
+                leftIcon={<Search />}
+              >
+                Search
+              </Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible icon actions
+            </Text>
+            <View style={styles.row}>
+              <Button
+                accessibilityLabel='Search'
+                color='primary'
+                iconOnly
+                leftIcon={<Search />}
+                variant='ghost'
+              />
+              <Button
+                accessibilityLabel='Filter results'
+                color='secondary'
+                iconOnly
+                leftIcon={<Filter />}
+                variant='outline'
+              />
+              <Button
+                accessibilityLabel='Save'
+                color='primary'
+                iconOnly
+                leftIcon={<Save />}
+                variant='solid'
+              />
+            </View>
           </View>
         </Section>
 
@@ -313,7 +425,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 16,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 20,
   },
 
   sectionTitle: {
@@ -326,6 +438,19 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: 12,
+  },
+
+  group: {
+    gap: 8,
+  },
+
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  fullWidthDemo: {
+    width: '100%',
   },
 
   panelText: {},

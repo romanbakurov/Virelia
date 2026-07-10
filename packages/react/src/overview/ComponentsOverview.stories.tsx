@@ -7,6 +7,7 @@ import {
   Download,
   DropdownMenu,
   Filter,
+  Save,
   Search,
   Settings,
 } from '@vellira-ui/icons';
@@ -224,6 +225,42 @@ function WebComponentsOverview() {
                   Both icons
                 </Button>
                 <Button iconOnly aria-label='Search' leftIcon={<Search />} />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Button types</h3>
+              <div style={rowStyle}>
+                <Button type='button'>Button</Button>
+                <Button type='submit'>Submit</Button>
+                <Button type='reset'>Reset</Button>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Accessible icon actions</h3>
+              <div style={rowStyle}>
+                <Button
+                  aria-label='Search'
+                  color='primary'
+                  iconOnly
+                  leftIcon={<Search />}
+                  variant='ghost'
+                />
+                <Button
+                  aria-label='Filter results'
+                  color='secondary'
+                  iconOnly
+                  leftIcon={<Filter />}
+                  variant='outline'
+                />
+                <Button
+                  aria-label='Save'
+                  color='primary'
+                  iconOnly
+                  leftIcon={<Save />}
+                  variant='solid'
+                />
               </div>
             </div>
           </div>

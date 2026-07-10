@@ -107,6 +107,7 @@ describe('Button', () => {
 
     expect(button?.getAttribute('aria-label')).toBe('Search');
     expect(button?.className).toContain('iconOnly');
+    expect(button?.textContent).toBe('');
     expect(warn).not.toHaveBeenCalled();
     act(() => root.unmount());
   });
