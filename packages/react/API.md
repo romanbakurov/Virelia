@@ -165,7 +165,7 @@ For controlled clearable inputs, update the controlled value in `onClear`.
 | Prop                 | Type                                                     | Required | Description                                      |
 | -------------------- | -------------------------------------------------------- | -------- | ------------------------------------------------ |
 | `id`                 | `string`                                                 | No       | Input id. Generated internally when omitted.     |
-| `className`          | `string`                                                 | No       | Extra CSS class for the root element.            |
+| `className`          | `string`                                                 | No       | Extra CSS class for the input element.           |
 | `autoComplete`       | `string`                                                 | No       | HTML autocomplete value.                         |
 | `name`               | `string`                                                 | No       | —                                                |
 | `description`        | `string`                                                 | No       | Additional descriptive text.                     |
