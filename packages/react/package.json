@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vellira-dev/vellira",
+    "url": "git+https://github.com/vellira-dev/vellira.git",
     "directory": "packages/react"
   },
   "private": false,

@@ -29,6 +29,9 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: '@vellira-ui'
 
+      - name: Install npm with trusted publishing support
+        run: npm install --global npm@11
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 

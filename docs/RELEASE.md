@@ -112,9 +112,10 @@ generated artifacts.
 ## npm Trusted Publishing
 
 The `Release` workflow publishes packages through npm Trusted Publishing, not a
-long-lived npm publish token. The workflow must keep `id-token: write` and must
-not set `NODE_AUTH_TOKEN` for the publish step, otherwise npm/pnpm can fall back
-to token-based authentication instead of OIDC.
+long-lived npm publish token. The workflow must keep `id-token: write`, use npm
+CLI 11.5.1 or newer for the publish command, and must not set `NODE_AUTH_TOKEN`
+for the publish step, otherwise npm can fall back to token-based authentication
+instead of OIDC.
 
 Configure a Trusted Publisher on npmjs.com for each public package:
 
