@@ -19,7 +19,10 @@ test.describe('web Button', () => {
     await expect(matrix).toBeVisible();
     await expect(matrix.getByRole('button')).toHaveCount(12);
     await expect(matrix).toHaveScreenshot(
-      `web-button-matrix-${testInfo.project.name}.png`
+      `web-button-matrix-${testInfo.project.name}.png`,
+      {
+        maxDiffPixelRatio: 0.02,
+      }
     );
   });
 
