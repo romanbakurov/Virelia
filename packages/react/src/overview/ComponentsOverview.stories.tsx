@@ -267,47 +267,73 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Input'>
-          <Input
-            label='Name'
-            description='Basic uncontrolled input.'
-            placeholder='Ada Lovelace'
-          />
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <Input
+                label='Name'
+                description='Basic uncontrolled input.'
+                placeholder='Ada Lovelace'
+              />
+              <Input
+                label='Required email'
+                placeholder='name@example.com'
+                type='email'
+                required
+              />
+            </div>
 
-          <Input
-            label='Search'
-            placeholder='Find component'
-            type='search'
-            size='sm'
-            leftAdornment={<Search />}
-          />
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <Input label='Small' size='sm' placeholder='Small input' />
+              <Input label='Medium' size='md' placeholder='Medium input' />
+              <Input label='Large' size='lg' placeholder='Large input' />
+            </div>
 
-          <Input
-            label='Email'
-            placeholder='name@example.com'
-            type='email'
-            rightAdornment={<Check />}
-            rightAdornmentTone='success'
-            defaultValue='name@example.com'
-          />
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Types and adornments</h3>
+              <Input
+                label='Search'
+                placeholder='Find component'
+                type='search'
+                size='sm'
+                leftAdornment={<Search />}
+              />
 
-          <Input
-            label='Clearable'
-            placeholder='Type something'
-            defaultValue='Theme'
-            clearable
-            clearIcon={<Close />}
-          />
+              <Input label='Password' placeholder='Password' type='password' />
 
-          <Input label='Disabled' disabled value='Disabled value' />
+              <Input
+                label='Email'
+                placeholder='name@example.com'
+                type='email'
+                rightAdornment={<Check />}
+                rightAdornmentTone='success'
+                defaultValue='name@example.com'
+              />
 
-          <Input label='Read only' readOnly value='Read only value' />
+              <Input
+                label='Clearable'
+                placeholder='Type something'
+                defaultValue='Theme'
+                clearable
+                clearIcon={<Close />}
+              />
+            </div>
 
-          <Input
-            label='Invalid email'
-            placeholder='name@example.com'
-            type='email'
-            error='Use a valid email address'
-          />
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Input label='Disabled' disabled value='Disabled value' />
+
+              <Input label='Read only' readOnly value='Read only value' />
+
+              <Input
+                label='Invalid email'
+                placeholder='name@example.com'
+                type='email'
+                error='Use a valid email address'
+              />
+            </div>
+          </div>
         </Section>
 
         <Section title='Checkbox'>
