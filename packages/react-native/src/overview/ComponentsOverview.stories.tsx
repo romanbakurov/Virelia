@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
 import {
+  Check,
+  Close,
   Download,
   DropdownMenu,
   Filter,
@@ -234,13 +236,99 @@ function NativeComponentsOverview() {
         </Section>
 
         <Section title='Input'>
-          <Input label='Name' placeholder='Ada Lovelace' />
-          <Input label='Search' placeholder='Find component' size='sm' />
-          <Input
-            label='Email'
-            placeholder='name@example.com'
-            error='Use a valid email address'
-          />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Basic
+            </Text>
+            <Input
+              label='Name'
+              description='Basic uncontrolled input.'
+              placeholder='Ada Lovelace'
+            />
+            <Input
+              label='Required email'
+              placeholder='name@example.com'
+              type='email'
+              required
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <Input label='Small' size='sm' placeholder='Small input' />
+            <Input label='Medium' size='md' placeholder='Medium input' />
+            <Input label='Large' size='lg' placeholder='Large input' />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Types and icons
+            </Text>
+            <Input
+              label='Search'
+              placeholder='Find component'
+              type='search'
+              size='sm'
+              leftIcon={<Search />}
+            />
+
+            <Input label='Password' placeholder='Password' type='password' />
+
+            <Input
+              label='Email'
+              placeholder='name@example.com'
+              type='email'
+              rightIcon={<Check />}
+              rightIconTone='success'
+              defaultValue='name@example.com'
+            />
+
+            <Input
+              label='Clearable'
+              placeholder='Type something'
+              defaultValue='Theme'
+              clearable
+              clearIcon={<Close />}
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Input label='Disabled' disabled value='Disabled value' />
+
+            <Input label='Read only' readOnly value='Read only value' />
+
+            <Input
+              label='Invalid email'
+              placeholder='name@example.com'
+              type='email'
+              error='Use a valid email address'
+            />
+          </View>
         </Section>
 
         <Section title='Checkbox'>

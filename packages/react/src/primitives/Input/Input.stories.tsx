@@ -284,6 +284,30 @@ export const States: Story = {
   ),
 };
 
+export const Validation: Story = {
+  render: () => (
+    <Section title='Validation'>
+      <div style={fieldColumnStyle}>
+        <Input
+          label='Email'
+          type='email'
+          required
+          error='Enter a valid email address'
+          value='wrong-email'
+        />
+
+        <Input
+          label='Password'
+          type='password'
+          required
+          error='Password must contain at least 8 characters'
+          value=''
+        />
+      </div>
+    </Section>
+  ),
+};
+
 export const Playground: Story = {
   render: (args) => (
     <Section title='Playground'>
