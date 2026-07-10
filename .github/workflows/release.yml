@@ -65,6 +65,7 @@ jobs:
         run: pnpm exec semantic-release
 
       - name: Create version sync PR
+        id: version-sync-pr
         uses: peter-evans/create-pull-request@v8
         with:
           add-paths: |
