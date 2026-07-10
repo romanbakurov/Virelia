@@ -109,6 +109,44 @@ pnpm smoke:packages
 Use smoke tests after changes to exports, build config, package files, or
 generated artifacts.
 
+## npm Trusted Publishing
+
+The `Release` workflow publishes packages through npm Trusted Publishing, not a
+long-lived npm publish token. The workflow must keep `id-token: write` and must
+not set `NODE_AUTH_TOKEN` for the publish step, otherwise npm/pnpm can fall back
+to token-based authentication instead of OIDC.
+
+Configure a Trusted Publisher on npmjs.com for each public package:
+
+- `@vellira-ui/core`
+- `@vellira-ui/tokens`
+- `@vellira-ui/types`
+- `@vellira-ui/icons`
+- `@vellira-ui/react`
+- `@vellira-ui/react-native`
+
+Use these exact npm settings for each package:
+
+- Provider: GitHub Actions
+- Organization or user: `vellira-dev`
+- Repository: `vellira`
+- Workflow filename: `release.yml`
+- Environment name: leave empty unless the GitHub workflow also declares the
+  same environment
+- Allowed actions: `npm publish`
+
+`@vellira-ui/assets` is intentionally excluded because it is a private workspace
+package and is not published to npm.
+
+If npm returns `ERR_PNPM_AUTH_TOKEN_EXCHANGE` with a 404 during publish, the
+package's Trusted Publisher entry is missing or does not exactly match the
+repository/workflow fields above. npm does not validate those fields when the
+configuration is saved, so the mismatch only appears during publish.
+
+The failed `v2.22.2` release tag exists without matching npm packages. Do not
+reuse that version. After Trusted Publishing is configured, the next
+release-triggering commit should publish the next patch version.
+
 ## Changelog
 
 `docs/CHANGELOG.md` contains release notes and migration policy. Release tooling
