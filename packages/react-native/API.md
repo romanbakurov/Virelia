@@ -105,7 +105,8 @@ import { Button } from '@vellira-ui/react-native';
 
 Icon-only buttons must provide `accessibilityLabel`. Icons should be Vellira icon
 elements such as `<Search />`; Button injects the current icon `color` and
-`size`.
+`size`. When `iconOnly` is enabled, visible `children` are not rendered; use
+`accessibilityLabel` as the accessible action name.
 
 ## Checkbox
 

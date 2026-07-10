@@ -8,6 +8,8 @@ import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { Button } from './Button';
 import type { ButtonProps } from './types';
 
+import styles from './Button.module.scss';
+
 afterEach(() => {
   document.body.innerHTML = '';
   vi.restoreAllMocks();
@@ -84,6 +86,31 @@ describe('Button', () => {
     act(() => root.unmount());
   });
 
+  it('applies color, variant, and size classes from the public API', () => {
+    const colors = ['primary', 'secondary', 'close', 'danger'] as const;
+    const variants = ['solid', 'outline', 'ghost'] as const;
+    const sizes = ['sm', 'md', 'lg'] as const;
+
+    for (const color of colors) {
+      for (const variant of variants) {
+        for (const size of sizes) {
+          const { button, root } = renderButton({
+            children: `${color} ${variant} ${size}`,
+            color,
+            variant,
+            size,
+          });
+
+          expect(button?.classList.contains(styles[color])).toBe(true);
+          expect(button?.classList.contains(styles[variant])).toBe(true);
+          expect(button?.classList.contains(styles[size])).toBe(true);
+
+          act(() => root.unmount());
+        }
+      }
+    }
+  });
+
   it('renders left and right icons', () => {
     const { container, root } = renderButton({
       children: 'Save',
@@ -96,14 +123,16 @@ describe('Button', () => {
     act(() => root.unmount());
   });
 
-  it('hides the label for icon-only buttons with an accessible label', () => {
+  it('hides the label for icon-only buttons with an accessible label', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    const { button, root } = renderButton({
+    const { button, container, root } = renderButton({
       'aria-label': 'Search',
       iconOnly: true,
       leftIcon: <svg data-testid='search-icon' />,
       children: 'Search',
     });
+
+    await expectNoA11yViolations(container);
 
     expect(button?.getAttribute('aria-label')).toBe('Search');
     expect(button?.className).toContain('iconOnly');

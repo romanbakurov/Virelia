@@ -109,9 +109,10 @@ import { Button } from '@vellira-ui/react';
 <!-- api-docgen:end web.ButtonProps.Button -->
 
 Icon-only buttons must provide the standard `aria-label` attribute. Web Button
-does not expose a camelCase accessible-label alias. Button also accepts standard
-`button` attributes such as `type`, `className`, and `onClick`; its default
-`type` is `button`.
+does not expose a camelCase accessible-label alias. When `iconOnly` is enabled,
+visible `children` are not rendered; use `aria-label` as the accessible action
+name. Button also accepts standard `button` attributes such as `type`,
+`className`, and `onClick`; its default `type` is `button`.
 
 ## Checkbox
 
