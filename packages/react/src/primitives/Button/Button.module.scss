@@ -57,6 +57,8 @@ $button-variants: solid, outline, ghost;
 
     .button:not(:disabled).#{$variant}.#{$color}:active {
       @include button-state($color, $variant, pressed);
+
+      transform: scale(0.98);
     }
   }
 }
@@ -159,6 +161,10 @@ $button-variants: solid, outline, ghost;
   @each $variant in $button-variants {
     @each $color in $button-colors {
       .button:not(:disabled).#{$variant}.#{$color}:hover {
+        transform: none;
+      }
+
+      .button:not(:disabled).#{$variant}.#{$color}:active {
         transform: none;
       }
     }

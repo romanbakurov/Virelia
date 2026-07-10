@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Filter, Save, Search } from '@vellira-ui/icons';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Button } from '../Button';
 
@@ -227,6 +227,16 @@ export const Basic: Story = {
       </div>
     </Section>
   ),
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: 'Download' });
+
+    await expect(button).toHaveAttribute('type', 'button');
+
+    await userEvent.click(button);
+
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
+  },
 };
 
 export const Colors: Story = {
@@ -368,10 +378,20 @@ export const IconOnly: Story = {
   render: (args) => (
     <Section title='IconOnly'>
       <div style={rowStyle}>
-        <Button {...args} leftIcon={<Filter />} />
+        <Button {...args} leftIcon={<Filter />}>
+          Filter
+        </Button>
       </div>
     </Section>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: 'Filter' });
+
+    await expect(button).toBeVisible();
+    await expect(button).toHaveTextContent('');
+    await expect(canvas.queryByText('Filter')).toBeNull();
+  },
 };
 
 export const Loading: Story = {
@@ -395,6 +415,18 @@ export const Loading: Story = {
       </div>
     </Section>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const loadingButton = canvas.getByRole('button', { name: 'Saving' });
+    const loadingTextButton = canvas.getByRole('button', {
+      name: 'Saving...',
+    });
+
+    await expect(loadingButton).toBeDisabled();
+    await expect(loadingButton).toHaveAttribute('aria-busy', 'true');
+    await expect(loadingTextButton).toBeDisabled();
+    await expect(loadingTextButton).toHaveTextContent('Saving...');
+  },
 };
 
 export const Disabled: Story = {
@@ -412,6 +444,16 @@ export const Disabled: Story = {
       </div>
     </Section>
   ),
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: 'Disabled' });
+
+    await expect(button).toBeDisabled();
+
+    await userEvent.click(button);
+
+    await expect(args.onClick).not.toHaveBeenCalled();
+  },
 };
 
 export const FullWidth: Story = {
