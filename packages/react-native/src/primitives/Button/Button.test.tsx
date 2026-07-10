@@ -79,6 +79,12 @@ describe('Native Button', () => {
 
     expect(onPress).not.toHaveBeenCalled();
     expect(container.querySelector('button')?.disabled).toBe(true);
+    expect(container.querySelector('button')?.getAttribute('aria-busy')).toBe(
+      'true'
+    );
+    expect(
+      container.querySelector('button')?.getAttribute('aria-disabled')
+    ).toBe('true');
     expect(container.querySelector('[role="progressbar"]')).toBeTruthy();
 
     unmount();
@@ -124,15 +130,22 @@ describe('Native Button', () => {
   it('does not warn for icon-only buttons with accessibilityLabel', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { container, unmount } = render(
-      <Button accessibilityLabel='Search' iconOnly leftIcon={<Text>Icon</Text>}>
+      <Button
+        accessibilityLabel='Search'
+        fullWidth
+        iconOnly
+        leftIcon={<Text>Icon</Text>}
+      >
         Search
       </Button>
     );
+    const button = container.querySelector('button');
 
-    expect(container.querySelector('button')?.getAttribute('aria-label')).toBe(
-      'Search'
-    );
-    expect(container.querySelector('button')?.textContent).toBe('Icon');
+    expect(button?.getAttribute('aria-label')).toBe('Search');
+    expect(button?.textContent).toBe('Icon');
+    expect(button?.style.width).toBe('44px');
+    expect(button?.style.height).toBe('44px');
+    expect(button?.style.alignSelf).toBe('');
     expect(warn).not.toHaveBeenCalled();
 
     unmount();

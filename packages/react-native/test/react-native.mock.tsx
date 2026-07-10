@@ -59,6 +59,8 @@ const stateProps = (state?: Record<string, unknown>) => ({
     typeof state?.expanded === 'boolean' ? String(state.expanded) : undefined,
   'aria-selected':
     typeof state?.selected === 'boolean' ? String(state.selected) : undefined,
+  'aria-busy':
+    typeof state?.busy === 'boolean' ? String(state.busy) : undefined,
 });
 
 export const View = forwardRef<HTMLDivElement, NativeProps>(
