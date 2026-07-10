@@ -132,6 +132,7 @@ describe('Native Button', () => {
     expect(container.querySelector('button')?.getAttribute('aria-label')).toBe(
       'Search'
     );
+    expect(container.querySelector('button')?.textContent).toBe('Icon');
     expect(warn).not.toHaveBeenCalled();
 
     unmount();

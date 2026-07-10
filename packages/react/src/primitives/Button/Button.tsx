@@ -67,7 +67,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {!loading && leftIcon && (
           <span className={styles.icon}>{leftIcon}</span>
         )}
-        {content && <span className={styles.label}>{content}</span>}
+        {content && !iconOnly && (
+          <span className={styles.label}>{content}</span>
+        )}
         {!loading && rightIcon && (
           <span className={styles.icon}>{rightIcon}</span>
         )}
