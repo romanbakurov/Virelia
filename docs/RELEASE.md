@@ -144,9 +144,9 @@ package's Trusted Publisher entry is missing or does not exactly match the
 repository/workflow fields above. npm does not validate those fields when the
 configuration is saved, so the mismatch only appears during publish.
 
-The failed `v2.22.2` release tag exists without matching npm packages. Do not
-reuse that version. After Trusted Publishing is configured, the next
-release-triggering commit should publish the next patch version.
+The failed `v2.22.2` and `v2.22.3` release tags exist without matching npm
+packages. Do not reuse those versions. After Trusted Publishing is configured,
+the next release-triggering commit should publish the next patch version.
 
 ## Changelog
 
