@@ -19,7 +19,7 @@ export const createStyles = (theme: NativeTheme) =>
       height: 22,
       borderWidth: 2,
       borderColor: theme.components.checkbox.default.border,
-      borderRadius: theme.tokens.radius.md,
+      borderRadius: theme.tokens.radius.xs,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.components.checkbox.default.bg,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 import { fn } from 'storybook/test';
 
 import { Checkbox } from './index';
@@ -19,11 +19,12 @@ const meta = {
 Boolean form control for turning a single option on or off.
 
 **Features**
-- Controlled checked state
-- Optional label
-- Disabled checked and unchecked states
-- Validation error message
-- Change callback for form integration
+- Controlled and uncontrolled usage
+- Checked, unchecked and indeterminate states
+- Sizes: sm, md and lg
+- Optional label and description
+- Required, disabled and error states
+- Standard input and accessibility props
 
 ### Usage
 
@@ -51,6 +52,41 @@ Correct usage:
       control: 'text',
       table: {
         type: { summary: 'string' },
+      },
+    },
+    description: {
+      description: 'Additional supporting text displayed below the label.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+
+    required: {
+      description: 'Marks the checkbox as required.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+
+    indeterminate: {
+      description: 'Displays the mixed selection state.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+
+    size: {
+      description: 'Checkbox size.',
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: `'sm' | 'md' | 'lg'` },
+        defaultValue: { summary: 'md' },
       },
     },
     checked: {
@@ -94,12 +130,58 @@ Correct usage:
   },
 } satisfies Meta<typeof Checkbox>;
 
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
+
+const rowStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: 12,
+  alignItems: 'center',
+} as const;
+
+const sectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+  minWidth: 0,
+  padding: 20,
+  maxWidth: 760,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-xl)',
+  background: 'var(--surface-subtle)',
+} satisfies CSSProperties;
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section style={sectionStyle}>
+      <h3 style={subtitleStyle}>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
 type CheckboxStoryProps = ComponentProps<typeof Checkbox>;
 
 const InteractiveCheckbox = (args: CheckboxStoryProps) => {
-  const [checked, setChecked] = useState(args.checked ?? false);
+  const [checked, setChecked] = useState(
+    args.checked ?? args.defaultChecked ?? false
+  );
 
-  return <Checkbox {...args} checked={checked} onCheckedChange={setChecked} />;
+  return (
+    <Checkbox
+      {...args}
+      checked={checked}
+      onCheckedChange={(nextChecked) => {
+        setChecked(nextChecked);
+        args.onCheckedChange?.(nextChecked);
+      }}
+    />
+  );
 };
 
 export default meta;
@@ -110,6 +192,13 @@ export const Checked: Story = {
     label: 'Accept the terms',
     checked: true,
   },
+  render: (args) => (
+    <Section title='Checked'>
+      <div style={rowStyle}>
+        <Checkbox {...args} />
+      </div>
+    </Section>
+  ),
 };
 
 export const Unchecked: Story = {
@@ -117,6 +206,73 @@ export const Unchecked: Story = {
     label: 'Accept the terms',
     checked: false,
   },
+  render: (args) => (
+    <Section title='Unchecked'>
+      <div style={rowStyle}>
+        <Checkbox {...args} />
+      </div>
+    </Section>
+  ),
+};
+
+export const Indeterminate: Story = {
+  args: {
+    label: 'Select all items',
+    indeterminate: true,
+  },
+  render: (args) => (
+    <Section title='Indeterminate'>
+      <Checkbox {...args} />
+    </Section>
+  ),
+};
+
+export const Required: Story = {
+  args: {
+    label: 'Accept the privacy policy',
+    required: true,
+  },
+  render: (args) => (
+    <Section title='Required'>
+      <Checkbox {...args} />
+    </Section>
+  ),
+};
+
+export const WithDescription: Story = {
+  args: {
+    label: 'Product updates',
+    description: 'Receive occasional news about new Vellira releases.',
+  },
+  render: (args) => (
+    <Section title='With description'>
+      <Checkbox {...args} />
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    label: 'Remember me',
+    defaultChecked: true,
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <Checkbox {...args} />
+    </Section>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <div style={rowStyle}>
+        <Checkbox label='Small' size='sm' />
+        <Checkbox label='Medium' size='md' />
+        <Checkbox label='Large' size='lg' />
+      </div>
+    </Section>
+  ),
 };
 
 export const DisabledChecked: Story = {
@@ -125,6 +281,13 @@ export const DisabledChecked: Story = {
     disabled: true,
     checked: true,
   },
+  render: (args) => (
+    <Section title='DisabledChecked'>
+      <div style={rowStyle}>
+        <Checkbox {...args} />
+      </div>
+    </Section>
+  ),
 };
 
 export const DisabledUnchecked: Story = {
@@ -133,6 +296,13 @@ export const DisabledUnchecked: Story = {
     disabled: true,
     checked: false,
   },
+  render: (args) => (
+    <Section title='DisabledUnchecked'>
+      <div style={rowStyle}>
+        <Checkbox {...args} />
+      </div>
+    </Section>
+  ),
 };
 
 export const Interactive: Story = {
@@ -141,7 +311,13 @@ export const Interactive: Story = {
     checked: false,
   },
   render: (args) => {
-    return <InteractiveCheckbox {...args} />;
+    return (
+      <Section title='Interactive'>
+        <div style={rowStyle}>
+          <InteractiveCheckbox {...args} />
+        </div>
+      </Section>
+    );
   },
 };
 
@@ -151,4 +327,11 @@ export const Error: Story = {
     error: 'You must accept the terms',
     checked: false,
   },
+  render: (args) => (
+    <Section title='Error'>
+      <div style={rowStyle}>
+        <Checkbox {...args} />
+      </div>
+    </Section>
+  ),
 };
