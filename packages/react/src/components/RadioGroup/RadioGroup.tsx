@@ -25,6 +25,7 @@ export const RadioGroup = ({
   const generatedId = useId();
 
   const groupId = `${generatedId}-group`;
+  const labelId = label ? `${generatedId}-label` : undefined;
   const descriptionId = description ? `${generatedId}-description` : undefined;
   const errorId = error ? `${generatedId}-error` : undefined;
   const describedBy =
@@ -39,16 +40,28 @@ export const RadioGroup = ({
   return (
     <FormField
       id={generatedId}
-      label={label}
       description={description}
       required={required}
       disabled={disabled}
       error={error}
     >
+      {label && (
+        <span id={labelId} className={styles.groupLabel}>
+          {label}
+
+          {required && (
+            <span className={styles.required} aria-hidden='true'>
+              *
+            </span>
+          )}
+        </span>
+      )}
+
       <div
         id={groupId}
         className={cn(styles.group, styles[orientation], className)}
         role='radiogroup'
+        aria-labelledby={labelId}
         aria-required={required || undefined}
         aria-invalid={!!error || undefined}
         aria-describedby={describedBy}

@@ -206,9 +206,53 @@ describe('Native Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).toHaveBeenCalledWith('');
+    expect(change).not.toHaveBeenCalled();
     expect(clear).toHaveBeenCalledTimes(1);
     expect(container.querySelector('input')?.value).toBe('');
+
+    unmount();
+  });
+
+  it('clears controlled values through onClear without emitting change', () => {
+    const change = vi.fn();
+    const clear = vi.fn();
+    const { container, rerender, unmount } = render(
+      <Input
+        label='Controlled clearable'
+        value='Clear me'
+        onChange={change}
+        onClear={clear}
+        clearable
+      />
+    );
+
+    const clearButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Clear input"]'
+    );
+
+    expect(clearButton).not.toBeNull();
+
+    act(() => {
+      clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(change).not.toHaveBeenCalled();
+    expect(clear).toHaveBeenCalledTimes(1);
+    expect(container.querySelector('input')?.value).toBe('Clear me');
+
+    rerender(
+      <Input
+        label='Controlled clearable'
+        value=''
+        onChange={change}
+        onClear={clear}
+        clearable
+      />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
 
     unmount();
   });

@@ -79,7 +79,15 @@ describe('RadioGroup', () => {
 
     const group = container.querySelector<HTMLElement>('[role="radiogroup"]');
     const describedBy = group?.getAttribute('aria-describedby');
+    const labelledBy = group?.getAttribute('aria-labelledby');
 
+    expect(labelledBy).toBeTruthy();
+    expect(document.getElementById(labelledBy ?? '')?.textContent).toContain(
+      'Plan'
+    );
+    expect(container.querySelector('label[for]')?.textContent).not.toContain(
+      'Plan'
+    );
     expect(describedBy).toBeTruthy();
 
     const ids = describedBy?.split(' ') ?? [];

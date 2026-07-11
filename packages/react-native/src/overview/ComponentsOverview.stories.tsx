@@ -281,23 +281,39 @@ function NativeComponentsOverview() {
             >
               Types and icons
             </Text>
+            <Input label='Text' type='text' placeholder='Ada Lovelace' />
+
+            <Input label='Number' type='number' placeholder='42' />
+
+            <Input label='Phone' type='tel' placeholder='+33 6 00 00 00 00' />
+
+            <Input label='URL' type='url' placeholder='https://vellira.dev' />
+
             <Input
               label='Search'
-              placeholder='Find component'
               type='search'
-              size='sm'
+              placeholder='Search components'
               leftIcon={<Search />}
             />
 
             <Input label='Password' placeholder='Password' type='password' />
 
             <Input
-              label='Email'
-              placeholder='name@example.com'
-              type='email'
+              label='Verified email'
+              defaultValue='hello@vellira.dev'
               rightIcon={<Check />}
               rightIconTone='success'
-              defaultValue='name@example.com'
+              placeholder='name@company.com'
+              type='email'
+            />
+
+            <Input
+              label='Search settings'
+              leftIcon={<Search />}
+              rightIcon={<Check />}
+              rightIconTone='success'
+              leftIconTone='primary'
+              defaultValue='Theme'
             />
 
             <Input
@@ -318,6 +334,8 @@ function NativeComponentsOverview() {
             >
               States
             </Text>
+            <Input label='Required' required placeholder='Required input' />
+
             <Input label='Disabled' disabled value='Disabled value' />
 
             <Input label='Read only' readOnly value='Read only value' />
@@ -327,6 +345,14 @@ function NativeComponentsOverview() {
               placeholder='name@example.com'
               type='email'
               error='Use a valid email address'
+            />
+
+            <Input
+              label='Password'
+              type='password'
+              required
+              error='Password must contain at least 8 characters'
+              value=''
             />
           </View>
         </Section>
