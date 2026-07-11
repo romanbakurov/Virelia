@@ -28,12 +28,6 @@ For detailed props, shared types, examples, and compound component APIs, see
 pnpm add @vellira-ui/react
 ```
 
-If consuming from GitHub Packages, configure the scope registry:
-
-```bash
-@romanbakurov:registry=https://npm.pkg.github.com
-```
-
 ## Usage
 
 Import the stylesheet once in your app entry point:
