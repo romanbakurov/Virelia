@@ -135,7 +135,6 @@ export const Input = forwardRef<TextInput, InputProps>(
         setUncontrolledValue('');
       }
 
-      onChange?.('');
       onClear?.();
     };
 

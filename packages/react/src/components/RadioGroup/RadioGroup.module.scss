@@ -4,6 +4,20 @@
   gap: var(--space-2);
 }
 
+.groupLabel {
+  display: inline-flex;
+  align-items: center;
+  color: var(--form-field-label-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  gap: var(--space-1);
+}
+
+.required {
+  color: var(--form-field-required-mark-fg);
+}
+
 .vertical {
   flex-direction: column;
 }

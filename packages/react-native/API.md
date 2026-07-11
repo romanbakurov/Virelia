@@ -154,6 +154,17 @@ import { Input } from '@vellira-ui/react-native';
 
 `Input` also accepts React Native `TextInputProps`, except `value`, `onChange`, `onChangeText`, and `editable`, which are controlled by the Vellira API.
 
+Clearable inputs use separate callbacks for typing and clear actions:
+
+- typing into the input calls `onChange`;
+- pressing the clear action calls `onClear`;
+- controlled inputs should clear their value inside `onClear`;
+- uncontrolled inputs clear their internal value and then call `onClear`.
+
+Native Input accessibility should be verified on real devices with VoiceOver and
+TalkBack for focus visibility, read-only announcement and styling, and
+description/error announcement behavior.
+
 <!-- api-docgen:start native.InputProps.Input -->
 
 | Prop              | Type                      | Required | Description                                      |

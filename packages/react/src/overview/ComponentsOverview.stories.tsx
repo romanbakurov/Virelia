@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
@@ -104,6 +104,34 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       <h2 style={sectionTitleStyle}>{title}</h2>
       {children}
     </section>
+  );
+}
+
+function WorkspaceFormFieldDemo() {
+  const workspaceId = useId();
+
+  return (
+    <FormField
+      id={workspaceId}
+      label='Workspace'
+      description='Used in URLs and notifications.'
+      required
+    >
+      <input
+        id={workspaceId}
+        placeholder='vellira-design'
+        style={{
+          width: '100%',
+          minHeight: 40,
+          padding: '0 12px',
+          color: 'var(--input-default-fg)',
+          background: 'var(--input-default-bg)',
+          border: '1px solid var(--input-default-border)',
+          borderRadius: 'var(--radius-md)',
+          boxSizing: 'border-box',
+        }}
+      />
+    </FormField>
   );
 }
 
@@ -292,23 +320,40 @@ function WebComponentsOverview() {
 
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>Types and adornments</h3>
+              <Input label='Text' type='text' placeholder='Ada Lovelace' />
+
+              <Input label='Number' type='number' placeholder='42' />
+
+              <Input label='Phone' type='tel' placeholder='+33 6 00 00 00 00' />
+
+              <Input label='URL' type='url' placeholder='https://vellira.dev' />
+
               <Input
                 label='Search'
-                placeholder='Find component'
                 type='search'
                 size='sm'
                 leftAdornment={<Search />}
+                placeholder='Search components'
               />
 
-              <Input label='Password' placeholder='Password' type='password' />
+              <Input label='Password' type='password' placeholder='Password' />
 
               <Input
-                label='Email'
-                placeholder='name@example.com'
-                type='email'
+                label='Verified email'
+                defaultValue='hello@vellira.dev'
                 rightAdornment={<Check />}
                 rightAdornmentTone='success'
-                defaultValue='name@example.com'
+                placeholder='name@company.com'
+                type='email'
+              />
+
+              <Input
+                label='Search settings'
+                leftAdornment={<Search />}
+                rightAdornment={<Check />}
+                rightAdornmentTone='success'
+                leftAdornmentTone='primary'
+                defaultValue='Theme'
               />
 
               <Input
@@ -322,6 +367,8 @@ function WebComponentsOverview() {
 
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>States</h3>
+              <Input label='Required' required placeholder='Required input' />
+
               <Input label='Disabled' disabled value='Disabled value' />
 
               <Input label='Read only' readOnly value='Read only value' />
@@ -331,6 +378,14 @@ function WebComponentsOverview() {
                 placeholder='name@example.com'
                 type='email'
                 error='Use a valid email address'
+              />
+
+              <Input
+                label='Password'
+                type='password'
+                required
+                error='Password must contain at least 8 characters'
+                value=''
               />
             </div>
           </div>
@@ -449,25 +504,7 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='FormField'>
-          <FormField
-            label='Workspace'
-            description='Used in URLs and notifications.'
-            required
-          >
-            <input
-              placeholder='vellira-design'
-              style={{
-                width: '100%',
-                minHeight: 40,
-                padding: '0 12px',
-                color: 'var(--input-default-fg)',
-                background: 'var(--input-default-bg)',
-                border: '1px solid var(--input-default-border)',
-                borderRadius: 'var(--radius-md)',
-                boxSizing: 'border-box',
-              }}
-            />
-          </FormField>
+          <WorkspaceFormFieldDemo />
         </Section>
       </div>
     </div>

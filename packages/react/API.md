@@ -158,8 +158,15 @@ import { Input } from '@vellira-ui/react';
 />;
 ```
 
-For controlled clearable inputs, update the controlled value in `onClear`.
-`onChange` is reserved for input value changes from the input element.
+Clearable inputs use separate callbacks for typing and clear actions:
+
+- typing into the input calls `onChange`;
+- pressing the clear action calls `onClear`;
+- controlled inputs should clear their value inside `onClear`;
+- uncontrolled inputs clear their internal value and then call `onClear`.
+
+`rightAdornment` is an arbitrary slot. Interactive content rendered there is
+responsible for its own accessible name, focus handling, and keyboard behavior.
 
 <!-- api-docgen:start web.InputProps.Input -->
 

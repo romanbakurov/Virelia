@@ -157,6 +157,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         >
           {leftAdornment && (
             <span
+              aria-hidden='true'
               className={cn(
                 styles.leftAdornment,
                 toneClassNameByTone[leftAdornmentTone]
