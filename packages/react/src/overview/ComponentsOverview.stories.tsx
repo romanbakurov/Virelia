@@ -112,14 +112,18 @@ function WorkspaceFormFieldDemo() {
 
   return (
     <FormField
-      id={workspaceId}
+      controlId={workspaceId}
       label='Workspace'
       description='Used in URLs and notifications.'
       required
     >
       <input
         id={workspaceId}
+        name='workspace'
+        autoComplete='organization'
         placeholder='vellira-design'
+        required
+        aria-describedby={`${workspaceId}-description`}
         style={{
           width: '100%',
           minHeight: 40,

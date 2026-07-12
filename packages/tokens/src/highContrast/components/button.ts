@@ -1,6 +1,5 @@
 import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
-import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -148,12 +147,12 @@ export const button = {
         border: action.danger.muted.border,
       },
       hover: {
-        bg: status.error.bg,
+        bg: surface.danger,
         fg: action.danger.subtle.bg,
         border: action.danger.subtle.border,
       },
       pressed: {
-        bg: status.error.bg,
+        bg: surface.danger,
         fg: action.danger.active.bg,
         border: action.danger.active.border,
       },
@@ -165,12 +164,12 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: status.error.bg,
+        bg: surface.danger,
         fg: action.danger.subtle.bg,
         border: 'transparent',
       },
       pressed: {
-        bg: status.error.bg,
+        bg: surface.danger,
         fg: action.danger.active.bg,
         border: 'transparent',
       },

@@ -9,6 +9,9 @@ const meta = {
   component: Button,
   tags: ['autodocs'],
   parameters: {
+    controls: {
+      exclude: ['children'],
+    },
     docs: {
       description: {
         component: `
@@ -130,7 +133,7 @@ Correct usage:
       description: 'Visible button content.',
       control: 'text',
       table: {
-        type: { summary: 'ReactNode' },
+        disable: true,
       },
     },
     onClick: {
@@ -232,9 +235,7 @@ export const Basic: Story = {
     const button = canvas.getByRole('button', { name: 'Download' });
 
     await expect(button).toHaveAttribute('type', 'button');
-
     await userEvent.click(button);
-
     await expect(args.onClick).toHaveBeenCalledTimes(1);
   },
 };

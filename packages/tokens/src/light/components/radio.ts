@@ -41,7 +41,7 @@ export const radio = {
 
   invalid: {
     bg: surface.default,
-    fg: text.onInverse,
+    fg: text.inverse,
     border: status.error.border,
   },
 

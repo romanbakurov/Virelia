@@ -1,3 +1,5 @@
+import { useId } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
@@ -139,7 +141,6 @@ Use FormField when a custom control needs consistent field layout and validation
     },
   },
   args: {
-    controlId: 'field',
     label: 'Label',
     required: false,
     disabled: false,
@@ -265,7 +266,8 @@ function PlaygroundExample({
   error,
   ...args
 }: FormFieldStoryProps) {
-  const resolvedControlId = controlId?.trim() || 'field';
+  const generatedId = useId();
+  const resolvedControlId = controlId?.trim() || generatedId;
 
   const describedBy =
     [
@@ -284,7 +286,7 @@ function PlaygroundExample({
     >
       <input
         id={resolvedControlId}
-        name={resolvedControlId}
+        name='storybook-form-field'
         className={styles.storyInput}
         autoComplete='off'
         placeholder='Field value'
@@ -304,6 +306,335 @@ function PlaygroundExample({
   );
 }
 
+function WithInputExample() {
+  const controlId = useId();
+
+  return (
+    <FormField controlId={controlId} label='Email'>
+      <input
+        id={controlId}
+        name='email'
+        type='email'
+        autoComplete='email'
+        placeholder='name@company.com'
+        style={inputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function WithDescriptionExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label='Username'
+      description='Use 3–20 characters. Letters, numbers, and underscores are allowed.'
+    >
+      <input
+        id={controlId}
+        name='username'
+        autoComplete='username'
+        placeholder='alex_johnson'
+        aria-describedby={`${controlId}-description`}
+        style={inputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function RequiredExample() {
+  const controlId = useId();
+
+  return (
+    <FormField controlId={controlId} label='Full name' required>
+      <input
+        id={controlId}
+        type='text'
+        name='full-name'
+        autoComplete='name'
+        placeholder='Alex Johnson'
+        required
+        style={inputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function WithErrorExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label='Password'
+      error='Password must be at least 8 characters.'
+    >
+      <input
+        id={controlId}
+        name='password'
+        type='password'
+        autoComplete='current-password'
+        placeholder='Enter password'
+        aria-invalid
+        aria-describedby={`${controlId}-error`}
+        style={errorInputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function DisabledExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label='Email'
+      description='This field is currently unavailable.'
+      disabled
+    >
+      <input
+        id={controlId}
+        type='email'
+        name='disabled-email'
+        autoComplete='email'
+        placeholder='name@company.com'
+        aria-describedby={`${controlId}-description`}
+        disabled
+        style={disabledInputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function WithCheckboxExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      description='This example uses a custom Vellira control.'
+    >
+      <Checkbox
+        id={controlId}
+        name='agreement'
+        label='Accept terms and conditions'
+        aria-describedby={`${controlId}-description`}
+      />
+    </FormField>
+  );
+}
+
+function CustomLabelExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label={
+        <span style={customLabelStyle}>
+          Workspace
+          <span style={badgeStyle}>Public</span>
+        </span>
+      }
+      required
+    >
+      <input
+        id={controlId}
+        name='workspace'
+        autoComplete='off'
+        placeholder='vellira-design'
+        required
+        style={inputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function CustomDescriptionExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label='Password'
+      description={
+        <div style={{ display: 'grid', gap: 'var(--space-1)' }}>
+          <span>Your password must contain:</span>
+
+          <ul style={{ margin: 0, paddingLeft: 20 }}>
+            <li>At least 8 characters</li>
+            <li>One number</li>
+            <li>One uppercase letter</li>
+          </ul>
+        </div>
+      }
+    >
+      <input
+        id={controlId}
+        type='password'
+        name='new-password'
+        autoComplete='new-password'
+        placeholder='Enter password'
+        aria-describedby={`${controlId}-description`}
+        style={inputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function CustomErrorExample() {
+  const controlId = useId();
+
+  return (
+    <FormField
+      controlId={controlId}
+      label='Email'
+      error={
+        <div
+          style={{
+            padding: 'var(--space-2)',
+            background: 'var(--surface-subtle)',
+            borderRadius: 'var(--radius-md)',
+          }}
+        >
+          This email address is already registered.
+        </div>
+      }
+    >
+      <input
+        id={controlId}
+        type='email'
+        name='registered-email'
+        autoComplete='email'
+        placeholder='name@company.com'
+        aria-invalid
+        aria-describedby={`${controlId}-error`}
+        style={errorInputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function CompleteExampleDemo() {
+  const rootId = useId();
+  const controlId = useId();
+
+  return (
+    <FormField
+      id={rootId}
+      controlId={controlId}
+      label='Email'
+      description='We will use this email for account notifications.'
+      required
+      error='Email is required.'
+    >
+      <input
+        id={controlId}
+        type='email'
+        name='complete-email'
+        autoComplete='email'
+        placeholder='name@company.com'
+        aria-invalid
+        aria-describedby={`${controlId}-description ${controlId}-error`}
+        required
+        style={errorInputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
+function StatesExample() {
+  const defaultId = useId();
+  const descriptionId = useId();
+  const requiredId = useId();
+  const disabledId = useId();
+  const errorId = useId();
+
+  return (
+    <div style={columnStyle}>
+      <FormField controlId={defaultId} label='Default'>
+        <input
+          id={defaultId}
+          name='state-default'
+          autoComplete='off'
+          placeholder='Default field'
+          style={inputStyle}
+          className={styles.storyInput}
+        />
+      </FormField>
+
+      <FormField
+        controlId={descriptionId}
+        label='With description'
+        description='Additional supporting information.'
+      >
+        <input
+          id={descriptionId}
+          name='state-username'
+          autoComplete='username'
+          placeholder='Field with description'
+          aria-describedby={`${descriptionId}-description`}
+          style={inputStyle}
+          className={styles.storyInput}
+        />
+      </FormField>
+
+      <FormField controlId={requiredId} label='Required' required>
+        <input
+          id={requiredId}
+          name='state-required'
+          autoComplete='off'
+          placeholder='Required field'
+          required
+          style={inputStyle}
+          className={styles.storyInput}
+        />
+      </FormField>
+
+      <FormField controlId={disabledId} label='Disabled' disabled>
+        <input
+          id={disabledId}
+          name='state-disabled'
+          autoComplete='off'
+          placeholder='Disabled field'
+          disabled
+          style={disabledInputStyle}
+          className={styles.storyInput}
+        />
+      </FormField>
+
+      <FormField
+        controlId={errorId}
+        label='Error'
+        error='This field is invalid.'
+      >
+        <input
+          id={errorId}
+          name='state-error'
+          autoComplete='off'
+          placeholder='Invalid field'
+          aria-invalid
+          aria-describedby={`${errorId}-error`}
+          style={errorInputStyle}
+          className={styles.storyInput}
+        />
+      </FormField>
+    </div>
+  );
+}
+
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
@@ -315,278 +646,81 @@ export const Playground: Story = {
 };
 
 export const WithInput: Story = {
-  args: {
-    controlId: 'email',
-    label: 'Email',
-    children: (
-      <input
-        id='email'
-        name='email'
-        type='email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='With input'>
-      <FormField {...args} />
+      <WithInputExample />
     </Section>
   ),
 };
 
 export const WithDescription: Story = {
-  args: {
-    controlId: 'username',
-    label: 'Username',
-    description:
-      'Use 3–20 characters. Letters, numbers, and underscores are allowed.',
-    children: (
-      <input
-        id='username'
-        type='text'
-        name='username'
-        autoComplete='username'
-        placeholder='alex_johnson'
-        aria-describedby='username-description'
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='With description'>
-      <FormField {...args} />
+      <WithDescriptionExample />
     </Section>
   ),
 };
 
 export const Required: Story = {
-  args: {
-    controlId: 'full-name',
-    label: 'Full name',
-    required: true,
-    children: (
-      <input
-        id='full-name'
-        type='text'
-        name='full-name'
-        autoComplete='name'
-        placeholder='Alex Johnson'
-        required
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Required'>
-      <FormField {...args} />
+      <RequiredExample />
     </Section>
   ),
 };
 
 export const WithError: Story = {
-  args: {
-    controlId: 'password',
-    label: 'Password',
-    error: 'Password must be at least 8 characters.',
-    children: (
-      <input
-        id='password'
-        type='password'
-        name='password'
-        autoComplete='current-password'
-        placeholder='Enter password'
-        aria-invalid
-        aria-describedby='password-error'
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='With error'>
-      <FormField {...args} />
+      <WithErrorExample />
     </Section>
   ),
 };
 
 export const Disabled: Story = {
-  args: {
-    controlId: 'disabled-email',
-    label: 'Email',
-    description: 'This field is currently unavailable.',
-    disabled: true,
-    children: (
-      <input
-        id='disabled-email'
-        type='email'
-        name='email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-describedby='disabled-email-description'
-        disabled
-        style={disabledInputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Disabled'>
-      <FormField {...args} />
+      <DisabledExample />
     </Section>
   ),
 };
 
 export const WithCheckbox: Story = {
-  args: {
-    controlId: 'agreement',
-    description: 'This example uses a custom Vellira control.',
-    children: (
-      <Checkbox
-        id='agreement'
-        name='agreement'
-        label='Accept terms and conditions'
-        aria-describedby='agreement-description'
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='With checkbox'>
-      <FormField {...args} />
+      <WithCheckboxExample />
     </Section>
   ),
 };
 
 export const CustomLabel: Story = {
-  args: {
-    controlId: 'workspace',
-    label: (
-      <span style={customLabelStyle}>
-        Workspace
-        <span style={badgeStyle}>Public</span>
-      </span>
-    ),
-    required: true,
-    children: (
-      <input
-        id='workspace'
-        name='workspace'
-        autoComplete='off'
-        placeholder='vellira-design'
-        required
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Custom label'>
-      <FormField {...args} />
+      <CustomLabelExample />
     </Section>
   ),
 };
 
 export const CustomDescription: Story = {
-  args: {
-    controlId: 'secure-password',
-    label: 'Password',
-    description: (
-      <div style={{ display: 'grid', gap: 'var(--space-1)' }}>
-        <span>Your password must contain:</span>
-
-        <ul style={{ margin: 0, paddingLeft: 20 }}>
-          <li>At least 8 characters</li>
-          <li>One number</li>
-          <li>One uppercase letter</li>
-        </ul>
-      </div>
-    ),
-    children: (
-      <input
-        id='secure-password'
-        type='password'
-        name='password'
-        autoComplete='new-password'
-        placeholder='Enter password'
-        aria-describedby='secure-password-description'
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Custom description'>
-      <FormField {...args} />
+      <CustomDescriptionExample />
     </Section>
   ),
 };
 
 export const CustomError: Story = {
-  args: {
-    controlId: 'registered-email',
-    label: 'Email',
-    error: (
-      <div
-        style={{
-          padding: 'var(--space-2)',
-          background: 'var(--surface-subtle)',
-          borderRadius: 'var(--radius-md)',
-        }}
-      >
-        This email address is already registered.
-      </div>
-    ),
-    children: (
-      <input
-        id='registered-email'
-        type='email'
-        name='email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-invalid
-        aria-describedby='registered-email-error'
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Custom error'>
-      <FormField {...args} />
+      <CustomErrorExample />
     </Section>
   ),
 };
 
 export const CompleteExample: Story = {
-  args: {
-    id: 'complete-field',
-    controlId: 'complete-email',
-    label: 'Email',
-    description: 'We will use this email for account notifications.',
-    required: true,
-    error: 'Email is required.',
-    children: (
-      <input
-        id='complete-email'
-        type='email'
-        name='email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-invalid
-        aria-describedby='complete-email-description complete-email-error'
-        required
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    ),
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Complete example'>
-      <FormField {...args} />
+      <CompleteExampleDemo />
     </Section>
   ),
 };
@@ -594,75 +728,7 @@ export const CompleteExample: Story = {
 export const States: Story = {
   render: () => (
     <Section title='States'>
-      <div style={columnStyle}>
-        <FormField controlId='state-default' label='Default'>
-          <input
-            id='state-default'
-            name='state-default'
-            autoComplete='off'
-            placeholder='Default field'
-            style={inputStyle}
-            className={styles.storyInput}
-          />
-        </FormField>
-
-        <FormField
-          controlId='state-username'
-          label='With description'
-          description='Additional supporting information.'
-        >
-          <input
-            id='state-username'
-            name='username'
-            autoComplete='username'
-            placeholder='Field with description'
-            aria-describedby='state-username-description'
-            style={inputStyle}
-            className={styles.storyInput}
-          />
-        </FormField>
-
-        <FormField controlId='state-required' label='Required' required>
-          <input
-            id='state-required'
-            name='required'
-            autoComplete='off'
-            placeholder='Required field'
-            required
-            style={inputStyle}
-            className={styles.storyInput}
-          />
-        </FormField>
-
-        <FormField controlId='state-disabled' label='Disabled' disabled>
-          <input
-            id='state-disabled'
-            name='state-disabled'
-            autoComplete='off'
-            placeholder='Disabled field'
-            disabled
-            style={disabledInputStyle}
-            className={styles.storyInput}
-          />
-        </FormField>
-
-        <FormField
-          controlId='state-error'
-          label='Error'
-          error='This field is invalid.'
-        >
-          <input
-            id='state-error'
-            name='state-error'
-            autoComplete='off'
-            placeholder='Invalid field'
-            aria-invalid
-            aria-describedby='state-error-error'
-            style={errorInputStyle}
-            className={styles.storyInput}
-          />
-        </FormField>
-      </div>
+      <StatesExample />
     </Section>
   ),
 };

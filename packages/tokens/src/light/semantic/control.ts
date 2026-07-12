@@ -26,13 +26,13 @@ export const control = {
   selected: {
     default: {
       bg: colors.primary[700],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.primary[700],
     },
 
     hover: {
       bg: colors.primary[800],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.primary[800],
     },
 
