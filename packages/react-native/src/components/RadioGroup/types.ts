@@ -1,18 +1,22 @@
-import type { BaseRadioGroupProps, BaseRadioOption } from '@vellira-ui/types';
-import type { HTMLAttributes, ReactNode } from 'react';
-
-export interface RadioOption extends BaseRadioOption {
-  label: ReactNode;
-  description?: ReactNode;
-}
+import type { BaseRadioGroupProps } from '@vellira-ui/types';
+import type { ReactNode } from 'react';
+import type { StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
 
 export interface RadioGroupProps
   extends
-    Omit<BaseRadioGroupProps, 'options'>,
-    Omit<HTMLAttributes<HTMLDivElement>, 'defaultValue' | 'onChange'> {
+    BaseRadioGroupProps,
+    Omit<
+      ViewProps,
+      'children' | 'style' | 'accessibilityRole' | 'accessibilityState'
+    > {
   label?: ReactNode;
   description?: ReactNode;
   error?: string;
-  options?: RadioOption[];
   children?: ReactNode;
+
+  style?: StyleProp<ViewStyle>;
+  itemsStyle?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  descriptionStyle?: StyleProp<TextStyle>;
+  errorStyle?: StyleProp<TextStyle>;
 }

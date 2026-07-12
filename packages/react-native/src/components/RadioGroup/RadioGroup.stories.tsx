@@ -1,76 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
+import type { ComponentProps, ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { fn } from 'storybook/test';
+
+import { Radio } from '../../primitives/Radio';
+import { useTheme } from '../../theme';
 
 import { RadioGroup } from './RadioGroup';
-import type { RadioGroupProps } from './types';
 
-const options = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro' },
-  { label: 'Enterprise', value: 'enterprise' },
-];
-
-const optionsWithDisabled = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro', disabled: true },
-  { label: 'Enterprise', value: 'enterprise' },
-];
-
-const meta = {
+const meta: Meta<typeof RadioGroup> = {
   title: 'Components/RadioGroup',
   component: RadioGroup,
   tags: ['autodocs'],
   parameters: {
+    layout: 'centered',
     docs: {
       description: {
         component: `
 ### RadioGroup Component
 
-Accessible radio button group for selecting a single option in React Native.
+Accessible group for selecting exactly one option in React Native.
 
 **Features**
-- Single selection
-- Label and description
+
+- Controlled and uncontrolled usage
+- Composition with Radio controls
+- Group label and description
 - Required indicator
 - Error message
-- Disabled state
-- Controlled and uncontrolled usage
+- Vertical and horizontal orientation
+- Disabled group state
+- Disabled individual Radio controls
+- Sizes: sm, md and lg
+- Accessibility support
 
 ### Usage
 
-Use RadioGroup when users must choose exactly one option from a predefined list.
-
-Correct usage:
+Use RadioGroup when users must choose one option from a set.
 
 \`\`\`tsx
 <RadioGroup
-  label="Plan"
-  options={[
-    { label: 'Starter', value: 'starter' },
-    { label: 'Pro', value: 'pro' },
-    { label: 'Enterprise', value: 'enterprise' },
-  ]}
-  value={value}
-  onChange={setValue}
-/>
+  label='Plan'
+  value={plan}
+  onValueChange={setPlan}
+>
+  <Radio value='starter' label='Starter' />
+  <Radio value='pro' label='Pro' />
+  <Radio value='enterprise' label='Enterprise' />
+</RadioGroup>
 \`\`\`
 
 ### Accessibility
 
-- Accessible radio group
-- Individual radio button semantics
-- Keyboard and screen reader support
-- Disabled state support
-- Validation message support
-
-### Common use cases
-
-- Subscription plans
-- Payment methods
-- Account preferences
-- Shipping options
-- Settings
+- Exposes the radiogroup role
+- Each Radio exposes native radio semantics
+- Propagates disabled, required, invalid and size state
+- Includes description and validation text in the accessibility hint
 `,
       },
     },
@@ -78,89 +65,236 @@ Correct usage:
   args: {
     label: 'Plan',
     defaultValue: 'pro',
-    options,
     orientation: 'vertical',
+    size: 'md',
+    required: false,
+    disabled: false,
+    onValueChange: fn(),
   },
   argTypes: {
     label: {
       control: 'text',
-      description: 'Text label displayed above the RadioGroup.',
+      description: 'Content displayed as the group label.',
     },
+
     description: {
       control: 'text',
-      description: 'Helper text displayed below the label.',
+      description: 'Supporting content displayed below the group label.',
     },
+
     defaultValue: {
       control: 'text',
       description: 'Initial selected value for uncontrolled usage.',
     },
+
     value: {
       control: 'text',
       description: 'Current selected value for controlled usage.',
     },
-    options: {
-      control: 'object',
-      description: 'List of radio options.',
-    },
+
     orientation: {
-      control: 'select',
-      options: ['horizontal', 'vertical'],
-      description: 'Layout direction of the radio options.',
+      control: 'radio',
+      options: ['vertical', 'horizontal'],
+      description: 'Layout direction of the Radio controls.',
     },
+
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      description: 'Size inherited by Radio controls in the group.',
+    },
+
     required: {
       control: 'boolean',
       description: 'Marks the radio group as required.',
     },
+
     disabled: {
       control: 'boolean',
-      description: 'Disables all radio options in the group.',
+      description: 'Disables all Radio controls in the group.',
     },
+
     error: {
       control: 'text',
-      description: 'Validation error message displayed below the group.',
+      description: 'Validation content displayed below the group.',
     },
-    onChange: {
+
+    onValueChange: {
       action: 'changed',
       description: 'Called when the selected value changes.',
     },
+
+    children: {
+      control: false,
+      description: 'Radio controls rendered inside the group.',
+    },
+
+    style: {
+      control: false,
+    },
+
+    itemsStyle: {
+      control: false,
+    },
+
+    labelStyle: {
+      control: false,
+    },
+
+    descriptionStyle: {
+      control: false,
+    },
+
+    errorStyle: {
+      control: false,
+    },
   },
-} satisfies Meta<typeof RadioGroup>;
+};
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RadioGroup>;
+type RadioGroupStoryProps = ComponentProps<typeof RadioGroup>;
 
-const RadioGroupWithState = (args: RadioGroupProps) => {
+const storyStyles = StyleSheet.create({
+  column: {
+    width: '100%',
+    gap: 12,
+  },
+});
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    section: {
+      width: '100%',
+      padding: 20,
+      gap: 16,
+      borderWidth: 1,
+      borderColor: theme.semantic.border.muted,
+      borderRadius: 20,
+      backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    subtitle: {
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+      fontWeight: '600',
+    },
+  });
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.subtitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function PlanRadios({ disablePro = false }: { disablePro?: boolean }) {
+  return (
+    <>
+      <Radio value='starter' label='Starter' />
+      <Radio value='pro' label='Pro' disabled={disablePro} />
+      <Radio value='enterprise' label='Enterprise' />
+    </>
+  );
+}
+
+function InteractiveRadioGroup(args: RadioGroupStoryProps) {
   const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
+
+  useEffect(() => {
+    setValue(args.value ?? args.defaultValue ?? '');
+  }, [args.value, args.defaultValue]);
 
   return (
     <RadioGroup
       {...args}
       value={value}
-      onChange={(nextValue) => {
+      onValueChange={(nextValue) => {
         setValue(nextValue);
-        args.onChange?.(nextValue);
+        args.onValueChange?.(nextValue);
       }}
-    />
+    >
+      {args.children}
+    </RadioGroup>
   );
+}
+
+export const Playground: Story = {
+  args: {
+    children: <PlanRadios />,
+  },
+  render: (args) => (
+    <Section title='Playground'>
+      <InteractiveRadioGroup {...args} />
+    </Section>
+  ),
 };
 
 export const Default: Story = {
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Default'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const Controlled: Story = {
+  args: {
+    value: 'pro',
+    defaultValue: undefined,
+  },
+  render: (args) => (
+    <Section title='Controlled'>
+      <InteractiveRadioGroup {...args}>
+        <PlanRadios />
+      </InteractiveRadioGroup>
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    defaultValue: 'pro',
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const WithDescription: Story = {
   args: {
     description: 'Choose the plan that fits your current needs.',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='WithDescription'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Horizontal: Story = {
   args: {
     orientation: 'horizontal',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Horizontal'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Required: Story = {
@@ -168,27 +302,144 @@ export const Required: Story = {
     required: true,
     label: 'Required plan',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Required'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const WithError: Story = {
   args: {
-    error: 'Select a plan to continue',
     defaultValue: '',
+    required: true,
+    error: 'Select a plan to continue.',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='WithError'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Disabled: Story = {
   args: {
     disabled: true,
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Disabled'>
+      <RadioGroup {...args}>
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
-export const WithDisabledOption: Story = {
+export const WithDisabledRadio: Story = {
+  render: (args) => (
+    <Section title='WithDisabledRadio'>
+      <RadioGroup {...args}>
+        <PlanRadios disablePro />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <View style={storyStyles.column}>
+        <RadioGroup label='Small' defaultValue='starter' size='sm'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Medium' defaultValue='pro' size='md'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Large' defaultValue='enterprise' size='lg'>
+          <PlanRadios />
+        </RadioGroup>
+      </View>
+    </Section>
+  ),
+};
+
+export const WithRadioDescriptions: Story = {
   args: {
-    options: optionsWithDisabled,
+    label: 'Delivery method',
+    description: 'Choose how your order should be delivered.',
+    defaultValue: 'standard',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='WithRadioDescriptions'>
+      <RadioGroup {...args}>
+        <Radio
+          value='standard'
+          label='Standard delivery'
+          description='Delivered within three to five business days.'
+        />
+
+        <Radio
+          value='express'
+          label='Express delivery'
+          description='Delivered on the next business day.'
+        />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const CustomStyles: Story = {
+  render: () => (
+    <Section title='CustomStyles'>
+      <RadioGroup
+        label='Plan'
+        description='Custom group layout.'
+        defaultValue='pro'
+        style={{ maxWidth: 320 }}
+        itemsStyle={{ gap: 20 }}
+        labelStyle={{ fontWeight: '700' }}
+        descriptionStyle={{ fontStyle: 'italic' }}
+      >
+        <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const States: Story = {
+  render: () => (
+    <Section title='States'>
+      <View style={storyStyles.column}>
+        <RadioGroup label='Default' defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          label='With description'
+          description='Choose one available option.'
+          defaultValue='pro'
+        >
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Required' required defaultValue='enterprise'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Disabled' disabled defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Error' required error='Select one option.'>
+          <PlanRadios />
+        </RadioGroup>
+      </View>
+    </Section>
+  ),
 };
