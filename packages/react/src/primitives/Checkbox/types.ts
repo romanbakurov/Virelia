@@ -10,4 +10,5 @@ export interface CheckboxProps
     > {
   label?: ReactNode;
   description?: ReactNode;
+  wrapperClassName?: string;
 }

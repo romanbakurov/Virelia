@@ -10,16 +10,22 @@ import type { CheckboxProps } from './types';
 
 import styles from './Checkbox.module.scss';
 
-const sizeClassNameBySize = {
-  sm: styles.checkboxSm,
-  md: styles.checkboxMd,
-  lg: styles.checkboxLg,
-} as const;
-
 const labelSizeClassNameBySize = {
   sm: styles.labelSm,
   md: styles.labelMd,
   lg: styles.labelLg,
+} as const;
+
+const wrapperSizeClassNameBySize = {
+  sm: styles.wrapperSm,
+  md: styles.wrapperMd,
+  lg: styles.wrapperLg,
+} as const;
+
+const containerSizeClassNameBySize = {
+  sm: styles.containerSm,
+  md: styles.containerMd,
+  lg: styles.containerLg,
 } as const;
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
@@ -35,6 +41,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       required = false,
       indeterminate = false,
       className,
+      wrapperClassName,
       onCheckedChange,
       error,
       'aria-label': ariaLabel,
@@ -95,10 +102,22 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     );
 
     return (
-      <div className={styles.container}>
+      <div
+        className={cn(
+          styles.container,
+          containerSizeClassNameBySize[size],
+          className
+        )}
+      >
         <label
           htmlFor={id}
-          className={cn(styles.wrapper, disabled && styles.disabled)}
+          className={cn(
+            styles.wrapper,
+            wrapperSizeClassNameBySize[size],
+            !label && styles.iconOnly,
+            disabled && styles.disabled,
+            wrapperClassName
+          )}
         >
           <input
             {...inputProps}
@@ -109,9 +128,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             disabled={disabled}
             required={required}
             onChange={handleChange}
-            className={cn(styles.input, className)}
+            className={styles.input}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
+            aria-checked={indeterminate ? 'mixed' : inputProps['aria-checked']}
             aria-invalid={hasError ? true : inputProps['aria-invalid']}
             aria-describedby={describedBy || undefined}
           />
@@ -119,7 +139,6 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           <span
             className={cn(
               styles.customCheckbox,
-              sizeClassNameBySize[size],
               hasError && styles.error,
               indeterminate && styles.indeterminate
             )}
@@ -149,7 +168,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
 
         {description && (
-          <span id={descriptionId} className={styles.description}>
+          <span id={descriptionId} className={styles.descriptionText}>
             {description}
           </span>
         )}

@@ -8,6 +8,7 @@ import { Checkbox } from './Checkbox';
 
 afterEach(() => {
   document.body.innerHTML = '';
+  vi.restoreAllMocks();
 });
 
 describe('Native Checkbox', () => {
@@ -35,6 +36,51 @@ describe('Native Checkbox', () => {
       container.querySelector<HTMLButtonElement>('[role="checkbox"]');
 
     expect(checkbox?.getAttribute('aria-label')).toBe('Accept terms');
+
+    unmount();
+  });
+
+  it('renders description text', () => {
+    const { container, unmount } = render(
+      <Checkbox
+        label='Product updates'
+        description='Receive occasional release notes.'
+      />
+    );
+
+    expect(container.textContent).toContain(
+      'Receive occasional release notes.'
+    );
+
+    unmount();
+  });
+
+  it('resolves the indeterminate state to checked on press', () => {
+    const onCheckedChange = vi.fn();
+    const { container, unmount } = render(
+      <Checkbox
+        label='Accept'
+        indeterminate
+        onCheckedChange={onCheckedChange}
+      />
+    );
+
+    const checkbox =
+      container.querySelector<HTMLButtonElement>('[role="checkbox"]');
+
+    act(() => checkbox?.click());
+
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+    unmount();
+  });
+
+  it('warns when no accessible label is provided', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { unmount } = render(<Checkbox />);
+
+    expect(warn).toHaveBeenCalledWith(
+      'Checkbox: an accessible label must be provided through label or accessibilityLabel.'
+    );
 
     unmount();
   });

@@ -20,6 +20,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
   (
     {
       label,
+      description,
       checked,
       defaultChecked = false,
       disabled = false,
@@ -50,7 +51,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
       lg: styles.labelLg,
     };
 
-    const errorTextSizeStyle = {
+    const helperTextSizeStyle = {
       sm: styles.errorTextSm,
       md: styles.errorTextMd,
       lg: styles.errorTextLg,
@@ -72,7 +73,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
 
     const resolvedAccessibilityLabel = accessibilityLabel ?? label;
 
-    const resolvedAccessibilityHint = [accessibilityHint, error]
+    const resolvedAccessibilityHint = [accessibilityHint, description, error]
       .filter(Boolean)
       .join(' ');
 
@@ -101,7 +102,12 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
           }}
           accessibilityHint={resolvedAccessibilityHint || undefined}
           accessibilityLabel={resolvedAccessibilityLabel}
-          style={[styles.wrapper, disabled && styles.disabled, style]}
+          style={[
+            styles.wrapper,
+            !label && styles.iconOnly,
+            disabled && styles.disabled,
+            style,
+          ]}
         >
           <View
             style={[
@@ -136,8 +142,20 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
           )}
         </Pressable>
 
+        {description && (
+          <Text
+            style={[
+              styles.descriptionText,
+              helperTextSizeStyle[size],
+              disabled && styles.descriptionTextDisabled,
+            ]}
+          >
+            {description}
+          </Text>
+        )}
+
         {hasError && (
-          <Text style={[styles.errorText, errorTextSizeStyle[size]]}>
+          <Text style={[styles.errorText, helperTextSizeStyle[size]]}>
             {error}
           </Text>
         )}

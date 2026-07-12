@@ -42,7 +42,10 @@ export function PreferencesScreen() {
           { label: 'Dark', value: 'dark' },
         ]}
       />
-      <Checkbox label='Send product updates' />
+      <Checkbox
+        label='Send product updates'
+        description='Receive release notes and billing updates.'
+      />
       <Button color='primary' variant='solid'>
         Apply
       </Button>
@@ -55,20 +58,20 @@ export function PreferencesScreen() {
 
 Every native component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/api.md).
+[`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/API.md).
 
-| Component    | Role                  |
-| ------------ | --------------------- |
-| `Button`     | Buttons and actions   |
-| `Checkbox`   | Boolean input         |
-| `Input`      | Text input            |
-| `FormField`  | Labels and validation |
-| `RadioGroup` | Single selection      |
-| `Select`     | Selection control     |
-| `Dropdown`   | Context menu          |
-| `Tabs`       | Tab navigation        |
-| `Tooltip`    | Contextual helper     |
-| `Modal`      | Dialog and overlay    |
+| Component    | Core props                                                                      | Role                  |
+| ------------ | ------------------------------------------------------------------------------- | --------------------- |
+| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `accessibilityLabel`                | Buttons and actions   |
+| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error` | Boolean input         |
+| `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                    | Text input            |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`             | Labels and validation |
+| `RadioGroup` | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `error` | Single selection      |
+| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `error` | Selection control     |
+| `Dropdown`   | `items`, `trigger`, `icon`, `onSelect`, `disabled`                              | Context menu          |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`    | Tab navigation        |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                     | Contextual helper     |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                       | Dialog and overlay    |
 
 ## Button
 
@@ -117,6 +120,7 @@ export function ControlledPreferences() {
         checked={enabled}
         onCheckedChange={setEnabled}
         label='Send product updates'
+        description='Receive release notes and billing updates.'
       />
       <RadioGroup
         label='Theme'
@@ -141,7 +145,11 @@ import { Checkbox, Tabs } from '@vellira-ui/react-native';
 export function UncontrolledPreferences() {
   return (
     <>
-      <Checkbox defaultChecked label='Remember this device' />
+      <Checkbox
+        defaultChecked
+        label='Remember this device'
+        description='Skip verification prompts on this device.'
+      />
       <Tabs defaultActiveIndex={0}>
         <Tabs.List>
           <Tabs.Tab index={0}>Profile</Tabs.Tab>
@@ -163,8 +171,11 @@ accessibility props where the platform supports them.
 - `Button` uses `accessibilityLabel` for icon-only or ambiguous actions. Its
   hover state changes background on web-compatible targets; focus adds a ring
   without changing the background.
-- Inputs, selection controls, and field wrappers expose labels, disabled state,
-  required state, and error text through React Native accessibility APIs.
+- Inputs, checkboxes, selection controls, and field wrappers expose labels,
+  descriptions, disabled state, required state, and error text through React
+  Native accessibility APIs.
+- Checkbox rows without a visible label should use `accessibilityLabel`; mixed
+  selection rows can use `indeterminate`.
 - Interactive components keep press handling and disabled behavior inside the
   renderer package.
 - Modal and overlay components keep platform rendering details out of

@@ -116,7 +116,8 @@ name. Button also accepts standard `button` attributes such as `type`,
 
 ## Checkbox
 
-Boolean input with controlled and uncontrolled modes.
+Boolean input with controlled and uncontrolled modes, helper text, validation
+state, and mixed selection support.
 
 ```tsx
 import { Checkbox } from '@vellira-ui/react';
@@ -125,22 +126,35 @@ import { Checkbox } from '@vellira-ui/react';
   checked={accepted}
   onCheckedChange={setAccepted}
   label='Accept terms'
+  description='Required to continue.'
 />;
 ```
 
 <!-- api-docgen:start web.CheckboxProps.Checkbox -->
 
-| Prop              | Type                         | Required | Description                                   |
-| ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Text label rendered next to the control.      |
-| `className`       | `string`                     | No       | Extra CSS class for the root element.         |
-| `error`           | `string`                     | No       | Error message rendered for invalid state.     |
-| `checked`         | `boolean`                    | No       | Controlled checked state.                     |
-| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
-| `disabled`        | `boolean`                    | No       | Disables interaction.                         |
-| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
+| Prop               | Type                         | Required | Description                                      |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------------ |
+| `label`            | `ReactNode`                  | No       | Visible label rendered next to the control.      |
+| `description`      | `ReactNode`                  | No       | Helper text rendered below the checkbox row.     |
+| `wrapperClassName` | `string`                     | No       | Extra CSS class for the clickable label wrapper. |
+| `error`            | `string`                     | No       | Error message rendered for invalid state.        |
+| `checked`          | `boolean`                    | No       | Controlled checked state.                        |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.    |
+| `disabled`         | `boolean`                    | No       | Disables interaction.                            |
+| `required`         | `boolean`                    | No       | Marks the checkbox as required.                  |
+| `indeterminate`    | `boolean`                    | No       | Displays and announces a mixed selection state.  |
+| `size`             | `CheckboxSize`               | No       | Checkbox size.                                   |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the user changes the state.          |
 
 <!-- api-docgen:end web.CheckboxProps.Checkbox -->
+
+Checkbox accepts standard `input[type="checkbox"]` attributes except the state
+props controlled by Vellira (`checked`, `defaultChecked`, `onChange`, `type`,
+and native `size`). `className` styles the root container; use
+`wrapperClassName` for the clickable label row. When no visible `label` is
+rendered, provide `aria-label` or `aria-labelledby`; the icon-only hit target
+remains at least 44px square. `description` and `error` are associated through
+`aria-describedby`.
 
 ## Input
 

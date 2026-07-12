@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Checkbox } from '@vellira-ui/react-native';
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
@@ -24,7 +24,7 @@ Native boolean control for independent choices.
 - Controlled and uncontrolled usage
 - Checked, unchecked and indeterminate states
 - Sizes: sm, md and lg
-- Optional label
+- Optional label and description
 - Required, disabled and error states
 - Native accessibility semantics
 - Standard Pressable props
@@ -55,6 +55,14 @@ Use Checkbox for a single on/off choice in forms, preferences, and settings scre
   argTypes: {
     label: {
       description: 'Visible text label displayed next to the checkbox.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+
+    description: {
+      description: 'Helper text displayed below the checkbox.',
       control: 'text',
       table: {
         type: { summary: 'string' },
@@ -205,6 +213,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function ControlledCheckbox(args: CheckboxStoryProps) {
   const [checked, setChecked] = useState(args.checked ?? false);
 
+  useEffect(() => {
+    setChecked(args.checked ?? false);
+  }, [args.checked]);
+
   return (
     <Checkbox
       {...args}
@@ -240,6 +252,34 @@ export const Default: Story = {
   ),
 };
 
+export const Controlled: Story = {
+  args: {
+    label: 'Receive notifications',
+    checked: false,
+  },
+  render: (args) => (
+    <Section title='Controlled'>
+      <View style={storyStyles.column}>
+        <ControlledCheckbox {...args} />
+      </View>
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    label: 'Remember me',
+    defaultChecked: true,
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <View style={storyStyles.column}>
+        <Checkbox {...args} />
+      </View>
+    </Section>
+  ),
+};
+
 export const Checked: Story = {
   args: {
     label: 'Checked',
@@ -255,15 +295,15 @@ export const Checked: Story = {
   ),
 };
 
-export const Controlled: Story = {
+export const Unchecked: Story = {
   args: {
-    label: 'Receive notifications',
-    checked: false,
+    label: 'Unchecked',
+    defaultChecked: false,
   },
   render: (args) => (
-    <Section title='Indeterminate'>
+    <Section title='Unchecked'>
       <View style={storyStyles.column}>
-        <ControlledCheckbox {...args} />
+        <Checkbox {...args} />
       </View>
     </Section>
   ),
@@ -299,6 +339,21 @@ export const Required: Story = {
   ),
 };
 
+export const WithDescription: Story = {
+  args: {
+    label: 'Product updates',
+    description: 'Receive occasional news about new Vellira releases.',
+  },
+
+  render: (args) => (
+    <Section title='With description'>
+      <View style={storyStyles.column}>
+        <Checkbox {...args} />
+      </View>
+    </Section>
+  ),
+};
+
 export const Disabled: Story = {
   args: {
     label: 'Disabled',
@@ -322,7 +377,23 @@ export const DisabledChecked: Story = {
   },
 
   render: (args) => (
-    <Section title='DisabledChecked'>
+    <Section title='Disabled checked'>
+      <View style={storyStyles.column}>
+        <Checkbox {...args} />
+      </View>
+    </Section>
+  ),
+};
+
+export const DisabledUnchecked: Story = {
+  args: {
+    label: 'Disabled unchecked',
+    disabled: true,
+    defaultChecked: false,
+  },
+
+  render: (args) => (
+    <Section title='Disabled unchecked'>
       <View style={storyStyles.column}>
         <Checkbox {...args} />
       </View>
@@ -348,7 +419,7 @@ export const Error: Story = {
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
-      <View style={storyStyles.column}>
+      <View style={storyStyles.rowStyle}>
         <Checkbox label='Small' size='sm' />
         <Checkbox label='Medium' size='md' />
         <Checkbox label='Large' size='lg' />
@@ -367,19 +438,11 @@ export const States: Story = {
         <Checkbox label='Required' required />
         <Checkbox label='Disabled' disabled />
         <Checkbox label='Disabled checked' disabled defaultChecked />
-        <Checkbox label='Error' error='This field is required' />
-      </View>
-    </Section>
-  ),
-};
-
-export const SizeComparison: Story = {
-  render: () => (
-    <Section title='SizeComparison'>
-      <View style={storyStyles.rowStyle}>
-        <Checkbox label='Small' size='sm' />
-        <Checkbox label='Medium' size='md' />
-        <Checkbox label='Large' size='lg' />
+        <Checkbox
+          label='Error with description'
+          description='This option is required to continue.'
+          error='This field is required'
+        />
       </View>
     </Section>
   ),
@@ -387,12 +450,12 @@ export const SizeComparison: Story = {
 
 export const AccessibleWithoutVisibleLabel: Story = {
   args: {
+    label: undefined,
     accessibilityLabel: 'Enable notifications',
   },
   render: (args) => (
-    <Section title='AccessibleWithoutVisibleLabel'>
+    <Section title='Accessible without visible label'>
       <View style={storyStyles.column}>
-        <Text>Checkbox without a visible label:</Text>
         <Checkbox {...args} />
       </View>
     </Section>

@@ -14,6 +14,12 @@ export const createStyles = (theme: NativeTheme) =>
       gap: theme.tokens.spacing[3],
     },
 
+    iconOnly: {
+      justifyContent: 'center',
+      minWidth: 44,
+      minHeight: 44,
+    },
+
     disabled: {
       opacity: 1,
     },
@@ -94,6 +100,17 @@ export const createStyles = (theme: NativeTheme) =>
 
     requiredMark: {
       color: theme.components.checkbox.error.fg,
+    },
+
+    descriptionText: {
+      color: theme.components.formField.description.fg,
+      fontFamily: theme.tokens.typography.family.regular,
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
+
+    descriptionTextDisabled: {
+      color: theme.components.formField.disabled.descriptionFg,
     },
 
     errorText: {
