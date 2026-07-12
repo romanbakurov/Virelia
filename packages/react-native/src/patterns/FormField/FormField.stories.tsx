@@ -329,6 +329,9 @@ function CustomErrorExample() {
 }
 
 export const Playground: Story = {
+  args: {
+    children: <DemoControl placeholder='Alex Johnson' />,
+  },
   render: (args) => (
     <Section title='Playground'>
       <FormField {...args} />
@@ -339,7 +342,7 @@ export const Playground: Story = {
 export const Default: Story = {
   args: {
     label: 'Full name',
-    children: <DemoControl placeholder='Alex Johnson' />,
+    children: <DemoControl placeholder='name@company.com' />,
   },
   render: (args) => (
     <Section title='Default'>

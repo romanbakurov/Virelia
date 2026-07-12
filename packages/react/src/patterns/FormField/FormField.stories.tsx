@@ -5,26 +5,28 @@ import { Checkbox } from '../../primitives/Checkbox';
 
 import { FormField } from './FormField';
 
+import styles from './FormField.module.scss';
+
 const inputStyle = {
   width: '100%',
   padding: 'var(--space-3) var(--space-4)',
   color: 'var(--color-gray-900)',
   font: 'inherit',
-  backgroundColor: 'var(--color-gray-0)',
-  border: '1px solid var(--color-gray-200)',
+  backgroundColor: 'transparent',
+  border: '1px solid var(--input-default-border)',
   borderRadius: 'var(--radius-md)',
   outline: 'none',
 } satisfies CSSProperties;
 
 const errorInputStyle = {
   ...inputStyle,
-  borderColor: 'var(--color-error)',
+  borderColor: 'var(--status-error-border)',
 } satisfies CSSProperties;
 
 const disabledInputStyle = {
   ...inputStyle,
   color: 'var(--color-gray-500)',
-  backgroundColor: 'var(--color-gray-100)',
+  backgroundColor: 'var(--input-disabled-bg)',
   cursor: 'not-allowed',
   opacity: 0.6,
 } satisfies CSSProperties;
@@ -283,6 +285,7 @@ function PlaygroundExample({
       <input
         id={resolvedControlId}
         name={resolvedControlId}
+        className={styles.storyInput}
         autoComplete='off'
         placeholder='Field value'
         required={args.required}
@@ -323,6 +326,7 @@ export const WithInput: Story = {
         autoComplete='email'
         placeholder='name@company.com'
         style={inputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -348,6 +352,7 @@ export const WithDescription: Story = {
         placeholder='alex_johnson'
         aria-describedby='username-description'
         style={inputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -372,6 +377,7 @@ export const Required: Story = {
         placeholder='Alex Johnson'
         required
         style={inputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -397,6 +403,7 @@ export const WithError: Story = {
         aria-invalid
         aria-describedby='password-error'
         style={errorInputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -423,6 +430,7 @@ export const Disabled: Story = {
         aria-describedby='disabled-email-description'
         disabled
         style={disabledInputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -471,6 +479,7 @@ export const CustomLabel: Story = {
         placeholder='vellira-design'
         required
         style={inputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -505,6 +514,7 @@ export const CustomDescription: Story = {
         placeholder='Enter password'
         aria-describedby='secure-password-description'
         style={inputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -540,6 +550,7 @@ export const CustomError: Story = {
         aria-invalid
         aria-describedby='registered-email-error'
         style={errorInputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -569,6 +580,7 @@ export const CompleteExample: Story = {
         aria-describedby='complete-email-description complete-email-error'
         required
         style={errorInputStyle}
+        className={styles.storyInput}
       />
     ),
   },
@@ -590,6 +602,7 @@ export const States: Story = {
             autoComplete='off'
             placeholder='Default field'
             style={inputStyle}
+            className={styles.storyInput}
           />
         </FormField>
 
@@ -605,6 +618,7 @@ export const States: Story = {
             placeholder='Field with description'
             aria-describedby='state-username-description'
             style={inputStyle}
+            className={styles.storyInput}
           />
         </FormField>
 
@@ -616,6 +630,7 @@ export const States: Story = {
             placeholder='Required field'
             required
             style={inputStyle}
+            className={styles.storyInput}
           />
         </FormField>
 
@@ -627,6 +642,7 @@ export const States: Story = {
             placeholder='Disabled field'
             disabled
             style={disabledInputStyle}
+            className={styles.storyInput}
           />
         </FormField>
 
@@ -643,6 +659,7 @@ export const States: Story = {
             aria-invalid
             aria-describedby='state-error-error'
             style={errorInputStyle}
+            className={styles.storyInput}
           />
         </FormField>
       </div>

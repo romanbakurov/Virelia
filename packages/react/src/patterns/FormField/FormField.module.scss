@@ -58,3 +58,8 @@
     color: var(--form-field-disabled-required-mark-fg);
   }
 }
+
+.storyInput::placeholder {
+  color: var(--input-default-placeholder);
+  opacity: 1;
+}
