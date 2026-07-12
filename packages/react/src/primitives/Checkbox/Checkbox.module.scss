@@ -1,9 +1,57 @@
 .wrapper {
+  --checkbox-border-width: 2px;
+  --checkbox-checkmark-size: 12px;
+  --checkbox-size: 20px;
+
   display: flex;
   align-items: center;
   gap: var(--space-3);
   cursor: pointer;
   user-select: none;
+}
+
+.wrapperSm {
+  --checkbox-border-width: 1px;
+  --checkbox-checkmark-size: 10px;
+  --checkbox-size: 16px;
+}
+
+.wrapperMd {
+  --checkbox-border-width: 2px;
+  --checkbox-checkmark-size: 12px;
+  --checkbox-size: 20px;
+}
+
+.wrapperLg {
+  --checkbox-border-width: 2px;
+  --checkbox-checkmark-size: 14px;
+  --checkbox-size: 24px;
+}
+
+.iconOnly {
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.container {
+  --checkbox-size: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.containerSm {
+  --checkbox-size: 16px;
+}
+
+.containerMd {
+  --checkbox-size: 20px;
+}
+
+.containerLg {
+  --checkbox-size: 24px;
 }
 
 .input {
@@ -18,24 +66,32 @@
   clip-path: inset(50%);
 }
 
-.input:focus-visible + .customCheckbox {
-  outline: 2px solid var(--checkbox-focus-ring);
-  outline-offset: 2px;
-}
-
 .customCheckbox {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 22px;
-  height: 22px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  color: var(--checkbox-default-fg);
   background: var(--checkbox-default-bg);
-  border: 2px solid var(--checkbox-default-border);
+  border: var(--checkbox-border-width) solid var(--checkbox-default-border);
   border-radius: var(--radius-xs);
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.requiredMark {
+  margin-left: var(--space-1);
+  color: var(--checkbox-error-fg);
+}
+
+.input:focus-visible + .customCheckbox {
+  outline: 2px solid var(--checkbox-focus-ring);
+  outline-offset: 2px;
 }
 
 .checkmark {
@@ -51,16 +107,22 @@
     transform 0.2s ease;
 
   svg {
-    width: 12px;
-    height: 12px;
+    width: var(--checkbox-checkmark-size);
+    height: var(--checkbox-checkmark-size);
     fill: currentcolor;
   }
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+.indeterminateMark {
+  width: 60%;
+  height: 2px;
+  background: currentcolor;
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transform: scaleX(0.5);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .label {
@@ -68,50 +130,78 @@
   font-size: var(--font-size-md);
 }
 
-.error {
-  border-color: var(--checkbox-error-border);
+.descriptionText {
+  margin-left: calc(var(--checkbox-size) + var(--space-3));
+  color: var(--form-field-description-fg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
 .errorText {
+  margin-left: calc(var(--checkbox-size) + var(--space-3));
   color: var(--checkbox-error-fg);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
-  margin-left: calc(22px + var(--space-3));
 }
 
-.input:checked + .customCheckbox.error {
-  border-color: var(--checkbox-error-border);
+.labelSm {
+  font-size: var(--font-size-sm);
 }
 
-.wrapper:hover .input:not(:disabled) + .customCheckbox {
-  background: var(--checkbox-hover-bg);
-  border-color: var(--checkbox-hover-border);
-  box-shadow: 0 0 0 4px var(--checkbox-hover-bg);
+.labelMd {
+  font-size: var(--font-size-md);
 }
 
-.input:checked + .customCheckbox {
+.labelLg {
+  font-size: var(--font-size-lg);
+}
+
+.input:checked + .customCheckbox,
+.input:indeterminate + .customCheckbox,
+.indeterminate {
+  color: var(--checkbox-checked-default-fg);
   background: var(--checkbox-checked-default-bg);
   border-color: var(--checkbox-checked-default-border);
-
-  .checkmark svg {
-    fill: var(--checkbox-checked-default-fg);
-  }
 }
 
 .input:checked + .customCheckbox .checkmark {
-  color: var(--checkbox-checked-default-fg);
   opacity: 1;
   transform: scale(1);
 }
 
-.input:disabled + .customCheckbox {
-  background: var(--checkbox-disabled-bg);
-  cursor: not-allowed;
-  border-color: var(--checkbox-disabled-border);
+.input:indeterminate + .customCheckbox .indeterminateMark,
+.indeterminate .indeterminateMark {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
-.input:disabled + .customCheckbox .checkmark {
+.wrapper:hover
+  .input:not(:checked, :indeterminate, :disabled)
+  + .customCheckbox {
+  background: var(--checkbox-hover-bg);
+  border-color: var(--checkbox-hover-border);
+  box-shadow: 0 0 0 3px var(--checkbox-hover-bg);
+}
+
+.wrapper:hover .input:checked:not(:disabled) + .customCheckbox,
+.wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox,
+.wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate {
+  background: var(--checkbox-checked-hover-bg);
+  border-color: var(--checkbox-checked-hover-border);
+}
+
+.input + .customCheckbox.error,
+.input:checked + .customCheckbox.error,
+.input:indeterminate + .customCheckbox.error,
+.customCheckbox.indeterminate.error,
+.wrapper:hover .input:not(:disabled) + .customCheckbox.error {
+  border-color: var(--checkbox-error-border);
+}
+
+.input:disabled + .customCheckbox {
   color: var(--checkbox-disabled-fg);
+  background: var(--checkbox-disabled-bg);
+  border-color: var(--checkbox-disabled-border);
 }
 
 .input:disabled + .customCheckbox + .label {
@@ -125,7 +215,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .customCheckbox,
-  .checkmark {
+  .checkmark,
+  .indeterminateMark {
     transition: none;
   }
 }

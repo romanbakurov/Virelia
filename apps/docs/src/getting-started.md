@@ -56,6 +56,7 @@ import { useState } from 'react';
 
 export function SignInForm() {
   const [email, setEmail] = useState('');
+  const [remember, setRemember] = useState(false);
 
   return (
     <form>
@@ -65,7 +66,12 @@ export function SignInForm() {
         onChange={setEmail}
         placeholder='name@example.com'
       />
-      <Checkbox label='Remember me' />
+      <Checkbox
+        label='Remember me'
+        description='Keep this browser signed in.'
+        checked={remember}
+        onCheckedChange={setRemember}
+      />
       <Button color='primary' variant='solid'>
         Continue
       </Button>
@@ -83,11 +89,17 @@ import { View } from 'react-native';
 
 export function SignInScreen() {
   const [email, setEmail] = useState('');
+  const [remember, setRemember] = useState(false);
 
   return (
     <View style={{ gap: 16, padding: 24 }}>
       <Input label='Email' value={email} onChange={setEmail} />
-      <Checkbox label='Remember me' />
+      <Checkbox
+        label='Remember me'
+        description='Keep this device signed in.'
+        checked={remember}
+        onCheckedChange={setRemember}
+      />
       <Button color='primary' variant='solid'>
         Continue
       </Button>

@@ -63,18 +63,18 @@ Every component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react/API.md).
 
-| Component    | Core props                                                                   | State model                   |
-| ------------ | ---------------------------------------------------------------------------- | ----------------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`        | disabled, loading             |
-| `Checkbox`   | `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`             | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`        | controlled                    |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`          | presentation wrapper          |
-| `RadioGroup` | `name`, `options`, `value`, `defaultValue`, `onChange`, `orientation`        | controlled or uncontrolled    |
-| `Select`     | `options`, `value`, `defaultValue`, `onChange`, `placeholder`, `error`       | controlled or uncontrolled    |
-| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `textWrap`, `onSelect` | open state managed internally |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance` | controlled or uncontrolled    |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`      | open state managed internally |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections      | controlled                    |
+| Component    | Core props                                                                                       | State model                   |
+| ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
+| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`                            | disabled, loading             |
+| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
+| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
+| `RadioGroup` | `name`, `options`, `value`, `defaultValue`, `onChange`, `orientation`                            | controlled or uncontrolled    |
+| `Select`     | `options`, `value`, `defaultValue`, `onChange`, `placeholder`, `error`                           | controlled or uncontrolled    |
+| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `textWrap`, `onSelect`                     | open state managed internally |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                          | open state managed internally |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                          | controlled                    |
 
 ## Button
 
@@ -123,6 +123,7 @@ export function ControlledSettings() {
         checked={enabled}
         onCheckedChange={setEnabled}
         label='Enable notifications'
+        description='Send product and billing updates to this account.'
       />
       <Select
         label='Role'
@@ -147,7 +148,11 @@ import { Checkbox, RadioGroup, Tabs } from '@vellira-ui/react';
 export function UncontrolledPreferences() {
   return (
     <>
-      <Checkbox defaultChecked label='Remember this device' />
+      <Checkbox
+        defaultChecked
+        label='Remember this device'
+        description='Skip verification prompts on this browser.'
+      />
       <RadioGroup
         name='theme'
         label='Theme'
@@ -179,8 +184,10 @@ keeping the public API platform-independent.
 - `Button` supports accessible labels for icon-only or ambiguous actions through
   the standard `aria-label` attribute. It does not expose a camelCase
   accessible-label alias.
-- `Input`, `Select`, `RadioGroup`, and `FormField` wire labels, descriptions,
-  required state, disabled state, and error text.
+- `Input`, `Checkbox`, `Select`, `RadioGroup`, and `FormField` wire labels,
+  descriptions, required state, disabled state, and error text.
+- Checkbox rows without a visible label should use `aria-label` or
+  `aria-labelledby`; mixed states use `indeterminate`.
 - `RadioGroup`, `Tabs`, menus, tooltips, and overlays include keyboard behavior
   appropriate to their role.
 - `Modal` owns dialog visibility, escape handling, backdrop close behavior, and

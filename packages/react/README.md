@@ -44,6 +44,7 @@ import { useState } from 'react';
 
 export function Example() {
   const [email, setEmail] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   return (
     <form>
@@ -53,7 +54,12 @@ export function Example() {
         onChange={(event) => setEmail(event.target.value)}
         placeholder='name@example.com'
       />
-      <Checkbox label='Accept terms' />
+      <Checkbox
+        label='Accept terms'
+        description='Required to create an account.'
+        checked={accepted}
+        onCheckedChange={setAccepted}
+      />
       <Button color='primary' variant='solid'>
         Submit
       </Button>
@@ -74,6 +80,12 @@ import { Search } from '@vellira-ui/icons';
 
 `loading` disables interaction and can replace the visible label with
 `loadingText`.
+
+### Checkbox Notes
+
+Use `description` for settings-style helper text when the checkbox is not
+wrapped in `FormField`. For checkbox rows without a visible label, provide
+`aria-label` or `aria-labelledby`.
 
 ## Testing
 

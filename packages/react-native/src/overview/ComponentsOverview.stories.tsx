@@ -358,13 +358,71 @@ function NativeComponentsOverview() {
         </Section>
 
         <Section title='Checkbox'>
-          <Checkbox
-            label='Receive product updates'
-            checked={accepted}
-            onChange={setAccepted}
-          />
-          <Checkbox label='Disabled checked' checked disabled />
-          <Checkbox label='Validation state' error='Required field' />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Settings row
+            </Text>
+            <Checkbox
+              label='Receive product updates'
+              description='Get release notes and billing notifications.'
+              checked={accepted}
+              onCheckedChange={setAccepted}
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Checkbox label='Unchecked' />
+            <Checkbox label='Checked' defaultChecked />
+            <Checkbox label='Indeterminate' indeterminate />
+            <Checkbox label='Required' required />
+            <Checkbox label='Disabled checked' defaultChecked disabled />
+            <Checkbox
+              label='Validation state'
+              description='This setting is required to continue.'
+              error='Required field'
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Checkbox label='Small' size='sm' />
+              <Checkbox label='Medium' size='md' />
+              <Checkbox label='Large' size='lg' />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible without visible label
+            </Text>
+            <Checkbox accessibilityLabel='Enable notifications' />
+          </View>
         </Section>
 
         <Section title='RadioGroup'>

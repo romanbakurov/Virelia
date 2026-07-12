@@ -50,6 +50,8 @@ Use this page as a visual overview of the component library.
     <div class="docs-state-grid">
       <div><span>Default</span><label class="docs-check"><input type="checkbox" />Remember</label></div>
       <div><span>Checked</span><label class="docs-check"><input type="checkbox" checked />Remember</label></div>
+      <div><span>Description</span><label class="docs-check"><input type="checkbox" />Updates</label><small>Receive product news.</small></div>
+      <div><span>Mixed</span><label class="docs-check"><input type="checkbox" aria-checked="mixed" />Select all</label></div>
       <div><span>Focus</span><label class="docs-check docs-is-focus"><input type="checkbox" checked />Remember</label></div>
       <div><span>Disabled</span><label class="docs-check docs-is-disabled"><input type="checkbox" checked disabled />Remember</label></div>
       <div><span>Error</span><label class="docs-check docs-has-error"><input type="checkbox" />Required</label></div>
@@ -165,6 +167,7 @@ import { useState } from 'react';
 
 export function FormExample() {
   const [email, setEmail] = useState('');
+  const [remember, setRemember] = useState(false);
 
   return (
     <form>
@@ -174,7 +177,12 @@ export function FormExample() {
         onChange={setEmail}
         placeholder='name@example.com'
       />
-      <Checkbox label='Remember this device' defaultChecked />
+      <Checkbox
+        label='Remember this device'
+        description='Skip verification prompts on this browser.'
+        checked={remember}
+        onCheckedChange={setRemember}
+      />
       <Button color='primary' variant='solid'>
         Continue
       </Button>
