@@ -1,5 +1,3 @@
-import { useId } from 'react';
-
 import { cn } from '@utils/cn';
 
 import type { FormFieldProps } from './types';
@@ -8,6 +6,7 @@ import styles from './FormField.module.scss';
 
 export const FormField = ({
   id,
+  controlId,
   label,
   description,
   error,
@@ -15,27 +14,27 @@ export const FormField = ({
   disabled = false,
   children,
   className,
+  controlClassName,
+  labelClassName,
+  descriptionClassName,
+  errorClassName,
+  ...rest
 }: FormFieldProps) => {
-  const generatedId = useId();
-  const fieldId = id ?? generatedId;
+  const descriptionId =
+    description && controlId ? `${controlId}-description` : undefined;
 
-  const descriptionId = description ? `${fieldId}-description` : undefined;
-  const errorId = error ? `${fieldId}-error` : undefined;
+  const errorId = error && controlId ? `${controlId}-error` : undefined;
 
   return (
     <div
-      className={cn(
-        styles.wrapper,
-        {
-          [styles.disabled]: disabled,
-        },
-        className
-      )}
+      {...rest}
+      id={id}
+      className={cn(styles.wrapper, disabled && styles.disabled, className)}
       data-disabled={disabled || undefined}
-      data-invalid={!!error || undefined}
+      data-invalid={Boolean(error) || undefined}
     >
       {label && (
-        <label className={styles.label} htmlFor={fieldId}>
+        <label htmlFor={controlId} className={cn(styles.label, labelClassName)}>
           {label}
 
           {required && (
@@ -47,17 +46,24 @@ export const FormField = ({
       )}
 
       {description && (
-        <span className={styles.description} id={descriptionId}>
+        <div
+          id={descriptionId}
+          className={cn(styles.description, descriptionClassName)}
+        >
           {description}
-        </span>
+        </div>
       )}
 
-      <div className={styles.control}>{children}</div>
+      <div className={cn(styles.control, controlClassName)}>{children}</div>
 
       {error && (
-        <span className={styles.errorText} id={errorId} role='alert'>
+        <div
+          id={errorId}
+          className={cn(styles.errorText, errorClassName)}
+          role='alert'
+        >
           {error}
-        </span>
+        </div>
       )}
     </div>
   );

@@ -44,6 +44,17 @@
 }
 
 .disabled {
-  color: var(--form-field-disabled-label-fg);
   cursor: not-allowed;
+
+  .label {
+    color: var(--form-field-disabled-label-fg);
+  }
+
+  .description {
+    color: var(--form-field-disabled-description-fg);
+  }
+
+  .required {
+    color: var(--form-field-disabled-required-mark-fg);
+  }
 }

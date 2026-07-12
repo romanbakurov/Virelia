@@ -42,6 +42,12 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.formField.disabled.descriptionFg,
     },
 
+    customLabel: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.tokens.spacing[1],
+    },
+
     control: {
       width: '100%',
       minWidth: 0,

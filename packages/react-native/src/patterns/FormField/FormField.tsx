@@ -17,48 +17,73 @@ export function FormField({
   labelStyle,
   descriptionStyle,
   errorStyle,
+  ...rest
 }: FormFieldProps) {
   const styles = useThemeStyles(createStyles);
 
   return (
-    <View
-      style={[styles.root, style]}
-      accessibilityState={{
-        disabled,
-      }}
-    >
-      {label && (
-        <Text
-          style={[styles.label, disabled && styles.labelDisabled, labelStyle]}
-        >
-          {label}
-          {required && <Text style={styles.required}> *</Text>}
-        </Text>
-      )}
+    <View {...rest} style={[styles.root, style]}>
+      {label &&
+        (typeof label === 'string' || typeof label === 'number' ? (
+          <Text
+            style={[styles.label, disabled && styles.labelDisabled, labelStyle]}
+          >
+            {label}
 
-      {description && (
-        <Text
-          style={[
-            styles.description,
-            disabled && styles.descriptionDisabled,
-            descriptionStyle,
-          ]}
-        >
-          {description}
-        </Text>
-      )}
+            {required && (
+              <Text
+                style={styles.required}
+                accessible={false}
+                importantForAccessibility='no'
+              >
+                {' *'}
+              </Text>
+            )}
+          </Text>
+        ) : (
+          <View style={styles.customLabel}>
+            {label}
+
+            {required && (
+              <Text
+                style={styles.required}
+                accessible={false}
+                importantForAccessibility='no'
+              >
+                *
+              </Text>
+            )}
+          </View>
+        ))}
+
+      {description &&
+        (typeof description === 'string' || typeof description === 'number' ? (
+          <Text
+            style={[
+              styles.description,
+              disabled && styles.descriptionDisabled,
+              descriptionStyle,
+            ]}
+          >
+            {description}
+          </Text>
+        ) : (
+          description
+        ))}
 
       <View style={[styles.control, controlStyle]}>{children}</View>
 
-      {error && (
-        <Text
-          style={[styles.error, errorStyle]}
-          accessibilityRole='alert'
-          accessibilityLiveRegion='polite'
-        >
-          {error}
-        </Text>
-      )}
+      {error &&
+        (typeof error === 'string' || typeof error === 'number' ? (
+          <Text
+            accessibilityLiveRegion='polite'
+            style={[styles.error, errorStyle]}
+          >
+            {error}
+          </Text>
+        ) : (
+          <View accessibilityLiveRegion='polite'>{error}</View>
+        ))}
     </View>
   );
 }

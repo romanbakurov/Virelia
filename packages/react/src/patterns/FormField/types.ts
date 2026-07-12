@@ -1,11 +1,19 @@
 import type { BaseFormFieldProps } from '@vellira-ui/types';
-import type { ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-export interface FormFieldProps extends BaseFormFieldProps {
-  id?: string;
-  label?: string;
-  description?: string;
-  error?: string;
+export interface FormFieldProps
+  extends
+    Omit<BaseFormFieldProps, 'label' | 'description' | 'error'>,
+    Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
+  controlId?: string;
+
+  label?: ReactNode;
+  description?: ReactNode;
+  error?: ReactNode;
   children: ReactNode;
-  className?: string;
+
+  controlClassName?: string;
+  labelClassName?: string;
+  descriptionClassName?: string;
+  errorClassName?: string;
 }
