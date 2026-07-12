@@ -1,106 +1,116 @@
-import { useId } from 'react';
+import { forwardRef, useId } from 'react';
 
-import { FormField } from '@patterns/FormField';
-import { cn } from '@utils/cn';
 import { useControllableState } from '@vellira-ui/core';
 
+import { cn } from '../../utils/cn';
+
+import { RadioGroupProvider } from './RadioGroupContext';
 import type { RadioGroupProps } from './types';
 
 import styles from './RadioGroup.module.scss';
 
-export const RadioGroup = ({
-  label,
-  description,
-  value,
-  defaultValue,
-  onChange,
-  options,
-  name,
-  required = false,
-  disabled = false,
-  error,
-  className,
-  orientation = 'vertical',
-}: RadioGroupProps) => {
-  const generatedId = useId();
+export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
+  (
+    {
+      value,
+      defaultValue = '',
+      onValueChange,
+      disabled = false,
+      required = false,
+      size = 'md',
+      name,
+      label,
+      description,
+      error,
+      orientation = 'vertical',
+      children,
+      className,
+      id,
+      ...rest
+    },
+    ref
+  ) => {
+    const generatedId = useId();
+    const groupId = id ?? generatedId;
 
-  const groupId = `${generatedId}-group`;
-  const labelId = label ? `${generatedId}-label` : undefined;
-  const descriptionId = description ? `${generatedId}-description` : undefined;
-  const errorId = error ? `${generatedId}-error` : undefined;
-  const describedBy =
-    [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
+    const labelId = label ? `${groupId}-label` : undefined;
+    const descriptionId = description ? `${groupId}-description` : undefined;
+    const errorId = error ? `${groupId}-error` : undefined;
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value,
-    defaultValue: defaultValue ?? '',
-    onChange,
-  });
+    const describedBy =
+      [descriptionId, errorId].filter(Boolean).join(' ') || undefined;
 
-  return (
-    <FormField
-      id={generatedId}
-      description={description}
-      required={required}
-      disabled={disabled}
-      error={error}
-    >
-      {label && (
-        <span id={labelId} className={styles.groupLabel}>
-          {label}
+    const resolvedName = name ?? `${groupId}-radio`;
 
-          {required && (
-            <span className={styles.required} aria-hidden='true'>
-              *
-            </span>
-          )}
-        </span>
-      )}
+    const [currentValue, setCurrentValue] = useControllableState({
+      value,
+      defaultValue,
+      onChange: onValueChange,
+    });
 
+    const invalid = Boolean(error);
+
+    return (
       <div
+        {...rest}
+        ref={ref}
         id={groupId}
-        className={cn(styles.group, styles[orientation], className)}
         role='radiogroup'
         aria-labelledby={labelId}
-        aria-required={required || undefined}
-        aria-invalid={!!error || undefined}
         aria-describedby={describedBy}
+        aria-disabled={disabled || undefined}
+        aria-required={required || undefined}
+        aria-invalid={invalid || undefined}
+        className={cn(
+          styles.root,
+          invalid && styles.invalid,
+          disabled && styles.disabled,
+          className
+        )}
       >
-        {options.map((option) => {
-          const optionId = `${generatedId}-${option.value}`;
-          const isDisabled = disabled || option.disabled;
+        {label && (
+          <div id={labelId} className={styles.label}>
+            {label}
 
-          return (
-            <label
-              key={option.value}
-              htmlFor={optionId}
-              className={cn(styles.option, {
-                [styles.disabled]: isDisabled,
-              })}
-            >
-              <input
-                id={optionId}
-                type='radio'
-                name={name}
-                value={option.value}
-                checked={selectedValue === option.value}
-                required={required}
-                disabled={isDisabled}
-                onChange={() => {
-                  if (isDisabled) return;
-                  setSelectedValue(option.value);
-                }}
-                className={styles.input}
-              />
+            {required && (
+              <span className={styles.required} aria-hidden='true'>
+                *
+              </span>
+            )}
+          </div>
+        )}
 
-              <span className={styles.customRadio} aria-hidden='true' />
-              <span className={styles.label}>{option.label}</span>
-            </label>
-          );
-        })}
+        {description && (
+          <div id={descriptionId} className={styles.description}>
+            {description}
+          </div>
+        )}
+
+        <RadioGroupProvider
+          value={{
+            name: resolvedName,
+            value: currentValue,
+            disabled,
+            required,
+            invalid,
+            size,
+            describedBy,
+            onValueChange: setCurrentValue,
+          }}
+        >
+          <div className={cn(styles.items, styles[orientation])}>
+            {children}
+          </div>
+        </RadioGroupProvider>
+
+        {error && (
+          <div id={errorId} className={styles.error}>
+            {error}
+          </div>
+        )}
       </div>
-    </FormField>
-  );
-};
+    );
+  }
+);
 
 RadioGroup.displayName = 'RadioGroup';

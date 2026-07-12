@@ -1,19 +1,16 @@
-import type {
-  BaseRadioGroupProps,
-  BaseRadioOption,
-  Orientation,
-} from '@vellira-ui/types';
+import type { BaseRadioGroupProps } from '@vellira-ui/types';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-export interface RadioOption extends BaseRadioOption {
-  label: string;
-}
-
-export interface RadioGroupProps extends Omit<BaseRadioGroupProps, 'options'> {
-  label?: string;
-  description?: string;
-  name: string;
-  options: RadioOption[];
+export interface RadioGroupProps
+  extends
+    BaseRadioGroupProps,
+    Omit<
+      ComponentPropsWithoutRef<'div'>,
+      'defaultValue' | 'onChange' | 'role'
+    > {
+  name?: string;
+  label?: ReactNode;
+  children?: ReactNode;
+  description?: ReactNode;
   error?: string;
-  orientation?: Orientation;
-  className?: string;
 }
