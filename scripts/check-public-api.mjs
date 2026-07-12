@@ -176,6 +176,7 @@ const publicSymbolContracts = {
     'ButtonColor',
     'ButtonSize',
     'ButtonVariant',
+    'CheckboxSize',
     'FloatingPlacement',
     'InputAdornmentTone',
     'InputBaseProps',

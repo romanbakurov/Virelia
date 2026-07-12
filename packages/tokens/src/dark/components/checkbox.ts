@@ -9,7 +9,7 @@ export const checkbox = {
   default: {
     bg: surface.elevated,
     fg: text.inverse,
-    border: border.subtle,
+    border: border.default,
   },
 
   hover: {

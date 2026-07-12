@@ -7,6 +7,7 @@ Import public components from the package root:
 ```tsx
 import {
   Button,
+  Checkbox,
   Input,
   Modal,
   Select,
@@ -110,7 +111,8 @@ elements such as `<Search />`; Button injects the current icon `color` and
 
 ## Checkbox
 
-Boolean input with controlled and uncontrolled modes.
+Boolean input with controlled and uncontrolled modes, helper text, validation
+state, and mixed selection support.
 
 ```tsx
 import { Checkbox } from '@vellira-ui/react-native';
@@ -119,6 +121,7 @@ import { Checkbox } from '@vellira-ui/react-native';
   checked={accepted}
   onCheckedChange={setAccepted}
   label='Accept terms'
+  description='Required to continue.'
 />;
 ```
 
@@ -126,15 +129,25 @@ import { Checkbox } from '@vellira-ui/react-native';
 
 | Prop              | Type                         | Required | Description                                   |
 | ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Text label rendered next to the control.      |
-| `style`           | `StyleProp<ViewStyle>`       | No       | Extra container style.                        |
+| `label`           | `string`                     | No       | Visible label rendered next to the control.   |
+| `description`     | `string`                     | No       | Helper text rendered below the checkbox row.  |
+| `style`           | `StyleProp<ViewStyle>`       | No       | Extra style for the clickable wrapper.        |
 | `error`           | `string`                     | No       | Error message rendered for invalid state.     |
 | `checked`         | `boolean`                    | No       | Controlled checked state.                     |
 | `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
 | `disabled`        | `boolean`                    | No       | Disables interaction.                         |
+| `required`        | `boolean`                    | No       | Marks the checkbox as required.               |
+| `indeterminate`   | `boolean`                    | No       | Displays a mixed selection state.             |
+| `size`            | `CheckboxSize`               | No       | Checkbox size.                                |
 | `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
 
 <!-- api-docgen:end native.CheckboxProps.Checkbox -->
+
+`style` applies to the clickable `Pressable` row. When no visible `label` is
+rendered, provide `accessibilityLabel`; the icon-only touch target remains at
+least 44px square. `description`, `error`, and any explicit
+`accessibilityHint` are merged into the resolved accessibility hint so
+settings-style rows remain useful without wrapping the checkbox in `FormField`.
 
 ## Input
 

@@ -27,6 +27,11 @@ Vellira follows these principles across supported platforms:
 | Errors    | Components expose APIs for associating validation text with form controls                                      |
 | Semantics | Components render appropriate roles and accessibility attributes whenever possible                             |
 
+Checkbox supports visible labels, helper descriptions, required and error text,
+controlled and uncontrolled checked state, and mixed selection through
+`indeterminate`. Use `aria-label` on web or `accessibilityLabel` on native when a
+checkbox row has no visible label.
+
 ## What Product Code Owns
 
 - Writing meaningful labels and button text.

@@ -42,11 +42,17 @@ import { View } from 'react-native';
 
 export function Example() {
   const [email, setEmail] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   return (
     <View style={{ gap: 16 }}>
       <Input label='Email' value={email} onChange={setEmail} />
-      <Checkbox label='Accept terms' />
+      <Checkbox
+        label='Accept terms'
+        description='Required to create an account.'
+        checked={accepted}
+        onCheckedChange={setAccepted}
+      />
       <Button color='primary' variant='solid'>
         Continue
       </Button>
@@ -68,6 +74,12 @@ import { Search } from '@vellira-ui/icons';
 Button icons are React elements from `@vellira-ui/icons`; the component injects
 the current icon color and size. `loading` disables interaction and can replace
 the visible label with `loadingText`.
+
+### Checkbox Notes
+
+Use `description` for settings-style helper text when the checkbox is not
+wrapped in `FormField`. For checkbox rows without a visible label, provide
+`accessibilityLabel`.
 
 ## Testing
 

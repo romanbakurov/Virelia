@@ -4,10 +4,20 @@ import type { NativeTheme } from '../../theme';
 
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
+    container: {
+      gap: theme.tokens.spacing[2],
+    },
+
     wrapper: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: theme.tokens.spacing[3],
+    },
+
+    iconOnly: {
+      justifyContent: 'center',
+      minWidth: 44,
+      minHeight: 44,
     },
 
     disabled: {
@@ -15,14 +25,31 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     box: {
-      width: 22,
-      height: 22,
-      borderWidth: 2,
-      borderColor: theme.components.checkbox.default.border,
-      borderRadius: theme.tokens.radius.md,
+      flexShrink: 0,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.components.checkbox.default.bg,
+      borderWidth: 2,
+      borderColor: theme.components.checkbox.default.border,
+      borderRadius: theme.tokens.radius.xs,
+    },
+
+    boxSm: {
+      width: 16,
+      height: 16,
+      borderWidth: 1,
+    },
+
+    boxMd: {
+      width: 20,
+      height: 20,
+      borderWidth: 2,
+    },
+
+    boxLg: {
+      width: 24,
+      height: 24,
+      borderWidth: 2,
     },
 
     boxChecked: {
@@ -39,24 +66,69 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.checkbox.error.border,
     },
 
+    indeterminateMark: {
+      width: '60%',
+      height: 2,
+      backgroundColor: theme.components.checkbox.checked.default.fg,
+      borderRadius: theme.tokens.radius.full,
+    },
+
     label: {
+      flexShrink: 1,
       fontFamily: theme.tokens.typography.family.regular,
-      fontSize: theme.tokens.typography.size.md,
       color: theme.components.checkbox.default.fg,
+    },
+
+    labelSm: {
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
+
+    labelMd: {
+      fontSize: theme.tokens.typography.size.md,
+      lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    labelLg: {
+      fontSize: theme.tokens.typography.size.lg,
+      lineHeight: theme.tokens.typography.lineHeight.lg,
     },
 
     labelDisabled: {
       color: theme.components.checkbox.disabled.fg,
     },
 
-    container: {
-      gap: theme.tokens.spacing[2],
+    requiredMark: {
+      color: theme.components.checkbox.error.fg,
+    },
+
+    descriptionText: {
+      color: theme.components.formField.description.fg,
+      fontFamily: theme.tokens.typography.family.regular,
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
+
+    descriptionTextDisabled: {
+      color: theme.components.formField.disabled.descriptionFg,
     },
 
     errorText: {
       color: theme.components.checkbox.error.fg,
+      fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.sm,
       lineHeight: theme.tokens.typography.lineHeight.sm,
-      marginLeft: 22 + theme.tokens.spacing[3],
+    },
+
+    errorTextSm: {
+      marginLeft: 16 + theme.tokens.spacing[3],
+    },
+
+    errorTextMd: {
+      marginLeft: 20 + theme.tokens.spacing[3],
+    },
+
+    errorTextLg: {
+      marginLeft: 24 + theme.tokens.spacing[3],
     },
   });

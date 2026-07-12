@@ -392,13 +392,43 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Checkbox'>
-          <Checkbox
-            label='Receive product updates'
-            checked={accepted}
-            onChange={setAccepted}
-          />
-          <Checkbox label='Disabled checked' checked disabled />
-          <Checkbox label='Validation state' error='Required field' />
+          <div style={groupStyle}>
+            <h3 style={subtitleStyle}>Settings row</h3>
+            <Checkbox
+              label='Receive product updates'
+              description='Get release notes and billing notifications.'
+              checked={accepted}
+              onCheckedChange={setAccepted}
+            />
+          </div>
+
+          <div style={groupStyle}>
+            <h3 style={subtitleStyle}>States</h3>
+            <Checkbox label='Unchecked' />
+            <Checkbox label='Checked' defaultChecked />
+            <Checkbox label='Indeterminate' indeterminate />
+            <Checkbox label='Required' required />
+            <Checkbox label='Disabled checked' defaultChecked disabled />
+            <Checkbox
+              label='Validation state'
+              description='This setting is required to continue.'
+              error='Required field'
+            />
+          </div>
+
+          <div style={groupStyle}>
+            <h3 style={subtitleStyle}>Sizes</h3>
+            <div style={rowStyle}>
+              <Checkbox label='Small' size='sm' />
+              <Checkbox label='Medium' size='md' />
+              <Checkbox label='Large' size='lg' />
+            </div>
+          </div>
+
+          <div style={groupStyle}>
+            <h3 style={subtitleStyle}>Accessible without visible label</h3>
+            <Checkbox aria-label='Enable notifications' />
+          </div>
         </Section>
 
         <Section title='RadioGroup'>
