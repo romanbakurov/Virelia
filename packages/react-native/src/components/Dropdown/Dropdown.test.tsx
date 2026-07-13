@@ -282,6 +282,51 @@ describe('Native Dropdown', () => {
     unmount();
   });
 
+  it('keeps item icons and labels in sync with pressed colors', () => {
+    const Icon = ({ color }: { color?: string }) => (
+      <span data-color={color} data-testid='item-icon' />
+    );
+
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        items={[
+          { label: 'Edit', value: 'edit', icon: <Icon /> },
+          { label: 'Delete', value: 'delete', danger: true, icon: <Icon /> },
+        ]}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    act(() => trigger?.click());
+
+    const editItem = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('Edit')
+    );
+    const deleteItem = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('Delete')
+    );
+
+    act(() => {
+      editItem?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      deleteItem?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    });
+
+    const [editIcon, deleteIcon] = Array.from(
+      container.querySelectorAll<HTMLElement>('[data-testid="item-icon"]')
+    );
+
+    expect(editIcon?.dataset.color).toBe(
+      nativeThemes.light.components.dropdown.item.hover.fg
+    );
+    expect(deleteIcon?.dataset.color).toBe(
+      nativeThemes.light.components.dropdown.item.danger.hover.fg
+    );
+
+    unmount();
+  });
+
   it.each([
     ['dark', nativeThemes.dark.components.dropdown.item.default.fg],
     [

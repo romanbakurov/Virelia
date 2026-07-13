@@ -21,16 +21,25 @@ export function DropdownItem({
 }: DropdownItemProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const contentColor = disabled
-    ? theme.components.dropdown.item.disabled.fg
-    : danger
-      ? theme.components.dropdown.item.danger.default.fg
-      : theme.components.dropdown.item.default.fg;
 
   const renderColoredNode = (node: ReactNode, color: string) => {
     if (!isValidElement(node)) return node;
 
     return cloneElement(node as ReactElement<{ color?: string }>, { color });
+  };
+
+  const getContentColor = (pressed: boolean) => {
+    if (disabled) return theme.components.dropdown.item.disabled.fg;
+
+    if (danger) {
+      return pressed
+        ? theme.components.dropdown.item.danger.hover.fg
+        : theme.components.dropdown.item.danger.default.fg;
+    }
+
+    return pressed
+      ? theme.components.dropdown.item.hover.fg
+      : theme.components.dropdown.item.default.fg;
   };
 
   return (
@@ -52,19 +61,22 @@ export function DropdownItem({
         itemStyle,
       ]}
     >
-      {icon ? renderColoredNode(icon, contentColor) : null}
+      {({ pressed }) => {
+        const contentColor = getContentColor(pressed);
 
-      <Text
-        numberOfLines={textWrap === 'wrap' ? undefined : 1}
-        style={[
-          styles.itemText,
-          danger && styles.dangerText,
-          disabled && styles.itemTextDisabled,
-          textStyle,
-        ]}
-      >
-        {label}
-      </Text>
+        return (
+          <>
+            {icon ? renderColoredNode(icon, contentColor) : null}
+
+            <Text
+              numberOfLines={textWrap === 'wrap' ? undefined : 1}
+              style={[styles.itemText, { color: contentColor }, textStyle]}
+            >
+              {label}
+            </Text>
+          </>
+        );
+      }}
     </Pressable>
   );
 }

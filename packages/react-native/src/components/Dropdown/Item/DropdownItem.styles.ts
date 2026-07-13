@@ -30,17 +30,8 @@ export const createStyles = (theme: NativeTheme) =>
     itemText: {
       flex: 1,
       minWidth: 0,
-      color: theme.components.dropdown.item.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.md,
       lineHeight: 24,
-    },
-
-    itemTextDisabled: {
-      color: theme.components.dropdown.item.disabled.fg,
-    },
-
-    dangerText: {
-      color: theme.components.dropdown.item.danger.default.fg,
     },
   });
