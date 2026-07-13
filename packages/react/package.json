@@ -35,7 +35,8 @@
   ],
   "scripts": {
     "clean": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', { recursive: true, force: true })\"",
-    "build": "pnpm run clean && vite build",
+    "build": "pnpm run build:deps && pnpm run clean && vite build",
+    "build:deps": "pnpm --filter @vellira-ui/types build && pnpm --filter @vellira-ui/core build && pnpm --filter @vellira-ui/icons build && pnpm --filter @vellira-ui/tokens build",
     "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
     "test": "vitest run --config vitest.config.ts",
     "test:coverage": "vitest run --coverage"
