@@ -24,19 +24,22 @@ const meta = {
         component: `
 ### Dropdown Component
 
-Contextual action menu opened from a trigger.
+Contextual action menu opened from a trigger. Dropdown is for commands and
+secondary actions, not for selecting a saved form value.
 
 **Features**
 - Text and icon triggers
 - Custom trigger content
 - Disabled items
 - Danger items
+- Controlled and uncontrolled open state
 - Long menus
 - Different trigger styles
 
 ### Usage
 
 Use Dropdown for secondary actions that should not be visible all the time, such as edit, duplicate, delete, or account actions.
+Use Select when the user is choosing a form value from a compact list. Use RadioGroup when a small set of choices should stay visible for comparison.
 
 Correct usage:
 
@@ -59,7 +62,16 @@ Correct usage:
   },
   argTypes: {
     label: {
-      description: 'Accessible label for the dropdown trigger.',
+      description:
+        'Trigger label. Use ariaLabel when the rendered label is not plain text.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+    ariaLabel: {
+      description:
+        'Accessible trigger label used when label is not plain text or the trigger is icon-only.',
       control: 'text',
       table: {
         type: { summary: 'string' },
@@ -128,10 +140,31 @@ Correct usage:
       },
     },
     onSelect: {
-      description: 'Called when a dropdown item is selected.',
+      description: 'Called when a dropdown action item is selected.',
       action: 'selected',
       table: {
         type: { summary: '(value: string) => void' },
+      },
+    },
+    open: {
+      description: 'Controlled open state.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
+    defaultOpen: {
+      description: 'Initial open state for uncontrolled usage.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
+    onOpenChange: {
+      description: 'Called when the dropdown requests an open state change.',
+      action: 'open changed',
+      table: {
+        type: { summary: '(open: boolean) => void' },
       },
     },
     icon: {

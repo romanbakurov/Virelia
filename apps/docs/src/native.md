@@ -72,7 +72,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                              | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`                           | Single selection      |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error` | Selection control     |
-| `Dropdown`   | `items`, `trigger`, `icon`, `onSelect`, `disabled`                                                     | Context menu          |
+| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                              | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                           | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                            | Contextual helper     |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                              | Dialog and overlay    |

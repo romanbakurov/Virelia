@@ -404,6 +404,19 @@ import { Dropdown } from '@vellira-ui/react-native';
 />;
 ```
 
+### Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions such as copy, rename, archive, delete or
+account commands. It reports the selected action through `onSelect`; it should
+not be used as a form value control. Use `Select` when the user chooses one
+saved value from a compact list. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison.
+
+The menu open state can be controlled with `open` and `onOpenChange`, or left
+uncontrolled with `defaultOpen`. Prefer a visible text trigger; for icon-only or
+custom non-text triggers, provide `accessibilityLabel` and add
+`accessibilityHint` when the surrounding screen needs extra guidance.
+
 ### Dropdown Props
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->

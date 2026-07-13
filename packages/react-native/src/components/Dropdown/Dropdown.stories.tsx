@@ -66,7 +66,8 @@ const meta = {
         component: `
 ### Dropdown Component
 
-Contextual action menu for React Native applications.
+Contextual action menu for React Native applications. Dropdown is for commands
+and secondary actions, not for selecting a saved form value.
 
 **Features**
 - Text trigger
@@ -77,10 +78,12 @@ Contextual action menu for React Native applications.
 - Danger actions
 - Long text support
 - Controlled selection callback
+- Controlled and uncontrolled open state
 
 ### Usage
 
 Use Dropdown when secondary actions should be hidden until requested by the user.
+Use Select when the user is choosing a form value from a compact list. Use RadioGroup when a small set of choices should stay visible for comparison.
 
 Correct usage:
 
@@ -120,7 +123,19 @@ Correct usage:
   },
   argTypes: {
     label: {
-      description: 'Accessible label for the dropdown trigger.',
+      description:
+        'Trigger label. Use accessibilityLabel when the rendered label is not plain text.',
+      control: 'text',
+    },
+
+    accessibilityLabel: {
+      description:
+        'Accessible trigger label used when label is not plain text or the trigger is icon-only.',
+      control: 'text',
+    },
+
+    accessibilityHint: {
+      description: 'Additional screen reader hint for the trigger.',
       control: 'text',
     },
 
@@ -155,8 +170,23 @@ Correct usage:
     },
 
     onSelect: {
-      description: 'Called when a menu item is selected.',
+      description: 'Called when a dropdown action item is selected.',
       action: 'selected',
+    },
+
+    open: {
+      description: 'Controlled open state.',
+      control: 'boolean',
+    },
+
+    defaultOpen: {
+      description: 'Initial open state for uncontrolled usage.',
+      control: 'boolean',
+    },
+
+    onOpenChange: {
+      description: 'Called when the dropdown requests an open state change.',
+      action: 'open changed',
     },
 
     style: {
@@ -168,6 +198,10 @@ Correct usage:
     },
 
     itemStyle: {
+      table: { disable: true },
+    },
+
+    contentStyle: {
       table: { disable: true },
     },
 
