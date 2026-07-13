@@ -254,9 +254,69 @@ describe('Dropdown', () => {
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
 
     const menu = document.querySelector('[role="menu"]');
+    expect(menu?.getAttribute('aria-activedescendant')).toBe(
+      `${menu?.id}-item-0`
+    );
+
     pressKey(menu!, 'Escape');
 
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
+
+    unmount();
+  });
+
+  it('opens from ArrowUp with the last enabled item active', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        trigger='Actions'
+        items={[
+          { label: 'Edit', value: 'edit' },
+          { label: 'Archive', value: 'archive', disabled: true },
+          { label: 'Delete', value: 'delete' },
+        ]}
+      />
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+    pressKey(trigger!, 'ArrowUp');
+
+    const menu = document.querySelector('[role="menu"]');
+
+    expect(menu?.getAttribute('aria-activedescendant')).toBe(
+      `${menu?.id}-item-2`
+    );
+
+    unmount();
+  });
+
+  it('keeps stable menu item ids for repeated values', () => {
+    const onSelect = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        trigger='Actions'
+        items={[
+          { label: 'Copy link', value: 'copy' },
+          { label: 'Copy markdown', value: 'copy' },
+        ]}
+        onSelect={onSelect}
+      />
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+    act(() => trigger?.click());
+
+    const menu = document.querySelector('[role="menu"]');
+    const menuItems =
+      document.querySelectorAll<HTMLElement>('[role="menuitem"]');
+
+    expect(menuItems[0]?.id).toBe(`${menu?.id}-item-0`);
+    expect(menuItems[1]?.id).toBe(`${menu?.id}-item-1`);
+
+    act(() => menuItems[1]?.click());
+
+    expect(onSelect).toHaveBeenCalledWith('copy');
 
     unmount();
   });

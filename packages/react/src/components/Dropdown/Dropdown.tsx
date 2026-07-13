@@ -1,4 +1,11 @@
-import { useId, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { useOutsideClick } from '@hooks/useOutsideClick';
@@ -53,50 +60,121 @@ export const Dropdown = ({
     mobileSheetBreakpoint: 640,
   });
 
-  const navigableItems = items.filter(isMenuItem);
+  const navigableEntries = useMemo(
+    () =>
+      items.flatMap((item, itemIndex) =>
+        isMenuItem(item) ? [{ item, itemIndex }] : []
+      ),
+    [items]
+  );
+  const navigableItems = useMemo(
+    () => navigableEntries.map(({ item }) => item),
+    [navigableEntries]
+  );
+  const navigableIndexByItemIndex = useMemo(
+    () =>
+      new Map(
+        navigableEntries.map(({ itemIndex }, navigableIndex) => [
+          itemIndex,
+          navigableIndex,
+        ])
+      ),
+    [navigableEntries]
+  );
   const activeDescendantId =
     isOpen && activeIndex >= 0 ? `${menuId}-item-${activeIndex}` : undefined;
 
-  const getFirstEnabledIndex = () =>
-    navigableItems.findIndex((item) => !item.disabled);
+  const getFirstEnabledIndex = useCallback(
+    () => navigableItems.findIndex((item) => !item.disabled),
+    [navigableItems]
+  );
 
-  const setOpen = (next: boolean) => {
-    if (!isControlled) {
-      setUncontrolledOpen(next);
+  const getLastEnabledIndex = useCallback(() => {
+    for (let index = navigableItems.length - 1; index >= 0; index--) {
+      if (!navigableItems[index]?.disabled) {
+        return index;
+      }
     }
 
-    onOpenChange?.(next);
+    return -1;
+  }, [navigableItems]);
 
-    if (next) {
-      setActiveIndex(getFirstEnabledIndex());
-    } else {
+  const syncActiveIndex = useCallback(
+    (nextOpen: boolean, initialIndex?: number) => {
+      if (nextOpen) {
+        setActiveIndex((currentIndex) => {
+          if (currentIndex >= 0 && !navigableItems[currentIndex]?.disabled) {
+            return currentIndex;
+          }
+
+          return initialIndex ?? getFirstEnabledIndex();
+        });
+
+        return;
+      }
+
       setActiveIndex(-1);
-    }
-  };
+    },
+    [getFirstEnabledIndex, navigableItems]
+  );
 
-  const toggleOpen = () => {
+  useEffect(() => {
+    syncActiveIndex(isOpen);
+  }, [isOpen, syncActiveIndex]);
+
+  const setOpen = useCallback(
+    (next: boolean, initialIndex?: number) => {
+      if (!isControlled) {
+        setUncontrolledOpen(next);
+      }
+
+      onOpenChange?.(next);
+      syncActiveIndex(next, initialIndex);
+    },
+    [isControlled, onOpenChange, syncActiveIndex]
+  );
+
+  const openDropdown = useCallback(
+    (initialIndex = getFirstEnabledIndex()) => {
+      if (disabled) return;
+
+      setOpen(true, initialIndex);
+    },
+    [disabled, getFirstEnabledIndex, setOpen]
+  );
+
+  const toggleOpen = useCallback(() => {
     if (disabled) return;
 
-    setOpen(!isOpen);
-  };
+    if (isOpen) {
+      setOpen(false);
+      return;
+    }
 
-  const close = () => {
+    openDropdown();
+  }, [disabled, isOpen, openDropdown, setOpen]);
+
+  const close = useCallback(() => {
     if (!isOpen) return;
 
     setOpen(false);
-  };
+  }, [isOpen, setOpen]);
 
-  const closeAndRestoreFocus = () => {
+  const closeAndRestoreFocus = useCallback(() => {
     close();
     buttonRef.current?.focus();
-  };
+  }, [close]);
 
   const { onKeyDown } = useKeyboardNavigation({
     activeIndex,
     setActiveIndex,
     items: navigableItems,
     isOpen,
-    onOpen: toggleOpen,
+    onOpen: (event) => {
+      openDropdown(
+        event.key === 'ArrowUp' ? getLastEnabledIndex() : getFirstEnabledIndex()
+      );
+    },
     onSelect: () => {
       const item = navigableItems[activeIndex];
       if (!item || item.disabled) return;
@@ -111,16 +189,22 @@ export const Dropdown = ({
 
   useOutsideClick([buttonRef, menuRef], () => close(), isOpen);
 
-  const triggerRef = (el: HTMLButtonElement | null) => {
-    buttonRef.current = el;
-    setRef(el);
-  };
+  const triggerRef = useCallback(
+    (el: HTMLButtonElement | null) => {
+      buttonRef.current = el;
+      setRef(el);
+    },
+    [setRef]
+  );
 
-  const menuRefCallback = (el: HTMLUListElement | null) => {
-    menuRef.current = el;
-    setFloatingRef(el);
-    el?.focus();
-  };
+  const menuRefCallback = useCallback(
+    (el: HTMLUListElement | null) => {
+      menuRef.current = el;
+      setFloatingRef(el);
+      el?.focus();
+    },
+    [setFloatingRef]
+  );
 
   return (
     <div className={cn(styles.wrapper, className)}>
@@ -171,13 +255,11 @@ export const Dropdown = ({
             }
 
             if (isMenuItem(item)) {
-              const navigableIndex = navigableItems.findIndex(
-                (i) => i === item
-              );
+              const navigableIndex = navigableIndexByItemIndex.get(index) ?? -1;
 
               return (
                 <DropdownItem
-                  key={item.value}
+                  key={`${item.value}-${index}`}
                   id={`${menuId}-item-${navigableIndex}`}
                   {...item}
                   active={activeIndex === navigableIndex}
@@ -190,7 +272,9 @@ export const Dropdown = ({
                     }
                   }}
                   onMouseEnter={() => {
-                    if (navigableIndex < 0 || item.disabled) return;
+                    if (navigableIndex < 0 || item.disabled) {
+                      return;
+                    }
 
                     setActiveIndex(navigableIndex);
                   }}
