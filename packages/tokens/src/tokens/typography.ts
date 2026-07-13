@@ -1,6 +1,6 @@
 export const typography = {
   family: {
-    base: 'KantumruyPro',
+    base: "KantumruyPro, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     extraLight: 'KantumruyPro-ExtraLight',
     regular: 'KantumruyPro-Regular',
     medium: 'KantumruyPro-Medium',
