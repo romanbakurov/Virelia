@@ -59,9 +59,58 @@
   }
 }
 
-.storyInput::placeholder {
-  color: var(--input-default-placeholder);
-  opacity: 1;
+.storyInput {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-md);
+  caret-color: var(--input-default-fg);
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
+
+  &::placeholder {
+    color: var(--input-default-placeholder);
+    opacity: 1;
+  }
+
+  &:not(:disabled, :focus-visible):hover {
+    background: var(--input-hover-bg);
+    border-color: var(--input-hover-border);
+  }
+
+  &:focus-visible {
+    color: var(--input-focus-fg);
+    background-color: var(--input-focus-bg);
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 2px var(--input-focus-ring);
+    caret-color: var(--input-focus-fg);
+  }
+
+  &:disabled {
+    caret-color: var(--input-disabled-fg);
+
+    &::placeholder {
+      color: var(--input-disabled-placeholder);
+    }
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--input-default-fg);
+    caret-color: var(--input-default-fg);
+    box-shadow: 0 0 0 1000px var(--input-default-bg) inset;
+    transition: background-color 9999s ease-out;
+  }
+
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--input-focus-fg);
+    caret-color: var(--input-focus-fg);
+    box-shadow: 0 0 0 1000px var(--input-focus-bg) inset;
+  }
 }
 
 .storyBadge {
