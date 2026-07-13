@@ -9,7 +9,7 @@ import { text } from '../semantic/text.js';
 export const select = {
   trigger: {
     default: {
-      bg: surface.default,
+      bg: surface.subtle,
       fg: text.subtle,
       border: border.default,
     },
@@ -24,9 +24,9 @@ export const select = {
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
-      border: border.muted,
+      border: border.disabled,
     },
 
     placeholder: {

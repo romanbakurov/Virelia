@@ -10,7 +10,7 @@ export const select = {
     default: {
       bg: 'transparent',
       fg: text.subtle,
-      border: border.subtle,
+      border: border.default,
     },
 
     hover: control.hover,
@@ -23,9 +23,9 @@ export const select = {
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
-      border: border.default,
+      border: border.disabled,
     },
 
     placeholder: {
@@ -41,7 +41,7 @@ export const select = {
   dropdown: {
     bg: surface.elevated,
     fg: text.primary,
-    border: border.default,
+    border: border.muted,
   },
 
   option: {

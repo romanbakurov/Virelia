@@ -14,20 +14,33 @@ export const Select = ({
   description,
   id,
   name,
+  'aria-label': ariaLabel,
   value: controlledValue,
   defaultValue,
   onChange,
   options,
   placeholder = 'Select...',
+  noOptionsText = 'No options available',
+  size = 'md',
   required = false,
   disabled = false,
   error,
+  placement = 'bottom-start',
+  matchTriggerWidth = true,
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  onBlur,
+  onFocus,
   className,
+  triggerClassName,
+  dropdownClassName,
 }: SelectProps) => {
   const generatedId = useId();
   const triggerId = id ?? generatedId;
   const listboxId = `${triggerId}-listbox`;
-  const errorId = error ? `${triggerId}-error` : undefined;
+  const hasError = !!error;
+  const errorId = hasError ? `${triggerId}-error` : undefined;
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -38,7 +51,11 @@ export const Select = ({
     onChange,
   });
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useControllableState({
+    value: open,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const selectedOption = useMemo(
@@ -50,7 +67,9 @@ export const Select = ({
 
   const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
     open: isOpen,
-    matchTriggerWidth: true,
+    onOpenChange: setIsOpen,
+    placement,
+    matchTriggerWidth,
     mobileSheetBreakpoint: 640,
   });
 
@@ -109,6 +128,7 @@ export const Select = ({
 
       handleSelect(activeOption.value);
     },
+    getItemText: (option) => option.label,
   });
 
   useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
@@ -147,13 +167,20 @@ export const Select = ({
         required={required}
         listboxId={listboxId}
         activeIndex={activeIndex}
-        ariaLabel={!label ? selectedOption?.label || placeholder : undefined}
-        error={error}
+        ariaLabel={
+          ariaLabel ??
+          (!label ? selectedOption?.label || placeholder : undefined)
+        }
+        error={hasError}
         displayText={selectedOption?.label ?? placeholder}
         isPlaceholder={!hasSelectedOption}
+        size={size}
+        className={triggerClassName}
         buttonRef={setTriggerRef}
         onClick={toggleDropdown}
         onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        onFocus={onFocus}
       />
 
       {name && (
@@ -171,8 +198,10 @@ export const Select = ({
         labelledById={triggerId}
         style={floatingStyles}
         options={options}
+        noOptionsText={noOptionsText}
         selectedValue={selectedValue}
         activeIndex={activeIndex}
+        className={dropdownClassName}
         setDropdownRef={setDropdownRef}
         onSelect={handleSelect}
         onMouseEnter={setActiveIndex}

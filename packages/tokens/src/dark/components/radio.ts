@@ -7,7 +7,7 @@ import { text } from '../semantic/text.js';
 
 export const radio = {
   default: {
-    bg: surface.default,
+    bg: surface.elevated,
     fg: text.primary,
     border: border.default,
   },
@@ -33,9 +33,9 @@ export const radio = {
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
-      border: border.default,
+      border: border.disabled,
     },
   },
 
@@ -51,8 +51,8 @@ export const radio = {
   },
 
   disabled: {
-    bg: surface.subtle,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.default,
+    border: border.disabled,
   },
 } as const;

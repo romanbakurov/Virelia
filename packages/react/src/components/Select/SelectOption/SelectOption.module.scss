@@ -1,8 +1,15 @@
 .option {
-  padding: var(--space-4) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-3) var(--space-3);
   color: var(--select-option-default-fg);
+  font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   background-color: var(--select-option-default-bg);
+  border-radius: var(--radius-sm);
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
@@ -31,4 +38,33 @@
   color: var(--select-option-disabled-fg);
   background-color: var(--select-option-disabled-bg);
   cursor: not-allowed;
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  color: currentcolor;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option {
+    transition: none;
+  }
 }

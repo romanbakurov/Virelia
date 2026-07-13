@@ -28,7 +28,7 @@ export const select = {
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
       border: border.disabled,
     },

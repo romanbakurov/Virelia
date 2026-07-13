@@ -8,6 +8,7 @@ export const surface = {
   elevated: colors.gray[700],
   pressed: colors.gray[900],
   danger: withAlpha(colors.error[800], 0.5),
+  disabled: colors.gray[800],
 
   hover: colors.gray[800],
   active: colors.gray[500],

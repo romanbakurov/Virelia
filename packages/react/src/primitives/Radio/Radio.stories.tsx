@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { RadioGroup } from '../../components/RadioGroup';
 
@@ -67,7 +67,7 @@ Group usage:
     size: 'md',
     disabled: false,
     required: false,
-    onCheckedChange: fn(),
+    onCheckedChange: noop,
   },
   argTypes: {
     value: {

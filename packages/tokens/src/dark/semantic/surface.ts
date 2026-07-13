@@ -4,10 +4,11 @@ import { withAlpha } from '../../utils/color.js';
 export const surface = {
   default: colors.vellira[950],
   muted: colors.vellira[900],
-  subtle: colors.vellira[800],
+  subtle: colors.vellira[850],
   elevated: colors.vellira[700],
   pressed: colors.vellira[600],
   danger: withAlpha(colors.error[800], 0.5),
+  disabled: colors.vellira[800],
 
   hover: colors.vellira[700],
   active: colors.vellira[500],

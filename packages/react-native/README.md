@@ -82,6 +82,35 @@ Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `accessibilityLabel`.
 
+### Select Notes
+
+Use `Select` for one form value from a compact list, `RadioGroup` for a few
+visible choices, and `Dropdown` for action menus. Native `Select` commits the
+picker draft only when the user presses `Done`; `Cancel` and the backdrop close
+without changing the selected value.
+
+```tsx
+import { Select } from '@vellira-ui/react-native';
+import { useState } from 'react';
+
+export function RoleSelect() {
+  const [role, setRole] = useState('editor');
+
+  return (
+    <Select
+      label='Role'
+      value={role}
+      onChange={setRole}
+      options={[
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Viewer', value: 'viewer' },
+      ]}
+    />
+  );
+}
+```
+
 ### FormField Notes
 
 `FormField` is a presentational wrapper for custom native controls. Do not wrap

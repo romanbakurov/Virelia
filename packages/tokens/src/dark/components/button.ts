@@ -64,7 +64,7 @@ export const button = {
         border: action.secondary.muted.border,
       },
       hover: {
-        bg: surface.muted,
+        bg: surface.elevated,
         fg: action.secondary.hover.bg,
         border: action.secondary.hover.border,
       },
@@ -81,7 +81,7 @@ export const button = {
         border: 'transparent',
       },
       hover: {
-        bg: surface.muted,
+        bg: surface.elevated,
         fg: action.secondary.subtle.bg,
         border: 'transparent',
       },
@@ -178,8 +178,8 @@ export const button = {
   },
 
   disabled: {
-    bg: surface.muted,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.muted,
+    border: border.disabled,
   },
 } as const;

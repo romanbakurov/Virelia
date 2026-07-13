@@ -25,6 +25,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Radio } from '../primitives/Radio';
 import { useTheme } from '../theme';
 
 const meta = {
@@ -42,12 +43,6 @@ const selectOptions = [
   { label: 'Product', value: 'product' },
   { label: 'Engineering', value: 'engineering' },
   { label: 'Support', value: 'support' },
-];
-
-const radioOptions = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro' },
-  { label: 'Enterprise', value: 'enterprise' },
 ];
 
 const dropdownItems = [
@@ -425,13 +420,94 @@ function NativeComponentsOverview() {
           </View>
         </Section>
 
+        <Section title='Radio'>
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Radio value='unchecked' label='Unchecked' />
+            <Radio value='checked' label='Checked' defaultChecked />
+            <Radio
+              value='described'
+              label='With description'
+              description='Use inside RadioGroup for exclusive choices.'
+            />
+            <Radio value='disabled' label='Disabled' disabled />
+            <Radio
+              value='error'
+              label='Validation state'
+              error='This option needs attention.'
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Radio value='small' label='Small' size='sm' />
+              <Radio value='medium' label='Medium' size='md' />
+              <Radio value='large' label='Large' size='lg' />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible without visible label
+            </Text>
+            <Radio value='email' accessibilityLabel='Email notifications' />
+          </View>
+        </Section>
+
         <Section title='RadioGroup'>
           <RadioGroup
             label='Plan'
-            options={radioOptions}
+            description='Choose one subscription plan.'
             value={plan}
-            onChange={setPlan}
-          />
+            onValueChange={setPlan}
+          >
+            <Radio value='starter' label='Starter' />
+            <Radio
+              value='pro'
+              label='Pro'
+              description='Best for growing teams.'
+            />
+            <Radio value='enterprise' label='Enterprise' />
+          </RadioGroup>
+
+          <RadioGroup
+            label='Delivery'
+            orientation='horizontal'
+            defaultValue='standard'
+          >
+            <Radio value='standard' label='Standard' />
+            <Radio value='express' label='Express' />
+            <Radio value='pickup' label='Pickup' disabled />
+          </RadioGroup>
+
+          <RadioGroup
+            label='Required plan'
+            required
+            error='Choose one plan to continue.'
+          >
+            <Radio value='starter' label='Starter' />
+            <Radio value='pro' label='Pro' />
+          </RadioGroup>
         </Section>
 
         <Section title='Select'>
@@ -446,7 +522,21 @@ function NativeComponentsOverview() {
             label='Required team'
             options={selectOptions}
             placeholder='Select a team'
+            required
             error='Team is required'
+          />
+          <Select
+            label='Billing team'
+            description='Picker changes are committed with Done.'
+            options={selectOptions}
+            defaultValue='product'
+            accessibilityHint='Choose the team used for invoices.'
+          />
+          <Select
+            label='Archived team'
+            options={[]}
+            placeholder='No archived teams'
+            accessibilityHint='There are no archived teams to choose from.'
           />
         </Section>
 

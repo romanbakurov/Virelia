@@ -327,27 +327,50 @@ import { Select } from '@vellira-ui/react-native';
 />;
 ```
 
+### Select Usage Guidelines
+
+Use `Select` when the user chooses one value from a compact list and the
+choices can live in a picker sheet. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison. Use `Dropdown` for action
+menus, not for form values.
+
+### Select Native Behavior
+
+Native `Select` opens a picker sheet. Changing the picker updates a draft value
+only. The selected value is committed through `Done`; `Cancel` and the backdrop
+close the sheet without changing the current value.
+
+### Select Accessibility Notes
+
+Provide a visible `label` whenever possible. If the UI cannot show a label, pass
+`accessibilityLabel`. Required and invalid states are reflected on the trigger,
+and error text is announced through the field error region. Use
+`accessibilityHint` when the surrounding screen needs more guidance than the
+default picker hint.
+
 ### Select Props
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                      | Required | Description                                    |
-| -------------------- | ------------------------- | -------- | ---------------------------------------------- |
-| `label`              | `string`                  | No       | Visible field label.                           |
-| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
-| `placeholder`        | `string`                  | No       | Text shown when no value is selected.          |
-| `error`              | `string`                  | No       | Error message.                                 |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                         |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                           |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                              |
-| `value`              | `string`                  | No       | Controlled selected value.                     |
-| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage. |
-| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.        |
-| `required`           | `boolean`                 | No       | Marks the field as required.                   |
-| `disabled`           | `boolean`                 | No       | Disables interaction.                          |
-| `description`        | `string`                  | No       | Additional descriptive text.                   |
-| `pickerStyle`        | `StyleProp<TextStyle>`    | No       | —                                              |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.           |
+| Prop                 | Type                      | Required | Description                                       |
+| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
+| `label`              | `string`                  | No       | Visible field label.                              |
+| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.                 |
+| `placeholder`        | `string`                  | No       | Text shown when no value is selected.             |
+| `error`              | `ReactNode`               | No       | Error message.                                    |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                            |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
+| `value`              | `string`                  | No       | Controlled selected value.                        |
+| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage.    |
+| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.           |
+| `required`           | `boolean`                 | No       | Marks the field as required.                      |
+| `disabled`           | `boolean`                 | No       | Disables interaction.                             |
+| `description`        | `string`                  | No       | Additional descriptive text.                      |
+| `pickerStyle`        | `StyleProp<ViewStyle>`    | No       | Extra picker style.                               |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
+| `size`               | `SelectSize`              | No       | Select size.                                      |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -505,7 +528,7 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 | `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.          |
 | `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.    |
 | `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds. |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                     |
+| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.   |
 | `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                  |
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->

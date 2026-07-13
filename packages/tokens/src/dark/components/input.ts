@@ -9,7 +9,7 @@ export const input = {
   default: {
     bg: 'transparent',
     fg: text.primary,
-    border: border.elevated,
+    border: border.default,
     placeholder: text.secondary,
     icon: icons.brand,
   },
@@ -65,6 +65,7 @@ export const input = {
     danger: icons.danger,
     muted: icons.muted,
     inverse: icons.inverse,
+    brand: icons.brand,
   },
 
   clearButton: {

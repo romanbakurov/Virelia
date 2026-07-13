@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Button } from '../../primitives/Button';
 import { Modal } from '../Modal';
@@ -53,7 +53,7 @@ Correct usage:
     },
   },
   args: {
-    onClose: fn(),
+    onClose: noop,
   },
   argTypes: {
     children: {

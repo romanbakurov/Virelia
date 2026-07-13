@@ -6,7 +6,7 @@ import { text } from './text.js';
 
 export const control = {
   default: {
-    bg: surface.default,
+    bg: surface.muted,
     fg: text.primary,
     border: border.muted,
   },
