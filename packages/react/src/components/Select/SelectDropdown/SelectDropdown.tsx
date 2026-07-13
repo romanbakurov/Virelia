@@ -13,6 +13,7 @@ export const SelectDropdown = ({
   setDropdownRef,
   style,
   options,
+  noOptionsText,
   selectedValue,
   activeIndex,
   className,
@@ -31,17 +32,23 @@ export const SelectDropdown = ({
         className={[styles.dropdown, className].filter(Boolean).join(' ')}
         style={style}
       >
-        {options.map((option, index) => (
-          <SelectOption
-            key={option.value}
-            option={option}
-            isSelected={option.value === selectedValue}
-            isActive={index === activeIndex}
-            optionId={`${listboxId}-option-${index}`}
-            onSelect={onSelect}
-            onMouseEnter={() => onMouseEnter(index)}
-          />
-        ))}
+        {options.length ? (
+          options.map((option, index) => (
+            <SelectOption
+              key={option.value}
+              option={option}
+              isSelected={option.value === selectedValue}
+              isActive={index === activeIndex}
+              optionId={`${listboxId}-option-${index}`}
+              onSelect={onSelect}
+              onMouseEnter={() => onMouseEnter(index)}
+            />
+          ))
+        ) : (
+          <li className={styles.empty} role='presentation'>
+            {noOptionsText}
+          </li>
+        )}
       </ul>
     </Portal>
   );

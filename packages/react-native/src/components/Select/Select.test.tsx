@@ -246,6 +246,29 @@ describe('Native Select', () => {
       'Choose the country used for billing'
     );
 
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(
+      document.body
+        .querySelector('[aria-label="Billing country picker actions"]')
+        ?.getAttribute('aria-label')
+    ).toBe('Billing country picker actions');
+    expect(getButtonByText('Cancel')?.getAttribute('aria-label')).toBe(
+      'Cancel selection'
+    );
+    expect(getButtonByText('Cancel')?.getAttribute('aria-description')).toBe(
+      'Closes the picker without changing the selected value'
+    );
+    expect(getButtonByText('Done')?.getAttribute('aria-label')).toBe(
+      'Confirm selection'
+    );
+    expect(getButtonByText('Done')?.getAttribute('aria-description')).toBe(
+      'Applies the highlighted picker value'
+    );
+    expect(document.body.textContent).toContain('Billing country');
+
     unmount();
   });
 

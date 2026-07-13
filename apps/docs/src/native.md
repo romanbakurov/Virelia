@@ -77,6 +77,10 @@ generated reference lives in
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                            | Contextual helper     |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                              | Dialog and overlay    |
 
+Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
+value only; the selection is committed through `Done`, while `Cancel` and the
+backdrop close the sheet without changing the selected value.
+
 ## Button
 
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts

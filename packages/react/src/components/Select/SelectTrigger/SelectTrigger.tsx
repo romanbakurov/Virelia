@@ -22,6 +22,8 @@ export const SelectTrigger = ({
   buttonRef,
   onClick,
   onKeyDown,
+  onBlur,
+  onFocus,
 }: SelectTriggerProps) => {
   return (
     <button
@@ -54,6 +56,8 @@ export const SelectTrigger = ({
       )}
       onClick={onClick}
       onKeyDown={onKeyDown}
+      onBlur={onBlur}
+      onFocus={onFocus}
     >
       <span
         className={cn(styles.value, {

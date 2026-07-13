@@ -105,6 +105,26 @@ describe('Select', () => {
       'country-listbox-option-2'
     );
 
+    pressKey(trigger!, 'Home');
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+
+    pressKey(trigger!, 'End');
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-2'
+    );
+
+    pressKey(trigger!, 'g');
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+
+    pressKey(trigger!, 'End');
+
     pressKey(trigger!, 'Enter');
 
     expect(onChange).toHaveBeenCalledWith('es');
@@ -312,6 +332,87 @@ describe('Select', () => {
       document.querySelector('[data-testid="custom-error"]')?.textContent
     ).toBe('Country required');
     expect(trigger?.className).toContain('error');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports explicit accessibility label and focus handlers', () => {
+    const onFocus = vi.fn();
+    const onBlur = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          aria-label='Billing country'
+          options={options}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
+
+    act(() => {
+      trigger?.focus();
+    });
+
+    expect(onFocus).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      trigger?.blur();
+    });
+
+    expect(onBlur).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('opens an empty state when no options are available', () => {
+    const onChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          name='country'
+          options={[]}
+          noOptionsText='No countries found'
+          onChange={onChange}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    pressKey(trigger!, 'ArrowDown');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.hasAttribute('aria-activedescendant')).toBe(false);
+    expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
+      'No countries found'
+    );
+
+    pressKey(trigger!, 'Enter');
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(new FormData(form).get('country')).toBe('');
 
     act(() => {
       root.unmount();

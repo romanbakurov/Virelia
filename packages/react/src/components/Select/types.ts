@@ -1,6 +1,6 @@
 import type { Placement } from '@floating-ui/react';
 import type { BaseSelectOption, BaseSelectProps } from '@vellira-ui/types';
-import type { ReactNode } from 'react';
+import type { FocusEventHandler, ReactNode } from 'react';
 
 export type SelectOption = BaseSelectOption;
 
@@ -12,8 +12,10 @@ export interface SelectProps extends Omit<
   description?: ReactNode;
   id?: string;
   name?: string;
+  'aria-label'?: string;
   options: SelectOption[];
   error?: ReactNode;
+  noOptionsText?: ReactNode;
   placement?: Extract<
     Placement,
     'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'
@@ -22,6 +24,8 @@ export interface SelectProps extends Omit<
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onBlur?: FocusEventHandler<HTMLButtonElement>;
+  onFocus?: FocusEventHandler<HTMLButtonElement>;
   className?: string;
   triggerClassName?: string;
   dropdownClassName?: string;

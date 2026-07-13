@@ -106,11 +106,27 @@ Single-value select control for choosing from a predefined list.
         type: { summary: 'string' },
       },
     },
+    'aria-label': {
+      description:
+        'Accessible trigger label used when a visible label is not provided.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
     placeholder: {
       description: 'Placeholder text shown when no value is selected.',
       control: 'text',
       table: {
         type: { summary: 'string' },
+      },
+    },
+    noOptionsText: {
+      description: 'Content shown inside the dropdown when options is empty.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+        defaultValue: { summary: 'No options available' },
       },
     },
     value: {
@@ -236,6 +252,20 @@ Single-value select control for choosing from a predefined list.
       action: 'open changed',
       table: {
         type: { summary: '(open: boolean) => void' },
+      },
+    },
+    onFocus: {
+      description: 'Called when the trigger receives focus.',
+      action: 'focused',
+      table: {
+        type: { summary: 'FocusEventHandler<HTMLButtonElement>' },
+      },
+    },
+    onBlur: {
+      description: 'Called when the trigger loses focus.',
+      action: 'blurred',
+      table: {
+        type: { summary: 'FocusEventHandler<HTMLButtonElement>' },
       },
     },
   },
@@ -426,6 +456,19 @@ export const DisabledOption: Story = {
   ),
 };
 
+export const EmptyOptions: Story = {
+  args: {
+    options: [],
+    defaultOpen: true,
+    noOptionsText: 'No countries found',
+  },
+  render: (args) => (
+    <Section title='Empty options'>
+      <SelectWithOpenState {...args} />
+    </Section>
+  ),
+};
+
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
@@ -573,6 +616,19 @@ export const WithFormName: Story = {
   render: (args) => (
     <Section title='Form submission'>
       <Select {...args} />
+    </Section>
+  ),
+};
+
+export const AccessibleWithoutVisibleLabel: Story = {
+  args: {
+    label: undefined,
+    'aria-label': 'Billing country',
+    placeholder: 'Choose billing country',
+  },
+  render: (args) => (
+    <Section title='Accessible without visible label'>
+      <SelectWithState {...args} />
     </Section>
   ),
 };

@@ -14,11 +14,13 @@ export const Select = ({
   description,
   id,
   name,
+  'aria-label': ariaLabel,
   value: controlledValue,
   defaultValue,
   onChange,
   options,
   placeholder = 'Select...',
+  noOptionsText = 'No options available',
   size = 'md',
   required = false,
   disabled = false,
@@ -28,6 +30,8 @@ export const Select = ({
   open,
   defaultOpen = false,
   onOpenChange,
+  onBlur,
+  onFocus,
   className,
   triggerClassName,
   dropdownClassName,
@@ -124,6 +128,7 @@ export const Select = ({
 
       handleSelect(activeOption.value);
     },
+    getItemText: (option) => option.label,
   });
 
   useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
@@ -162,7 +167,10 @@ export const Select = ({
         required={required}
         listboxId={listboxId}
         activeIndex={activeIndex}
-        ariaLabel={!label ? selectedOption?.label || placeholder : undefined}
+        ariaLabel={
+          ariaLabel ??
+          (!label ? selectedOption?.label || placeholder : undefined)
+        }
         error={hasError}
         displayText={selectedOption?.label ?? placeholder}
         isPlaceholder={!hasSelectedOption}
@@ -171,6 +179,8 @@ export const Select = ({
         buttonRef={setTriggerRef}
         onClick={toggleDropdown}
         onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        onFocus={onFocus}
       />
 
       {name && (
@@ -188,6 +198,7 @@ export const Select = ({
         labelledById={triggerId}
         style={floatingStyles}
         options={options}
+        noOptionsText={noOptionsText}
         selectedValue={selectedValue}
         activeIndex={activeIndex}
         className={dropdownClassName}
