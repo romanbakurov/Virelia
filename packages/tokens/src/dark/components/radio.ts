@@ -1,7 +1,7 @@
-import { status } from '../../light/semantic';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
+import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
