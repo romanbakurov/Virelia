@@ -3,6 +3,7 @@ import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Dropdown } from './Dropdown';
 
@@ -242,4 +243,78 @@ describe('Native Dropdown', () => {
 
     unmount();
   });
+
+  it('colors item icons from dropdown item state tokens', () => {
+    const Icon = ({ color }: { color?: string }) => (
+      <span data-color={color} data-testid='item-icon' />
+    );
+
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        items={[
+          { label: 'Edit', value: 'edit', icon: <Icon /> },
+          { label: 'Delete', value: 'delete', danger: true, icon: <Icon /> },
+          {
+            label: 'Archive',
+            value: 'archive',
+            disabled: true,
+            icon: <Icon />,
+          },
+        ]}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    act(() => trigger?.click());
+
+    const icons = Array.from(
+      container.querySelectorAll<HTMLElement>('[data-testid="item-icon"]')
+    );
+
+    expect(icons.map((icon) => icon.dataset.color)).toEqual([
+      nativeThemes.light.components.dropdown.item.default.fg,
+      nativeThemes.light.components.dropdown.item.danger.default.fg,
+      nativeThemes.light.components.dropdown.item.disabled.fg,
+    ]);
+
+    unmount();
+  });
+
+  it.each([
+    ['dark', nativeThemes.dark.components.dropdown.item.default.fg],
+    [
+      'highContrast',
+      nativeThemes.highContrast.components.dropdown.item.default.fg,
+    ],
+  ] as const)(
+    'uses readable action icon colors in the %s theme',
+    (themeName, expectedColor) => {
+      const Icon = ({ color }: { color?: string }) => (
+        <span data-color={color} data-testid='item-icon' />
+      );
+
+      const { container, unmount } = render(
+        <ThemeProvider defaultTheme={themeName}>
+          <Dropdown
+            label='Actions'
+            items={[{ label: 'Edit', value: 'edit', icon: <Icon /> }]}
+          />
+        </ThemeProvider>
+      );
+
+      const trigger =
+        container.querySelector<HTMLButtonElement>('[role="button"]');
+      act(() => trigger?.click());
+
+      const icon = container.querySelector<HTMLElement>(
+        '[data-testid="item-icon"]'
+      );
+
+      expect(icon?.dataset.color).toBe(expectedColor);
+
+      unmount();
+    }
+  );
 });
