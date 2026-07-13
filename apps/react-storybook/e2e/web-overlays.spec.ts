@@ -67,7 +67,7 @@ test.describe('web overlays', () => {
   test('Select keeps focus on the trigger, closes on Escape, portals listbox, and matches trigger width', async ({
     page,
   }) => {
-    await openStory(page, 'components-select--basic');
+    await openStory(page, 'components-select--default');
 
     const trigger = page.getByRole('combobox', { name: 'Country' });
     await trigger.focus();
