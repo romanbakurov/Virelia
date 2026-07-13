@@ -219,7 +219,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 function CustomLabelExample() {
-  const { theme } = useTheme();
+  const { theme, themeName } = useTheme();
+  const isLightTheme = themeName === 'light';
 
   return (
     <Section title='CustomLabel'>
@@ -240,13 +241,17 @@ function CustomLabelExample() {
               style={[
                 storyStyles.badge,
                 {
-                  backgroundColor: theme.semantic.surface.active,
+                  backgroundColor: isLightTheme
+                    ? theme.colors.primary[600]
+                    : theme.colors.primary[400],
                 },
               ]}
             >
               <Text
                 style={{
-                  color: theme.semantic.text.secondary,
+                  color: isLightTheme
+                    ? theme.colors.primary[50]
+                    : theme.colors.primary[950],
                   fontSize: theme.tokens.typography.size.xs,
                 }}
               >

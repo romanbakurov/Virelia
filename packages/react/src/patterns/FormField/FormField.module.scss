@@ -63,3 +63,14 @@
   color: var(--input-default-placeholder);
   opacity: 1;
 }
+
+.storyBadge {
+  color: var(--color-primary-50);
+  background: var(--color-primary-600);
+}
+
+[data-vellira-theme='dark'] .storyBadge,
+[data-vellira-theme='high-contrast'] .storyBadge {
+  color: var(--color-primary-950);
+  background: var(--color-primary-400);
+}

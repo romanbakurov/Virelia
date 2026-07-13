@@ -12,9 +12,9 @@ import styles from './FormField.module.scss';
 const inputStyle = {
   width: '100%',
   padding: 'var(--space-3) var(--space-4)',
-  color: 'var(--color-gray-900)',
+  color: 'var(--input-default-fg)',
   font: 'inherit',
-  backgroundColor: 'transparent',
+  backgroundColor: 'var(--input-default-bg)',
   border: '1px solid var(--input-default-border)',
   borderRadius: 'var(--radius-md)',
   outline: 'none',
@@ -27,7 +27,7 @@ const errorInputStyle = {
 
 const disabledInputStyle = {
   ...inputStyle,
-  color: 'var(--color-gray-500)',
+  color: 'var(--input-disabled-fg)',
   backgroundColor: 'var(--input-disabled-bg)',
   cursor: 'not-allowed',
   opacity: 0.6,
@@ -67,10 +67,8 @@ const customLabelStyle = {
 
 const badgeStyle = {
   padding: '2px 6px',
-  color: 'var(--text-secondary)',
   fontSize: 12,
   lineHeight: '16px',
-  background: 'var(--surface-active)',
   borderRadius: 'var(--radius-full)',
 } satisfies CSSProperties;
 
@@ -432,7 +430,9 @@ function CustomLabelExample() {
       label={
         <span style={customLabelStyle}>
           Workspace
-          <span style={badgeStyle}>Public</span>
+          <span className={styles.storyBadge} style={badgeStyle}>
+            Public
+          </span>
         </span>
       }
       required
