@@ -51,6 +51,8 @@ const roleFromAccessibility = (role?: string) => {
   if (role === 'radiogroup') return 'radiogroup';
   if (role === 'tab') return 'tab';
   if (role === 'tablist') return 'tablist';
+  if (role === 'toolbar') return 'toolbar';
+  if (role === 'header') return 'heading';
   return undefined;
 };
 
@@ -176,6 +178,7 @@ export const Text = forwardRef<HTMLSpanElement, NativeProps>(
       children,
       style,
       testID,
+      accessibilityRole,
       accessibilityLabel,
       accessibilityHint,
       accessibilityLiveRegion,
@@ -187,6 +190,7 @@ export const Text = forwardRef<HTMLSpanElement, NativeProps>(
     <span
       ref={ref}
       data-testid={testID}
+      role={roleFromAccessibility(accessibilityRole)}
       style={flattenStyle(style)}
       {...accessibilityProps({
         accessibilityLabel,

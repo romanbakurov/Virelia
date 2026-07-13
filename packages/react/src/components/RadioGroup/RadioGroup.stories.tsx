@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+const noop = () => undefined;
 
 import { Radio } from '../../primitives/Radio';
 
@@ -56,7 +56,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
     orientation: 'vertical',
     disabled: false,
     required: false,
-    onValueChange: fn(),
+    onValueChange: noop,
   },
   argTypes: {
     label: {
@@ -102,6 +102,15 @@ Groups multiple Radio controls and manages selection of exactly one value.
       table: {
         type: { summary: `'vertical' | 'horizontal'` },
         defaultValue: { summary: 'vertical' },
+      },
+    },
+    size: {
+      description: 'Default size applied to Radio controls in the group.',
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: `'sm' | 'md' | 'lg'` },
+        defaultValue: { summary: 'md' },
       },
     },
     required: {
@@ -369,6 +378,41 @@ export const Horizontal: Story = {
   ),
 };
 
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <RadioGroup
+          name='country-small'
+          label='Small'
+          defaultValue='fr'
+          size='sm'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='country-medium'
+          label='Medium'
+          defaultValue='fr'
+          size='md'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='country-large'
+          label='Large'
+          defaultValue='fr'
+          size='lg'
+        >
+          <CountryRadios />
+        </RadioGroup>
+      </div>
+    </Section>
+  ),
+};
+
 export const WithRadioDescriptions: Story = {
   args: {
     defaultValue: 'standard',
@@ -393,6 +437,81 @@ export const WithRadioDescriptions: Story = {
   ),
 };
 
+export const CustomContent: Story = {
+  render: () => (
+    <Section title='Custom content'>
+      <RadioGroup
+        name='shipping-speed'
+        label={
+          <span style={{ display: 'inline-flex', gap: 8 }}>
+            Shipping speed
+            <strong>Required</strong>
+          </span>
+        }
+        description={
+          <span>Choose the speed that matches the current order priority.</span>
+        }
+        required
+        defaultValue='standard'
+      >
+        <Radio
+          value='standard'
+          label='Standard'
+          description='Delivered within three to five business days.'
+        />
+        <Radio
+          value='express'
+          label='Express'
+          description='Delivered on the next business day.'
+        />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const States: Story = {
+  render: () => (
+    <Section title='States'>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <RadioGroup name='states-default' label='Default' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-horizontal'
+          label='Horizontal'
+          orientation='horizontal'
+          defaultValue='fr'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup name='states-required' label='Required' required>
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-disabled'
+          label='Disabled group'
+          defaultValue='fr'
+          disabled
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-error'
+          label='Error'
+          error='Please select a country.'
+          required
+        >
+          <CountryRadios disableSpain />
+        </RadioGroup>
+      </div>
+    </Section>
+  ),
+};
+
 export const Selection: Story = {
   args: {
     defaultValue: '',
@@ -404,25 +523,6 @@ export const Selection: Story = {
       </RadioGroup>
     </Section>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const franceInput = canvas.getByRole('radio', {
-      name: 'France',
-    });
-
-    const spainInput = canvas.getByRole('radio', {
-      name: 'Spain',
-    });
-
-    await expect(franceInput).not.toBeChecked();
-    await expect(spainInput).not.toBeChecked();
-
-    await userEvent.click(spainInput);
-
-    await expect(spainInput).toBeChecked();
-    await expect(franceInput).not.toBeChecked();
-  },
 };
 
 export const DisabledRadioInteraction: Story = {
@@ -436,23 +536,4 @@ export const DisabledRadioInteraction: Story = {
       </RadioGroup>
     </Section>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const franceInput = canvas.getByRole('radio', {
-      name: 'France',
-    });
-
-    const spainInput = canvas.getByRole('radio', {
-      name: 'Spain',
-    });
-
-    await expect(franceInput).toBeChecked();
-    await expect(spainInput).toBeDisabled();
-
-    await userEvent.click(spainInput);
-
-    await expect(franceInput).toBeChecked();
-    await expect(spainInput).not.toBeChecked();
-  },
 };

@@ -1,15 +1,23 @@
+import type { BaseFormFieldProps } from './formField.js';
+
+export type SelectSize = 'sm' | 'md' | 'lg';
+
 export interface BaseSelectOption {
+  label: string;
   value: string;
   disabled?: boolean;
 }
 
-export interface BaseSelectProps {
+export interface BaseSelectProps extends Pick<
+  BaseFormFieldProps,
+  'label' | 'description' | 'error' | 'required' | 'disabled'
+> {
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
   options: BaseSelectOption[];
-  required?: boolean;
-  disabled?: boolean;
+  placeholder?: string;
+  size?: SelectSize;
 }
 
 export interface BaseSelectDropdownProps {

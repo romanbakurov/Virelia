@@ -8,9 +8,12 @@
 }
 
 .input {
+  appearance: none;
   width: 100%;
   padding: var(--space-3) var(--space-4);
   color: var(--input-default-fg);
+  letter-spacing: inherit;
+  font-family: var(--font-family-base);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-md);
@@ -22,11 +25,14 @@
     border-color 0.2s,
     background-color 0.2s,
     box-shadow 0.2s;
-  font-family: var(--font-family-base);
   outline: none;
 
   &::placeholder {
     color: var(--input-default-placeholder);
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
   }
 
   &:focus-visible {
@@ -170,7 +176,7 @@
 }
 
 .toneDefault {
-  color: var(--input-icon-default);
+  color: var(--input-icon-brand);
 }
 
 .tonePrimary {

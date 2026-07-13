@@ -71,11 +71,23 @@ generated reference lives in
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                      | controlled or uncontrolled    |
-| `Select`     | `options`, `value`, `defaultValue`, `onChange`, `placeholder`, `error`                           | controlled or uncontrolled    |
+| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`  | controlled or uncontrolled    |
 | `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `textWrap`, `onSelect`                     | open state managed internally |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                          | open state managed internally |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                          | controlled                    |
+
+## Select Usage Guidelines
+
+Use `Select` for a single form value from a compact list. Use `RadioGroup` when
+there are only a few options and users should compare them without opening an
+overlay. Use `Dropdown` for contextual actions, not saved form values.
+
+For accessibility, prefer a visible `label`; if no label can be rendered, pass
+`aria-label`. Select connects validation content through `aria-describedby`,
+sets invalid state when `error` is present, supports required state, and exposes
+keyboard behavior for Enter, Space, Arrow keys, Home, End, typeahead search,
+Escape and Tab.
 
 ## Button
 

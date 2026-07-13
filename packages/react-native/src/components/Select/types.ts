@@ -1,19 +1,21 @@
 import type { BaseSelectOption, BaseSelectProps } from '@vellira-ui/types';
+import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-export interface SelectOption extends BaseSelectOption {
-  label: string;
-}
+export type SelectOption = BaseSelectOption;
 
-export interface SelectProps extends Omit<BaseSelectProps, 'options'> {
+export interface SelectProps extends Omit<
+  BaseSelectProps,
+  'options' | 'error'
+> {
   label?: string;
   description?: string;
   options: SelectOption[];
-  placeholder?: string;
-  error?: string;
+  error?: ReactNode;
   style?: StyleProp<ViewStyle>;
   triggerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  pickerStyle?: StyleProp<TextStyle>;
+  pickerStyle?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
 }

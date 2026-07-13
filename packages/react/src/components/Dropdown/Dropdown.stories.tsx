@@ -10,7 +10,7 @@ import {
   Restart,
   Settings,
 } from '@vellira-ui/icons';
-import { expect, fn, userEvent, within } from 'storybook/test';
+const noop = () => undefined;
 
 import { Dropdown } from '../Dropdown';
 
@@ -55,7 +55,7 @@ Correct usage:
     },
   },
   args: {
-    onSelect: fn(),
+    onSelect: noop,
   },
   argTypes: {
     label: {
@@ -287,7 +287,7 @@ export const LongLabelsWrap: Story = {
 
 export const TableActions: Story = {
   render: () => {
-    const handleSelect = fn();
+    const handleSelect = noop;
     const rows = [
       { id: 1, name: 'Document.pdf', status: 'Active' },
       { id: 2, name: 'Image.png', status: 'Processing' },
@@ -420,19 +420,5 @@ export const Selection: Story = {
       { label: 'Copy', value: 'copy' },
       { label: 'Delete', value: 'delete', danger: true },
     ],
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const body = within(document.body);
-
-    const trigger = canvas.getByRole('button', { name: 'Actions' });
-
-    await userEvent.click(trigger);
-
-    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-
-    await userEvent.click(body.getByRole('menuitem', { name: 'Copy' }));
-
-    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   },
 };

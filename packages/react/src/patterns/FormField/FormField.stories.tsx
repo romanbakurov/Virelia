@@ -544,6 +544,37 @@ function CompleteExampleDemo() {
   );
 }
 
+function CustomClassesExample() {
+  const id = useId();
+
+  return (
+    <FormField
+      id={id}
+      label='Repository'
+      description='Class slots allow apps to integrate with local CSS modules.'
+      error='Repository name is already taken.'
+      required
+      className={styles.storyCustomRoot}
+      labelClassName={styles.storyCustomLabel}
+      controlClassName={styles.storyCustomControl}
+      descriptionClassName={styles.storyCustomDescription}
+      errorClassName={styles.storyCustomError}
+    >
+      <input
+        id={id}
+        name='repository'
+        autoComplete='off'
+        placeholder='vellira'
+        required
+        aria-invalid
+        aria-describedby={`${id}-description ${id}-error`}
+        style={errorInputStyle}
+        className={styles.storyInput}
+      />
+    </FormField>
+  );
+}
+
 function StatesExample() {
   const defaultId = useId();
   const descriptionId = useId();
@@ -706,6 +737,14 @@ export const CompleteExample: Story = {
   render: () => (
     <Section title='Complete example'>
       <CompleteExampleDemo />
+    </Section>
+  ),
+};
+
+export const CustomClasses: Story = {
+  render: () => (
+    <Section title='Custom classes'>
+      <CustomClassesExample />
     </Section>
   ),
 };

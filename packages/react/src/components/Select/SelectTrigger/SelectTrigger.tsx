@@ -17,9 +17,13 @@ export const SelectTrigger = ({
   error,
   displayText,
   isPlaceholder,
+  size = 'md',
+  className,
   buttonRef,
   onClick,
   onKeyDown,
+  onBlur,
+  onFocus,
 }: SelectTriggerProps) => {
   return (
     <button
@@ -33,6 +37,7 @@ export const SelectTrigger = ({
       aria-expanded={isOpen}
       aria-haspopup='listbox'
       aria-label={ariaLabel}
+      aria-invalid={error || undefined}
       aria-controls={isOpen ? listboxId : undefined}
       aria-describedby={errorId}
       aria-activedescendant={
@@ -40,12 +45,19 @@ export const SelectTrigger = ({
           ? `${listboxId}-option-${activeIndex}`
           : undefined
       }
-      className={cn(styles.control, {
-        [styles.error]: !!error,
-        [styles.disabled]: disabled,
-      })}
+      className={cn(
+        styles.control,
+        styles[size],
+        {
+          [styles.error]: !!error,
+          [styles.disabled]: disabled,
+        },
+        className
+      )}
       onClick={onClick}
       onKeyDown={onKeyDown}
+      onBlur={onBlur}
+      onFocus={onFocus}
     >
       <span
         className={cn(styles.value, {
