@@ -66,6 +66,7 @@ export const input = {
     danger: icons.danger,
     muted: icons.muted,
     inverse: icons.inverse,
+    brand: icons.brand,
   },
 
   clearButton: {

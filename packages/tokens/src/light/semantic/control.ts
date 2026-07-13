@@ -25,14 +25,14 @@ export const control = {
 
   selected: {
     default: {
-      bg: colors.primary[700],
+      bg: colors.primary[600],
       fg: text.onInverse,
-      border: colors.primary[700],
+      border: colors.primary[600],
     },
 
     hover: {
       bg: colors.primary[800],
-      fg: text.onInverse,
+      fg: text.brand,
       border: colors.primary[800],
     },
 
