@@ -102,11 +102,12 @@ Use this page as a visual overview of the component library.
       <h3>Dropdown</h3>
       <a href="https://storybook.vellira.dev/?path=/docs/components-dropdown--docs">Storybook</a>
     </header>
+    <p>Contextual actions for commands. Use Select or RadioGroup for saved form values.</p>
     <div class="docs-state-grid">
-      <div><span>Default</span><button class="docs-button docs-button-secondary">Actions</button></div>
-      <div><span>Open</span><div class="docs-menu docs-menu-static"><div>Edit</div><div>Duplicate</div><div class="docs-menu-danger">Delete</div></div></div>
-      <div><span>Danger item</span><div class="docs-menu docs-menu-static"><div>Archive</div><div class="docs-menu-danger">Delete</div></div></div>
-      <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Actions</button></div>
+      <div><span>Trigger</span><button class="docs-button docs-button-secondary">Report actions</button></div>
+      <div><span>Open actions</span><div class="docs-menu docs-menu-static"><div>Open settings</div><div>Download report</div><div>Filter view</div><div class="docs-menu-danger">Delete report</div></div></div>
+      <div><span>Icon trigger</span><button class="docs-button docs-button-secondary" aria-label="More report actions">•••</button></div>
+      <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Disabled actions</button></div>
     </div>
   </section>
 
@@ -253,11 +254,14 @@ export function OverlayExample() {
 
   return (
     <Dropdown
-      label='Open menu'
+      label='Report actions'
+      trigger='Report actions'
       items={[
-        { label: 'Copy', value: 'copy' },
-        { label: 'Rename', value: 'rename' },
-        { label: 'Delete', value: 'delete', danger: true },
+        { type: 'group', label: 'Report actions' },
+        { label: 'Open settings', value: 'settings' },
+        { label: 'Download report', value: 'download' },
+        { type: 'separator' },
+        { label: 'Delete report', value: 'delete', danger: true },
       ]}
       onSelect={handleAction}
     />
