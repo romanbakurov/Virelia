@@ -220,23 +220,32 @@ Layout helper for labels, errors, and custom field controls.
 ```tsx
 import { FormField, Input } from '@vellira-ui/react';
 
-<FormField label='Email' error={error}>
-  <Input />
+<FormField id='email' label='Email' error={error}>
+  <Input id='email' />
 </FormField>;
 ```
 
+`FormField` uses `id` to connect the visible label and generated
+`{id}-description` / `{id}-error` content with the control. Pass the same `id`
+to the wrapped control and add `aria-describedby`, `aria-invalid`, `required`,
+and `disabled` to that control when needed. The root wrapper does not receive the
+`id`, which avoids duplicate DOM ids.
+
 <!-- api-docgen:start web.FormFieldProps.FormField -->
 
-| Prop          | Type        | Required | Description                                    |
-| ------------- | ----------- | -------- | ---------------------------------------------- |
-| `id`          | `string`    | No       | Id used to connect the label with the control. |
-| `label`       | `string`    | No       | Field label.                                   |
-| `error`       | `string`    | No       | Error message.                                 |
-| `children`    | `ReactNode` | Yes      | Field control or custom content.               |
-| `required`    | `boolean`   | No       | Marks the field as required.                   |
-| `disabled`    | `boolean`   | No       | Renders the disabled field state.              |
-| `description` | `string`    | No       | Additional descriptive text.                   |
-| `className`   | `string`    | No       | Extra CSS class for the root element.          |
+| Prop                   | Type        | Required | Description                                         |
+| ---------------------- | ----------- | -------- | --------------------------------------------------- |
+| `id`                   | `string`    | No       | ID used to connect the label with the control.      |
+| `label`                | `ReactNode` | No       | Field label.                                        |
+| `description`          | `ReactNode` | No       | Additional descriptive content.                     |
+| `error`                | `ReactNode` | No       | Error message or custom validation content.         |
+| `children`             | `ReactNode` | Yes      | Field control or custom content.                    |
+| `required`             | `boolean`   | No       | Marks the field as required.                        |
+| `disabled`             | `boolean`   | No       | Renders the disabled field state.                   |
+| `controlClassName`     | `string`    | No       | Extra CSS class for the control wrapper.            |
+| `labelClassName`       | `string`    | No       | Extra CSS class for the label element.              |
+| `descriptionClassName` | `string`    | No       | Extra CSS class for the description element.        |
+| `errorClassName`       | `string`    | No       | Extra CSS class for the validation message element. |
 
 <!-- api-docgen:end web.FormFieldProps.FormField -->
 
@@ -245,52 +254,59 @@ import { FormField, Input } from '@vellira-ui/react';
 Single-selection group with controlled and uncontrolled modes.
 
 ```tsx
-import { RadioGroup } from '@vellira-ui/react';
+import { Radio, RadioGroup } from '@vellira-ui/react';
 
 <RadioGroup
   name='plan'
   label='Plan'
   defaultValue='basic'
   orientation='vertical'
-  options={[
-    { value: 'basic', label: 'Basic' },
-    { value: 'pro', label: 'Pro' },
-  ]}
-/>;
+>
+  <Radio value='basic' label='Basic' />
+  <Radio value='pro' label='Pro' />
+</RadioGroup>;
 ```
 
 ### RadioGroup Props
 
 <!-- api-docgen:start web.RadioGroupProps.RadioGroupProps -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `label`        | `string`                  | No       | Group label.                          |
-| `name`         | `string`                  | Yes      | Radio input name.                     |
-| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.        |
-| `error`        | `string`                  | No       | Error message.                        |
-| `orientation`  | `Orientation`             | No       | Layout direction.                     |
-| `className`    | `string`                  | No       | Extra CSS class for the root element. |
-| `value`        | `string`                  | No       | Controlled selected value.            |
-| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when selection changes.        |
-| `required`     | `boolean`                 | No       | Marks the group as required.          |
-| `disabled`     | `boolean`                 | No       | Disables the whole group.             |
-| `description`  | `string`                  | No       | Additional descriptive text.          |
+| Prop            | Type                          | Required | Description                           |
+| --------------- | ----------------------------- | -------- | ------------------------------------- |
+| `label`         | `ReactNode`                   | No       | Group label.                          |
+| `name`          | `string`                      | No       | Radio input name.                     |
+| `children`      | `ReactNode`                   | No       | Radio controls rendered by the group. |
+| `error`         | `string`                      | No       | Error message.                        |
+| `orientation`   | `RadioGroupOrientation`       | No       | Layout direction.                     |
+| `value`         | `string`                      | No       | Controlled selected value.            |
+| `defaultValue`  | `string`                      | No       | Initial value for uncontrolled usage. |
+| `onValueChange` | `(value: RadioValue) => void` | No       | Called when selection changes.        |
+| `required`      | `boolean`                     | No       | Marks the group as required.          |
+| `disabled`      | `boolean`                     | No       | Disables the whole group.             |
+| `description`   | `ReactNode`                   | No       | Additional descriptive text.          |
+| `size`          | `RadioSize`                   | No       | Size inherited by child radios.       |
 
 <!-- api-docgen:end web.RadioGroupProps.RadioGroupProps -->
 
-### RadioOption
+### Radio Props
 
-<!-- api-docgen:start web.RadioOption.RadioOption -->
+<!-- api-docgen:start web.RadioProps.RadioProps -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop               | Type                         | Required | Description                                           |
+| ------------------ | ---------------------------- | -------- | ----------------------------------------------------- |
+| `value`            | `string`                     | Yes      | Value submitted by the radio control.                 |
+| `label`            | `ReactNode`                  | No       | Text label displayed next to the radio control.       |
+| `description`      | `ReactNode`                  | No       | Additional supporting text displayed below the label. |
+| `checked`          | `boolean`                    | No       | Current checked state for controlled usage.           |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.         |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the standalone checked state changes.     |
+| `disabled`         | `boolean`                    | No       | Disables user interaction.                            |
+| `required`         | `boolean`                    | No       | Marks the radio control as required.                  |
+| `error`            | `string`                     | No       | Validation error message displayed under the radio.   |
+| `size`             | `RadioSize`                  | No       | Radio control size.                                   |
+| `wrapperClassName` | `string`                     | No       | Class name applied to the clickable label wrapper.    |
 
-<!-- api-docgen:end web.RadioOption.RadioOption -->
+<!-- api-docgen:end web.RadioProps.RadioProps -->
 
 ## Select
 

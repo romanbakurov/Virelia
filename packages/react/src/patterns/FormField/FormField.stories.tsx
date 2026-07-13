@@ -112,7 +112,7 @@ Use FormField when a custom control needs consistent field layout and validation
 
 \`\`\`tsx
 <FormField
-  controlId='email'
+  id='email'
   label='Email'
   description='Used for account notifications.'
   error={emailError}
@@ -131,10 +131,9 @@ Use FormField when a custom control needs consistent field layout and validation
 
 ### ID behavior
 
-- \`id\` is applied to the FormField root.
-- \`controlId\` associates the label and supporting content with the control.
+- \`id\` associates the label and supporting content with the control.
 - FormField does not inject props into children.
-- Pass \`controlId\` to FormField and the same \`id\` to the control.
+- Pass \`id\` to FormField and the same \`id\` to the control.
 - Add \`aria-describedby\`, \`aria-invalid\`, \`required\`, and \`disabled\` to the control when needed.
 `,
       },
@@ -147,14 +146,6 @@ Use FormField when a custom control needs consistent field layout and validation
   },
   argTypes: {
     id: {
-      description: 'ID applied to the FormField root container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-
-    controlId: {
       description:
         'ID used to associate the field label and supporting content with the form control.',
       control: 'text',
@@ -261,18 +252,18 @@ type FormFieldStoryProps = ComponentProps<typeof FormField>;
 
 function PlaygroundExample({
   children: _children,
-  controlId,
+  id,
   description,
   error,
   ...args
 }: FormFieldStoryProps) {
   const generatedId = useId();
-  const resolvedControlId = controlId?.trim() || generatedId;
+  const resolvedId = id?.trim() || generatedId;
 
   const describedBy =
     [
-      description ? `${resolvedControlId}-description` : undefined,
-      error ? `${resolvedControlId}-error` : undefined,
+      description ? `${resolvedId}-description` : undefined,
+      error ? `${resolvedId}-error` : undefined,
     ]
       .filter(Boolean)
       .join(' ') || undefined;
@@ -280,12 +271,12 @@ function PlaygroundExample({
   return (
     <FormField
       {...args}
-      controlId={resolvedControlId}
+      id={resolvedId}
       description={description}
       error={error}
     >
       <input
-        id={resolvedControlId}
+        id={resolvedId}
         name='storybook-form-field'
         className={styles.storyInput}
         autoComplete='off'
@@ -307,12 +298,12 @@ function PlaygroundExample({
 }
 
 function WithInputExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
-    <FormField controlId={controlId} label='Email'>
+    <FormField id={id} label='Email'>
       <input
-        id={controlId}
+        id={id}
         name='email'
         type='email'
         autoComplete='email'
@@ -325,20 +316,20 @@ function WithInputExample() {
 }
 
 function WithDescriptionExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label='Username'
       description='Use 3–20 characters. Letters, numbers, and underscores are allowed.'
     >
       <input
-        id={controlId}
+        id={id}
         name='username'
         autoComplete='username'
         placeholder='alex_johnson'
-        aria-describedby={`${controlId}-description`}
+        aria-describedby={`${id}-description`}
         style={inputStyle}
         className={styles.storyInput}
       />
@@ -347,12 +338,12 @@ function WithDescriptionExample() {
 }
 
 function RequiredExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
-    <FormField controlId={controlId} label='Full name' required>
+    <FormField id={id} label='Full name' required>
       <input
-        id={controlId}
+        id={id}
         type='text'
         name='full-name'
         autoComplete='name'
@@ -366,22 +357,22 @@ function RequiredExample() {
 }
 
 function WithErrorExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label='Password'
       error='Password must be at least 8 characters.'
     >
       <input
-        id={controlId}
+        id={id}
         name='password'
         type='password'
         autoComplete='current-password'
         placeholder='Enter password'
         aria-invalid
-        aria-describedby={`${controlId}-error`}
+        aria-describedby={`${id}-error`}
         style={errorInputStyle}
         className={styles.storyInput}
       />
@@ -390,22 +381,22 @@ function WithErrorExample() {
 }
 
 function DisabledExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label='Email'
       description='This field is currently unavailable.'
       disabled
     >
       <input
-        id={controlId}
+        id={id}
         type='email'
         name='disabled-email'
         autoComplete='email'
         placeholder='name@company.com'
-        aria-describedby={`${controlId}-description`}
+        aria-describedby={`${id}-description`}
         disabled
         style={disabledInputStyle}
         className={styles.storyInput}
@@ -415,29 +406,29 @@ function DisabledExample() {
 }
 
 function WithCheckboxExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       description='This example uses a custom Vellira control.'
     >
       <Checkbox
-        id={controlId}
+        id={id}
         name='agreement'
         label='Accept terms and conditions'
-        aria-describedby={`${controlId}-description`}
+        aria-describedby={`${id}-description`}
       />
     </FormField>
   );
 }
 
 function CustomLabelExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label={
         <span style={customLabelStyle}>
           Workspace
@@ -447,7 +438,7 @@ function CustomLabelExample() {
       required
     >
       <input
-        id={controlId}
+        id={id}
         name='workspace'
         autoComplete='off'
         placeholder='vellira-design'
@@ -460,11 +451,11 @@ function CustomLabelExample() {
 }
 
 function CustomDescriptionExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label='Password'
       description={
         <div style={{ display: 'grid', gap: 'var(--space-1)' }}>
@@ -479,12 +470,12 @@ function CustomDescriptionExample() {
       }
     >
       <input
-        id={controlId}
+        id={id}
         type='password'
         name='new-password'
         autoComplete='new-password'
         placeholder='Enter password'
-        aria-describedby={`${controlId}-description`}
+        aria-describedby={`${id}-description`}
         style={inputStyle}
         className={styles.storyInput}
       />
@@ -493,11 +484,11 @@ function CustomDescriptionExample() {
 }
 
 function CustomErrorExample() {
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      controlId={controlId}
+      id={id}
       label='Email'
       error={
         <div
@@ -512,13 +503,13 @@ function CustomErrorExample() {
       }
     >
       <input
-        id={controlId}
+        id={id}
         type='email'
         name='registered-email'
         autoComplete='email'
         placeholder='name@company.com'
         aria-invalid
-        aria-describedby={`${controlId}-error`}
+        aria-describedby={`${id}-error`}
         style={errorInputStyle}
         className={styles.storyInput}
       />
@@ -527,26 +518,24 @@ function CustomErrorExample() {
 }
 
 function CompleteExampleDemo() {
-  const rootId = useId();
-  const controlId = useId();
+  const id = useId();
 
   return (
     <FormField
-      id={rootId}
-      controlId={controlId}
+      id={id}
       label='Email'
       description='We will use this email for account notifications.'
       required
       error='Email is required.'
     >
       <input
-        id={controlId}
+        id={id}
         type='email'
         name='complete-email'
         autoComplete='email'
         placeholder='name@company.com'
         aria-invalid
-        aria-describedby={`${controlId}-description ${controlId}-error`}
+        aria-describedby={`${id}-description ${id}-error`}
         required
         style={errorInputStyle}
         className={styles.storyInput}
@@ -564,7 +553,7 @@ function StatesExample() {
 
   return (
     <div style={columnStyle}>
-      <FormField controlId={defaultId} label='Default'>
+      <FormField id={defaultId} label='Default'>
         <input
           id={defaultId}
           name='state-default'
@@ -576,7 +565,7 @@ function StatesExample() {
       </FormField>
 
       <FormField
-        controlId={descriptionId}
+        id={descriptionId}
         label='With description'
         description='Additional supporting information.'
       >
@@ -591,7 +580,7 @@ function StatesExample() {
         />
       </FormField>
 
-      <FormField controlId={requiredId} label='Required' required>
+      <FormField id={requiredId} label='Required' required>
         <input
           id={requiredId}
           name='state-required'
@@ -603,7 +592,7 @@ function StatesExample() {
         />
       </FormField>
 
-      <FormField controlId={disabledId} label='Disabled' disabled>
+      <FormField id={disabledId} label='Disabled' disabled>
         <input
           id={disabledId}
           name='state-disabled'
@@ -615,11 +604,7 @@ function StatesExample() {
         />
       </FormField>
 
-      <FormField
-        controlId={errorId}
-        label='Error'
-        error='This field is invalid.'
-      >
+      <FormField id={errorId} label='Error' error='This field is invalid.'>
         <input
           id={errorId}
           name='state-error'

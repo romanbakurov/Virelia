@@ -22,7 +22,11 @@ export function FormField({
   const styles = useThemeStyles(createStyles);
 
   return (
-    <View {...rest} style={[styles.root, style]}>
+    <View
+      {...rest}
+      accessibilityState={disabled ? { disabled: true } : undefined}
+      style={[styles.root, style]}
+    >
       {label &&
         (typeof label === 'string' || typeof label === 'number' ? (
           <Text

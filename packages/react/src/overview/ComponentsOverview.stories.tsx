@@ -112,7 +112,7 @@ function WorkspaceFormFieldDemo() {
 
   return (
     <FormField
-      controlId={workspaceId}
+      id={workspaceId}
       label='Workspace'
       description='Used in URLs and notifications.'
       required

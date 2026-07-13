@@ -8,10 +8,12 @@ import { FormField } from './FormField';
 
 function DemoControl({
   placeholder,
+  accessibilityLabel,
   error = false,
   disabled = false,
 }: {
   placeholder: string;
+  accessibilityLabel?: string;
   error?: boolean;
   disabled?: boolean;
 }) {
@@ -19,6 +21,7 @@ function DemoControl({
 
   return (
     <TextInput
+      accessibilityLabel={accessibilityLabel ?? placeholder}
       editable={!disabled}
       placeholder={placeholder}
       placeholderTextColor={
@@ -85,13 +88,16 @@ Components that already include FormField internally, such as Input, Select and 
   description='Visible to other users.'
   required
 >
-  <TextInput placeholder='vellira-design' />
+  <TextInput
+    accessibilityLabel='Workspace'
+    placeholder='vellira-design'
+  />
 </FormField>
 \`\`\`
 
 ### Accessibility
 
-FormField provides visual field structure. The wrapped control remains responsible for its own accessibility role, label, state and interaction behavior.
+FormField provides visual field structure and announces error content with a polite live region. The wrapped control remains responsible for its own accessibility role, accessibility label, disabled/editable state and interaction behavior.
 `,
       },
     },

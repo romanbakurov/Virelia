@@ -10,6 +10,7 @@ This package contains iOS-inspired native components built with React Native `St
 - Checkbox
 - Input
 - FormField
+- Radio
 - RadioGroup
 - Select
 - Dropdown
@@ -80,6 +81,15 @@ the visible label with `loadingText`.
 Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `accessibilityLabel`.
+
+### FormField Notes
+
+`FormField` is a presentational wrapper for custom native controls. Do not wrap
+components that already render their own field chrome, such as `Input`, `Select`
+or `RadioGroup`. The wrapped control should provide its own
+`accessibilityLabel`, role, disabled/editable state and interaction behavior.
+`FormField` only provides layout, text styling, required mark, disabled root
+state and polite error announcement.
 
 ## Testing
 

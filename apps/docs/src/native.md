@@ -19,7 +19,13 @@ pnpm add react react-native
 ## Example
 
 ```tsx
-import { Button, Checkbox, Input, RadioGroup } from '@vellira-ui/react-native';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Radio,
+  RadioGroup,
+} from '@vellira-ui/react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -34,14 +40,11 @@ export function PreferencesScreen() {
         onChange={setEmail}
         placeholder='name@example.com'
       />
-      <RadioGroup
-        label='Theme'
-        options={[
-          { label: 'System', value: 'system' },
-          { label: 'Light', value: 'light' },
-          { label: 'Dark', value: 'dark' },
-        ]}
-      />
+      <RadioGroup label='Theme'>
+        <Radio value='system' label='System' />
+        <Radio value='light' label='Light' />
+        <Radio value='dark' label='Dark' />
+      </RadioGroup>
       <Checkbox
         label='Send product updates'
         description='Receive release notes and billing updates.'
@@ -66,7 +69,8 @@ generated reference lives in
 | `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error` | Boolean input         |
 | `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                    | Text input            |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`             | Labels and validation |
-| `RadioGroup` | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `error` | Single selection      |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`       | Radio option          |
+| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`    | Single selection      |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `error` | Selection control     |
 | `Dropdown`   | `items`, `trigger`, `icon`, `onSelect`, `disabled`                              | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`    | Tab navigation        |
@@ -100,6 +104,14 @@ export function ButtonExamples() {
 }
 ```
 
+## FormField
+
+Native `FormField` is a presentational wrapper for custom controls. Use it for
+layout, label text, descriptions, required marks and validation text. Do not wrap
+`Input`, `Select` or `RadioGroup`, because those components already include
+their own field structure. The child control must keep its own
+`accessibilityLabel`, role, disabled/editable state and interaction behavior.
+
 ## Controlled and Uncontrolled
 
 Most form components support both controlled and uncontrolled usage.
@@ -107,7 +119,7 @@ Most form components support both controlled and uncontrolled usage.
 Use controlled props when application state owns the value.
 
 ```tsx
-import { Checkbox, RadioGroup } from '@vellira-ui/react-native';
+import { Checkbox, Radio, RadioGroup } from '@vellira-ui/react-native';
 import { useState } from 'react';
 
 export function ControlledPreferences() {
@@ -122,16 +134,11 @@ export function ControlledPreferences() {
         label='Send product updates'
         description='Receive release notes and billing updates.'
       />
-      <RadioGroup
-        label='Theme'
-        value={theme}
-        onChange={setTheme}
-        options={[
-          { label: 'System', value: 'system' },
-          { label: 'Light', value: 'light' },
-          { label: 'Dark', value: 'dark' },
-        ]}
-      />
+      <RadioGroup label='Theme' value={theme} onValueChange={setTheme}>
+        <Radio value='system' label='System' />
+        <Radio value='light' label='Light' />
+        <Radio value='dark' label='Dark' />
+      </RadioGroup>
     </>
   );
 }

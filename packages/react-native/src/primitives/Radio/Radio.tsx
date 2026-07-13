@@ -102,7 +102,12 @@ export const Radio = forwardRef<View, RadioProps>(
     const controlMarginTop = (typographySize.labelLineHeight - controlSize) / 2;
 
     useEffect(() => {
-      if (__DEV__ && !label && !accessibilityLabel) {
+      if (
+        typeof __DEV__ !== 'undefined' &&
+        __DEV__ &&
+        !label &&
+        !accessibilityLabel
+      ) {
         console.warn(
           'Radio requires either a visible label or accessibilityLabel.'
         );

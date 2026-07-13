@@ -6,7 +6,6 @@ import styles from './FormField.module.scss';
 
 export const FormField = ({
   id,
-  controlId,
   label,
   description,
   error,
@@ -20,21 +19,20 @@ export const FormField = ({
   errorClassName,
   ...rest
 }: FormFieldProps) => {
-  const descriptionId =
-    description && controlId ? `${controlId}-description` : undefined;
+  const descriptionId = description && id ? `${id}-description` : undefined;
 
-  const errorId = error && controlId ? `${controlId}-error` : undefined;
+  const errorId = error && id ? `${id}-error` : undefined;
 
   return (
     <div
       {...rest}
-      id={id}
+      aria-disabled={disabled || undefined}
       className={cn(styles.wrapper, disabled && styles.disabled, className)}
       data-disabled={disabled || undefined}
       data-invalid={Boolean(error) || undefined}
     >
       {label && (
-        <label htmlFor={controlId} className={cn(styles.label, labelClassName)}>
+        <label htmlFor={id} className={cn(styles.label, labelClassName)}>
           {label}
 
           {required && (

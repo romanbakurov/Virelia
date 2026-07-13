@@ -23,4 +23,6 @@ export type { CheckboxProps } from './primitives/Checkbox';
 export { Checkbox } from './primitives/Checkbox';
 export type { InputProps } from './primitives/Input';
 export { Input } from './primitives/Input';
+export type { RadioProps } from './primitives/Radio';
+export { Radio } from './primitives/Radio';
 export * from './theme';
