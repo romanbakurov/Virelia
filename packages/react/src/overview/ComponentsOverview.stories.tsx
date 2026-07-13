@@ -26,8 +26,6 @@ import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
 import { Radio } from '../primitives/Radio';
 
-import formFieldStyles from '../patterns/FormField/FormField.module.scss';
-
 const meta = {
   title: 'Overview/Web',
   parameters: {
@@ -121,7 +119,6 @@ function WorkspaceFormFieldDemo() {
         <input
           id={workspaceId}
           name='workspace'
-          className={formFieldStyles.storyInput}
           autoComplete='organization'
           placeholder='vellira-design'
           required
@@ -169,7 +166,6 @@ function WorkspaceFormFieldDemo() {
         <input
           id={projectId}
           name='project'
-          className={formFieldStyles.storyInput}
           autoComplete='off'
           placeholder='launch-plan'
           aria-describedby={`${projectId}-description`}
@@ -194,7 +190,6 @@ function WorkspaceFormFieldDemo() {
         <input
           id={errorId}
           name='slug'
-          className={formFieldStyles.storyInput}
           autoComplete='off'
           placeholder='Launch Plan'
           aria-invalid
@@ -221,7 +216,6 @@ function WorkspaceFormFieldDemo() {
         <input
           id={disabledId}
           name='organization'
-          className={formFieldStyles.storyInput}
           autoComplete='organization'
           placeholder='Vellira'
           disabled
