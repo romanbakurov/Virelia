@@ -168,6 +168,7 @@ const publicSymbolContracts = {
     'BaseSelectOptionProps',
     'BaseSelectProps',
     'BaseSelectTriggerProps',
+    'SelectSize',
     'BaseTabProps',
     'BaseTabsListProps',
     'BaseTabsPanelProps',

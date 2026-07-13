@@ -19,15 +19,24 @@ export const Select = ({
   onChange,
   options,
   placeholder = 'Select...',
+  size = 'md',
   required = false,
   disabled = false,
   error,
+  placement = 'bottom-start',
+  matchTriggerWidth = true,
+  open,
+  defaultOpen = false,
+  onOpenChange,
   className,
+  triggerClassName,
+  dropdownClassName,
 }: SelectProps) => {
   const generatedId = useId();
   const triggerId = id ?? generatedId;
   const listboxId = `${triggerId}-listbox`;
-  const errorId = error ? `${triggerId}-error` : undefined;
+  const hasError = !!error;
+  const errorId = hasError ? `${triggerId}-error` : undefined;
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
@@ -38,7 +47,11 @@ export const Select = ({
     onChange,
   });
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useControllableState({
+    value: open,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const selectedOption = useMemo(
@@ -50,7 +63,9 @@ export const Select = ({
 
   const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
     open: isOpen,
-    matchTriggerWidth: true,
+    onOpenChange: setIsOpen,
+    placement,
+    matchTriggerWidth,
     mobileSheetBreakpoint: 640,
   });
 
@@ -148,9 +163,11 @@ export const Select = ({
         listboxId={listboxId}
         activeIndex={activeIndex}
         ariaLabel={!label ? selectedOption?.label || placeholder : undefined}
-        error={error}
+        error={hasError}
         displayText={selectedOption?.label ?? placeholder}
         isPlaceholder={!hasSelectedOption}
+        size={size}
+        className={triggerClassName}
         buttonRef={setTriggerRef}
         onClick={toggleDropdown}
         onKeyDown={onKeyDown}
@@ -173,6 +190,7 @@ export const Select = ({
         options={options}
         selectedValue={selectedValue}
         activeIndex={activeIndex}
+        className={dropdownClassName}
         setDropdownRef={setDropdownRef}
         onSelect={handleSelect}
         onMouseEnter={setActiveIndex}

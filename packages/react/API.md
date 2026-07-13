@@ -331,21 +331,29 @@ import { Select } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.SelectProps.SelectProps -->
 
-| Prop           | Type                      | Required | Description                                    |
-| -------------- | ------------------------- | -------- | ---------------------------------------------- |
-| `label`        | `string`                  | No       | Visible field label.                           |
-| `id`           | `string`                  | No       | Trigger id.                                    |
-| `name`         | `string`                  | No       | Field name.                                    |
-| `options`      | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
-| `placeholder`  | `string`                  | No       | Text shown when no value is selected.          |
-| `error`        | `string`                  | No       | Error message.                                 |
-| `className`    | `string`                  | No       | Extra CSS class for the root element.          |
-| `value`        | `string`                  | No       | Controlled selected value.                     |
-| `defaultValue` | `string`                  | No       | Initial selected value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when the user selects an option.        |
-| `required`     | `boolean`                 | No       | Marks the field as required.                   |
-| `disabled`     | `boolean`                 | No       | Disables interaction.                          |
-| `description`  | `string`                  | No       | Additional descriptive text.                   |
+| Prop                | Type                                                         | Required | Description                                      |
+| ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------ |
+| `label`             | `ReactNode`                                                  | No       | Visible field label.                             |
+| `id`                | `string`                                                     | No       | Trigger id.                                      |
+| `name`              | `string`                                                     | No       | Field name.                                      |
+| `options`           | `SelectOption[]`                                             | Yes      | Options rendered in the dropdown.                |
+| `placeholder`       | `string`                                                     | No       | Text shown when no value is selected.            |
+| `error`             | `ReactNode`                                                  | No       | Error message.                                   |
+| `className`         | `string`                                                     | No       | Extra CSS class for the root element.            |
+| `value`             | `string`                                                     | No       | Controlled selected value.                       |
+| `defaultValue`      | `string`                                                     | No       | Initial selected value for uncontrolled usage.   |
+| `onChange`          | `(value: string) => void`                                    | No       | Called when the user selects an option.          |
+| `required`          | `boolean`                                                    | No       | Marks the field as required.                     |
+| `disabled`          | `boolean`                                                    | No       | Disables interaction.                            |
+| `description`       | `ReactNode`                                                  | No       | Additional descriptive text.                     |
+| `placement`         | `'top-start' \| 'top-end' \| 'bottom-start' \| 'bottom-end'` | No       | Preferred dropdown placement.                    |
+| `matchTriggerWidth` | `boolean`                                                    | No       | Matches the dropdown width to the trigger width. |
+| `open`              | `boolean`                                                    | No       | Controlled open state.                           |
+| `defaultOpen`       | `boolean`                                                    | No       | Initial uncontrolled open state.                 |
+| `onOpenChange`      | `(open: boolean) => void`                                    | No       | Called when the open state changes.              |
+| `triggerClassName`  | `string`                                                     | No       | Extra CSS class for the trigger element.         |
+| `dropdownClassName` | `string`                                                     | No       | Extra CSS class for the dropdown element.        |
+| `size`              | `SelectSize`                                                 | No       | Select size.                                     |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 
@@ -500,10 +508,10 @@ import { Tooltip, Button } from '@vellira-ui/react';
 | `children`     | `ReactNode`               | Yes      | Content rendered inside the component. |
 | `maxWidth`     | `string \| number`        | No       | —                                      |
 | `className`    | `string`                  | No       | Extra CSS class for the root element.  |
-| `placement`    | `FloatingPlacement`       | No       | —                                      |
+| `placement`    | `FloatingPlacement`       | No       | Preferred dropdown placement.          |
 | `disabled`     | `boolean`                 | No       | Disables interaction.                  |
 | `delay`        | `TooltipDelay`            | No       | —                                      |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                      |
+| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.    |
 
 <!-- api-docgen:end web.TooltipProps.Tooltip -->
 

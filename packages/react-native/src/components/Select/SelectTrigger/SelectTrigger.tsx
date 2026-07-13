@@ -10,6 +10,7 @@ export function SelectTrigger({
   displayText,
   isPlaceholder,
   isOpen,
+  size = 'md',
   disabled = false,
   hasError = false,
   accessibilityLabel,
@@ -19,6 +20,11 @@ export function SelectTrigger({
 }: SelectTriggerProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const textSizeStyle = {
+    sm: styles.textSm,
+    md: styles.textMd,
+    lg: styles.textLg,
+  }[size];
 
   return (
     <Pressable
@@ -33,6 +39,7 @@ export function SelectTrigger({
       onPress={onPress}
       style={[
         styles.trigger,
+        styles[size],
         isOpen && styles.triggerOpen,
         hasError && styles.triggerError,
         disabled && styles.triggerDisabled,
@@ -43,6 +50,7 @@ export function SelectTrigger({
         numberOfLines={1}
         style={[
           styles.text,
+          textSizeStyle,
           isPlaceholder && styles.placeholder,
           disabled && styles.textDisabled,
           textStyle,

@@ -240,4 +240,81 @@ describe('Select', () => {
       root.unmount();
     });
   });
+
+  it('supports controlled open state and class props', () => {
+    const onOpenChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          options={options}
+          open
+          onOpenChange={onOpenChange}
+          placement='top-end'
+          matchTriggerWidth={false}
+          size='lg'
+          triggerClassName='custom-trigger'
+          dropdownClassName='custom-dropdown'
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+    const listbox = document.querySelector('[role="listbox"]');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.className).toContain('custom-trigger');
+    expect(trigger?.className).toContain('lg');
+    expect(listbox?.className).toContain('custom-dropdown');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports defaultOpen and custom error content', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          options={options}
+          defaultOpen
+          error={<span data-testid='custom-error'>Country required</span>}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger?.getAttribute('aria-describedby')).toBe('country-error');
+    expect(trigger?.getAttribute('aria-invalid')).toBe('true');
+    expect(
+      document.querySelector('[data-testid="custom-error"]')?.textContent
+    ).toBe('Country required');
+    expect(trigger?.className).toContain('error');
+
+    act(() => {
+      root.unmount();
+    });
+  });
 });

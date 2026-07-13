@@ -64,16 +64,30 @@ const fallbackDescriptions: Record<string, string> = {
   defaultTheme: 'Initial theme for uncontrolled usage.',
   onThemeChange: 'Called whenever the active theme changes.',
   className: 'Extra CSS class for the root element.',
+  defaultOpen: 'Initial uncontrolled open state.',
   description: 'Additional descriptive text.',
   disabled: 'Disables interaction.',
+  dropdownClassName: 'Extra CSS class for the dropdown element.',
+  matchTriggerWidth: 'Matches the dropdown width to the trigger width.',
+  onOpenChange: 'Called when the open state changes.',
+  open: 'Controlled open state.',
+  placement: 'Preferred dropdown placement.',
   required: 'Marks the field as required.',
   placeholder: 'Placeholder text.',
+  pickerStyle: 'Extra picker style.',
   clearable: 'Shows a clear action when the input has a value.',
+  triggerClassName: 'Extra CSS class for the trigger element.',
 };
 
 const descriptionOverrides: Record<string, Record<string, string>> = {
   'web.InputProps.Input': {
     className: 'Extra CSS class for the input element.',
+  },
+  'web.SelectProps.SelectProps': {
+    size: 'Select size.',
+  },
+  'native.SelectProps.SelectProps': {
+    size: 'Select size.',
   },
 };
 
@@ -499,6 +513,7 @@ function normalizeType(type: string) {
     .replace(/import\(["'][^"']*\/@types\+react@[^"']*\/index["']\)\./g, '')
     .replace(/import\("react"\)\./g, '')
     .replace(/import\("react-native"\)\./g, '')
+    .replace(/\bBaseSelectOption\[\]/g, 'SelectOption[]')
     .replace(/Readonly<(.+)>/g, '$1')
     .replace(/\s+/g, ' ')
     .trim();

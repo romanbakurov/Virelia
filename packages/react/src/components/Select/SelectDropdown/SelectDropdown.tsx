@@ -15,6 +15,7 @@ export const SelectDropdown = ({
   options,
   selectedValue,
   activeIndex,
+  className,
   onSelect,
   onMouseEnter,
 }: SelectDropdownProps) => {
@@ -27,7 +28,7 @@ export const SelectDropdown = ({
         id={listboxId}
         role='listbox'
         aria-labelledby={labelledById}
-        className={styles.dropdown}
+        className={[styles.dropdown, className].filter(Boolean).join(' ')}
         style={style}
       >
         {options.map((option, index) => (

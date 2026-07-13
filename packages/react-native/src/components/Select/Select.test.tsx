@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
@@ -209,6 +210,49 @@ describe('Native Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.body.textContent).not.toContain('Cancel');
     expect(container.textContent).toContain('Required');
+
+    unmount();
+  });
+
+  it('supports error content and style props', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        error={<Text testID='custom-error'>Required</Text>}
+        size='lg'
+        style={{ maxWidth: 360 }}
+        triggerStyle={{ maxWidth: 300 }}
+        textStyle={{ fontWeight: '700' }}
+        pickerStyle={{ minHeight: 160 }}
+      />
+    );
+
+    const field = container.firstElementChild as HTMLElement | null;
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    const triggerText = trigger?.querySelector('span');
+
+    expect(field?.style.maxWidth).toBe('360px');
+    expect(trigger?.style.minHeight).toBe('52px');
+    expect(trigger?.style.maxWidth).toBe('300px');
+    expect(triggerText?.style.fontSize).toBe('20px');
+    expect(triggerText?.style.lineHeight).toBe('28');
+    expect(triggerText?.style.fontWeight).toBe('700');
+    expect(container.textContent).toContain('Required');
+    expect(
+      container.querySelector('[data-testid="custom-error"]')
+    ).toBeTruthy();
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector<HTMLElement>(
+      '[data-testid="native-picker"]'
+    );
+
+    expect(picker?.style.minHeight).toBe('160px');
 
     unmount();
   });

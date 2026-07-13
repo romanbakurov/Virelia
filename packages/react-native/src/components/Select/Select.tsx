@@ -19,6 +19,7 @@ export function Select({
   onChange,
   options,
   placeholder = 'Select...',
+  size = 'md',
   required = false,
   disabled = false,
   error,
@@ -41,6 +42,7 @@ export function Select({
   const [draftValue, setDraftValue] = useState(selectedValue);
 
   const selectedOption = options.find((o) => o.value === selectedValue);
+  const hasError = !!error;
 
   const resolvedLabel =
     accessibilityLabel ??
@@ -88,8 +90,9 @@ export function Select({
         displayText={selectedOption?.label ?? placeholder}
         isPlaceholder={!selectedOption}
         isOpen={isOpen}
+        size={size}
         disabled={disabled}
-        hasError={!!error}
+        hasError={hasError}
         accessibilityLabel={resolvedLabel}
         triggerStyle={triggerStyle}
         textStyle={textStyle}
@@ -107,13 +110,23 @@ export function Select({
 
           <View style={styles.sheet}>
             <View style={styles.toolbar}>
-              <Pressable onPress={closePicker} hitSlop={8}>
+              <Pressable
+                onPress={closePicker}
+                hitSlop={8}
+                style={styles.toolbarAction}
+              >
                 <Text style={styles.cancelText}>Cancel</Text>
               </Pressable>
 
-              <Text style={styles.title}>{resolvedLabel}</Text>
+              <Text style={styles.title} numberOfLines={1}>
+                {resolvedLabel}
+              </Text>
 
-              <Pressable onPress={confirmPicker} hitSlop={8}>
+              <Pressable
+                onPress={confirmPicker}
+                hitSlop={8}
+                style={styles.toolbarAction}
+              >
                 <Text style={styles.doneText}>Done</Text>
               </Pressable>
             </View>

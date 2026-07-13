@@ -336,7 +336,7 @@ import { Select } from '@vellira-ui/react-native';
 | `label`              | `string`                  | No       | Visible field label.                           |
 | `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
 | `placeholder`        | `string`                  | No       | Text shown when no value is selected.          |
-| `error`              | `string`                  | No       | Error message.                                 |
+| `error`              | `ReactNode`               | No       | Error message.                                 |
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                         |
 | `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                           |
 | `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                              |
@@ -346,8 +346,9 @@ import { Select } from '@vellira-ui/react-native';
 | `required`           | `boolean`                 | No       | Marks the field as required.                   |
 | `disabled`           | `boolean`                 | No       | Disables interaction.                          |
 | `description`        | `string`                  | No       | Additional descriptive text.                   |
-| `pickerStyle`        | `StyleProp<TextStyle>`    | No       | —                                              |
+| `pickerStyle`        | `StyleProp<ViewStyle>`    | No       | Extra picker style.                            |
 | `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.           |
+| `size`               | `SelectSize`              | No       | Select size.                                   |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -505,7 +506,7 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 | `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.          |
 | `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.    |
 | `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds. |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                     |
+| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.   |
 | `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                  |
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->
