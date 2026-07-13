@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Copy, Delete, DropdownMenu, Edit, Restart } from '@vellira-ui/icons';
+import {
+  Copy,
+  Delete,
+  DropdownMenu,
+  Edit,
+  Restart,
+  Settings,
+} from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
@@ -33,19 +40,29 @@ function DropdownIcon() {
   );
 }
 
-function TriggerText({ children }: { children: string }) {
+function CustomTriggerContent() {
   const { theme } = useTheme();
+  const color = theme.components.dropdown.trigger.default.fg;
 
   return (
-    <Text
+    <View
       style={{
-        color: theme.components.dropdown.trigger.default.fg,
-        fontFamily: theme.tokens.typography.family.regular,
-        fontSize: theme.tokens.typography.size.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
       }}
     >
-      {children}
-    </Text>
+      <Settings size={16} color={color} />
+      <Text
+        style={{
+          color,
+          fontFamily: theme.tokens.typography.family.regular,
+          fontSize: theme.tokens.typography.size.md,
+        }}
+      >
+        Account actions
+      </Text>
+    </View>
   );
 }
 
@@ -324,14 +341,14 @@ export const IconOnly: Story = {
   ),
 };
 
-export const TextTrigger: Story = {
+export const CustomTrigger: Story = {
   args: {
     label: 'Account actions',
-    trigger: <TriggerText>Account actions</TriggerText>,
+    trigger: <CustomTriggerContent />,
     showArrow: true,
   },
   render: (args) => (
-    <Section title='TextTrigger'>
+    <Section title='CustomTrigger'>
       <Dropdown {...args} />
     </Section>
   ),
