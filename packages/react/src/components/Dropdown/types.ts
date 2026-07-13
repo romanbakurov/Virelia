@@ -8,33 +8,46 @@ import type {
 } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
-export interface DropdownMenuItem extends BaseDropdownMenuItem {
+export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
+  label: ReactNode;
   icon?: ReactNode;
-  danger?: boolean;
   shortcut?: string;
   textWrap?: TextWrap;
 }
 
-export type DropdownGroup = BaseDropdownGroup;
+export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {
+  label: ReactNode;
+}
+
 export type DropdownSeparator = BaseDropdownSeparator;
+
 export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
 
 export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
-  label?: string;
+  label?: ReactNode;
+  ariaLabel?: string;
+
   trigger?: ReactNode;
   icon?: ReactNode;
   arrowIcon?: ReactNode;
+
   items: DropdownItem[];
+
   placement?: Placement;
-  className?: string;
-  rotateAngle?: number;
   matchTriggerWidth?: boolean;
+
   showArrow?: boolean;
+  rotateAngle?: number;
   textWrap?: TextWrap;
+
+  className?: string;
+  triggerClassName?: string;
+  contentClassName?: string;
+  itemClassName?: string;
 }
 
 export const isMenuItem = (item: DropdownItem): item is DropdownMenuItem =>
-  item.type !== 'group' && item.type !== 'separator';
+  item.type === undefined || item.type === 'item';
 
 export const isGroup = (item: DropdownItem): item is DropdownGroup =>
   item.type === 'group';

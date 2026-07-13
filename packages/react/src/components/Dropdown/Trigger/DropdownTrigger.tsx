@@ -20,6 +20,7 @@ export const DropdownTrigger = forwardRef<
       showArrow = true,
       rotateAngle = 90,
       label,
+      ariaLabel,
       className,
       ...buttonProps
     },
@@ -32,7 +33,13 @@ export const DropdownTrigger = forwardRef<
     const isOnlyIcon = hasIcon && !hasContent;
     const shouldShowArrow = showArrow && hasContent;
     const arrow = arrowIcon ?? <ChevronDown />;
-    const ariaLabel = isOnlyIcon ? (label ?? 'Open menu') : undefined;
+    const resolvedAriaLabel =
+      ariaLabel ??
+      (isOnlyIcon
+        ? typeof label === 'string'
+          ? label
+          : 'Open menu'
+        : undefined);
 
     return (
       <button
@@ -47,7 +54,7 @@ export const DropdownTrigger = forwardRef<
           },
           className
         )}
-        aria-label={ariaLabel}
+        aria-label={resolvedAriaLabel}
         aria-expanded={isOpen}
         aria-haspopup='menu'
         style={

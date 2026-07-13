@@ -408,20 +408,27 @@ import { Dropdown } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->
 
-| Prop           | Type                      | Required | Description                                     |
-| -------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`        | `string`                  | No       | Default trigger label.                          |
-| `trigger`      | `ReactNode`               | No       | Custom trigger content.                         |
-| `items`        | `DropdownItem[]`          | Yes      | Menu model.                                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                               |
-| `triggerStyle` | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                            |
-| `itemStyle`    | `StyleProp<ViewStyle>`    | No       | Extra item style.                               |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra text style.                               |
-| `disabled`     | `boolean`                 | No       | Disables the trigger.                           |
-| `onSelect`     | `(value: string) => void` | No       | Called when a menu item is selected.            |
-| `icon`         | `ReactNode`               | No       | Icon rendered inside the component.             |
-| `arrowIcon`    | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
-| `showArrow`    | `boolean`                 | No       | Controls whether the trigger arrow is rendered. |
+| Prop                 | Type                      | Required | Description                                       |
+| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
+| `label`              | `ReactNode`               | No       | Default trigger label.                            |
+| `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
+| `items`              | `DropdownItem[]`          | Yes      | Menu model.                                       |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
+| `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                             |
+| `onSelect`           | `(value: string) => void` | No       | Called when a menu item is selected.              |
+| `icon`               | `ReactNode`               | No       | Icon rendered inside the component.               |
+| `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.        |
+| `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.   |
+| `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                              |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
+| `size`               | `DropdownSize`            | No       | Input size.                                       |
+| `open`               | `boolean`                 | No       | Controlled open state.                            |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 

@@ -130,4 +130,116 @@ describe('Native Dropdown', () => {
 
     unmount();
   });
+
+  it('supports controlled open state and reports open changes', () => {
+    const onOpenChange = vi.fn();
+    const { container, rerender, unmount } = render(
+      <Dropdown
+        label='Actions'
+        items={items}
+        open={false}
+        onOpenChange={onOpenChange}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(container.textContent).not.toContain('Edit');
+
+    rerender(
+      <Dropdown
+        label='Actions'
+        items={items}
+        open
+        onOpenChange={onOpenChange}
+      />
+    );
+
+    expect(container.textContent).toContain('Edit');
+
+    const editItem = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('Edit')
+    );
+
+    act(() => editItem?.click());
+
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+
+    unmount();
+  });
+
+  it('passes accessibility label and hint to the trigger', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        accessibilityLabel='Project actions'
+        accessibilityHint='Opens project action menu'
+        items={items}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Project actions');
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Opens project action menu'
+    );
+
+    unmount();
+  });
+
+  it('supports empty items and content styles', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label='Empty actions'
+        items={[]}
+        contentStyle={{ borderTopLeftRadius: 24 }}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    const closeButton = Array.from(document.querySelectorAll('button')).find(
+      (button) => button.getAttribute('aria-label') === 'Close menu'
+    );
+    const styledContent = Array.from(
+      document.querySelectorAll<HTMLElement>('*')
+    ).find((element) => element.style.borderTopLeftRadius === '24px');
+
+    expect(closeButton).not.toBeNull();
+    expect(document.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
+    expect(styledContent).not.toBeNull();
+
+    unmount();
+  });
+
+  it('keeps disabled menus closed', () => {
+    const onOpenChange = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown
+        disabled
+        label='Disabled actions'
+        items={items}
+        onOpenChange={onOpenChange}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    expect(container.textContent).not.toContain('Edit');
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
 });

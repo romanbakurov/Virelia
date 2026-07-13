@@ -22,7 +22,7 @@ export function DropdownItem({
     <Pressable
       disabled={disabled}
       accessibilityRole='menuitem'
-      accessibilityLabel={label}
+      accessibilityLabel={typeof label === 'string' ? label : undefined}
       accessibilityState={{ disabled }}
       onPress={() => {
         if (disabled) return;

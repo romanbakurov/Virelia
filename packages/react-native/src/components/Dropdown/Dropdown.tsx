@@ -21,16 +21,36 @@ export function Dropdown({
   showArrow = true,
   items,
   onSelect,
+  open,
+  defaultOpen = false,
+  onOpenChange,
   disabled = false,
   style,
   triggerStyle,
+  contentStyle,
   itemStyle,
   textStyle,
+  accessibilityLabel,
+  accessibilityHint,
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = open !== undefined;
+  const isOpen = open ?? uncontrolledOpen;
 
-  const close = () => setIsOpen(false);
+  const setOpen = (next: boolean) => {
+    if (!isControlled) {
+      setUncontrolledOpen(next);
+    }
+
+    onOpenChange?.(next);
+  };
+
+  const close = () => {
+    if (!isOpen) return;
+
+    setOpen(false);
+  };
 
   const handleSelect = (value: string) => {
     onSelect?.(value);
@@ -48,14 +68,20 @@ export function Dropdown({
         disabled={disabled}
         isOpen={isOpen}
         triggerStyle={triggerStyle}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
         onPress={() => {
           if (disabled) return;
 
-          setIsOpen(true);
+          setOpen(!isOpen);
         }}
       />
 
-      <DropdownContent isOpen={isOpen} onClose={close}>
+      <DropdownContent
+        isOpen={isOpen}
+        onClose={close}
+        contentStyle={contentStyle}
+      >
         {items.map((item, index) => {
           if (isGroup(item)) {
             return (

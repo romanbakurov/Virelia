@@ -414,7 +414,7 @@ import { Dropdown } from '@vellira-ui/react';
 
 | Prop                | Type                      | Required | Description                                     |
 | ------------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`             | `string`                  | No       | Default trigger label.                          |
+| `label`             | `ReactNode`               | No       | Default trigger label.                          |
 | `trigger`           | `ReactNode`               | No       | Custom trigger content.                         |
 | `icon`              | `ReactNode`               | No       | Icon rendered in the default trigger.           |
 | `arrowIcon`         | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
@@ -427,6 +427,14 @@ import { Dropdown } from '@vellira-ui/react';
 | `textWrap`          | `TextWrap`                | No       | Default text wrapping behavior for items.       |
 | `disabled`          | `boolean`                 | No       | Disables the trigger.                           |
 | `onSelect`          | `(value: string) => void` | No       | Called when a menu item is selected.            |
+| `ariaLabel`         | `string`                  | No       | —                                               |
+| `triggerClassName`  | `string`                  | No       | Extra CSS class for the trigger element.        |
+| `contentClassName`  | `string`                  | No       | —                                               |
+| `itemClassName`     | `string`                  | No       | —                                               |
+| `size`              | `DropdownSize`            | No       | Input size.                                     |
+| `open`              | `boolean`                 | No       | Controlled open state.                          |
+| `defaultOpen`       | `boolean`                 | No       | Initial uncontrolled open state.                |
+| `onOpenChange`      | `(open: boolean) => void` | No       | Called when the open state changes.             |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 

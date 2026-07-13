@@ -24,6 +24,8 @@ export function DropdownTrigger({
   disabled = false,
   isOpen,
   triggerStyle,
+  accessibilityLabel,
+  accessibilityHint,
   onPress,
 }: DropdownTriggerProps) {
   const { theme } = useTheme();
@@ -85,7 +87,10 @@ export function DropdownTrigger({
     <Pressable
       disabled={disabled}
       accessibilityRole='button'
-      accessibilityLabel={label}
+      accessibilityLabel={
+        accessibilityLabel ?? (typeof label === 'string' ? label : undefined)
+      }
+      accessibilityHint={accessibilityHint}
       accessibilityState={{ expanded: isOpen, disabled }}
       onPress={onPress}
       onPressIn={() => setIsPressed(true)}

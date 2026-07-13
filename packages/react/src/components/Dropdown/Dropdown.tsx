@@ -17,11 +17,18 @@ import styles from './Dropdown.module.scss';
 
 export const Dropdown = ({
   label,
+  ariaLabel,
   icon,
   trigger,
   items = [],
   onSelect,
+  open,
+  defaultOpen = false,
+  onOpenChange,
   className,
+  triggerClassName,
+  contentClassName,
+  itemClassName,
   disabled,
   rotateAngle = 90,
   placement,
@@ -30,8 +37,10 @@ export const Dropdown = ({
   showArrow = true,
   arrowIcon,
 }: DropdownProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const isControlled = open !== undefined;
+  const isOpen = open ?? uncontrolledOpen;
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLUListElement | null>(null);
@@ -51,23 +60,30 @@ export const Dropdown = ({
   const getFirstEnabledIndex = () =>
     navigableItems.findIndex((item) => !item.disabled);
 
+  const setOpen = (next: boolean) => {
+    if (!isControlled) {
+      setUncontrolledOpen(next);
+    }
+
+    onOpenChange?.(next);
+
+    if (next) {
+      setActiveIndex(getFirstEnabledIndex());
+    } else {
+      setActiveIndex(-1);
+    }
+  };
+
   const toggleOpen = () => {
     if (disabled) return;
 
-    setIsOpen((prev) => {
-      const next = !prev;
-      if (next) {
-        setActiveIndex(getFirstEnabledIndex());
-      } else {
-        setActiveIndex(-1);
-      }
-      return next;
-    });
+    setOpen(!isOpen);
   };
 
   const close = () => {
-    setIsOpen(false);
-    setActiveIndex(-1);
+    if (!isOpen) return;
+
+    setOpen(false);
   };
 
   const closeAndRestoreFocus = () => {
@@ -89,6 +105,8 @@ export const Dropdown = ({
       closeAndRestoreFocus();
     },
     onClose: closeAndRestoreFocus,
+    getItemText: (item) =>
+      typeof item.label === 'string' ? item.label : item.value,
   });
 
   useOutsideClick([buttonRef, menuRef], () => close(), isOpen);
@@ -113,9 +131,11 @@ export const Dropdown = ({
         disabled={disabled}
         icon={icon}
         label={label}
+        ariaLabel={ariaLabel}
         showArrow={showArrow}
         arrowIcon={arrowIcon}
         rotateAngle={rotateAngle}
+        className={triggerClassName}
         onClick={toggleOpen}
         onKeyDown={onKeyDown}
         aria-expanded={isOpen}
@@ -131,9 +151,13 @@ export const Dropdown = ({
           floatingStyles={floatingStyles}
           menuId={menuId}
           labelledById={trigger ? triggerId : undefined}
-          label={!trigger ? label : undefined}
+          label={
+            ariaLabel ??
+            (!trigger && typeof label === 'string' ? label : undefined)
+          }
           activeDescendantId={activeDescendantId}
           onKeyDown={onKeyDown}
+          className={contentClassName}
         >
           {items.map((item, index) => {
             if (isGroup(item)) {
@@ -158,6 +182,7 @@ export const Dropdown = ({
                   {...item}
                   active={activeIndex === navigableIndex}
                   textWrap={item.textWrap || textWrap}
+                  className={itemClassName}
                   onClick={() => {
                     if (!item.disabled) {
                       onSelect?.(item.value);
