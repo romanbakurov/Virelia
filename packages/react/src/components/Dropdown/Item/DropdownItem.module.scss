@@ -43,10 +43,12 @@
 
   &:hover:not(.disabled) {
     color: var(--dropdown-item-danger-hover-fg);
+    background-color: var(--dropdown-item-danger-hover-bg);
   }
 
   &.active {
     color: var(--dropdown-item-danger-active-fg);
+    background-color: var(--dropdown-item-danger-active-bg);
     box-shadow: 0 0 0 2px var(--dropdown-item-danger-active-ring);
   }
 }

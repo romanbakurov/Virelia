@@ -1,3 +1,4 @@
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { navigation } from '../semantic/navigation.js';
@@ -37,7 +38,7 @@ export const dropdown = {
   content: {
     bg: surface.elevated,
     fg: text.primary,
-    border: border.default,
+    border: border.elevated,
   },
 
   item: {
@@ -65,17 +66,17 @@ export const dropdown = {
 
     danger: {
       default: {
-        fg: status.error.fg,
+        fg: colors.error[300],
       },
 
       hover: {
         bg: status.error.bg,
-        fg: status.error.fg,
+        fg: colors.error[300],
       },
 
       active: {
-        bg: status.error.border,
-        fg: status.error.fg,
+        bg: colors.error[600],
+        fg: text.inverse,
         ring: 'transparent',
       },
     },
