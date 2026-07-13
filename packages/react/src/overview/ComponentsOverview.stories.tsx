@@ -623,7 +623,22 @@ function WebComponentsOverview() {
             label='Required team'
             options={selectOptions}
             placeholder='Select a team'
+            required
             error='Team is required'
+          />
+          <Select
+            aria-label='Billing team'
+            placeholder='Billing team'
+            description='Accessible name comes from aria-label when the visible label is omitted.'
+            options={selectOptions}
+            defaultValue='product'
+          />
+          <Select
+            label='Archived team'
+            options={[]}
+            placeholder='No archived team'
+            noOptionsText='No archived teams available'
+            defaultOpen
           />
         </Section>
 
