@@ -12,7 +12,6 @@ export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
   label: ReactNode;
   icon?: ReactNode;
   shortcut?: string;
-  textWrap?: TextWrap;
 }
 
 export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {

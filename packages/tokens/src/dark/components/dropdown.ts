@@ -38,7 +38,7 @@ export const dropdown = {
   content: {
     bg: surface.elevated,
     fg: text.primary,
-    border: border.elevated,
+    border: border.default,
   },
 
   item: {
@@ -66,17 +66,17 @@ export const dropdown = {
 
     danger: {
       default: {
-        fg: colors.error[300],
+        fg: colors.error[400],
       },
 
       hover: {
         bg: status.error.bg,
-        fg: colors.error[300],
+        fg: colors.error[400],
       },
 
       active: {
-        bg: colors.error[600],
-        fg: text.inverse,
+        bg: status.error.bg,
+        fg: colors.error[400],
         ring: 'transparent',
       },
     },

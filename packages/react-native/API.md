@@ -396,6 +396,7 @@ import { Dropdown } from '@vellira-ui/react-native';
 <Dropdown
   label='Actions'
   items={[
+    { type: 'group', label: 'File' },
     { type: 'item', value: 'edit', label: 'Edit' },
     { type: 'separator' },
     { type: 'item', value: 'delete', label: 'Delete', danger: true },
@@ -438,7 +439,7 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                              |
 | `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
 | `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
-| `size`               | `DropdownSize`            | No       | Input size.                                       |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                    |
 | `open`               | `boolean`                 | No       | Controlled open state.                            |
 | `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
 | `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
@@ -447,11 +448,14 @@ custom non-text triggers, provide `accessibilityLabel` and add
 
 ### Dropdown Items
 
-| Shape               | Required Props                    | Optional Props                                   | Description                                   |
-| ------------------- | --------------------------------- | ------------------------------------------------ | --------------------------------------------- |
-| `DropdownMenuItem`  | `value`, `label`                  | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable item. `type` defaults to `'item'`. |
-| `DropdownGroup`     | `type: 'group'`, `label`, `items` | None                                             | Labeled group of menu entries.                |
-| `DropdownSeparator` | `type: 'separator'`               | None                                             | Visual separator.                             |
+| Shape               | Required Props           | Optional Props                                   | Description                                     |
+| ------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
+| `DropdownMenuItem`  | `value`, `label`         | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable action. `type` defaults to `'item'`. |
+| `DropdownGroup`     | `type: 'group'`, `label` | None                                             | Flat group heading for the following entries.   |
+| `DropdownSeparator` | `type: 'separator'`      | None                                             | Visual separator.                               |
+
+`items` is a flat array. Use a `DropdownGroup` entry as a heading before the
+items it labels; groups do not own nested `items`.
 
 ## Tabs
 

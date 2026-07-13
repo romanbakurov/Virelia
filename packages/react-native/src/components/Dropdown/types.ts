@@ -3,7 +3,6 @@ import type {
   BaseDropdownMenuItem,
   BaseDropdownProps,
   BaseDropdownSeparator,
-  TextWrap,
 } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
@@ -11,7 +10,6 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
   label: ReactNode;
   icon?: ReactNode;
-  textWrap?: TextWrap;
 }
 
 export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {

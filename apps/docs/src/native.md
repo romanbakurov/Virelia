@@ -92,6 +92,14 @@ For accessibility, prefer a visible `label`; if no label can be rendered, pass
 `accessibilityHint` can add screen-specific guidance beyond the default picker
 hint.
 
+## Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions, not saved form values. The native model
+is a flat `items` array with action entries, `{ type: 'group', label }`
+headings and `{ type: 'separator' }` dividers. Use `accessibilityLabel` for
+icon-only or custom triggers and `accessibilityHint` when the screen needs
+extra guidance.
+
 ## Button
 
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts

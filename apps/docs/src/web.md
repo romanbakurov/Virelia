@@ -89,6 +89,13 @@ sets invalid state when `error` is present, supports required state, and exposes
 keyboard behavior for Enter, Space, Arrow keys, Home, End, typeahead search,
 Escape and Tab.
 
+## Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions, not saved form values. The web model is
+a flat `items` array with action entries, `{ type: 'group', label }` headings
+and `{ type: 'separator' }` dividers. Use `ariaLabel` when the trigger is
+icon-only or custom content without a clear text label.
+
 ## Button
 
 Web Button uses native button semantics, defaults to `type="button"`, and

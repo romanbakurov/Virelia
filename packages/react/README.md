@@ -116,6 +116,27 @@ export function RoleSelect() {
 }
 ```
 
+### Dropdown Notes
+
+Use `Dropdown` for contextual actions, not saved form values. The `items` model
+is flat: use `{ type: 'group', label }` as a heading before related actions and
+`{ type: 'separator' }` between sections. Use `open`, `defaultOpen`, and
+`onOpenChange` for menu state, and `onSelect` for the selected action value.
+
+```tsx
+import type { DropdownItem } from '@vellira-ui/react';
+import { Dropdown } from '@vellira-ui/react';
+
+const items: DropdownItem[] = [
+  { type: 'group', label: 'File' },
+  { label: 'Duplicate', value: 'duplicate' },
+  { type: 'separator' },
+  { label: 'Delete', value: 'delete', danger: true },
+];
+
+<Dropdown label='Actions' items={items} onSelect={handleAction} />;
+```
+
 ### FormField Notes
 
 `FormField` is a presentational wrapper for custom web controls. Pass `id` to

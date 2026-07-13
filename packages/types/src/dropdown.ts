@@ -1,3 +1,5 @@
+import type { TextWrap } from './common';
+
 export type DropdownSize = 'sm' | 'md' | 'lg';
 
 export interface BaseDropdownMenuItem {
@@ -6,6 +8,7 @@ export interface BaseDropdownMenuItem {
   label: string;
   disabled?: boolean;
   danger?: boolean;
+  textWrap?: TextWrap;
 }
 
 export interface BaseDropdownGroup {
@@ -37,6 +40,11 @@ export interface BaseDropdownTriggerProps {
   isOpen: boolean;
   disabled?: boolean;
   size?: DropdownSize;
+}
+
+export interface BaseDropdownContentProps {
+  isOpen: boolean;
+  items: BaseDropdownItem[];
 }
 
 export type BaseDropdownGroupProps = BaseDropdownGroup;
