@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Check, Close, Search } from '@vellira-ui/icons';
 import type { ChangeEvent, CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Input } from '../Input';
 
@@ -42,7 +42,7 @@ Labeled text input primitive for short form values.
     required: false,
     readOnly: false,
     clearable: false,
-    onChange: fn(),
+    onChange: noop,
   },
   argTypes: {
     id: { control: 'text' },

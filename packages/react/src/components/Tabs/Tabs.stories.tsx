@@ -10,7 +10,7 @@ import {
   Profile,
   Settings,
 } from '@vellira-ui/icons';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Tabs } from '../Tabs';
 
@@ -59,7 +59,7 @@ Correct usage:
     defaultActiveIndex: 0,
     orientation: 'horizontal',
     appearance: 'default',
-    onChange: fn(),
+    onChange: noop,
   },
   argTypes: {
     children: {

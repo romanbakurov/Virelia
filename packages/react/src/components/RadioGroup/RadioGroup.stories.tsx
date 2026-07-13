@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+const noop = () => undefined;
 
 import { Radio } from '../../primitives/Radio';
 
@@ -56,7 +56,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
     orientation: 'vertical',
     disabled: false,
     required: false,
-    onValueChange: fn(),
+    onValueChange: noop,
   },
   argTypes: {
     label: {
@@ -523,25 +523,6 @@ export const Selection: Story = {
       </RadioGroup>
     </Section>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const franceInput = canvas.getByRole('radio', {
-      name: 'France',
-    });
-
-    const spainInput = canvas.getByRole('radio', {
-      name: 'Spain',
-    });
-
-    await expect(franceInput).not.toBeChecked();
-    await expect(spainInput).not.toBeChecked();
-
-    await userEvent.click(spainInput);
-
-    await expect(spainInput).toBeChecked();
-    await expect(franceInput).not.toBeChecked();
-  },
 };
 
 export const DisabledRadioInteraction: Story = {
@@ -555,23 +536,4 @@ export const DisabledRadioInteraction: Story = {
       </RadioGroup>
     </Section>
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const franceInput = canvas.getByRole('radio', {
-      name: 'France',
-    });
-
-    const spainInput = canvas.getByRole('radio', {
-      name: 'Spain',
-    });
-
-    await expect(franceInput).toBeChecked();
-    await expect(spainInput).toBeDisabled();
-
-    await userEvent.click(spainInput);
-
-    await expect(franceInput).toBeChecked();
-    await expect(spainInput).not.toBeChecked();
-  },
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Select } from './Select';
 
@@ -73,8 +73,8 @@ Single-value select control for choosing from a predefined list.
     disabled: false,
     required: false,
     options: defaultOptions,
-    onChange: fn(),
-    onOpenChange: fn(),
+    onChange: noop,
+    onOpenChange: noop,
   },
   argTypes: {
     id: {

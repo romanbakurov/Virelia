@@ -12,7 +12,7 @@ import {
   Settings,
 } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Dropdown } from '../components/Dropdown';
 import { Modal } from '../components/Modal';
@@ -633,13 +633,13 @@ function WebComponentsOverview() {
               label='Actions'
               trigger='Actions'
               items={dropdownItems}
-              onSelect={fn()}
+              onSelect={noop}
             />
             <Dropdown
               label='Icon actions'
               icon={<DropdownMenu />}
               items={dropdownItems}
-              onSelect={fn()}
+              onSelect={noop}
             />
           </div>
         </Section>
