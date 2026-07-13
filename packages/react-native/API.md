@@ -327,6 +327,27 @@ import { Select } from '@vellira-ui/react-native';
 />;
 ```
 
+### Select Usage Guidelines
+
+Use `Select` when the user chooses one value from a compact list and the
+choices can live in a picker sheet. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison. Use `Dropdown` for action
+menus, not for form values.
+
+### Select Native Behavior
+
+Native `Select` opens a picker sheet. Changing the picker updates a draft value
+only. The selected value is committed through `Done`; `Cancel` and the backdrop
+close the sheet without changing the current value.
+
+### Select Accessibility Notes
+
+Provide a visible `label` whenever possible. If the UI cannot show a label, pass
+`accessibilityLabel`. Required and invalid states are reflected on the trigger,
+and error text is announced through the field error region. Use
+`accessibilityHint` when the surrounding screen needs more guidance than the
+default picker hint.
+
 ### Select Props
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->

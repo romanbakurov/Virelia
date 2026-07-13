@@ -327,6 +327,23 @@ import { Select } from '@vellira-ui/react';
 />;
 ```
 
+### Select Usage Guidelines
+
+Use `Select` when the user chooses one value from a compact list and the
+available choices do not need to stay visible after selection. Use
+`RadioGroup` when there are only a few choices and comparing them side by side
+helps the decision. Use `Dropdown` for action menus such as copy, rename or
+delete, not for form values.
+
+### Select Accessibility Notes
+
+Provide a visible `label` whenever possible. If the UI cannot show a label, pass
+`aria-label` so the trigger has a stable accessible name. Error content is
+connected to the trigger through `aria-describedby` and marks the trigger
+invalid. Keyboard users can open the list with Enter, Space or Arrow keys,
+navigate with ArrowUp/ArrowDown, jump with Home/End, type to search matching
+options, select with Enter or Space, and close with Escape.
+
 ### Select Props
 
 <!-- api-docgen:start web.SelectProps.SelectProps -->

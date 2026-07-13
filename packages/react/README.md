@@ -88,6 +88,34 @@ Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `aria-label` or `aria-labelledby`.
 
+### Select Notes
+
+Use `Select` for one form value from a compact list, `RadioGroup` for a few
+visible choices, and `Dropdown` for action menus. Prefer a visible `label`; if
+the design has no visible label, provide `aria-label`.
+
+```tsx
+import { Select } from '@vellira-ui/react';
+import { useState } from 'react';
+
+export function RoleSelect() {
+  const [role, setRole] = useState('editor');
+
+  return (
+    <Select
+      label='Role'
+      value={role}
+      onChange={setRole}
+      options={[
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Viewer', value: 'viewer' },
+      ]}
+    />
+  );
+}
+```
+
 ### FormField Notes
 
 `FormField` is a presentational wrapper for custom web controls. Pass `id` to

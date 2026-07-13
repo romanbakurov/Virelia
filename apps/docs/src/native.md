@@ -81,6 +81,17 @@ Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
 value only; the selection is committed through `Done`, while `Cancel` and the
 backdrop close the sheet without changing the selected value.
 
+## Select Usage Guidelines
+
+Use `Select` for a single form value from a compact list. Use `RadioGroup` when
+there are only a few options and users should compare them without opening a
+picker. Use `Dropdown` for contextual actions, not saved form values.
+
+For accessibility, prefer a visible `label`; if no label can be rendered, pass
+`accessibilityLabel`. Error text is announced by the field error region, and
+`accessibilityHint` can add screen-specific guidance beyond the default picker
+hint.
+
 ## Button
 
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts
