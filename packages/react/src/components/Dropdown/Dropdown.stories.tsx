@@ -355,6 +355,30 @@ export const IconOnly: Story = {
   ),
 };
 
+export const CustomTrigger: Story = {
+  args: {
+    label: 'Account actions',
+    trigger: (
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          minWidth: 0,
+        }}
+      >
+        <Settings style={{ width: 16, height: 16 }} />
+        Account actions
+      </span>
+    ),
+  },
+  render: (args) => (
+    <Section title='CustomTrigger'>
+      <Dropdown {...args} />
+    </Section>
+  ),
+};
+
 export const WithGroups: Story = {
   args: {
     label: 'Document actions',
