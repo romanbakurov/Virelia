@@ -28,6 +28,7 @@ export function Select({
   textStyle,
   pickerStyle,
   accessibilityLabel,
+  accessibilityHint,
 }: SelectProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
@@ -92,8 +93,10 @@ export function Select({
         isOpen={isOpen}
         size={size}
         disabled={disabled}
+        required={required}
         hasError={hasError}
         accessibilityLabel={resolvedLabel}
+        accessibilityHint={accessibilityHint}
         triggerStyle={triggerStyle}
         textStyle={textStyle}
         onPress={openPicker}

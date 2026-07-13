@@ -214,6 +214,41 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('supports accessibility label and required/error hints', () => {
+    const { container, rerender, unmount } = render(
+      <Select
+        label='Country'
+        accessibilityLabel='Billing country'
+        options={options}
+        required
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Required. Opens a picker'
+    );
+
+    rerender(
+      <Select
+        label='Country'
+        accessibilityLabel='Billing country'
+        accessibilityHint='Choose the country used for billing'
+        options={options}
+        error='Country is required'
+      />
+    );
+
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Choose the country used for billing'
+    );
+
+    unmount();
+  });
+
   it('supports error content and style props', () => {
     const { container, unmount } = render(
       <Select

@@ -24,6 +24,7 @@ const shouldCheck = process.argv.includes('--check');
 
 const fallbackDescriptions: Record<string, string> = {
   accessibilityLabel: 'Accessible label for screen readers.',
+  accessibilityHint: 'Additional accessibility hint for screen readers.',
   activeIndex: 'Currently active tab index.',
   arrowIcon: 'Custom arrow icon rendered in the trigger.',
   bubbleStyle: 'Extra tooltip bubble style.',

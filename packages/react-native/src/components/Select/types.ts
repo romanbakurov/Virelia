@@ -17,4 +17,5 @@ export interface SelectProps extends Omit<
   textStyle?: StyleProp<TextStyle>;
   pickerStyle?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
 }

@@ -7,8 +7,10 @@ export interface SelectTriggerProps {
   isOpen: boolean;
   size?: SelectSize;
   disabled?: boolean;
+  required?: boolean;
   hasError?: boolean;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
   triggerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   onPress: () => void;

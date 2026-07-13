@@ -12,8 +12,10 @@ export function SelectTrigger({
   isOpen,
   size = 'md',
   disabled = false,
+  required = false,
   hasError = false,
   accessibilityLabel,
+  accessibilityHint,
   triggerStyle,
   textStyle,
   onPress,
@@ -25,13 +27,20 @@ export function SelectTrigger({
     md: styles.textMd,
     lg: styles.textLg,
   }[size];
+  const resolvedAccessibilityHint =
+    accessibilityHint ??
+    (hasError
+      ? 'Invalid selection. Opens a picker'
+      : required
+        ? 'Required. Opens a picker'
+        : 'Opens a picker');
 
   return (
     <Pressable
       disabled={disabled}
       accessibilityRole='button'
       accessibilityLabel={accessibilityLabel}
-      accessibilityHint='Opens a picker'
+      accessibilityHint={resolvedAccessibilityHint}
       accessibilityState={{
         expanded: isOpen,
         disabled,
