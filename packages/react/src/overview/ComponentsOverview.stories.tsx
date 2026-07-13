@@ -119,7 +119,11 @@ function WorkspaceFormFieldDemo() {
     >
       <input
         id={workspaceId}
+        name='workspace'
+        autoComplete='organization'
         placeholder='vellira-design'
+        required
+        aria-describedby={`${workspaceId}-description`}
         style={{
           width: '100%',
           minHeight: 40,

@@ -100,9 +100,9 @@ const sections: ApiSection[] = [
   ),
   section(
     'web',
-    '### RadioOption',
-    'RadioOption',
-    'src/components/RadioGroup/types.ts'
+    '### Radio Props',
+    'RadioProps',
+    'src/primitives/Radio/types.ts'
   ),
   section(
     'web',
@@ -186,9 +186,9 @@ const sections: ApiSection[] = [
   ),
   section(
     'native',
-    '### RadioOption',
-    'RadioOption',
-    'src/components/RadioGroup/types.ts'
+    '### Radio Props',
+    'RadioProps',
+    'src/primitives/Radio/types.ts'
   ),
   section(
     'native',

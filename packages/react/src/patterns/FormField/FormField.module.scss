@@ -44,6 +44,33 @@
 }
 
 .disabled {
-  color: var(--form-field-disabled-label-fg);
   cursor: not-allowed;
+
+  .label {
+    color: var(--form-field-disabled-label-fg);
+  }
+
+  .description {
+    color: var(--form-field-disabled-description-fg);
+  }
+
+  .required {
+    color: var(--form-field-disabled-label-fg);
+  }
+}
+
+.storyInput::placeholder {
+  color: var(--input-default-placeholder);
+  opacity: 1;
+}
+
+.storyBadge {
+  color: var(--color-primary-50);
+  background: var(--color-primary-600);
+}
+
+[data-vellira-theme='dark'] .storyBadge,
+[data-vellira-theme='high-contrast'] .storyBadge {
+  color: var(--color-primary-950);
+  background: var(--color-primary-400);
 }

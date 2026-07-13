@@ -10,8 +10,8 @@ export const status = {
 
   error: {
     fg: colors.error[400],
-    bg: colors.gray[900],
-    border: colors.error[400],
+    bg: colors.error[600],
+    border: colors.error[500],
     strong: colors.error[300],
   },
 

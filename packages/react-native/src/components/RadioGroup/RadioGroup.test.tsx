@@ -2,63 +2,53 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Radio } from '../../primitives/Radio';
 import { render } from '../../test-utils/render';
 
 import { RadioGroup } from './RadioGroup';
-
-const options = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro' },
-];
 
 afterEach(() => {
   document.body.innerHTML = '';
 });
 
+function PlanRadios({ disablePro = false }: { disablePro?: boolean }) {
+  return (
+    <>
+      <Radio value='starter' label='Starter' />
+      <Radio value='pro' label='Pro' disabled={disablePro} />
+    </>
+  );
+}
+
 describe('Native RadioGroup', () => {
-  it('selects an option and calls onChange', () => {
-    const onChange = vi.fn();
+  it('updates uncontrolled value and calls onValueChange', () => {
+    const onValueChange = vi.fn();
     const { container, unmount } = render(
-      <RadioGroup
-        options={options}
-        defaultValue='starter'
-        onChange={onChange}
-      />
+      <RadioGroup defaultValue='starter' onValueChange={onValueChange}>
+        <PlanRadios />
+      </RadioGroup>
     );
 
     const radios =
       container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
 
     expect(radios[0].getAttribute('aria-checked')).toBe('true');
+
     act(() => radios[1].click());
+
+    expect(radios[0].getAttribute('aria-checked')).toBe('false');
     expect(radios[1].getAttribute('aria-checked')).toBe('true');
-    expect(onChange).toHaveBeenCalledWith('pro');
-
-    unmount();
-  });
-
-  it('exposes radiogroup and radio accessibility states', () => {
-    const { container, unmount } = render(
-      <RadioGroup label='Plan' options={options} defaultValue='starter' />
-    );
-
-    const group = container.querySelector('[role="radiogroup"]');
-    const radios =
-      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
-
-    expect(group).not.toBeNull();
-    expect(radios[0].getAttribute('aria-label')).toBe('Starter');
-    expect(radios[0].getAttribute('aria-checked')).toBe('true');
-    expect(radios[1].getAttribute('aria-label')).toBe('Pro');
-    expect(radios[1].getAttribute('aria-checked')).toBe('false');
+    expect(onValueChange).toHaveBeenCalledWith('pro');
 
     unmount();
   });
 
   it('keeps controlled value until value changes', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const { container, rerender, unmount } = render(
-      <RadioGroup options={options} value='starter' onChange={onChange} />
+      <RadioGroup value='starter' onValueChange={onValueChange}>
+        <PlanRadios />
+      </RadioGroup>
     );
 
     const radios =
@@ -66,69 +56,107 @@ describe('Native RadioGroup', () => {
 
     act(() => radios[1].click());
 
-    expect(onChange).toHaveBeenCalledWith('pro');
+    expect(onValueChange).toHaveBeenCalledWith('pro');
     expect(radios[0].getAttribute('aria-checked')).toBe('true');
     expect(radios[1].getAttribute('aria-checked')).toBe('false');
 
-    rerender(<RadioGroup options={options} value='pro' onChange={onChange} />);
+    rerender(
+      <RadioGroup value='pro' onValueChange={onValueChange}>
+        <PlanRadios />
+      </RadioGroup>
+    );
 
     const updatedRadios =
       container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+
     expect(updatedRadios[0].getAttribute('aria-checked')).toBe('false');
     expect(updatedRadios[1].getAttribute('aria-checked')).toBe('true');
 
     unmount();
   });
 
-  it('marks disabled group and option states and ignores disabled options', () => {
-    const onChange = vi.fn();
+  it('exposes group accessibility props and propagates state to radios', () => {
     const { container, unmount } = render(
       <RadioGroup
-        options={[
-          ...options,
-          { label: 'Enterprise', value: 'enterprise', disabled: true },
-        ]}
-        defaultValue='starter'
-        onChange={onChange}
-      />
-    );
-
-    const radios =
-      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
-
-    expect(radios[2].getAttribute('aria-disabled')).toBe('true');
-
-    act(() => radios[2].click());
-
-    expect(onChange).not.toHaveBeenCalled();
-    expect(radios[0].getAttribute('aria-checked')).toBe('true');
-
-    unmount();
-  });
-
-  it('disables every option when the group is disabled', () => {
-    const onChange = vi.fn();
-    const { container, unmount } = render(
-      <RadioGroup
-        options={options}
+        label='Plan'
+        description='Choose one plan.'
+        error='Plan is required.'
+        required
         disabled
-        defaultValue='starter'
-        onChange={onChange}
-      />
+        size='lg'
+      >
+        <PlanRadios />
+      </RadioGroup>
     );
 
     const group = container.querySelector('[role="radiogroup"]');
     const radios =
       container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
 
+    expect(group?.getAttribute('aria-label')).toBe('Plan');
+    expect(group?.getAttribute('aria-description')).toBe(
+      'Choose one plan. Required. Plan is required.'
+    );
     expect(group?.getAttribute('aria-disabled')).toBe('true');
     expect(radios[0].getAttribute('aria-disabled')).toBe('true');
-    expect(radios[1].getAttribute('aria-disabled')).toBe('true');
+    expect(radios[0].getAttribute('aria-description')).toBe('Required.');
+    expect(radios[0].textContent).toContain('Starter');
+
+    unmount();
+  });
+
+  it('does not select disabled radios inside the group', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <RadioGroup defaultValue='starter' onValueChange={onValueChange}>
+        <PlanRadios disablePro />
+      </RadioGroup>
+    );
+
+    const radios =
+      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
 
     act(() => radios[1].click());
 
-    expect(onChange).not.toHaveBeenCalled();
-    expect(radios[0].getAttribute('aria-checked')).toBe('true');
+    expect(radios[1].getAttribute('aria-disabled')).toBe('true');
+    expect(radios[1].getAttribute('aria-checked')).toBe('false');
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('applies style props to the field and items wrapper', () => {
+    const { container, unmount } = render(
+      <RadioGroup
+        testID='items'
+        label='Plan'
+        style={{ maxWidth: 360 }}
+        itemsStyle={{ marginTop: 4 }}
+        labelStyle={{ fontWeight: '700' }}
+        description='Choose one plan.'
+        descriptionStyle={{ fontStyle: 'italic' }}
+        error='Plan is required.'
+        errorStyle={{ textDecorationLine: 'underline' }}
+      >
+        <PlanRadios />
+      </RadioGroup>
+    );
+
+    const field = container.firstElementChild as HTMLElement | null;
+    const items = container.querySelector<HTMLElement>('[data-testid="items"]');
+    const label = Array.from(container.querySelectorAll('span')).find((node) =>
+      node.textContent?.includes('Plan')
+    );
+    const description = Array.from(container.querySelectorAll('span')).find(
+      (node) => node.textContent === 'Choose one plan.'
+    );
+    const error = container.querySelector<HTMLElement>('[aria-live="polite"]');
+
+    expect(field?.style.maxWidth).toBe('360px');
+    expect(items?.style.marginTop).toBe('4px');
+    expect(label?.style.fontWeight).toBe('700');
+    expect(description?.style.fontStyle).toBe('italic');
+    expect(error?.style.textDecorationLine).toBe('underline');
 
     unmount();
   });

@@ -216,28 +216,34 @@ description/error announcement behavior.
 Layout helper for labels, errors, and custom field controls.
 
 ```tsx
-import { FormField, Input } from '@vellira-ui/react-native';
+import { FormField } from '@vellira-ui/react-native';
+import { TextInput } from 'react-native';
 
 <FormField label='Email' error={error}>
-  <Input label='Email' value={email} onChange={setEmail} />
+  <TextInput accessibilityLabel='Email' value={email} onChangeText={setEmail} />
 </FormField>;
 ```
+
+`FormField` is a presentational wrapper. The wrapped control remains
+responsible for its own `accessibilityLabel`, role, disabled/editable state, and
+interaction behavior. Error text is announced with a polite live region, and the
+root exposes disabled state when `disabled` is set.
 
 <!-- api-docgen:start native.FormFieldProps.FormField -->
 
 | Prop               | Type                   | Required | Description                       |
 | ------------------ | ---------------------- | -------- | --------------------------------- |
-| `label`            | `string`               | No       | Field label.                      |
-| `error`            | `string`               | No       | Error message.                    |
+| `label`            | `ReactNode`            | No       | Field label.                      |
+| `error`            | `ReactNode`            | No       | Error message.                    |
 | `children`         | `ReactNode`            | Yes      | Field control or custom content.  |
 | `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.            |
 | `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.           |
 | `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.           |
 | `required`         | `boolean`              | No       | Marks the field as required.      |
 | `disabled`         | `boolean`              | No       | Renders the disabled field state. |
-| `description`      | `string`               | No       | Additional descriptive text.      |
-| `controlStyle`     | `StyleProp<ViewStyle>` | No       | —                                 |
-| `descriptionStyle` | `StyleProp<TextStyle>` | No       | —                                 |
+| `description`      | `ReactNode`            | No       | Additional descriptive text.      |
+| `controlStyle`     | `StyleProp<ViewStyle>` | No       | Extra control wrapper style.      |
+| `descriptionStyle` | `StyleProp<TextStyle>` | No       | Extra description text style.     |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 
@@ -246,52 +252,61 @@ import { FormField, Input } from '@vellira-ui/react-native';
 Single-selection group with controlled and uncontrolled modes.
 
 ```tsx
-import { RadioGroup } from '@vellira-ui/react-native';
+import { Radio, RadioGroup } from '@vellira-ui/react-native';
 
-<RadioGroup
-  label='Plan'
-  defaultValue='basic'
-  orientation='vertical'
-  options={[
-    { value: 'basic', label: 'Basic' },
-    { value: 'pro', label: 'Pro' },
-  ]}
-/>;
+<RadioGroup label='Plan' defaultValue='basic' orientation='vertical'>
+  <Radio value='basic' label='Basic' />
+  <Radio value='pro' label='Pro' />
+</RadioGroup>;
 ```
 
 ### RadioGroup Props
 
 <!-- api-docgen:start native.RadioGroupProps.RadioGroupProps -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `label`        | `string`                  | No       | Group label.                          |
-| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.        |
-| `error`        | `string`                  | No       | Error message.                        |
-| `orientation`  | `Orientation`             | No       | Layout direction.                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra group style.                    |
-| `optionStyle`  | `StyleProp<ViewStyle>`    | No       | Extra option style.                   |
-| `labelStyle`   | `StyleProp<TextStyle>`    | No       | Extra label text style.               |
-| `value`        | `string`                  | No       | Controlled selected value.            |
-| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when selection changes.        |
-| `required`     | `boolean`                 | No       | Marks the group as required.          |
-| `disabled`     | `boolean`                 | No       | Disables the whole group.             |
-| `description`  | `string`                  | No       | Additional descriptive text.          |
+| Prop               | Type                          | Required | Description                           |
+| ------------------ | ----------------------------- | -------- | ------------------------------------- |
+| `label`            | `ReactNode`                   | No       | Group label.                          |
+| `children`         | `ReactNode`                   | No       | Radio controls rendered by the group. |
+| `error`            | `string`                      | No       | Error message.                        |
+| `orientation`      | `RadioGroupOrientation`       | No       | Layout direction.                     |
+| `style`            | `StyleProp<ViewStyle>`        | No       | Extra group style.                    |
+| `itemsStyle`       | `StyleProp<ViewStyle>`        | No       | Extra items wrapper style.            |
+| `labelStyle`       | `StyleProp<TextStyle>`        | No       | Extra label text style.               |
+| `value`            | `string`                      | No       | Controlled selected value.            |
+| `defaultValue`     | `string`                      | No       | Initial value for uncontrolled usage. |
+| `onValueChange`    | `(value: RadioValue) => void` | No       | Called when selection changes.        |
+| `required`         | `boolean`                     | No       | Marks the group as required.          |
+| `disabled`         | `boolean`                     | No       | Disables the whole group.             |
+| `description`      | `ReactNode`                   | No       | Additional descriptive text.          |
+| `size`             | `RadioSize`                   | No       | Size inherited by child radios.       |
+| `descriptionStyle` | `StyleProp<TextStyle>`        | No       | —                                     |
+| `errorStyle`       | `StyleProp<TextStyle>`        | No       | —                                     |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 
-### RadioOption
+### Radio Props
 
-<!-- api-docgen:start native.RadioOption.RadioOption -->
+<!-- api-docgen:start native.RadioProps.RadioProps -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop               | Type                         | Required | Description                                            |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------------------ |
+| `value`            | `string`                     | Yes      | Value represented by the radio control.                |
+| `label`            | `ReactNode`                  | No       | Visible label displayed next to the radio control.     |
+| `description`      | `ReactNode`                  | No       | Supporting text displayed below the label.             |
+| `checked`          | `boolean`                    | No       | Current checked state for controlled usage.            |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.          |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the checked state changes.                 |
+| `disabled`         | `boolean`                    | No       | Disables interaction with the radio control.           |
+| `required`         | `boolean`                    | No       | Marks the radio control as required for accessibility. |
+| `error`            | `string`                     | No       | Validation error displayed below the radio control.    |
+| `size`             | `RadioSize`                  | No       | Radio control size.                                    |
+| `containerStyle`   | `StyleProp<ViewStyle>`       | No       | Extra root container style.                            |
+| `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.                                |
+| `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.                          |
+| `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.                                |
 
-<!-- api-docgen:end native.RadioOption.RadioOption -->
+<!-- api-docgen:end native.RadioProps.RadioProps -->
 
 ## Select
 

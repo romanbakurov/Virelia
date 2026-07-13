@@ -10,6 +10,7 @@ This package contains the web implementation of the design system. It extends sh
 - Checkbox
 - Input
 - FormField
+- Radio
 - RadioGroup
 - Select
 - Dropdown
@@ -86,6 +87,14 @@ import { Search } from '@vellira-ui/icons';
 Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `aria-label` or `aria-labelledby`.
+
+### FormField Notes
+
+`FormField` is a presentational wrapper for custom web controls. Pass `id` to
+`FormField` and the same `id` to the wrapped control; the root wrapper does not
+receive that `id`, which avoids duplicate DOM ids. The child control remains
+responsible for `aria-describedby`, `aria-invalid`, `required`, `disabled` and
+interaction behavior.
 
 ## Testing
 

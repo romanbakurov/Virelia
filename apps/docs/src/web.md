@@ -69,7 +69,8 @@ generated reference lives in
 | `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
 | `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
-| `RadioGroup` | `name`, `options`, `value`, `defaultValue`, `onChange`, `orientation`                            | controlled or uncontrolled    |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | controlled or uncontrolled    |
+| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                      | controlled or uncontrolled    |
 | `Select`     | `options`, `value`, `defaultValue`, `onChange`, `placeholder`, `error`                           | controlled or uncontrolled    |
 | `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `textWrap`, `onSelect`                     | open state managed internally |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
@@ -143,7 +144,7 @@ export function ControlledSettings() {
 Use default props when the component can own its initial state.
 
 ```tsx
-import { Checkbox, RadioGroup, Tabs } from '@vellira-ui/react';
+import { Checkbox, Radio, RadioGroup, Tabs } from '@vellira-ui/react';
 
 export function UncontrolledPreferences() {
   return (
@@ -153,16 +154,11 @@ export function UncontrolledPreferences() {
         label='Remember this device'
         description='Skip verification prompts on this browser.'
       />
-      <RadioGroup
-        name='theme'
-        label='Theme'
-        defaultValue='system'
-        options={[
-          { label: 'System', value: 'system' },
-          { label: 'Light', value: 'light' },
-          { label: 'Dark', value: 'dark' },
-        ]}
-      />
+      <RadioGroup name='theme' label='Theme' defaultValue='system'>
+        <Radio value='system' label='System' />
+        <Radio value='light' label='Light' />
+        <Radio value='dark' label='Dark' />
+      </RadioGroup>
       <Tabs defaultActiveIndex={0}>
         <Tabs.List>
           <Tabs.Tab index={0}>Profile</Tabs.Tab>
@@ -184,8 +180,10 @@ keeping the public API platform-independent.
 - `Button` supports accessible labels for icon-only or ambiguous actions through
   the standard `aria-label` attribute. It does not expose a camelCase
   accessible-label alias.
-- `Input`, `Checkbox`, `Select`, `RadioGroup`, and `FormField` wire labels,
-  descriptions, required state, disabled state, and error text.
+- `Input`, `Checkbox`, `Select`, and `RadioGroup` wire labels, descriptions,
+  required state, disabled state, and error text. `FormField` provides the same
+  visual structure for custom controls, while the wrapped control owns its own
+  ARIA props and interaction state.
 - Checkbox rows without a visible label should use `aria-label` or
   `aria-labelledby`; mixed states use `indeterminate`.
 - `RadioGroup`, `Tabs`, menus, tooltips, and overlays include keyboard behavior

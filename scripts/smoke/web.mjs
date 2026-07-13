@@ -101,6 +101,7 @@ const expectedWebApi = [
   'FormField',
   'Input',
   'Modal',
+  'Radio',
   'RadioGroup',
   'Select',
   'Tabs',

@@ -34,17 +34,17 @@ export const action = {
   secondary: {
     default: {
       bg: colors.secondary[400],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.secondary[400],
     },
     hover: {
       bg: colors.secondary[300],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.secondary[300],
     },
     active: {
       bg: colors.secondary[200],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.secondary[200],
     },
     muted: {
@@ -54,7 +54,7 @@ export const action = {
     },
     subtle: {
       bg: colors.secondary[200],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.secondary[200],
     },
   },
@@ -62,17 +62,17 @@ export const action = {
   close: {
     default: {
       bg: colors.mono[50],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.mono[50],
     },
     hover: {
       bg: colors.gray[300],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.gray[300],
     },
     active: {
       bg: colors.gray[400],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.gray[400],
     },
   },

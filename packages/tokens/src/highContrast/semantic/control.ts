@@ -12,8 +12,13 @@ export const control = {
   },
   hover: {
     bg: colors.gray[900],
-    fg: text.inverse,
+    fg: text.brand,
     border: colors.primary[500],
+  },
+  active: {
+    bg: colors.primary[100],
+    fg: colors.primary[900],
+    border: colors.primary[800],
   },
   radioHover: {
     bg: colors.gray[900],
@@ -22,9 +27,9 @@ export const control = {
   },
   selected: {
     default: {
-      bg: colors.primary[500],
+      bg: colors.primary[400],
       fg: text.primary,
-      border: colors.primary[500],
+      border: colors.primary[400],
     },
     hover: {
       bg: colors.info[500],

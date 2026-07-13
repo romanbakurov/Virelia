@@ -10,27 +10,38 @@ export const control = {
     fg: text.primary,
     border: border.subtle,
   },
+
   hover: {
     bg: colors.primary[50],
-    fg: colors.primary[900],
+    fg: colors.primary[700],
     border: colors.primary[700],
   },
+
+  active: {
+    bg: colors.primary[100],
+    fg: colors.primary[900],
+    border: colors.primary[800],
+  },
+
   selected: {
     default: {
       bg: colors.primary[700],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.primary[700],
     },
+
     hover: {
       bg: colors.primary[800],
-      fg: text.inverse,
+      fg: text.onInverse,
       border: colors.primary[800],
     },
+
     active: {
       bg: colors.primary[950],
       fg: text.inverse,
       border: colors.primary[950],
     },
+
     muted: {
       bg: colors.primary[700],
       fg: text.inverse,

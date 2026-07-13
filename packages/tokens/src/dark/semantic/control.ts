@@ -15,11 +15,16 @@ export const control = {
     fg: text.brand,
     border: colors.primary[300],
   },
+  active: {
+    bg: colors.primary[100],
+    fg: colors.primary[900],
+    border: colors.primary[800],
+  },
   selected: {
     default: {
-      bg: colors.primary[600],
+      bg: colors.primary[400],
       fg: text.inverse,
-      border: colors.primary[600],
+      border: colors.primary[400],
     },
     hover: {
       bg: colors.primary[700],

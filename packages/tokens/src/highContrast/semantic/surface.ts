@@ -10,7 +10,7 @@ export const surface = {
   danger: withAlpha(colors.error[800], 0.5),
 
   hover: colors.gray[800],
-  active: colors.gray[900],
+  active: colors.gray[500],
 
   inverse: colors.mono[50],
 } as const;
