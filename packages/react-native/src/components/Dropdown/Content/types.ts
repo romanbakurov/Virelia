@@ -6,4 +6,5 @@ export interface DropdownContentProps {
   children: ReactNode;
   onClose: () => void;
   contentStyle?: StyleProp<ViewStyle>;
+  accessibilityLabel?: string;
 }

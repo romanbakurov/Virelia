@@ -1,18 +1,22 @@
 @use '@styles/mixins' as *;
 
 .button {
+  box-sizing: border-box;
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-2);
   min-width: 32px;
   min-height: 32px;
+  max-width: 100%;
   padding: var(--space-2);
   color: var(--dropdown-trigger-default-fg);
+  line-height: var(--line-height-md);
   background: var(--dropdown-trigger-default-bg);
   border: 2px solid var(--dropdown-trigger-default-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
+  overflow: hidden;
 
   @include smooth-transition(
     (color, background-color, border-color, box-shadow)
@@ -69,10 +73,19 @@
   }
 }
 
+.button > :not(.iconLeft, .arrow) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .iconLeft,
 .arrow {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
+  flex-shrink: 0;
   line-height: 0;
 
   @include smooth-transition(transform);

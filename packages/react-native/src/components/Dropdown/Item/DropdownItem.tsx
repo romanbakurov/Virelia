@@ -41,12 +41,15 @@ export function DropdownItem({
       ? theme.components.dropdown.item.hover.fg
       : theme.components.dropdown.item.default.fg;
   };
+  const accessibilityLabel = typeof label === 'string' ? label : value;
+  const numberOfLines = textWrap === 'wrap' ? undefined : 1;
+  const ellipsizeMode = textWrap === 'truncate' ? 'tail' : 'clip';
 
   return (
     <Pressable
       disabled={disabled}
       accessibilityRole='menuitem'
-      accessibilityLabel={typeof label === 'string' ? label : undefined}
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ disabled }}
       onPress={() => {
         if (disabled) return;
@@ -69,7 +72,8 @@ export function DropdownItem({
             {icon ? renderColoredNode(icon, contentColor) : null}
 
             <Text
-              numberOfLines={textWrap === 'wrap' ? undefined : 1}
+              numberOfLines={numberOfLines}
+              ellipsizeMode={ellipsizeMode}
               style={[styles.itemText, { color: contentColor }, textStyle]}
             >
               {label}

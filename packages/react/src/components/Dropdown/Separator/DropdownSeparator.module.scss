@@ -1,9 +1,8 @@
-.group {
-  padding: var(--space-2) var(--space-3);
-  color: var(--dropdown-separator-fg);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  user-select: none;
+.separator {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  padding: 0;
+  background-color: var(--dropdown-separator-bg);
+  border: 0;
+  flex-shrink: 0;
 }

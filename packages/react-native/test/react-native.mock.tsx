@@ -11,8 +11,10 @@ type NativeProps = {
   accessibilityLabel?: string;
   accessibilityHint?: string;
   accessibilityLiveRegion?: string;
+  ellipsizeMode?: string;
   accessible?: boolean;
   importantForAccessibility?: string;
+  numberOfLines?: number;
   onPress?: () => void;
   onPressIn?: () => void;
   onPressOut?: () => void;
@@ -53,6 +55,8 @@ const roleFromAccessibility = (role?: string) => {
   if (role === 'tablist') return 'tablist';
   if (role === 'toolbar') return 'toolbar';
   if (role === 'header') return 'heading';
+  if (role === 'menu') return 'menu';
+  if (role === 'menuitem') return 'menuitem';
   return undefined;
 };
 
@@ -182,14 +186,18 @@ export const Text = forwardRef<HTMLSpanElement, NativeProps>(
       accessibilityLabel,
       accessibilityHint,
       accessibilityLiveRegion,
+      ellipsizeMode,
       accessible,
       importantForAccessibility,
+      numberOfLines,
     },
     ref
   ) => (
     <span
       ref={ref}
       data-testid={testID}
+      data-ellipsize-mode={ellipsizeMode}
+      data-number-of-lines={numberOfLines}
       role={roleFromAccessibility(accessibilityRole)}
       style={flattenStyle(style)}
       {...accessibilityProps({

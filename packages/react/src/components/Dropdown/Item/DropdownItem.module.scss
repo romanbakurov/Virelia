@@ -2,18 +2,21 @@
 
 .item {
   position: relative;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   width: 100%;
+  min-width: 0;
+  min-height: 36px;
   padding: var(--space-2) var(--space-3);
   color: var(--dropdown-item-default-fg);
   font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
   background-color: var(--dropdown-item-default-bg);
   border-radius: var(--radius-sm);
   cursor: pointer;
   overflow: hidden;
-  gap: var(--space-4);
-  min-width: 0;
+  gap: var(--space-3);
   user-select: none;
 
   @include smooth-transition((color, background-color, box-shadow));
@@ -26,7 +29,7 @@
 
 .item:focus-visible:not(.disabled) {
   outline: none;
-  box-shadow: 0 0 0 2px var(--dropdown-item-active-ring);
+  box-shadow: 0 0 0 2px var(--dropdown-item-focus-ring);
 }
 
 .active {
@@ -75,7 +78,7 @@
 .itemText {
   flex: 1;
   min-width: 0;
-  line-height: 1.5;
+  line-height: var(--line-height-md);
   text-align: left;
 
   &--truncate {
@@ -90,6 +93,8 @@
   }
 
   &--nowrap {
+    overflow: hidden;
+    text-overflow: clip;
     white-space: nowrap;
   }
 }
@@ -97,10 +102,12 @@
 .itemShortcut {
   flex-shrink: 0;
   margin-left: auto;
-  padding-left: var(--space-3);
+  padding-left: var(--space-2);
   color: var(--dropdown-group-label-fg);
   font-family: monospace;
   font-size: var(--font-size-xs);
+  line-height: var(--line-height-sm);
+  white-space: nowrap;
 }
 
 .item:has(.itemText--wrap) {
@@ -110,6 +117,7 @@
 .itemIcon {
   display: inline-flex;
   flex-shrink: 0;
+  justify-content: center;
   align-items: center;
   width: 20px;
   height: 20px;

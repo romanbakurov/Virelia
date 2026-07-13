@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { DropdownSeparator } from './Separator/DropdownSeparator';
 import { DropdownTrigger } from './Trigger/DropdownTrigger';
 import { createStyles } from './Dropdown.styles';
 import type { DropdownProps } from './types';
-import { isGroup, isSeparator } from './types';
+import { isGroup, isMenuItem, isSeparator } from './types';
 
 export function Dropdown({
   label = 'Menu',
@@ -37,25 +37,42 @@ export function Dropdown({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const isControlled = open !== undefined;
   const isOpen = open ?? uncontrolledOpen;
+  const menuAccessibilityLabel = useMemo(() => {
+    if (accessibilityLabel) return accessibilityLabel;
 
-  const setOpen = (next: boolean) => {
-    if (!isControlled) {
-      setUncontrolledOpen(next);
-    }
+    return typeof label === 'string' ? label : 'Menu';
+  }, [accessibilityLabel, label]);
 
-    onOpenChange?.(next);
-  };
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (!isControlled) {
+        setUncontrolledOpen(next);
+      }
 
-  const close = () => {
+      onOpenChange?.(next);
+    },
+    [isControlled, onOpenChange]
+  );
+
+  const close = useCallback(() => {
     if (!isOpen) return;
 
     setOpen(false);
-  };
+  }, [isOpen, setOpen]);
 
-  const handleSelect = (value: string) => {
-    onSelect?.(value);
-    close();
-  };
+  const handleSelect = useCallback(
+    (value: string) => {
+      onSelect?.(value);
+      close();
+    },
+    [close, onSelect]
+  );
+
+  const handleTriggerPress = useCallback(() => {
+    if (disabled) return;
+
+    setOpen(!isOpen);
+  }, [disabled, isOpen, setOpen]);
 
   return (
     <View style={[styles.root, style]}>
@@ -70,17 +87,14 @@ export function Dropdown({
         triggerStyle={triggerStyle}
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
-        onPress={() => {
-          if (disabled) return;
-
-          setOpen(!isOpen);
-        }}
+        onPress={handleTriggerPress}
       />
 
       <DropdownContent
         isOpen={isOpen}
         onClose={close}
         contentStyle={contentStyle}
+        accessibilityLabel={menuAccessibilityLabel}
       >
         {items.map((item, index) => {
           if (isGroup(item)) {
@@ -96,9 +110,13 @@ export function Dropdown({
             return <DropdownSeparator key={`separator-${index}`} />;
           }
 
+          if (!isMenuItem(item)) {
+            return null;
+          }
+
           return (
             <DropdownItem
-              key={item.value}
+              key={`${item.value}-${index}`}
               label={item.label}
               value={item.value}
               icon={item.icon}

@@ -194,6 +194,99 @@ describe('Native Dropdown', () => {
     unmount();
   });
 
+  it('labels the menu and falls back to item values for complex labels', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label={<span>Actions</span>}
+        accessibilityLabel='Project actions'
+        items={[
+          {
+            label: <span data-testid='complex-label'>Copy link</span>,
+            value: 'copy-link',
+          },
+        ]}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    act(() => trigger?.click());
+
+    const menu = container.querySelector('[role="menu"]');
+    const menuItem = container.querySelector('[role="menuitem"]');
+
+    expect(menu?.getAttribute('aria-label')).toBe('Project actions');
+    expect(menuItem?.getAttribute('aria-label')).toBe('copy-link');
+
+    unmount();
+  });
+
+  it('renders repeated values with stable menuitem semantics', () => {
+    const onSelect = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        items={[
+          { label: 'Copy link', value: 'copy' },
+          { label: 'Copy markdown', value: 'copy' },
+        ]}
+        onSelect={onSelect}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    act(() => trigger?.click());
+
+    const menuItems = container.querySelectorAll('[role="menuitem"]');
+
+    expect(menuItems).toHaveLength(2);
+    expect(menuItems[0]?.textContent).toContain('Copy link');
+    expect(menuItems[1]?.textContent).toContain('Copy markdown');
+
+    act(() => (menuItems[1] as HTMLButtonElement | undefined)?.click());
+
+    expect(onSelect).toHaveBeenCalledWith('copy');
+
+    unmount();
+  });
+
+  it('maps textWrap values to native text truncation behavior', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        items={[
+          { label: 'Truncate label', value: 'truncate' },
+          { label: 'No wrap label', value: 'nowrap', textWrap: 'nowrap' },
+          { label: 'Wrapped label', value: 'wrap', textWrap: 'wrap' },
+        ]}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    act(() => trigger?.click());
+
+    const truncateLabel = Array.from(container.querySelectorAll('span')).find(
+      (element) => element.textContent === 'Truncate label'
+    );
+    const nowrapLabel = Array.from(container.querySelectorAll('span')).find(
+      (element) => element.textContent === 'No wrap label'
+    );
+    const wrapLabel = Array.from(container.querySelectorAll('span')).find(
+      (element) => element.textContent === 'Wrapped label'
+    );
+
+    expect(truncateLabel?.getAttribute('data-number-of-lines')).toBe('1');
+    expect(truncateLabel?.getAttribute('data-ellipsize-mode')).toBe('tail');
+    expect(nowrapLabel?.getAttribute('data-number-of-lines')).toBe('1');
+    expect(nowrapLabel?.getAttribute('data-ellipsize-mode')).toBe('clip');
+    expect(wrapLabel?.getAttribute('data-number-of-lines')).toBeNull();
+    expect(wrapLabel?.getAttribute('data-ellipsize-mode')).toBe('clip');
+
+    unmount();
+  });
+
   it('supports empty items and content styles', () => {
     const { container, unmount } = render(
       <Dropdown
