@@ -174,6 +174,55 @@ describe('Select', () => {
     });
   });
 
+  it('closes on outside pointerdown without changing the selected value', () => {
+    const onChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const outsideButton = document.createElement('button');
+    outsideButton.type = 'button';
+    outsideButton.textContent = 'Outside';
+    document.body.append(outsideButton);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          defaultValue='de'
+          onChange={onChange}
+          options={options}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+
+    act(() => {
+      outsideButton.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+      );
+    });
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(document.querySelector('[role="listbox"]')).toBeNull();
+    expect(new FormData(form).get('country')).toBe('de');
+    expect(onChange).not.toHaveBeenCalled();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('ignores disabled option click and selects enabled option click', () => {
     const onChange = vi.fn();
     const form = document.createElement('form');
@@ -305,6 +354,49 @@ describe('Select', () => {
     });
   });
 
+  it('reflects controlled value rerenders', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          value='de'
+          options={options}
+        />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.textContent).toContain('Germany');
+    expect(new FormData(form).get('country')).toBe('de');
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          value='es'
+          options={options}
+        />
+      );
+    });
+
+    expect(trigger?.textContent).toContain('Spain');
+    expect(new FormData(form).get('country')).toBe('es');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('supports defaultOpen and custom error content', () => {
     const form = document.createElement('form');
     document.body.append(form);
@@ -379,6 +471,46 @@ describe('Select', () => {
     });
   });
 
+  it('uses selected text as accessible name without a visible label', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(<Select id='country' defaultValue='es' options={options} />);
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Spain');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('marks required state for assistive tech', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' required options={options} />
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.getAttribute('aria-required')).toBe('true');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('opens an empty state when no options are available', () => {
     const onChange = vi.fn();
     const form = document.createElement('form');
@@ -413,6 +545,43 @@ describe('Select', () => {
 
     expect(onChange).not.toHaveBeenCalled();
     expect(new FormData(form).get('country')).toBe('');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('applies truncation classes for long trigger and option labels', () => {
+    const longLabel =
+      'Very very very very very very long country label for truncation';
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultValue='long'
+          defaultOpen
+          options={[{ label: longLabel, value: 'long' }]}
+        />
+      );
+    });
+
+    const triggerValue = form.querySelector<HTMLSpanElement>(
+      '[role="combobox"] span'
+    );
+    const optionLabel = document.querySelector<HTMLSpanElement>(
+      '[role="option"] span'
+    );
+
+    expect(triggerValue?.className).toContain('value');
+    expect(optionLabel?.className).toContain('label');
+    expect(triggerValue?.textContent).toBe(longLabel);
+    expect(optionLabel?.textContent).toBe(longLabel);
 
     act(() => {
       root.unmount();

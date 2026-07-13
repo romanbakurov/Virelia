@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
 import { useControllableState } from '@vellira-ui/core';
@@ -45,6 +45,12 @@ export function Select({
   const selectedOption = options.find((o) => o.value === selectedValue);
   const hasError = !!error;
 
+  useEffect(() => {
+    if (isOpen) {
+      setDraftValue(selectedValue);
+    }
+  }, [isOpen, selectedValue]);
+
   const resolvedLabel =
     accessibilityLabel ??
     label ??
@@ -74,6 +80,13 @@ export function Select({
   };
 
   const confirmPicker = () => {
+    const nextOption = options.find((option) => option.value === draftValue);
+
+    if (!nextOption || nextOption.disabled) {
+      setIsOpen(false);
+      return;
+    }
+
     setSelectedValue(draftValue);
     setIsOpen(false);
   };

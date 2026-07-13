@@ -13,6 +13,11 @@ const options = [
   { label: 'Spain', value: 'es' },
 ];
 
+const longOptions = Array.from({ length: 24 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
+}));
+
 const getButtonByText = (text: string) =>
   Array.from(document.body.querySelectorAll<HTMLButtonElement>('button')).find(
     (button) => button.textContent === text
@@ -195,6 +200,104 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('confirms the latest controlled value after rerender while open', () => {
+    const onChange = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        value='fr'
+        onChange={onChange}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      getButtonByText('France')?.click();
+    });
+
+    rerender(
+      <Select
+        label='Country'
+        options={options}
+        value='es'
+        onChange={onChange}
+      />
+    );
+
+    act(() => {
+      getButtonByText('Done')?.click();
+    });
+
+    expect(onChange).toHaveBeenCalledWith('es');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+
+    unmount();
+  });
+
+  it('renders an empty picker with only the disabled placeholder option', () => {
+    const onChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select label='Country' options={[]} onChange={onChange} />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+    const pickerOptions = picker?.querySelectorAll('button');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(pickerOptions).toHaveLength(1);
+    expect(pickerOptions?.[0]?.textContent).toBe('Select...');
+    expect(pickerOptions?.[0]?.hasAttribute('disabled')).toBe(true);
+
+    act(() => {
+      getButtonByText('Done')?.click();
+    });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('renders long option lists in the picker', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={longOptions} defaultValue='country-12' />
+    );
+
+    expect(container.textContent).toContain('Country 12');
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+
+    expect(picker?.querySelectorAll('button')).toHaveLength(
+      longOptions.length + 1
+    );
+    expect(getButtonByText('Country 24')).toBeTruthy();
+
+    unmount();
+  });
+
   it('does not open when disabled', () => {
     const { container, unmount } = render(
       <Select label='Country' options={options} disabled error='Required' />
@@ -210,6 +313,36 @@ describe('Native Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.body.textContent).not.toContain('Cancel');
     expect(container.textContent).toContain('Required');
+
+    unmount();
+  });
+
+  it('keeps disabled select closed and exposes custom accessibility hint', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        disabled
+        accessibilityLabel='Billing country'
+        accessibilityHint='Selection is locked by billing settings'
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.getAttribute('aria-disabled')).toBe('true');
+    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Selection is locked by billing settings'
+    );
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(document.body.textContent).not.toContain('Done');
 
     unmount();
   });
@@ -252,7 +385,7 @@ describe('Native Select', () => {
 
     expect(
       document.body
-        .querySelector('[aria-label="Billing country picker actions"]')
+        .querySelector('[role="toolbar"]')
         ?.getAttribute('aria-label')
     ).toBe('Billing country picker actions');
     expect(getButtonByText('Cancel')?.getAttribute('aria-label')).toBe(
@@ -267,7 +400,9 @@ describe('Native Select', () => {
     expect(getButtonByText('Done')?.getAttribute('aria-description')).toBe(
       'Applies the highlighted picker value'
     );
-    expect(document.body.textContent).toContain('Billing country');
+    expect(document.body.querySelector('[role="heading"]')?.textContent).toBe(
+      'Billing country'
+    );
 
     unmount();
   });
