@@ -1,33 +1,47 @@
 import { colors } from '../../primitives/colors.js';
 
+import { border } from './border.js';
+import { surface } from './surface.js';
 import { text } from './text.js';
 
 export const navigation = {
   hover: {
-    bg: colors.vellira[100],
+    bg: surface.hover,
     fg: text.primary,
   },
+
   active: {
-    bg: colors.vellira[150],
+    bg: surface.active,
     fg: text.primary,
   },
+
   brandHover: {
-    bg: colors.vellira[100],
-    fg: colors.primary[900],
+    bg: surface.hover,
+    fg: text.interactiveHover,
   },
+
   tabHover: {
-    fg: colors.primary[500],
+    fg: text.interactiveHover,
   },
+
   tabFocus: {
-    ring: colors.warning[500],
+    ring: colors.primary[700],
   },
+
   optionHover: {
-    bg: colors.gray[300],
+    bg: surface.hover,
     fg: text.primary,
   },
+
   optionActive: {
-    bg: colors.gray[200],
+    bg: surface.active,
     fg: text.primary,
   },
-  border: colors.vellira[200],
+
+  triggerHover: {
+    bg: surface.hover,
+    fg: text.interactiveHover,
+  },
+
+  border: border.muted,
 } as const;

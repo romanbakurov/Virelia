@@ -1,5 +1,6 @@
-import { overlay } from '../../semantic/overlay.js';
-import { border } from '../semantic/border.js';
+import { focus } from '../semantic/focus.js';
+import { overlay } from '../semantic/overlay.js';
+import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -9,9 +10,10 @@ export const modal = {
   },
 
   content: {
-    bg: surface.subtle,
+    bg: overlay.modal.bg,
     fg: text.primary,
-    border: border.default,
+    border: overlay.modal.border,
+    shadow: shadow.xl,
   },
 
   title: {
@@ -25,17 +27,30 @@ export const modal = {
   closeButton: {
     default: {
       bg: 'transparent',
-      fg: text.muted,
+      fg: text.secondary,
+      border: 'transparent',
     },
 
     hover: {
-      bg: surface.subtle,
+      bg: surface.hover,
       fg: text.primary,
+      border: 'transparent',
+    },
+
+    pressed: {
+      bg: surface.pressed,
+      fg: text.primary,
+      border: 'transparent',
+    },
+
+    focus: {
+      ring: focus.ring.color,
     },
 
     disabled: {
       bg: 'transparent',
       fg: text.disabled,
+      border: 'transparent',
     },
   },
 } as const;

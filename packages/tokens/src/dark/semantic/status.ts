@@ -21,6 +21,7 @@ export const status = {
     fg: colors.warning[400],
     bg: 'rgba(251, 191, 36, 0.14)',
     border: colors.warning[400],
+    ring: colors.error[400],
     strong: colors.warning[600],
   },
 
@@ -28,6 +29,7 @@ export const status = {
     fg: colors.info[200],
     bg: 'rgba(56, 189, 248, 0.14)',
     border: colors.info[200],
+    ring: colors.error[400],
     strong: colors.info[500],
   },
 } as const;

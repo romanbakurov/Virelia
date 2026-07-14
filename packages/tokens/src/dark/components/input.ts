@@ -26,7 +26,7 @@ export const input = {
     bg: 'transparent',
     fg: text.primary,
     border: border.focus,
-    ring: focus.ring,
+    ring: focus.ring.color,
     placeholder: text.secondary,
     icon: icons.brand,
   },

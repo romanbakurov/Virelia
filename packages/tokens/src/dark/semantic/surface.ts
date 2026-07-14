@@ -11,7 +11,7 @@ export const surface = {
   active: colors.vellira[700],
   pressed: colors.vellira[600],
 
-  disabled: colors.vellira[850],
+  disabled: colors.vellira[800],
   danger: withAlpha(colors.error[800], 0.5),
 
   inverse: colors.mono[50],

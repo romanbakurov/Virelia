@@ -1,15 +1,15 @@
-import { border } from '../semantic/border.js';
-import { surface } from '../semantic/surface.js';
-import { text } from '../semantic/text.js';
+import { overlay } from '../semantic/overlay.js';
+import { shadow } from '../semantic/shadow.js';
 
 export const tooltip = {
   content: {
-    bg: surface.inverse,
-    fg: text.inverse,
-    border: border.default,
+    bg: overlay.tooltip.bg,
+    fg: overlay.tooltip.fg,
+    border: overlay.tooltip.border,
+    shadow: shadow.md,
   },
 
   arrow: {
-    bg: surface.inverse,
+    bg: overlay.tooltip.bg,
   },
 } as const;

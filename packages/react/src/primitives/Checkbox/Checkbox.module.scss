@@ -158,10 +158,16 @@
 
 .input:checked + .customCheckbox,
 .input:indeterminate + .customCheckbox,
-.indeterminate {
+.customCheckbox.indeterminate {
   color: var(--checkbox-checked-default-fg);
   background: var(--checkbox-checked-default-bg);
   border-color: var(--checkbox-checked-default-border);
+}
+
+.input:checked + .customCheckbox + .label,
+.input:indeterminate + .customCheckbox + .label,
+.customCheckbox.indeterminate + .label {
+  color: var(--checkbox-checked-default-label-fg);
 }
 
 .input:checked + .customCheckbox .checkmark {
@@ -170,9 +176,37 @@
 }
 
 .input:indeterminate + .customCheckbox .indeterminateMark,
-.indeterminate .indeterminateMark {
+.customCheckbox.indeterminate .indeterminateMark {
   opacity: 1;
   transform: scaleX(1);
+}
+
+.wrapper:hover .input:checked:not(:disabled) + .customCheckbox,
+.wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox,
+.wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate {
+  color: var(--checkbox-checked-hover-fg);
+  background: var(--checkbox-checked-hover-bg);
+  border-color: var(--checkbox-checked-hover-border);
+}
+
+.wrapper:hover .input:checked:not(:disabled) + .customCheckbox + .label,
+.wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox + .label,
+.wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate + .label {
+  color: var(--checkbox-checked-hover-label-fg);
+}
+
+.input:checked:active:not(:disabled) + .customCheckbox,
+.input:indeterminate:active:not(:disabled) + .customCheckbox,
+.input:active:not(:disabled) + .customCheckbox.indeterminate {
+  color: var(--checkbox-checked-pressed-fg);
+  background: var(--checkbox-checked-pressed-bg);
+  border-color: var(--checkbox-checked-pressed-border);
+}
+
+.input:checked:active:not(:disabled) + .customCheckbox + .label,
+.input:indeterminate:active:not(:disabled) + .customCheckbox + .label,
+.input:active:not(:disabled) + .customCheckbox.indeterminate + .label {
+  color: var(--checkbox-checked-pressed-label-fg);
 }
 
 .wrapper:hover
@@ -181,13 +215,6 @@
   background: var(--checkbox-hover-bg);
   border-color: var(--checkbox-hover-border);
   box-shadow: 0 0 0 3px var(--checkbox-hover-bg);
-}
-
-.wrapper:hover .input:checked:not(:disabled) + .customCheckbox,
-.wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox,
-.wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate {
-  background: var(--checkbox-checked-hover-bg);
-  border-color: var(--checkbox-checked-hover-border);
 }
 
 .input + .customCheckbox.error,

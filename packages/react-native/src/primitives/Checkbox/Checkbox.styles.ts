@@ -57,6 +57,16 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.checkbox.checked.default.border,
     },
 
+    boxCheckedHover: {
+      backgroundColor: theme.components.checkbox.checked.hover.bg,
+      borderColor: theme.components.checkbox.checked.hover.border,
+    },
+
+    boxCheckedPressed: {
+      backgroundColor: theme.components.checkbox.checked.pressed.bg,
+      borderColor: theme.components.checkbox.checked.pressed.border,
+    },
+
     boxDisabled: {
       backgroundColor: theme.components.checkbox.disabled.bg,
       borderColor: theme.components.checkbox.disabled.border,
@@ -66,6 +76,18 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.checkbox.error.border,
     },
 
+    checkmark: {
+      color: theme.components.checkbox.checked.default.fg,
+    },
+
+    checkmarkHover: {
+      color: theme.components.checkbox.checked.hover.fg,
+    },
+
+    checkmarkPressed: {
+      color: theme.components.checkbox.checked.pressed.fg,
+    },
+
     indeterminateMark: {
       width: '60%',
       height: 2,
@@ -73,10 +95,30 @@ export const createStyles = (theme: NativeTheme) =>
       borderRadius: theme.tokens.radius.full,
     },
 
+    indeterminateMarkHover: {
+      backgroundColor: theme.components.checkbox.checked.hover.fg,
+    },
+
+    indeterminateMarkPressed: {
+      backgroundColor: theme.components.checkbox.checked.pressed.fg,
+    },
+
     label: {
       flexShrink: 1,
       fontFamily: theme.tokens.typography.family.regular,
       color: theme.components.checkbox.default.fg,
+    },
+
+    labelChecked: {
+      color: theme.components.checkbox.checked.default.labelFg,
+    },
+
+    labelCheckedHover: {
+      color: theme.components.checkbox.checked.hover.labelFg,
+    },
+
+    labelCheckedPressed: {
+      color: theme.components.checkbox.checked.pressed.labelFg,
     },
 
     labelSm: {

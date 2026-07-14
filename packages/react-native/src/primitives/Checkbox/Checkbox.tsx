@@ -5,7 +5,6 @@ import { Check } from '@vellira-ui/icons';
 import { Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
-import { devWarning } from '../../utils/devWarning';
 
 import { createStyles } from './Checkbox.styles';
 import type { CheckboxProps } from './types';
@@ -79,15 +78,6 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
 
     const accessibilityChecked = indeterminate ? 'mixed' : isChecked;
 
-    const checkColor = disabled
-      ? theme.components.checkbox.disabled.fg
-      : theme.components.checkbox.checked.default.fg;
-
-    devWarning(
-      Boolean(resolvedAccessibilityLabel),
-      'Checkbox: an accessible label must be provided through label or accessibilityLabel.'
-    );
-
     return (
       <View style={styles.container}>
         <Pressable
@@ -109,37 +99,59 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
             style,
           ]}
         >
-          <View
-            style={[
-              styles.box,
-              boxSizeStyle[size],
-              (isChecked || indeterminate) && styles.boxChecked,
-              hasError && styles.boxError,
-              disabled && styles.boxDisabled,
-            ]}
-          >
-            {indeterminate ? (
-              <View style={styles.indeterminateMark} />
-            ) : (
-              isChecked && (
-                <Check size={iconSizeBySize[size]} color={checkColor} />
-              )
-            )}
-          </View>
+          {({ pressed }) => {
+            const isSelected = isChecked || indeterminate;
 
-          {label && (
-            <Text
-              style={[
-                styles.label,
-                labelSizeStyle[size],
-                disabled && styles.labelDisabled,
-              ]}
-            >
-              {label}
+            const checkColor = disabled
+              ? theme.components.checkbox.disabled.fg
+              : pressed && isSelected
+                ? theme.components.checkbox.checked.pressed.fg
+                : theme.components.checkbox.checked.default.fg;
 
-              {required && <Text style={styles.requiredMark}> *</Text>}
-            </Text>
-          )}
+            return (
+              <>
+                <View
+                  style={[
+                    styles.box,
+                    boxSizeStyle[size],
+                    isSelected && styles.boxChecked,
+                    isSelected && pressed && styles.boxCheckedPressed,
+                    hasError && styles.boxError,
+                    disabled && styles.boxDisabled,
+                  ]}
+                >
+                  {indeterminate ? (
+                    <View
+                      style={[
+                        styles.indeterminateMark,
+                        pressed && styles.indeterminateMarkPressed,
+                      ]}
+                    />
+                  ) : (
+                    isChecked && (
+                      <Check size={iconSizeBySize[size]} color={checkColor} />
+                    )
+                  )}
+                </View>
+
+                {label && (
+                  <Text
+                    style={[
+                      styles.label,
+                      labelSizeStyle[size],
+                      isSelected && styles.labelChecked,
+                      isSelected && pressed && styles.labelCheckedPressed,
+                      disabled && styles.labelDisabled,
+                    ]}
+                  >
+                    {label}
+
+                    {required && <Text style={styles.requiredMark}> *</Text>}
+                  </Text>
+                )}
+              </>
+            );
+          }}
         </Pressable>
 
         {description && (

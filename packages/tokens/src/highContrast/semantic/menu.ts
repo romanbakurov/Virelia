@@ -4,8 +4,8 @@ import { status } from './status.js';
 import { text } from './text.js';
 
 export const menu = {
-  background: colors.vellira[800],
-  border: colors.vellira[600],
+  background: colors.gray[900],
+  border: colors.mono[50],
 
   item: {
     default: {
@@ -14,18 +14,18 @@ export const menu = {
     },
 
     hover: {
-      bg: colors.vellira[700],
-      fg: text.primary,
+      bg: colors.warning[300],
+      fg: colors.mono[950],
     },
 
     active: {
-      bg: colors.vellira[700],
-      fg: text.primary,
+      bg: colors.warning[400],
+      fg: colors.mono[950],
     },
 
     pressed: {
-      bg: colors.vellira[600],
-      fg: text.primary,
+      bg: colors.warning[500],
+      fg: colors.mono[950],
     },
 
     disabled: {
@@ -40,13 +40,13 @@ export const menu = {
       },
 
       hover: {
-        bg: colors.vellira[700],
-        fg: status.error.fg,
+        bg: colors.error[400],
+        fg: colors.mono[950],
       },
 
       active: {
-        bg: colors.vellira[700],
-        fg: status.error.fg,
+        bg: colors.error[600],
+        fg: colors.mono[50],
       },
 
       disabled: {

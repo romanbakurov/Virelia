@@ -10,16 +10,19 @@ export const control = {
     fg: text.primary,
     border: border.default,
   },
+
   hover: {
     bg: surface.hover,
     fg: text.primary,
     border: border.focus,
   },
+
   active: {
     bg: surface.active,
     fg: text.primary,
     border: colors.primary[300],
   },
+
   disabled: {
     bg: surface.disabled,
     fg: text.disabled,
@@ -32,16 +35,19 @@ export const control = {
       fg: colors.mono[50],
       border: colors.primary[500],
     },
+
     hover: {
       bg: colors.primary[400],
       fg: colors.mono[50],
       border: colors.primary[400],
     },
+
     active: {
       bg: colors.primary[600],
       fg: colors.mono[50],
       border: colors.primary[600],
     },
+
     muted: {
       bg: colors.primary[800],
       fg: colors.primary[100],

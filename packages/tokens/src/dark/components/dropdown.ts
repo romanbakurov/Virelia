@@ -73,26 +73,15 @@ export const dropdown = {
     },
 
     danger: {
-      default: {
-        bg: menu.item.danger.default.bg,
-        fg: menu.item.danger.default.fg,
-      },
-
-      hover: {
-        bg: menu.item.danger.hover.bg,
-        fg: menu.item.danger.hover.fg,
-      },
+      default: menu.item.danger.default,
+      hover: menu.item.danger.hover,
 
       active: {
-        bg: menu.item.danger.active.bg,
-        fg: menu.item.danger.active.fg,
+        ...menu.item.danger.active,
         ring: 'transparent',
       },
 
-      disabled: {
-        bg: menu.item.danger.disabled.bg,
-        fg: menu.item.danger.disabled.fg,
-      },
+      disabled: menu.item.danger.disabled,
     },
   },
 

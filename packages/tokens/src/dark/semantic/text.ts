@@ -8,8 +8,10 @@ export const text = {
   disabled: colors.vellira[500],
 
   brand: colors.primary[300],
-  interactive: colors.mono[300],
-  interactiveHover: colors.primary[200],
+
+  interactive: colors.primary[300],
+  interactiveHover: colors.primary[400],
+  interactiveActive: colors.primary[500],
 
   inverse: colors.mono[950],
 } as const;

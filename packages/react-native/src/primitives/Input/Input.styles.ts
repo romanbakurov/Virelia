@@ -5,8 +5,17 @@ import type { NativeTheme } from '../../theme';
 export const getPlaceholderTextColor = (theme: NativeTheme) =>
   theme.components.input.default.placeholder;
 
+export const getFocusedPlaceholderTextColor = (theme: NativeTheme) =>
+  theme.components.input.focus.placeholder;
+
 export const getDisabledPlaceholderTextColor = (theme: NativeTheme) =>
   theme.components.input.disabled.placeholder;
+
+export const getReadOnlyPlaceholderTextColor = (theme: NativeTheme) =>
+  theme.components.input.readOnly.placeholder;
+
+const resolveRingColor = (ring: string | { color: string }): string =>
+  typeof ring === 'string' ? ring : ring.color;
 
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
@@ -71,15 +80,19 @@ export const createStyles = (theme: NativeTheme) =>
       width: 20,
       height: 20,
       marginTop: -10,
-      borderRadius: 999,
+      borderRadius: theme.tokens.radius.full,
       alignItems: 'center',
       justifyContent: 'center',
     },
 
     clearButtonText: {
-      color: theme.components.input.icon.danger,
+      color: theme.components.input.clearButton.fg,
       fontSize: 16,
       lineHeight: 20,
+    },
+
+    clearButtonPressed: {
+      backgroundColor: theme.components.input.clearButton.pressedBg,
     },
 
     sm: {
@@ -103,18 +116,50 @@ export const createStyles = (theme: NativeTheme) =>
       fontSize: theme.tokens.typography.size.lg,
     },
 
-    error: {
-      borderColor: theme.components.input.error.border,
-    },
-
     focused: {
       color: theme.components.input.focus.fg,
       backgroundColor: theme.components.input.focus.bg,
       borderColor: theme.components.input.focus.border,
+      shadowColor: resolveRingColor(theme.components.input.focus.ring),
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.18,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+
+    error: {
+      borderColor: theme.components.input.error.border,
     },
 
     errorFocused: {
       borderColor: theme.components.input.error.border,
+      shadowColor: resolveRingColor(theme.components.input.error.ring),
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+
+    success: {
+      borderColor: theme.components.input.success.border,
+    },
+
+    successFocused: {
+      borderColor: theme.components.input.success.border,
+      shadowColor: resolveRingColor(theme.components.input.success.ring),
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.18,
+      shadowRadius: 6,
+      elevation: 1,
     },
 
     readOnly: {

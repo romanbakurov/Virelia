@@ -40,12 +40,12 @@ export const menu = {
       },
 
       hover: {
-        bg: colors.vellira[700],
+        bg: status.error.bg,
         fg: status.error.fg,
       },
 
       active: {
-        bg: colors.vellira[700],
+        bg: status.error.bg,
         fg: status.error.fg,
       },
 

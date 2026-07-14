@@ -19,13 +19,24 @@ export const checkbox = {
   },
 
   checked: {
-    default: control.selected.default,
-    hover: control.selected.hover,
-    pressed: control.selected.active,
+    default: {
+      ...control.selected.default,
+      labelFg: text.brand,
+    },
+
+    hover: {
+      ...control.selected.hover,
+      labelFg: text.interactiveHover,
+    },
+
+    pressed: {
+      ...control.selected.active,
+      labelFg: text.interactiveActive,
+    },
   },
 
   focus: {
-    ring: focus.ring,
+    ring: focus.ring.color,
   },
 
   disabled: {
@@ -37,5 +48,6 @@ export const checkbox = {
   error: {
     fg: status.error.fg,
     border: status.error.border,
+    ring: status.error.ring,
   },
 } as const;

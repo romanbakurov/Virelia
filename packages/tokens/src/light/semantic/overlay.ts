@@ -4,21 +4,21 @@ import { border } from './border.js';
 import { surface } from './surface.js';
 
 export const overlay = {
-  backdrop: 'rgba(0,0,0,.72)',
+  backdrop: 'rgba(24, 21, 33, 0.52)',
 
   tooltip: {
-    bg: colors.mono[50],
-    fg: colors.mono[950],
-    border: border.subtle,
+    bg: surface.inverse,
+    fg: colors.mono[50],
+    border: surface.inverse,
   },
 
   popover: {
-    bg: surface.subtle,
+    bg: surface.elevated,
     border: border.muted,
   },
 
   modal: {
-    bg: surface.subtle,
+    bg: surface.elevated,
     border: border.muted,
   },
 } as const;

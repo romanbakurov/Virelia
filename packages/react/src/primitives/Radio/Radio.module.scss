@@ -82,7 +82,7 @@
   user-select: none;
 
   &:has(.input:checked) {
-    color: var(--radio-checked-default-fg);
+    color: var(--radio-checked-default-label-fg);
   }
 
   &:has(.input:disabled) {
@@ -135,12 +135,12 @@
 }
 
 .input:checked + .control {
-  background-color: var(--radio-default-bg);
+  background-color: var(--radio-checked-default-bg);
   border-color: var(--radio-checked-default-border);
 }
 
 .input:checked + .control .indicator {
-  background-color: var(--radio-checked-default-bg);
+  background-color: var(--radio-checked-default-fg);
   opacity: 1;
   transform: scale(1);
 }
@@ -155,7 +155,7 @@
 }
 
 .wrapper:not(:has(.input:disabled)):has(.input:checked):hover {
-  color: var(--radio-checked-hover-fg);
+  color: var(--radio-checked-hover-label-fg);
 
   .control {
     background-color: var(--radio-default-bg);
@@ -163,7 +163,7 @@
   }
 
   .indicator {
-    background-color: var(--radio-checked-hover-bg);
+    background-color: var(--radio-checked-hover-fg);
   }
 }
 
@@ -178,12 +178,12 @@
 }
 
 .input:checked:active:not(:disabled) + .control {
-  background-color: var(--radio-default-bg);
+  background-color: var(--radio-checked-pressed-bg);
   border-color: var(--radio-checked-pressed-border);
 }
 
 .input:checked:active:not(:disabled) + .control .indicator {
-  background-color: var(--radio-checked-pressed-bg);
+  background-color: var(--radio-checked-pressed-fg);
 }
 
 .input:disabled + .control {
