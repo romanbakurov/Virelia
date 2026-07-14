@@ -1,4 +1,5 @@
-import { action } from '../semantic/action.js';
+import { status } from '../../dark/semantic/index.js';
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { navigation } from '../semantic/navigation.js';
@@ -65,17 +66,17 @@ export const dropdown = {
 
     danger: {
       default: {
-        fg: action.danger.subtle.fg,
+        fg: colors.error[400],
       },
 
       hover: {
-        bg: navigation.itemHover.bg,
-        fg: action.danger.subtle.fg,
+        bg: status.error.bg,
+        fg: colors.error[400],
       },
 
       active: {
-        bg: action.danger.default.bg,
-        fg: action.danger.default.fg,
+        bg: status.error.bg,
+        fg: colors.error[400],
         ring: focus.ring,
       },
     },

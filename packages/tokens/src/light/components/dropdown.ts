@@ -74,8 +74,8 @@ export const dropdown = {
       },
 
       active: {
-        bg: action.danger.default.bg,
-        fg: action.danger.default.fg,
+        bg: action.danger.subtle.bg,
+        fg: action.danger.subtle.fg,
         ring: 'transparent',
       },
     },
