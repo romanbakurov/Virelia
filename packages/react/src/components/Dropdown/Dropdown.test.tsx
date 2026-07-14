@@ -352,7 +352,39 @@ describe('Dropdown', () => {
     unmount();
   });
 
-  it('supports typeahead, Home, and End keyboard navigation', () => {
+  it('moves to the first and last enabled items with Home and End', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        trigger='Actions'
+        items={[
+          { label: 'Apple', value: 'apple' },
+          { label: 'Banana', value: 'banana', disabled: true },
+          { label: 'Cherry', value: 'cherry' },
+        ]}
+      />
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+    pressKey(trigger!, 'Enter');
+
+    const menu = document.querySelector('[role="menu"]');
+
+    pressKey(menu!, 'End');
+    expect(menu?.getAttribute('aria-activedescendant')).toBe(
+      `${menu?.id}-item-2`
+    );
+
+    pressKey(menu!, 'Home');
+    expect(menu?.getAttribute('aria-activedescendant')).toBe(
+      `${menu?.id}-item-0`
+    );
+
+    unmount();
+  });
+
+  it('supports typeahead navigation and selects the matched item', () => {
+    const onSelect = vi.fn();
     const { container, unmount } = render(
       <Dropdown
         label='Actions'
@@ -362,6 +394,7 @@ describe('Dropdown', () => {
           { label: 'Banana', value: 'banana' },
           { label: 'Cherry', value: 'cherry' },
         ]}
+        onSelect={onSelect}
       />
     );
 
@@ -375,15 +408,9 @@ describe('Dropdown', () => {
       `${menu?.id}-item-2`
     );
 
-    pressKey(menu!, 'Home');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-0`
-    );
+    pressKey(menu!, 'Enter');
 
-    pressKey(menu!, 'End');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-2`
-    );
+    expect(onSelect).toHaveBeenCalledWith('cherry');
 
     unmount();
   });
