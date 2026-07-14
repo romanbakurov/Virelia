@@ -86,6 +86,9 @@ describe('Native Dropdown', () => {
 
     expect(container.textContent).toContain('File');
     expect(container.textContent).toContain('Archive');
+    expect(container.querySelector('[role="heading"]')?.textContent).toContain(
+      'File'
+    );
 
     const archiveItem = Array.from(container.querySelectorAll('button')).find(
       (button) => button.textContent?.includes('Archive')
