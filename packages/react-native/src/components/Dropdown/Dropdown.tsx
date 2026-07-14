@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
+import { useDropdown } from '@vellira-ui/core';
 import { View } from 'react-native';
 
 import { useThemeStyles } from '../../theme';
@@ -34,45 +35,40 @@ export function Dropdown({
   accessibilityHint,
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const isControlled = open !== undefined;
-  const isOpen = open ?? uncontrolledOpen;
   const menuAccessibilityLabel = useMemo(() => {
     if (accessibilityLabel) return accessibilityLabel;
 
     return typeof label === 'string' ? label : 'Menu';
   }, [accessibilityLabel, label]);
 
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (!isControlled) {
-        setUncontrolledOpen(next);
-      }
-
-      onOpenChange?.(next);
-    },
-    [isControlled, onOpenChange]
+  const navigableItems = useMemo(
+    () => items.filter((item) => isMenuItem(item)),
+    [items]
   );
 
-  const close = useCallback(() => {
-    if (!isOpen) return;
-
-    setOpen(false);
-  }, [isOpen, setOpen]);
+  const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
+    items: navigableItems,
+    open,
+    defaultOpen,
+    disabled,
+    onOpenChange,
+    onSelect,
+    getItemValue: (item) => item.value,
+    getItemText: (item) =>
+      typeof item.label === 'string' ? item.label : item.value,
+  });
 
   const handleSelect = useCallback(
     (value: string) => {
       onSelect?.(value);
-      close();
+      closeDropdown();
     },
-    [close, onSelect]
+    [closeDropdown, onSelect]
   );
 
   const handleTriggerPress = useCallback(() => {
-    if (disabled) return;
-
-    setOpen(!isOpen);
-  }, [disabled, isOpen, setOpen]);
+    toggleDropdown();
+  }, [toggleDropdown]);
 
   return (
     <View style={[styles.root, style]}>
@@ -92,7 +88,7 @@ export function Dropdown({
 
       <DropdownContent
         isOpen={isOpen}
-        onClose={close}
+        onClose={closeDropdown}
         contentStyle={contentStyle}
         accessibilityLabel={menuAccessibilityLabel}
       >

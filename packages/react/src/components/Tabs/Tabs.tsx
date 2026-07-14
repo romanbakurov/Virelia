@@ -1,7 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
-
 import { cn } from '@utils/cn';
-import { useTabsKeyboard } from '@vellira-ui/core';
+import { useTabs } from '@vellira-ui/core';
 
 import type { TabsContextValue } from './TabsContext';
 import { TabsContext } from './TabsContext';
@@ -18,39 +16,13 @@ export const Tabs = ({
   appearance = 'default',
   className,
 }: TabsProps) => {
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] =
-    useState(defaultActiveIndex);
-  const isControlled = controlledActiveIndex !== undefined;
-  const activeIndex = isControlled
-    ? controlledActiveIndex
-    : uncontrolledActiveIndex;
-
-  const setActiveIndex = useCallback(
-    (nextIndex: number) => {
-      if (!isControlled) {
-        setUncontrolledActiveIndex(nextIndex);
-      }
-
-      onChange?.(nextIndex);
-    },
-    [isControlled, onChange]
-  );
-
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const registerTab = useCallback(
-    (index: number, el: HTMLButtonElement | null) => {
-      tabRefs.current[index] = el;
-    },
-    []
-  );
-
-  const { onKeyDown } = useTabsKeyboard<HTMLButtonElement>({
-    activeIndex,
-    setActiveIndex,
-    tabRefs,
-    orientation,
-  });
+  const { activeIndex, setActiveIndex, registerTab, onKeyDown } =
+    useTabs<HTMLButtonElement>({
+      activeIndex: controlledActiveIndex,
+      defaultActiveIndex,
+      onChange,
+      orientation,
+    });
 
   const contextValue: TabsContextValue = {
     activeIndex,

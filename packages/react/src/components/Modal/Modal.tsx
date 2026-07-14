@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useModal } from '@vellira-ui/core';
 
 import { ModalContent } from './Content/ModalContent';
 import ModalContext from './ModalContext';
@@ -21,18 +21,23 @@ export const Modal = ({
   closeOnClick,
   closeOnEsc = true,
 }: ModalProps) => {
-  const titleId = useId();
-  const descriptionId = useId();
+  const modal = useModal({
+    isOpen,
+    onClose,
+    closeOnBackdrop,
+    closeOnClick,
+    closeOnEsc,
+  });
 
-  if (!isOpen) return null;
+  if (!modal.shouldRender) return null;
 
   return (
-    <ModalContext.Provider value={{ onClose, titleId, descriptionId }}>
+    <ModalContext.Provider value={modal.contextValue}>
       <ModalOverlay
-        isOpen={isOpen}
-        onClose={onClose}
-        closeOnBackdrop={closeOnBackdrop ?? closeOnClick}
-        closeOnEsc={closeOnEsc}
+        isOpen={modal.isOpen}
+        onClose={modal.onClose}
+        closeOnBackdrop={modal.closeOnBackdrop}
+        closeOnEsc={modal.closeOnEsc}
       >
         <ModalContent>{children}</ModalContent>
       </ModalOverlay>

@@ -1,16 +1,10 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useId, useMemo, useRef } from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { cn } from '@utils/cn';
-import { useKeyboardNavigation } from '@vellira-ui/core';
+import { useDropdown } from '@vellira-ui/core';
+import type { KeyboardEvent } from 'react';
 
 import { DropdownContent } from './Content/DropdownContent';
 import { DropdownGroup } from './Group/DropdownGroup';
@@ -44,11 +38,6 @@ export const Dropdown = ({
   showArrow = true,
   arrowIcon,
 }: DropdownProps) => {
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const isControlled = open !== undefined;
-  const isOpen = open ?? uncontrolledOpen;
-
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const menuRef = useRef<HTMLUListElement | null>(null);
   const menuId = useId();
@@ -81,113 +70,50 @@ export const Dropdown = ({
       ),
     [navigableEntries]
   );
-  const activeDescendantId =
-    isOpen && activeIndex >= 0 ? `${menuId}-item-${activeIndex}` : undefined;
 
-  const getFirstEnabledIndex = useCallback(
-    () => navigableItems.findIndex((item) => !item.disabled),
-    [navigableItems]
-  );
-
-  const getLastEnabledIndex = useCallback(() => {
-    for (let index = navigableItems.length - 1; index >= 0; index--) {
-      if (!navigableItems[index]?.disabled) {
-        return index;
-      }
-    }
-
-    return -1;
-  }, [navigableItems]);
-
-  const syncActiveIndex = useCallback(
-    (nextOpen: boolean, initialIndex?: number) => {
-      if (nextOpen) {
-        setActiveIndex((currentIndex) => {
-          if (currentIndex >= 0 && !navigableItems[currentIndex]?.disabled) {
-            return currentIndex;
-          }
-
-          return initialIndex ?? getFirstEnabledIndex();
-        });
-
-        return;
-      }
-
-      setActiveIndex(-1);
+  const handleSelect = useCallback(
+    (value: string) => {
+      onSelect?.(value);
+      buttonRef.current?.focus();
     },
-    [getFirstEnabledIndex, navigableItems]
+    [onSelect]
   );
 
-  useEffect(() => {
-    syncActiveIndex(isOpen);
-  }, [isOpen, syncActiveIndex]);
-
-  const setOpen = useCallback(
-    (next: boolean, initialIndex?: number) => {
-      if (!isControlled) {
-        setUncontrolledOpen(next);
-      }
-
-      onOpenChange?.(next);
-      syncActiveIndex(next, initialIndex);
-    },
-    [isControlled, onOpenChange, syncActiveIndex]
-  );
-
-  const openDropdown = useCallback(
-    (initialIndex = getFirstEnabledIndex()) => {
-      if (disabled) return;
-
-      setOpen(true, initialIndex);
-    },
-    [disabled, getFirstEnabledIndex, setOpen]
-  );
-
-  const toggleOpen = useCallback(() => {
-    if (disabled) return;
-
-    if (isOpen) {
-      setOpen(false);
-      return;
-    }
-
-    openDropdown();
-  }, [disabled, isOpen, openDropdown, setOpen]);
-
-  const close = useCallback(() => {
-    if (!isOpen) return;
-
-    setOpen(false);
-  }, [isOpen, setOpen]);
-
-  const closeAndRestoreFocus = useCallback(() => {
-    close();
-    buttonRef.current?.focus();
-  }, [close]);
-
-  const { onKeyDown } = useKeyboardNavigation({
+  const {
     activeIndex,
     setActiveIndex,
-    items: navigableItems,
     isOpen,
-    onOpen: (event) => {
-      openDropdown(
-        event.key === 'ArrowUp' ? getLastEnabledIndex() : getFirstEnabledIndex()
-      );
-    },
-    onSelect: () => {
-      const item = navigableItems[activeIndex];
-      if (!item || item.disabled) return;
-
-      onSelect?.(item.value);
-      closeAndRestoreFocus();
-    },
-    onClose: closeAndRestoreFocus,
+    closeDropdown,
+    toggleDropdown,
+    selectItem,
+    onKeyDown,
+  } = useDropdown({
+    items: navigableItems,
+    open,
+    defaultOpen,
+    disabled,
+    onOpenChange,
+    onSelect: handleSelect,
+    getItemValue: (item) => item.value,
     getItemText: (item) =>
       typeof item.label === 'string' ? item.label : item.value,
   });
 
-  useOutsideClick([buttonRef, menuRef], () => close(), isOpen);
+  const activeDescendantId =
+    isOpen && activeIndex >= 0 ? `${menuId}-item-${activeIndex}` : undefined;
+
+  useOutsideClick([buttonRef, menuRef], closeDropdown, isOpen);
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement | HTMLUListElement>) => {
+      onKeyDown(event);
+
+      if (isOpen && event.key === 'Escape') {
+        buttonRef.current?.focus();
+      }
+    },
+    [isOpen, onKeyDown]
+  );
 
   const triggerRef = useCallback(
     (el: HTMLButtonElement | null) => {
@@ -220,8 +146,8 @@ export const Dropdown = ({
         arrowIcon={arrowIcon}
         rotateAngle={rotateAngle}
         className={triggerClassName}
-        onClick={toggleOpen}
-        onKeyDown={onKeyDown}
+        onClick={toggleDropdown}
+        onKeyDown={handleKeyDown}
         aria-expanded={isOpen}
         aria-haspopup='menu'
         {...(isOpen && { 'aria-controls': menuId })}
@@ -240,7 +166,7 @@ export const Dropdown = ({
             (!trigger && typeof label === 'string' ? label : undefined)
           }
           activeDescendantId={activeDescendantId}
-          onKeyDown={onKeyDown}
+          onKeyDown={handleKeyDown}
           className={contentClassName}
         >
           {items.map((item, index) => {
@@ -266,10 +192,8 @@ export const Dropdown = ({
                   textWrap={item.textWrap || textWrap}
                   className={itemClassName}
                   onClick={() => {
-                    if (!item.disabled) {
-                      onSelect?.(item.value);
-                      closeAndRestoreFocus();
-                    }
+                    selectItem(item);
+                    buttonRef.current?.focus();
                   }}
                   onMouseEnter={() => {
                     if (navigableIndex < 0 || item.disabled) {

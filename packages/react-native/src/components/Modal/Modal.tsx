@@ -1,3 +1,5 @@
+import { useModal } from '@vellira-ui/core';
+
 import { ModalContent } from './Content/ModalContent';
 import ModalContext from './ModalContext';
 import { ModalOverlay } from './ModalOverlay';
@@ -11,12 +13,18 @@ export const ModalRoot = ({
   overlayStyle,
   contentStyle,
 }: ModalProps) => {
+  const modal = useModal({
+    isOpen,
+    onClose,
+    closeOnBackdrop,
+  });
+
   return (
-    <ModalContext.Provider value={{ onClose }}>
+    <ModalContext.Provider value={modal.contextValue}>
       <ModalOverlay
-        isOpen={isOpen}
-        onClose={onClose}
-        closeOnBackdrop={closeOnBackdrop}
+        isOpen={modal.isOpen}
+        onClose={modal.onClose}
+        closeOnBackdrop={modal.closeOnBackdrop}
         overlayStyle={overlayStyle}
       >
         <ModalContent style={contentStyle}>{children}</ModalContent>
