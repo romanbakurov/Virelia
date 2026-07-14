@@ -1,7 +1,4 @@
-import { useCallback, useRef } from 'react';
-
 import { useControllableState } from './useControllableState.js';
-import { type TabKeyboardItem, useTabsKeyboard } from './useTabsKeyboard.js';
 
 export interface UseTabsParams {
   activeIndex?: number;
@@ -10,11 +7,10 @@ export interface UseTabsParams {
   orientation?: 'horizontal' | 'vertical';
 }
 
-export const useTabs = <TTab extends TabKeyboardItem>({
+export const useTabs = ({
   activeIndex: controlledActiveIndex,
   defaultActiveIndex = 0,
   onChange,
-  orientation = 'horizontal',
 }: UseTabsParams) => {
   const [activeIndex, setActiveIndex] = useControllableState({
     value: controlledActiveIndex,
@@ -22,24 +18,8 @@ export const useTabs = <TTab extends TabKeyboardItem>({
     onChange,
   });
 
-  const tabRefs = useRef<(TTab | null)[]>([]);
-
-  const registerTab = useCallback((index: number, el: TTab | null) => {
-    tabRefs.current[index] = el;
-  }, []);
-
-  const { onKeyDown } = useTabsKeyboard<TTab>({
-    activeIndex,
-    setActiveIndex,
-    tabRefs,
-    orientation,
-  });
-
   return {
     activeIndex,
     setActiveIndex,
-    tabRefs,
-    registerTab,
-    onKeyDown,
   };
 };

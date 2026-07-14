@@ -32,7 +32,13 @@ export const Modal = ({
   if (!modal.shouldRender) return null;
 
   return (
-    <ModalContext.Provider value={modal.contextValue}>
+    <ModalContext.Provider
+      value={{
+        onClose: modal.onClose,
+        titleId: modal.titleId,
+        descriptionId: modal.descriptionId,
+      }}
+    >
       <ModalOverlay
         isOpen={modal.isOpen}
         onClose={modal.onClose}

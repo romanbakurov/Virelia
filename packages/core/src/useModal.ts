@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react';
+import { useId } from 'react';
 
 export interface UseModalParams {
   isOpen: boolean;
@@ -19,19 +19,14 @@ export const useModal = ({
   const descriptionId = useId();
   const resolvedCloseOnBackdrop = closeOnBackdrop ?? closeOnClick;
 
-  const contextValue = useMemo(
-    () => ({ onClose, titleId, descriptionId }),
-    [descriptionId, onClose, titleId]
-  );
-
   return {
     isOpen,
+    open: isOpen,
     shouldRender: isOpen,
     onClose,
     closeOnBackdrop: resolvedCloseOnBackdrop,
     closeOnEsc,
     titleId,
     descriptionId,
-    contextValue,
   };
 };

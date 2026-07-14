@@ -118,6 +118,7 @@ export const useSelect = <TOption extends SelectOptionLike>({
     setSelectedValue,
     selectedOption,
     isOpen,
+    open: isOpen,
     setIsOpen,
     activeIndex,
     setActiveIndex,
@@ -126,6 +127,7 @@ export const useSelect = <TOption extends SelectOptionLike>({
     closeDropdown,
     toggleDropdown,
     selectValue,
+    select: selectValue,
     selectActiveOption,
     onKeyDown,
   };

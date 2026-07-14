@@ -20,7 +20,7 @@ export const ModalRoot = ({
   });
 
   return (
-    <ModalContext.Provider value={modal.contextValue}>
+    <ModalContext.Provider value={{ onClose: modal.onClose }}>
       <ModalOverlay
         isOpen={modal.isOpen}
         onClose={modal.onClose}
