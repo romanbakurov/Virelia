@@ -73,6 +73,45 @@
   }
 }
 
+.sm {
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  &.iconOnly {
+    width: 36px;
+    height: 36px;
+    padding: var(--space-2);
+  }
+}
+
+.md {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+
+  &.iconOnly {
+    width: 44px;
+    height: 44px;
+    padding: var(--space-3);
+  }
+}
+
+.lg {
+  min-height: 52px;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+
+  &.iconOnly {
+    width: 52px;
+    height: 52px;
+    padding: var(--space-4);
+  }
+}
+
 .button > :not(.iconLeft, .arrow) {
   min-width: 0;
   overflow: hidden;

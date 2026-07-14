@@ -139,6 +139,18 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('applies the configured trigger size', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' trigger='Actions' size='lg' items={items} />
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+
+    expect(trigger?.className).toContain('lg');
+
+    unmount();
+  });
+
   it('renders groups, separators, icons, shortcuts, and wrapped item text', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

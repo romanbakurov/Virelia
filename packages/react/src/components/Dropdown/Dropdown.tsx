@@ -26,6 +26,7 @@ export const Dropdown = ({
   open,
   defaultOpen = false,
   onOpenChange,
+  size = 'md',
   className,
   triggerClassName,
   contentClassName,
@@ -139,6 +140,7 @@ export const Dropdown = ({
         id={triggerId}
         isOpen={isOpen}
         disabled={disabled}
+        size={size}
         icon={icon}
         label={label}
         ariaLabel={ariaLabel}

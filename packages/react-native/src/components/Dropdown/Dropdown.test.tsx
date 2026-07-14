@@ -52,6 +52,19 @@ describe('Native Dropdown', () => {
     unmount();
   });
 
+  it('applies the configured trigger size', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' trigger='Actions' size='lg' items={items} />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.style.minHeight).toBe('52px');
+
+    unmount();
+  });
+
   it('renders grouped menu content and ignores disabled item presses', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

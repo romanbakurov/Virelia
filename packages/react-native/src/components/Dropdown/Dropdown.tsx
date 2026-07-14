@@ -26,6 +26,7 @@ export function Dropdown({
   defaultOpen = false,
   onOpenChange,
   disabled = false,
+  size = 'md',
   style,
   triggerStyle,
   contentStyle,
@@ -80,6 +81,7 @@ export function Dropdown({
         showArrow={showArrow}
         disabled={disabled}
         isOpen={isOpen}
+        size={size}
         triggerStyle={triggerStyle}
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}

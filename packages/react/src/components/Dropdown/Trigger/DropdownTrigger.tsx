@@ -19,6 +19,7 @@ export const DropdownTrigger = forwardRef<
       arrowIcon,
       showArrow = true,
       rotateAngle = 90,
+      size = 'md',
       label,
       ariaLabel,
       className,
@@ -48,6 +49,7 @@ export const DropdownTrigger = forwardRef<
         type='button'
         className={cn(
           styles.button,
+          styles[size],
           {
             [styles.disabled]: buttonProps.disabled,
             [styles.iconOnly]: isOnlyIcon,

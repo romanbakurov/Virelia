@@ -21,6 +21,7 @@ export function DropdownTrigger({
   icon,
   arrowIcon,
   showArrow = true,
+  size = 'md',
   disabled = false,
   isOpen,
   triggerStyle,
@@ -30,6 +31,16 @@ export function DropdownTrigger({
 }: DropdownTriggerProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const textSizeStyle = {
+    sm: styles.textSm,
+    md: styles.textMd,
+    lg: styles.textLg,
+  }[size];
+  const iconOnlySizeStyle = {
+    sm: styles.smIconOnly,
+    md: styles.mdIconOnly,
+    lg: styles.lgIconOnly,
+  }[size];
   const hasIcon = Boolean(icon);
   const isIconOnly = !trigger && hasIcon && !showArrow;
   const [isPressed, setIsPressed] = useState(false);
@@ -55,6 +66,7 @@ export function DropdownTrigger({
           numberOfLines={1}
           style={[
             styles.triggerText,
+            textSizeStyle,
             { color },
             disabled && styles.triggerTextDisabled,
           ]}
@@ -97,9 +109,11 @@ export function DropdownTrigger({
       onPressOut={() => setIsPressed(false)}
       style={[
         styles.trigger,
+        styles[size],
         isPressed && !disabled && styles.triggerPressed,
         disabled && styles.triggerDisabled,
         isIconOnly && styles.iconOnly,
+        isIconOnly && iconOnlySizeStyle,
         triggerStyle,
       ]}
     >
@@ -113,6 +127,7 @@ export function DropdownTrigger({
             numberOfLines={1}
             style={[
               styles.triggerText,
+              textSizeStyle,
               { color: contentColor },
               disabled && styles.triggerTextDisabled,
             ]}
