@@ -66,17 +66,17 @@ export const dropdown = {
 
     danger: {
       default: {
-        fg: colors.error[400],
+        fg: colors.error[300],
       },
 
       hover: {
         bg: status.error.bg,
-        fg: colors.error[400],
+        fg: colors.error[300],
       },
 
       active: {
-        bg: status.error.bg,
-        fg: colors.error[400],
+        bg: colors.error[600],
+        fg: text.inverse,
         ring: 'transparent',
       },
     },
