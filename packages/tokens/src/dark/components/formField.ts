@@ -12,7 +12,7 @@ export const formField = {
 
   helperText: {
     default: {
-      fg: text.secondary,
+      fg: text.muted,
     },
 
     error: {

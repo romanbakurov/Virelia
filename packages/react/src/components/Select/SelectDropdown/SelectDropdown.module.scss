@@ -1,17 +1,17 @@
 .dropdown {
   z-index: var(--z-index-dropdown);
-  max-height: 300px;
-  box-sizing: border-box;
   padding: var(--space-1);
-  overflow-y: auto;
-  overscroll-behavior: contain;
   color: var(--select-dropdown-fg);
   background-color: var(--select-dropdown-bg);
   border: 1px solid var(--select-dropdown-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  outline: none;
+  box-shadow: var(--select-dropdown-shadow);
   animation: dropdownIn 0.12s ease-out;
+  max-height: 300px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
 }
 
 .empty {

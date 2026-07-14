@@ -15,10 +15,10 @@ export const input = {
   },
 
   hover: {
-    bg: surface.hover,
+    bg: surface.subtle,
     fg: text.primary,
     border: border.focus,
-    placeholder: text.muted,
+    placeholder: text.secondary,
     icon: icons.hover,
   },
 
@@ -27,14 +27,14 @@ export const input = {
     fg: text.primary,
     border: border.focus,
     ring: focus.ring,
-    placeholder: text.muted,
-    icon: icons.subtle,
+    placeholder: text.secondary,
+    icon: icons.brand,
   },
 
   disabled: {
-    bg: surface.elevated,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.default,
+    border: border.disabled,
     placeholder: text.disabled,
     icon: icons.disabled,
   },
@@ -45,14 +45,14 @@ export const input = {
   },
 
   success: {
-    border: status.success.strong,
+    border: status.success.border,
     ring: status.success.fg,
   },
 
   readOnly: {
     bg: surface.subtle,
     fg: text.secondary,
-    border: border.default,
+    border: border.muted,
     placeholder: text.muted,
     icon: icons.muted,
   },
@@ -69,10 +69,10 @@ export const input = {
   },
 
   clearButton: {
-    fg: status.error.fg,
+    fg: icons.muted,
     hoverFg: status.error.fg,
-    hoverBg: surface.danger,
-    focusBg: surface.inverse,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
     pressedBg: surface.active,
   },
 } as const;

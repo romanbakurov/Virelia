@@ -27,13 +27,13 @@
     background: var(--dropdown-trigger-focus-bg);
     outline: none;
     box-shadow: 0 0 0 3px var(--dropdown-trigger-focus-ring);
+
+    @include focus-ring;
   }
 
   &:hover:not(.disabled) {
     color: var(--dropdown-trigger-hover-fg);
     background: var(--dropdown-trigger-hover-bg);
-
-    @include ring(var(--dropdown-trigger-hover-ring));
 
     .iconLeft svg {
       color: currentcolor;
@@ -63,8 +63,6 @@
 
     &:hover:not(.disabled) {
       background: var(--dropdown-trigger-hover-bg);
-
-      @include ring(var(--dropdown-trigger-hover-ring));
 
       .iconLeft {
         transform: rotate(var(--dropdown-rotate-angle, 90deg));

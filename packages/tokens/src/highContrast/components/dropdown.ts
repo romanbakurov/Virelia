@@ -36,7 +36,7 @@ export const dropdown = {
   },
 
   content: {
-    bg: surface.elevated,
+    bg: surface.muted,
     fg: text.primary,
     border: navigation.border,
   },

@@ -1,8 +1,7 @@
-import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
-import { navigation } from '../semantic/navigation.js';
-import { status } from '../semantic/status.js';
+import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -10,49 +9,58 @@ export const dropdown = {
   trigger: {
     default: {
       bg: 'transparent',
-      fg: text.brand,
+      fg: text.interactive,
       border: 'transparent',
     },
 
     hover: {
-      bg: navigation.brandHover.bg,
-      fg: navigation.brandHover.fg,
+      bg: surface.hover,
+      fg: text.interactiveHover,
       border: 'transparent',
       ring: 'transparent',
     },
 
     focus: {
       bg: 'transparent',
-      fg: text.brand,
+      fg: text.interactive,
       border: border.focus,
       ring: focus.ring,
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
-      border: border.default,
+      border: border.disabled,
     },
   },
 
   content: {
-    bg: surface.elevated,
-    fg: text.primary,
-    border: border.default,
+    bg: menu.background,
+    fg: menu.item.default.fg,
+    border: menu.border,
+    shadow: shadow.lg,
   },
 
   item: {
     default: {
-      bg: 'transparent',
-      fg: text.primary,
+      bg: menu.item.default.bg,
+      fg: menu.item.default.fg,
     },
 
-    hover: navigation.hover,
+    hover: {
+      bg: menu.item.hover.bg,
+      fg: menu.item.hover.fg,
+    },
 
     active: {
-      bg: navigation.active.bg,
-      fg: navigation.active.fg,
+      bg: menu.item.active.bg,
+      fg: menu.item.active.fg,
       ring: 'transparent',
+    },
+
+    pressed: {
+      bg: menu.item.pressed.bg,
+      fg: menu.item.pressed.fg,
     },
 
     focus: {
@@ -60,24 +68,30 @@ export const dropdown = {
     },
 
     disabled: {
-      bg: 'transparent',
-      fg: text.disabled,
+      bg: menu.item.disabled.bg,
+      fg: menu.item.disabled.fg,
     },
 
     danger: {
       default: {
-        fg: colors.error[400],
+        bg: menu.item.danger.default.bg,
+        fg: menu.item.danger.default.fg,
       },
 
       hover: {
-        bg: status.error.bg,
-        fg: colors.error[400],
+        bg: menu.item.danger.hover.bg,
+        fg: menu.item.danger.hover.fg,
       },
 
       active: {
-        bg: status.error.bg,
-        fg: colors.error[400],
+        bg: menu.item.danger.active.bg,
+        fg: menu.item.danger.active.fg,
         ring: 'transparent',
+      },
+
+      disabled: {
+        bg: menu.item.danger.disabled.bg,
+        fg: menu.item.danger.disabled.fg,
       },
     },
   },
@@ -87,7 +101,7 @@ export const dropdown = {
   },
 
   separator: {
-    bg: border.default,
+    bg: border.muted,
     fg: text.muted,
   },
 } as const;

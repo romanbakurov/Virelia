@@ -187,7 +187,6 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
     },
     [
       activeIndex,
-      items,
       isOpen,
       onOpen,
       onSelect,

@@ -19,13 +19,14 @@
   &:hover:not(.selected, .disabled) {
     color: var(--select-option-hover-fg);
     background-color: var(--select-option-hover-bg);
-    box-shadow: inset 0 0 0 2px var(--select-option-active-ring);
   }
 }
 
 .selected {
   color: var(--select-option-selected-fg);
-  background-color: var(--select-option-selected-bg);
+  background: var(--select-option-selected-bg);
+  border-color: var(--select-option-selected-border);
+  box-shadow: var(--select-option-selected-shadow);
 }
 
 .active:not(.selected, .disabled) {

@@ -24,14 +24,11 @@
   line-height: var(--line-height-sm);
 }
 
-@mixin ring($color, $width: 2px) {
-  box-shadow: 0 0 0 $width $color;
-}
-
-@mixin focus-ring($width: 2px) {
+@mixin focus-ring($color: var(--focus-ring-color)) {
   outline: none;
-
-  @include ring(var(--color-focus-ring), $width);
+  box-shadow:
+    0 0 0 var(--focus-ring-width) $color,
+    var(--focus-ring-shadow);
 }
 
 @mixin smooth-transition($properties: all, $duration: 0.2s) {

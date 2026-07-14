@@ -2,41 +2,19 @@ import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { status } from '../semantic/status.js';
-import { surface } from '../semantic/surface.js';
-import { text } from '../semantic/text.js';
 
 export const radio = {
-  default: {
-    bg: surface.elevated,
-    fg: text.primary,
-    border: border.default,
-  },
+  default: control.default,
 
   hover: control.hover,
 
   pressed: control.active,
 
   checked: {
-    default: {
-      ...control.selected.default,
-      fg: text.brand,
-    },
-
-    hover: {
-      ...control.selected.hover,
-      fg: text.brand,
-    },
-
-    pressed: {
-      ...control.selected.active,
-      fg: text.brand,
-    },
-
-    disabled: {
-      bg: surface.disabled,
-      fg: text.disabled,
-      border: border.disabled,
-    },
+    default: control.selected.default,
+    hover: control.selected.hover,
+    pressed: control.selected.active,
+    disabled: control.disabled,
   },
 
   focus: {
@@ -45,14 +23,9 @@ export const radio = {
   },
 
   invalid: {
-    bg: surface.default,
-    fg: text.inverse,
+    ...control.default,
     border: status.error.border,
   },
 
-  disabled: {
-    bg: surface.disabled,
-    fg: text.disabled,
-    border: border.disabled,
-  },
+  disabled: control.disabled,
 } as const;

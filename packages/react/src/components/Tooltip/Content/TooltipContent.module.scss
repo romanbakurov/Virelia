@@ -11,7 +11,7 @@
   background-color: var(--tooltip-content-bg);
   border: 1px solid var(--tooltip-content-border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--tooltip-content-shadow);
   opacity: 0;
   transition: opacity 0.15s ease-out;
 

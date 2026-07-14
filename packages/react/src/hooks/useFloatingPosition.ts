@@ -82,7 +82,7 @@ export const useFloatingPosition = ({
 
   const middleware: Middleware[] = useMemo(
     () => [
-      offset(6),
+      offset(2),
       flip(),
       size({
         apply({ rects, elements }) {

@@ -15,7 +15,7 @@
   background-color: var(--dropdown-content-bg);
   border: 1px solid var(--dropdown-content-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--dropdown-content-shadow);
   transition: background-color 0.15s ease;
   animation: dropdownIn 0.15s ease;
   list-style: none;

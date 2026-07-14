@@ -8,13 +8,14 @@ import { text } from '../semantic/text.js';
 export const checkbox = {
   default: {
     bg: surface.elevated,
-    fg: text.inverse,
+    fg: text.primary,
     border: border.default,
   },
 
   hover: {
-    ...control.hover,
-    fg: text.inverse,
+    bg: control.hover.bg,
+    fg: control.hover.fg,
+    border: control.hover.border,
   },
 
   checked: {
@@ -28,13 +29,13 @@ export const checkbox = {
   },
 
   disabled: {
-    bg: surface.subtle,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.default,
+    border: border.disabled,
   },
 
   error: {
     fg: status.error.fg,
-    border: status.error.fg,
+    border: status.error.border,
   },
 } as const;
