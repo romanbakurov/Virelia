@@ -10,7 +10,5 @@
 }
 
 .group:not(:first-child) {
-  margin-top: var(--space-4);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--dropdown-separator-bg);
+  margin-top: var(--space-1);
 }
