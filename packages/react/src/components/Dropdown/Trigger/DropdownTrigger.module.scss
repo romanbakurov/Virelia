@@ -19,21 +19,21 @@
   overflow: hidden;
 
   @include smooth-transition(
-    (color, background-color, border-color, box-shadow)
+    (color, background-color, border-color, box-shadow, transform)
   );
 
   &:focus-visible:not(.disabled) {
     color: var(--dropdown-trigger-focus-fg);
     background: var(--dropdown-trigger-focus-bg);
-    outline: none;
-    box-shadow: 0 0 0 3px var(--dropdown-trigger-focus-ring);
+    border-color: var(--dropdown-trigger-focus-border);
 
-    @include focus-ring;
+    @include focus-ring(var(--dropdown-trigger-focus-ring));
   }
 
   &:hover:not(.disabled) {
     color: var(--dropdown-trigger-hover-fg);
     background: var(--dropdown-trigger-hover-bg);
+    border-color: var(--dropdown-trigger-hover-border);
 
     .iconLeft svg {
       color: currentcolor;
@@ -56,14 +56,14 @@
 
   &.iconOnly {
     justify-content: center;
+    min-width: 0;
+    min-height: 0;
     width: 42px;
     height: 42px;
     padding: 8px;
     border-radius: var(--radius-full);
 
     &:hover:not(.disabled) {
-      background: var(--dropdown-trigger-hover-bg);
-
       .iconLeft {
         transform: rotate(var(--dropdown-rotate-angle, 90deg));
       }

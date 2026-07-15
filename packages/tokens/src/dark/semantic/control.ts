@@ -13,13 +13,13 @@ export const control = {
 
   hover: {
     bg: surface.hover,
-    fg: text.primary,
+    fg: text.interactive,
     border: border.focus,
   },
 
   active: {
     bg: surface.active,
-    fg: text.primary,
+    fg: text.interactive,
     border: colors.primary[300],
   },
 

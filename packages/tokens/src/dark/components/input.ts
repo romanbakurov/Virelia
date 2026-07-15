@@ -15,7 +15,7 @@ export const input = {
   },
 
   hover: {
-    bg: surface.subtle,
+    bg: surface.hover,
     fg: text.primary,
     border: border.focus,
     placeholder: text.secondary,

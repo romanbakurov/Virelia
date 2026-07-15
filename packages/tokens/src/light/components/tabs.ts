@@ -55,9 +55,9 @@ export const tabs = {
     },
 
     active: {
-      bg: control.selected.muted.bg,
-      fg: control.selected.muted.fg,
-      border: control.selected.muted.border,
+      bg: control.selected.default.bg,
+      fg: control.selected.default.fg,
+      border: control.selected.default.border,
     },
 
     disabled: {

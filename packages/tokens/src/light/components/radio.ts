@@ -46,6 +46,7 @@ export const radio = {
   invalid: {
     ...control.default,
     border: status.error.border,
+    ring: status.error.ring,
   },
 
   focus: {
