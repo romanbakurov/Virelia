@@ -185,8 +185,7 @@
 }
 
 .input:focus-visible + .control {
-  border-color: var(--radio-focus-border);
-
+  @include focus-border(var(--radio-focus-border), var(--radio-focus-ring));
   @include focus-ring(var(--radio-focus-ring));
 }
 

@@ -25,8 +25,13 @@
 }
 
 @mixin focus-ring($color: var(--focus-ring-color)) {
-  outline: var(--focus-ring-width) solid $color;
+  outline: var(--focus-ring-width) solid
+    color-mix(in srgb, #{$color} 48%, transparent);
   outline-offset: var(--focus-ring-width);
+}
+
+@mixin focus-border($border-color, $ring-color) {
+  border-color: color-mix(in srgb, #{$border-color} 70%, #{$ring-color});
 }
 
 @mixin smooth-transition($properties: all, $duration: 0.2s) {

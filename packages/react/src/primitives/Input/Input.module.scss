@@ -35,8 +35,8 @@
   &:focus-visible {
     color: var(--input-focus-fg);
     background-color: var(--input-focus-bg);
-    border-color: var(--input-focus-border);
 
+    @include focus-border(var(--input-focus-border), var(--input-focus-ring));
     @include focus-ring(var(--input-focus-ring));
 
     &::placeholder {

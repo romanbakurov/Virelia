@@ -35,8 +35,11 @@
   &:focus-visible:not(.disabled) {
     color: var(--select-trigger-focus-fg);
     background-color: var(--select-trigger-focus-bg);
-    border-color: var(--select-trigger-focus-border);
 
+    @include focus-border(
+      var(--select-trigger-focus-border),
+      var(--select-trigger-focus-ring)
+    );
     @include focus-ring(var(--select-trigger-focus-ring));
   }
 }

@@ -92,6 +92,10 @@
 }
 
 .input:focus-visible + .customCheckbox {
+  @include focus-border(
+    var(--checkbox-default-border),
+    var(--checkbox-focus-ring)
+  );
   @include focus-ring(var(--checkbox-focus-ring));
 }
 
@@ -168,6 +172,14 @@
   color: var(--checkbox-checked-default-fg);
   background: var(--checkbox-checked-default-bg);
   border-color: var(--checkbox-checked-default-border);
+}
+
+.input:checked:focus-visible + .customCheckbox,
+.input:indeterminate:focus-visible + .customCheckbox {
+  @include focus-border(
+    var(--checkbox-checked-default-border),
+    var(--checkbox-focus-ring)
+  );
 }
 
 .input:checked + .customCheckbox + .label,
