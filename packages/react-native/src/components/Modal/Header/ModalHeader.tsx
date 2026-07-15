@@ -27,10 +27,12 @@ export const ModalHeader = ({
           onPress={onClose}
           style={styles.closeButton}
         >
-          <Close
-            size={16}
-            color={theme.components.modal.closeButton.default.fg}
-          />
+          {({ pressed }) => {
+            const closeIconColor = pressed
+              ? theme.components.modal.closeButton.hover.fg
+              : theme.components.modal.closeButton.default.fg;
+            return <Close size={16} color={closeIconColor} />;
+          }}
         </Pressable>
       )}
     </View>

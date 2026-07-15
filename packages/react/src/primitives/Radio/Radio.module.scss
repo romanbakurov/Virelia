@@ -1,3 +1,5 @@
+@use '@styles/mixins' as *;
+
 .root {
   --radio-size: 16px;
   --radio-indicator-size: 8px;
@@ -82,7 +84,7 @@
   user-select: none;
 
   &:has(.input:checked) {
-    color: var(--radio-checked-default-fg);
+    color: var(--radio-checked-default-label-fg);
   }
 
   &:has(.input:disabled) {
@@ -115,6 +117,7 @@
   border: 1px solid var(--radio-default-border);
   border-radius: 50%;
   transition:
+    color 0.15s ease,
     background-color 0.15s ease,
     border-color 0.15s ease,
     box-shadow 0.15s ease;
@@ -125,24 +128,34 @@
 .indicator {
   width: var(--radio-indicator-size);
   height: var(--radio-indicator-size);
-  background-color: var(--radio-checked-default-bg);
+  background-color: var(--radio-checked-default-fg);
   border-radius: 50%;
   opacity: 0;
   transform: scale(0.6);
   transition:
+    background-color 0.15s ease,
     opacity 0.15s ease,
     transform 0.15s ease;
 }
 
 .input:checked + .control {
-  background-color: var(--radio-default-bg);
+  background-color: var(--radio-checked-default-bg);
   border-color: var(--radio-checked-default-border);
 }
 
 .input:checked + .control .indicator {
-  background-color: var(--radio-checked-default-bg);
+  background-color: var(--radio-checked-default-fg);
   opacity: 1;
   transform: scale(1);
+}
+
+.input:checked:active:not(:disabled) + .control {
+  background-color: var(--radio-checked-pressed-bg);
+  border-color: var(--radio-checked-pressed-border);
+}
+
+.input:checked:active:not(:disabled) + .control .indicator {
+  background-color: var(--radio-checked-pressed-fg);
 }
 
 .wrapper:not(:has(.input:disabled)):hover {
@@ -155,21 +168,31 @@
 }
 
 .wrapper:not(:has(.input:disabled)):has(.input:checked):hover {
-  color: var(--radio-checked-hover-fg);
+  color: var(--radio-checked-hover-label-fg);
 
   .control {
-    background-color: var(--radio-default-bg);
+    background-color: var(--radio-checked-hover-bg);
     border-color: var(--radio-checked-hover-border);
   }
 
   .indicator {
-    background-color: var(--radio-checked-hover-bg);
+    background-color: var(--radio-checked-hover-fg);
   }
 }
 
+.wrapper:not(:has(.input:disabled)):has(.input:checked):active {
+  color: var(--radio-checked-pressed-label-fg);
+}
+
 .input:focus-visible + .control {
-  border-color: var(--radio-focus-border);
-  box-shadow: 0 0 0 2px var(--radio-focus-ring);
+  @include focus-border(var(--radio-focus-border), var(--radio-focus-ring));
+  @include focus-ring(var(--radio-focus-ring));
+}
+
+.root.invalid .input:focus-visible + .control {
+  border-color: var(--radio-invalid-border);
+
+  @include focus-ring(var(--radio-invalid-ring));
 }
 
 .input:active:not(:disabled) + .control {
@@ -178,12 +201,12 @@
 }
 
 .input:checked:active:not(:disabled) + .control {
-  background-color: var(--radio-default-bg);
+  background-color: var(--radio-checked-pressed-bg);
   border-color: var(--radio-checked-pressed-border);
 }
 
 .input:checked:active:not(:disabled) + .control .indicator {
-  background-color: var(--radio-checked-pressed-bg);
+  background-color: var(--radio-checked-pressed-fg);
 }
 
 .input:disabled + .control {
@@ -213,6 +236,7 @@
   font-size: var(--radio-label-font-size);
   font-weight: var(--font-weight-regular);
   line-height: var(--radio-label-line-height);
+  transition: color 0.15s ease;
 }
 
 .description,

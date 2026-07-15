@@ -3,9 +3,10 @@ import type { ReactNode } from 'react';
 
 export interface DropdownItemProps extends Pick<
   BaseDropdownItemProps,
-  'label' | 'value' | 'disabled' | 'active'
+  'value' | 'disabled' | 'active'
 > {
   id?: string;
+  label: ReactNode;
   children: ReactNode;
   icon?: ReactNode;
   danger?: boolean;

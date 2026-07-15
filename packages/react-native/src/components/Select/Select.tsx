@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
-import { useControllableState } from '@vellira-ui/core';
+import { useSelect } from '@vellira-ui/core';
 import { Modal, Pressable, Text, View } from 'react-native';
 
 import { FormField } from '../../patterns/FormField';
@@ -32,17 +32,17 @@ export function Select({
 }: SelectProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value,
-    defaultValue: defaultValue ?? '',
-    onChange,
-  });
+  const { selectedValue, setSelectedValue, selectedOption, isOpen, setIsOpen } =
+    useSelect({
+      value,
+      defaultValue,
+      onChange,
+      options,
+      disabled,
+    });
 
   const [draftValue, setDraftValue] = useState(selectedValue);
-
-  const selectedOption = options.find((o) => o.value === selectedValue);
   const hasError = !!error;
 
   useEffect(() => {

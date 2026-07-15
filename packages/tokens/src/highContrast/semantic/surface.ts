@@ -3,15 +3,16 @@ import { withAlpha } from '../../utils/color.js';
 
 export const surface = {
   default: colors.mono[950],
-  muted: colors.gray[800],
-  subtle: colors.gray[900],
+  muted: colors.gray[900],
+  subtle: colors.gray[800],
   elevated: colors.gray[700],
-  pressed: colors.gray[900],
-  danger: withAlpha(colors.error[800], 0.5),
-  disabled: colors.gray[800],
 
-  hover: colors.gray[800],
-  active: colors.gray[500],
+  hover: colors.gray[700],
+  active: colors.gray[700],
+  pressed: colors.gray[600],
+
+  disabled: colors.gray[900],
+  danger: withAlpha(colors.error[700], 0.5),
 
   inverse: colors.mono[50],
 } as const;

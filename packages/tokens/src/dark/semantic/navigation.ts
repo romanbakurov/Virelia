@@ -1,11 +1,12 @@
 import { colors } from '../../primitives/colors.js';
 
+import { border } from './border.js';
 import { surface } from './surface.js';
 import { text } from './text.js';
 
 export const navigation = {
   hover: {
-    bg: surface.active,
+    bg: surface.hover,
     fg: text.primary,
   },
   active: {
@@ -23,16 +24,17 @@ export const navigation = {
     ring: colors.warning[500],
   },
   optionHover: {
-    bg: surface.active,
+    bg: surface.hover,
     fg: text.primary,
   },
   optionActive: {
     bg: surface.active,
     fg: text.primary,
   },
-  border: colors.vellira[700],
   triggerHover: {
     bg: surface.hover,
-    fg: colors.vellira[50],
+    fg: text.primary,
   },
+
+  border: border.muted,
 } as const;

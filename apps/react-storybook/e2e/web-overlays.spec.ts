@@ -36,7 +36,7 @@ test.describe('web overlays', () => {
   test('Dropdown supports keyboard navigation, focus restore, portal, outside click, and positioning', async ({
     page,
   }) => {
-    await openStory(page, 'components-dropdown--text-only');
+    await openStory(page, 'components-dropdown--default');
 
     const trigger = page.getByRole('button', { name: 'Actions' });
     await trigger.focus();

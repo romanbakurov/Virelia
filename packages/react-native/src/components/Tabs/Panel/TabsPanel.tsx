@@ -8,11 +8,21 @@ import type { TabsPanelProps } from './types';
 
 export const TabsPanel = ({ index, children, style }: TabsPanelProps) => {
   const styles = useThemeStyles(createStyles);
-  const { activeIndex } = useTabs();
+  const { activeIndex, orientation } = useTabs();
 
   if (activeIndex !== index) return null;
 
-  return <View style={[styles.panel, style]}>{children}</View>;
+  return (
+    <View
+      style={[
+        styles.panel,
+        orientation === 'vertical' && styles.panelVertical,
+        style,
+      ]}
+    >
+      {children}
+    </View>
+  );
 };
 
 TabsPanel.displayName = 'TabsPanel';

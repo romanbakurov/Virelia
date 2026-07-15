@@ -1,9 +1,10 @@
-import { useState } from 'react';
-
 import type { Meta, StoryObj } from '@storybook/react';
 import { Home, Profile, Settings } from '@vellira-ui/icons';
 import { Text } from 'react-native';
 
+import { useThemeStyles } from '../../theme';
+
+import { createStyles } from './Panel/TabsPanel.styles';
 import { Tabs } from '.';
 
 const meta = {
@@ -78,27 +79,90 @@ Correct usage:
   },
 } satisfies Meta<typeof Tabs>;
 
-const ControlledTabs = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
+  const styles = useThemeStyles(createStyles);
+  const panelStyle = {
+    minHeight: 80,
+  };
 
   return (
-    <Tabs activeIndex={activeIndex} onChange={setActiveIndex}>
+    <Tabs {...args}>
       <Tabs.List>
         <Tabs.Tab index={0}>Overview</Tabs.Tab>
         <Tabs.Tab index={1}>Usage</Tabs.Tab>
         <Tabs.Tab index={2}>API</Tabs.Tab>
       </Tabs.List>
 
+      <Tabs.Panel index={0} style={panelStyle}>
+        <Text style={styles.text}>
+          Overview content for the native tabs component.
+        </Text>
+      </Tabs.Panel>
+
+      <Tabs.Panel index={1} style={panelStyle}>
+        <Text style={styles.text}>
+          Usage examples and implementation notes.
+        </Text>
+      </Tabs.Panel>
+
+      <Tabs.Panel index={2} style={panelStyle}>
+        <Text style={styles.text}>API details are shown in this panel.</Text>
+      </Tabs.Panel>
+    </Tabs>
+  );
+};
+
+const DisabledTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <Tabs {...args}>
+      <Tabs.List>
+        <Tabs.Tab index={0}>Active</Tabs.Tab>
+        <Tabs.Tab index={1} disabled>
+          Disabled
+        </Tabs.Tab>
+        <Tabs.Tab index={2}>Settings</Tabs.Tab>
+      </Tabs.List>
+
       <Tabs.Panel index={0}>
-        <Text>Overview content</Text>
+        <Text style={styles.text}>Active panel.</Text>
       </Tabs.Panel>
 
       <Tabs.Panel index={1}>
-        <Text>Usage content</Text>
+        <Text style={styles.text}>
+          This panel is not reachable while the tab is disabled.
+        </Text>
       </Tabs.Panel>
 
       <Tabs.Panel index={2}>
-        <Text>API content</Text>
+        <Text style={styles.text}>Settings panel.</Text>
+      </Tabs.Panel>
+    </Tabs>
+  );
+};
+
+const IconOnlyTabsStory = () => {
+  const styles = useThemeStyles(createStyles);
+
+  return (
+    <Tabs appearance='pills'>
+      <Tabs.List>
+        <Tabs.Tab index={0} icon={<Home />} />
+        <Tabs.Tab index={1} icon={<Profile />} />
+        <Tabs.Tab index={2} icon={<Settings />} />
+      </Tabs.List>
+
+      <Tabs.Panel index={0}>
+        <Text style={styles.text}>Home content</Text>
+      </Tabs.Panel>
+
+      <Tabs.Panel index={1}>
+        <Text style={styles.text}>Profile content</Text>
+      </Tabs.Panel>
+
+      <Tabs.Panel index={2}>
+        <Text style={styles.text}>Settings content</Text>
       </Tabs.Panel>
     </Tabs>
   );
@@ -111,68 +175,28 @@ export const Default: Story = {
   args: {
     appearance: 'default',
   },
-  render: (args) => (
-    <Tabs {...args}>
-      <Tabs.List>
-        <Tabs.Tab index={0}>Overview</Tabs.Tab>
-        <Tabs.Tab index={1}>Usage</Tabs.Tab>
-        <Tabs.Tab index={2}>API</Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panel index={0}>
-        <Text>Overview content for the native tabs component.</Text>
-      </Tabs.Panel>
-      <Tabs.Panel index={1}>
-        <Text>Usage examples and implementation notes.</Text>
-      </Tabs.Panel>
-      <Tabs.Panel index={2}>
-        <Text>API details are shown in this panel.</Text>
-      </Tabs.Panel>
-    </Tabs>
-  ),
+  render: (args) => <DefaultTabsStory {...args} />,
 };
 
 export const Underline: Story = {
   args: {
     appearance: 'underline',
   },
-  render: (args) => <Default.render {...args} />,
+  render: (args) => <DefaultTabsStory {...args} />,
 };
 
 export const Vertical: Story = {
   args: {
     orientation: 'vertical',
   },
-  render: (args) => <Default.render {...args} />,
-};
-
-export const WithDisabledTab: Story = {
-  render: (args) => (
-    <Tabs {...args}>
-      <Tabs.List>
-        <Tabs.Tab index={0}>Active</Tabs.Tab>
-        <Tabs.Tab index={1} disabled>
-          Disabled
-        </Tabs.Tab>
-        <Tabs.Tab index={2}>Settings</Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panel index={0}>
-        <Text>Active panel.</Text>
-      </Tabs.Panel>
-      <Tabs.Panel index={1}>
-        <Text>This panel is not reachable while the tab is disabled.</Text>
-      </Tabs.Panel>
-      <Tabs.Panel index={2}>
-        <Text>Settings panel.</Text>
-      </Tabs.Panel>
-    </Tabs>
-  ),
+  render: (args) => <DefaultTabsStory {...args} />,
 };
 
 export const Pills: Story = {
   args: {
     appearance: 'pills',
   },
-  render: Default.render,
+  render: (args) => <DefaultTabsStory {...args} />,
 };
 
 export const VerticalUnderline: Story = {
@@ -180,33 +204,13 @@ export const VerticalUnderline: Story = {
     orientation: 'vertical',
     appearance: 'underline',
   },
-  render: Default.render,
+  render: (args) => <DefaultTabsStory {...args} />,
 };
 
-export const Controlled: Story = {
-  render: () => <ControlledTabs />,
+export const WithDisabledTab: Story = {
+  render: (args) => <DisabledTabsStory {...args} />,
 };
 
 export const IconOnly: Story = {
-  render: () => (
-    <Tabs appearance='pills'>
-      <Tabs.List>
-        <Tabs.Tab index={0} icon={<Home />} />
-        <Tabs.Tab index={1} icon={<Profile />} />
-        <Tabs.Tab index={2} icon={<Settings />} />
-      </Tabs.List>
-
-      <Tabs.Panel index={0}>
-        <Text>Home content</Text>
-      </Tabs.Panel>
-
-      <Tabs.Panel index={1}>
-        <Text>Profile content</Text>
-      </Tabs.Panel>
-
-      <Tabs.Panel index={2}>
-        <Text>Settings content</Text>
-      </Tabs.Panel>
-    </Tabs>
-  ),
+  render: () => <IconOnlyTabsStory />,
 };

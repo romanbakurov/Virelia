@@ -72,7 +72,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                              | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`                           | Single selection      |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error` | Selection control     |
-| `Dropdown`   | `items`, `trigger`, `icon`, `onSelect`, `disabled`                                                     | Context menu          |
+| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                              | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                           | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                            | Contextual helper     |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                              | Dialog and overlay    |
@@ -91,6 +91,14 @@ For accessibility, prefer a visible `label`; if no label can be rendered, pass
 `accessibilityLabel`. Error text is announced by the field error region, and
 `accessibilityHint` can add screen-specific guidance beyond the default picker
 hint.
+
+## Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions, not saved form values. The native model
+is a flat `items` array with action entries, `{ type: 'group', label }`
+headings and `{ type: 'separator' }` dividers. Use `accessibilityLabel` for
+icon-only or custom triggers and `accessibilityHint` when the screen needs
+extra guidance.
 
 ## Button
 

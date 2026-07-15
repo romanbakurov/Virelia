@@ -72,7 +72,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                      | controlled or uncontrolled    |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`  | controlled or uncontrolled    |
-| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `textWrap`, `onSelect`                     | open state managed internally |
+| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`          | controlled or uncontrolled    |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                          | open state managed internally |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                          | controlled                    |
@@ -88,6 +88,13 @@ For accessibility, prefer a visible `label`; if no label can be rendered, pass
 sets invalid state when `error` is present, supports required state, and exposes
 keyboard behavior for Enter, Space, Arrow keys, Home, End, typeahead search,
 Escape and Tab.
+
+## Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions, not saved form values. The web model is
+a flat `items` array with action entries, `{ type: 'group', label }` headings
+and `{ type: 'separator' }` dividers. Use `ariaLabel` when the trigger is
+icon-only or custom content without a clear text label.
 
 ## Button
 

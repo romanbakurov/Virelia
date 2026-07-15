@@ -1,19 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
-import { ChevronDown, DropdownMenu } from '@vellira-ui/icons';
-import { Text } from 'react-native';
+import type { Meta, StoryObj } from '@storybook/react-native';
+import {
+  Copy,
+  Delete,
+  DropdownMenu,
+  Edit,
+  Restart,
+  Settings,
+} from '@vellira-ui/icons';
+import type { ComponentProps, ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { fn } from 'storybook/test';
 
 import { useTheme } from '../../theme';
 
 import { Dropdown } from './Dropdown';
 
-const items = [
+const actionItems = [
   { type: 'group' as const, label: 'Actions' },
-  { label: 'Edit profile', value: 'edit' },
-  { label: 'Duplicate', value: 'duplicate' },
+  { label: 'Edit profile', value: 'edit', icon: <Edit /> },
+  { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
+  { label: 'Refresh', value: 'refresh', icon: <Restart /> },
   { type: 'separator' as const },
-  { label: 'Delete account', value: 'delete', danger: true },
+  { label: 'Delete account', value: 'delete', icon: <Delete />, danger: true },
 ];
 
 function DropdownIcon() {
@@ -30,268 +40,402 @@ function DropdownIcon() {
   );
 }
 
-function ArrowIcon() {
+function CustomTriggerContent() {
   const { theme } = useTheme();
+  const color = theme.components.dropdown.trigger.default.fg;
 
   return (
-    <ChevronDown
-      size={16}
-      color={theme.components.dropdown.trigger.default.fg}
-    />
-  );
-}
-
-function TriggerText({ children }: { children: string }) {
-  const { theme } = useTheme();
-
-  return (
-    <Text
+    <View
       style={{
-        color: theme.components.dropdown.trigger.default.fg,
-        fontFamily: theme.tokens.typography.family.regular,
-        fontSize: theme.tokens.typography.size.md,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
       }}
     >
-      {children}
-    </Text>
+      <Settings size={16} color={color} />
+      <Text
+        style={{
+          color,
+          fontFamily: theme.tokens.typography.family.regular,
+          fontSize: theme.tokens.typography.size.md,
+        }}
+      >
+        Account actions
+      </Text>
+    </View>
   );
 }
 
-const meta = {
+const meta: Meta<typeof Dropdown> = {
   title: 'Components/Dropdown',
   component: Dropdown,
+  tags: ['autodocs'],
   parameters: {
+    layout: 'centered',
     docs: {
       description: {
         component: `
 ### Dropdown Component
 
-Contextual action menu for React Native applications.
+Contextual action menu for React Native applications. Dropdown is for commands
+and secondary actions, not for selecting a saved form value.
 
 **Features**
-- Text trigger
-- Icon-only trigger
-- Custom trigger content
+
+- Controlled and uncontrolled open state
+- Text, icon and custom triggers
 - Groups and separators
-- Disabled items
-- Danger actions
+- Disabled and danger action items
 - Long text support
-- Controlled selection callback
+- Accessibility label, hint and expanded state support
 
 ### Usage
 
 Use Dropdown when secondary actions should be hidden until requested by the user.
-
-Correct usage:
+Use Select when the user is choosing a form value from a compact list. Use
+RadioGroup when a small set of choices should stay visible for comparison.
 
 \`\`\`tsx
 <Dropdown
-  label="Actions"
+  label='Actions'
   items={[
     { label: 'Edit', value: 'edit' },
     { label: 'Delete', value: 'delete', danger: true },
   ]}
-  onSelect={(value) => console.log(value)}
+  onSelect={handleAction}
 />
 \`\`\`
-
-### Accessibility
-
-- Accessible button trigger
-- Expanded/collapsed state
-- Disabled state support
-- Screen reader friendly labels
-
-### Common use cases
-
-- Row actions
-- Settings menus
-- Context menus
-- Overflow actions (three dots menu)
-- Account actions
 `,
       },
     },
   },
   args: {
-    label: 'Open menu',
-    items,
-    showArrow: false,
+    label: 'Actions',
+    items: actionItems,
+    showArrow: true,
+    disabled: false,
+    onSelect: fn(),
+    onOpenChange: fn(),
   },
   argTypes: {
     label: {
-      description: 'Accessible label for the dropdown trigger.',
       control: 'text',
+      description:
+        'Trigger label. Use accessibilityLabel when the rendered label is not plain text.',
+    },
+
+    accessibilityLabel: {
+      control: 'text',
+      description:
+        'Accessible trigger label used when label is not plain text or the trigger is icon-only.',
+    },
+
+    accessibilityHint: {
+      control: 'text',
+      description: 'Additional screen reader hint for the trigger.',
     },
 
     trigger: {
+      control: false,
       description: 'Custom trigger content.',
-      control: false,
-    },
-
-    icon: {
-      description: 'Icon displayed inside the trigger.',
-      control: false,
-    },
-
-    arrowIcon: {
-      description: 'Custom arrow icon.',
-      control: false,
-    },
-
-    showArrow: {
-      description: 'Controls arrow visibility.',
-      control: 'boolean',
     },
 
     items: {
-      description: 'Dropdown items, groups and separators.',
       control: 'object',
+      description: 'Dropdown items, groups and separators.',
+    },
+
+    open: {
+      control: 'boolean',
+      description: 'Controlled open state.',
+    },
+
+    defaultOpen: {
+      control: 'boolean',
+      description: 'Initial open state for uncontrolled usage.',
     },
 
     disabled: {
-      description: 'Disables the dropdown.',
       control: 'boolean',
+      description: 'Disables user interaction.',
+    },
+
+    showArrow: {
+      control: 'boolean',
+      description: 'Controls arrow visibility.',
     },
 
     onSelect: {
-      description: 'Called when a menu item is selected.',
       action: 'selected',
+      description: 'Called when a dropdown action item is selected.',
+    },
+
+    onOpenChange: {
+      action: 'open changed',
+      description: 'Called when the dropdown requests an open state change.',
+    },
+
+    icon: {
+      control: false,
+      description: 'Icon displayed inside the trigger.',
+    },
+
+    arrowIcon: {
+      control: false,
+      description: 'Custom arrow icon.',
     },
 
     style: {
-      table: { disable: true },
+      control: false,
     },
 
     triggerStyle: {
-      table: { disable: true },
+      control: false,
+    },
+
+    contentStyle: {
+      control: false,
     },
 
     itemStyle: {
-      table: { disable: true },
+      control: false,
     },
 
     textStyle: {
-      table: { disable: true },
+      control: false,
     },
-  },
-} satisfies Meta<typeof Dropdown>;
-
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-
-export const Basic: Story = {
-  args: {
-    label: 'Actions',
-    icon: <DropdownIcon />,
-    arrowIcon: <ArrowIcon />,
-    showArrow: false,
-    items,
   },
 };
 
-export const TextOnly: Story = {
-  args: {
-    label: 'Actions',
-    trigger: <TriggerText>Actions</TriggerText>,
-    showArrow: true,
-    items,
+export default meta;
+
+type Story = StoryObj<typeof Dropdown>;
+type DropdownStoryProps = ComponentProps<typeof Dropdown>;
+
+const storyStyles = StyleSheet.create({
+  column: {
+    width: '100%',
+    gap: 12,
   },
+});
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    section: {
+      width: '100%',
+      padding: 20,
+      gap: 16,
+      borderWidth: 1,
+      borderColor: theme.semantic.border.muted,
+      borderRadius: 20,
+      backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    subtitle: {
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+      fontWeight: '600',
+    },
+
+    status: {
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+    },
+  });
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.subtitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
+function InteractiveDropdown(args: DropdownStoryProps) {
+  const { theme } = useTheme();
+  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? false);
+  const [selected, setSelected] = useState<string>();
+
+  useEffect(() => {
+    setOpen(args.open ?? args.defaultOpen ?? false);
+  }, [args.open, args.defaultOpen]);
+
+  return (
+    <View style={storyStyles.column}>
+      <Dropdown
+        {...args}
+        open={open}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen);
+          args.onOpenChange?.(nextOpen);
+        }}
+        onSelect={(value) => {
+          setSelected(value);
+          args.onSelect?.(value);
+        }}
+      />
+      <Text
+        style={{
+          color: theme.semantic.text.secondary,
+          fontSize: 13,
+        }}
+      >
+        Selected action: {selected ?? 'none'}
+      </Text>
+    </View>
+  );
+}
+
+export const Playground: Story = {
+  render: (args) => (
+    <Section title='Playground'>
+      <InteractiveDropdown {...args} />
+    </Section>
+  ),
+};
+
+export const Default: Story = {
+  render: (args) => (
+    <Section title='Default'>
+      <Dropdown {...args} />
+    </Section>
+  ),
+};
+
+export const Controlled: Story = {
+  args: {
+    open: false,
+  },
+  render: (args) => (
+    <Section title='Controlled'>
+      <InteractiveDropdown {...args} />
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <Dropdown {...args} />
+    </Section>
+  ),
+};
+
+export const IconOnly: Story = {
+  args: {
+    label: 'More actions',
+    accessibilityLabel: 'More actions',
+    accessibilityHint: 'Opens account action menu',
+    icon: <DropdownIcon />,
+    showArrow: false,
+  },
+  render: (args) => (
+    <Section title='IconOnly'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };
 
 export const CustomTrigger: Story = {
   args: {
-    trigger: <TriggerText>Account actions</TriggerText>,
+    label: 'Account actions',
+    trigger: <CustomTriggerContent />,
     showArrow: true,
-    items,
   },
+  render: (args) => (
+    <Section title='CustomTrigger'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };
 
-export const WithGroupsAndSeparator: Story = {
+export const WithGroups: Story = {
   args: {
-    label: 'Documents',
-    showArrow: true,
+    label: 'Document actions',
     items: [
-      { type: 'group', label: 'Recent' },
-      { label: 'Document 1', value: 'doc1' },
-      { label: 'Document 2', value: 'doc2' },
+      { type: 'group', label: 'File' },
+      { label: 'Edit', value: 'edit', icon: <Edit /> },
+      { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
       { type: 'separator' },
-      { type: 'group', label: 'Actions' },
-      { label: 'Duplicate', value: 'duplicate' },
-      { label: 'Delete', value: 'delete', danger: true },
+      { type: 'group', label: 'Danger' },
+      { label: 'Delete', value: 'delete', icon: <Delete />, danger: true },
     ],
   },
+  render: (args) => (
+    <Section title='WithGroups'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };
 
 export const WithDisabledItems: Story = {
   args: {
-    label: 'Project menu',
-    showArrow: true,
+    label: 'Project actions',
     items: [
-      { label: 'Rename', value: 'rename' },
-      { label: 'Archive', value: 'archive', disabled: true },
-      { label: 'Delete', value: 'delete', danger: true },
+      { label: 'Edit', value: 'edit', icon: <Edit /> },
+      { label: 'Refresh', value: 'refresh', icon: <Restart />, disabled: true },
+      { label: 'Delete', value: 'delete', icon: <Delete />, danger: true },
     ],
   },
+  render: (args) => (
+    <Section title='WithDisabledItems'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };
 
-export const LongText: Story = {
+export const DangerActions: Story = {
+  args: {
+    label: 'Danger actions',
+    items: [
+      { label: 'Archive project', value: 'archive' },
+      { label: 'Delete draft', value: 'delete-draft', danger: true },
+      { label: 'Delete project', value: 'delete-project', danger: true },
+    ],
+  },
+  render: (args) => (
+    <Section title='DangerActions'>
+      <Dropdown {...args} />
+    </Section>
+  ),
+};
+
+export const LongLabels: Story = {
   args: {
     label: 'Long labels',
-    showArrow: true,
     items: [
       {
-        label: 'This option has a long label and wraps onto another line',
-        value: 'long',
+        label: 'Rename this project using the full generated workspace title',
+        value: 'rename-long',
         textWrap: 'wrap',
       },
-      { label: 'Short option', value: 'short' },
+      {
+        label: 'Archive completed tasks and notify every collaborator',
+        value: 'archive-long',
+        textWrap: 'wrap',
+      },
     ],
   },
-};
-
-const DropdownWithState = () => {
-  const { theme } = useTheme();
-  const [value, setValue] = useState<string>();
-
-  return (
-    <>
-      <Dropdown
-        label='Select action'
-        items={[
-          { label: 'Edit', value: 'edit' },
-          { label: 'Duplicate', value: 'duplicate' },
-          { label: 'Delete', value: 'delete', danger: true },
-        ]}
-        onSelect={setValue}
-      />
-
-      <Text
-        style={{
-          marginTop: 12,
-          color: theme.semantic.text.primary,
-        }}
-      >
-        Selected: {value ?? 'none'}
-      </Text>
-    </>
-  );
-};
-
-export const Selection: Story = {
-  args: {
-    showArrow: true,
-    items,
-  },
-  render: () => <DropdownWithState />,
+  render: (args) => (
+    <Section title='LongLabels'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };
 
 export const Disabled: Story = {
   args: {
+    label: 'Disabled actions',
     disabled: true,
-    label: 'Disabled menu',
-    showArrow: true,
-    items,
   },
+  render: (args) => (
+    <Section title='Disabled'>
+      <Dropdown {...args} />
+    </Section>
+  ),
 };

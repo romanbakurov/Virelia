@@ -7,7 +7,7 @@ import { Checkbox } from '../../primitives/Checkbox';
 
 import { FormField } from './FormField';
 
-import styles from './FormField.module.scss';
+import styles from './FormField.stories.module.scss';
 
 const inputStyle = {
   width: '100%',

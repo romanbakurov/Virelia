@@ -17,7 +17,7 @@ export interface UseKeyboardNavigationParams<TItem extends NavigableItem> {
   setActiveIndex: (index: number) => void;
   items: TItem[];
   isOpen: boolean;
-  onOpen: () => void;
+  onOpen: (event: KeyboardNavigationEvent) => void;
   onSelect?: () => void;
   onClose?: () => void;
   getItemText?: (item: TItem) => string;
@@ -116,7 +116,7 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
           event.key === 'ArrowUp'
         ) {
           event.preventDefault();
-          onOpen();
+          onOpen(event);
         }
         return;
       }
@@ -187,7 +187,6 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
     },
     [
       activeIndex,
-      items,
       isOpen,
       onOpen,
       onSelect,

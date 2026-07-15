@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import {
   Check,
   Close,
+  Delete,
   Download,
   DropdownMenu,
   Filter,
@@ -46,9 +47,12 @@ const selectOptions = [
 ];
 
 const dropdownItems = [
+  { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
+  { type: 'separator' as const },
+  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -541,19 +545,39 @@ function NativeComponentsOverview() {
         </Section>
 
         <Section title='Dropdown'>
-          <View style={styles.row}>
-            <Dropdown
-              label='Actions'
-              trigger='Actions'
-              items={dropdownItems}
-              onSelect={fn()}
-            />
-            <Dropdown
-              label='Icon actions'
-              icon={<DropdownMenu />}
-              items={dropdownItems}
-              onSelect={fn()}
-            />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Contextual actions for commands. Use Select or RadioGroup for
+              saved form values.
+            </Text>
+            <View style={styles.row}>
+              <Dropdown
+                label='Report actions'
+                trigger='Report actions'
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+              <Dropdown
+                label='More report actions'
+                accessibilityLabel='More report actions'
+                accessibilityHint='Opens report action menu'
+                icon={<DropdownMenu />}
+                showArrow={false}
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+              <Dropdown
+                label='Disabled actions'
+                disabled
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+            </View>
           </View>
         </Section>
 

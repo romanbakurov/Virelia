@@ -27,14 +27,17 @@ const fallbackDescriptions: Record<string, string> = {
   accessibilityHint: 'Additional accessibility hint for screen readers.',
   'aria-label': 'Accessible trigger label.',
   activeIndex: 'Currently active tab index.',
+  ariaLabel: 'Accessible trigger label for icon-only or custom triggers.',
   arrowIcon: 'Custom arrow icon rendered in the trigger.',
   bubbleStyle: 'Extra tooltip bubble style.',
+  contentClassName: 'Extra CSS class for the menu content element.',
   contentStyle: 'Extra content style.',
   error: 'Error message rendered for invalid state.',
   fullWidth: 'Makes the component fill its container width.',
   icon: 'Icon rendered inside the component.',
   iconSize: 'Icon size in pixels.',
   inputStyle: 'Extra style for the input element.',
+  itemClassName: 'Extra CSS class applied to every menu item.',
   itemStyle: 'Extra item style.',
   label: 'Visible label.',
   labelStyle: 'Extra label text style.',
@@ -93,6 +96,12 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   },
   'native.SelectProps.SelectProps': {
     size: 'Select size.',
+  },
+  'web.DropdownProps.DropdownProps': {
+    size: 'Dropdown size.',
+  },
+  'native.DropdownProps.DropdownProps': {
+    size: 'Dropdown size.',
   },
 };
 

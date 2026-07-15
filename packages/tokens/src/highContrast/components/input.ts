@@ -1,7 +1,6 @@
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
-import { navigation } from '../semantic/navigation.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -11,15 +10,15 @@ export const input = {
     bg: 'transparent',
     fg: text.primary,
     border: border.default,
-    placeholder: text.muted,
+    placeholder: text.secondary,
     icon: icons.brand,
   },
 
   hover: {
     bg: surface.hover,
-    fg: navigation.hover.fg,
-    border: navigation.hover.bg,
-    placeholder: navigation.hover.fg,
+    fg: text.primary,
+    border: border.focus,
+    placeholder: text.secondary,
     icon: icons.hover,
   },
 
@@ -27,33 +26,33 @@ export const input = {
     bg: 'transparent',
     fg: text.primary,
     border: border.focus,
-    ring: focus.ring,
-    placeholder: text.muted,
-    icon: icons.subtle,
+    ring: focus.ring.color,
+    placeholder: text.secondary,
+    icon: icons.brand,
   },
 
   disabled: {
-    bg: surface.muted,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.muted,
+    border: border.disabled,
     placeholder: text.disabled,
     icon: icons.disabled,
   },
 
   error: {
     border: status.error.border,
-    ring: status.error.fg,
+    ring: status.error.ring,
   },
 
   success: {
-    border: status.success.strong,
-    ring: status.success.fg,
+    border: status.success.border,
+    ring: status.success.ring,
   },
 
   readOnly: {
     bg: surface.subtle,
     fg: text.secondary,
-    border: border.default,
+    border: border.muted,
     placeholder: text.muted,
     icon: icons.muted,
   },
@@ -70,10 +69,10 @@ export const input = {
   },
 
   clearButton: {
-    fg: status.error.fg,
+    fg: icons.muted,
     hoverFg: status.error.fg,
-    hoverBg: surface.danger,
-    focusBg: surface.inverse,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
     pressedBg: surface.active,
   },
 } as const;

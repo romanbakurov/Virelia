@@ -35,7 +35,12 @@ export const createStyles = (theme: NativeTheme) =>
 
     controlChecked: {
       borderColor: theme.components.radio.checked.default.border,
-      backgroundColor: theme.components.radio.default.bg,
+      backgroundColor: theme.components.radio.checked.default.bg,
+    },
+
+    controlCheckedPressed: {
+      borderColor: theme.components.radio.checked.pressed.border,
+      backgroundColor: theme.components.radio.checked.pressed.bg,
     },
 
     controlInvalid: {
@@ -47,13 +52,22 @@ export const createStyles = (theme: NativeTheme) =>
       backgroundColor: theme.components.radio.disabled.bg,
     },
 
+    controlCheckedDisabled: {
+      borderColor: theme.components.radio.checked.disabled.border,
+      backgroundColor: theme.components.radio.checked.disabled.bg,
+    },
+
     indicator: {
       borderRadius: theme.tokens.radius.full,
-      backgroundColor: theme.components.radio.checked.default.bg,
+      backgroundColor: theme.components.radio.checked.default.fg,
+    },
+
+    indicatorPressed: {
+      backgroundColor: theme.components.radio.checked.pressed.fg,
     },
 
     indicatorDisabled: {
-      backgroundColor: theme.components.radio.checked.disabled.bg,
+      backgroundColor: theme.components.radio.checked.disabled.fg,
     },
 
     content: {
@@ -67,7 +81,11 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     labelChecked: {
-      color: theme.components.radio.checked.default.fg,
+      color: theme.components.radio.checked.default.labelFg,
+    },
+
+    labelCheckedPressed: {
+      color: theme.components.radio.checked.pressed.labelFg,
     },
 
     labelInvalid: {

@@ -1,9 +1,9 @@
 export { button } from './button.js';
 export { checkbox } from './checkbox.js';
+export { contextMenu } from './contextMenu.js';
 export { dropdown } from './dropdown.js';
 export { formField } from './formField.js';
 export { input } from './input.js';
-export { menu } from './menu.js';
 export { modal } from './modal.js';
 export { radio } from './radio.js';
 export { select } from './select.js';

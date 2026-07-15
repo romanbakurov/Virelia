@@ -1,3 +1,5 @@
-import type { BaseDropdownGroupProps } from '@vellira-ui/types';
+import type { ReactNode } from 'react';
 
-export type DropdownGroupProps = Pick<BaseDropdownGroupProps, 'label'>;
+export interface DropdownGroupProps {
+  label: ReactNode;
+}

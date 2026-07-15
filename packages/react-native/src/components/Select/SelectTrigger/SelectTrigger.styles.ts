@@ -52,11 +52,29 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     triggerOpen: {
+      backgroundColor: theme.components.select.trigger.focus.bg,
       borderColor: theme.components.select.trigger.focus.border,
+      borderWidth: 2,
     },
 
     triggerError: {
       borderColor: theme.components.select.trigger.error.border,
+    },
+
+    triggerErrorOpen: {
+      borderColor: theme.components.select.trigger.error.border,
+      shadowColor: theme.components.select.trigger.error.ring,
+      shadowOffset: {
+        width: 0,
+        height: 0,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+      elevation: 1,
+    },
+
+    textOpen: {
+      color: theme.components.select.trigger.focus.fg,
     },
 
     triggerDisabled: {

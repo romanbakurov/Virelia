@@ -15,10 +15,12 @@
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-sm);
   gap: var(--space-1);
+  transition: color 0.2s ease;
 }
 
 .required {
   color: var(--form-field-required-mark-fg);
+  transition: color 0.2s ease;
 }
 
 .description {
@@ -26,6 +28,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-sm);
+  transition: color 0.2s ease;
 }
 
 .items {
@@ -50,17 +53,44 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-sm);
+  transition: color 0.2s ease;
 }
 
 .disabled {
-  .label,
+  cursor: not-allowed;
+
+  .label {
+    color: var(--form-field-disabled-label-fg);
+  }
+
   .description {
-    color: var(--form-field-disabled-fg);
+    color: var(--form-field-disabled-description-fg);
+  }
+
+  .error {
+    color: var(--form-field-disabled-helper-text-fg);
+  }
+
+  .required {
+    color: var(--form-field-disabled-label-fg);
   }
 }
 
 .invalid {
   .label {
-    color: var(--form-field-error-fg);
+    color: var(--radio-invalid-fg);
+  }
+
+  .required {
+    color: var(--radio-invalid-fg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label,
+  .required,
+  .description,
+  .error {
+    transition: none;
   }
 }

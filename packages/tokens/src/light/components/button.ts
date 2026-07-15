@@ -1,3 +1,4 @@
+import { colors } from '../../primitives/colors.js';
 import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
 import { status } from '../semantic/status.js';
@@ -6,7 +7,8 @@ import { text } from '../semantic/text.js';
 
 const transparent = {
   bg: 'transparent',
-};
+  border: 'transparent',
+} as const;
 
 export const button = {
   primary: {
@@ -15,38 +17,43 @@ export const button = {
       hover: action.primary.hover,
       pressed: action.primary.active,
     },
+
     outline: {
       default: {
-        ...transparent,
-        fg: action.primary.default.bg,
-        border: action.primary.default.border,
+        bg: 'transparent',
+        fg: colors.primary[700],
+        border: colors.primary[600],
       },
+
       hover: {
-        bg: surface.hover,
-        fg: action.primary.hover.bg,
-        border: action.primary.hover.border,
+        bg: action.primary.subtle.bg,
+        fg: colors.primary[800],
+        border: colors.primary[700],
       },
+
       pressed: {
-        bg: surface.pressed,
-        fg: action.primary.active.bg,
-        border: action.primary.active.border,
+        bg: action.primary.muted.bg,
+        fg: colors.primary[900],
+        border: colors.primary[800],
       },
     },
+
     ghost: {
       default: {
         ...transparent,
-        fg: action.primary.default.bg,
-        border: 'transparent',
+        fg: colors.primary[700],
       },
+
       hover: {
+        ...transparent,
         bg: action.primary.subtle.bg,
-        fg: action.primary.hover.bg,
-        border: 'transparent',
+        fg: colors.primary[800],
       },
+
       pressed: {
-        bg: action.primary.subtle.bg,
-        fg: action.primary.active.bg,
-        border: 'transparent',
+        ...transparent,
+        bg: action.primary.muted.bg,
+        fg: colors.primary[900],
       },
     },
   },
@@ -57,38 +64,43 @@ export const button = {
       hover: action.secondary.hover,
       pressed: action.secondary.active,
     },
+
     outline: {
       default: {
-        ...transparent,
-        fg: action.secondary.default.bg,
-        border: action.secondary.default.border,
+        bg: 'transparent',
+        fg: colors.secondary[700],
+        border: colors.secondary[700],
       },
+
       hover: {
-        bg: surface.elevated,
-        fg: action.secondary.hover.bg,
-        border: action.secondary.hover.border,
+        bg: action.secondary.subtle.bg,
+        fg: colors.secondary[800],
+        border: colors.secondary[800],
       },
+
       pressed: {
-        bg: surface.pressed,
-        fg: action.secondary.active.bg,
-        border: action.secondary.active.border,
+        bg: action.secondary.muted.bg,
+        fg: colors.secondary[900],
+        border: colors.secondary[900],
       },
     },
+
     ghost: {
       default: {
         ...transparent,
-        fg: action.secondary.default.bg,
-        border: 'transparent',
+        fg: colors.secondary[700],
       },
+
       hover: {
-        bg: surface.elevated,
-        fg: action.secondary.hover.bg,
-        border: 'transparent',
+        ...transparent,
+        bg: action.secondary.subtle.bg,
+        fg: colors.secondary[800],
       },
+
       pressed: {
-        bg: surface.pressed,
-        fg: action.secondary.active.bg,
-        border: 'transparent',
+        ...transparent,
+        bg: action.secondary.muted.bg,
+        fg: colors.secondary[900],
       },
     },
   },
@@ -99,38 +111,43 @@ export const button = {
       hover: action.close.hover,
       pressed: action.close.active,
     },
+
     outline: {
       default: {
-        ...transparent,
-        fg: action.close.muted.bg,
-        border: action.close.muted.border,
+        bg: 'transparent',
+        fg: colors.vellira[700],
+        border: colors.vellira[400],
       },
+
       hover: {
-        bg: surface.hover,
-        fg: action.close.subtle.bg,
-        border: action.close.subtle.border,
+        bg: action.close.subtle.bg,
+        fg: colors.vellira[800],
+        border: colors.vellira[500],
       },
+
       pressed: {
-        bg: surface.pressed,
-        fg: action.close.active.bg,
-        border: action.close.active.border,
+        bg: action.close.muted.bg,
+        fg: colors.vellira[900],
+        border: colors.vellira[600],
       },
     },
+
     ghost: {
       default: {
         ...transparent,
         fg: text.primary,
-        border: 'transparent',
       },
+
       hover: {
-        bg: action.primary.subtle.bg,
-        fg: text.primary,
-        border: 'transparent',
+        ...transparent,
+        bg: action.close.subtle.bg,
+        fg: colors.vellira[800],
       },
+
       pressed: {
-        bg: action.primary.subtle.bg,
-        fg: text.primary,
-        border: 'transparent',
+        ...transparent,
+        bg: action.close.muted.bg,
+        fg: colors.vellira[900],
       },
     },
   },
@@ -141,38 +158,43 @@ export const button = {
       hover: action.danger.hover,
       pressed: action.danger.active,
     },
+
     outline: {
       default: {
-        ...transparent,
-        fg: action.danger.default.bg,
-        border: action.danger.default.border,
+        bg: 'transparent',
+        fg: status.error.fg,
+        border: status.error.border,
       },
+
       hover: {
         bg: status.error.bg,
-        fg: action.danger.hover.bg,
-        border: action.danger.hover.border,
+        fg: colors.error[800],
+        border: colors.error[700],
       },
+
       pressed: {
-        bg: status.error.bg,
-        fg: action.danger.active.bg,
-        border: action.danger.active.border,
+        bg: action.danger.muted.bg,
+        fg: colors.error[900],
+        border: colors.error[800],
       },
     },
+
     ghost: {
       default: {
         ...transparent,
-        fg: action.danger.default.bg,
-        border: 'transparent',
+        fg: status.error.fg,
       },
+
       hover: {
+        ...transparent,
         bg: status.error.bg,
-        fg: action.danger.hover.bg,
-        border: 'transparent',
+        fg: colors.error[800],
       },
+
       pressed: {
-        bg: status.error.bg,
-        fg: action.danger.active.bg,
-        border: 'transparent',
+        ...transparent,
+        bg: action.danger.muted.bg,
+        fg: colors.error[900],
       },
     },
   },
