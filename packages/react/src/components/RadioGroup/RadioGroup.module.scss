@@ -1,114 +1,96 @@
-.group {
+.root {
   display: flex;
+  flex-direction: column;
   width: 100%;
+  min-width: 0;
   gap: var(--space-2);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  color: var(--form-field-label-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-sm);
+  gap: var(--space-1);
+  transition: color 0.2s ease;
+}
+
+.required {
+  color: var(--form-field-required-mark-fg);
+  transition: color 0.2s ease;
+}
+
+.description {
+  color: var(--form-field-description-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  transition: color 0.2s ease;
+}
+
+.items {
+  display: flex;
+  min-width: 0;
 }
 
 .vertical {
   flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
 }
 
 .horizontal {
   flex-flow: row wrap;
+  align-items: flex-start;
   gap: var(--space-4) var(--space-6);
 }
 
-.option {
-  display: inline-flex;
-  align-items: center;
-  color: var(--radio-default-fg);
-  font-size: var(--font-size-md);
-  transition: color 0.15s ease;
-  cursor: pointer;
-  min-width: 0;
-  gap: var(--space-2);
-  user-select: none;
-
-  &:hover:not(.disabled) {
-    color: var(--radio-hover-fg);
-
-    .customRadio {
-      background-color: var(--radio-hover-bg);
-      border-color: var(--radio-hover-border);
-    }
-  }
-}
-
-.input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  clip-path: inset(50%);
-}
-
-.customRadio {
-  position: relative;
-  flex: 0 0 auto;
-  width: 16px;
-  height: 16px;
-  background-color: var(--radio-default-bg);
-  border: 1px solid var(--radio-default-border);
-  border-radius: 50%;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background-color 0.15s ease;
-
-  &::after {
-    position: absolute;
-    inset: 2px;
-    content: '';
-    background-color: var(--radio-checked-default-bg);
-    border-radius: 50%;
-    opacity: 0;
-    transform: scale(0.6);
-    transition:
-      opacity 0.15s ease,
-      transform 0.15s ease;
-  }
-}
-
-.input:checked + .customRadio {
-  border-color: var(--radio-checked-default-border);
-}
-
-.input:checked + .customRadio::after {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.input:focus-visible + .customRadio {
-  border-color: var(--radio-checked-default-border);
-  box-shadow: 0 0 0 2px var(--radio-focus-ring);
-}
-
-.option:has(.input:checked) {
-  color: var(--radio-hover-fg);
-}
-
-.label {
-  min-width: 0;
+.error {
+  color: var(--form-field-helper-text-error-fg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  transition: color 0.2s ease;
 }
 
 .disabled {
-  color: var(--radio-disabled-fg);
   cursor: not-allowed;
+
+  .label {
+    color: var(--form-field-disabled-label-fg);
+  }
+
+  .description {
+    color: var(--form-field-disabled-description-fg);
+  }
+
+  .error {
+    color: var(--form-field-disabled-helper-text-fg);
+  }
+
+  .required {
+    color: var(--form-field-disabled-label-fg);
+  }
 }
 
-.disabled .customRadio {
-  background-color: var(--radio-disabled-bg);
-  border-color: var(--radio-disabled-border);
+.invalid {
+  .label {
+    color: var(--radio-invalid-fg);
+  }
+
+  .required {
+    color: var(--radio-invalid-fg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .option,
-  .customRadio,
-  .customRadio::after {
+  .label,
+  .required,
+  .description,
+  .error {
     transition: none;
   }
 }

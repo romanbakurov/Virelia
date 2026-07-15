@@ -9,7 +9,6 @@ export interface TabsKeyboardEvent {
 
 export interface TabKeyboardItem {
   disabled?: boolean;
-  focus?: () => void;
   props?: {
     disabled?: boolean;
   };
@@ -20,6 +19,7 @@ export interface UseTabsKeyboardParams<TItem extends TabKeyboardItem> {
   setActiveIndex: (index: number) => void;
   tabRefs: MutableRefObject<(TItem | null)[]>;
   orientation: 'horizontal' | 'vertical';
+  onNavigate?: (index: number) => void;
 }
 
 export const useTabsKeyboard = <TItem extends TabKeyboardItem>({
@@ -27,6 +27,7 @@ export const useTabsKeyboard = <TItem extends TabKeyboardItem>({
   setActiveIndex,
   tabRefs,
   orientation = 'horizontal',
+  onNavigate,
 }: UseTabsKeyboardParams<TItem>) => {
   const onKeyDown = useCallback(
     (event: TabsKeyboardEvent) => {
@@ -119,10 +120,10 @@ export const useTabsKeyboard = <TItem extends TabKeyboardItem>({
 
       if (nextIndex !== activeIndex) {
         setActiveIndex(nextIndex);
-        tabRefs.current[nextIndex]?.focus?.();
+        onNavigate?.(nextIndex);
       }
     },
-    [activeIndex, orientation, setActiveIndex, tabRefs]
+    [activeIndex, onNavigate, orientation, setActiveIndex, tabRefs]
   );
 
   return { onKeyDown };

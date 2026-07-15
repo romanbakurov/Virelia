@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
-import { useControllableState } from '@vellira-ui/core';
+import { useSelect } from '@vellira-ui/core';
 import { Modal, Pressable, Text, View } from 'react-native';
 
 import { FormField } from '../../patterns/FormField';
@@ -19,6 +19,7 @@ export function Select({
   onChange,
   options,
   placeholder = 'Select...',
+  size = 'md',
   required = false,
   disabled = false,
   error,
@@ -27,20 +28,28 @@ export function Select({
   textStyle,
   pickerStyle,
   accessibilityLabel,
+  accessibilityHint,
 }: SelectProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value,
-    defaultValue: defaultValue ?? '',
-    onChange,
-  });
+  const { selectedValue, setSelectedValue, selectedOption, isOpen, setIsOpen } =
+    useSelect({
+      value,
+      defaultValue,
+      onChange,
+      options,
+      disabled,
+    });
 
   const [draftValue, setDraftValue] = useState(selectedValue);
+  const hasError = !!error;
 
-  const selectedOption = options.find((o) => o.value === selectedValue);
+  useEffect(() => {
+    if (isOpen) {
+      setDraftValue(selectedValue);
+    }
+  }, [isOpen, selectedValue]);
 
   const resolvedLabel =
     accessibilityLabel ??
@@ -71,6 +80,13 @@ export function Select({
   };
 
   const confirmPicker = () => {
+    const nextOption = options.find((option) => option.value === draftValue);
+
+    if (!nextOption || nextOption.disabled) {
+      setIsOpen(false);
+      return;
+    }
+
     setSelectedValue(draftValue);
     setIsOpen(false);
   };
@@ -88,9 +104,12 @@ export function Select({
         displayText={selectedOption?.label ?? placeholder}
         isPlaceholder={!selectedOption}
         isOpen={isOpen}
+        size={size}
         disabled={disabled}
-        hasError={!!error}
+        required={required}
+        hasError={hasError}
         accessibilityLabel={resolvedLabel}
+        accessibilityHint={accessibilityHint}
         triggerStyle={triggerStyle}
         textStyle={textStyle}
         onPress={openPicker}
@@ -106,14 +125,39 @@ export function Select({
           <Pressable style={styles.backdrop} onPress={closePicker} />
 
           <View style={styles.sheet}>
-            <View style={styles.toolbar}>
-              <Pressable onPress={closePicker} hitSlop={8}>
+            <View
+              style={styles.toolbar}
+              accessible
+              accessibilityRole='toolbar'
+              accessibilityLabel={`${resolvedLabel} picker actions`}
+            >
+              <Pressable
+                onPress={closePicker}
+                hitSlop={8}
+                style={styles.toolbarAction}
+                accessibilityRole='button'
+                accessibilityLabel='Cancel selection'
+                accessibilityHint='Closes the picker without changing the selected value'
+              >
                 <Text style={styles.cancelText}>Cancel</Text>
               </Pressable>
 
-              <Text style={styles.title}>{resolvedLabel}</Text>
+              <Text
+                style={styles.title}
+                numberOfLines={1}
+                accessibilityRole='header'
+              >
+                {resolvedLabel}
+              </Text>
 
-              <Pressable onPress={confirmPicker} hitSlop={8}>
+              <Pressable
+                onPress={confirmPicker}
+                hitSlop={8}
+                style={styles.toolbarAction}
+                accessibilityRole='button'
+                accessibilityLabel='Confirm selection'
+                accessibilityHint='Applies the highlighted picker value'
+              >
                 <Text style={styles.doneText}>Done</Text>
               </Pressable>
             </View>

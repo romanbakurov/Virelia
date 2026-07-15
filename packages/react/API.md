@@ -109,13 +109,15 @@ import { Button } from '@vellira-ui/react';
 <!-- api-docgen:end web.ButtonProps.Button -->
 
 Icon-only buttons must provide the standard `aria-label` attribute. Web Button
-does not expose a camelCase accessible-label alias. Button also accepts standard
-`button` attributes such as `type`, `className`, and `onClick`; its default
-`type` is `button`.
+does not expose a camelCase accessible-label alias. When `iconOnly` is enabled,
+visible `children` are not rendered; use `aria-label` as the accessible action
+name. Button also accepts standard `button` attributes such as `type`,
+`className`, and `onClick`; its default `type` is `button`.
 
 ## Checkbox
 
-Boolean input with controlled and uncontrolled modes.
+Boolean input with controlled and uncontrolled modes, helper text, validation
+state, and mixed selection support.
 
 ```tsx
 import { Checkbox } from '@vellira-ui/react';
@@ -124,22 +126,35 @@ import { Checkbox } from '@vellira-ui/react';
   checked={accepted}
   onCheckedChange={setAccepted}
   label='Accept terms'
+  description='Required to continue.'
 />;
 ```
 
 <!-- api-docgen:start web.CheckboxProps.Checkbox -->
 
-| Prop              | Type                         | Required | Description                                   |
-| ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Text label rendered next to the control.      |
-| `className`       | `string`                     | No       | Extra CSS class for the root element.         |
-| `error`           | `string`                     | No       | Error message rendered for invalid state.     |
-| `checked`         | `boolean`                    | No       | Controlled checked state.                     |
-| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
-| `disabled`        | `boolean`                    | No       | Disables interaction.                         |
-| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
+| Prop               | Type                         | Required | Description                                      |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------------ |
+| `label`            | `ReactNode`                  | No       | Visible label rendered next to the control.      |
+| `description`      | `ReactNode`                  | No       | Helper text rendered below the checkbox row.     |
+| `wrapperClassName` | `string`                     | No       | Extra CSS class for the clickable label wrapper. |
+| `error`            | `string`                     | No       | Error message rendered for invalid state.        |
+| `checked`          | `boolean`                    | No       | Controlled checked state.                        |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.    |
+| `disabled`         | `boolean`                    | No       | Disables interaction.                            |
+| `required`         | `boolean`                    | No       | Marks the checkbox as required.                  |
+| `indeterminate`    | `boolean`                    | No       | Displays and announces a mixed selection state.  |
+| `size`             | `CheckboxSize`               | No       | Checkbox size.                                   |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the user changes the state.          |
 
 <!-- api-docgen:end web.CheckboxProps.Checkbox -->
+
+Checkbox accepts standard `input[type="checkbox"]` attributes except the state
+props controlled by Vellira (`checked`, `defaultChecked`, `onChange`, `type`,
+and native `size`). `className` styles the root container; use
+`wrapperClassName` for the clickable label row. When no visible `label` is
+rendered, provide `aria-label` or `aria-labelledby`; the icon-only hit target
+remains at least 44px square. `description` and `error` are associated through
+`aria-describedby`.
 
 ## Input
 
@@ -157,15 +172,22 @@ import { Input } from '@vellira-ui/react';
 />;
 ```
 
-For controlled clearable inputs, update the controlled value in `onClear`.
-`onChange` is reserved for input value changes from the input element.
+Clearable inputs use separate callbacks for typing and clear actions:
+
+- typing into the input calls `onChange`;
+- pressing the clear action calls `onClear`;
+- controlled inputs should clear their value inside `onClear`;
+- uncontrolled inputs clear their internal value and then call `onClear`.
+
+`rightAdornment` is an arbitrary slot. Interactive content rendered there is
+responsible for its own accessible name, focus handling, and keyboard behavior.
 
 <!-- api-docgen:start web.InputProps.Input -->
 
 | Prop                 | Type                                                     | Required | Description                                      |
 | -------------------- | -------------------------------------------------------- | -------- | ------------------------------------------------ |
 | `id`                 | `string`                                                 | No       | Input id. Generated internally when omitted.     |
-| `className`          | `string`                                                 | No       | Extra CSS class for the root element.            |
+| `className`          | `string`                                                 | No       | Extra CSS class for the input element.           |
 | `autoComplete`       | `string`                                                 | No       | HTML autocomplete value.                         |
 | `name`               | `string`                                                 | No       | —                                                |
 | `description`        | `string`                                                 | No       | Additional descriptive text.                     |
@@ -198,23 +220,32 @@ Layout helper for labels, errors, and custom field controls.
 ```tsx
 import { FormField, Input } from '@vellira-ui/react';
 
-<FormField label='Email' error={error}>
-  <Input />
+<FormField id='email' label='Email' error={error}>
+  <Input id='email' />
 </FormField>;
 ```
 
+`FormField` uses `id` to connect the visible label and generated
+`{id}-description` / `{id}-error` content with the control. Pass the same `id`
+to the wrapped control and add `aria-describedby`, `aria-invalid`, `required`,
+and `disabled` to that control when needed. The root wrapper does not receive the
+`id`, which avoids duplicate DOM ids.
+
 <!-- api-docgen:start web.FormFieldProps.FormField -->
 
-| Prop          | Type        | Required | Description                                    |
-| ------------- | ----------- | -------- | ---------------------------------------------- |
-| `id`          | `string`    | No       | Id used to connect the label with the control. |
-| `label`       | `string`    | No       | Field label.                                   |
-| `error`       | `string`    | No       | Error message.                                 |
-| `children`    | `ReactNode` | Yes      | Field control or custom content.               |
-| `required`    | `boolean`   | No       | Marks the field as required.                   |
-| `disabled`    | `boolean`   | No       | Renders the disabled field state.              |
-| `description` | `string`    | No       | Additional descriptive text.                   |
-| `className`   | `string`    | No       | Extra CSS class for the root element.          |
+| Prop                   | Type        | Required | Description                                         |
+| ---------------------- | ----------- | -------- | --------------------------------------------------- |
+| `id`                   | `string`    | No       | ID used to connect the label with the control.      |
+| `label`                | `ReactNode` | No       | Field label.                                        |
+| `description`          | `ReactNode` | No       | Additional descriptive content.                     |
+| `error`                | `ReactNode` | No       | Error message or custom validation content.         |
+| `children`             | `ReactNode` | Yes      | Field control or custom content.                    |
+| `required`             | `boolean`   | No       | Marks the field as required.                        |
+| `disabled`             | `boolean`   | No       | Renders the disabled field state.                   |
+| `controlClassName`     | `string`    | No       | Extra CSS class for the control wrapper.            |
+| `labelClassName`       | `string`    | No       | Extra CSS class for the label element.              |
+| `descriptionClassName` | `string`    | No       | Extra CSS class for the description element.        |
+| `errorClassName`       | `string`    | No       | Extra CSS class for the validation message element. |
 
 <!-- api-docgen:end web.FormFieldProps.FormField -->
 
@@ -223,52 +254,59 @@ import { FormField, Input } from '@vellira-ui/react';
 Single-selection group with controlled and uncontrolled modes.
 
 ```tsx
-import { RadioGroup } from '@vellira-ui/react';
+import { Radio, RadioGroup } from '@vellira-ui/react';
 
 <RadioGroup
   name='plan'
   label='Plan'
   defaultValue='basic'
   orientation='vertical'
-  options={[
-    { value: 'basic', label: 'Basic' },
-    { value: 'pro', label: 'Pro' },
-  ]}
-/>;
+>
+  <Radio value='basic' label='Basic' />
+  <Radio value='pro' label='Pro' />
+</RadioGroup>;
 ```
 
 ### RadioGroup Props
 
 <!-- api-docgen:start web.RadioGroupProps.RadioGroupProps -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `label`        | `string`                  | No       | Group label.                          |
-| `name`         | `string`                  | Yes      | Radio input name.                     |
-| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.        |
-| `error`        | `string`                  | No       | Error message.                        |
-| `orientation`  | `Orientation`             | No       | Layout direction.                     |
-| `className`    | `string`                  | No       | Extra CSS class for the root element. |
-| `value`        | `string`                  | No       | Controlled selected value.            |
-| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when selection changes.        |
-| `required`     | `boolean`                 | No       | Marks the group as required.          |
-| `disabled`     | `boolean`                 | No       | Disables the whole group.             |
-| `description`  | `string`                  | No       | Additional descriptive text.          |
+| Prop            | Type                          | Required | Description                           |
+| --------------- | ----------------------------- | -------- | ------------------------------------- |
+| `label`         | `ReactNode`                   | No       | Group label.                          |
+| `name`          | `string`                      | No       | Radio input name.                     |
+| `children`      | `ReactNode`                   | No       | Radio controls rendered by the group. |
+| `error`         | `string`                      | No       | Error message.                        |
+| `orientation`   | `RadioGroupOrientation`       | No       | Layout direction.                     |
+| `value`         | `string`                      | No       | Controlled selected value.            |
+| `defaultValue`  | `string`                      | No       | Initial value for uncontrolled usage. |
+| `onValueChange` | `(value: RadioValue) => void` | No       | Called when selection changes.        |
+| `required`      | `boolean`                     | No       | Marks the group as required.          |
+| `disabled`      | `boolean`                     | No       | Disables the whole group.             |
+| `description`   | `ReactNode`                   | No       | Additional descriptive text.          |
+| `size`          | `RadioSize`                   | No       | Size inherited by child radios.       |
 
 <!-- api-docgen:end web.RadioGroupProps.RadioGroupProps -->
 
-### RadioOption
+### Radio Props
 
-<!-- api-docgen:start web.RadioOption.RadioOption -->
+<!-- api-docgen:start web.RadioProps.RadioProps -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop               | Type                         | Required | Description                                           |
+| ------------------ | ---------------------------- | -------- | ----------------------------------------------------- |
+| `value`            | `string`                     | Yes      | Value submitted by the radio control.                 |
+| `label`            | `ReactNode`                  | No       | Text label displayed next to the radio control.       |
+| `description`      | `ReactNode`                  | No       | Additional supporting text displayed below the label. |
+| `checked`          | `boolean`                    | No       | Current checked state for controlled usage.           |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.         |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the standalone checked state changes.     |
+| `disabled`         | `boolean`                    | No       | Disables user interaction.                            |
+| `required`         | `boolean`                    | No       | Marks the radio control as required.                  |
+| `error`            | `string`                     | No       | Validation error message displayed under the radio.   |
+| `size`             | `RadioSize`                  | No       | Radio control size.                                   |
+| `wrapperClassName` | `string`                     | No       | Class name applied to the clickable label wrapper.    |
 
-<!-- api-docgen:end web.RadioOption.RadioOption -->
+<!-- api-docgen:end web.RadioProps.RadioProps -->
 
 ## Select
 
@@ -289,25 +327,54 @@ import { Select } from '@vellira-ui/react';
 />;
 ```
 
+### Select Usage Guidelines
+
+Use `Select` when the user chooses one value from a compact list and the
+available choices do not need to stay visible after selection. Use
+`RadioGroup` when there are only a few choices and comparing them side by side
+helps the decision. Use `Dropdown` for action menus such as copy, rename or
+delete, not for form values.
+
+### Select Accessibility Notes
+
+Provide a visible `label` whenever possible. If the UI cannot show a label, pass
+`aria-label` so the trigger has a stable accessible name. Error content is
+connected to the trigger through `aria-describedby` and marks the trigger
+invalid. Keyboard users can open the list with Enter, Space or Arrow keys,
+navigate with ArrowUp/ArrowDown, jump with Home/End, type to search matching
+options, select with Enter or Space, and close with Escape.
+
 ### Select Props
 
 <!-- api-docgen:start web.SelectProps.SelectProps -->
 
-| Prop           | Type                      | Required | Description                                    |
-| -------------- | ------------------------- | -------- | ---------------------------------------------- |
-| `label`        | `string`                  | No       | Visible field label.                           |
-| `id`           | `string`                  | No       | Trigger id.                                    |
-| `name`         | `string`                  | No       | Field name.                                    |
-| `options`      | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
-| `placeholder`  | `string`                  | No       | Text shown when no value is selected.          |
-| `error`        | `string`                  | No       | Error message.                                 |
-| `className`    | `string`                  | No       | Extra CSS class for the root element.          |
-| `value`        | `string`                  | No       | Controlled selected value.                     |
-| `defaultValue` | `string`                  | No       | Initial selected value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when the user selects an option.        |
-| `required`     | `boolean`                 | No       | Marks the field as required.                   |
-| `disabled`     | `boolean`                 | No       | Disables interaction.                          |
-| `description`  | `string`                  | No       | Additional descriptive text.                   |
+| Prop                | Type                                                         | Required | Description                                      |
+| ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------ |
+| `label`             | `ReactNode`                                                  | No       | Visible field label.                             |
+| `id`                | `string`                                                     | No       | Trigger id.                                      |
+| `name`              | `string`                                                     | No       | Field name.                                      |
+| `options`           | `SelectOption[]`                                             | Yes      | Options rendered in the dropdown.                |
+| `placeholder`       | `string`                                                     | No       | Text shown when no value is selected.            |
+| `error`             | `ReactNode`                                                  | No       | Error message.                                   |
+| `className`         | `string`                                                     | No       | Extra CSS class for the root element.            |
+| `value`             | `string`                                                     | No       | Controlled selected value.                       |
+| `defaultValue`      | `string`                                                     | No       | Initial selected value for uncontrolled usage.   |
+| `onChange`          | `(value: string) => void`                                    | No       | Called when the user selects an option.          |
+| `required`          | `boolean`                                                    | No       | Marks the field as required.                     |
+| `disabled`          | `boolean`                                                    | No       | Disables interaction.                            |
+| `description`       | `ReactNode`                                                  | No       | Additional descriptive text.                     |
+| `placement`         | `'top-start' \| 'top-end' \| 'bottom-start' \| 'bottom-end'` | No       | Preferred dropdown placement.                    |
+| `matchTriggerWidth` | `boolean`                                                    | No       | Matches the dropdown width to the trigger width. |
+| `open`              | `boolean`                                                    | No       | Controlled open state.                           |
+| `defaultOpen`       | `boolean`                                                    | No       | Initial uncontrolled open state.                 |
+| `onOpenChange`      | `(open: boolean) => void`                                    | No       | Called when the open state changes.              |
+| `triggerClassName`  | `string`                                                     | No       | Extra CSS class for the trigger element.         |
+| `dropdownClassName` | `string`                                                     | No       | Extra CSS class for the dropdown element.        |
+| `size`              | `SelectSize`                                                 | No       | Select size.                                     |
+| `aria-label`        | `string`                                                     | No       | Accessible trigger label.                        |
+| `noOptionsText`     | `ReactNode`                                                  | No       | Content shown when no options are available.     |
+| `onBlur`            | `FocusEventHandler<HTMLButtonElement>`                       | No       | Called when the trigger loses focus.             |
+| `onFocus`           | `FocusEventHandler<HTMLButtonElement>`                       | No       | Called when the trigger receives focus.          |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 
@@ -333,6 +400,7 @@ import { Dropdown } from '@vellira-ui/react';
 <Dropdown
   label='Actions'
   items={[
+    { type: 'group', label: 'File' },
     { type: 'item', value: 'edit', label: 'Edit' },
     { type: 'separator' },
     { type: 'item', value: 'delete', label: 'Delete', danger: true },
@@ -341,35 +409,59 @@ import { Dropdown } from '@vellira-ui/react';
 />;
 ```
 
+### Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions such as copy, rename, archive, delete or
+account commands. It reports the selected action through `onSelect`; it should
+not be used as a form value control. Use `Select` when the user chooses one
+saved value from a compact list. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison.
+
+The menu open state can be controlled with `open` and `onOpenChange`, or left
+uncontrolled with `defaultOpen`. Prefer a visible text trigger; for icon-only or
+non-text triggers, provide `ariaLabel` so the trigger and menu have a stable
+accessible name.
+
 ### Dropdown Props
 
 <!-- api-docgen:start web.DropdownProps.DropdownProps -->
 
-| Prop                | Type                      | Required | Description                                     |
-| ------------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`             | `string`                  | No       | Default trigger label.                          |
-| `trigger`           | `ReactNode`               | No       | Custom trigger content.                         |
-| `icon`              | `ReactNode`               | No       | Icon rendered in the default trigger.           |
-| `arrowIcon`         | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
-| `items`             | `DropdownItem[]`          | Yes      | Menu model.                                     |
-| `placement`         | `Placement`               | No       | Floating UI menu placement.                     |
-| `className`         | `string`                  | No       | Extra CSS class for the root element.           |
-| `rotateAngle`       | `number`                  | No       | Rotation angle for the trigger arrow.           |
-| `matchTriggerWidth` | `boolean`                 | No       | Makes the menu match the trigger width.         |
-| `showArrow`         | `boolean`                 | No       | Controls whether the trigger arrow is rendered. |
-| `textWrap`          | `TextWrap`                | No       | Default text wrapping behavior for items.       |
-| `disabled`          | `boolean`                 | No       | Disables the trigger.                           |
-| `onSelect`          | `(value: string) => void` | No       | Called when a menu item is selected.            |
+| Prop                | Type                      | Required | Description                                                |
+| ------------------- | ------------------------- | -------- | ---------------------------------------------------------- |
+| `label`             | `ReactNode`               | No       | Default trigger label.                                     |
+| `trigger`           | `ReactNode`               | No       | Custom trigger content.                                    |
+| `icon`              | `ReactNode`               | No       | Icon rendered in the default trigger.                      |
+| `arrowIcon`         | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.                 |
+| `items`             | `DropdownItem[]`          | Yes      | Menu model.                                                |
+| `placement`         | `Placement`               | No       | Floating UI menu placement.                                |
+| `className`         | `string`                  | No       | Extra CSS class for the root element.                      |
+| `rotateAngle`       | `number`                  | No       | Rotation angle for the trigger arrow.                      |
+| `matchTriggerWidth` | `boolean`                 | No       | Makes the menu match the trigger width.                    |
+| `showArrow`         | `boolean`                 | No       | Controls whether the trigger arrow is rendered.            |
+| `textWrap`          | `TextWrap`                | No       | Default text wrapping behavior for items.                  |
+| `disabled`          | `boolean`                 | No       | Disables the trigger.                                      |
+| `onSelect`          | `(value: string) => void` | No       | Called when a menu item is selected.                       |
+| `ariaLabel`         | `string`                  | No       | Accessible trigger label for icon-only or custom triggers. |
+| `triggerClassName`  | `string`                  | No       | Extra CSS class for the trigger element.                   |
+| `contentClassName`  | `string`                  | No       | Extra CSS class for the menu content element.              |
+| `itemClassName`     | `string`                  | No       | Extra CSS class applied to every menu item.                |
+| `size`              | `DropdownSize`            | No       | Dropdown size.                                             |
+| `open`              | `boolean`                 | No       | Controlled open state.                                     |
+| `defaultOpen`       | `boolean`                 | No       | Initial uncontrolled open state.                           |
+| `onOpenChange`      | `(open: boolean) => void` | No       | Called when the open state changes.                        |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 
 ### Dropdown Items
 
-| Shape               | Required Props                    | Optional Props                                   | Description                                   |
-| ------------------- | --------------------------------- | ------------------------------------------------ | --------------------------------------------- |
-| `DropdownMenuItem`  | `value`, `label`                  | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable item. `type` defaults to `'item'`. |
-| `DropdownGroup`     | `type: 'group'`, `label`, `items` | None                                             | Labeled group of menu entries.                |
-| `DropdownSeparator` | `type: 'separator'`               | None                                             | Visual separator.                             |
+| Shape               | Required Props           | Optional Props                                               | Description                                     |
+| ------------------- | ------------------------ | ------------------------------------------------------------ | ----------------------------------------------- |
+| `DropdownMenuItem`  | `value`, `label`         | `type`, `disabled`, `icon`, `danger`, `shortcut`, `textWrap` | Selectable action. `type` defaults to `'item'`. |
+| `DropdownGroup`     | `type: 'group'`, `label` | None                                                         | Flat group heading for the following entries.   |
+| `DropdownSeparator` | `type: 'separator'`      | None                                                         | Visual separator.                               |
+
+`items` is a flat array. Use a `DropdownGroup` entry as a heading before the
+items it labels; groups do not own nested `items`.
 
 ## Tabs
 
@@ -462,10 +554,10 @@ import { Tooltip, Button } from '@vellira-ui/react';
 | `children`     | `ReactNode`               | Yes      | Content rendered inside the component. |
 | `maxWidth`     | `string \| number`        | No       | —                                      |
 | `className`    | `string`                  | No       | Extra CSS class for the root element.  |
-| `placement`    | `FloatingPlacement`       | No       | —                                      |
+| `placement`    | `FloatingPlacement`       | No       | Preferred dropdown placement.          |
 | `disabled`     | `boolean`                 | No       | Disables interaction.                  |
 | `delay`        | `TooltipDelay`            | No       | —                                      |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                      |
+| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.    |
 
 <!-- api-docgen:end web.TooltipProps.Tooltip -->
 

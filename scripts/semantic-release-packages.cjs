@@ -31,11 +31,11 @@ exports.prepare = async (_pluginConfig, context) => {
 
 exports.publish = async () => {
   for (const packageName of publicPackages) {
+    const directory = packageName.replace('@vellira-ui/', '');
+    const packageDirectory = `.${path.sep}${path.join('packages', directory)}`;
     const args = [
-      '--filter',
-      packageName,
       'publish',
-      '--no-git-checks',
+      packageDirectory,
       '--access',
       'public',
       '--registry',
@@ -44,7 +44,7 @@ exports.publish = async () => {
 
     console.log(`Publishing ${packageName} to npm...`);
 
-    const result = spawnSync('pnpm', args, {
+    const result = spawnSync('npm', args, {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -63,7 +63,7 @@ exports.publish = async () => {
 
     if (result.status !== 0) {
       throw new Error(
-        `Failed to publish ${packageName}: pnpm exited with status ${result.status}`
+        `Failed to publish ${packageName}: npm exited with status ${result.status}`
       );
     }
   }

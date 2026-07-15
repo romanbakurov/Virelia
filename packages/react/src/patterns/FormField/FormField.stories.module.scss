@@ -1,0 +1,24 @@
+.storyCustomRoot {
+  padding: var(--space-4);
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.storyCustomLabel {
+  color: var(--text-primary);
+}
+
+.storyCustomControl {
+  gap: var(--space-3);
+}
+
+.storyCustomDescription {
+  color: var(--text-secondary);
+}
+
+.storyCustomError {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-subtle);
+  border-radius: var(--radius-md);
+}

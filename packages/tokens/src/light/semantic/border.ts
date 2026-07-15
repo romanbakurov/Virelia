@@ -1,11 +1,12 @@
 import { colors } from '../../primitives/colors.js';
 
 export const border = {
+  subtle: colors.vellira[150],
+  muted: colors.vellira[200],
   default: colors.vellira[300],
-  muted: colors.vellira[150],
-  subtle: colors.vellira[250],
-  elevated: colors.vellira[400],
-  strong: colors.vellira[600],
+  strong: colors.vellira[500],
+
+  elevated: colors.vellira[250],
   disabled: colors.vellira[200],
 
   focus: colors.primary[700],

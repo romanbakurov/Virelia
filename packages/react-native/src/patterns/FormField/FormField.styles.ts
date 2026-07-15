@@ -42,6 +42,12 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.formField.disabled.descriptionFg,
     },
 
+    customLabel: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.tokens.spacing[1],
+    },
+
     control: {
       width: '100%',
       minWidth: 0,
@@ -53,5 +59,9 @@ export const createStyles = (theme: NativeTheme) =>
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.sm,
       lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
+
+    helperTextDisabled: {
+      color: theme.components.formField.disabled.helperTextFg,
     },
   });

@@ -7,6 +7,7 @@ Import public components from the package root:
 ```tsx
 import {
   Button,
+  Checkbox,
   Input,
   Modal,
   Select,
@@ -105,11 +106,13 @@ import { Button } from '@vellira-ui/react-native';
 
 Icon-only buttons must provide `accessibilityLabel`. Icons should be Vellira icon
 elements such as `<Search />`; Button injects the current icon `color` and
-`size`.
+`size`. When `iconOnly` is enabled, visible `children` are not rendered; use
+`accessibilityLabel` as the accessible action name.
 
 ## Checkbox
 
-Boolean input with controlled and uncontrolled modes.
+Boolean input with controlled and uncontrolled modes, helper text, validation
+state, and mixed selection support.
 
 ```tsx
 import { Checkbox } from '@vellira-ui/react-native';
@@ -118,6 +121,7 @@ import { Checkbox } from '@vellira-ui/react-native';
   checked={accepted}
   onCheckedChange={setAccepted}
   label='Accept terms'
+  description='Required to continue.'
 />;
 ```
 
@@ -125,15 +129,25 @@ import { Checkbox } from '@vellira-ui/react-native';
 
 | Prop              | Type                         | Required | Description                                   |
 | ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Text label rendered next to the control.      |
-| `style`           | `StyleProp<ViewStyle>`       | No       | Extra container style.                        |
+| `label`           | `string`                     | No       | Visible label rendered next to the control.   |
+| `description`     | `string`                     | No       | Helper text rendered below the checkbox row.  |
+| `style`           | `StyleProp<ViewStyle>`       | No       | Extra style for the clickable wrapper.        |
 | `error`           | `string`                     | No       | Error message rendered for invalid state.     |
 | `checked`         | `boolean`                    | No       | Controlled checked state.                     |
 | `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
 | `disabled`        | `boolean`                    | No       | Disables interaction.                         |
+| `required`        | `boolean`                    | No       | Marks the checkbox as required.               |
+| `indeterminate`   | `boolean`                    | No       | Displays a mixed selection state.             |
+| `size`            | `CheckboxSize`               | No       | Checkbox size.                                |
 | `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
 
 <!-- api-docgen:end native.CheckboxProps.Checkbox -->
+
+`style` applies to the clickable `Pressable` row. When no visible `label` is
+rendered, provide `accessibilityLabel`; the icon-only touch target remains at
+least 44px square. `description`, `error`, and any explicit
+`accessibilityHint` are merged into the resolved accessibility hint so
+settings-style rows remain useful without wrapping the checkbox in `FormField`.
 
 ## Input
 
@@ -152,6 +166,17 @@ import { Input } from '@vellira-ui/react-native';
 ```
 
 `Input` also accepts React Native `TextInputProps`, except `value`, `onChange`, `onChangeText`, and `editable`, which are controlled by the Vellira API.
+
+Clearable inputs use separate callbacks for typing and clear actions:
+
+- typing into the input calls `onChange`;
+- pressing the clear action calls `onClear`;
+- controlled inputs should clear their value inside `onClear`;
+- uncontrolled inputs clear their internal value and then call `onClear`.
+
+Native Input accessibility should be verified on real devices with VoiceOver and
+TalkBack for focus visibility, read-only announcement and styling, and
+description/error announcement behavior.
 
 <!-- api-docgen:start native.InputProps.Input -->
 
@@ -191,28 +216,34 @@ import { Input } from '@vellira-ui/react-native';
 Layout helper for labels, errors, and custom field controls.
 
 ```tsx
-import { FormField, Input } from '@vellira-ui/react-native';
+import { FormField } from '@vellira-ui/react-native';
+import { TextInput } from 'react-native';
 
 <FormField label='Email' error={error}>
-  <Input label='Email' value={email} onChange={setEmail} />
+  <TextInput accessibilityLabel='Email' value={email} onChangeText={setEmail} />
 </FormField>;
 ```
+
+`FormField` is a presentational wrapper. The wrapped control remains
+responsible for its own `accessibilityLabel`, role, disabled/editable state, and
+interaction behavior. Error text is announced with a polite live region, and the
+root exposes disabled state when `disabled` is set.
 
 <!-- api-docgen:start native.FormFieldProps.FormField -->
 
 | Prop               | Type                   | Required | Description                       |
 | ------------------ | ---------------------- | -------- | --------------------------------- |
-| `label`            | `string`               | No       | Field label.                      |
-| `error`            | `string`               | No       | Error message.                    |
+| `label`            | `ReactNode`            | No       | Field label.                      |
+| `error`            | `ReactNode`            | No       | Error message.                    |
 | `children`         | `ReactNode`            | Yes      | Field control or custom content.  |
 | `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.            |
 | `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.           |
 | `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.           |
 | `required`         | `boolean`              | No       | Marks the field as required.      |
 | `disabled`         | `boolean`              | No       | Renders the disabled field state. |
-| `description`      | `string`               | No       | Additional descriptive text.      |
-| `controlStyle`     | `StyleProp<ViewStyle>` | No       | —                                 |
-| `descriptionStyle` | `StyleProp<TextStyle>` | No       | —                                 |
+| `description`      | `ReactNode`            | No       | Additional descriptive text.      |
+| `controlStyle`     | `StyleProp<ViewStyle>` | No       | Extra control wrapper style.      |
+| `descriptionStyle` | `StyleProp<TextStyle>` | No       | Extra description text style.     |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 
@@ -221,52 +252,61 @@ import { FormField, Input } from '@vellira-ui/react-native';
 Single-selection group with controlled and uncontrolled modes.
 
 ```tsx
-import { RadioGroup } from '@vellira-ui/react-native';
+import { Radio, RadioGroup } from '@vellira-ui/react-native';
 
-<RadioGroup
-  label='Plan'
-  defaultValue='basic'
-  orientation='vertical'
-  options={[
-    { value: 'basic', label: 'Basic' },
-    { value: 'pro', label: 'Pro' },
-  ]}
-/>;
+<RadioGroup label='Plan' defaultValue='basic' orientation='vertical'>
+  <Radio value='basic' label='Basic' />
+  <Radio value='pro' label='Pro' />
+</RadioGroup>;
 ```
 
 ### RadioGroup Props
 
 <!-- api-docgen:start native.RadioGroupProps.RadioGroupProps -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `label`        | `string`                  | No       | Group label.                          |
-| `options`      | `RadioOption[]`           | Yes      | Options rendered by the group.        |
-| `error`        | `string`                  | No       | Error message.                        |
-| `orientation`  | `Orientation`             | No       | Layout direction.                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra group style.                    |
-| `optionStyle`  | `StyleProp<ViewStyle>`    | No       | Extra option style.                   |
-| `labelStyle`   | `StyleProp<TextStyle>`    | No       | Extra label text style.               |
-| `value`        | `string`                  | No       | Controlled selected value.            |
-| `defaultValue` | `string`                  | No       | Initial value for uncontrolled usage. |
-| `onChange`     | `(value: string) => void` | No       | Called when selection changes.        |
-| `required`     | `boolean`                 | No       | Marks the group as required.          |
-| `disabled`     | `boolean`                 | No       | Disables the whole group.             |
-| `description`  | `string`                  | No       | Additional descriptive text.          |
+| Prop               | Type                          | Required | Description                           |
+| ------------------ | ----------------------------- | -------- | ------------------------------------- |
+| `label`            | `ReactNode`                   | No       | Group label.                          |
+| `children`         | `ReactNode`                   | No       | Radio controls rendered by the group. |
+| `error`            | `string`                      | No       | Error message.                        |
+| `orientation`      | `RadioGroupOrientation`       | No       | Layout direction.                     |
+| `style`            | `StyleProp<ViewStyle>`        | No       | Extra group style.                    |
+| `itemsStyle`       | `StyleProp<ViewStyle>`        | No       | Extra items wrapper style.            |
+| `labelStyle`       | `StyleProp<TextStyle>`        | No       | Extra label text style.               |
+| `value`            | `string`                      | No       | Controlled selected value.            |
+| `defaultValue`     | `string`                      | No       | Initial value for uncontrolled usage. |
+| `onValueChange`    | `(value: RadioValue) => void` | No       | Called when selection changes.        |
+| `required`         | `boolean`                     | No       | Marks the group as required.          |
+| `disabled`         | `boolean`                     | No       | Disables the whole group.             |
+| `description`      | `ReactNode`                   | No       | Additional descriptive text.          |
+| `size`             | `RadioSize`                   | No       | Size inherited by child radios.       |
+| `descriptionStyle` | `StyleProp<TextStyle>`        | No       | —                                     |
+| `errorStyle`       | `StyleProp<TextStyle>`        | No       | —                                     |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 
-### RadioOption
+### Radio Props
 
-<!-- api-docgen:start native.RadioOption.RadioOption -->
+<!-- api-docgen:start native.RadioProps.RadioProps -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop               | Type                         | Required | Description                                            |
+| ------------------ | ---------------------------- | -------- | ------------------------------------------------------ |
+| `value`            | `string`                     | Yes      | Value represented by the radio control.                |
+| `label`            | `ReactNode`                  | No       | Visible label displayed next to the radio control.     |
+| `description`      | `ReactNode`                  | No       | Supporting text displayed below the label.             |
+| `checked`          | `boolean`                    | No       | Current checked state for controlled usage.            |
+| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.          |
+| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the checked state changes.                 |
+| `disabled`         | `boolean`                    | No       | Disables interaction with the radio control.           |
+| `required`         | `boolean`                    | No       | Marks the radio control as required for accessibility. |
+| `error`            | `string`                     | No       | Validation error displayed below the radio control.    |
+| `size`             | `RadioSize`                  | No       | Radio control size.                                    |
+| `containerStyle`   | `StyleProp<ViewStyle>`       | No       | Extra root container style.                            |
+| `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.                                |
+| `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.                          |
+| `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.                                |
 
-<!-- api-docgen:end native.RadioOption.RadioOption -->
+<!-- api-docgen:end native.RadioProps.RadioProps -->
 
 ## Select
 
@@ -287,27 +327,50 @@ import { Select } from '@vellira-ui/react-native';
 />;
 ```
 
+### Select Usage Guidelines
+
+Use `Select` when the user chooses one value from a compact list and the
+choices can live in a picker sheet. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison. Use `Dropdown` for action
+menus, not for form values.
+
+### Select Native Behavior
+
+Native `Select` opens a picker sheet. Changing the picker updates a draft value
+only. The selected value is committed through `Done`; `Cancel` and the backdrop
+close the sheet without changing the current value.
+
+### Select Accessibility Notes
+
+Provide a visible `label` whenever possible. If the UI cannot show a label, pass
+`accessibilityLabel`. Required and invalid states are reflected on the trigger,
+and error text is announced through the field error region. Use
+`accessibilityHint` when the surrounding screen needs more guidance than the
+default picker hint.
+
 ### Select Props
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                      | Required | Description                                    |
-| -------------------- | ------------------------- | -------- | ---------------------------------------------- |
-| `label`              | `string`                  | No       | Visible field label.                           |
-| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.              |
-| `placeholder`        | `string`                  | No       | Text shown when no value is selected.          |
-| `error`              | `string`                  | No       | Error message.                                 |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                         |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                           |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                              |
-| `value`              | `string`                  | No       | Controlled selected value.                     |
-| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage. |
-| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.        |
-| `required`           | `boolean`                 | No       | Marks the field as required.                   |
-| `disabled`           | `boolean`                 | No       | Disables interaction.                          |
-| `description`        | `string`                  | No       | Additional descriptive text.                   |
-| `pickerStyle`        | `StyleProp<TextStyle>`    | No       | —                                              |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.           |
+| Prop                 | Type                      | Required | Description                                       |
+| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
+| `label`              | `string`                  | No       | Visible field label.                              |
+| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.                 |
+| `placeholder`        | `string`                  | No       | Text shown when no value is selected.             |
+| `error`              | `ReactNode`               | No       | Error message.                                    |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                            |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
+| `value`              | `string`                  | No       | Controlled selected value.                        |
+| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage.    |
+| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.           |
+| `required`           | `boolean`                 | No       | Marks the field as required.                      |
+| `disabled`           | `boolean`                 | No       | Disables interaction.                             |
+| `description`        | `string`                  | No       | Additional descriptive text.                      |
+| `pickerStyle`        | `StyleProp<ViewStyle>`    | No       | Extra picker style.                               |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
+| `size`               | `SelectSize`              | No       | Select size.                                      |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -333,6 +396,7 @@ import { Dropdown } from '@vellira-ui/react-native';
 <Dropdown
   label='Actions'
   items={[
+    { type: 'group', label: 'File' },
     { type: 'item', value: 'edit', label: 'Edit' },
     { type: 'separator' },
     { type: 'item', value: 'delete', label: 'Delete', danger: true },
@@ -341,34 +405,57 @@ import { Dropdown } from '@vellira-ui/react-native';
 />;
 ```
 
+### Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions such as copy, rename, archive, delete or
+account commands. It reports the selected action through `onSelect`; it should
+not be used as a form value control. Use `Select` when the user chooses one
+saved value from a compact list. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison.
+
+The menu open state can be controlled with `open` and `onOpenChange`, or left
+uncontrolled with `defaultOpen`. Prefer a visible text trigger; for icon-only or
+custom non-text triggers, provide `accessibilityLabel` and add
+`accessibilityHint` when the surrounding screen needs extra guidance.
+
 ### Dropdown Props
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->
 
-| Prop           | Type                      | Required | Description                                     |
-| -------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`        | `string`                  | No       | Default trigger label.                          |
-| `trigger`      | `ReactNode`               | No       | Custom trigger content.                         |
-| `items`        | `DropdownItem[]`          | Yes      | Menu model.                                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                               |
-| `triggerStyle` | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                            |
-| `itemStyle`    | `StyleProp<ViewStyle>`    | No       | Extra item style.                               |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra text style.                               |
-| `disabled`     | `boolean`                 | No       | Disables the trigger.                           |
-| `onSelect`     | `(value: string) => void` | No       | Called when a menu item is selected.            |
-| `icon`         | `ReactNode`               | No       | Icon rendered inside the component.             |
-| `arrowIcon`    | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
-| `showArrow`    | `boolean`                 | No       | Controls whether the trigger arrow is rendered. |
+| Prop                 | Type                      | Required | Description                                       |
+| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
+| `label`              | `ReactNode`               | No       | Default trigger label.                            |
+| `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
+| `items`              | `DropdownItem[]`          | Yes      | Menu model.                                       |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
+| `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                             |
+| `onSelect`           | `(value: string) => void` | No       | Called when a menu item is selected.              |
+| `icon`               | `ReactNode`               | No       | Icon rendered inside the component.               |
+| `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.        |
+| `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.   |
+| `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                              |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                    |
+| `open`               | `boolean`                 | No       | Controlled open state.                            |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 
 ### Dropdown Items
 
-| Shape               | Required Props                    | Optional Props                                   | Description                                   |
-| ------------------- | --------------------------------- | ------------------------------------------------ | --------------------------------------------- |
-| `DropdownMenuItem`  | `value`, `label`                  | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable item. `type` defaults to `'item'`. |
-| `DropdownGroup`     | `type: 'group'`, `label`, `items` | None                                             | Labeled group of menu entries.                |
-| `DropdownSeparator` | `type: 'separator'`               | None                                             | Visual separator.                             |
+| Shape               | Required Props           | Optional Props                                   | Description                                     |
+| ------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
+| `DropdownMenuItem`  | `value`, `label`         | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable action. `type` defaults to `'item'`. |
+| `DropdownGroup`     | `type: 'group'`, `label` | None                                             | Flat group heading for the following entries.   |
+| `DropdownSeparator` | `type: 'separator'`      | None                                             | Visual separator.                               |
+
+`items` is a flat array. Use a `DropdownGroup` entry as a heading before the
+items it labels; groups do not own nested `items`.
 
 ## Tabs
 
@@ -465,7 +552,7 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 | `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.          |
 | `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.    |
 | `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds. |
-| `onOpenChange` | `(open: boolean) => void` | No       | —                                     |
+| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.   |
 | `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                  |
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->

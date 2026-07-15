@@ -8,33 +8,46 @@ import { text } from '../semantic/text.js';
 export const checkbox = {
   default: {
     bg: surface.elevated,
-    fg: text.inverse,
-    border: border.subtle,
+    fg: text.primary,
+    border: border.default,
   },
 
   hover: {
-    ...control.hover,
-    fg: text.inverse,
+    bg: control.hover.bg,
+    fg: control.hover.fg,
+    border: control.hover.border,
   },
 
   checked: {
-    default: control.selected.default,
-    hover: control.selected.hover,
-    pressed: control.selected.active,
+    default: {
+      ...control.selected.default,
+      labelFg: text.brand,
+    },
+
+    hover: {
+      ...control.selected.hover,
+      labelFg: text.interactiveHover,
+    },
+
+    pressed: {
+      ...control.selected.active,
+      labelFg: text.interactiveActive,
+    },
   },
 
   focus: {
-    ring: focus.ring,
+    ring: focus.ring.color,
   },
 
   disabled: {
-    bg: surface.subtle,
+    bg: surface.disabled,
     fg: text.disabled,
-    border: border.default,
+    border: border.disabled,
   },
 
   error: {
     fg: status.error.fg,
-    border: status.error.fg,
+    border: status.error.border,
+    ring: status.error.ring,
   },
 } as const;

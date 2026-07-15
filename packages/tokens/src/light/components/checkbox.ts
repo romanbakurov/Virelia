@@ -1,8 +1,6 @@
-import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { status } from '../semantic/status.js';
-import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const checkbox = {
@@ -11,23 +9,31 @@ export const checkbox = {
   hover: control.hover,
 
   checked: {
-    default: control.selected.default,
-    hover: control.selected.hover,
-    pressed: control.selected.active,
+    default: {
+      ...control.selected.default,
+      labelFg: text.interactive,
+    },
+
+    hover: {
+      ...control.selected.hover,
+      labelFg: text.interactiveHover,
+    },
+
+    pressed: {
+      ...control.selected.active,
+      labelFg: text.interactiveActive,
+    },
   },
 
   focus: {
-    ring: focus.ring,
+    ring: focus.ring.color,
   },
 
-  disabled: {
-    bg: surface.subtle,
-    fg: text.disabled,
-    border: border.muted,
-  },
+  disabled: control.disabled,
 
   error: {
     fg: status.error.fg,
-    border: status.error.fg,
+    border: status.error.border,
+    ring: status.error.ring,
   },
 } as const;

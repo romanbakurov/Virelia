@@ -2,9 +2,13 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
 import {
+  Check,
+  Close,
+  Delete,
   Download,
   DropdownMenu,
   Filter,
+  Save,
   Search,
   Settings,
 } from '@vellira-ui/icons';
@@ -22,6 +26,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Radio } from '../primitives/Radio';
 import { useTheme } from '../theme';
 
 const meta = {
@@ -41,16 +46,13 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
-const radioOptions = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro' },
-  { label: 'Enterprise', value: 'enterprise' },
-];
-
 const dropdownItems = [
+  { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
+  { type: 'separator' as const },
+  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -61,8 +63,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       style={[
         styles.section,
         {
-          borderColor: theme.semantic.border.default,
-          backgroundColor: theme.semantic.surface.elevated,
+          borderColor: theme.semantic.border.muted,
+          backgroundColor: theme.semantic.surface.subtle,
         },
       ]}
     >
@@ -96,58 +98,420 @@ function NativeComponentsOverview() {
     >
       <View style={styles.content}>
         <Section title='Button'>
-          <View style={styles.row}>
-            <Button color='primary' variant='solid' leftIcon={<Download />}>
-              Primary
-            </Button>
-            <Button color='secondary' variant='solid'>
-              Secondary
-            </Button>
-            <Button color='danger' variant='solid'>
-              Danger
-            </Button>
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Colors
+            </Text>
+            <View style={styles.row}>
+              <Button color='primary'>Primary</Button>
+              <Button color='secondary'>Secondary</Button>
+              <Button color='close'>Close</Button>
+              <Button color='danger'>Danger</Button>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Button size='sm'>Small</Button>
-            <Button size='md'>Medium</Button>
-            <Button size='lg'>Large</Button>
-            <Button
-              color='secondary'
-              variant='solid'
-              accessibilityLabel='Search'
-              leftIcon={<Search />}
-            />
-            <Button disabled>Disabled</Button>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Variants
+            </Text>
+            <View style={styles.row}>
+              <Button color='primary' variant='solid'>
+                Solid
+              </Button>
+              <Button color='primary' variant='outline'>
+                Outline
+              </Button>
+              <Button color='primary' variant='ghost'>
+                Ghost
+              </Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Button size='sm'>Small</Button>
+              <Button size='md'>Medium</Button>
+              <Button size='lg'>Large</Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <View style={styles.row}>
+              <Button disabled>Disabled</Button>
+              <Button loading>Loading</Button>
+              <Button loading loadingText='Saving...'>
+                Save
+              </Button>
+            </View>
+            <View style={styles.fullWidthDemo}>
+              <Button fullWidth>Full width</Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Icons
+            </Text>
+            <View style={styles.row}>
+              <Button leftIcon={<Download />}>Left icon</Button>
+              <Button rightIcon={<Download />}>Right icon</Button>
+              <Button leftIcon={<Download />} rightIcon={<Search />}>
+                Both icons
+              </Button>
+              <Button
+                iconOnly
+                accessibilityLabel='Search'
+                leftIcon={<Search />}
+              >
+                Search
+              </Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible icon actions
+            </Text>
+            <View style={styles.row}>
+              <Button
+                accessibilityLabel='Search'
+                color='primary'
+                iconOnly
+                leftIcon={<Search />}
+                variant='ghost'
+              />
+              <Button
+                accessibilityLabel='Filter results'
+                color='secondary'
+                iconOnly
+                leftIcon={<Filter />}
+                variant='outline'
+              />
+              <Button
+                accessibilityLabel='Save'
+                color='primary'
+                iconOnly
+                leftIcon={<Save />}
+                variant='solid'
+              />
+            </View>
           </View>
         </Section>
 
         <Section title='Input'>
-          <Input label='Name' placeholder='Ada Lovelace' />
-          <Input label='Search' placeholder='Find component' size='sm' />
-          <Input
-            label='Email'
-            placeholder='name@example.com'
-            error='Use a valid email address'
-          />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Basic
+            </Text>
+            <Input
+              label='Name'
+              description='Basic uncontrolled input.'
+              placeholder='Ada Lovelace'
+            />
+            <Input
+              label='Required email'
+              placeholder='name@example.com'
+              type='email'
+              required
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <Input label='Small' size='sm' placeholder='Small input' />
+            <Input label='Medium' size='md' placeholder='Medium input' />
+            <Input label='Large' size='lg' placeholder='Large input' />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Types and icons
+            </Text>
+            <Input label='Text' type='text' placeholder='Ada Lovelace' />
+
+            <Input label='Number' type='number' placeholder='42' />
+
+            <Input label='Phone' type='tel' placeholder='+33 6 00 00 00 00' />
+
+            <Input label='URL' type='url' placeholder='https://vellira.dev' />
+
+            <Input
+              label='Search'
+              type='search'
+              placeholder='Search components'
+              leftIcon={<Search />}
+            />
+
+            <Input label='Password' placeholder='Password' type='password' />
+
+            <Input
+              label='Verified email'
+              defaultValue='hello@vellira.dev'
+              rightIcon={<Check />}
+              rightIconTone='success'
+              placeholder='name@company.com'
+              type='email'
+            />
+
+            <Input
+              label='Search settings'
+              leftIcon={<Search />}
+              rightIcon={<Check />}
+              rightIconTone='success'
+              leftIconTone='primary'
+              defaultValue='Theme'
+            />
+
+            <Input
+              label='Clearable'
+              placeholder='Type something'
+              defaultValue='Theme'
+              clearable
+              clearIcon={<Close />}
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Input label='Required' required placeholder='Required input' />
+
+            <Input label='Disabled' disabled value='Disabled value' />
+
+            <Input label='Read only' readOnly value='Read only value' />
+
+            <Input
+              label='Invalid email'
+              placeholder='name@example.com'
+              type='email'
+              error='Use a valid email address'
+            />
+
+            <Input
+              label='Password'
+              type='password'
+              required
+              error='Password must contain at least 8 characters'
+              value=''
+            />
+          </View>
         </Section>
 
         <Section title='Checkbox'>
-          <Checkbox
-            label='Receive product updates'
-            checked={accepted}
-            onChange={setAccepted}
-          />
-          <Checkbox label='Disabled checked' checked disabled />
-          <Checkbox label='Validation state' error='Required field' />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Settings row
+            </Text>
+            <Checkbox
+              label='Receive product updates'
+              description='Get release notes and billing notifications.'
+              checked={accepted}
+              onCheckedChange={setAccepted}
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Checkbox label='Unchecked' />
+            <Checkbox label='Checked' defaultChecked />
+            <Checkbox label='Indeterminate' indeterminate />
+            <Checkbox label='Required' required />
+            <Checkbox label='Disabled checked' defaultChecked disabled />
+            <Checkbox
+              label='Validation state'
+              description='This setting is required to continue.'
+              error='Required field'
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Checkbox label='Small' size='sm' />
+              <Checkbox label='Medium' size='md' />
+              <Checkbox label='Large' size='lg' />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible without visible label
+            </Text>
+            <Checkbox accessibilityLabel='Enable notifications' />
+          </View>
+        </Section>
+
+        <Section title='Radio'>
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <Radio value='unchecked' label='Unchecked' />
+            <Radio value='checked' label='Checked' defaultChecked />
+            <Radio
+              value='described'
+              label='With description'
+              description='Use inside RadioGroup for exclusive choices.'
+            />
+            <Radio value='disabled' label='Disabled' disabled />
+            <Radio
+              value='error'
+              label='Validation state'
+              error='This option needs attention.'
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Sizes
+            </Text>
+            <View style={styles.row}>
+              <Radio value='small' label='Small' size='sm' />
+              <Radio value='medium' label='Medium' size='md' />
+              <Radio value='large' label='Large' size='lg' />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Accessible without visible label
+            </Text>
+            <Radio value='email' accessibilityLabel='Email notifications' />
+          </View>
         </Section>
 
         <Section title='RadioGroup'>
           <RadioGroup
             label='Plan'
-            options={radioOptions}
+            description='Choose one subscription plan.'
             value={plan}
-            onChange={setPlan}
-          />
+            onValueChange={setPlan}
+          >
+            <Radio value='starter' label='Starter' />
+            <Radio
+              value='pro'
+              label='Pro'
+              description='Best for growing teams.'
+            />
+            <Radio value='enterprise' label='Enterprise' />
+          </RadioGroup>
+
+          <RadioGroup
+            label='Delivery'
+            orientation='horizontal'
+            defaultValue='standard'
+          >
+            <Radio value='standard' label='Standard' />
+            <Radio value='express' label='Express' />
+            <Radio value='pickup' label='Pickup' disabled />
+          </RadioGroup>
+
+          <RadioGroup
+            label='Required plan'
+            required
+            error='Choose one plan to continue.'
+          >
+            <Radio value='starter' label='Starter' />
+            <Radio value='pro' label='Pro' />
+          </RadioGroup>
         </Section>
 
         <Section title='Select'>
@@ -162,24 +526,58 @@ function NativeComponentsOverview() {
             label='Required team'
             options={selectOptions}
             placeholder='Select a team'
+            required
             error='Team is required'
+          />
+          <Select
+            label='Billing team'
+            description='Picker changes are committed with Done.'
+            options={selectOptions}
+            defaultValue='product'
+            accessibilityHint='Choose the team used for invoices.'
+          />
+          <Select
+            label='Archived team'
+            options={[]}
+            placeholder='No archived teams'
+            accessibilityHint='There are no archived teams to choose from.'
           />
         </Section>
 
         <Section title='Dropdown'>
-          <View style={styles.row}>
-            <Dropdown
-              label='Actions'
-              trigger='Actions'
-              items={dropdownItems}
-              onSelect={fn()}
-            />
-            <Dropdown
-              label='Icon actions'
-              icon={<DropdownMenu />}
-              items={dropdownItems}
-              onSelect={fn()}
-            />
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Contextual actions for commands. Use Select or RadioGroup for
+              saved form values.
+            </Text>
+            <View style={styles.row}>
+              <Dropdown
+                label='Report actions'
+                trigger='Report actions'
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+              <Dropdown
+                label='More report actions'
+                accessibilityLabel='More report actions'
+                accessibilityHint='Opens report action menu'
+                icon={<DropdownMenu />}
+                showArrow={false}
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+              <Dropdown
+                label='Disabled actions'
+                disabled
+                items={dropdownItems}
+                onSelect={fn()}
+              />
+            </View>
           </View>
         </Section>
 
@@ -313,7 +711,7 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 16,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 20,
   },
 
   sectionTitle: {
@@ -326,6 +724,19 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     gap: 12,
+  },
+
+  group: {
+    gap: 8,
+  },
+
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+
+  fullWidthDemo: {
+    width: '100%',
   },
 
   panelText: {},

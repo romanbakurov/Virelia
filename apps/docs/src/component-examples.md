@@ -50,6 +50,8 @@ Use this page as a visual overview of the component library.
     <div class="docs-state-grid">
       <div><span>Default</span><label class="docs-check"><input type="checkbox" />Remember</label></div>
       <div><span>Checked</span><label class="docs-check"><input type="checkbox" checked />Remember</label></div>
+      <div><span>Description</span><label class="docs-check"><input type="checkbox" />Updates</label><small>Receive product news.</small></div>
+      <div><span>Mixed</span><label class="docs-check"><input type="checkbox" aria-checked="mixed" />Select all</label></div>
       <div><span>Focus</span><label class="docs-check docs-is-focus"><input type="checkbox" checked />Remember</label></div>
       <div><span>Disabled</span><label class="docs-check docs-is-disabled"><input type="checkbox" checked disabled />Remember</label></div>
       <div><span>Error</span><label class="docs-check docs-has-error"><input type="checkbox" />Required</label></div>
@@ -100,11 +102,12 @@ Use this page as a visual overview of the component library.
       <h3>Dropdown</h3>
       <a href="https://storybook.vellira.dev/?path=/docs/components-dropdown--docs">Storybook</a>
     </header>
+    <p>Contextual actions for commands. Use Select or RadioGroup for saved form values.</p>
     <div class="docs-state-grid">
-      <div><span>Default</span><button class="docs-button docs-button-secondary">Actions</button></div>
-      <div><span>Open</span><div class="docs-menu docs-menu-static"><div>Edit</div><div>Duplicate</div><div class="docs-menu-danger">Delete</div></div></div>
-      <div><span>Danger item</span><div class="docs-menu docs-menu-static"><div>Archive</div><div class="docs-menu-danger">Delete</div></div></div>
-      <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Actions</button></div>
+      <div><span>Trigger</span><button class="docs-button docs-button-secondary">Report actions</button></div>
+      <div><span>Open actions</span><div class="docs-menu docs-menu-static"><div>Open settings</div><div>Download report</div><div>Filter view</div><div class="docs-menu-danger">Delete report</div></div></div>
+      <div><span>Icon trigger</span><button class="docs-button docs-button-secondary" aria-label="More report actions">•••</button></div>
+      <div><span>Disabled</span><button class="docs-button docs-button-secondary" disabled>Disabled actions</button></div>
     </div>
   </section>
 
@@ -165,6 +168,7 @@ import { useState } from 'react';
 
 export function FormExample() {
   const [email, setEmail] = useState('');
+  const [remember, setRemember] = useState(false);
 
   return (
     <form>
@@ -174,7 +178,12 @@ export function FormExample() {
         onChange={setEmail}
         placeholder='name@example.com'
       />
-      <Checkbox label='Remember this device' defaultChecked />
+      <Checkbox
+        label='Remember this device'
+        description='Skip verification prompts on this browser.'
+        checked={remember}
+        onCheckedChange={setRemember}
+      />
       <Button color='primary' variant='solid'>
         Continue
       </Button>
@@ -245,11 +254,14 @@ export function OverlayExample() {
 
   return (
     <Dropdown
-      label='Open menu'
+      label='Report actions'
+      trigger='Report actions'
       items={[
-        { label: 'Copy', value: 'copy' },
-        { label: 'Rename', value: 'rename' },
-        { label: 'Delete', value: 'delete', danger: true },
+        { type: 'group', label: 'Report actions' },
+        { label: 'Open settings', value: 'settings' },
+        { label: 'Download report', value: 'download' },
+        { type: 'separator' },
+        { label: 'Delete report', value: 'delete', danger: true },
       ]}
       onSelect={handleAction}
     />

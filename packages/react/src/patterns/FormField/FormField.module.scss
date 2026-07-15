@@ -31,8 +31,10 @@
 
 .control {
   display: flex;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  gap: var(--space-2);
 }
 
 .errorText {
@@ -41,7 +43,38 @@
   color: var(--form-field-helper-text-error-fg);
 }
 
+.label,
+.description,
+.errorText,
+.required {
+  transition: color 0.2s ease;
+}
+
 .disabled {
-  color: var(--form-field-disabled-label-fg);
   cursor: not-allowed;
+
+  .label {
+    color: var(--form-field-disabled-label-fg);
+  }
+
+  .description {
+    color: var(--form-field-disabled-description-fg);
+  }
+
+  .errorText {
+    color: var(--form-field-disabled-helper-text-fg);
+  }
+
+  .required {
+    color: var(--form-field-disabled-label-fg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label,
+  .description,
+  .errorText,
+  .required {
+    transition: none;
+  }
 }

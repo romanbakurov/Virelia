@@ -1,22 +1,27 @@
 .tooltip {
   position: absolute;
   z-index: var(--z-index-tooltip);
-  user-select: none;
   max-width: 240px;
   padding: var(--space-2) var(--space-3);
   color: var(--tooltip-content-fg);
   font-size: var(--font-size-sm);
-  line-height: 1.4;
+  line-height: var(--line-height-sm);
   text-align: center;
   background-color: var(--tooltip-content-bg);
   border: 1px solid var(--tooltip-content-border);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--tooltip-content-shadow);
   opacity: 0;
-  transition: opacity 0.15s ease-out;
+  transform: translateY(2px) scale(0.98);
+  transition:
+    opacity 0.15s ease-out,
+    transform 0.15s ease-out;
+  user-select: none;
+  pointer-events: none;
 
   &[data-state='open'] {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -24,8 +29,9 @@
   position: absolute;
   width: 10px;
   height: 10px;
-  background: var(--tooltip-arrow-bg);
+  background-color: var(--tooltip-arrow-bg);
   transform: rotate(45deg);
+  pointer-events: none;
 }
 
 @media (width <= 480px) {
@@ -33,6 +39,7 @@
     max-width: 200px;
     padding: var(--space-1) var(--space-2);
     font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
   }
 
   .arrow {
@@ -43,6 +50,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tooltip {
+    transform: none;
     transition: none;
   }
 }

@@ -4,28 +4,32 @@ export const status = {
   success: {
     fg: colors.success[700],
     bg: colors.success[50],
-    border: colors.success[300],
-    strong: colors.success[700],
+    border: colors.success[500],
+    ring: colors.success[500],
+    strong: colors.success[800],
   },
 
   error: {
-    fg: colors.error[500],
-    bg: colors.error[100],
-    border: colors.error[300],
-    strong: colors.error[700],
+    fg: colors.error[700],
+    bg: colors.error[50],
+    border: colors.error[600],
+    ring: colors.error[500],
+    strong: colors.error[800],
   },
 
   warning: {
-    fg: colors.warning[700],
+    fg: colors.warning[800],
     bg: colors.warning[50],
-    border: colors.warning[300],
-    strong: colors.warning[700],
+    border: colors.warning[500],
+    ring: colors.warning[500],
+    strong: colors.warning[800],
   },
 
   info: {
     fg: colors.info[700],
     bg: colors.info[50],
-    border: colors.info[300],
-    strong: colors.info[700],
+    border: colors.info[500],
+    ring: colors.info[500],
+    strong: colors.info[800],
   },
 } as const;

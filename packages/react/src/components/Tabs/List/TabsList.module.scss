@@ -6,8 +6,8 @@
 }
 
 .vertical {
+  flex: 0 0 140px;
   flex-direction: column;
   gap: var(--space-1);
-  margin-right: var(--space-4);
   margin-bottom: 0;
 }

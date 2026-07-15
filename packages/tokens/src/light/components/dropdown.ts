@@ -1,7 +1,7 @@
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
-import { navigation } from '../semantic/navigation.js';
-import { status } from '../semantic/status.js';
+import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -9,20 +9,20 @@ export const dropdown = {
   trigger: {
     default: {
       bg: 'transparent',
-      fg: text.brand,
+      fg: text.interactive,
       border: 'transparent',
     },
 
     hover: {
-      bg: navigation.brandHover.bg,
-      fg: navigation.brandHover.fg,
+      bg: surface.hover,
+      fg: text.interactiveHover,
       border: 'transparent',
       ring: 'transparent',
     },
 
     focus: {
       bg: 'transparent',
-      fg: text.brand,
+      fg: text.interactive,
       border: border.focus,
       ring: focus.ring,
     },
@@ -30,59 +30,49 @@ export const dropdown = {
     disabled: {
       bg: surface.disabled,
       fg: text.disabled,
-      border: border.muted,
+      border: border.disabled,
     },
   },
 
   content: {
-    bg: surface.subtle,
-    fg: text.primary,
-    border: navigation.border,
+    bg: menu.background,
+    fg: menu.item.default.fg,
+    border: menu.border,
+    shadow: shadow.lg,
   },
 
   item: {
-    default: {
-      bg: 'transparent',
-      fg: text.primary,
-    },
-
-    hover: navigation.hover,
+    default: menu.item.default,
+    hover: menu.item.hover,
 
     active: {
-      bg: navigation.hover.bg,
-      fg: navigation.hover.fg,
+      ...menu.item.active,
       ring: 'transparent',
     },
+
+    pressed: menu.item.pressed,
 
     focus: {
       ring: focus.ring,
     },
 
-    disabled: {
-      bg: 'transparent',
-      fg: text.disabled,
-    },
+    disabled: menu.item.disabled,
 
     danger: {
-      default: {
-        fg: status.error.fg,
-      },
-
-      hover: {
-        bg: status.error.bg,
-        fg: status.error.fg,
-      },
+      default: menu.item.danger.default,
+      hover: menu.item.danger.hover,
 
       active: {
-        bg: status.error.bg,
-        fg: status.error.fg,
+        ...menu.item.danger.active,
         ring: 'transparent',
       },
+
+      disabled: menu.item.danger.disabled,
     },
   },
 
   groupLabel: {
-    fg: text.muted,
+    fg: text.secondary,
   },
 
   separator: {

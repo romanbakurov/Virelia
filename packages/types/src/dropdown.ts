@@ -1,8 +1,14 @@
+import type { TextWrap } from './common';
+
+export type DropdownSize = 'sm' | 'md' | 'lg';
+
 export interface BaseDropdownMenuItem {
   type?: 'item';
   value: string;
   label: string;
   disabled?: boolean;
+  danger?: boolean;
+  textWrap?: TextWrap;
 }
 
 export interface BaseDropdownGroup {
@@ -19,18 +25,30 @@ export type BaseDropdownItem =
 
 export interface BaseDropdownProps {
   items: BaseDropdownItem[];
-  onSelect?: (value: string) => void;
+
   disabled?: boolean;
+  size?: DropdownSize;
+
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+
+  onSelect?: (value: string) => void;
 }
 
-export type BaseDropdownContentProps = Record<never, never>;
+export interface BaseDropdownTriggerProps {
+  isOpen: boolean;
+  disabled?: boolean;
+  size?: DropdownSize;
+}
+
+export interface BaseDropdownContentProps {
+  isOpen: boolean;
+  items: BaseDropdownItem[];
+}
 
 export type BaseDropdownGroupProps = BaseDropdownGroup;
 
 export type BaseDropdownItemProps = BaseDropdownMenuItem & {
   active?: boolean;
 };
-
-export interface BaseDropdownTriggerProps {
-  isOpen: boolean;
-}

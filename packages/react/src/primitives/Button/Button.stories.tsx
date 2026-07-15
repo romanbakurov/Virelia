@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Filter, Save, Search } from '@vellira-ui/icons';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Button } from '../Button';
 
@@ -9,6 +9,9 @@ const meta = {
   component: Button,
   tags: ['autodocs'],
   parameters: {
+    controls: {
+      exclude: ['children'],
+    },
     docs: {
       description: {
         component: `
@@ -48,7 +51,7 @@ Correct usage:
     disabled: false,
     loading: false,
     fullWidth: false,
-    onClick: fn(),
+    onClick: noop,
   },
   argTypes: {
     color: {
@@ -130,7 +133,7 @@ Correct usage:
       description: 'Visible button content.',
       control: 'text',
       table: {
-        type: { summary: 'ReactNode' },
+        disable: true,
       },
     },
     onClick: {
@@ -368,7 +371,9 @@ export const IconOnly: Story = {
   render: (args) => (
     <Section title='IconOnly'>
       <div style={rowStyle}>
-        <Button {...args} leftIcon={<Filter />} />
+        <Button {...args} leftIcon={<Filter />}>
+          Filter
+        </Button>
       </div>
     </Section>
   ),

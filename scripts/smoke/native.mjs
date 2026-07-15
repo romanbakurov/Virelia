@@ -197,6 +197,7 @@ const expectedNativeApi = [
   'FormField',
   'Input',
   'Modal',
+  'Radio',
   'RadioGroup',
   'Select',
   'Tabs',

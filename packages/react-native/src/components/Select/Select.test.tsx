@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
@@ -11,6 +12,11 @@ const options = [
   { label: 'Germany', value: 'de', disabled: true },
   { label: 'Spain', value: 'es' },
 ];
+
+const longOptions = Array.from({ length: 24 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
+}));
 
 const getButtonByText = (text: string) =>
   Array.from(document.body.querySelectorAll<HTMLButtonElement>('button')).find(
@@ -194,6 +200,104 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('confirms the latest controlled value after rerender while open', () => {
+    const onChange = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        value='fr'
+        onChange={onChange}
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      getButtonByText('France')?.click();
+    });
+
+    rerender(
+      <Select
+        label='Country'
+        options={options}
+        value='es'
+        onChange={onChange}
+      />
+    );
+
+    act(() => {
+      getButtonByText('Done')?.click();
+    });
+
+    expect(onChange).toHaveBeenCalledWith('es');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+
+    unmount();
+  });
+
+  it('renders an empty picker with only the disabled placeholder option', () => {
+    const onChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select label='Country' options={[]} onChange={onChange} />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+    const pickerOptions = picker?.querySelectorAll('button');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(pickerOptions).toHaveLength(1);
+    expect(pickerOptions?.[0]?.textContent).toBe('Select...');
+    expect(pickerOptions?.[0]?.hasAttribute('disabled')).toBe(true);
+
+    act(() => {
+      getButtonByText('Done')?.click();
+    });
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('renders long option lists in the picker', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={longOptions} defaultValue='country-12' />
+    );
+
+    expect(container.textContent).toContain('Country 12');
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+
+    expect(picker?.querySelectorAll('button')).toHaveLength(
+      longOptions.length + 1
+    );
+    expect(getButtonByText('Country 24')).toBeTruthy();
+
+    unmount();
+  });
+
   it('does not open when disabled', () => {
     const { container, unmount } = render(
       <Select label='Country' options={options} disabled error='Required' />
@@ -209,6 +313,139 @@ describe('Native Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.body.textContent).not.toContain('Cancel');
     expect(container.textContent).toContain('Required');
+
+    unmount();
+  });
+
+  it('keeps disabled select closed and exposes custom accessibility hint', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        disabled
+        accessibilityLabel='Billing country'
+        accessibilityHint='Selection is locked by billing settings'
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.getAttribute('aria-disabled')).toBe('true');
+    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Selection is locked by billing settings'
+    );
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(document.body.textContent).not.toContain('Done');
+
+    unmount();
+  });
+
+  it('supports accessibility label and required/error hints', () => {
+    const { container, rerender, unmount } = render(
+      <Select
+        label='Country'
+        accessibilityLabel='Billing country'
+        options={options}
+        required
+      />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Required. Opens a picker'
+    );
+
+    rerender(
+      <Select
+        label='Country'
+        accessibilityLabel='Billing country'
+        accessibilityHint='Choose the country used for billing'
+        options={options}
+        error='Country is required'
+      />
+    );
+
+    expect(trigger?.getAttribute('aria-description')).toBe(
+      'Choose the country used for billing'
+    );
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(
+      document.body
+        .querySelector('[role="toolbar"]')
+        ?.getAttribute('aria-label')
+    ).toBe('Billing country picker actions');
+    expect(getButtonByText('Cancel')?.getAttribute('aria-label')).toBe(
+      'Cancel selection'
+    );
+    expect(getButtonByText('Cancel')?.getAttribute('aria-description')).toBe(
+      'Closes the picker without changing the selected value'
+    );
+    expect(getButtonByText('Done')?.getAttribute('aria-label')).toBe(
+      'Confirm selection'
+    );
+    expect(getButtonByText('Done')?.getAttribute('aria-description')).toBe(
+      'Applies the highlighted picker value'
+    );
+    expect(document.body.querySelector('[role="heading"]')?.textContent).toBe(
+      'Billing country'
+    );
+
+    unmount();
+  });
+
+  it('supports error content and style props', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        error={<Text testID='custom-error'>Required</Text>}
+        size='lg'
+        style={{ maxWidth: 360 }}
+        triggerStyle={{ maxWidth: 300 }}
+        textStyle={{ fontWeight: '700' }}
+        pickerStyle={{ minHeight: 160 }}
+      />
+    );
+
+    const field = container.firstElementChild as HTMLElement | null;
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    const triggerText = trigger?.querySelector('span');
+
+    expect(field?.style.maxWidth).toBe('360px');
+    expect(trigger?.style.minHeight).toBe('52px');
+    expect(trigger?.style.maxWidth).toBe('300px');
+    expect(triggerText?.style.fontSize).toBe('20px');
+    expect(triggerText?.style.lineHeight).toBe('28');
+    expect(triggerText?.style.fontWeight).toBe('700');
+    expect(container.textContent).toContain('Required');
+    expect(
+      container.querySelector('[data-testid="custom-error"]')
+    ).toBeTruthy();
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector<HTMLElement>(
+      '[data-testid="native-picker"]'
+    );
+
+    expect(picker?.style.minHeight).toBe('160px');
 
     unmount();
   });

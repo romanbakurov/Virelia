@@ -1,9 +1,10 @@
+@use '@styles/mixins' as *;
+
 .modalHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: var(--space-4);
-  background-color: var(--modal-content-bg);
 
   &Title {
     margin: 0;
@@ -26,28 +27,37 @@
     border-radius: var(--radius-full);
     transition:
       color 0.2s ease,
-      transform 0.2s ease;
+      background-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     cursor: pointer;
 
     svg {
       width: 16px;
       height: 16px;
+      fill: currentcolor;
     }
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: var(--modal-close-button-hover-fg);
       background: var(--modal-close-button-hover-bg);
       transform: rotate(90deg);
     }
 
+    &:active:not(:disabled) {
+      color: var(--modal-close-button-pressed-fg);
+      background: var(--modal-close-button-pressed-bg);
+      transform: rotate(90deg) scale(0.96);
+    }
+
     &:focus-visible {
-      outline: 2px solid var(--focus-ring);
-      outline-offset: 2px;
+      @include focus-ring;
     }
 
     &:disabled {
       color: var(--modal-close-button-disabled-fg);
       background: var(--modal-close-button-disabled-bg);
+      transform: none;
       cursor: not-allowed;
     }
   }

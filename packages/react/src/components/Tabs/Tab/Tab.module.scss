@@ -1,34 +1,41 @@
 @use '@styles/mixins' as *;
 
 .tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   color: var(--tabs-trigger-default-fg);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-regular);
-  background: var(--tabs-trigger-default-bg);
-  border: none;
+  background-color: var(--tabs-trigger-default-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   transition:
     color 0.2s ease,
     background-color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
+  gap: var(--space-2);
+
+  &:focus-visible:not(:disabled) {
+    @include focus-border(
+      var(--tabs-trigger-active-border),
+      var(--tabs-trigger-focus-ring-color)
+    );
+    @include focus-ring(var(--tabs-trigger-focus-ring-color));
+  }
 
   &:disabled {
     color: var(--tabs-trigger-disabled-fg);
     background-color: var(--tabs-trigger-disabled-bg);
+    border-color: var(--tabs-trigger-disabled-border, transparent);
     cursor: not-allowed;
   }
 
   &.iconOnly {
     padding: var(--space-2);
-  }
-
-  &:focus-visible:not(:disabled) {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
   }
 }
 
@@ -49,56 +56,63 @@
 
 .label {
   display: inline-block;
+  min-width: 0;
   font-size: var(--font-size-md);
 }
 
 .default {
   &:hover:not(:disabled) {
     color: var(--tabs-trigger-hover-fg);
+    background-color: var(--tabs-trigger-hover-bg);
   }
 
   &[aria-selected='true'] {
     color: var(--tabs-trigger-active-fg);
+    background-color: var(--tabs-trigger-active-bg);
   }
 }
 
-// Variant Underlined
 .underline {
-  position: relative;
+  border-radius: 0;
 
   &::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    right: 0;
+    bottom: -1px;
     left: 0;
-    width: 0;
     height: 3px;
-    background: var(--tabs-indicator-default-bg);
+    background-color: transparent;
+    transform: scaleX(0);
+    transform-origin: center;
 
-    @include smooth-transition((width, background-color));
+    @include smooth-transition((transform, background-color));
   }
 
   &:hover:not(:disabled) {
     color: var(--tabs-trigger-hover-fg);
+    background-color: var(--tabs-trigger-hover-bg);
   }
 
   &:hover:not(:disabled)::after {
-    width: 100%;
-    background: var(--tabs-indicator-hover-bg);
+    background-color: var(--tabs-indicator-hover-bg);
+    transform: scaleX(1);
   }
 
   &[aria-selected='true'] {
     color: var(--tabs-trigger-active-fg);
+    background-color: var(--tabs-trigger-active-bg);
   }
 
   &[aria-selected='true']::after {
-    width: 100%;
-    background: var(--tabs-indicator-active-bg);
+    background-color: var(--tabs-indicator-active-bg);
+    transform: scaleX(1);
   }
 }
 
-// Variant Pills
 .pills {
+  color: var(--tabs-pills-default-fg);
+  background-color: var(--tabs-pills-default-bg);
   border-radius: var(--radius-md);
 
   &:hover:not(:disabled) {
@@ -112,52 +126,40 @@
   }
 }
 
-// Vertical orientation
 .vertical {
   justify-content: flex-start;
   width: 100%;
-  color: var(--tabs-trigger-default-fg);
   text-align: left;
 
-  &.default {
-    border-left: 2px solid transparent;
+  &.default,
+  &.underline {
+    padding-left: calc(var(--space-4) + 3px);
 
-    &:hover:not(:disabled) {
-      color: var(--tabs-trigger-hover-fg);
-      background-color: var(--tabs-trigger-hover-bg);
-      border-left-color: var(--tabs-indicator-hover-bg);
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 3px;
+      background-color: transparent;
     }
 
-    &[aria-selected='true'] {
-      background-color: var(--tabs-trigger-hover-bg);
+    &:hover:not(:disabled)::before {
+      background-color: var(--tabs-indicator-hover-bg);
+    }
+
+    &[aria-selected='true']::before {
+      background-color: var(--tabs-indicator-active-bg);
     }
   }
 
-  &.underline {
-    border-left: 2px solid transparent;
-
-    &::after {
-      display: none;
-    }
-
-    &:hover:not(:disabled) {
-      background-color: var(--tabs-trigger-hover-bg);
-      border-left-color: var(--tabs-indicator-hover-bg);
-    }
-
-    &[aria-selected='true'] {
-      color: var(--tabs-trigger-active-fg);
-      border-left-color: var(--tabs-indicator-active-bg);
-    }
+  &.underline::after {
+    display: none;
   }
 
   &.pills {
     border-radius: var(--radius-lg);
-
-    &[aria-selected='true'] {
-      color: var(--tabs-pills-active-fg);
-      background-color: var(--tabs-pills-active-bg);
-    }
   }
 }
 

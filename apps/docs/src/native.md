@@ -19,7 +19,13 @@ pnpm add react react-native
 ## Example
 
 ```tsx
-import { Button, Checkbox, Input, RadioGroup } from '@vellira-ui/react-native';
+import {
+  Button,
+  Checkbox,
+  Input,
+  Radio,
+  RadioGroup,
+} from '@vellira-ui/react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -34,15 +40,15 @@ export function PreferencesScreen() {
         onChange={setEmail}
         placeholder='name@example.com'
       />
-      <RadioGroup
-        label='Theme'
-        options={[
-          { label: 'System', value: 'system' },
-          { label: 'Light', value: 'light' },
-          { label: 'Dark', value: 'dark' },
-        ]}
+      <RadioGroup label='Theme'>
+        <Radio value='system' label='System' />
+        <Radio value='light' label='Light' />
+        <Radio value='dark' label='Dark' />
+      </RadioGroup>
+      <Checkbox
+        label='Send product updates'
+        description='Receive release notes and billing updates.'
       />
-      <Checkbox label='Send product updates' />
       <Button color='primary' variant='solid'>
         Apply
       </Button>
@@ -55,20 +61,44 @@ export function PreferencesScreen() {
 
 Every native component exports TypeScript props from the package root. The full
 generated reference lives in
-[`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/api.md).
+[`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/API.md).
 
-| Component    | Role                  |
-| ------------ | --------------------- |
-| `Button`     | Buttons and actions   |
-| `Checkbox`   | Boolean input         |
-| `Input`      | Text input            |
-| `FormField`  | Labels and validation |
-| `RadioGroup` | Single selection      |
-| `Select`     | Selection control     |
-| `Dropdown`   | Context menu          |
-| `Tabs`       | Tab navigation        |
-| `Tooltip`    | Contextual helper     |
-| `Modal`      | Dialog and overlay    |
+| Component    | Core props                                                                                             | Role                  |
+| ------------ | ------------------------------------------------------------------------------------------------------ | --------------------- |
+| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `accessibilityLabel`                                       | Buttons and actions   |
+| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | Boolean input         |
+| `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                                           | Text input            |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                    | Labels and validation |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                              | Radio option          |
+| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`                           | Single selection      |
+| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error` | Selection control     |
+| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                              | Context menu          |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                           | Tab navigation        |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                            | Contextual helper     |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                              | Dialog and overlay    |
+
+Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
+value only; the selection is committed through `Done`, while `Cancel` and the
+backdrop close the sheet without changing the selected value.
+
+## Select Usage Guidelines
+
+Use `Select` for a single form value from a compact list. Use `RadioGroup` when
+there are only a few options and users should compare them without opening a
+picker. Use `Dropdown` for contextual actions, not saved form values.
+
+For accessibility, prefer a visible `label`; if no label can be rendered, pass
+`accessibilityLabel`. Error text is announced by the field error region, and
+`accessibilityHint` can add screen-specific guidance beyond the default picker
+hint.
+
+## Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions, not saved form values. The native model
+is a flat `items` array with action entries, `{ type: 'group', label }`
+headings and `{ type: 'separator' }` dividers. Use `accessibilityLabel` for
+icon-only or custom triggers and `accessibilityHint` when the screen needs
+extra guidance.
 
 ## Button
 
@@ -97,6 +127,14 @@ export function ButtonExamples() {
 }
 ```
 
+## FormField
+
+Native `FormField` is a presentational wrapper for custom controls. Use it for
+layout, label text, descriptions, required marks and validation text. Do not wrap
+`Input`, `Select` or `RadioGroup`, because those components already include
+their own field structure. The child control must keep its own
+`accessibilityLabel`, role, disabled/editable state and interaction behavior.
+
 ## Controlled and Uncontrolled
 
 Most form components support both controlled and uncontrolled usage.
@@ -104,7 +142,7 @@ Most form components support both controlled and uncontrolled usage.
 Use controlled props when application state owns the value.
 
 ```tsx
-import { Checkbox, RadioGroup } from '@vellira-ui/react-native';
+import { Checkbox, Radio, RadioGroup } from '@vellira-ui/react-native';
 import { useState } from 'react';
 
 export function ControlledPreferences() {
@@ -117,17 +155,13 @@ export function ControlledPreferences() {
         checked={enabled}
         onCheckedChange={setEnabled}
         label='Send product updates'
+        description='Receive release notes and billing updates.'
       />
-      <RadioGroup
-        label='Theme'
-        value={theme}
-        onChange={setTheme}
-        options={[
-          { label: 'System', value: 'system' },
-          { label: 'Light', value: 'light' },
-          { label: 'Dark', value: 'dark' },
-        ]}
-      />
+      <RadioGroup label='Theme' value={theme} onValueChange={setTheme}>
+        <Radio value='system' label='System' />
+        <Radio value='light' label='Light' />
+        <Radio value='dark' label='Dark' />
+      </RadioGroup>
     </>
   );
 }
@@ -141,7 +175,11 @@ import { Checkbox, Tabs } from '@vellira-ui/react-native';
 export function UncontrolledPreferences() {
   return (
     <>
-      <Checkbox defaultChecked label='Remember this device' />
+      <Checkbox
+        defaultChecked
+        label='Remember this device'
+        description='Skip verification prompts on this device.'
+      />
       <Tabs defaultActiveIndex={0}>
         <Tabs.List>
           <Tabs.Tab index={0}>Profile</Tabs.Tab>
@@ -163,8 +201,11 @@ accessibility props where the platform supports them.
 - `Button` uses `accessibilityLabel` for icon-only or ambiguous actions. Its
   hover state changes background on web-compatible targets; focus adds a ring
   without changing the background.
-- Inputs, selection controls, and field wrappers expose labels, disabled state,
-  required state, and error text through React Native accessibility APIs.
+- Inputs, checkboxes, selection controls, and field wrappers expose labels,
+  descriptions, disabled state, required state, and error text through React
+  Native accessibility APIs.
+- Checkbox rows without a visible label should use `accessibilityLabel`; mixed
+  selection rows can use `indeterminate`.
 - Interactive components keep press handling and disabled behavior inside the
   renderer package.
 - Modal and overlay components keep platform rendering details out of

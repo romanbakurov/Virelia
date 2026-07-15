@@ -8,43 +8,50 @@ export const control = {
   default: {
     bg: surface.default,
     fg: text.primary,
-    border: border.muted,
+    border: border.default,
   },
+
   hover: {
-    bg: colors.gray[900],
-    fg: text.inverse,
-    border: colors.primary[500],
+    bg: surface.hover,
+    fg: text.interactive,
+    border: colors.warning[300],
   },
-  radioHover: {
-    bg: colors.gray[900],
-    fg: colors.primary[300],
-    border: colors.primary[300],
+
+  active: {
+    bg: surface.active,
+    fg: text.primary,
+    border: colors.warning[200],
   },
+
+  disabled: {
+    bg: surface.disabled,
+    fg: text.disabled,
+    border: border.disabled,
+  },
+
   selected: {
     default: {
-      bg: colors.primary[500],
-      fg: text.primary,
-      border: colors.primary[500],
+      bg: colors.warning[300],
+      fg: colors.mono[950],
+      border: colors.warning[300],
     },
+
     hover: {
-      bg: colors.info[500],
-      fg: text.inverse,
-      border: colors.info[500],
+      bg: colors.warning[200],
+      fg: colors.mono[950],
+      border: colors.warning[200],
     },
+
     active: {
-      bg: colors.primary[800],
-      fg: text.inverse,
-      border: colors.primary[800],
+      bg: colors.warning[400],
+      fg: colors.mono[950],
+      border: colors.warning[400],
     },
+
     muted: {
-      bg: colors.primary[600],
-      fg: colors.mono[50],
-      border: colors.primary[600],
-    },
-    radioDefault: {
-      bg: colors.primary[400],
-      fg: colors.primary[500],
-      border: colors.primary[300],
+      bg: colors.gray[800],
+      fg: colors.warning[200],
+      border: colors.warning[300],
     },
   },
 } as const;

@@ -10,6 +10,7 @@ This package contains the web implementation of the design system. It extends sh
 - Checkbox
 - Input
 - FormField
+- Radio
 - RadioGroup
 - Select
 - Dropdown
@@ -28,12 +29,6 @@ For detailed props, shared types, examples, and compound component APIs, see
 pnpm add @vellira-ui/react
 ```
 
-If consuming from GitHub Packages, configure the scope registry:
-
-```bash
-@romanbakurov:registry=https://npm.pkg.github.com
-```
-
 ## Usage
 
 Import the stylesheet once in your app entry point:
@@ -50,6 +45,7 @@ import { useState } from 'react';
 
 export function Example() {
   const [email, setEmail] = useState('');
+  const [accepted, setAccepted] = useState(false);
 
   return (
     <form>
@@ -59,7 +55,12 @@ export function Example() {
         onChange={(event) => setEmail(event.target.value)}
         placeholder='name@example.com'
       />
-      <Checkbox label='Accept terms' />
+      <Checkbox
+        label='Accept terms'
+        description='Required to create an account.'
+        checked={accepted}
+        onCheckedChange={setAccepted}
+      />
       <Button color='primary' variant='solid'>
         Submit
       </Button>
@@ -80,6 +81,69 @@ import { Search } from '@vellira-ui/icons';
 
 `loading` disables interaction and can replace the visible label with
 `loadingText`.
+
+### Checkbox Notes
+
+Use `description` for settings-style helper text when the checkbox is not
+wrapped in `FormField`. For checkbox rows without a visible label, provide
+`aria-label` or `aria-labelledby`.
+
+### Select Notes
+
+Use `Select` for one form value from a compact list, `RadioGroup` for a few
+visible choices, and `Dropdown` for action menus. Prefer a visible `label`; if
+the design has no visible label, provide `aria-label`.
+
+```tsx
+import { Select } from '@vellira-ui/react';
+import { useState } from 'react';
+
+export function RoleSelect() {
+  const [role, setRole] = useState('editor');
+
+  return (
+    <Select
+      label='Role'
+      value={role}
+      onChange={setRole}
+      options={[
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Viewer', value: 'viewer' },
+      ]}
+    />
+  );
+}
+```
+
+### Dropdown Notes
+
+Use `Dropdown` for contextual actions, not saved form values. The `items` model
+is flat: use `{ type: 'group', label }` as a heading before related actions and
+`{ type: 'separator' }` between sections. Use `open`, `defaultOpen`, and
+`onOpenChange` for menu state, and `onSelect` for the selected action value.
+
+```tsx
+import type { DropdownItem } from '@vellira-ui/react';
+import { Dropdown } from '@vellira-ui/react';
+
+const items: DropdownItem[] = [
+  { type: 'group', label: 'File' },
+  { label: 'Duplicate', value: 'duplicate' },
+  { type: 'separator' },
+  { label: 'Delete', value: 'delete', danger: true },
+];
+
+<Dropdown label='Actions' items={items} onSelect={handleAction} />;
+```
+
+### FormField Notes
+
+`FormField` is a presentational wrapper for custom web controls. Pass `id` to
+`FormField` and the same `id` to the wrapped control; the root wrapper does not
+receive that `id`, which avoids duplicate DOM ids. The child control remains
+responsible for `aria-describedby`, `aria-invalid`, `required`, `disabled` and
+interaction behavior.
 
 ## Testing
 

@@ -1,23 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import type { ComponentProps, CSSProperties, ReactNode } from 'react';
+const noop = () => undefined;
 
-import { RadioGroup } from '../RadioGroup';
+import { Radio } from '../../primitives/Radio';
 
-import type { RadioGroupProps } from './types';
-
-const defaultOptions = [
-  { label: 'France', value: 'fr' },
-  { label: 'Spain', value: 'es' },
-  { label: 'Germany', value: 'de' },
-];
-
-const optionsWithDisabled = [
-  { label: 'France', value: 'fr' },
-  { label: 'Spain', value: 'es', disabled: true },
-  { label: 'Germany', value: 'de' },
-];
+import { RadioGroup } from './index';
 
 const meta = {
   title: 'Components/RadioGroup',
@@ -29,24 +18,20 @@ const meta = {
         component: `
 ### RadioGroup Component
 
-Grouped radio control for selecting exactly one option.
+Groups multiple Radio controls and manages selection of exactly one value.
 
 **Features**
-- Label and description support
-- Controlled and uncontrolled value support
+- Controlled and uncontrolled usage
+- Composition with standalone Radio controls
+- Group label and description
 - Vertical and horizontal orientation
-- Required state
-- Disabled group state
-- Disabled individual options
+- Required and disabled group states
+- Disabled individual Radio controls
 - Validation error message
-- Native radio input semantics
+- Shared native input name
+- Accessible \`radiogroup\` semantics
 
-### Accessibility
-
-RadioGroup uses native radio inputs inside a \`radiogroup\`.
-Error and description text are connected through \`aria-describedby\`.
-
-Correct usage:
+### Usage
 
 \`\`\`tsx
 <RadioGroup
@@ -54,9 +39,12 @@ Correct usage:
   label='Country'
   description='Choose your country of residence.'
   value={country}
-  onChange={setCountry}
-  options={countries}
-/>
+  onValueChange={setCountry}
+>
+  <Radio value='fr' label='France' />
+  <Radio value='es' label='Spain' />
+  <Radio value='de' label='Germany' />
+</RadioGroup>
 \`\`\`
 `,
       },
@@ -65,28 +53,29 @@ Correct usage:
   args: {
     name: 'country',
     label: 'Country',
-    placeholder: undefined,
-    options: defaultOptions,
     orientation: 'vertical',
-    onChange: fn(),
+    disabled: false,
+    required: false,
+    onValueChange: noop,
   },
   argTypes: {
     label: {
-      description: 'Text label displayed above the RadioGroup.',
+      description: 'Content displayed as the group label.',
       control: 'text',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'ReactNode' },
       },
     },
     description: {
-      description: 'Helper text displayed below the label.',
+      description: 'Supporting text displayed below the group label.',
       control: 'text',
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'ReactNode' },
       },
     },
     name: {
-      description: 'Radio group name shared by all radio options.',
+      description:
+        'Native input name shared by all Radio controls in the group.',
       control: 'text',
       table: {
         type: { summary: 'string' },
@@ -106,23 +95,22 @@ Correct usage:
         type: { summary: 'string' },
       },
     },
-    options: {
-      description: 'List of radio options.',
-      control: 'object',
-      table: {
-        type: {
-          summary:
-            'Array<{ label: string; value: string; disabled?: boolean }>',
-        },
-      },
-    },
     orientation: {
-      description: 'Layout direction of the radio options.',
+      description: 'Layout direction of the Radio controls.',
       control: 'radio',
       options: ['vertical', 'horizontal'],
       table: {
         type: { summary: `'vertical' | 'horizontal'` },
         defaultValue: { summary: 'vertical' },
+      },
+    },
+    size: {
+      description: 'Default size applied to Radio controls in the group.',
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: `'sm' | 'md' | 'lg'` },
+        defaultValue: { summary: 'md' },
       },
     },
     required: {
@@ -134,7 +122,7 @@ Correct usage:
       },
     },
     disabled: {
-      description: 'Disables all radio options in the group.',
+      description: 'Disables every Radio control in the group.',
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },
@@ -142,24 +130,31 @@ Correct usage:
       },
     },
     error: {
-      description: 'Validation error message displayed below the group.',
+      description: 'Validation error displayed below the group.',
       control: 'text',
       table: {
         type: { summary: 'string' },
       },
     },
     className: {
-      description: 'Additional class name for the RadioGroup root.',
+      description: 'Class name applied to the RadioGroup root.',
       control: 'text',
       table: {
         type: { summary: 'string' },
       },
     },
-    onChange: {
+    onValueChange: {
       description: 'Called when the selected value changes.',
       action: 'changed',
       table: {
         type: { summary: '(value: string) => void' },
+      },
+    },
+    children: {
+      control: false,
+      description: 'Radio controls rendered inside the group.',
+      table: {
+        type: { summary: 'ReactNode' },
       },
     },
   },
@@ -168,27 +163,135 @@ Correct usage:
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+type RadioGroupStoryProps = ComponentProps<typeof RadioGroup>;
 
-const RadioGroupWithState = (args: RadioGroupProps) => {
+const sectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+  minWidth: 0,
+  maxWidth: 760,
+  padding: 20,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-xl)',
+  background: 'var(--surface-subtle)',
+} satisfies CSSProperties;
+
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section style={sectionStyle}>
+      <h3 style={subtitleStyle}>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function CountryRadios({ disableSpain = false }: { disableSpain?: boolean }) {
+  return (
+    <>
+      <Radio value='fr' label='France' />
+      <Radio value='es' label='Spain' disabled={disableSpain} />
+      <Radio value='de' label='Germany' />
+    </>
+  );
+}
+
+const ControlledRadioGroup = (args: RadioGroupStoryProps) => {
+  const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
+
+  useEffect(() => {
+    setValue(args.value ?? args.defaultValue ?? '');
+  }, [args.value, args.defaultValue]);
+
+  return (
+    <RadioGroup
+      {...args}
+      value={value}
+      onValueChange={(nextValue) => {
+        setValue(nextValue);
+        args.onValueChange?.(nextValue);
+      }}
+    >
+      {args.children}
+    </RadioGroup>
+  );
+};
+
+const ControlledCountryGroup = (
+  args: Omit<RadioGroupStoryProps, 'children'>
+) => {
   const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
 
   return (
     <RadioGroup
       {...args}
       value={value}
-      onChange={(nextValue) => {
+      onValueChange={(nextValue) => {
         setValue(nextValue);
-        args.onChange?.(nextValue);
+        args.onValueChange?.(nextValue);
       }}
-    />
+    >
+      <CountryRadios />
+    </RadioGroup>
   );
 };
 
-export const Basic: Story = {
+export const Playground: Story = {
+  args: {
+    defaultValue: 'fr',
+    children: <CountryRadios />,
+  },
+  render: (args) => (
+    <Section title='Playground'>
+      <ControlledRadioGroup {...args} />
+    </Section>
+  ),
+};
+
+export const Default: Story = {
   args: {
     defaultValue: 'fr',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Default'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const Controlled: Story = {
+  args: {
+    value: 'fr',
+  },
+  render: (args) => (
+    <Section title='Controlled'>
+      <ControlledCountryGroup {...args}>
+        <CountryRadios />
+      </ControlledCountryGroup>
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    defaultValue: 'fr',
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const WithDescription: Story = {
@@ -196,7 +299,13 @@ export const WithDescription: Story = {
     defaultValue: 'fr',
     description: 'Choose your country of residence.',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='With description'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Required: Story = {
@@ -204,16 +313,28 @@ export const Required: Story = {
     required: true,
     defaultValue: 'fr',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Required'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const WithError: Story = {
   args: {
     required: true,
     defaultValue: '',
-    error: 'Please select a country',
+    error: 'Please select a country.',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Error'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Disabled: Story = {
@@ -221,15 +342,26 @@ export const Disabled: Story = {
     disabled: true,
     defaultValue: 'fr',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Disabled group'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
-export const DisabledOption: Story = {
+export const DisabledRadio: Story = {
   args: {
     defaultValue: 'fr',
-    options: optionsWithDisabled,
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Disabled Radio'>
+      <RadioGroup {...args}>
+        <CountryRadios disableSpain />
+      </RadioGroup>
+    </Section>
+  ),
 };
 
 export const Horizontal: Story = {
@@ -237,24 +369,171 @@ export const Horizontal: Story = {
     defaultValue: 'fr',
     orientation: 'horizontal',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
+  render: (args) => (
+    <Section title='Horizontal'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <RadioGroup
+          name='country-small'
+          label='Small'
+          defaultValue='fr'
+          size='sm'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='country-medium'
+          label='Medium'
+          defaultValue='fr'
+          size='md'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='country-large'
+          label='Large'
+          defaultValue='fr'
+          size='lg'
+        >
+          <CountryRadios />
+        </RadioGroup>
+      </div>
+    </Section>
+  ),
+};
+
+export const WithRadioDescriptions: Story = {
+  args: {
+    defaultValue: 'standard',
+    label: 'Delivery method',
+    description: 'Choose how your order should be delivered.',
+  },
+  render: (args) => (
+    <Section title='Radio descriptions'>
+      <RadioGroup {...args}>
+        <Radio
+          value='standard'
+          label='Standard delivery'
+          description='Delivered within three to five business days.'
+        />
+        <Radio
+          value='express'
+          label='Express delivery'
+          description='Delivered on the next business day.'
+        />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const CustomContent: Story = {
+  render: () => (
+    <Section title='Custom content'>
+      <RadioGroup
+        name='shipping-speed'
+        label={
+          <span style={{ display: 'inline-flex', gap: 8 }}>
+            Shipping speed
+            <strong>Required</strong>
+          </span>
+        }
+        description={
+          <span>Choose the speed that matches the current order priority.</span>
+        }
+        required
+        defaultValue='standard'
+      >
+        <Radio
+          value='standard'
+          label='Standard'
+          description='Delivered within three to five business days.'
+        />
+        <Radio
+          value='express'
+          label='Express'
+          description='Delivered on the next business day.'
+        />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const States: Story = {
+  render: () => (
+    <Section title='States'>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <RadioGroup name='states-default' label='Default' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-horizontal'
+          label='Horizontal'
+          orientation='horizontal'
+          defaultValue='fr'
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup name='states-required' label='Required' required>
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-disabled'
+          label='Disabled group'
+          defaultValue='fr'
+          disabled
+        >
+          <CountryRadios />
+        </RadioGroup>
+
+        <RadioGroup
+          name='states-error'
+          label='Error'
+          error='Please select a country.'
+          required
+        >
+          <CountryRadios disableSpain />
+        </RadioGroup>
+      </div>
+    </Section>
+  ),
 };
 
 export const Selection: Story = {
   args: {
     defaultValue: '',
   },
-  render: (args) => <RadioGroupWithState {...args} />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  render: (args) => (
+    <Section title='Selection'>
+      <RadioGroup {...args}>
+        <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
 
-    const spainInput = canvas.getByLabelText('Spain');
-    const spainLabel = spainInput.closest('label');
-
-    expect(spainLabel).not.toBeNull();
-
-    await userEvent.click(spainLabel as HTMLLabelElement);
-
-    await expect(spainInput).toBeChecked();
+export const DisabledRadioInteraction: Story = {
+  args: {
+    defaultValue: 'fr',
   },
+  render: (args) => (
+    <Section title='Disabled Radio interaction'>
+      <RadioGroup {...args}>
+        <CountryRadios disableSpain />
+      </RadioGroup>
+    </Section>
+  ),
 };

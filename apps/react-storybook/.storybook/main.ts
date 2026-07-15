@@ -1,4 +1,13 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
+
+const dirname =
+  typeof __dirname !== 'undefined'
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   framework: {
@@ -11,18 +20,23 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-docs',
     '@storybook/addon-a11y',
-    '@storybook/addon-vitest',
     '@chromatic-com/storybook',
   ],
 
   async viteFinal(config) {
-    return {
-      ...config,
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          '@vellira-ui/core': path.resolve(
+            dirname,
+            '../../../packages/core/src/index.ts'
+          ),
+        },
+      },
       build: {
-        ...config.build,
         chunkSizeWarningLimit: 1200,
       },
-    };
+    });
   },
 };
 

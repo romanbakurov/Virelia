@@ -1,107 +1,107 @@
+import { forwardRef } from 'react';
+
 import { useControllableState } from '@vellira-ui/core';
-import { Pressable, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { FormField } from '../../patterns/FormField';
 import { useThemeStyles } from '../../theme';
 
 import { createStyles } from './RadioGroup.styles';
+import { RadioGroupProvider } from './RadioGroupContext';
 import type { RadioGroupProps } from './types';
 
-export function RadioGroup({
-  label,
-  description,
-  value,
-  defaultValue = '',
-  onChange,
-  options,
-  required = false,
-  disabled = false,
-  error,
-  orientation = 'vertical',
-  style,
-  optionStyle,
-  labelStyle,
-}: RadioGroupProps) {
-  const styles = useThemeStyles(createStyles);
+export const RadioGroup = forwardRef<View, RadioGroupProps>(
+  (
+    {
+      value,
+      defaultValue = '',
+      onValueChange,
+      disabled = false,
+      required = false,
+      size = 'md',
+      orientation = 'vertical',
+      label,
+      description,
+      error,
+      children,
+      style,
+      itemsStyle,
+      labelStyle,
+      descriptionStyle,
+      errorStyle,
+      accessibilityLabel,
+      accessibilityHint,
+      ...rest
+    },
+    ref
+  ) => {
+    const styles = useThemeStyles(createStyles);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
-    value,
-    defaultValue,
-    onChange,
-  });
+    const [selectedValue, setSelectedValue] = useControllableState({
+      value,
+      defaultValue,
+      onChange: onValueChange,
+    });
 
-  return (
-    <FormField
-      label={label}
-      description={description}
-      error={error}
-      required={required}
-      disabled={disabled}
-    >
-      <View
-        accessibilityRole='radiogroup'
-        accessibilityState={{ disabled }}
-        style={[
-          styles.group,
-          orientation === 'horizontal' && styles.horizontal,
-          style,
-        ]}
+    const invalid = Boolean(error);
+
+    const resolvedAccessibilityLabel =
+      accessibilityLabel ?? (typeof label === 'string' ? label : undefined);
+
+    const resolvedAccessibilityHint =
+      (accessibilityHint ??
+        [
+          typeof description === 'string' ? description : undefined,
+          required ? 'Required.' : undefined,
+          typeof error === 'string' ? error : undefined,
+        ]
+          .filter(Boolean)
+          .join(' ')) ||
+      undefined;
+
+    return (
+      <FormField
+        label={label}
+        description={description}
+        error={error}
+        required={required}
+        disabled={disabled}
+        labelStyle={labelStyle}
+        descriptionStyle={descriptionStyle}
+        errorStyle={errorStyle}
+        style={style}
       >
-        {options.map((option) => {
-          const isSelected = selectedValue === option.value;
-          const isDisabled = disabled || !!option.disabled;
-
-          return (
-            <Pressable
-              key={option.value}
-              disabled={isDisabled}
-              accessibilityRole='radio'
-              accessibilityLabel={option.label}
-              accessibilityState={{
-                checked: isSelected,
-                disabled: isDisabled,
-              }}
-              onPress={() => {
-                if (isDisabled) return;
-
-                setSelectedValue(option.value);
-              }}
-              style={[
-                styles.option,
-                isDisabled && styles.optionDisabled,
-                optionStyle,
-              ]}
-            >
-              <View
-                style={[
-                  styles.radio,
-                  isSelected && styles.radioSelected,
-                  isDisabled && styles.radioDisabled,
-                ]}
-              >
-                {isSelected && (
-                  <View
-                    style={[styles.dot, isDisabled && styles.dotDisabled]}
-                  />
-                )}
-              </View>
-
-              <Text
-                style={[
-                  styles.label,
-                  isSelected && styles.labelSelected,
-                  isDisabled && styles.labelDisabled,
-                  labelStyle,
-                ]}
-              >
-                {option.label}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
-    </FormField>
-  );
-}
+        <RadioGroupProvider
+          value={{
+            value: selectedValue,
+            disabled,
+            required,
+            invalid,
+            size,
+            onValueChange: setSelectedValue,
+          }}
+        >
+          <View
+            {...rest}
+            ref={ref}
+            accessibilityRole='radiogroup'
+            accessibilityLabel={resolvedAccessibilityLabel}
+            accessibilityHint={resolvedAccessibilityHint}
+            accessibilityState={{
+              disabled,
+            }}
+            style={[
+              styles.items,
+              orientation === 'horizontal' && styles.horizontal,
+              itemsStyle,
+            ]}
+          >
+            {children}
+          </View>
+        </RadioGroupProvider>
+      </FormField>
+    );
+  }
+);
 
 RadioGroup.displayName = 'RadioGroup';

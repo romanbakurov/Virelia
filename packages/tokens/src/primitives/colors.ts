@@ -1,10 +1,8 @@
 /**
- * Brand palette used across both Light and Dark themes.
+ * Shared color scales used by Light, Dark, and High Contrast themes.
  *
- * 50–200   → light backgrounds / subtle surfaces
- * 300–500  → accents / interactive states
- * 600–700  → main actions
- * 800–950  → dark surfaces / text / pressed states
+ * Lower steps are lighter, higher steps are darker.
+ * Semantic and component tokens define the actual usage of each step.
  */
 export const colors = {
   primary: {
@@ -48,6 +46,7 @@ export const colors = {
     600: '#4F4867',
     700: '#3D3754',
     800: '#2F2A42',
+    850: '#242034',
     900: '#231F31',
     950: '#181521',
   },

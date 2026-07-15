@@ -1,4 +1,3 @@
-import { overlay } from '@vellira-ui/tokens';
 import { StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
@@ -12,7 +11,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     backdrop: {
       ...StyleSheet.absoluteFill,
-      backgroundColor: overlay.backdrop,
+      backgroundColor: theme.semantic.overlay.backdrop,
     },
 
     menu: {
@@ -24,5 +23,14 @@ export const createStyles = (theme: NativeTheme) =>
       borderTopLeftRadius: theme.tokens.radius.lg,
       borderTopRightRadius: theme.tokens.radius.lg,
       borderWidth: 1,
+
+      shadowColor: '#000000',
+      shadowOffset: {
+        width: 0,
+        height: -4,
+      },
+      shadowOpacity: 0.24,
+      shadowRadius: 16,
+      elevation: 12,
     },
   });

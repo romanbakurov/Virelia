@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
+import { useTabs } from '@vellira-ui/core';
 import { View } from 'react-native';
 
 import { useThemeStyles } from '../../theme';
@@ -18,25 +19,12 @@ export const TabsRoot = ({
   style,
 }: TabsProps) => {
   const styles = useThemeStyles(createStyles);
-
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] =
-    useState(defaultActiveIndex);
-
-  const isControlled = controlledActiveIndex !== undefined;
-  const activeIndex = isControlled
-    ? controlledActiveIndex
-    : uncontrolledActiveIndex;
-
-  const setActiveIndex = useCallback(
-    (nextIndex: number) => {
-      if (!isControlled) {
-        setUncontrolledActiveIndex(nextIndex);
-      }
-
-      onChange?.(nextIndex);
-    },
-    [isControlled, onChange]
-  );
+  const { activeIndex, setActiveIndex } = useTabs({
+    activeIndex: controlledActiveIndex,
+    defaultActiveIndex,
+    onChange,
+    orientation,
+  });
 
   const value = useMemo(
     () => ({ activeIndex, appearance, orientation, setActiveIndex }),

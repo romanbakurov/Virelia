@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Search } from '@vellira-ui/icons';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Button } from '../../primitives/Button';
 import { Tooltip } from '../Tooltip';
@@ -56,7 +56,7 @@ Correct usage:
     },
   },
   args: {
-    onOpenChange: fn(),
+    onOpenChange: noop,
   },
   argTypes: {
     children: {
