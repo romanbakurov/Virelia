@@ -35,7 +35,7 @@
   &:focus-visible {
     color: var(--input-focus-fg);
     background-color: var(--input-focus-bg);
-    border-color: transparent;
+    border-color: var(--input-focus-border);
 
     @include focus-ring(var(--input-focus-ring));
 
@@ -59,7 +59,7 @@
     border-color: var(--input-error-border);
 
     &:focus-visible {
-      border-color: transparent;
+      border-color: var(--input-error-border);
 
       @include focus-ring(var(--input-error-ring));
     }
