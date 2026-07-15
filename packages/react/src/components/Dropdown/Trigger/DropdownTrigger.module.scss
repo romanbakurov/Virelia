@@ -25,9 +25,9 @@
   &:focus-visible:not(.disabled) {
     color: var(--dropdown-trigger-focus-fg);
     background: var(--dropdown-trigger-focus-bg);
-    border-color: var(--dropdown-trigger-focus-border);
+    border-color: transparent;
 
-    @include focus-ring(var(--dropdown-trigger-focus-ring));
+    @include focus-ring(var(--dropdown-trigger-focus-ring-color));
   }
 
   &:hover:not(.disabled) {

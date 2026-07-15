@@ -24,7 +24,7 @@ export const dropdown = {
       bg: 'transparent',
       fg: text.interactive,
       border: border.focus,
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: {
@@ -53,7 +53,7 @@ export const dropdown = {
     pressed: menu.item.pressed,
 
     focus: {
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: menu.item.disabled,

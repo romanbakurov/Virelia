@@ -32,7 +32,7 @@
   }
 
   &:focus-visible:not(.disabled) {
-    @include focus-ring(var(--dropdown-item-focus-ring));
+    @include focus-ring(var(--dropdown-item-focus-ring-color));
   }
 }
 

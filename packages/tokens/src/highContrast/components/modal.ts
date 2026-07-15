@@ -44,7 +44,7 @@ export const modal = {
     },
 
     focus: {
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: {

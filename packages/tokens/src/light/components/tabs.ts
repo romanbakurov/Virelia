@@ -31,7 +31,7 @@ export const tabs = {
     },
 
     focus: {
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: {

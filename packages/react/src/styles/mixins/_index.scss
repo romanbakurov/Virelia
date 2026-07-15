@@ -25,10 +25,8 @@
 }
 
 @mixin focus-ring($color: var(--focus-ring-color)) {
-  outline: none;
-  box-shadow:
-    0 0 0 var(--focus-ring-width) $color,
-    var(--focus-ring-shadow);
+  outline: var(--focus-ring-width) solid $color;
+  outline-offset: var(--focus-ring-width);
 }
 
 @mixin smooth-transition($properties: all, $duration: 0.2s) {

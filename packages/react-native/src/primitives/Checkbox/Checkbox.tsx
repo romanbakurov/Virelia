@@ -1,10 +1,11 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 
 import { useControllableState } from '@vellira-ui/core';
 import { Check } from '@vellira-ui/icons';
 import { Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
+import { devWarning } from '../../utils/devWarning';
 
 import { createStyles } from './Checkbox.styles';
 import type { CheckboxProps } from './types';
@@ -77,6 +78,13 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
       .join(' ');
 
     const accessibilityChecked = indeterminate ? 'mixed' : isChecked;
+
+    useEffect(() => {
+      devWarning(
+        Boolean(resolvedAccessibilityLabel),
+        'Checkbox: an accessible label must be provided through label or accessibilityLabel.'
+      );
+    }, [resolvedAccessibilityLabel]);
 
     return (
       <View style={styles.container}>

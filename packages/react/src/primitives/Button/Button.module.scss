@@ -56,6 +56,8 @@ $button-variants: solid, outline, ghost;
 
 .button:focus-visible {
   @include focus-ring;
+
+  box-shadow: none;
 }
 
 .button:disabled,

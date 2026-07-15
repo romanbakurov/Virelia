@@ -22,7 +22,7 @@ export const contextMenu = {
     pressed: semanticMenu.item.pressed,
 
     focus: {
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: semanticMenu.item.disabled,
@@ -47,7 +47,7 @@ export const contextMenu = {
       bg: 'transparent',
       fg: text.interactive,
       border: 'transparent',
-      ring: focus.ring.color,
+      ring: focus.ring,
     },
 
     disabled: {

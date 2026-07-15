@@ -35,7 +35,7 @@
   &:focus-visible {
     color: var(--input-focus-fg);
     background-color: var(--input-focus-bg);
-    border-color: var(--input-focus-border);
+    border-color: transparent;
 
     @include focus-ring(var(--input-focus-ring));
 
@@ -59,7 +59,7 @@
     border-color: var(--input-error-border);
 
     &:focus-visible {
-      border-color: var(--input-error-border);
+      border-color: transparent;
 
       @include focus-ring(var(--input-error-ring));
     }
@@ -93,9 +93,7 @@
     caret-color: var(--input-focus-fg);
     box-shadow:
       0 0 0 1000px var(--input-focus-bg) inset,
-      0 0 0 var(--focus-ring-width) var(--focus-ring-offset),
-      0 0 0 calc(var(--focus-ring-width) * 2) var(--input-focus-ring),
-      var(--focus-ring-shadow);
+      0 0 0 var(--focus-ring-width) var(--input-focus-ring);
   }
 }
 
