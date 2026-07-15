@@ -1,19 +1,22 @@
 .panel {
   flex: 1;
+  min-width: 0;
   padding: var(--space-4);
   color: var(--tabs-panel-fg);
   opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .visible {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .vertical {
   padding-left: var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    transition: none;
+  }
 }

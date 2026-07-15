@@ -1,35 +1,42 @@
 @use '@styles/mixins' as *;
 
 .button {
+  box-sizing: border-box;
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-2);
   min-width: 32px;
   min-height: 32px;
+  max-width: 100%;
   padding: var(--space-2);
   color: var(--dropdown-trigger-default-fg);
+  line-height: var(--line-height-md);
   background: var(--dropdown-trigger-default-bg);
   border: 2px solid var(--dropdown-trigger-default-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
+  overflow: hidden;
 
   @include smooth-transition(
-    (color, background-color, border-color, box-shadow)
+    (color, background-color, border-color, box-shadow, transform)
   );
 
   &:focus-visible:not(.disabled) {
     color: var(--dropdown-trigger-focus-fg);
     background: var(--dropdown-trigger-focus-bg);
-    outline: none;
-    box-shadow: 0 0 0 3px var(--dropdown-trigger-focus-ring);
+
+    @include focus-border(
+      var(--dropdown-trigger-focus-border),
+      var(--dropdown-trigger-focus-ring-color)
+    );
+    @include focus-ring(var(--dropdown-trigger-focus-ring-color));
   }
 
   &:hover:not(.disabled) {
     color: var(--dropdown-trigger-hover-fg);
     background: var(--dropdown-trigger-hover-bg);
-
-    @include ring(var(--dropdown-trigger-hover-ring));
+    border-color: var(--dropdown-trigger-hover-border);
 
     .iconLeft svg {
       color: currentcolor;
@@ -52,16 +59,14 @@
 
   &.iconOnly {
     justify-content: center;
+    min-width: 0;
+    min-height: 0;
     width: 42px;
     height: 42px;
     padding: 8px;
     border-radius: var(--radius-full);
 
     &:hover:not(.disabled) {
-      background: var(--dropdown-trigger-hover-bg);
-
-      @include ring(var(--dropdown-trigger-hover-ring));
-
       .iconLeft {
         transform: rotate(var(--dropdown-rotate-angle, 90deg));
       }
@@ -69,10 +74,58 @@
   }
 }
 
+.sm {
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+
+  &.iconOnly {
+    width: 36px;
+    height: 36px;
+    padding: var(--space-2);
+  }
+}
+
+.md {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-md);
+
+  &.iconOnly {
+    width: 44px;
+    height: 44px;
+    padding: var(--space-3);
+  }
+}
+
+.lg {
+  min-height: 52px;
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-lg);
+
+  &.iconOnly {
+    width: 52px;
+    height: 52px;
+    padding: var(--space-4);
+  }
+}
+
+.button > :not(.iconLeft, .arrow) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .iconLeft,
 .arrow {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
+  flex-shrink: 0;
   line-height: 0;
 
   @include smooth-transition(transform);

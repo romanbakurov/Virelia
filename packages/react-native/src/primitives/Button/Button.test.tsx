@@ -214,7 +214,7 @@ describe('Native Button', () => {
     });
 
     expect(button?.style.borderColor).toBe(
-      hexToRgb(nativeThemes.light.semantic.focus.ring)
+      hexToRgb(nativeThemes.light.semantic.focus.ring.color)
     );
 
     unmount();
@@ -234,7 +234,7 @@ describe('Native Button', () => {
 
     expect(button?.style.backgroundColor).toBe(hoverBg);
     expect(button?.style.borderColor).toBe(
-      hexToRgb(nativeThemes.light.semantic.focus.ring)
+      hexToRgb(nativeThemes.light.semantic.focus.ring.color)
     );
 
     unmount();

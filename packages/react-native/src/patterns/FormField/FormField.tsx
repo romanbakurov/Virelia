@@ -81,7 +81,11 @@ export function FormField({
         (typeof error === 'string' || typeof error === 'number' ? (
           <Text
             accessibilityLiveRegion='polite'
-            style={[styles.error, errorStyle]}
+            style={[
+              styles.error,
+              disabled && styles.helperTextDisabled,
+              errorStyle,
+            ]}
           >
             {error}
           </Text>

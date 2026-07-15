@@ -21,13 +21,26 @@ export function DropdownTrigger({
   icon,
   arrowIcon,
   showArrow = true,
+  size = 'md',
   disabled = false,
   isOpen,
   triggerStyle,
+  accessibilityLabel,
+  accessibilityHint,
   onPress,
 }: DropdownTriggerProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const textSizeStyle = {
+    sm: styles.textSm,
+    md: styles.textMd,
+    lg: styles.textLg,
+  }[size];
+  const iconOnlySizeStyle = {
+    sm: styles.smIconOnly,
+    md: styles.mdIconOnly,
+    lg: styles.lgIconOnly,
+  }[size];
   const hasIcon = Boolean(icon);
   const isIconOnly = !trigger && hasIcon && !showArrow;
   const [isPressed, setIsPressed] = useState(false);
@@ -53,6 +66,7 @@ export function DropdownTrigger({
           numberOfLines={1}
           style={[
             styles.triggerText,
+            textSizeStyle,
             { color },
             disabled && styles.triggerTextDisabled,
           ]}
@@ -85,16 +99,21 @@ export function DropdownTrigger({
     <Pressable
       disabled={disabled}
       accessibilityRole='button'
-      accessibilityLabel={label}
+      accessibilityLabel={
+        accessibilityLabel ?? (typeof label === 'string' ? label : undefined)
+      }
+      accessibilityHint={accessibilityHint}
       accessibilityState={{ expanded: isOpen, disabled }}
       onPress={onPress}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       style={[
         styles.trigger,
+        styles[size],
+        isIconOnly && styles.iconOnly,
+        isIconOnly && iconOnlySizeStyle,
         isPressed && !disabled && styles.triggerPressed,
         disabled && styles.triggerDisabled,
-        isIconOnly && styles.iconOnly,
         triggerStyle,
       ]}
     >
@@ -108,6 +127,7 @@ export function DropdownTrigger({
             numberOfLines={1}
             style={[
               styles.triggerText,
+              textSizeStyle,
               { color: contentColor },
               disabled && styles.triggerTextDisabled,
             ]}

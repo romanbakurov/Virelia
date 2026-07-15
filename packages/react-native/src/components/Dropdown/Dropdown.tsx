@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
+import { useDropdown } from '@vellira-ui/core';
 import { View } from 'react-native';
 
 import { useThemeStyles } from '../../theme';
@@ -11,7 +12,7 @@ import { DropdownSeparator } from './Separator/DropdownSeparator';
 import { DropdownTrigger } from './Trigger/DropdownTrigger';
 import { createStyles } from './Dropdown.styles';
 import type { DropdownProps } from './types';
-import { isGroup, isSeparator } from './types';
+import { isGroup, isMenuItem, isSeparator } from './types';
 
 export function Dropdown({
   label = 'Menu',
@@ -21,21 +22,54 @@ export function Dropdown({
   showArrow = true,
   items,
   onSelect,
+  open,
+  defaultOpen = false,
+  onOpenChange,
   disabled = false,
+  size = 'md',
   style,
   triggerStyle,
+  contentStyle,
   itemStyle,
   textStyle,
+  accessibilityLabel,
+  accessibilityHint,
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
+  const menuAccessibilityLabel = useMemo(() => {
+    if (accessibilityLabel) return accessibilityLabel;
 
-  const close = () => setIsOpen(false);
+    return typeof label === 'string' ? label : 'Menu';
+  }, [accessibilityLabel, label]);
 
-  const handleSelect = (value: string) => {
-    onSelect?.(value);
-    close();
-  };
+  const navigableItems = useMemo(
+    () => items.filter((item) => isMenuItem(item)),
+    [items]
+  );
+
+  const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
+    items: navigableItems,
+    open,
+    defaultOpen,
+    disabled,
+    onOpenChange,
+    onSelect,
+    getItemValue: (item) => item.value,
+    getItemText: (item) =>
+      typeof item.label === 'string' ? item.label : item.value,
+  });
+
+  const handleSelect = useCallback(
+    (value: string) => {
+      onSelect?.(value);
+      closeDropdown();
+    },
+    [closeDropdown, onSelect]
+  );
+
+  const handleTriggerPress = useCallback(() => {
+    toggleDropdown();
+  }, [toggleDropdown]);
 
   return (
     <View style={[styles.root, style]}>
@@ -47,15 +81,19 @@ export function Dropdown({
         showArrow={showArrow}
         disabled={disabled}
         isOpen={isOpen}
+        size={size}
         triggerStyle={triggerStyle}
-        onPress={() => {
-          if (disabled) return;
-
-          setIsOpen(true);
-        }}
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
+        onPress={handleTriggerPress}
       />
 
-      <DropdownContent isOpen={isOpen} onClose={close}>
+      <DropdownContent
+        isOpen={isOpen}
+        onClose={closeDropdown}
+        contentStyle={contentStyle}
+        accessibilityLabel={menuAccessibilityLabel}
+      >
         {items.map((item, index) => {
           if (isGroup(item)) {
             return (
@@ -70,9 +108,13 @@ export function Dropdown({
             return <DropdownSeparator key={`separator-${index}`} />;
           }
 
+          if (!isMenuItem(item)) {
+            return null;
+          }
+
           return (
             <DropdownItem
-              key={item.value}
+              key={`${item.value}-${index}`}
               label={item.label}
               value={item.value}
               icon={item.icon}

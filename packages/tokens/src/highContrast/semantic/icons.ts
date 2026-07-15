@@ -1,19 +1,18 @@
 import { colors } from '../../primitives/colors.js';
 
 export const icons = {
-  default: colors.mono[900],
-  primary: colors.primary[300],
-  secondary: colors.mono[500],
-  success: colors.success[500],
-  muted: colors.mono[500],
-  disabled: colors.mono[400],
-  subtle: colors.mono[50],
-  danger: colors.error[500],
+  default: colors.mono[50],
+  secondary: colors.gray[200],
+  muted: colors.gray[400],
+  subtle: colors.gray[300],
+  disabled: colors.gray[500],
 
-  hover: colors.primary[400],
+  primary: colors.warning[300],
+  brand: colors.warning[300],
+  hover: colors.warning[200],
 
-  inverse: colors.mono[800],
-  onInverse: colors.mono[950],
+  success: colors.success[300],
+  danger: colors.error[300],
 
-  brand: colors.primary[400],
+  inverse: colors.mono[950],
 } as const;

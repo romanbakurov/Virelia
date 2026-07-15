@@ -60,4 +60,8 @@ export const createStyles = (theme: NativeTheme) =>
       fontSize: theme.tokens.typography.size.sm,
       lineHeight: theme.tokens.typography.lineHeight.sm,
     },
+
+    helperTextDisabled: {
+      color: theme.components.formField.disabled.helperTextFg,
+    },
   });

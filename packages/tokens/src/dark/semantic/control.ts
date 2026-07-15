@@ -7,39 +7,51 @@ import { text } from './text.js';
 export const control = {
   default: {
     bg: surface.elevated,
-    fg: text.inverse,
-    border: border.subtle,
+    fg: text.primary,
+    border: border.default,
   },
+
   hover: {
     bg: surface.hover,
-    fg: text.brand,
+    fg: text.interactive,
+    border: border.focus,
+  },
+
+  active: {
+    bg: surface.active,
+    fg: text.interactive,
     border: colors.primary[300],
   },
-  active: {
-    bg: colors.primary[100],
-    fg: colors.primary[900],
-    border: colors.primary[800],
+
+  disabled: {
+    bg: surface.disabled,
+    fg: text.disabled,
+    border: border.disabled,
   },
+
   selected: {
     default: {
+      bg: colors.primary[500],
+      fg: colors.mono[50],
+      border: colors.primary[500],
+    },
+
+    hover: {
       bg: colors.primary[400],
-      fg: text.inverse,
+      fg: colors.mono[50],
       border: colors.primary[400],
     },
-    hover: {
-      bg: colors.primary[700],
-      fg: text.inverse,
-      border: colors.primary[700],
-    },
+
     active: {
-      bg: colors.primary[800],
-      fg: text.inverse,
-      border: colors.primary[800],
+      bg: colors.primary[600],
+      fg: colors.mono[50],
+      border: colors.primary[600],
     },
+
     muted: {
-      bg: colors.primary[700],
-      fg: text.inverse,
-      border: colors.primary[500],
+      bg: colors.primary[800],
+      fg: colors.primary[100],
+      border: colors.primary[600],
     },
   },
 } as const;

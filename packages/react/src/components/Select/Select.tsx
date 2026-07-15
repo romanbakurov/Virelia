@@ -1,9 +1,9 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { FormField } from '@patterns/FormField';
-import { useControllableState, useKeyboardNavigation } from '@vellira-ui/core';
+import { useSelect } from '@vellira-ui/core';
 
 import { SelectDropdown } from './SelectDropdown/SelectDropdown';
 import { SelectTrigger } from './SelectTrigger/SelectTrigger';
@@ -45,23 +45,27 @@ export const Select = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
 
-  const [selectedValue, setSelectedValue] = useControllableState({
+  const {
+    selectedValue,
+    selectedOption,
+    isOpen,
+    setIsOpen,
+    activeIndex,
+    setActiveIndex,
+    closeDropdown,
+    toggleDropdown,
+    selectValue,
+    onKeyDown,
+  } = useSelect({
     value: controlledValue,
-    defaultValue: defaultValue ?? '',
+    defaultValue,
     onChange,
+    options,
+    disabled,
+    open,
+    defaultOpen,
+    onOpenChange,
   });
-
-  const [isOpen, setIsOpen] = useControllableState({
-    value: open,
-    defaultValue: defaultOpen,
-    onChange: onOpenChange,
-  });
-  const [activeIndex, setActiveIndex] = useState(-1);
-
-  const selectedOption = useMemo(
-    () => options.find((option) => option.value === selectedValue),
-    [options, selectedValue]
-  );
 
   const hasSelectedOption = !!selectedOption;
 
@@ -73,63 +77,13 @@ export const Select = ({
     mobileSheetBreakpoint: 640,
   });
 
-  const getInitialActiveIndex = useCallback(() => {
-    const selectedIndex = options.findIndex(
-      (option) => option.value === selectedValue && !option.disabled
-    );
-
-    if (selectedIndex >= 0) return selectedIndex;
-
-    return options.findIndex((option) => !option.disabled);
-  }, [options, selectedValue]);
-
-  const openDropdown = useCallback(() => {
-    if (disabled) return;
-
-    setActiveIndex(getInitialActiveIndex());
-    setIsOpen(true);
-  }, [disabled, getInitialActiveIndex]);
-
-  const closeDropdown = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-
-  const toggleDropdown = useCallback(() => {
-    if (disabled) return;
-
-    if (isOpen) {
-      closeDropdown();
-      return;
-    }
-
-    openDropdown();
-  }, [closeDropdown, disabled, isOpen, openDropdown]);
-
   const handleSelect = useCallback(
     (value: string) => {
-      setSelectedValue(value);
-      closeDropdown();
+      selectValue(value);
       buttonRef.current?.focus();
     },
-    [closeDropdown, setSelectedValue]
+    [selectValue]
   );
-
-  const { onKeyDown } = useKeyboardNavigation({
-    activeIndex,
-    setActiveIndex,
-    items: options,
-    isOpen,
-    onOpen: openDropdown,
-    onClose: closeDropdown,
-    onSelect: () => {
-      const activeOption = options[activeIndex];
-
-      if (!activeOption || activeOption.disabled) return;
-
-      handleSelect(activeOption.value);
-    },
-    getItemText: (option) => option.label,
-  });
 
   useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
 

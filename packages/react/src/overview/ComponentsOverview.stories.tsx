@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Check,
   Close,
+  Delete,
   Download,
   DropdownMenu,
   Filter,
@@ -44,9 +45,12 @@ const selectOptions = [
 ];
 
 const dropdownItems = [
+  { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
+  { type: 'separator' as const },
+  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
 ];
 
 const sectionStyle = {
@@ -643,19 +647,34 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Dropdown'>
-          <div style={rowStyle}>
-            <Dropdown
-              label='Actions'
-              trigger='Actions'
-              items={dropdownItems}
-              onSelect={noop}
-            />
-            <Dropdown
-              label='Icon actions'
-              icon={<DropdownMenu />}
-              items={dropdownItems}
-              onSelect={noop}
-            />
+          <div style={groupStyle}>
+            <p style={subtitleStyle}>
+              Contextual actions for commands. Use Select or RadioGroup for
+              saved form values.
+            </p>
+            <div style={rowStyle}>
+              <Dropdown
+                label='Report actions'
+                trigger='Report actions'
+                items={dropdownItems}
+                onSelect={noop}
+              />
+              <Dropdown
+                label='More report actions'
+                ariaLabel='More report actions'
+                icon={<DropdownMenu />}
+                showArrow={false}
+                items={dropdownItems}
+                onSelect={noop}
+              />
+              <Dropdown
+                label='Disabled actions'
+                trigger='Disabled actions'
+                disabled
+                items={dropdownItems}
+                onSelect={noop}
+              />
+            </div>
           </div>
         </Section>
 

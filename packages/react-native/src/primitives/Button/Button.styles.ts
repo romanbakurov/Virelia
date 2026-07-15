@@ -40,14 +40,15 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     focused: {
-      borderColor: theme.semantic.focus.ring,
-      shadowColor: theme.semantic.focus.ring,
+      borderColor: theme.semantic.focus.ring.color,
+      shadowColor: theme.semantic.focus.ring.color,
       shadowOffset: {
         width: 0,
         height: 0,
       },
-      shadowOpacity: 0.35,
-      shadowRadius: 4,
+      shadowOpacity: 0.18,
+      shadowRadius: 8,
+      elevation: 2,
     },
 
     pressed: {

@@ -396,6 +396,7 @@ import { Dropdown } from '@vellira-ui/react-native';
 <Dropdown
   label='Actions'
   items={[
+    { type: 'group', label: 'File' },
     { type: 'item', value: 'edit', label: 'Edit' },
     { type: 'separator' },
     { type: 'item', value: 'delete', label: 'Delete', danger: true },
@@ -404,34 +405,57 @@ import { Dropdown } from '@vellira-ui/react-native';
 />;
 ```
 
+### Dropdown Usage Guidelines
+
+Use `Dropdown` for contextual actions such as copy, rename, archive, delete or
+account commands. It reports the selected action through `onSelect`; it should
+not be used as a form value control. Use `Select` when the user chooses one
+saved value from a compact list. Use `RadioGroup` when there are only a few
+choices and keeping them visible helps comparison.
+
+The menu open state can be controlled with `open` and `onOpenChange`, or left
+uncontrolled with `defaultOpen`. Prefer a visible text trigger; for icon-only or
+custom non-text triggers, provide `accessibilityLabel` and add
+`accessibilityHint` when the surrounding screen needs extra guidance.
+
 ### Dropdown Props
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->
 
-| Prop           | Type                      | Required | Description                                     |
-| -------------- | ------------------------- | -------- | ----------------------------------------------- |
-| `label`        | `string`                  | No       | Default trigger label.                          |
-| `trigger`      | `ReactNode`               | No       | Custom trigger content.                         |
-| `items`        | `DropdownItem[]`          | Yes      | Menu model.                                     |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                               |
-| `triggerStyle` | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                            |
-| `itemStyle`    | `StyleProp<ViewStyle>`    | No       | Extra item style.                               |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra text style.                               |
-| `disabled`     | `boolean`                 | No       | Disables the trigger.                           |
-| `onSelect`     | `(value: string) => void` | No       | Called when a menu item is selected.            |
-| `icon`         | `ReactNode`               | No       | Icon rendered inside the component.             |
-| `arrowIcon`    | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.      |
-| `showArrow`    | `boolean`                 | No       | Controls whether the trigger arrow is rendered. |
+| Prop                 | Type                      | Required | Description                                       |
+| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
+| `label`              | `ReactNode`               | No       | Default trigger label.                            |
+| `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
+| `items`              | `DropdownItem[]`          | Yes      | Menu model.                                       |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
+| `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                             |
+| `onSelect`           | `(value: string) => void` | No       | Called when a menu item is selected.              |
+| `icon`               | `ReactNode`               | No       | Icon rendered inside the component.               |
+| `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.        |
+| `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.   |
+| `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                              |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                    |
+| `open`               | `boolean`                 | No       | Controlled open state.                            |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 
 ### Dropdown Items
 
-| Shape               | Required Props                    | Optional Props                                   | Description                                   |
-| ------------------- | --------------------------------- | ------------------------------------------------ | --------------------------------------------- |
-| `DropdownMenuItem`  | `value`, `label`                  | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable item. `type` defaults to `'item'`. |
-| `DropdownGroup`     | `type: 'group'`, `label`, `items` | None                                             | Labeled group of menu entries.                |
-| `DropdownSeparator` | `type: 'separator'`               | None                                             | Visual separator.                             |
+| Shape               | Required Props           | Optional Props                                   | Description                                     |
+| ------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
+| `DropdownMenuItem`  | `value`, `label`         | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable action. `type` defaults to `'item'`. |
+| `DropdownGroup`     | `type: 'group'`, `label` | None                                             | Flat group heading for the following entries.   |
+| `DropdownSeparator` | `type: 'separator'`      | None                                             | Visual separator.                               |
+
+`items` is a flat array. Use a `DropdownGroup` entry as a heading before the
+items it labels; groups do not own nested `items`.
 
 ## Tabs
 

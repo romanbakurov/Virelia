@@ -4,8 +4,9 @@ import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export interface DropdownItemProps extends Pick<
   BaseDropdownItemProps,
-  'label' | 'value' | 'disabled'
+  'value' | 'disabled'
 > {
+  label: ReactNode;
   icon?: ReactNode;
   danger?: boolean;
   itemStyle?: StyleProp<ViewStyle>;

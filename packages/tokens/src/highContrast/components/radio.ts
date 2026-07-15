@@ -1,3 +1,4 @@
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
@@ -6,53 +7,50 @@ import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const radio = {
-  default: {
-    bg: surface.muted,
-    fg: text.inverse,
-    border: border.default,
-  },
-
+  default: control.default,
   hover: control.hover,
-
   pressed: control.active,
 
   checked: {
     default: {
-      ...control.selected.default,
-      fg: text.brand,
+      bg: surface.default,
+      fg: colors.warning[300],
+      border: colors.warning[300],
+      labelFg: text.interactive,
     },
 
     hover: {
-      ...control.selected.hover,
-      fg: text.brand,
+      bg: surface.hover,
+      fg: colors.warning[200],
+      border: colors.warning[200],
+      labelFg: text.interactiveHover,
     },
 
     pressed: {
-      ...control.selected.active,
-      fg: text.brand,
+      bg: surface.active,
+      fg: colors.warning[400],
+      border: colors.warning[400],
+      labelFg: text.interactiveActive,
     },
 
     disabled: {
-      bg: surface.subtle,
+      bg: surface.disabled,
       fg: text.disabled,
       border: border.disabled,
+      labelFg: text.disabled,
     },
   },
 
   focus: {
-    ring: focus.ring,
+    ring: focus.ring.color,
     border: border.focus,
   },
 
   invalid: {
-    bg: surface.default,
-    fg: text.inverse,
+    ...control.default,
     border: status.error.border,
+    ring: status.error.ring,
   },
 
-  disabled: {
-    bg: surface.subtle,
-    fg: text.disabled,
-    border: border.disabled,
-  },
+  disabled: control.disabled,
 } as const;
