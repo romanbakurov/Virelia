@@ -10,6 +10,7 @@ This package contains iOS-inspired native components built with React Native `St
 - Checkbox
 - Input
 - FormField
+- Radio
 - RadioGroup
 - Select
 - Dropdown
@@ -80,6 +81,65 @@ the visible label with `loadingText`.
 Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `accessibilityLabel`.
+
+### Select Notes
+
+Use `Select` for one form value from a compact list, `RadioGroup` for a few
+visible choices, and `Dropdown` for action menus. Native `Select` commits the
+picker draft only when the user presses `Done`; `Cancel` and the backdrop close
+without changing the selected value.
+
+```tsx
+import { Select } from '@vellira-ui/react-native';
+import { useState } from 'react';
+
+export function RoleSelect() {
+  const [role, setRole] = useState('editor');
+
+  return (
+    <Select
+      label='Role'
+      value={role}
+      onChange={setRole}
+      options={[
+        { label: 'Admin', value: 'admin' },
+        { label: 'Editor', value: 'editor' },
+        { label: 'Viewer', value: 'viewer' },
+      ]}
+    />
+  );
+}
+```
+
+### Dropdown Notes
+
+Use `Dropdown` for contextual actions, not saved form values. The `items` model
+is flat: use `{ type: 'group', label }` as a heading before related actions and
+`{ type: 'separator' }` between sections. Use `open`, `defaultOpen`, and
+`onOpenChange` for menu state, and `onSelect` for the selected action value.
+
+```tsx
+import type { DropdownItem } from '@vellira-ui/react-native';
+import { Dropdown } from '@vellira-ui/react-native';
+
+const items: DropdownItem[] = [
+  { type: 'group', label: 'File' },
+  { label: 'Duplicate', value: 'duplicate' },
+  { type: 'separator' },
+  { label: 'Delete', value: 'delete', danger: true },
+];
+
+<Dropdown label='Actions' items={items} onSelect={handleAction} />;
+```
+
+### FormField Notes
+
+`FormField` is a presentational wrapper for custom native controls. Do not wrap
+components that already render their own field chrome, such as `Input`, `Select`
+or `RadioGroup`. The wrapped control should provide its own
+`accessibilityLabel`, role, disabled/editable state and interaction behavior.
+`FormField` only provides layout, text styling, required mark, disabled root
+state and polite error announcement.
 
 ## Testing
 

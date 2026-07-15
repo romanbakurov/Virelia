@@ -1,5 +1,3 @@
-import { useId } from 'react';
-
 import { cn } from '@utils/cn';
 
 import type { FormFieldProps } from './types';
@@ -15,27 +13,26 @@ export const FormField = ({
   disabled = false,
   children,
   className,
+  controlClassName,
+  labelClassName,
+  descriptionClassName,
+  errorClassName,
+  ...rest
 }: FormFieldProps) => {
-  const generatedId = useId();
-  const fieldId = id ?? generatedId;
+  const descriptionId = description && id ? `${id}-description` : undefined;
 
-  const descriptionId = description ? `${fieldId}-description` : undefined;
-  const errorId = error ? `${fieldId}-error` : undefined;
+  const errorId = error && id ? `${id}-error` : undefined;
 
   return (
     <div
-      className={cn(
-        styles.wrapper,
-        {
-          [styles.disabled]: disabled,
-        },
-        className
-      )}
+      {...rest}
+      aria-disabled={disabled || undefined}
+      className={cn(styles.wrapper, disabled && styles.disabled, className)}
       data-disabled={disabled || undefined}
-      data-invalid={!!error || undefined}
+      data-invalid={Boolean(error) || undefined}
     >
       {label && (
-        <label className={styles.label} htmlFor={fieldId}>
+        <label htmlFor={id} className={cn(styles.label, labelClassName)}>
           {label}
 
           {required && (
@@ -47,17 +44,24 @@ export const FormField = ({
       )}
 
       {description && (
-        <span className={styles.description} id={descriptionId}>
+        <div
+          id={descriptionId}
+          className={cn(styles.description, descriptionClassName)}
+        >
           {description}
-        </span>
+        </div>
       )}
 
-      <div className={styles.control}>{children}</div>
+      <div className={cn(styles.control, controlClassName)}>{children}</div>
 
       {error && (
-        <span className={styles.errorText} id={errorId} role='alert'>
+        <div
+          id={errorId}
+          className={cn(styles.errorText, errorClassName)}
+          role='alert'
+        >
           {error}
-        </span>
+        </div>
       )}
     </div>
   );

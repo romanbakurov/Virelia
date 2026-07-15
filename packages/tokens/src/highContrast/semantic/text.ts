@@ -1,16 +1,17 @@
 import { colors } from '../../primitives/colors.js';
 
-const inverse = colors.mono[950];
-
 export const text = {
   primary: colors.mono[50],
   secondary: colors.vellira[150],
-  muted: colors.gray[200],
+  muted: colors.gray[300],
+  subtle: colors.gray[400],
   disabled: colors.gray[500],
-  subtle: colors.gray[100],
 
-  inverse,
-  onInverse: inverse,
+  brand: colors.warning[400],
 
-  brand: colors.primary[300],
+  interactive: colors.warning[400],
+  interactiveHover: colors.warning[300],
+  interactiveActive: colors.warning[200],
+
+  inverse: colors.mono[950],
 } as const;

@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Check,
   Close,
+  Delete,
   Download,
   DropdownMenu,
   Filter,
@@ -12,7 +13,7 @@ import {
   Settings,
 } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Dropdown } from '../components/Dropdown';
 import { Modal } from '../components/Modal';
@@ -24,6 +25,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Radio } from '../primitives/Radio';
 
 const meta = {
   title: 'Overview/Web',
@@ -42,16 +44,13 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
-const radioOptions = [
-  { label: 'Starter', value: 'starter' },
-  { label: 'Pro', value: 'pro' },
-  { label: 'Enterprise', value: 'enterprise' },
-];
-
 const dropdownItems = [
+  { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
+  { type: 'separator' as const },
+  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
 ];
 
 const sectionStyle = {
@@ -109,29 +108,136 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function WorkspaceFormFieldDemo() {
   const workspaceId = useId();
+  const projectId = useId();
+  const disabledId = useId();
+  const errorId = useId();
 
   return (
-    <FormField
-      id={workspaceId}
-      label='Workspace'
-      description='Used in URLs and notifications.'
-      required
-    >
-      <input
+    <div style={stackStyle}>
+      <FormField
         id={workspaceId}
-        placeholder='vellira-design'
-        style={{
-          width: '100%',
-          minHeight: 40,
-          padding: '0 12px',
-          color: 'var(--input-default-fg)',
-          background: 'var(--input-default-bg)',
-          border: '1px solid var(--input-default-border)',
-          borderRadius: 'var(--radius-md)',
-          boxSizing: 'border-box',
-        }}
-      />
-    </FormField>
+        label='Workspace'
+        description='Used in URLs and notifications.'
+        required
+      >
+        <input
+          id={workspaceId}
+          name='workspace'
+          autoComplete='organization'
+          placeholder='vellira-design'
+          required
+          aria-describedby={`${workspaceId}-description`}
+          style={{
+            width: '100%',
+            minHeight: 40,
+            padding: '0 12px',
+            color: 'var(--input-default-fg)',
+            background: 'var(--input-default-bg)',
+            border: '1px solid var(--input-default-border)',
+            borderRadius: 'var(--radius-md)',
+            boxSizing: 'border-box',
+          }}
+        />
+      </FormField>
+
+      <FormField
+        id={projectId}
+        label={
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--space-2)',
+            }}
+          >
+            Project
+            <span
+              style={{
+                padding: '2px 6px',
+                color: 'var(--color-primary-50)',
+                fontSize: 12,
+                lineHeight: '16px',
+                background: 'var(--color-primary-600)',
+                borderRadius: 'var(--radius-full)',
+              }}
+            >
+              Public
+            </span>
+          </span>
+        }
+        description='Custom label content.'
+      >
+        <input
+          id={projectId}
+          name='project'
+          autoComplete='off'
+          placeholder='launch-plan'
+          aria-describedby={`${projectId}-description`}
+          style={{
+            width: '100%',
+            minHeight: 40,
+            padding: '0 12px',
+            color: 'var(--input-default-fg)',
+            background: 'var(--input-default-bg)',
+            border: '1px solid var(--input-default-border)',
+            borderRadius: 'var(--radius-md)',
+            boxSizing: 'border-box',
+          }}
+        />
+      </FormField>
+
+      <FormField
+        id={errorId}
+        label='Slug'
+        error='Only lowercase letters, numbers, and hyphens are allowed.'
+      >
+        <input
+          id={errorId}
+          name='slug'
+          autoComplete='off'
+          placeholder='Launch Plan'
+          aria-invalid
+          aria-describedby={`${errorId}-error`}
+          style={{
+            width: '100%',
+            minHeight: 40,
+            padding: '0 12px',
+            color: 'var(--input-default-fg)',
+            background: 'var(--input-default-bg)',
+            border: '1px solid var(--status-error-border)',
+            borderRadius: 'var(--radius-md)',
+            boxSizing: 'border-box',
+          }}
+        />
+      </FormField>
+
+      <FormField
+        id={disabledId}
+        label='Organization'
+        description='Locked by workspace policy.'
+        disabled
+      >
+        <input
+          id={disabledId}
+          name='organization'
+          autoComplete='organization'
+          placeholder='Vellira'
+          disabled
+          aria-describedby={`${disabledId}-description`}
+          style={{
+            width: '100%',
+            minHeight: 40,
+            padding: '0 12px',
+            color: 'var(--input-disabled-fg)',
+            background: 'var(--input-disabled-bg)',
+            border: '1px solid var(--input-disabled-border)',
+            borderRadius: 'var(--radius-md)',
+            boxSizing: 'border-box',
+            cursor: 'not-allowed',
+          }}
+        />
+      </FormField>
+    </div>
   );
 }
 
@@ -431,14 +537,82 @@ function WebComponentsOverview() {
           </div>
         </Section>
 
+        <Section title='Radio'>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Radio
+                name='overview-radio'
+                value='unchecked'
+                label='Unchecked'
+              />
+              <Radio
+                name='overview-radio'
+                value='checked'
+                label='Checked'
+                defaultChecked
+              />
+              <Radio value='required' label='Required' required />
+              <Radio value='disabled' label='Disabled' disabled />
+              <Radio
+                value='description'
+                label='With description'
+                description='Useful when an option needs supporting context.'
+              />
+              <Radio
+                value='error'
+                label='Validation state'
+                description='This choice is required to continue.'
+                error='Select this option first.'
+              />
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <div style={rowStyle}>
+                <Radio value='small' label='Small' size='sm' />
+                <Radio value='medium' label='Medium' size='md' />
+                <Radio value='large' label='Large' size='lg' />
+              </div>
+            </div>
+          </div>
+        </Section>
+
         <Section title='RadioGroup'>
-          <RadioGroup
-            name='overview-plan'
-            label='Plan'
-            options={radioOptions}
-            value={plan}
-            onChange={setPlan}
-          />
+          <div style={stackStyle}>
+            <RadioGroup
+              name='overview-plan'
+              label='Plan'
+              description='Choose the billing plan for this workspace.'
+              value={plan}
+              onValueChange={setPlan}
+            >
+              <Radio value='starter' label='Starter' />
+              <Radio value='pro' label='Pro' />
+              <Radio value='enterprise' label='Enterprise' />
+            </RadioGroup>
+
+            <RadioGroup
+              name='overview-delivery'
+              label='Delivery'
+              orientation='horizontal'
+              defaultValue='standard'
+            >
+              <Radio value='standard' label='Standard' />
+              <Radio value='express' label='Express' />
+              <Radio value='pickup' label='Pickup' disabled />
+            </RadioGroup>
+
+            <RadioGroup
+              name='overview-required-plan'
+              label='Required plan'
+              required
+              error='Choose one plan to continue.'
+            >
+              <Radio value='starter' label='Starter' />
+              <Radio value='pro' label='Pro' />
+            </RadioGroup>
+          </div>
         </Section>
 
         <Section title='Select'>
@@ -453,24 +627,54 @@ function WebComponentsOverview() {
             label='Required team'
             options={selectOptions}
             placeholder='Select a team'
+            required
             error='Team is required'
+          />
+          <Select
+            aria-label='Billing team'
+            placeholder='Billing team'
+            description='Accessible name comes from aria-label when the visible label is omitted.'
+            options={selectOptions}
+            defaultValue='product'
+          />
+          <Select
+            label='Archived team'
+            options={[]}
+            placeholder='No archived team'
+            noOptionsText='No archived teams available'
+            defaultOpen
           />
         </Section>
 
         <Section title='Dropdown'>
-          <div style={rowStyle}>
-            <Dropdown
-              label='Actions'
-              trigger='Actions'
-              items={dropdownItems}
-              onSelect={fn()}
-            />
-            <Dropdown
-              label='Icon actions'
-              icon={<DropdownMenu />}
-              items={dropdownItems}
-              onSelect={fn()}
-            />
+          <div style={groupStyle}>
+            <p style={subtitleStyle}>
+              Contextual actions for commands. Use Select or RadioGroup for
+              saved form values.
+            </p>
+            <div style={rowStyle}>
+              <Dropdown
+                label='Report actions'
+                trigger='Report actions'
+                items={dropdownItems}
+                onSelect={noop}
+              />
+              <Dropdown
+                label='More report actions'
+                ariaLabel='More report actions'
+                icon={<DropdownMenu />}
+                showArrow={false}
+                items={dropdownItems}
+                onSelect={noop}
+              />
+              <Dropdown
+                label='Disabled actions'
+                trigger='Disabled actions'
+                disabled
+                items={dropdownItems}
+                onSelect={noop}
+              />
+            </div>
           </div>
         </Section>
 

@@ -9,6 +9,8 @@ export function DropdownContent({
   isOpen,
   children,
   onClose,
+  contentStyle,
+  accessibilityLabel,
 }: DropdownContentProps) {
   const styles = useThemeStyles(createStyles);
 
@@ -27,7 +29,11 @@ export function DropdownContent({
           onPress={onClose}
         />
 
-        <View accessibilityRole='menu' style={styles.menu}>
+        <View
+          accessibilityRole='menu'
+          accessibilityLabel={accessibilityLabel}
+          style={[styles.menu, contentStyle]}
+        >
           {children}
         </View>
       </View>

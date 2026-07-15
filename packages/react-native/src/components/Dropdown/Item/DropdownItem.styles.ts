@@ -16,15 +16,19 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     itemPressed: {
-      backgroundColor: theme.components.dropdown.item.hover.bg,
+      backgroundColor: theme.components.dropdown.item.pressed.bg,
     },
 
     itemDisabled: {
       backgroundColor: theme.components.dropdown.item.disabled.bg,
     },
 
+    itemDanger: {
+      backgroundColor: theme.components.dropdown.item.danger.default.bg,
+    },
+
     itemDangerPressed: {
-      backgroundColor: theme.components.dropdown.item.danger.hover.bg,
+      backgroundColor: theme.components.dropdown.item.danger.active.bg,
     },
 
     itemText: {
@@ -33,14 +37,22 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.dropdown.item.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.md,
-      lineHeight: 24,
+      lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    itemTextPressed: {
+      color: theme.components.dropdown.item.pressed.fg,
     },
 
     itemTextDisabled: {
       color: theme.components.dropdown.item.disabled.fg,
     },
 
-    dangerText: {
+    itemTextDanger: {
       color: theme.components.dropdown.item.danger.default.fg,
+    },
+
+    itemTextDangerPressed: {
+      color: theme.components.dropdown.item.danger.active.fg,
     },
   });

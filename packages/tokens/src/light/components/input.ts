@@ -1,5 +1,4 @@
 import { border } from '../semantic/border.js';
-import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { status } from '../semantic/status.js';
@@ -11,15 +10,15 @@ export const input = {
     bg: 'transparent',
     fg: text.primary,
     border: border.default,
-    placeholder: text.muted,
+    placeholder: text.secondary,
     icon: icons.brand,
   },
 
   hover: {
-    bg: control.hover.bg,
+    bg: surface.hover,
     fg: text.primary,
-    border: control.hover.border,
-    placeholder: text.muted,
+    border: border.focus,
+    placeholder: text.secondary,
     icon: icons.hover,
   },
 
@@ -27,9 +26,9 @@ export const input = {
     bg: 'transparent',
     fg: text.primary,
     border: border.focus,
-    ring: focus.ring,
-    placeholder: text.muted,
-    icon: icons.subtle,
+    ring: focus.ring.color,
+    placeholder: text.secondary,
+    icon: icons.brand,
   },
 
   disabled: {
@@ -41,19 +40,19 @@ export const input = {
   },
 
   error: {
-    border: status.error.strong,
-    ring: status.error.fg,
+    border: status.error.border,
+    ring: status.error.ring,
   },
 
   success: {
-    border: status.success.strong,
-    ring: status.success.fg,
+    border: status.success.border,
+    ring: status.success.ring,
   },
 
   readOnly: {
     bg: surface.subtle,
     fg: text.secondary,
-    border: border.default,
+    border: border.muted,
     placeholder: text.muted,
     icon: icons.muted,
   },
@@ -66,13 +65,14 @@ export const input = {
     danger: icons.danger,
     muted: icons.muted,
     inverse: icons.inverse,
+    brand: icons.brand,
   },
 
   clearButton: {
-    fg: status.error.fg,
+    fg: icons.muted,
     hoverFg: status.error.fg,
-    hoverBg: surface.danger,
-    focusBg: surface.inverse,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
     pressedBg: surface.active,
   },
 } as const;

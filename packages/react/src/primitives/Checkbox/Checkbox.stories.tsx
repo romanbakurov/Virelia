@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-import { fn } from 'storybook/test';
+const noop = () => undefined;
 
 import { Checkbox } from './index';
 
@@ -49,7 +49,7 @@ Correct usage:
     disabled: false,
     required: false,
     indeterminate: false,
-    onCheckedChange: fn(),
+    onCheckedChange: noop,
   },
   argTypes: {
     label: {

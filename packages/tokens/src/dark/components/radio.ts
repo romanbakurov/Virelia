@@ -1,37 +1,58 @@
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
+import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const radio = {
-  default: {
-    bg: surface.elevated,
-    fg: text.primary,
-    border: border.subtle,
-  },
+  default: control.default,
 
   hover: control.hover,
 
+  pressed: control.active,
+
   checked: {
     default: {
-      ...control.selected.default,
-      fg: text.brand,
+      bg: surface.default,
+      fg: colors.primary[300],
+      border: colors.primary[500],
+      labelFg: text.brand,
     },
+
     hover: {
-      ...control.selected.hover,
-      fg: text.brand,
+      bg: surface.hover,
+      fg: colors.primary[200],
+      border: colors.primary[400],
+      labelFg: text.interactiveHover,
     },
-    pressed: control.selected.active,
+
+    pressed: {
+      bg: surface.active,
+      fg: colors.primary[400],
+      border: colors.primary[600],
+      labelFg: text.brand,
+    },
+
+    disabled: {
+      bg: surface.disabled,
+      fg: text.disabled,
+      border: border.disabled,
+      labelFg: text.disabled,
+    },
   },
 
   focus: {
-    ring: focus.ring,
+    ring: focus.ring.color,
+    border: border.focus,
   },
 
-  disabled: {
-    bg: surface.subtle,
-    fg: text.disabled,
-    border: border.default,
+  invalid: {
+    ...control.default,
+    border: status.error.border,
+    ring: status.error.ring,
   },
+
+  disabled: control.disabled,
 } as const;

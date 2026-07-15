@@ -14,6 +14,40 @@ const meta: Meta<typeof Button> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: `
+### Button Component
+
+Button triggers an action initiated by the user.
+
+**Features**
+
+- Solid, outline and ghost variants
+- Primary, secondary, close and danger colors
+- Sizes: sm, md and lg
+- Loading state
+- Disabled state
+- Full width support
+- Left and right icons
+- Icon-only mode
+- Accessibility support
+
+### Usage
+
+Use Button for primary and secondary actions throughout the application.
+
+\`\`\`tsx
+<Button
+  color="primary"
+  onPress={handlePress}
+>
+  Save
+</Button>
+\`\`\`
+`,
+      },
+    },
   },
   args: {
     children: 'Button',

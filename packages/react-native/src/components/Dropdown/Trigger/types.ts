@@ -1,14 +1,20 @@
-import type { BaseDropdownTriggerProps } from '@vellira-ui/types';
+import type { BaseDropdownTriggerProps, DropdownSize } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
-  label: string;
+  label?: ReactNode;
   trigger?: ReactNode;
   icon?: ReactNode;
   arrowIcon?: ReactNode;
-  showArrow?: boolean;
+
   disabled?: boolean;
+  size?: DropdownSize;
+  showArrow?: boolean;
+
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+
   triggerStyle?: StyleProp<ViewStyle>;
-  onPress?: () => void;
+  onPress: () => void;
 }

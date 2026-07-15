@@ -24,6 +24,7 @@ export const Tab = ({
   const isPills = appearance === 'pills';
   const isUnderline = appearance === 'underline';
   const isDefault = appearance === 'default';
+  const isVertical = orientation === 'vertical';
 
   const iconColor =
     isPills && isActive
@@ -43,32 +44,70 @@ export const Tab = ({
       disabled={disabled}
       accessibilityRole='tab'
       accessibilityState={{ selected: isActive, disabled }}
-      onPress={() => setActiveIndex(index)}
-      style={[
+      onPress={() => {
+        if (!disabled && !isActive) {
+          setActiveIndex(index);
+        }
+      }}
+      style={({ pressed }) => [
         styles.tab,
-        orientation === 'vertical' && styles.tabVertical,
+        isVertical && styles.tabVertical,
+
+        isPills && styles.tabPills,
         isPills && isActive && styles.tabPillsActive,
-        isUnderline && styles.tabUnderline,
-        isUnderline && isActive && styles.tabUnderlineActive,
+
+        pressed && !disabled && styles.tabPressed,
+
         isDefault && isActive && styles.tabDefaultActive,
+
         disabled && styles.tabDisabled,
         style,
       ]}
     >
-      {icon != null && <View style={styles.tabIcon}>{renderedIcon}</View>}
+      {({ pressed }) => (
+        <>
+          {isUnderline && !isVertical && (
+            <View
+              pointerEvents='none'
+              style={[
+                styles.horizontalIndicator,
+                isActive && styles.horizontalIndicatorActive,
+              ]}
+            />
+          )}
 
-      {children != null && (
-        <Text
-          style={[
-            styles.tabText,
-            isPills && isActive && styles.tabTextPillsActive,
-            !isPills && isActive && styles.tabTextActive,
-            disabled && styles.tabTextDisabled,
-            textStyle,
-          ]}
-        >
-          {children}
-        </Text>
+          {isUnderline && isVertical && (
+            <View
+              pointerEvents='none'
+              style={[
+                styles.verticalIndicator,
+                isActive && styles.verticalIndicatorActive,
+                pressed &&
+                  !isActive &&
+                  !disabled &&
+                  styles.verticalIndicatorPressed,
+              ]}
+            />
+          )}
+
+          {icon != null && <View style={styles.tabIcon}>{renderedIcon}</View>}
+
+          {children != null && (
+            <Text
+              numberOfLines={2}
+              ellipsizeMode='tail'
+              style={[
+                styles.tabText,
+                isPills && isActive && styles.tabTextPillsActive,
+                !isPills && isActive && styles.tabTextActive,
+                disabled && styles.tabTextDisabled,
+                textStyle,
+              ]}
+            >
+              {children}
+            </Text>
+          )}
+        </>
       )}
     </Pressable>
   );

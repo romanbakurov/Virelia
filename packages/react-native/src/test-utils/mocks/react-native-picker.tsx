@@ -3,11 +3,13 @@
 import React from 'react';
 
 import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import { Pressable, Text, View } from 'react-native';
 
 interface PickerProps {
   selectedValue?: string;
   enabled?: boolean;
+  style?: StyleProp<ViewStyle>;
   children?: ReactNode;
   onValueChange?: (value: string) => void;
 }
@@ -24,9 +26,10 @@ export function Picker({
   children,
   enabled = true,
   onValueChange,
+  style,
 }: PickerProps) {
   return (
-    <View>
+    <View testID='native-picker' style={style}>
       {React.Children.map(children, (child) => {
         if (!React.isValidElement<PickerItemProps>(child)) {
           return child;

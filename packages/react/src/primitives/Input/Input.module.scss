@@ -8,32 +8,40 @@
 }
 
 .input {
+  appearance: none;
   width: 100%;
   padding: var(--space-3) var(--space-4);
   color: var(--input-default-fg);
+  font-family: var(--font-family-base);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-md);
+  letter-spacing: inherit;
   background-color: var(--input-default-bg);
   border: 1px solid var(--input-default-border);
   border-radius: var(--radius-md);
+  outline: none;
   transition:
     color 0.2s,
     border-color 0.2s,
     background-color 0.2s,
     box-shadow 0.2s;
-  font-family: var(--font-family-base);
-  outline: none;
 
   &::placeholder {
     color: var(--input-default-placeholder);
+    font: inherit;
   }
 
   &:focus-visible {
     color: var(--input-focus-fg);
     background-color: var(--input-focus-bg);
-    border-color: var(--input-focus-border);
-    box-shadow: 0 0 0 2px var(--input-focus-ring);
+
+    @include focus-border(var(--input-focus-border), var(--input-focus-ring));
+    @include focus-ring(var(--input-focus-ring));
+
+    &::placeholder {
+      color: var(--input-focus-placeholder);
+    }
   }
 
   &:disabled {
@@ -41,7 +49,6 @@
     background-color: var(--input-disabled-bg);
     border-color: var(--input-disabled-border);
     cursor: not-allowed;
-    pointer-events: none;
 
     &::placeholder {
       color: var(--input-disabled-placeholder);
@@ -53,7 +60,8 @@
 
     &:focus-visible {
       border-color: var(--input-error-border);
-      box-shadow: 0 0 0 3px var(--input-error-ring);
+
+      @include focus-ring(var(--input-error-ring));
     }
   }
 
@@ -73,8 +81,7 @@
   }
 
   &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:focus {
+  &:-webkit-autofill:hover {
     -webkit-text-fill-color: var(--input-default-fg);
     caret-color: var(--input-default-fg);
     box-shadow: 0 0 0 1000px var(--input-default-bg) inset;
@@ -84,13 +91,20 @@
   &:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--input-focus-fg);
     caret-color: var(--input-focus-fg);
-    box-shadow: 0 0 0 1000px var(--input-focus-bg) inset;
+    box-shadow:
+      0 0 0 1000px var(--input-focus-bg) inset,
+      0 0 0 var(--focus-ring-width) var(--input-focus-ring);
   }
 }
 
-.input:not(:disabled, :focus-visible):hover {
+.input:not(:disabled, :focus-visible, :read-only):hover {
+  color: var(--input-hover-fg);
+  background-color: var(--input-hover-bg);
   border-color: var(--input-hover-border);
-  background: var(--input-hover-bg);
+
+  &::placeholder {
+    color: var(--input-hover-placeholder);
+  }
 }
 
 .input:read-only:not(:disabled) {
@@ -98,6 +112,10 @@
   background-color: var(--input-read-only-bg);
   border-color: var(--input-read-only-border);
   cursor: default;
+
+  &::placeholder {
+    color: var(--input-read-only-placeholder);
+  }
 }
 
 .hasLeftAdornment .input {
@@ -120,6 +138,7 @@
   height: var(--space-6);
   color: var(--input-default-icon);
   transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .leftAdornment {
@@ -128,6 +147,34 @@
 
 .rightAdornment {
   right: var(--space-3);
+}
+
+.inputWrapper:has(.input:hover:not(:disabled, :focus-visible)) {
+  .leftAdornment,
+  .rightAdornment {
+    color: var(--input-hover-icon);
+  }
+}
+
+.inputWrapper:has(.input:focus-visible) {
+  .leftAdornment,
+  .rightAdornment {
+    color: var(--input-focus-icon);
+  }
+}
+
+.inputWrapper:has(.input:disabled) {
+  .leftAdornment,
+  .rightAdornment {
+    color: var(--input-disabled-icon);
+  }
+}
+
+.inputWrapper:has(.input:read-only:not(:disabled)) {
+  .leftAdornment,
+  .rightAdornment {
+    color: var(--input-read-only-icon);
+  }
 }
 
 .clearButton {
@@ -141,11 +188,15 @@
   width: var(--space-8);
   height: var(--space-8);
   padding: 0;
-  color: var(--input-default-icon);
+  color: var(--input-clear-button-fg);
   background: transparent;
   border: none;
   border-radius: var(--radius-full);
   transform: translateY(-50%);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 
@@ -157,16 +208,15 @@
 
 .clearButton:not(:disabled):hover {
   color: var(--input-clear-button-hover-fg);
-  background: var(--input-clear-button-hover-bg);
+  background-color: var(--input-clear-button-hover-bg);
 }
 
-.clearButton:active {
-  background: var(--input-clear-button-pressed-bg);
+.clearButton:not(:disabled):active {
+  background-color: var(--input-clear-button-pressed-bg);
 }
 
 .clearButton:focus-visible {
-  outline: 2px solid var(--input-focus-ring);
-  outline-offset: 2px;
+  @include focus-ring(var(--input-focus-ring));
 }
 
 .toneDefault {
@@ -198,8 +248,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .input {
+  .input,
+  .clearButton {
     transition: none;
-    animation: none;
   }
 }

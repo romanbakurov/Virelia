@@ -28,6 +28,10 @@ export default defineConfig({
       '@styles': path.resolve(webSrc, 'styles'),
       '@utils': path.resolve(webSrc, 'utils'),
       '@assets': path.resolve(webSrc, 'assets'),
+      '@vellira-ui/core': path.resolve(
+        dirname,
+        '../../packages/core/src/index.ts'
+      ),
       'storybook/test': require.resolve('storybook/test'),
     },
   },

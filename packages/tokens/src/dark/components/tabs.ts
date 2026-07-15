@@ -1,26 +1,27 @@
 import { action } from '../semantic/action.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
+import { focus } from '../semantic/focus.js';
 import { navigation } from '../semantic/navigation.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const tabs = {
   list: {
-    border: border.default,
+    border: border.muted,
   },
 
   trigger: {
     default: {
       bg: 'transparent',
-      fg: text.primary,
+      fg: text.secondary,
       border: 'transparent',
     },
 
     hover: {
       bg: 'transparent',
-      fg: navigation.hover.bg,
-      border: navigation.hover.bg,
+      fg: navigation.tabHover.fg,
+      border: 'transparent',
     },
 
     active: {
@@ -30,7 +31,7 @@ export const tabs = {
     },
 
     focus: {
-      ring: navigation.hover.bg,
+      ring: focus.ring,
     },
 
     disabled: {
@@ -43,7 +44,7 @@ export const tabs = {
   pills: {
     default: {
       bg: 'transparent',
-      fg: text.primary,
+      fg: text.secondary,
       border: 'transparent',
     },
 
@@ -72,11 +73,11 @@ export const tabs = {
     },
 
     hover: {
-      bg: control.selected.muted.bg,
+      bg: action.primary.hover.bg,
     },
 
     active: {
-      bg: text.brand,
+      bg: action.primary.default.bg,
     },
   },
 

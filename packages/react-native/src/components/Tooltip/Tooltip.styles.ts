@@ -15,31 +15,32 @@ export const createStyles = (theme: NativeTheme) =>
     bubble: {
       position: 'absolute',
       zIndex: 1000,
+      maxWidth: 280,
+
+      paddingHorizontal: theme.tokens.spacing[3],
+      paddingVertical: theme.tokens.spacing[2],
 
       backgroundColor: theme.components.tooltip.content.bg,
       borderColor: theme.components.tooltip.content.border,
       borderRadius: theme.tokens.radius.sm,
       borderWidth: 1,
 
-      paddingHorizontal: theme.tokens.spacing[3],
-      paddingVertical: theme.tokens.spacing[2],
-
-      shadowColor: theme.tokens.shadows.sm.color,
+      shadowColor: theme.tokens.shadows.md.color,
       shadowOffset: {
-        width: theme.tokens.shadows.sm.x,
-        height: theme.tokens.shadows.sm.y,
+        width: theme.tokens.shadows.md.x,
+        height: theme.tokens.shadows.md.y,
       },
-      shadowOpacity: theme.tokens.shadows.sm.opacity,
-      shadowRadius: theme.tokens.shadows.sm.blur,
-
-      elevation: theme.tokens.shadows.sm.elevation,
+      shadowOpacity: theme.tokens.shadows.md.opacity,
+      shadowRadius: theme.tokens.shadows.md.blur,
+      elevation: theme.tokens.shadows.md.elevation,
     },
 
     text: {
+      flexShrink: 1,
       color: theme.components.tooltip.content.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.sm,
-      lineHeight: 20,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
       textAlign: 'center',
     },
   });

@@ -9,6 +9,12 @@ type NativeProps = {
   accessibilityRole?: string;
   accessibilityState?: Record<string, unknown>;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
+  accessibilityLiveRegion?: string;
+  ellipsizeMode?: string;
+  accessible?: boolean;
+  importantForAccessibility?: string;
+  numberOfLines?: number;
   onPress?: () => void;
   onPressIn?: () => void;
   onPressOut?: () => void;
@@ -47,6 +53,10 @@ const roleFromAccessibility = (role?: string) => {
   if (role === 'radiogroup') return 'radiogroup';
   if (role === 'tab') return 'tab';
   if (role === 'tablist') return 'tablist';
+  if (role === 'toolbar') return 'toolbar';
+  if (role === 'header') return 'heading';
+  if (role === 'menu') return 'menu';
+  if (role === 'menuitem') return 'menuitem';
   return undefined;
 };
 
@@ -63,6 +73,32 @@ const stateProps = (state?: Record<string, unknown>) => ({
     typeof state?.busy === 'boolean' ? String(state.busy) : undefined,
 });
 
+const accessibilityProps = ({
+  accessibilityLabel,
+  accessibilityHint,
+  accessibilityLiveRegion,
+  accessible,
+  importantForAccessibility,
+}: Partial<
+  Pick<
+    NativeProps,
+    | 'accessibilityLabel'
+    | 'accessibilityHint'
+    | 'accessibilityLiveRegion'
+    | 'accessible'
+    | 'importantForAccessibility'
+  >
+>) => ({
+  'aria-label': accessibilityLabel,
+  'aria-description': accessibilityHint,
+  'aria-hidden':
+    accessible === false || importantForAccessibility === 'no'
+      ? 'true'
+      : undefined,
+  'aria-live': accessibilityLiveRegion,
+  'data-important-for-accessibility': importantForAccessibility,
+});
+
 export const View = forwardRef<HTMLDivElement, NativeProps>(
   (
     {
@@ -70,6 +106,11 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
       style,
       accessibilityRole,
       accessibilityState,
+      accessibilityLabel,
+      accessibilityHint,
+      accessibilityLiveRegion,
+      accessible,
+      importantForAccessibility,
       testID,
       onLayout,
     },
@@ -100,6 +141,13 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
         role={roleFromAccessibility(accessibilityRole)}
         style={resolvedStyle}
         {...stateProps(accessibilityState)}
+        {...accessibilityProps({
+          accessibilityLabel,
+          accessibilityHint,
+          accessibilityLiveRegion,
+          accessible,
+          importantForAccessibility,
+        })}
       >
         {children}
       </div>
@@ -129,8 +177,37 @@ export const Animated = {
 };
 
 export const Text = forwardRef<HTMLSpanElement, NativeProps>(
-  ({ children, style, testID }, ref) => (
-    <span ref={ref} data-testid={testID} style={flattenStyle(style)}>
+  (
+    {
+      children,
+      style,
+      testID,
+      accessibilityRole,
+      accessibilityLabel,
+      accessibilityHint,
+      accessibilityLiveRegion,
+      ellipsizeMode,
+      accessible,
+      importantForAccessibility,
+      numberOfLines,
+    },
+    ref
+  ) => (
+    <span
+      ref={ref}
+      data-testid={testID}
+      data-ellipsize-mode={ellipsizeMode}
+      data-number-of-lines={numberOfLines}
+      role={roleFromAccessibility(accessibilityRole)}
+      style={flattenStyle(style)}
+      {...accessibilityProps({
+        accessibilityLabel,
+        accessibilityHint,
+        accessibilityLiveRegion,
+        accessible,
+        importantForAccessibility,
+      })}
+    >
       {children}
     </span>
   )
@@ -156,6 +233,7 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
       accessibilityRole,
       accessibilityState,
       accessibilityLabel,
+      accessibilityHint,
       onPress,
       onPressIn,
       onPressOut,
@@ -185,7 +263,6 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         type='button'
         data-testid={testID}
         disabled={disabled}
-        aria-label={accessibilityLabel}
         role={roleFromAccessibility(accessibilityRole)}
         style={flattenStyle(resolvedStyle)}
         onClick={onPress}
@@ -197,6 +274,10 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         onMouseUp={onPressOut}
         onDoubleClick={onLongPress}
         {...stateProps(accessibilityState)}
+        {...accessibilityProps({
+          accessibilityLabel,
+          accessibilityHint,
+        })}
       >
         {resolvedChildren}
       </button>

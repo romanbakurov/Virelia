@@ -1,7 +1,7 @@
 import { colors } from '../../primitives/colors.js';
 
 export const divider = {
-  default: colors.gray[200],
-  muted: colors.grayBlue[100],
-  strong: colors.gray[300],
+  muted: colors.vellira[100],
+  default: colors.vellira[200],
+  strong: colors.vellira[300],
 } as const;

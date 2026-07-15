@@ -66,10 +66,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm exec semantic-release
 
+      - name: Verify release sync token
+        env:
+          RELEASE_SYNC_TOKEN: ${{ secrets.RELEASE_SYNC_TOKEN }}
+        run: |
+          if [ -z "$RELEASE_SYNC_TOKEN" ]; then
+            echo "RELEASE_SYNC_TOKEN secret is required to create the version sync PR as a maintainer."
+            exit 1
+          fi
+
       - name: Create version sync PR
         id: version-sync-pr
         uses: peter-evans/create-pull-request@v8
         with:
+          token: ${{ secrets.RELEASE_SYNC_TOKEN }}
           add-paths: |
             package.json
             pnpm-lock.yaml
@@ -84,7 +94,7 @@ jobs:
       - name: Enable auto-merge for version sync PR
         if: steps.version-sync-pr.outputs.pull-request-number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_SYNC_TOKEN }}
         run: |
           gh pr merge ${{ steps.version-sync-pr.outputs.pull-request-number }} \
             --auto \

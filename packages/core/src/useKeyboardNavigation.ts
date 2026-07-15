@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export interface NavigableItem {
   disabled?: boolean;
@@ -6,6 +6,9 @@ export interface NavigableItem {
 
 export interface KeyboardNavigationEvent {
   key: string;
+  altKey?: boolean;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
   preventDefault: () => void;
 }
 
@@ -14,9 +17,10 @@ export interface UseKeyboardNavigationParams<TItem extends NavigableItem> {
   setActiveIndex: (index: number) => void;
   items: TItem[];
   isOpen: boolean;
-  onOpen: () => void;
+  onOpen: (event: KeyboardNavigationEvent) => void;
   onSelect?: () => void;
   onClose?: () => void;
+  getItemText?: (item: TItem) => string;
 }
 
 export const useKeyboardNavigation = <TItem extends NavigableItem>({
@@ -27,7 +31,22 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
   onOpen,
   onSelect,
   onClose,
+  getItemText,
 }: UseKeyboardNavigationParams<TItem>) => {
+  const searchRef = useRef({
+    value: '',
+    timeoutId: undefined as ReturnType<typeof setTimeout> | undefined,
+  });
+
+  useEffect(
+    () => () => {
+      if (searchRef.current.timeoutId) {
+        clearTimeout(searchRef.current.timeoutId);
+      }
+    },
+    []
+  );
+
   const getNextEnabledIndex = useCallback(
     (current: number, direction: 1 | -1) => {
       if (!items.length) return current;
@@ -47,6 +66,46 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
     [items]
   );
 
+  const getFirstEnabledIndex = useCallback(
+    () => items.findIndex((item) => !item.disabled),
+    [items]
+  );
+
+  const getLastEnabledIndex = useCallback(() => {
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (!items[i].disabled) {
+        return i;
+      }
+    }
+
+    return -1;
+  }, [items]);
+
+  const getTypeaheadIndex = useCallback(
+    (query: string) => {
+      if (!getItemText || !query) return -1;
+
+      const normalizedQuery = query.toLocaleLowerCase();
+      const startIndex = activeIndex >= 0 ? activeIndex + 1 : 0;
+
+      for (let offset = 0; offset < items.length; offset++) {
+        const index = (startIndex + offset) % items.length;
+        const item = items[index];
+
+        if (
+          item &&
+          !item.disabled &&
+          getItemText(item).toLocaleLowerCase().startsWith(normalizedQuery)
+        ) {
+          return index;
+        }
+      }
+
+      return -1;
+    },
+    [activeIndex, getItemText, items]
+  );
+
   const onKeyDown = useCallback(
     (event: KeyboardNavigationEvent) => {
       if (!isOpen) {
@@ -57,7 +116,7 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
           event.key === 'ArrowUp'
         ) {
           event.preventDefault();
-          onOpen();
+          onOpen(event);
         }
         return;
       }
@@ -86,33 +145,57 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
 
         case 'Home':
           event.preventDefault();
-          setActiveIndex(items.findIndex((item) => !item.disabled));
+          setActiveIndex(getFirstEnabledIndex());
           break;
 
         case 'End':
           event.preventDefault();
-          for (let i = items.length - 1; i >= 0; i--) {
-            if (!items[i].disabled) {
-              setActiveIndex(i);
-              break;
-            }
-          }
+          setActiveIndex(getLastEnabledIndex());
           break;
 
         case 'Tab':
           onClose?.();
           break;
+
+        default:
+          if (
+            event.key.length === 1 &&
+            !event.altKey &&
+            !event.ctrlKey &&
+            !event.metaKey
+          ) {
+            event.preventDefault();
+
+            if (searchRef.current.timeoutId) {
+              clearTimeout(searchRef.current.timeoutId);
+            }
+
+            searchRef.current.value += event.key;
+            searchRef.current.timeoutId = setTimeout(() => {
+              searchRef.current.value = '';
+              searchRef.current.timeoutId = undefined;
+            }, 700);
+
+            const nextIndex = getTypeaheadIndex(searchRef.current.value);
+
+            if (nextIndex >= 0) {
+              setActiveIndex(nextIndex);
+            }
+          }
+          break;
       }
     },
     [
       activeIndex,
-      items,
       isOpen,
       onOpen,
       onSelect,
       onClose,
       setActiveIndex,
       getNextEnabledIndex,
+      getFirstEnabledIndex,
+      getLastEnabledIndex,
+      getTypeaheadIndex,
     ]
   );
 

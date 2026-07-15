@@ -9,14 +9,14 @@
   inset: 0;
   backdrop-filter: blur(4px);
   visibility: hidden;
+  transition:
+    opacity 200ms ease,
+    visibility 0s linear 200ms;
 
   &--open {
     opacity: 1;
     visibility: visible;
-  }
-
-  &--animated {
-    transition: opacity 200ms ease;
+    transition-delay: 0s;
   }
 }
 

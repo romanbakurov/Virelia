@@ -1,5 +1,11 @@
-export type { DropdownProps } from './components/Dropdown';
 export { Dropdown } from './components/Dropdown';
+export type {
+  DropdownGroup as DropdownGroupItem,
+  DropdownItem,
+  DropdownMenuItem,
+  DropdownProps,
+  DropdownSeparator as DropdownSeparatorItem,
+} from './components/Dropdown/types';
 export type { ModalProps } from './components/Modal';
 export { Modal } from './components/Modal';
 export type { RadioGroupProps } from './components/RadioGroup';
@@ -23,4 +29,6 @@ export type { CheckboxProps } from './primitives/Checkbox';
 export { Checkbox } from './primitives/Checkbox';
 export type { InputProps } from './primitives/Input';
 export { Input } from './primitives/Input';
+export type { RadioProps } from './primitives/Radio';
+export { Radio } from './primitives/Radio';
 export * from './theme';

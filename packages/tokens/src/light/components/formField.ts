@@ -3,7 +3,7 @@ import { text } from '../semantic/text.js';
 
 export const formField = {
   label: {
-    fg: text.subtle,
+    fg: text.primary,
   },
 
   description: {

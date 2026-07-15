@@ -1,7 +1,6 @@
-import type { BaseDropdownContentProps } from '@vellira-ui/types';
 import type { CSSProperties, KeyboardEventHandler, ReactNode } from 'react';
 
-export interface DropdownContentProps extends BaseDropdownContentProps {
+export interface DropdownContentProps {
   children: ReactNode;
   menuId: string;
   labelledById?: string;

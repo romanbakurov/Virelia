@@ -1,4 +1,5 @@
 import { cn } from '@utils/cn';
+import { Check } from '@vellira-ui/icons';
 
 import type { SelectOptionProps } from './types';
 
@@ -36,7 +37,11 @@ export const SelectOption = ({
         onMouseEnter();
       }}
     >
-      {option.label}
+      <span className={styles.label}>{option.label}</span>
+
+      <span className={styles.check} aria-hidden='true'>
+        {isSelected && <Check />}
+      </span>
     </li>
   );
 };

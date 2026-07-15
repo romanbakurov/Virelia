@@ -6,35 +6,52 @@ import { text } from './text.js';
 
 export const control = {
   default: {
-    bg: surface.default,
+    bg: surface.elevated,
     fg: text.primary,
-    border: border.subtle,
+    border: border.default,
   },
+
   hover: {
     bg: colors.primary[50],
-    fg: colors.primary[900],
+    fg: colors.primary[800],
     border: colors.primary[700],
   },
+
+  active: {
+    bg: colors.primary[100],
+    fg: colors.primary[900],
+    border: colors.primary[800],
+  },
+
+  disabled: {
+    bg: surface.disabled,
+    fg: text.disabled,
+    border: border.disabled,
+  },
+
   selected: {
     default: {
+      bg: colors.primary[600],
+      fg: colors.mono[50],
+      border: colors.primary[600],
+    },
+
+    hover: {
       bg: colors.primary[700],
-      fg: text.inverse,
+      fg: colors.mono[50],
       border: colors.primary[700],
     },
-    hover: {
+
+    active: {
       bg: colors.primary[800],
-      fg: text.inverse,
+      fg: colors.mono[50],
       border: colors.primary[800],
     },
-    active: {
-      bg: colors.primary[950],
-      fg: text.inverse,
-      border: colors.primary[950],
-    },
+
     muted: {
-      bg: colors.primary[700],
-      fg: text.inverse,
-      border: colors.primary[500],
+      bg: colors.primary[100],
+      fg: colors.primary[900],
+      border: colors.primary[300],
     },
   },
 } as const;

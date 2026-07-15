@@ -1,73 +1,79 @@
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
-import { navigation } from '../semantic/navigation.js';
+import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
-import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const select = {
   trigger: {
     default: {
-      bg: surface.default,
-      fg: text.subtle,
+      bg: 'transparent',
+      fg: text.primary,
       border: border.default,
     },
 
     hover: control.hover,
 
     focus: {
-      bg: surface.default,
+      bg: 'transparent',
       fg: text.primary,
       border: border.focus,
-      ring: focus.ring,
+      ring: focus.ring.color,
     },
 
-    disabled: {
-      bg: surface.subtle,
-      fg: text.disabled,
-      border: border.muted,
-    },
+    disabled: control.disabled,
 
     placeholder: {
       fg: text.secondary,
     },
 
     error: {
-      border: status.error.fg,
-      ring: status.error.bg,
+      border: status.error.border,
+      ring: status.error.ring,
     },
   },
 
   dropdown: {
-    bg: surface.subtle,
-    fg: text.primary,
-    border: border.muted,
+    bg: menu.background,
+    fg: menu.item.default.fg,
+    border: menu.border,
+    shadow: shadow.lg,
   },
 
   option: {
     default: {
-      bg: 'transparent',
-      fg: text.primary,
-      border: border.muted,
+      ...menu.item.default,
+      border: 'transparent',
     },
 
-    hover: navigation.brandHover,
+    hover: {
+      ...menu.item.hover,
+      border: 'transparent',
+    },
 
     active: {
-      ...navigation.brandHover,
+      ...menu.item.active,
+      border: 'transparent',
       ring: 'transparent',
     },
 
+    pressed: {
+      ...menu.item.pressed,
+      border: 'transparent',
+    },
+
     selected: {
-      bg: control.selected.default.bg,
-      fg: control.selected.default.fg,
+      bg: control.selected.muted.bg,
+      fg: control.selected.muted.fg,
+      border: control.selected.muted.border,
+      shadow: shadow.inset,
     },
 
     disabled: {
-      bg: 'transparent',
-      fg: text.disabled,
-      border: border.muted,
+      ...menu.item.disabled,
+      border: 'transparent',
     },
   },
 } as const;

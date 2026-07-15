@@ -1,6 +1,10 @@
 import { colors } from '../../primitives/colors.js';
 
 export const focus = {
-  ring: colors.primary[700],
-  ringOffset: colors.mono[50],
+  ring: {
+    color: colors.primary[700],
+    width: '2px',
+    shadow: '0 0 8px rgba(99, 70, 232, 0.14)',
+    offset: colors.mono[50],
+  },
 } as const;

@@ -14,14 +14,18 @@ export const createStyles = (theme: NativeTheme) =>
 
     listPills: {
       backgroundColor: theme.components.tabs.pills.default.bg,
-      padding: 0,
+      borderRadius: theme.tokens.radius.lg,
     },
 
     listVertical: {
-      alignSelf: 'flex-start',
       flexDirection: 'column',
+      alignSelf: 'flex-start',
+      width: 140,
+      minWidth: 140,
+      maxWidth: 140,
+      flexGrow: 0,
+      flexShrink: 0,
       gap: theme.tokens.spacing[1],
-      marginRight: theme.tokens.spacing[4],
       marginBottom: 0,
     },
   });
