@@ -6,7 +6,7 @@ export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     trigger: {
       alignItems: 'center',
-      justifyContent: 'space-between',
+      justifyContent: 'center',
       flexDirection: 'row',
       gap: theme.tokens.spacing[2],
       backgroundColor: theme.components.dropdown.trigger.default.bg,
@@ -43,19 +43,30 @@ export const createStyles = (theme: NativeTheme) =>
     smIconOnly: {
       width: 36,
       height: 36,
-      padding: theme.tokens.spacing[2],
+      minWidth: 36,
+      minHeight: 36,
+      padding: 0,
     },
 
     mdIconOnly: {
       width: 44,
       height: 44,
-      padding: theme.tokens.spacing[3],
+      minWidth: 44,
+      minHeight: 44,
+      padding: 0,
     },
 
     lgIconOnly: {
       width: 52,
       height: 52,
-      padding: theme.tokens.spacing[4],
+      minWidth: 52,
+      minHeight: 52,
+      padding: 0,
+    },
+
+    triggerPressed: {
+      backgroundColor: theme.components.dropdown.trigger.hover.bg,
+      borderColor: theme.components.dropdown.trigger.hover.border,
     },
 
     triggerDisabled: {
@@ -64,13 +75,17 @@ export const createStyles = (theme: NativeTheme) =>
       borderStyle: 'dashed',
     },
 
-    triggerPressed: {
-      backgroundColor: theme.components.dropdown.trigger.hover.bg,
-    },
-
     triggerText: {
       color: theme.components.dropdown.trigger.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
+    },
+
+    triggerTextPressed: {
+      color: theme.components.dropdown.trigger.hover.fg,
+    },
+
+    triggerTextDisabled: {
+      color: theme.components.dropdown.trigger.disabled.fg,
     },
 
     textSm: {
@@ -86,10 +101,6 @@ export const createStyles = (theme: NativeTheme) =>
     textLg: {
       fontSize: theme.tokens.typography.size.lg,
       lineHeight: theme.tokens.typography.lineHeight.lg,
-    },
-
-    triggerTextDisabled: {
-      color: theme.components.dropdown.trigger.disabled.fg,
     },
 
     icon: {

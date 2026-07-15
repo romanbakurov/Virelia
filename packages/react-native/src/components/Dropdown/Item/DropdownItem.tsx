@@ -29,18 +29,37 @@ export function DropdownItem({
   };
 
   const getContentColor = (pressed: boolean) => {
-    if (disabled) return theme.components.dropdown.item.disabled.fg;
+    if (disabled) {
+      return theme.components.dropdown.item.disabled.fg;
+    }
 
     if (danger) {
       return pressed
-        ? theme.components.dropdown.item.danger.hover.fg
+        ? theme.components.dropdown.item.danger.active.fg
         : theme.components.dropdown.item.danger.default.fg;
     }
 
     return pressed
-      ? theme.components.dropdown.item.hover.fg
+      ? theme.components.dropdown.item.pressed.fg
       : theme.components.dropdown.item.default.fg;
   };
+
+  const getBackgroundColor = (pressed: boolean) => {
+    if (disabled) {
+      return theme.components.dropdown.item.disabled.bg;
+    }
+
+    if (danger) {
+      return pressed
+        ? theme.components.dropdown.item.danger.active.bg
+        : theme.components.dropdown.item.danger.default.bg;
+    }
+
+    return pressed
+      ? theme.components.dropdown.item.pressed.bg
+      : theme.components.dropdown.item.default.bg;
+  };
+
   const accessibilityLabel = typeof label === 'string' ? label : value;
   const numberOfLines = textWrap === 'wrap' ? undefined : 1;
   const ellipsizeMode = textWrap === 'truncate' ? 'tail' : 'clip';
@@ -58,9 +77,9 @@ export function DropdownItem({
       }}
       style={({ pressed }) => [
         styles.item,
-        pressed && styles.itemPressed,
-        disabled && styles.itemDisabled,
-        pressed && danger && !disabled && styles.itemDangerPressed,
+        {
+          backgroundColor: getBackgroundColor(pressed),
+        },
         itemStyle,
       ]}
     >

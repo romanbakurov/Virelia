@@ -110,10 +110,10 @@ export function DropdownTrigger({
       style={[
         styles.trigger,
         styles[size],
-        isPressed && !disabled && styles.triggerPressed,
-        disabled && styles.triggerDisabled,
         isIconOnly && styles.iconOnly,
         isIconOnly && iconOnlySizeStyle,
+        isPressed && !disabled && styles.triggerPressed,
+        disabled && styles.triggerDisabled,
         triggerStyle,
       ]}
     >

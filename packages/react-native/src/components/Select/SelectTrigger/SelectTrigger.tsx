@@ -22,11 +22,13 @@ export function SelectTrigger({
 }: SelectTriggerProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+
   const textSizeStyle = {
     sm: styles.textSm,
     md: styles.textMd,
     lg: styles.textLg,
-  }[size];
+  } as const;
+
   const resolvedAccessibilityHint =
     accessibilityHint ??
     (hasError
@@ -59,8 +61,9 @@ export function SelectTrigger({
         numberOfLines={1}
         style={[
           styles.text,
-          textSizeStyle,
+          textSizeStyle[size],
           isPlaceholder && styles.placeholder,
+          isOpen && styles.textOpen,
           disabled && styles.textDisabled,
           textStyle,
         ]}
