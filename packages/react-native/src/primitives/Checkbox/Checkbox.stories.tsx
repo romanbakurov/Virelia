@@ -47,6 +47,8 @@ Use Checkbox for a single on/off choice in forms, preferences, and settings scre
   args: {
     label: 'Accept terms',
     size: 'md',
+    color: 'primary',
+    labelPosition: 'end',
     disabled: false,
     required: false,
     indeterminate: false,
@@ -93,6 +95,28 @@ Use Checkbox for a single on/off choice in forms, preferences, and settings scre
       table: {
         type: { summary: `'sm' | 'md' | 'lg'` },
         defaultValue: { summary: 'md' },
+      },
+    },
+
+    color: {
+      description: 'Selected checkbox color.',
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      table: {
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+
+    labelPosition: {
+      description: 'Position of the visible label relative to the checkbox.',
+      control: 'radio',
+      options: ['end', 'start'],
+      table: {
+        type: { summary: `'end' | 'start'` },
+        defaultValue: { summary: 'end' },
       },
     },
 
@@ -157,6 +181,14 @@ Use Checkbox for a single on/off choice in forms, preferences, and settings scre
     },
 
     style: {
+      control: false,
+    },
+
+    icon: {
+      control: false,
+    },
+
+    indeterminateIcon: {
       control: false,
     },
   },
@@ -423,6 +455,46 @@ export const Sizes: Story = {
         <Checkbox label='Small' size='sm' />
         <Checkbox label='Medium' size='md' />
         <Checkbox label='Large' size='lg' />
+      </View>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <View style={storyStyles.column}>
+        <Checkbox label='Primary' color='primary' defaultChecked />
+        <Checkbox label='Neutral' color='neutral' defaultChecked />
+        <Checkbox label='Success' color='success' defaultChecked />
+        <Checkbox label='Warning' color='warning' defaultChecked />
+        <Checkbox label='Danger' color='danger' defaultChecked />
+      </View>
+    </Section>
+  ),
+};
+
+export const LabelPositions: Story = {
+  render: () => (
+    <Section title='Label positions'>
+      <View style={storyStyles.column}>
+        <Checkbox label='Label at end' labelPosition='end' defaultChecked />
+        <Checkbox label='Label at start' labelPosition='start' defaultChecked />
+      </View>
+    </Section>
+  ),
+};
+
+export const CustomIcons: Story = {
+  render: () => (
+    <Section title='Custom icons'>
+      <View style={storyStyles.column}>
+        <Checkbox label='Custom checked' defaultChecked icon={<Text>✓</Text>} />
+        <Checkbox
+          label='Custom mixed'
+          indeterminate
+          indeterminateIcon={<Text>−</Text>}
+        />
       </View>
     </Section>
   ),

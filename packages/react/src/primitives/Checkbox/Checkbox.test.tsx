@@ -189,4 +189,45 @@ describe('Checkbox', () => {
     expect(checkbox?.classList.contains('custom-wrapper')).toBe(false);
     unmount();
   });
+
+  it('applies color and label position classes', () => {
+    const { container, unmount } = render(
+      <Checkbox label='Accept' color='success' labelPosition='start' />
+    );
+
+    const root = container.firstElementChild;
+    const wrapper = container.querySelector('label');
+
+    expect(root?.className).toContain('containerLabelStart');
+    expect(wrapper?.className).toContain('colorSuccess');
+    expect(wrapper?.className).toContain('labelStart');
+    unmount();
+  });
+
+  it('renders custom checked and indeterminate icons', () => {
+    const { container, rerender, unmount } = render(
+      <Checkbox
+        label='Accept'
+        checked
+        icon={<span data-testid='custom-check'>ok</span>}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="custom-check"]')).not.toBe(
+      null
+    );
+
+    rerender(
+      <Checkbox
+        label='Accept'
+        indeterminate
+        indeterminateIcon={<span data-testid='custom-mixed'>mixed</span>}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="custom-mixed"]')).not.toBe(
+      null
+    );
+    unmount();
+  });
 });

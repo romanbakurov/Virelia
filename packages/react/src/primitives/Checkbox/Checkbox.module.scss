@@ -3,6 +3,16 @@
 .wrapper {
   --checkbox-border-width: 2px;
   --checkbox-checkmark-size: 12px;
+  --checkbox-selected-bg: var(--checkbox-checked-default-bg);
+  --checkbox-selected-border: var(--checkbox-checked-default-border);
+  --checkbox-selected-fg: var(--checkbox-checked-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-checked-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-checked-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-checked-hover-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-checked-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-checked-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-checked-pressed-fg);
+  --checkbox-selected-ring: var(--checkbox-focus-ring);
   --checkbox-size: 20px;
 
   display: flex;
@@ -10,6 +20,75 @@
   gap: var(--space-3);
   cursor: pointer;
   user-select: none;
+}
+
+.colorPrimary {
+  --checkbox-selected-bg: var(--checkbox-checked-default-bg);
+  --checkbox-selected-border: var(--checkbox-checked-default-border);
+  --checkbox-selected-fg: var(--checkbox-checked-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-checked-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-checked-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-checked-hover-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-checked-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-checked-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-checked-pressed-fg);
+  --checkbox-selected-ring: var(--checkbox-focus-ring);
+}
+
+.colorNeutral {
+  --checkbox-selected-bg: var(--color-gray-900);
+  --checkbox-selected-border: var(--color-gray-900);
+  --checkbox-selected-fg: var(--color-gray-50);
+  --checkbox-selected-hover-bg: var(--color-gray-800);
+  --checkbox-selected-hover-border: var(--color-gray-800);
+  --checkbox-selected-hover-fg: var(--color-gray-50);
+  --checkbox-selected-pressed-bg: var(--color-gray-700);
+  --checkbox-selected-pressed-border: var(--color-gray-700);
+  --checkbox-selected-pressed-fg: var(--color-gray-50);
+  --checkbox-selected-ring: var(--focus-ring-color);
+}
+
+.colorSuccess {
+  --checkbox-selected-bg: var(--status-success-strong);
+  --checkbox-selected-border: var(--status-success-border);
+  --checkbox-selected-fg: var(--color-success-50);
+  --checkbox-selected-hover-bg: var(--color-success-700);
+  --checkbox-selected-hover-border: var(--color-success-700);
+  --checkbox-selected-hover-fg: var(--color-success-50);
+  --checkbox-selected-pressed-bg: var(--color-success-800);
+  --checkbox-selected-pressed-border: var(--color-success-800);
+  --checkbox-selected-pressed-fg: var(--color-success-50);
+  --checkbox-selected-ring: var(--status-success-ring);
+}
+
+.colorWarning {
+  --checkbox-selected-bg: var(--status-warning-strong);
+  --checkbox-selected-border: var(--status-warning-border);
+  --checkbox-selected-fg: var(--color-warning-950);
+  --checkbox-selected-hover-bg: var(--color-warning-600);
+  --checkbox-selected-hover-border: var(--color-warning-600);
+  --checkbox-selected-hover-fg: var(--color-warning-950);
+  --checkbox-selected-pressed-bg: var(--color-warning-700);
+  --checkbox-selected-pressed-border: var(--color-warning-700);
+  --checkbox-selected-pressed-fg: var(--color-warning-950);
+  --checkbox-selected-ring: var(--status-warning-ring);
+}
+
+.colorDanger {
+  --checkbox-selected-bg: var(--status-error-strong);
+  --checkbox-selected-border: var(--status-error-border);
+  --checkbox-selected-fg: var(--color-error-50);
+  --checkbox-selected-hover-bg: var(--color-error-700);
+  --checkbox-selected-hover-border: var(--color-error-700);
+  --checkbox-selected-hover-fg: var(--color-error-50);
+  --checkbox-selected-pressed-bg: var(--color-error-800);
+  --checkbox-selected-pressed-border: var(--color-error-800);
+  --checkbox-selected-pressed-fg: var(--color-error-50);
+  --checkbox-selected-ring: var(--status-error-ring);
+}
+
+.labelStart {
+  flex-direction: row-reverse;
 }
 
 .wrapperSm {
@@ -56,6 +135,13 @@
   --checkbox-size: 24px;
 }
 
+.containerLabelStart {
+  .descriptionText,
+  .errorText {
+    margin-left: 0;
+  }
+}
+
 .input {
   position: absolute;
   width: 1px;
@@ -69,6 +155,7 @@
 }
 
 .customCheckbox {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,8 +169,23 @@
     color 0.2s ease,
     background-color 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
   flex-shrink: 0;
+
+  &::after {
+    position: absolute;
+    inset: -5px;
+    background: currentcolor;
+    border-radius: calc(var(--radius-xs) + 7px);
+    content: '';
+    opacity: 0;
+    transform: scale(0.75);
+    transition:
+      opacity 0.26s ease,
+      transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
 }
 
 .requiredMark {
@@ -123,6 +225,9 @@
 }
 
 .indeterminateMark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60%;
   height: 2px;
   background: currentcolor;
@@ -132,6 +237,18 @@
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
+}
+
+.customMark {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+
+  svg {
+    width: var(--checkbox-checkmark-size);
+    height: var(--checkbox-checkmark-size);
+    fill: currentcolor;
+  }
 }
 
 .label {
@@ -169,16 +286,27 @@
 .input:checked + .customCheckbox,
 .input:indeterminate + .customCheckbox,
 .customCheckbox.indeterminate {
-  color: var(--checkbox-checked-default-fg);
-  background: var(--checkbox-checked-default-bg);
-  border-color: var(--checkbox-checked-default-border);
+  color: var(--checkbox-selected-fg);
+  background: var(--checkbox-selected-bg);
+  border-color: var(--checkbox-selected-border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 18%),
+    0 8px 18px rgb(0 0 0 / 10%);
+  animation: checkbox-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.input:checked + .customCheckbox::after,
+.input:indeterminate + .customCheckbox::after,
+.customCheckbox.indeterminate::after {
+  opacity: 0.12;
+  transform: scale(1);
 }
 
 .input:checked:focus-visible + .customCheckbox,
 .input:indeterminate:focus-visible + .customCheckbox {
   @include focus-border(
-    var(--checkbox-checked-default-border),
-    var(--checkbox-focus-ring)
+    var(--checkbox-selected-border),
+    var(--checkbox-selected-ring)
   );
 }
 
@@ -202,9 +330,10 @@
 .wrapper:hover .input:checked:not(:disabled) + .customCheckbox,
 .wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox,
 .wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate {
-  color: var(--checkbox-checked-hover-fg);
-  background: var(--checkbox-checked-hover-bg);
-  border-color: var(--checkbox-checked-hover-border);
+  color: var(--checkbox-selected-hover-fg);
+  background: var(--checkbox-selected-hover-bg);
+  border-color: var(--checkbox-selected-hover-border);
+  transform: translateY(-1px);
 }
 
 .wrapper:hover .input:checked:not(:disabled) + .customCheckbox + .label,
@@ -223,9 +352,10 @@
 .input:checked:active:not(:disabled) + .customCheckbox,
 .input:indeterminate:active:not(:disabled) + .customCheckbox,
 .input:active:not(:disabled) + .customCheckbox.indeterminate {
-  color: var(--checkbox-checked-pressed-fg);
-  background: var(--checkbox-checked-pressed-bg);
-  border-color: var(--checkbox-checked-pressed-border);
+  color: var(--checkbox-selected-pressed-fg);
+  background: var(--checkbox-selected-pressed-bg);
+  border-color: var(--checkbox-selected-pressed-border);
+  transform: scale(0.94);
 }
 
 .input:checked:active:not(:disabled) + .customCheckbox + .label,
@@ -271,11 +401,27 @@
   cursor: not-allowed;
 }
 
+@keyframes checkbox-pop {
+  0% {
+    transform: scale(0.82);
+  }
+
+  58% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .customCheckbox,
+  .customCheckbox::after,
   .checkmark,
   .indeterminateMark,
   .label {
     transition: none;
+    animation: none;
   }
 }

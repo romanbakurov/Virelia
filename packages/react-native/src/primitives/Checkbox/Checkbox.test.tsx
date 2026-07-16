@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
@@ -133,6 +134,37 @@ describe('Native Checkbox', () => {
 
     expect(onCheckedChange).not.toHaveBeenCalled();
     expect(checkbox?.getAttribute('aria-checked')).toBe('true');
+
+    unmount();
+  });
+
+  it('renders custom icons and accepts color and label position props', () => {
+    const { container, rerender, unmount } = render(
+      <Checkbox
+        label='Accept'
+        checked
+        color='success'
+        labelPosition='start'
+        icon={<Text testID='native-custom-check'>ok</Text>}
+      />
+    );
+
+    expect(
+      container.querySelector('[data-testid="native-custom-check"]')
+    ).not.toBe(null);
+
+    rerender(
+      <Checkbox
+        label='Accept'
+        indeterminate
+        color='warning'
+        indeterminateIcon={<Text testID='native-custom-mixed'>mixed</Text>}
+      />
+    );
+
+    expect(
+      container.querySelector('[data-testid="native-custom-mixed"]')
+    ).not.toBe(null);
 
     unmount();
   });

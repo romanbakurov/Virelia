@@ -14,6 +14,10 @@ export const createStyles = (theme: NativeTheme) =>
       gap: theme.tokens.spacing[3],
     },
 
+    wrapperLabelStart: {
+      flexDirection: 'row-reverse',
+    },
+
     iconOnly: {
       justifyContent: 'center',
       minWidth: 44,
