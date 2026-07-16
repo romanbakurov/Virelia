@@ -169,23 +169,8 @@
     color 0.2s ease,
     background-color 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease,
     transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
   flex-shrink: 0;
-
-  &::after {
-    position: absolute;
-    inset: -5px;
-    background: currentcolor;
-    border-radius: calc(var(--radius-xs) + 7px);
-    content: '';
-    opacity: 0;
-    transform: scale(0.75);
-    transition:
-      opacity 0.26s ease,
-      transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-  }
 }
 
 .requiredMark {
@@ -289,17 +274,7 @@
   color: var(--checkbox-selected-fg);
   background: var(--checkbox-selected-bg);
   border-color: var(--checkbox-selected-border);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 18%),
-    0 8px 18px rgb(0 0 0 / 10%);
   animation: checkbox-pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.input:checked + .customCheckbox::after,
-.input:indeterminate + .customCheckbox::after,
-.customCheckbox.indeterminate::after {
-  opacity: 0.12;
-  transform: scale(1);
 }
 
 .input:checked:focus-visible + .customCheckbox,
@@ -369,7 +344,6 @@
   + .customCheckbox {
   background: var(--checkbox-hover-bg);
   border-color: var(--checkbox-hover-border);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 6%);
 }
 
 .wrapper.disabled:hover {
@@ -417,7 +391,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .customCheckbox,
-  .customCheckbox::after,
   .checkmark,
   .indeterminateMark,
   .label {
