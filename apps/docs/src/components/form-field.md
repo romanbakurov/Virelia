@@ -4,7 +4,7 @@ FormField provides consistent layout for labels, descriptions, errors, required
 state, disabled state, and custom field controls.
 
 <StorybookFrame
-  id="patterns-formfield--complete-example"
+  story="formField.complete"
   title="FormField complete example"
   :height="520"
 />
@@ -32,13 +32,13 @@ another label if the component already supports `label`, `description`, and
 FormField is presentational. The child control owns its own value, disabled
 state, validation attributes, and interaction behavior.
 
-| Responsibility | Owner |
-| --- | --- |
-| Label and layout | `FormField` |
-| `aria-describedby` and `aria-invalid` | Child control on web |
+| Responsibility                               | Owner                   |
+| -------------------------------------------- | ----------------------- |
+| Label and layout                             | `FormField`             |
+| `aria-describedby` and `aria-invalid`        | Child control on web    |
 | `accessibilityLabel` and `accessibilityHint` | Child control on native |
-| Value and validation state | App |
-| Disabled interaction | Child control |
+| Value and validation state                   | App                     |
+| Disabled interaction                         | Child control           |
 
 ## Web Notes
 

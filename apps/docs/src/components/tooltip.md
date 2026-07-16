@@ -4,7 +4,7 @@ Tooltip provides short, non-critical helper text for a focused or hovered
 control. It should clarify UI, not carry required instructions.
 
 <StorybookFrame
-  id="components-tooltip--different-triggers"
+  story="tooltip.triggers"
   title="Tooltip triggers"
   :height="360"
 />
@@ -21,16 +21,16 @@ import { Button, Tooltip } from '@vellira-ui/react';
 
 <Tooltip content='Copy project ID'>
   <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
-</Tooltip>
+</Tooltip>;
 ```
 
 ## Content Guidance
 
-| Good | Avoid |
-| --- | --- |
-| `Copy project ID` | Paragraphs or multi-step instructions |
+| Good                                        | Avoid                                   |
+| ------------------------------------------- | --------------------------------------- |
+| `Copy project ID`                           | Paragraphs or multi-step instructions   |
 | `Only workspace owners can delete projects` | Critical validation only shown on hover |
-| `Press ⌘K to open command menu` | Interactive content inside the tooltip |
+| `Press ⌘K to open command menu`             | Interactive content inside the tooltip  |
 
 ## Delays And Placement
 
@@ -47,7 +47,7 @@ import { Button, Tooltip } from '@vellira-ui/react';
   delay={{ open: 250, close: 100 }}
 >
   <Button iconOnly aria-label='Filter invoices' iconStart={<Filter />} />
-</Tooltip>
+</Tooltip>;
 ```
 
 ## Real Example: Dense Toolbar

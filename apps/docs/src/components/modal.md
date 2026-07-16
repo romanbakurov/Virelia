@@ -4,7 +4,7 @@ Modal is for focused decisions and blocking workflows. It should reduce the
 current page to one clear task, then return users to where they were.
 
 <StorybookFrame
-  id="components-modal--basic"
+  story="modal.basic"
   title="Modal basic interaction"
   :height="460"
 />
@@ -19,9 +19,7 @@ content users need to compare with the page behind it.
 <Modal isOpen={open} onClose={() => setOpen(false)}>
   <Modal.Content>
     <Modal.Header>Invite teammate</Modal.Header>
-    <Modal.Body>
-      Send an invitation to join this workspace.
-    </Modal.Body>
+    <Modal.Body>Send an invitation to join this workspace.</Modal.Body>
     <Modal.Footer>
       <Button appearance='ghost' color='neutral' onClick={() => setOpen(false)}>
         Cancel
@@ -45,7 +43,12 @@ secondary path.
       This permanently deletes projects, members, and billing history.
     </Modal.Body>
     <Modal.Footer>
-      <Button appearance='ghost' color='neutral' disabled={deleting} onClick={close}>
+      <Button
+        appearance='ghost'
+        color='neutral'
+        disabled={deleting}
+        onClick={close}
+      >
         Cancel
       </Button>
       <Button
@@ -98,7 +101,11 @@ export function InviteTeammateDialog() {
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button appearance='ghost' color='neutral' onClick={() => setOpen(false)}>
+            <Button
+              appearance='ghost'
+              color='neutral'
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button
@@ -118,12 +125,12 @@ export function InviteTeammateDialog() {
 
 ## Anatomy
 
-| Part | Guidance |
-| --- | --- |
-| Header | State the decision or task. |
-| Body | Explain consequence, scope, or required input. |
-| Footer | Put the safe action and primary action in a predictable order. |
-| Backdrop | Close only when losing work is not risky. |
+| Part     | Guidance                                                       |
+| -------- | -------------------------------------------------------------- |
+| Header   | State the decision or task.                                    |
+| Body     | Explain consequence, scope, or required input.                 |
+| Footer   | Put the safe action and primary action in a predictable order. |
+| Backdrop | Close only when losing work is not risky.                      |
 
 ## Accessibility
 

@@ -5,7 +5,7 @@ the app root or at a contained boundary when a product surface intentionally
 uses a different theme.
 
 <StorybookFrame
-  id="overview-web--overview"
+  story="overview.web"
   title="Theme-aware component overview"
   :height="760"
 />
@@ -22,7 +22,7 @@ import { ThemeProvider } from '@vellira-ui/react';
 
 <ThemeProvider defaultTheme='light'>
   <App />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 Native does not need CSS imports.
@@ -32,7 +32,7 @@ import { ThemeProvider } from '@vellira-ui/react-native';
 
 <ThemeProvider defaultTheme='dark'>
   <App />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Controlled Theme
@@ -45,7 +45,7 @@ const [theme, setTheme] = useState('light');
 
 <ThemeProvider theme={theme} onThemeChange={setTheme}>
   <App />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Real Example: Theme Switcher
@@ -98,12 +98,12 @@ export function AppShell() {
 
 ## Supported Themes
 
-| Web | Native | Purpose |
-| --- | --- | --- |
-| `light` | `light` | Default bright product UI. |
-| `dark` | `dark` | Dark product UI. |
+| Web             | Native         | Purpose                             |
+| --------------- | -------------- | ----------------------------------- |
+| `light`         | `light`        | Default bright product UI.          |
+| `dark`          | `dark`         | Dark product UI.                    |
 | `high-contrast` | `highContrast` | Higher contrast accessibility mode. |
-| `highContrast` | `highContrast` | Web compatibility alias. |
+| `highContrast`  | `highContrast` | Web compatibility alias.            |
 
 ## Production Guidance
 

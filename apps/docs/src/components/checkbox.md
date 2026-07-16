@@ -4,7 +4,7 @@ Checkbox represents an independent boolean choice. It works for agreements,
 settings, row selection, and mixed selection summaries.
 
 <StorybookFrame
-  id="primitives-checkbox--states"
+  story="checkbox.states"
   title="Checkbox states"
   :height="520"
 />

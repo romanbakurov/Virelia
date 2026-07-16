@@ -4,7 +4,7 @@ RadioGroup presents a visible set of mutually exclusive choices. It is best
 when users benefit from comparing every option before choosing one.
 
 <StorybookFrame
-  id="components-radiogroup--states"
+  story="radioGroup.states"
   title="RadioGroup states"
   :height="520"
 />
@@ -28,12 +28,12 @@ the list is longer, the choice is secondary, or space is limited.
 
 ## Layout Guidance
 
-| Layout | Use For |
-| --- | --- |
-| Vertical | Plan selection, settings, choices with descriptions. |
-| Horizontal | Two or three short labels in compact forms. |
+| Layout         | Use For                                                               |
+| -------------- | --------------------------------------------------------------------- |
+| Vertical       | Plan selection, settings, choices with descriptions.                  |
+| Horizontal     | Two or three short labels in compact forms.                           |
 | Disabled group | Entire unavailable setting controlled by account or permission state. |
-| Disabled item | A specific option that exists but cannot currently be selected. |
+| Disabled item  | A specific option that exists but cannot currently be selected.       |
 
 ## Controlled State
 
@@ -47,7 +47,7 @@ const [plan, setPlan] = useState('pro');
   <Radio value='starter' label='Starter' />
   <Radio value='pro' label='Pro' />
   <Radio value='enterprise' label='Enterprise' />
-</RadioGroup>
+</RadioGroup>;
 ```
 
 ## Real Example: Billing Interval

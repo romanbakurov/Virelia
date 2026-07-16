@@ -4,7 +4,7 @@ Dropdown is for contextual actions: commands that apply to the current object,
 row, account, or page. It is not a form field.
 
 <StorybookFrame
-  id="components-dropdown--with-groups"
+  story="dropdown.groups"
   title="Dropdown with groups"
   :height="420"
 />
@@ -33,13 +33,13 @@ visible all the time. Use Select when the user is choosing a saved value.
 Dropdown uses a flat model. Groups label following entries; they do not own
 nested child arrays.
 
-| Item | Purpose |
-| --- | --- |
-| `item` | Selectable command with `value` and `label`. |
-| `group` | Non-interactive heading for following actions. |
-| `separator` | Visual divider between action clusters. |
-| `danger` | Destructive or high-risk item styling. |
-| `shortcut` | Keyboard command hint for advanced workflows. |
+| Item        | Purpose                                        |
+| ----------- | ---------------------------------------------- |
+| `item`      | Selectable command with `value` and `label`.   |
+| `group`     | Non-interactive heading for following actions. |
+| `separator` | Visual divider between action clusters.        |
+| `danger`    | Destructive or high-risk item styling.         |
+| `shortcut`  | Keyboard command hint for advanced workflows.  |
 
 ## Trigger Guidance
 
@@ -60,7 +60,7 @@ import { Button, Dropdown } from '@vellira-ui/react';
     />
   }
   items={items}
-/>
+/>;
 ```
 
 Native uses `accessibilityLabel` and can also use `accessibilityHint` when the
@@ -72,12 +72,7 @@ Control open state when another surface needs to close the menu, analytics need
 explicit open tracking, or business rules can block opening.
 
 ```tsx
-<Dropdown
-  open={open}
-  onOpenChange={setOpen}
-  label='Actions'
-  items={items}
-/>
+<Dropdown open={open} onOpenChange={setOpen} label='Actions' items={items} />
 ```
 
 ## Real Example: Table Row Actions
@@ -118,7 +113,9 @@ export function ProjectRowActions({ project }) {
           <Modal.Header>Delete {project.name}?</Modal.Header>
           <Modal.Body>This removes the project for every member.</Modal.Body>
           <Modal.Footer>
-            <Button appearance='ghost' color='neutral'>Cancel</Button>
+            <Button appearance='ghost' color='neutral'>
+              Cancel
+            </Button>
             <Button color='danger'>Delete project</Button>
           </Modal.Footer>
         </Modal.Content>

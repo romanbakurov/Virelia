@@ -11,7 +11,7 @@ for the full prop tables:
 - [Native API](https://github.com/vellira-dev/vellira/blob/main/packages/react-native/API.md)
 
 <StorybookFrame
-  id="overview-web--overview"
+  story="overview.web"
   title="Live component overview"
   :height="760"
 />
@@ -68,25 +68,25 @@ for the full prop tables:
 Every component should satisfy the same baseline before it is considered
 production-ready.
 
-| Standard | Expectation |
-| --- | --- |
-| Accessible by default | Visible labels are preferred. Icon-only or custom trigger controls must provide an explicit accessible name. |
-| Token driven | Visual states come from Vellira tokens, not local one-off colors. |
-| Controlled where needed | Form and overlay state can be owned by the app when business logic requires it. |
-| Native semantics | Web uses DOM and ARIA semantics. Native uses React Native roles, labels, hints, and touch behavior. |
-| Stable layout | Loading, validation, and helper content should avoid surprising layout jumps in dense product UI. |
-| Composition first | Components expose slots for icons, helper text, trigger content, and compound sections instead of hard-coded layouts. |
+| Standard                | Expectation                                                                                                           |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Accessible by default   | Visible labels are preferred. Icon-only or custom trigger controls must provide an explicit accessible name.          |
+| Token driven            | Visual states come from Vellira tokens, not local one-off colors.                                                     |
+| Controlled where needed | Form and overlay state can be owned by the app when business logic requires it.                                       |
+| Native semantics        | Web uses DOM and ARIA semantics. Native uses React Native roles, labels, hints, and touch behavior.                   |
+| Stable layout           | Loading, validation, and helper content should avoid surprising layout jumps in dense product UI.                     |
+| Composition first       | Components expose slots for icons, helper text, trigger content, and compound sections instead of hard-coded layouts. |
 
 ## Choosing Components
 
-| Need | Use |
-| --- | --- |
-| Submit, save, delete, navigate, or run a command | [Button](/components/button) |
-| Enter short free-form text | [Input](/components/input) |
-| Toggle an independent option | [Checkbox](/components/checkbox) |
-| Choose one option from a visible short list | [RadioGroup](/components/radio-group) |
-| Choose one option from a compact list | [Select](/components/select) |
-| Open contextual actions | [Dropdown](/components/dropdown) |
-| Move between peer sections | [Tabs](/components/tabs) |
-| Explain an icon or terse label | [Tooltip](/components/tooltip) |
-| Require a focused decision | [Modal](/components/modal) |
+| Need                                             | Use                                   |
+| ------------------------------------------------ | ------------------------------------- |
+| Submit, save, delete, navigate, or run a command | [Button](/components/button)          |
+| Enter short free-form text                       | [Input](/components/input)            |
+| Toggle an independent option                     | [Checkbox](/components/checkbox)      |
+| Choose one option from a visible short list      | [RadioGroup](/components/radio-group) |
+| Choose one option from a compact list            | [Select](/components/select)          |
+| Open contextual actions                          | [Dropdown](/components/dropdown)      |
+| Move between peer sections                       | [Tabs](/components/tabs)              |
+| Explain an icon or terse label                   | [Tooltip](/components/tooltip)        |
+| Require a focused decision                       | [Modal](/components/modal)            |

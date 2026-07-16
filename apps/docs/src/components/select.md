@@ -4,7 +4,7 @@ Select lets users choose one saved value from a compact list. It is a field, not
 an action menu.
 
 <StorybookFrame
-  id="components-select--selection"
+  story="select.selection"
   title="Select interaction"
   :height="420"
 />

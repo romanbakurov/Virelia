@@ -4,7 +4,7 @@ Tabs organize peer sections of the same context. They work best for dense
 product surfaces where switching should be fast and predictable.
 
 <StorybookFrame
-  id="components-tabs--controlled"
+  story="tabs.controlled"
   title="Controlled Tabs"
   :height="420"
 />
@@ -29,11 +29,11 @@ Do not use Tabs for a stepper, a wizard, or unrelated navigation destinations.
 
 ## Appearance
 
-| Appearance | Use For |
-| --- | --- |
-| `default` | General app surfaces. |
-| `underline` | Dense pages, headers, settings, and dashboards. |
-| `pills` | Compact filters or highly visible section switches. |
+| Appearance  | Use For                                             |
+| ----------- | --------------------------------------------------- |
+| `default`   | General app surfaces.                               |
+| `underline` | Dense pages, headers, settings, and dashboards.     |
+| `pills`     | Compact filters or highly visible section switches. |
 
 ## Controlled State
 
@@ -56,7 +56,11 @@ export function AccountSettings() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <Tabs activeIndex={activeTab} onChange={setActiveTab} appearance='underline'>
+    <Tabs
+      activeIndex={activeTab}
+      onChange={setActiveTab}
+      appearance='underline'
+    >
       <Tabs.List>
         <Tabs.Tab index={0}>Profile</Tabs.Tab>
         <Tabs.Tab index={1}>Security</Tabs.Tab>

@@ -5,13 +5,13 @@ enterprise workflows and flexible enough for product surfaces with icons,
 badges, keyboard shortcuts, links, and destructive actions.
 
 <StorybookFrame
-  id="primitives-button--matrix"
+  story="button.matrix"
   title="Button matrix"
   :height="620"
 />
 
 <StorybookFrame
-  id="primitives-button--with-icons"
+  story="button.icons"
   title="Button icons"
   :height="360"
 />
@@ -22,14 +22,14 @@ Use Button for immediate actions: saving, submitting, confirming, opening a
 menu, navigating to a route, or triggering a command. Use a native link when the
 only behavior is inline text navigation inside prose.
 
-| Pattern | Recommended API |
-| --- | --- |
-| Primary product action | `appearance="solid" color="primary"` |
+| Pattern                         | Recommended API                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| Primary product action          | `appearance="solid" color="primary"`                                           |
 | Secondary action near a primary | `appearance="outline" color="neutral"` or `appearance="ghost" color="neutral"` |
-| Low-emphasis toolbar action | `appearance="ghost"` with an icon |
-| Non-blocking success action | `appearance="soft" color="success"` |
-| Destructive intent | `color="danger"` with confirmation when the action is irreversible |
-| Text navigation | `appearance="link"` or `href` when a button should render as navigation |
+| Low-emphasis toolbar action     | `appearance="ghost"` with an icon                                              |
+| Non-blocking success action     | `appearance="soft" color="success"`                                            |
+| Destructive intent              | `color="danger"` with confirmation when the action is irreversible             |
+| Text navigation                 | `appearance="link"` or `href` when a button should render as navigation        |
 
 ## Appearance And Color
 
@@ -72,7 +72,7 @@ import { Search } from '@vellira-ui/icons';
 
 <Button iconStart={<Search />} shortcut='⌘K'>
   Search
-</Button>
+</Button>;
 ```
 
 ### Icon Only
@@ -82,7 +82,7 @@ Icon-only buttons need an accessible name.
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button aria-label='Open command menu' iconOnly iconStart={<Search />} />
+<Button aria-label='Open command menu' iconOnly iconStart={<Search />} />;
 ```
 
 On native, use `accessibilityLabel`.
@@ -90,7 +90,11 @@ On native, use `accessibilityLabel`.
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button accessibilityLabel='Open command menu' iconOnly iconStart={<Search />} />
+<Button
+  accessibilityLabel='Open command menu'
+  iconOnly
+  iconStart={<Search />}
+/>;
 ```
 
 ### Destructive Confirmation

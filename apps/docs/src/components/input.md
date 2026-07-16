@@ -5,7 +5,7 @@ optional adornments. It is the right choice for names, emails, search terms,
 URLs, numbers, and other compact text values.
 
 <StorybookFrame
-  id="primitives-input--validation"
+  story="input.validation"
   title="Input validation"
   :height="420"
 />
@@ -29,22 +29,17 @@ and selection is safer than typing.
 Native Input uses a value callback instead of a DOM event.
 
 ```tsx
-<Input
-  label='Email'
-  type='email'
-  value={email}
-  onChange={setEmail}
-/>
+<Input label='Email' type='email' value={email} onChange={setEmail} />
 ```
 
 ## Field Anatomy
 
-| Part | Guidance |
-| --- | --- |
-| Label | Prefer a visible label over placeholder-only UI. |
-| Description | Use for format, business rule, or persistence hints. |
-| Error | Keep it actionable and specific. |
-| Adornment | Use icons or compact text for context, not long instructions. |
+| Part         | Guidance                                                                 |
+| ------------ | ------------------------------------------------------------------------ |
+| Label        | Prefer a visible label over placeholder-only UI.                         |
+| Description  | Use for format, business rule, or persistence hints.                     |
+| Error        | Keep it actionable and specific.                                         |
+| Adornment    | Use icons or compact text for context, not long instructions.            |
 | Clear action | Use for search, filters, and optional text fields where reset is common. |
 
 ## Validation
