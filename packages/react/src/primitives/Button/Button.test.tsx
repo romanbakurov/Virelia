@@ -220,6 +220,32 @@ describe('Button', () => {
     act(() => root.unmount());
   });
 
+  it('reserves label width when loadingText is provided', () => {
+    const { button, root } = renderButton({
+      children: 'Publish',
+      loadingText: 'Publishing...',
+    });
+
+    const label = button?.querySelector(`.${styles.label}`);
+
+    expect(label?.getAttribute('data-measure')).toBe('Publishing...');
+    expect(button?.textContent).toBe('Publish');
+
+    act(() =>
+      root.render(
+        <Button loading loadingText='Publishing...'>
+          Publish
+        </Button>
+      )
+    );
+
+    const loadingLabel = button?.querySelector(`.${styles.label}`);
+
+    expect(loadingLabel?.getAttribute('data-measure')).toBe('Publish');
+    expect(button?.textContent).toBe('Publishing...');
+    act(() => root.unmount());
+  });
+
   it('renders href buttons as anchors with safe external rel', () => {
     const container = document.createElement('div');
     document.body.append(container);

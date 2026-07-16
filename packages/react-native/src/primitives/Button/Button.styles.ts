@@ -29,6 +29,15 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.button.primary.solid.default.fg,
     },
 
+    labelSlot: {
+      position: 'relative',
+    },
+
+    labelMeasure: {
+      position: 'absolute',
+      opacity: 0,
+    },
+
     spinner: {
       fontSize: 12,
       lineHeight: theme.tokens.typography.lineHeight.md,

@@ -84,6 +84,15 @@ export const Button = forwardRef<
 
     const isDisabled = disabled || loading;
     const content = loading && loadingText ? loadingText : visibleChildren;
+    const labelMeasure =
+      loadingText &&
+      visibleChildren &&
+      !iconOnly &&
+      (typeof visibleChildren === 'string' ||
+        typeof visibleChildren === 'number') &&
+      (typeof loadingText === 'string' || typeof loadingText === 'number')
+        ? String(loading ? visibleChildren : loadingText)
+        : undefined;
     const resolvedRel =
       target === '_blank' && !rel ? 'noreferrer noopener' : rel;
     const resolvedClassName = cn(
@@ -150,7 +159,9 @@ export const Button = forwardRef<
           <span className={styles.icon}>{iconStart}</span>
         )}
         {content && !iconOnly && (
-          <span className={styles.label}>{content}</span>
+          <span className={styles.label} data-measure={labelMeasure}>
+            <span className={styles.labelText}>{content}</span>
+          </span>
         )}
         {badge && !iconOnly && <span className={styles.badge}>{badge}</span>}
         {shortcut && !iconOnly && (

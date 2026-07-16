@@ -1,7 +1,7 @@
 import { cloneElement, useState } from 'react';
 
-import type { PressableProps } from 'react-native';
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import type { LayoutChangeEvent, PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 import { devWarning } from '../../utils/devWarning';
@@ -85,10 +85,17 @@ export function Button({
 
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [labelWidth, setLabelWidth] = useState(0);
 
   const isDisabled = disabled || loading;
   const iconOnly = iconOnlyProp || (!children && Boolean(iconStart || iconEnd));
   const content = loading && loadingText ? loadingText : children;
+  const measureLabel =
+    loadingText && children && !iconOnly
+      ? loading
+        ? children
+        : loadingText
+      : undefined;
 
   devWarning(
     !iconOnly || Boolean(accessibilityLabel),
@@ -122,6 +129,14 @@ export function Button({
       color: iconColor,
       size: resolvedIconSize,
     });
+
+  const handleLabelLayout = (event: LayoutChangeEvent) => {
+    const width = event.nativeEvent.layout.width;
+
+    setLabelWidth((currentWidth) =>
+      width > currentWidth ? width : currentWidth
+    );
+  };
 
   const getInteractionTheme = (pressed: boolean) =>
     isDisabled
@@ -181,18 +196,40 @@ export function Button({
             {!loading && iconStart && renderIcon(iconStart, contentColor)}
 
             {content && !iconOnly && (
-              <Text
-                style={[
-                  styles.text,
-                  {
-                    fontSize: config.fontSize,
-                    color: contentColor,
-                  },
-                  textStyle,
-                ]}
-              >
-                {content}
-              </Text>
+              <View style={styles.labelSlot}>
+                <Text
+                  onLayout={handleLabelLayout}
+                  style={[
+                    styles.text,
+                    labelWidth > 0 && { minWidth: labelWidth },
+                    {
+                      fontSize: config.fontSize,
+                      color: contentColor,
+                    },
+                    textStyle,
+                  ]}
+                >
+                  {content}
+                </Text>
+
+                {measureLabel && (
+                  <Text
+                    accessibilityElementsHidden
+                    importantForAccessibility='no-hide-descendants'
+                    onLayout={handleLabelLayout}
+                    style={[
+                      styles.text,
+                      styles.labelMeasure,
+                      {
+                        fontSize: config.fontSize,
+                      },
+                      textStyle,
+                    ]}
+                  >
+                    {measureLabel}
+                  </Text>
+                )}
+              </View>
             )}
 
             {badge && !iconOnly && (

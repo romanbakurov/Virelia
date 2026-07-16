@@ -1,6 +1,7 @@
+import { type ReactNode, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Download, Filter, Save, Search, Settings } from '@vellira-ui/icons';
-import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
@@ -103,6 +104,20 @@ const storyStyles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 16,
   },
+
+  toolbar: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  panel: {
+    gap: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderRadius: 12,
+  },
 });
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -130,6 +145,67 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     <View style={styles.section}>
       <Text style={styles.subtitle}>{title}</Text>
       {children}
+    </View>
+  );
+}
+
+function DestructiveConfirmationDemo() {
+  const { theme } = useTheme();
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = () => {
+    setDeleting(true);
+    setTimeout(() => {
+      setDeleting(false);
+      setConfirming(false);
+    }, 900);
+  };
+
+  return (
+    <View style={storyStyles.column}>
+      <Button
+        appearance='soft'
+        color='danger'
+        onPress={() => setConfirming(true)}
+      >
+        Delete workspace
+      </Button>
+
+      {confirming && (
+        <View
+          accessibilityLiveRegion='polite'
+          style={[
+            storyStyles.panel,
+            {
+              borderColor: theme.semantic.border.muted,
+              backgroundColor: theme.semantic.surface.default,
+            },
+          ]}
+        >
+          <Text style={{ color: theme.semantic.text.secondary }}>
+            This action removes workspace settings and cannot be undone.
+          </Text>
+          <View style={storyStyles.row}>
+            <Button
+              appearance='ghost'
+              color='neutral'
+              disabled={deleting}
+              onPress={() => setConfirming(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color='danger'
+              loading={deleting}
+              loadingText='Deleting...'
+              onPress={handleDelete}
+            >
+              Delete
+            </Button>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -251,6 +327,58 @@ export const Command: Story = {
   ),
 };
 
+export const DestructiveConfirmation: Story = {
+  render: () => (
+    <Section title='DestructiveConfirmation'>
+      <DestructiveConfirmationDemo />
+    </Section>
+  ),
+};
+
+export const ToolbarButtonGroup: Story = {
+  render: () => (
+    <Section title='ToolbarButtonGroup'>
+      <View style={storyStyles.column}>
+        <View accessibilityLabel='Editor toolbar' style={storyStyles.toolbar}>
+          <Button
+            accessibilityLabel='Save'
+            appearance='ghost'
+            color='neutral'
+            iconOnly
+            iconStart={<Save />}
+          />
+          <Button
+            appearance='ghost'
+            color='neutral'
+            iconStart={<Search />}
+            shortcut='⌘K'
+          >
+            Search
+          </Button>
+          <Button appearance='ghost' color='neutral' iconStart={<Filter />}>
+            Filter
+          </Button>
+          <Button appearance='soft' color='danger'>
+            Delete
+          </Button>
+        </View>
+
+        <View accessibilityLabel='View mode' style={storyStyles.toolbar}>
+          <Button appearance='solid' color='primary' shape='rounded'>
+            Preview
+          </Button>
+          <Button appearance='outline' color='neutral' shape='rounded'>
+            Code
+          </Button>
+          <Button appearance='outline' color='neutral' shape='rounded'>
+            Diff
+          </Button>
+        </View>
+      </View>
+    </Section>
+  ),
+};
+
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
@@ -271,6 +399,10 @@ export const States: Story = {
         <Button loading>Loading</Button>
         <Button loading loadingText='Saving...'>
           Save
+        </Button>
+        <Button loadingText='Publishing...'>Publish</Button>
+        <Button loading loadingText='Publishing...'>
+          Publish
         </Button>
       </View>
 

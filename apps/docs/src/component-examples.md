@@ -195,19 +195,65 @@ export function FormExample() {
 ### Button Actions
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
-import { Button } from '@vellira-ui/react';
+import { Filter, Save, Search } from '@vellira-ui/icons';
+import { Button, Modal } from '@vellira-ui/react';
+import { useState } from 'react';
 
 export function ButtonActions() {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
       <Button color='primary' appearance='solid'>
         Save
       </Button>
-      <Button loading loadingText='Saving...'>
-        Save
+
+      <Button loadingText='Saving...'>Save</Button>
+
+      <Button
+        aria-label='Save'
+        appearance='ghost'
+        iconOnly
+        iconStart={<Save />}
+      />
+
+      <Button appearance='ghost' iconStart={<Filter />}>
+        Filter
       </Button>
+
       <Button aria-label='Search' iconOnly iconStart={<Search />} />
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onClick={() => setConfirming(true)}
+      >
+        Delete workspace
+      </Button>
+
+      <Modal isOpen={confirming} onClose={() => setConfirming(false)}>
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onClick={() => setConfirming(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onClick={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

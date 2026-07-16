@@ -107,25 +107,75 @@ native styling hooks through `style` and `textStyle`. Use Vellira icon elements
 for `iconStart` and `iconEnd`; Button injects the active icon color and size.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
+import { Filter, Save, Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
       <Button color='primary' appearance='solid' onPress={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
       <Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />
+
+      <View accessibilityLabel='Editor toolbar'>
+        <Button
+          accessibilityLabel='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+      </View>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onPress={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      {confirmingDelete ? (
+        <View accessibilityLiveRegion='polite'>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onPress={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onPress={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </View>
+      ) : null}
     </>
   );
 }
 ```
+
+Pass `loadingText` before the loading state is active when the loading label is
+longer than the default label. Button measures both labels and keeps the text
+slot stable as `loading` changes.
 
 ## FormField
 

@@ -140,9 +140,19 @@ $button-appearances: solid, outline, ghost, soft, link;
 }
 
 .label {
-  display: inline-flex;
+  display: inline-grid;
   align-items: center;
   min-width: 0;
+}
+
+.labelText,
+.label::after {
+  grid-area: 1 / 1;
+}
+
+.label[data-measure]::after {
+  visibility: hidden;
+  content: attr(data-measure);
 }
 
 .icon {

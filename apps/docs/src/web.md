@@ -103,25 +103,79 @@ accepts standard DOM attributes such as `className`, `onClick`, and
 `aria-label`.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
-import { Button } from '@vellira-ui/react';
+import { Filter, Save, Search } from '@vellira-ui/icons';
+import { Button, Modal } from '@vellira-ui/react';
+import { useState } from 'react';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
       <Button color='primary' appearance='solid' onClick={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
       <Button aria-label='Search' iconOnly iconStart={<Search />} />
+
+      <div role='toolbar' aria-label='Editor toolbar'>
+        <Button
+          aria-label='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+      </div>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onClick={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      <Modal
+        isOpen={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+      >
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onClick={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onClick={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
 ```
+
+Pass `loadingText` even in the idle render when the loading label is longer than
+the default label. Button reserves that label width and avoids horizontal layout
+shift when `loading` turns on.
 
 ## Controlled and Uncontrolled
 

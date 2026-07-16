@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Filter, Save, Search } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
@@ -219,12 +221,87 @@ const sectionStyle = {
   background: 'var(--surface-subtle)',
 } satisfies CSSProperties;
 
+const panelStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 12,
+  padding: 16,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-md)',
+  background: 'var(--surface-default)',
+} satisfies CSSProperties;
+
+const panelTextStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 14,
+  lineHeight: 1.5,
+} satisfies CSSProperties;
+
+const buttonGroupStyle = {
+  display: 'inline-flex',
+  flexWrap: 'wrap',
+  gap: 8,
+  alignItems: 'center',
+} satisfies CSSProperties;
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section style={sectionStyle}>
       <h3 style={subtitleStyle}>{title}</h3>
       {children}
     </section>
+  );
+}
+
+function DestructiveConfirmationDemo() {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = () => {
+    setDeleting(true);
+    window.setTimeout(() => {
+      setDeleting(false);
+      setConfirming(false);
+    }, 900);
+  };
+
+  return (
+    <div style={stackStyle}>
+      <Button
+        appearance='soft'
+        color='danger'
+        onClick={() => setConfirming(true)}
+      >
+        Delete workspace
+      </Button>
+
+      {confirming && (
+        <div aria-live='polite' role='group' style={panelStyle}>
+          <p style={panelTextStyle}>
+            This action removes workspace settings and cannot be undone.
+          </p>
+          <div style={rowStyle}>
+            <Button
+              appearance='ghost'
+              color='neutral'
+              disabled={deleting}
+              onClick={() => setConfirming(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color='danger'
+              loading={deleting}
+              loadingText='Deleting...'
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -435,6 +512,62 @@ export const Command: Story = {
   ),
 };
 
+export const DestructiveConfirmation: Story = {
+  render: () => (
+    <Section title='DestructiveConfirmation'>
+      <DestructiveConfirmationDemo />
+    </Section>
+  ),
+};
+
+export const ToolbarButtonGroup: Story = {
+  render: () => (
+    <Section title='ToolbarButtonGroup'>
+      <div style={stackStyle}>
+        <div
+          aria-label='Editor toolbar'
+          role='toolbar'
+          style={buttonGroupStyle}
+        >
+          <Button
+            aria-label='Save'
+            appearance='ghost'
+            color='neutral'
+            iconOnly
+            iconStart={<Save />}
+          />
+          <Button
+            appearance='ghost'
+            color='neutral'
+            iconStart={<Search />}
+            shortcut='⌘K'
+          >
+            Search
+          </Button>
+          <Button appearance='ghost' color='neutral' iconStart={<Filter />}>
+            Filter
+          </Button>
+          <Button appearance='soft' color='danger'>
+            Delete
+          </Button>
+        </div>
+
+        <div aria-label='View mode' role='group' style={buttonGroupStyle}>
+          <Button appearance='solid' color='primary' shape='rounded'>
+            Preview
+          </Button>
+          <Button appearance='outline' color='neutral' shape='rounded'>
+            Code
+          </Button>
+          <Button appearance='outline' color='neutral' shape='rounded'>
+            Diff
+          </Button>
+        </div>
+      </div>
+    </Section>
+  ),
+};
+
 export const LinkButton: Story = {
   args: {
     appearance: 'link',
@@ -491,6 +624,12 @@ export const Loading: Story = {
         </Button>
         <Button {...args} loading loadingText='Saving...'>
           Save
+        </Button>
+        <Button {...args} loadingText='Publishing...'>
+          Publish
+        </Button>
+        <Button {...args} loading loadingText='Publishing...'>
+          Publish
         </Button>
         <Button {...args} loading iconStart={<Save />}>
           Uploading
