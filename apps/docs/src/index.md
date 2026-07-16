@@ -10,8 +10,8 @@ hero:
       text: Get Started
       link: /getting-started
     - theme: alt
-      text: Component
-      link: /component-examples
+      text: Components
+      link: /components/
     - theme: alt
       text: GitHub
       link: https://github.com/vellira-dev/vellira
@@ -33,6 +33,10 @@ platform-specific.
   <a class="docs-card" href="/component-examples">
     <strong>Component coverage</strong>
     <span>Button, Input, Checkbox, RadioGroup, Select, Dropdown, Tabs, Tooltip, and Modal.</span>
+  </a>
+  <a class="docs-card" href="/components/">
+    <strong>Premium component docs</strong>
+    <span>Usage guidance, accessibility contracts, platform notes, and production patterns for every component.</span>
   </a>
   <a class="docs-card" href="/getting-started">
     <strong>Fast adoption</strong>
@@ -116,7 +120,8 @@ Use the docs as the main path through the system.
 | Goal                           | Page                                      |
 | ------------------------------ | ----------------------------------------- |
 | Install and render a component | [Quick Start](/getting-started)           |
-| Browse component               | [Component](/component-examples)          |
+| Browse component               | [Components](/components/)                |
+| Compare visual states          | [Component Overview](/component-examples) |
 | Understand tokens              | [Theme Architecture](/theme-architecture) |
 | Prepare for production         | [Production](/production)                 |
 | Use React DOM                  | [Web](/web)                               |

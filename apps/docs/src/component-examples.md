@@ -5,6 +5,9 @@ into the renderer-specific API documentation.
 
 Use this page as a visual overview of the component library.
 
+For usage guidance, accessibility contracts, and platform notes, use the
+[component documentation](/components/).
+
 > 💡 Looking for interactive examples?
 >
 > Open Storybook →
