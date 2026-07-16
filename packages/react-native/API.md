@@ -320,6 +320,11 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 
 <!-- api-docgen:end native.RadioProps.RadioProps -->
 
+`RadioGroup color` sets the default selected color for child radios. Individual
+`Radio` items can override it with their own `color`. Use `icon` on `Radio`
+only when the default selected dot should be replaced by a product-specific
+indicator.
+
 ## Select
 
 Single-selection native dropdown field.
