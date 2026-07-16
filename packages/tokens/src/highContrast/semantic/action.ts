@@ -87,17 +87,17 @@ export const action = {
 
   danger: {
     default: {
-      bg: colors.error[500],
+      bg: colors.error[600],
       fg: colors.mono[50],
       border: colors.mono[50],
     },
     hover: {
-      bg: colors.error[400],
+      bg: colors.error[500],
       fg: colors.mono[950],
       border: colors.warning[300],
     },
     active: {
-      bg: colors.error[600],
+      bg: colors.error[700],
       fg: colors.mono[50],
       border: colors.warning[300],
     },
