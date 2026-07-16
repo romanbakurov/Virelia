@@ -614,6 +614,28 @@ function WebComponentsOverview() {
           </div>
 
           <div style={groupStyle}>
+            <h3 style={subtitleStyle}>Colors</h3>
+            <div style={rowStyle}>
+              <Checkbox label='Primary' color='primary' defaultChecked />
+              <Checkbox label='Success' color='success' defaultChecked />
+              <Checkbox label='Warning' color='warning' defaultChecked />
+              <Checkbox label='Danger' color='danger' defaultChecked />
+            </div>
+          </div>
+
+          <div style={groupStyle}>
+            <h3 style={subtitleStyle}>Label position</h3>
+            <div style={{ display: 'grid', gap: 12, maxWidth: 320 }}>
+              <Checkbox label='Label at end' labelPosition='end' />
+              <Checkbox
+                label='Label at start'
+                labelPosition='start'
+                defaultChecked
+              />
+            </div>
+          </div>
+
+          <div style={groupStyle}>
             <h3 style={subtitleStyle}>Sizes</h3>
             <div style={rowStyle}>
               <Checkbox label='Small' size='sm' />

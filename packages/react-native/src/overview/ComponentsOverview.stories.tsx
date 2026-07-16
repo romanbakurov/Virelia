@@ -396,6 +396,42 @@ function NativeComponentsOverview() {
                 { color: theme.semantic.text.secondary },
               ]}
             >
+              Colors
+            </Text>
+            <View style={styles.row}>
+              <Checkbox label='Primary' color='primary' defaultChecked />
+              <Checkbox label='Success' color='success' defaultChecked />
+              <Checkbox label='Warning' color='warning' defaultChecked />
+              <Checkbox label='Danger' color='danger' defaultChecked />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Label position
+            </Text>
+            <View style={styles.group}>
+              <Checkbox label='Label at end' labelPosition='end' />
+              <Checkbox
+                label='Label at start'
+                labelPosition='start'
+                defaultChecked
+              />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
               Sizes
             </Text>
             <Input label='Small' size='sm' placeholder='Small input' />
