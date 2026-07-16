@@ -56,7 +56,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     shortcut: {
-      opacity: 0.72,
+      opacity: 0.8,
       fontSize: 12,
     },
 
