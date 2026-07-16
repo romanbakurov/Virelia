@@ -107,7 +107,7 @@ describe('Native Button', () => {
   it('warns when icon-only button has no accessibilityLabel', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
-    render(<Button leftIcon={<Text>Icon</Text>} />);
+    render(<Button iconStart={<Text>Icon</Text>} />);
 
     expect(warn).toHaveBeenCalledWith(
       'Button: icon-only buttons must provide an accessibilityLabel.'
@@ -122,7 +122,7 @@ describe('Native Button', () => {
     vi.stubGlobal('__DEV__', false);
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
-    render(<Button leftIcon={<Text>Icon</Text>} />);
+    render(<Button iconStart={<Text>Icon</Text>} />);
 
     expect(warn).not.toHaveBeenCalled();
   });
@@ -134,7 +134,7 @@ describe('Native Button', () => {
         accessibilityLabel='Search'
         fullWidth
         iconOnly
-        leftIcon={<Text>Icon</Text>}
+        iconStart={<Text>Icon</Text>}
       >
         Search
       </Button>
@@ -154,14 +154,14 @@ describe('Native Button', () => {
   it('passes color and size to left and right icons', () => {
     const iconColor =
       nativeThemes.light.components.button.primary.solid.default.fg;
-    const leftIcon = (
+    const iconStart = (
       <TestIcon testID='left-icon' />
     ) satisfies ButtonIconElement;
-    const rightIcon = (
+    const iconEnd = (
       <TestIcon testID='right-icon' />
     ) satisfies ButtonIconElement;
     const { container, unmount } = render(
-      <Button iconSize={18} leftIcon={leftIcon} rightIcon={rightIcon}>
+      <Button iconSize={18} iconStart={iconStart} iconEnd={iconEnd}>
         Save
       </Button>
     );

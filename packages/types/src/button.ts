@@ -1,11 +1,14 @@
 export type ButtonSize = 'sm' | 'md' | 'lg';
-export type ButtonColor = 'primary' | 'secondary' | 'close' | 'danger';
-export type ButtonVariant = 'solid' | 'outline' | 'ghost';
+export type ButtonColor =
+  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+export type ButtonAppearance = 'solid' | 'outline' | 'ghost' | 'soft' | 'link';
+export type ButtonShape = 'square' | 'rounded' | 'pill';
 
 export interface BaseButtonProps {
   color?: ButtonColor;
-  variant?: ButtonVariant;
+  appearance?: ButtonAppearance;
   size?: ButtonSize;
+  shape?: ButtonShape;
   fullWidth?: boolean;
   loading?: boolean;
   loadingText?: string;

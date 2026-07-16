@@ -47,7 +47,7 @@ export function AccountPanel() {
             { label: 'Viewer', value: 'viewer' },
           ]}
         />
-        <Button color='primary' variant='solid'>
+        <Button color='primary' appearance='solid'>
           Save changes
         </Button>
       </Tabs.Panel>
@@ -65,7 +65,7 @@ generated reference lives in
 
 | Component    | Core props                                                                                       | State model                   |
 | ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`                            | disabled, loading             |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                | disabled, loading             |
 | `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
 | `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
@@ -109,7 +109,7 @@ import { Button } from '@vellira-ui/react';
 export function ButtonExamples() {
   return (
     <>
-      <Button color='primary' variant='solid' onClick={handleSave}>
+      <Button color='primary' appearance='solid' onClick={handleSave}>
         Save
       </Button>
 
@@ -117,7 +117,7 @@ export function ButtonExamples() {
         Save
       </Button>
 
-      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+      <Button aria-label='Search' iconOnly iconStart={<Search />} />
     </>
   );
 }

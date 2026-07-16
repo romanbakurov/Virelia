@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Filter, Save, Search } from '@vellira-ui/icons';
+import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
 import { Button } from '../Button';
@@ -20,11 +21,13 @@ const meta = {
 Clickable action primitive for web interfaces.
 
 **Features**
-- Colors: primary, secondary, close, and danger
-- Variants: solid, outline, and ghost
+- Colors: primary, neutral, success, warning, and danger
+- Appearances: solid, outline, ghost, soft, and link
+- Shapes: square, rounded, and pill
 - Sizes: sm, md, and lg
 - Disabled, loading, icon-only, and full-width states
-- Left and right icon support
+- Start and end icon support
+- Badge, shortcut, tooltip, spinner, and anchor rendering support
 
 ### Accessibility
 
@@ -37,7 +40,7 @@ Correct usage:
   Save changes
 </Button>
 
-<Button aria-label='Search' leftIcon={<Search />} />
+<Button aria-label='Search' iconStart={<Search />} />
 \`\`\`
 `,
       },
@@ -46,7 +49,7 @@ Correct usage:
   args: {
     children: 'Button',
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     disabled: false,
     loading: false,
@@ -57,19 +60,30 @@ Correct usage:
     color: {
       description: 'Button color.',
       control: 'select',
-      options: ['primary', 'secondary', 'close', 'danger'],
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
       table: {
-        type: { summary: `'primary' | 'secondary' | 'close' | 'danger'` },
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
         defaultValue: { summary: 'primary' },
       },
     },
-    variant: {
-      description: 'Button visual variant.',
+    appearance: {
+      description: 'Button visual appearance.',
       control: 'select',
-      options: ['solid', 'outline', 'ghost'],
+      options: ['solid', 'outline', 'ghost', 'soft', 'link'],
       table: {
-        type: { summary: `'solid' | 'outline' | 'ghost'` },
+        type: { summary: `'solid' | 'outline' | 'ghost' | 'soft' | 'link'` },
         defaultValue: { summary: 'solid' },
+      },
+    },
+    shape: {
+      description: 'Button corner shape.',
+      control: 'radio',
+      options: ['square', 'rounded', 'pill'],
+      table: {
+        type: { summary: `'square' | 'rounded' | 'pill'` },
+        defaultValue: { summary: 'pill' },
       },
     },
     size: {
@@ -143,14 +157,14 @@ Correct usage:
         type: { summary: 'MouseEventHandler<HTMLButtonElement>' },
       },
     },
-    leftIcon: {
+    iconStart: {
       description: 'Icon rendered before the button content.',
       control: false,
       table: {
         type: { summary: 'ReactNode' },
       },
     },
-    rightIcon: {
+    iconEnd: {
       description: 'Icon rendered after the button content.',
       control: false,
       table: {
@@ -218,10 +232,10 @@ export const Basic: Story = {
   args: {
     children: 'Download',
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     'aria-label': 'Download',
-    leftIcon: <Download />,
+    iconStart: <Download />,
   },
   render: (args) => (
     <Section title='Basic'>
@@ -234,7 +248,7 @@ export const Basic: Story = {
 
 export const Colors: Story = {
   args: {
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
   },
   render: (args) => (
@@ -243,11 +257,14 @@ export const Colors: Story = {
         <Button {...args} color='primary'>
           Primary
         </Button>
-        <Button {...args} color='secondary'>
-          Secondary
+        <Button {...args} color='neutral'>
+          Neutral
         </Button>
-        <Button {...args} color='close'>
-          Close
+        <Button {...args} color='success'>
+          Success
+        </Button>
+        <Button {...args} color='warning'>
+          Warning
         </Button>
         <Button {...args} color='danger'>
           Danger
@@ -257,22 +274,28 @@ export const Colors: Story = {
   ),
 };
 
-export const Variants: Story = {
+export const Appearances: Story = {
   args: {
     color: 'primary',
     size: 'md',
   },
   render: (args) => (
-    <Section title='Variants'>
+    <Section title='Appearances'>
       <div style={rowStyle}>
-        <Button {...args} variant='solid'>
+        <Button {...args} appearance='solid'>
           Solid
         </Button>
-        <Button {...args} variant='outline'>
+        <Button {...args} appearance='outline'>
           Outline
         </Button>
-        <Button {...args} variant='ghost'>
+        <Button {...args} appearance='ghost'>
           Ghost
+        </Button>
+        <Button {...args} appearance='soft'>
+          Soft
+        </Button>
+        <Button {...args} appearance='link'>
+          Link
         </Button>
       </div>
     </Section>
@@ -284,22 +307,28 @@ export const Matrix: Story = {
     size: 'md',
   },
   render: (args) => {
-    const colors = ['primary', 'secondary', 'close', 'danger'] as const;
-    const variants = ['solid', 'outline', 'ghost'] as const;
+    const colors = [
+      'primary',
+      'neutral',
+      'success',
+      'warning',
+      'danger',
+    ] as const;
+    const appearances = ['solid', 'outline', 'ghost', 'soft', 'link'] as const;
 
     return (
       <Section title='Matrix'>
         <div style={stackStyle}>
           {colors.map((color) => (
             <div key={color} style={rowStyle}>
-              {variants.map((variant) => (
+              {appearances.map((appearance) => (
                 <Button
-                  key={`${color}-${variant}`}
+                  key={`${color}-${appearance}`}
                   {...args}
                   color={color}
-                  variant={variant}
+                  appearance={appearance}
                 >
-                  {color} {variant}
+                  {color} {appearance}
                 </Button>
               ))}
             </div>
@@ -313,7 +342,7 @@ export const Matrix: Story = {
 export const Sizes: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
   },
   render: (args) => (
     <Section title='Sizes'>
@@ -332,26 +361,95 @@ export const Sizes: Story = {
   ),
 };
 
+export const Shapes: Story = {
+  args: {
+    appearance: 'solid',
+    color: 'primary',
+    size: 'md',
+  },
+  render: (args) => (
+    <Section title='Shapes'>
+      <div style={rowStyle}>
+        <Button {...args} shape='square'>
+          Square
+        </Button>
+        <Button {...args} shape='rounded'>
+          Rounded
+        </Button>
+        <Button {...args} shape='pill'>
+          Pill
+        </Button>
+      </div>
+    </Section>
+  ),
+};
+
 export const WithIcons: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
   },
   render: (args) => (
     <Section title='WithIcons'>
       <div style={stackStyle}>
         <div style={rowStyle}>
-          <Button {...args} leftIcon={<Download />}>
+          <Button {...args} iconStart={<Download />}>
             Left icon
           </Button>
-          <Button {...args} rightIcon={<Download />}>
-            Right icon
+          <Button {...args} iconEnd={<Download />}>
+            End icon
           </Button>
-          <Button {...args} leftIcon={<Save />} rightIcon={<Download />}>
+          <Button {...args} iconStart={<Save />} iconEnd={<Download />}>
             Both icons
           </Button>
         </div>
+      </div>
+    </Section>
+  ),
+};
+
+export const Command: Story = {
+  args: {
+    appearance: 'soft',
+    color: 'neutral',
+    size: 'md',
+  },
+  render: (args) => (
+    <Section title='Command'>
+      <div style={rowStyle}>
+        <Button
+          {...args}
+          badge='4'
+          iconStart={<Search />}
+          shortcut='⌘K'
+          tooltip='Open command menu'
+        >
+          Command menu
+        </Button>
+        <Button {...args} color='danger' iconStart={<Filter />} shortcut='⌘⌫'>
+          Clear filters
+        </Button>
+      </div>
+    </Section>
+  ),
+};
+
+export const LinkButton: Story = {
+  args: {
+    appearance: 'link',
+    color: 'primary',
+    size: 'md',
+  },
+  render: (args) => (
+    <Section title='LinkButton'>
+      <div style={rowStyle}>
+        <Button {...args} href='https://docs.vellira.dev' target='_blank'>
+          Open docs
+        </Button>
+        <Button {...args} appearance='outline' href='/download' download>
+          Download
+        </Button>
       </div>
     </Section>
   ),
@@ -363,7 +461,7 @@ export const IconOnly: Story = {
   },
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     iconOnly: true,
     'aria-label': 'Filter',
@@ -371,7 +469,7 @@ export const IconOnly: Story = {
   render: (args) => (
     <Section title='IconOnly'>
       <div style={rowStyle}>
-        <Button {...args} leftIcon={<Filter />}>
+        <Button {...args} iconStart={<Filter />}>
           Filter
         </Button>
       </div>
@@ -382,7 +480,7 @@ export const IconOnly: Story = {
 export const Loading: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
   },
   render: (args) => (
@@ -394,7 +492,7 @@ export const Loading: Story = {
         <Button {...args} loading loadingText='Saving...'>
           Save
         </Button>
-        <Button {...args} loading leftIcon={<Save />}>
+        <Button {...args} loading iconStart={<Save />}>
           Uploading
         </Button>
       </div>
@@ -405,7 +503,7 @@ export const Loading: Story = {
 export const Disabled: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     disabled: true,
     children: 'Disabled',
@@ -422,7 +520,7 @@ export const Disabled: Story = {
 export const FullWidth: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
   },
   render: (args) => (
@@ -439,7 +537,7 @@ export const FullWidth: Story = {
 export const ButtonTypes: Story = {
   args: {
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
   },
   render: (args) => (
@@ -467,22 +565,22 @@ export const AccessibleIconActions: Story = {
           aria-label='Search'
           color='primary'
           iconOnly
-          leftIcon={<Search />}
-          variant='ghost'
+          iconStart={<Search />}
+          appearance='ghost'
         />
         <Button
           aria-label='Filter results'
-          color='secondary'
+          color='neutral'
           iconOnly
-          leftIcon={<Filter />}
-          variant='outline'
+          iconStart={<Filter />}
+          appearance='outline'
         />
         <Button
           aria-label='Save'
           color='primary'
           iconOnly
-          leftIcon={<Save />}
-          variant='solid'
+          iconStart={<Save />}
+          appearance='solid'
         />
       </div>
     </Section>

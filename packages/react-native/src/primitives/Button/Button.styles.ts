@@ -12,7 +12,6 @@ export const createStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 8,
-      borderRadius: theme.tokens.radius.md,
       borderWidth: 1,
     },
 
@@ -33,6 +32,23 @@ export const createStyles = (theme: NativeTheme) =>
     spinner: {
       fontSize: 12,
       lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    badge: {
+      minWidth: 18,
+      height: 18,
+      paddingHorizontal: 6,
+      borderRadius: theme.tokens.radius.full,
+      overflow: 'hidden',
+      textAlign: 'center',
+      fontSize: 11,
+      lineHeight: 18,
+      fontWeight: fontWeight(theme.tokens.typography.weight.medium),
+    },
+
+    shortcut: {
+      opacity: 0.72,
+      fontSize: 12,
     },
 
     disabled: {

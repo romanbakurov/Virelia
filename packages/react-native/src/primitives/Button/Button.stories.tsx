@@ -23,19 +23,20 @@ Button triggers an action initiated by the user.
 
 **Features**
 
-- Solid, outline and ghost variants
-- Primary, secondary, close and danger colors
+- Solid, outline, ghost, soft and link appearances
+- Primary, neutral, success, warning and danger colors
+- Square, rounded and pill shapes
 - Sizes: sm, md and lg
 - Loading state
 - Disabled state
 - Full width support
-- Left and right icons
+- Start and end icons
 - Icon-only mode
 - Accessibility support
 
 ### Usage
 
-Use Button for primary and secondary actions throughout the application.
+Use Button for primary, neutral and semantic actions throughout the application.
 
 \`\`\`tsx
 <Button
@@ -52,7 +53,7 @@ Use Button for primary and secondary actions throughout the application.
   args: {
     children: 'Button',
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     disabled: false,
     loading: false,
@@ -62,11 +63,15 @@ Use Button for primary and secondary actions throughout the application.
   argTypes: {
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'close', 'danger'],
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
     },
-    variant: {
+    appearance: {
       control: 'select',
-      options: ['solid', 'outline', 'ghost'],
+      options: ['solid', 'outline', 'ghost', 'soft', 'link'],
+    },
+    shape: {
+      control: 'radio',
+      options: ['square', 'rounded', 'pill'],
     },
     size: {
       control: 'radio',
@@ -79,8 +84,8 @@ Use Button for primary and secondary actions throughout the application.
     iconOnly: { control: 'boolean' },
     accessibilityLabel: { control: 'text' },
     onPress: { action: 'pressed' },
-    leftIcon: { control: false },
-    rightIcon: { control: false },
+    iconStart: { control: false },
+    iconEnd: { control: false },
   },
 };
 
@@ -133,10 +138,10 @@ export const Basic: Story = {
   args: {
     children: 'Download',
     color: 'primary',
-    variant: 'solid',
+    appearance: 'solid',
     size: 'md',
     accessibilityLabel: 'Download',
-    leftIcon: <Download />,
+    iconStart: <Download />,
   },
   render: (args) => (
     <Section title='Basic'>
@@ -152,59 +157,94 @@ export const Colors: Story = {
     <Section title='Colors'>
       <View style={storyStyles.column}>
         <Button color='primary'>Primary</Button>
-        <Button color='secondary'>Secondary</Button>
-        <Button color='close'>Close</Button>
+        <Button color='neutral'>Neutral</Button>
+        <Button color='success'>Success</Button>
+        <Button color='warning'>Warning</Button>
         <Button color='danger'>Danger</Button>
       </View>
     </Section>
   ),
 };
 
-export const Variants: Story = {
+export const Appearances: Story = {
   render: () => (
-    <Section title='Variants'>
+    <Section title='Appearances'>
       <View style={storyStyles.column}>
-        <Button color='primary' variant='solid'>
-          Primary solid
-        </Button>
-        <Button color='secondary' variant='solid'>
-          Secondary solid
-        </Button>
-        <Button color='close' variant='solid'>
-          Close solid
-        </Button>
-        <Button color='danger' variant='solid'>
-          Danger solid
-        </Button>
+        <Button appearance='solid'>Solid</Button>
+        <Button appearance='outline'>Outline</Button>
+        <Button appearance='ghost'>Ghost</Button>
+        <Button appearance='soft'>Soft</Button>
+        <Button appearance='link'>Link</Button>
       </View>
+    </Section>
+  ),
+};
 
+export const Matrix: Story = {
+  render: () => {
+    const colors = [
+      'primary',
+      'neutral',
+      'success',
+      'warning',
+      'danger',
+    ] as const;
+    const appearances = ['solid', 'outline', 'ghost', 'soft', 'link'] as const;
+
+    return (
+      <Section title='Matrix'>
+        <View style={storyStyles.column}>
+          {colors.map((color) => (
+            <View key={color} style={storyStyles.row}>
+              {appearances.map((appearance) => (
+                <Button
+                  key={`${color}-${appearance}`}
+                  appearance={appearance}
+                  color={color}
+                >
+                  {color} {appearance}
+                </Button>
+              ))}
+            </View>
+          ))}
+        </View>
+      </Section>
+    );
+  },
+};
+
+export const Shapes: Story = {
+  render: () => (
+    <Section title='Shapes'>
       <View style={storyStyles.column}>
-        <Button color='primary' variant='outline'>
-          Primary outline
-        </Button>
-        <Button color='secondary' variant='outline'>
-          Secondary outline
-        </Button>
-        <Button color='close' variant='outline'>
-          Close outline
-        </Button>
-        <Button color='danger' variant='outline'>
-          Danger outline
-        </Button>
+        <Button shape='square'>Square</Button>
+        <Button shape='rounded'>Rounded</Button>
+        <Button shape='pill'>Pill</Button>
       </View>
+    </Section>
+  ),
+};
 
+export const Command: Story = {
+  render: () => (
+    <Section title='Command'>
       <View style={storyStyles.column}>
-        <Button color='primary' variant='ghost'>
-          Primary ghost
+        <Button
+          appearance='soft'
+          badge='4'
+          color='neutral'
+          iconStart={<Search />}
+          shortcut='⌘K'
+        >
+          Command menu
         </Button>
-        <Button color='secondary' variant='ghost'>
-          Secondary ghost
-        </Button>
-        <Button color='close' variant='ghost'>
-          Close ghost
-        </Button>
-        <Button color='danger' variant='ghost'>
-          Danger ghost
+        <Button
+          appearance='ghost'
+          color='danger'
+          iconStart={<Filter />}
+          shortcut='⌘⌫'
+        >
+          Clear filters
         </Button>
       </View>
     </Section>
@@ -245,9 +285,9 @@ export const WithIcons: Story = {
   render: () => (
     <Section title='WithIcons'>
       <View style={storyStyles.column}>
-        <Button leftIcon={<Search />}>Left icon</Button>
-        <Button rightIcon={<Search />}>Right icon</Button>
-        <Button leftIcon={<Search />} rightIcon={<Search />}>
+        <Button iconStart={<Search />}>Start icon</Button>
+        <Button iconEnd={<Search />}>End icon</Button>
+        <Button iconStart={<Search />} iconEnd={<Search />}>
           Both icons
         </Button>
       </View>
@@ -258,19 +298,19 @@ export const WithIcons: Story = {
 export const IconOnly: Story = {
   args: {
     iconOnly: true,
-    leftIcon: <Search />,
+    iconStart: <Search />,
     accessibilityLabel: 'Search',
   },
   render: () => (
     <Section title='IconOnly'>
       <View style={storyStyles.row}>
-        <Button iconOnly leftIcon={<Search />} accessibilityLabel='Search'>
+        <Button iconOnly iconStart={<Search />} accessibilityLabel='Search'>
           Search
         </Button>
-        <Button iconOnly leftIcon={<Settings />} accessibilityLabel='Settings'>
+        <Button iconOnly iconStart={<Settings />} accessibilityLabel='Settings'>
           Settings
         </Button>
-        <Button iconOnly leftIcon={<Download />} accessibilityLabel='Download'>
+        <Button iconOnly iconStart={<Download />} accessibilityLabel='Download'>
           Download
         </Button>
       </View>
@@ -286,22 +326,22 @@ export const AccessibleIconActions: Story = {
           accessibilityLabel='Search'
           color='primary'
           iconOnly
-          leftIcon={<Search />}
-          variant='ghost'
+          iconStart={<Search />}
+          appearance='ghost'
         />
         <Button
           accessibilityLabel='Filter results'
-          color='secondary'
+          color='neutral'
           iconOnly
-          leftIcon={<Filter />}
-          variant='outline'
+          iconStart={<Filter />}
+          appearance='outline'
         />
         <Button
           accessibilityLabel='Save'
           color='primary'
           iconOnly
-          leftIcon={<Save />}
-          variant='solid'
+          iconStart={<Save />}
+          appearance='solid'
         />
       </View>
     </Section>

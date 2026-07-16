@@ -46,7 +46,9 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 
 | Type                | Values                                                                      |
 | ------------------- | --------------------------------------------------------------------------- |
-| `ButtonColor`       | `'primary'`, `'secondary'`, `'close'`, `'danger'`                           |
+| `ButtonAppearance`  | `'solid'`, `'outline'`, `'ghost'`, `'soft'`, `'link'`                       |
+| `ButtonColor`       | `'primary'`, `'neutral'`, `'success'`, `'warning'`, `'danger'`              |
+| `ButtonShape`       | `'square'`, `'rounded'`, `'pill'`                                           |
 | `ButtonSize`        | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputSize`         | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
@@ -66,41 +68,44 @@ type TooltipDelay = {
 
 ## Button
 
-Pressable action component with variants, sizes, optional icons, loading state,
+Pressable action component with appearances, sizes, optional icons, loading state,
 and full-width layout support.
 
 ```tsx
 import { Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react-native';
 
-<Button color='primary' variant='solid' size='md' onPress={handleSave}>
+<Button color='primary' appearance='solid' size='md' onPress={handleSave}>
   Save
 </Button>;
 
-<Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />;
+<Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />;
 ```
 
 <!-- api-docgen:start native.ButtonProps.Button -->
 
-| Prop                 | Type                                     | Required | Description                                           |
-| -------------------- | ---------------------------------------- | -------- | ----------------------------------------------------- |
-| `children`           | `ReactNode`                              | No       | Button content.                                       |
-| `leftIcon`           | `ButtonIconElement`                      | No       | Icon rendered before content.                         |
-| `rightIcon`          | `ButtonIconElement`                      | No       | Icon rendered after content.                          |
-| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.         |
-| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                           |
-| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                     |
-| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                  |
-| `iconSize`           | `number`                                 | No       | Icon size in pixels.                                  |
-| `variant`            | `ButtonVariant`                          | No       | Visual variant: `solid`, `outline`, `ghost`.          |
-| `size`               | `ButtonSize`                             | No       | Button size.                                          |
-| `disabled`           | `boolean`                                | No       | Disables interaction.                                 |
-| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                     |
-| `testID`             | `string`                                 | No       | Test identifier.                                      |
-| `color`              | `ButtonColor`                            | No       | Tone: `primary`, `secondary`, `close`, `danger`.      |
-| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction. |
-| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.               |
-| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.             |
+| Prop                 | Type                                     | Required | Description                                                 |
+| -------------------- | ---------------------------------------- | -------- | ----------------------------------------------------------- |
+| `children`           | `ReactNode`                              | No       | Button content.                                             |
+| `iconStart`          | `ButtonIconElement`                      | No       | Icon rendered before content.                               |
+| `iconEnd`            | `ButtonIconElement`                      | No       | Icon rendered after content.                                |
+| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.               |
+| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                                 |
+| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                           |
+| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                        |
+| `iconSize`           | `number`                                 | No       | Icon size in pixels.                                        |
+| `size`               | `ButtonSize`                             | No       | Button size.                                                |
+| `disabled`           | `boolean`                                | No       | Disables interaction.                                       |
+| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                           |
+| `testID`             | `string`                                 | No       | Test identifier.                                            |
+| `color`              | `ButtonColor`                            | No       | Visual tone: primary, neutral, success, warning, or danger. |
+| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction.       |
+| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.                     |
+| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.                   |
+| `badge`              | `ReactNode`                              | No       | Compact badge rendered after the label.                     |
+| `shortcut`           | `ReactNode`                              | No       | Keyboard shortcut hint rendered after the label.            |
+| `appearance`         | `ButtonAppearance`                       | No       | Visual style: solid, outline, ghost, soft, or link.         |
+| `shape`              | `ButtonShape`                            | No       | Corner shape: square, rounded, or pill.                     |
 
 <!-- api-docgen:end native.ButtonProps.Button -->
 
@@ -203,11 +208,11 @@ description/error announcement behavior.
 | `onClear`         | `() => void`              | No       | Called when the clear action is pressed.         |
 | `error`           | `string`                  | No       | Error message rendered for invalid state.        |
 | `description`     | `string`                  | No       | Additional descriptive text.                     |
+| `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
 | `leftIcon`        | `InputIconElement`        | No       | Icon rendered before content.                    |
 | `rightIcon`       | `InputIconElement`        | No       | Icon rendered after content.                     |
 | `leftIconTone`    | `InputAdornmentTone`      | No       | Color tone for the left icon.                    |
 | `rightIconTone`   | `InputAdornmentTone`      | No       | Color tone for the right icon.                   |
-| `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
 
 <!-- api-docgen:end native.InputProps.Input -->
 
@@ -569,7 +574,7 @@ import { Button, Modal } from '@vellira-ui/react-native';
     <Modal.Header title='Delete file' />
     <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
     <Modal.Footer>
-      <Button color='secondary' variant='solid' onPress={closeModal}>
+      <Button color='neutral' appearance='solid' onPress={closeModal}>
         Cancel
       </Button>
     </Modal.Footer>

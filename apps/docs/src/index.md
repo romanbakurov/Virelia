@@ -59,7 +59,7 @@ import { Button } from '@vellira-ui/react';
 
 export function Example() {
   return (
-    <Button color='primary' variant='solid'>
+    <Button color='primary' appearance='solid'>
       Continue
     </Button>
   );

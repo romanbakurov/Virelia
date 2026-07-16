@@ -47,7 +47,8 @@ const sizeMap: Record<
 export function Button({
   children,
   color = 'primary',
-  variant = 'solid',
+  appearance = 'solid',
+  shape = 'pill',
   disabled = false,
   loading = false,
   loadingText,
@@ -57,8 +58,10 @@ export function Button({
   onHoverIn,
   onHoverOut,
   size = 'md',
-  leftIcon,
-  rightIcon,
+  iconStart,
+  iconEnd,
+  badge,
+  shortcut,
   fullWidth = false,
   iconOnly: iconOnlyProp = false,
   style,
@@ -71,15 +74,20 @@ export function Button({
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const config = sizeMap[size];
+  const radius =
+    shape === 'square'
+      ? theme.tokens.radius.sm
+      : shape === 'rounded'
+        ? theme.tokens.radius.md
+        : theme.tokens.radius.full;
 
-  const variantTheme = theme.components.button[color][variant];
+  const appearanceTheme = theme.components.button[color][appearance];
 
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const isDisabled = disabled || loading;
-  const iconOnly =
-    iconOnlyProp || (!children && Boolean(leftIcon || rightIcon));
+  const iconOnly = iconOnlyProp || (!children && Boolean(iconStart || iconEnd));
   const content = loading && loadingText ? loadingText : children;
 
   devWarning(
@@ -119,10 +127,10 @@ export function Button({
     isDisabled
       ? theme.components.button.disabled
       : pressed
-        ? variantTheme.pressed
+        ? appearanceTheme.pressed
         : isHovered
-          ? variantTheme.hover
-          : variantTheme.default;
+          ? appearanceTheme.hover
+          : appearanceTheme.default;
 
   return (
     <Pressable
@@ -148,6 +156,7 @@ export function Button({
           {
             backgroundColor: interactionTheme.bg,
             borderColor: interactionTheme.border,
+            borderRadius: radius,
             paddingHorizontal: iconOnly ? 0 : config.px,
             paddingVertical: iconOnly ? 0 : config.py,
             width: iconOnly ? config.height : undefined,
@@ -169,7 +178,7 @@ export function Button({
           <>
             {loading && <ActivityIndicator size='small' color={contentColor} />}
 
-            {!loading && leftIcon && renderIcon(leftIcon, contentColor)}
+            {!loading && iconStart && renderIcon(iconStart, contentColor)}
 
             {content && !iconOnly && (
               <Text
@@ -186,7 +195,34 @@ export function Button({
               </Text>
             )}
 
-            {!loading && rightIcon && renderIcon(rightIcon, contentColor)}
+            {badge && !iconOnly && (
+              <Text
+                style={[
+                  styles.badge,
+                  {
+                    backgroundColor: `${contentColor}24`,
+                    color: contentColor,
+                  },
+                ]}
+              >
+                {badge}
+              </Text>
+            )}
+
+            {shortcut && !iconOnly && (
+              <Text
+                style={[
+                  styles.shortcut,
+                  {
+                    color: contentColor,
+                  },
+                ]}
+              >
+                {shortcut}
+              </Text>
+            )}
+
+            {!loading && iconEnd && renderIcon(iconEnd, contentColor)}
           </>
         );
       }}

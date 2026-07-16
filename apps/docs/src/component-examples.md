@@ -184,7 +184,7 @@ export function FormExample() {
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </form>
@@ -201,13 +201,13 @@ import { Button } from '@vellira-ui/react';
 export function ButtonActions() {
   return (
     <>
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Save
       </Button>
       <Button loading loadingText='Saving...'>
         Save
       </Button>
-      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+      <Button aria-label='Search' iconOnly iconStart={<Search />} />
     </>
   );
 }

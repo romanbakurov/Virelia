@@ -61,7 +61,7 @@ export function Example() {
         checked={accepted}
         onCheckedChange={setAccepted}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Submit
       </Button>
     </form>
@@ -76,7 +76,7 @@ Use the standard `aria-label` attribute for icon-only web buttons:
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button aria-label='Search' iconOnly leftIcon={<Search />} />;
+<Button aria-label='Search' iconOnly iconStart={<Search />} />;
 ```
 
 `loading` disables interaction and can replace the visible label with
