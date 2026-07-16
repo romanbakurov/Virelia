@@ -1,5 +1,5 @@
+import { createRadioPalette } from '../../factories/createRadioPalette.js';
 import { colors } from '../../primitives/colors.js';
-import { createRadioPalette } from '../../utils/createRadioPalette.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';

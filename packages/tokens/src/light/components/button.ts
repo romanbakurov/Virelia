@@ -1,5 +1,5 @@
+import { createButtonPalette } from '../../factories/createButtonPalette.js';
 import { colors } from '../../primitives/colors.js';
-import { createButtonPalette } from '../../utils/createButtonPalette.js';
 import { border } from '../semantic/border.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
