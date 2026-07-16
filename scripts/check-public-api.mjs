@@ -202,6 +202,7 @@ const publicSymbolContracts = {
     'InputSize',
     'InputType',
     'Orientation',
+    'RadioColor',
     'RadioGroupOrientation',
     'RadioSize',
     'RadioValue',

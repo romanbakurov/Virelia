@@ -120,4 +120,22 @@ describe('Native Radio', () => {
 
     unmount();
   });
+
+  it('renders a custom selected indicator and accepts color', () => {
+    const { container, unmount } = render(
+      <Radio
+        value='security'
+        label='Security alerts'
+        color='success'
+        checked
+        icon={<span data-testid='native-custom-radio-indicator'>selected</span>}
+      />
+    );
+
+    expect(
+      container.querySelector('[data-testid="native-custom-radio-indicator"]')
+    ).not.toBeNull();
+
+    unmount();
+  });
 });

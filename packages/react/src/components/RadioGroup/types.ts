@@ -6,7 +6,7 @@ export interface RadioGroupProps
     BaseRadioGroupProps,
     Omit<
       ComponentPropsWithoutRef<'div'>,
-      'defaultValue' | 'onChange' | 'role'
+      'color' | 'defaultValue' | 'onChange' | 'role'
     > {
   name?: string;
   label?: ReactNode;

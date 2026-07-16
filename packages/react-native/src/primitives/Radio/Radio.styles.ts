@@ -34,13 +34,13 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     controlChecked: {
-      borderColor: theme.components.radio.checked.default.border,
-      backgroundColor: theme.components.radio.checked.default.bg,
+      borderColor: theme.components.radio.primary.default.border,
+      backgroundColor: theme.components.radio.primary.default.bg,
     },
 
     controlCheckedPressed: {
-      borderColor: theme.components.radio.checked.pressed.border,
-      backgroundColor: theme.components.radio.checked.pressed.bg,
+      borderColor: theme.components.radio.primary.pressed.border,
+      backgroundColor: theme.components.radio.primary.pressed.bg,
     },
 
     controlInvalid: {
@@ -53,21 +53,21 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     controlCheckedDisabled: {
-      borderColor: theme.components.radio.checked.disabled.border,
-      backgroundColor: theme.components.radio.checked.disabled.bg,
+      borderColor: theme.components.radio.selectedDisabled.border,
+      backgroundColor: theme.components.radio.selectedDisabled.bg,
     },
 
     indicator: {
       borderRadius: theme.tokens.radius.full,
-      backgroundColor: theme.components.radio.checked.default.fg,
+      backgroundColor: theme.components.radio.primary.default.fg,
     },
 
     indicatorPressed: {
-      backgroundColor: theme.components.radio.checked.pressed.fg,
+      backgroundColor: theme.components.radio.primary.pressed.fg,
     },
 
     indicatorDisabled: {
-      backgroundColor: theme.components.radio.checked.disabled.fg,
+      backgroundColor: theme.components.radio.selectedDisabled.fg,
     },
 
     content: {
@@ -81,11 +81,11 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     labelChecked: {
-      color: theme.components.radio.checked.default.labelFg,
+      color: theme.components.radio.primary.default.labelFg,
     },
 
     labelCheckedPressed: {
-      color: theme.components.radio.checked.pressed.labelFg,
+      color: theme.components.radio.primary.pressed.labelFg,
     },
 
     labelInvalid: {

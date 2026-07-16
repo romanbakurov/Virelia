@@ -297,6 +297,7 @@ import { Radio, RadioGroup } from '@vellira-ui/react';
 | `disabled`      | `boolean`                     | No       | Disables the whole group.             |
 | `description`   | `ReactNode`                   | No       | Additional descriptive text.          |
 | `size`          | `RadioSize`                   | No       | Size inherited by child radios.       |
+| `color`         | `RadioColor`                  | No       | —                                     |
 
 <!-- api-docgen:end web.RadioGroupProps.RadioGroupProps -->
 
@@ -317,6 +318,8 @@ import { Radio, RadioGroup } from '@vellira-ui/react';
 | `error`            | `string`                     | No       | Validation error message displayed under the radio.   |
 | `size`             | `RadioSize`                  | No       | Radio control size.                                   |
 | `wrapperClassName` | `string`                     | No       | Class name applied to the clickable label wrapper.    |
+| `icon`             | `ReactNode`                  | No       | Icon rendered inside the component.                   |
+| `color`            | `RadioColor`                 | No       | —                                                     |
 
 <!-- api-docgen:end web.RadioProps.RadioProps -->
 

@@ -14,8 +14,10 @@ export interface RadioProps
       | 'required'
       | 'onChange'
       | 'size'
+      | 'color'
     > {
   label?: ReactNode;
   description?: ReactNode;
+  icon?: ReactNode;
   wrapperClassName?: string;
 }

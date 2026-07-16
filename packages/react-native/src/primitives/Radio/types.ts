@@ -16,6 +16,7 @@ export interface RadioProps
     > {
   label?: ReactNode;
   description?: ReactNode;
+  icon?: ReactNode;
   error?: string;
 
   containerStyle?: StyleProp<ViewStyle>;

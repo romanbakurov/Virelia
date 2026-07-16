@@ -1,5 +1,7 @@
 import type { RadioSize } from './radioGroup';
 export type RadioValue = string;
+export type RadioColor =
+  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
 
 export interface BaseRadioProps {
   value: RadioValue;
@@ -9,5 +11,6 @@ export interface BaseRadioProps {
   required?: boolean;
   error?: string;
   size?: RadioSize;
+  color?: RadioColor;
   onCheckedChange?: (checked: boolean) => void;
 }

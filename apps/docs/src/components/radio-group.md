@@ -20,11 +20,58 @@ the list is longer, the choice is secondary, or space is limited.
   value={interval}
   onValueChange={setInterval}
   orientation='horizontal'
+  color='primary'
 >
   <Radio value='monthly' label='Monthly' />
   <Radio value='yearly' label='Yearly' description='Save 20%.' />
 </RadioGroup>
 ```
+
+## API Shape
+
+Use `value` with `onValueChange` for controlled groups, or `defaultValue` for
+uncontrolled groups. `size` and `color` can be set on RadioGroup and inherited
+by child Radio controls. Individual Radio items can override them.
+
+```tsx
+<RadioGroup label='Status' color='danger' defaultValue='blocked'>
+  <Radio value='blocked' label='Blocked' />
+  <Radio value='active' label='Active' color='success' />
+</RadioGroup>
+```
+
+Use `icon` only when the default dot does not match the product language.
+
+```tsx
+<Radio
+  value='approved'
+  label='Approved'
+  color='success'
+  checked
+  icon={<span aria-hidden='true'>✓</span>}
+/>
+```
+
+## Props
+
+| Prop               | Purpose                                                         |
+| ------------------ | --------------------------------------------------------------- |
+| `value`            | Controlled selected value on RadioGroup or item value on Radio. |
+| `defaultValue`     | Initial selected value for uncontrolled RadioGroup.             |
+| `onValueChange`    | Receives the next selected RadioGroup value.                    |
+| `checked`          | Controlled checked state for standalone Radio.                  |
+| `defaultChecked`   | Initial standalone Radio checked state.                         |
+| `onCheckedChange`  | Receives standalone checked changes.                            |
+| `size`             | `sm`, `md`, or `lg`.                                            |
+| `color`            | `primary`, `neutral`, `success`, `warning`, or `danger`.        |
+| `label`            | Visible group or item label.                                    |
+| `description`      | Supporting group or item text.                                  |
+| `error`            | Validation message and invalid state.                           |
+| `required`         | Marks the group or standalone Radio as required.                |
+| `disabled`         | Disables the group or individual Radio item.                    |
+| `orientation`      | `vertical` or `horizontal` on RadioGroup.                       |
+| `icon`             | Custom selected indicator on Radio.                             |
+| `wrapperClassName` | Clickable Radio row class name on web.                          |
 
 ## Layout Guidance
 

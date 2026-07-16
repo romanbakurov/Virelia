@@ -1,4 +1,4 @@
-import type { RadioValue } from './radio';
+import type { RadioColor, RadioValue } from './radio';
 
 export type RadioGroupOrientation = 'vertical' | 'horizontal';
 export type RadioSize = 'sm' | 'md' | 'lg';
@@ -10,5 +10,6 @@ export interface BaseRadioGroupProps {
   required?: boolean;
   orientation?: RadioGroupOrientation;
   size?: RadioSize;
+  color?: RadioColor;
   onValueChange?: (value: RadioValue) => void;
 }

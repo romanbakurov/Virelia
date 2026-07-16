@@ -69,8 +69,8 @@ generated reference lives in
 | `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
 | `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                                                     | controlled                    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | presentation wrapper          |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                                                 | controlled or uncontrolled    |
-| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                                               | controlled or uncontrolled    |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
+| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`                           | controlled or uncontrolled    |
 | `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`                                   | controlled or uncontrolled    |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
