@@ -3,6 +3,12 @@
 Tabs organize peer sections of the same context. They work best for dense
 product surfaces where switching should be fast and predictable.
 
+<StorybookFrame
+  id="components-tabs--controlled"
+  title="Controlled Tabs"
+  :height="420"
+/>
+
 ## When To Use
 
 Use Tabs for sections that are siblings: Overview, Usage, Billing, Security.

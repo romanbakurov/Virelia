@@ -3,6 +3,12 @@
 Checkbox represents an independent boolean choice. It works for agreements,
 settings, row selection, and mixed selection summaries.
 
+<StorybookFrame
+  id="primitives-checkbox--states"
+  title="Checkbox states"
+  :height="520"
+/>
+
 ## When To Use
 
 Use Checkbox when each option can be turned on or off without requiring another

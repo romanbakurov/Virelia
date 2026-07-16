@@ -226,6 +226,45 @@ body {
   overflow: hidden;
 }
 
+.docs-storybook-frame {
+  margin: 22px 0 28px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.docs-storybook-frame iframe {
+  display: block;
+  width: 100%;
+  min-height: 240px;
+  background: var(--vp-c-bg-elv);
+  border: 0;
+}
+
+.docs-storybook-frame figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  line-height: 1.4;
+  border-top: 1px solid var(--vp-c-border);
+}
+
+.docs-storybook-frame figcaption span {
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+}
+
+.docs-storybook-frame figcaption a {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .docs-preview {
   display: grid;
   width: 100%;

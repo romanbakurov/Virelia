@@ -3,6 +3,12 @@
 Select lets users choose one saved value from a compact list. It is a field, not
 an action menu.
 
+<StorybookFrame
+  id="components-select--selection"
+  title="Select interaction"
+  :height="420"
+/>
+
 ## When To Use
 
 Use Select when the value belongs to a form or persistent setting and the list

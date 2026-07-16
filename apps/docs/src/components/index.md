@@ -10,6 +10,12 @@ for the full prop tables:
 - [Web API](https://github.com/vellira-dev/vellira/blob/main/packages/react/API.md)
 - [Native API](https://github.com/vellira-dev/vellira/blob/main/packages/react-native/API.md)
 
+<StorybookFrame
+  id="overview-web--overview"
+  title="Live component overview"
+  :height="760"
+/>
+
 <div class="docs-card-grid docs-card-grid-three">
   <a class="docs-card" href="/components/button">
     <strong>Button</strong>
@@ -84,4 +90,3 @@ production-ready.
 | Move between peer sections | [Tabs](/components/tabs) |
 | Explain an icon or terse label | [Tooltip](/components/tooltip) |
 | Require a focused decision | [Modal](/components/modal) |
-

@@ -4,6 +4,12 @@ Input captures short free-form text with a stable label, validation state, and
 optional adornments. It is the right choice for names, emails, search terms,
 URLs, numbers, and other compact text values.
 
+<StorybookFrame
+  id="primitives-input--validation"
+  title="Input validation"
+  :height="420"
+/>
+
 ## When To Use
 
 Use Input when users need to type a value that cannot be represented as a short

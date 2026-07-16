@@ -3,6 +3,12 @@
 FormField provides consistent layout for labels, descriptions, errors, required
 state, disabled state, and custom field controls.
 
+<StorybookFrame
+  id="patterns-formfield--complete-example"
+  title="FormField complete example"
+  :height="520"
+/>
+
 ## When To Use
 
 Use FormField when a custom control needs the same field chrome as Input,

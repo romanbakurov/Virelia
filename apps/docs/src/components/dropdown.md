@@ -3,6 +3,12 @@
 Dropdown is for contextual actions: commands that apply to the current object,
 row, account, or page. It is not a form field.
 
+<StorybookFrame
+  id="components-dropdown--with-groups"
+  title="Dropdown with groups"
+  :height="420"
+/>
+
 ## When To Use
 
 Use Dropdown when several actions share the same trigger and do not need to be

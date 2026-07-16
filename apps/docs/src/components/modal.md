@@ -3,6 +3,12 @@
 Modal is for focused decisions and blocking workflows. It should reduce the
 current page to one clear task, then return users to where they were.
 
+<StorybookFrame
+  id="components-modal--basic"
+  title="Modal basic interaction"
+  :height="460"
+/>
+
 ## When To Use
 
 Use Modal for confirmations, short forms, permissions, or decisions that should

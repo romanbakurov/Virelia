@@ -3,6 +3,12 @@
 Tooltip provides short, non-critical helper text for a focused or hovered
 control. It should clarify UI, not carry required instructions.
 
+<StorybookFrame
+  id="components-tooltip--different-triggers"
+  title="Tooltip triggers"
+  :height="360"
+/>
+
 ## When To Use
 
 Use Tooltip to explain an icon, terse label, disabled action, or keyboard

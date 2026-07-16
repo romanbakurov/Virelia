@@ -4,6 +4,18 @@ Button is the action primitive for Vellira. It should feel precise enough for
 enterprise workflows and flexible enough for product surfaces with icons,
 badges, keyboard shortcuts, links, and destructive actions.
 
+<StorybookFrame
+  id="primitives-button--matrix"
+  title="Button matrix"
+  :height="620"
+/>
+
+<StorybookFrame
+  id="primitives-button--with-icons"
+  title="Button icons"
+  :height="360"
+/>
+
 ## When To Use
 
 Use Button for immediate actions: saving, submitting, confirming, opening a

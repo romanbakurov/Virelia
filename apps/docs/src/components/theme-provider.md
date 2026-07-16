@@ -4,6 +4,12 @@ ThemeProvider gives Vellira components access to the active theme. Use it near
 the app root or at a contained boundary when a product surface intentionally
 uses a different theme.
 
+<StorybookFrame
+  id="overview-web--overview"
+  title="Theme-aware component overview"
+  :height="760"
+/>
+
 ## When To Use
 
 Wrap the application once when all Vellira components should share the same

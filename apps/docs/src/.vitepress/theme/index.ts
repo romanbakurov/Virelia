@@ -1,4 +1,10 @@
 import DefaultTheme from 'vitepress/theme';
+import StorybookFrame from './StorybookFrame.vue';
 import './styles.css';
 
-export default DefaultTheme;
+export default {
+  extends: DefaultTheme,
+  enhanceApp({ app }) {
+    app.component('StorybookFrame', StorybookFrame);
+  },
+};
