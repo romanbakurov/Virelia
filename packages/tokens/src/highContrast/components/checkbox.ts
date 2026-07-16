@@ -5,7 +5,11 @@ import { text } from '../semantic/text.js';
 
 export const checkbox = {
   default: control.default,
-  hover: control.hover,
+
+  hover: {
+    ...control.hover,
+    labelFg: text.interactiveHover,
+  },
 
   checked: {
     default: {
