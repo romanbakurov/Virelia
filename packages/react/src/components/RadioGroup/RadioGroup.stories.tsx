@@ -25,6 +25,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
 - Composition with standalone Radio controls
 - Group label and description
 - Vertical and horizontal orientation
+- Shared selected color inherited by child Radio controls
 - Required and disabled group states
 - Disabled individual Radio controls
 - Validation error message
@@ -54,6 +55,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
     name: 'country',
     label: 'Country',
     orientation: 'vertical',
+    color: 'primary',
     disabled: false,
     required: false,
     onValueChange: noop,
@@ -111,6 +113,17 @@ Groups multiple Radio controls and manages selection of exactly one value.
       table: {
         type: { summary: `'sm' | 'md' | 'lg'` },
         defaultValue: { summary: 'md' },
+      },
+    },
+    color: {
+      description: 'Default selected color inherited by child Radio controls.',
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      table: {
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
+        defaultValue: { summary: 'primary' },
       },
     },
     required: {
@@ -406,6 +419,30 @@ export const Sizes: Story = {
           defaultValue='fr'
           size='lg'
         >
+          <CountryRadios />
+        </RadioGroup>
+      </div>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <div style={{ display: 'grid', gap: 24 }}>
+        <RadioGroup label='Primary' color='primary' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+        <RadioGroup label='Neutral' color='neutral' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+        <RadioGroup label='Success' color='success' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+        <RadioGroup label='Warning' color='warning' defaultValue='fr'>
+          <CountryRadios />
+        </RadioGroup>
+        <RadioGroup label='Danger' color='danger' defaultValue='fr'>
           <CountryRadios />
         </RadioGroup>
       </div>

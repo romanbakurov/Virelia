@@ -688,6 +688,53 @@ function WebComponentsOverview() {
                 <Radio value='large' label='Large' size='lg' />
               </div>
             </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Colors</h3>
+              <div style={rowStyle}>
+                <Radio
+                  value='primary'
+                  label='Primary'
+                  color='primary'
+                  defaultChecked
+                />
+                <Radio
+                  value='neutral'
+                  label='Neutral'
+                  color='neutral'
+                  defaultChecked
+                />
+                <Radio
+                  value='success'
+                  label='Success'
+                  color='success'
+                  defaultChecked
+                />
+                <Radio
+                  value='warning'
+                  label='Warning'
+                  color='warning'
+                  defaultChecked
+                />
+                <Radio
+                  value='danger'
+                  label='Danger'
+                  color='danger'
+                  defaultChecked
+                />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Custom indicator</h3>
+              <Radio
+                value='custom-indicator'
+                label='Approved'
+                color='success'
+                defaultChecked
+                icon={<Check />}
+              />
+            </div>
           </div>
         </Section>
 
@@ -709,11 +756,23 @@ function WebComponentsOverview() {
               name='overview-delivery'
               label='Delivery'
               orientation='horizontal'
+              color='success'
               defaultValue='standard'
             >
               <Radio value='standard' label='Standard' />
               <Radio value='express' label='Express' />
               <Radio value='pickup' label='Pickup' disabled />
+            </RadioGroup>
+
+            <RadioGroup
+              name='overview-status'
+              label='Status'
+              description='Group color is inherited by child radios.'
+              color='danger'
+              defaultValue='blocked'
+            >
+              <Radio value='blocked' label='Blocked' />
+              <Radio value='active' label='Active' color='success' />
             </RadioGroup>
 
             <RadioGroup

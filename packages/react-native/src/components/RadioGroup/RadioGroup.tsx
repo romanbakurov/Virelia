@@ -19,6 +19,7 @@ export const RadioGroup = forwardRef<View, RadioGroupProps>(
       disabled = false,
       required = false,
       size = 'md',
+      color = 'primary',
       orientation = 'vertical',
       label,
       description,
@@ -78,6 +79,7 @@ export const RadioGroup = forwardRef<View, RadioGroupProps>(
             required,
             invalid,
             size,
+            color,
             onValueChange: setSelectedValue,
           }}
         >

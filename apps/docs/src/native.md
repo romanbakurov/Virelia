@@ -69,8 +69,8 @@ generated reference lives in
 | `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | Boolean input         |
 | `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                                                              | Text input            |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | Labels and validation |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                                                 | Radio option          |
-| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`                                              | Single selection      |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
+| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error`                    | Selection control     |
 | `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                                                 | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |

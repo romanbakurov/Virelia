@@ -168,4 +168,20 @@ describe('RadioGroup', () => {
 
     unmount();
   });
+
+  it('propagates color to child radios and allows item overrides', () => {
+    const { container, unmount } = render(
+      <RadioGroup label='Status' color='danger' defaultValue='blocked'>
+        <Radio value='blocked' label='Blocked' />
+        <Radio value='active' label='Active' color='success' />
+      </RadioGroup>
+    );
+
+    const roots = container.querySelectorAll('[class*="root"]');
+
+    expect(roots[1]?.className).toContain('colorDanger');
+    expect(roots[2]?.className).toContain('colorSuccess');
+
+    unmount();
+  });
 });

@@ -18,6 +18,7 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       disabled = false,
       required = false,
       size = 'md',
+      color = 'primary',
       name,
       label,
       description,
@@ -94,6 +95,7 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
             required,
             invalid,
             size,
+            color,
             describedBy,
             onValueChange: setCurrentValue,
           }}

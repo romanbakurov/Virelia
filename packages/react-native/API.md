@@ -291,6 +291,7 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 | `size`             | `RadioSize`                   | No       | Size inherited by child radios.       |
 | `descriptionStyle` | `StyleProp<TextStyle>`        | No       | —                                     |
 | `errorStyle`       | `StyleProp<TextStyle>`        | No       | —                                     |
+| `color`            | `RadioColor`                  | No       | —                                     |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 
@@ -314,8 +315,15 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 | `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.                                |
 | `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.                          |
 | `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.                                |
+| `icon`             | `ReactNode`                  | No       | Icon rendered inside the component.                    |
+| `color`            | `RadioColor`                 | No       | —                                                      |
 
 <!-- api-docgen:end native.RadioProps.RadioProps -->
+
+`RadioGroup color` sets the default selected color for child radios. Individual
+`Radio` items can override it with their own `color`. Use `icon` on `Radio`
+only when the default selected dot should be replaced by a product-specific
+indicator.
 
 ## Select
 
