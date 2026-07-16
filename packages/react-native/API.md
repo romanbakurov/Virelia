@@ -132,19 +132,23 @@ import { Checkbox } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.CheckboxProps.Checkbox -->
 
-| Prop              | Type                         | Required | Description                                   |
-| ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Visible label rendered next to the control.   |
-| `description`     | `string`                     | No       | Helper text rendered below the checkbox row.  |
-| `style`           | `StyleProp<ViewStyle>`       | No       | Extra style for the clickable wrapper.        |
-| `error`           | `string`                     | No       | Error message rendered for invalid state.     |
-| `checked`         | `boolean`                    | No       | Controlled checked state.                     |
-| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
-| `disabled`        | `boolean`                    | No       | Disables interaction.                         |
-| `required`        | `boolean`                    | No       | Marks the checkbox as required.               |
-| `indeterminate`   | `boolean`                    | No       | Displays a mixed selection state.             |
-| `size`            | `CheckboxSize`               | No       | Checkbox size.                                |
-| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
+| Prop                | Type                                                | Required | Description                                   |
+| ------------------- | --------------------------------------------------- | -------- | --------------------------------------------- |
+| `label`             | `string`                                            | No       | Visible label rendered next to the control.   |
+| `description`       | `string`                                            | No       | Helper text rendered below the checkbox row.  |
+| `style`             | `StyleProp<ViewStyle>`                              | No       | Extra style for the clickable wrapper.        |
+| `error`             | `string`                                            | No       | Error message rendered for invalid state.     |
+| `checked`           | `boolean`                                           | No       | Controlled checked state.                     |
+| `defaultChecked`    | `boolean`                                           | No       | Initial checked state for uncontrolled usage. |
+| `disabled`          | `boolean`                                           | No       | Disables interaction.                         |
+| `required`          | `boolean`                                           | No       | Marks the checkbox as required.               |
+| `indeterminate`     | `boolean`                                           | No       | Displays a mixed selection state.             |
+| `size`              | `CheckboxSize`                                      | No       | Checkbox size.                                |
+| `onCheckedChange`   | `(checked: boolean) => void`                        | No       | Called when the user changes the state.       |
+| `icon`              | `ReactNode`                                         | No       | Icon rendered inside the component.           |
+| `indeterminateIcon` | `ReactNode`                                         | No       | —                                             |
+| `color`             | `import("@vellira-ui/types").CheckboxColor`         | No       | —                                             |
+| `labelPosition`     | `import("@vellira-ui/types").CheckboxLabelPosition` | No       | —                                             |
 
 <!-- api-docgen:end native.CheckboxProps.Checkbox -->
 

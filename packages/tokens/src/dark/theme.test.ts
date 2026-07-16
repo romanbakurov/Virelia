@@ -37,7 +37,10 @@ describe.each([
     expect(theme.components.button.primary.ghost.default.bg).toBeDefined();
 
     expect(theme.components.input.default.bg).toBeDefined();
-    expect(theme.components.checkbox.checked.default.bg).toBeDefined();
+    expect(theme.components.checkbox.primary.default.bg).toBeDefined();
+    expect(theme.components.checkbox.danger.default.bg).toBe(
+      theme.components.button.danger.solid.default.bg
+    );
     expect(theme.components.select.trigger.default.bg).toBeDefined();
     expect(theme.components.tooltip.content.bg).toBeDefined();
   });

@@ -334,6 +334,19 @@ body {
   accent-color: var(--vp-c-brand-1);
 }
 
+.docs-check-success input {
+  accent-color: #047857;
+}
+
+.docs-check-danger input {
+  accent-color: #dc2626;
+}
+
+.docs-check-start {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
 .docs-button {
   display: inline-flex;
   justify-content: center;

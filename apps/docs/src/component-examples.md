@@ -53,8 +53,11 @@ For usage guidance, accessibility contracts, and platform notes, use the
     <div class="docs-state-grid">
       <div><span>Default</span><label class="docs-check"><input type="checkbox" />Remember</label></div>
       <div><span>Checked</span><label class="docs-check"><input type="checkbox" checked />Remember</label></div>
+      <div><span>Success</span><label class="docs-check docs-check-success"><input type="checkbox" checked />Automate</label></div>
+      <div><span>Danger</span><label class="docs-check docs-check-danger"><input type="checkbox" checked />Delete</label></div>
       <div><span>Description</span><label class="docs-check"><input type="checkbox" />Updates</label><small>Receive product news.</small></div>
       <div><span>Mixed</span><label class="docs-check"><input type="checkbox" aria-checked="mixed" />Select all</label></div>
+      <div><span>Label start</span><label class="docs-check docs-check-start"><input type="checkbox" checked />Manual approval</label></div>
       <div><span>Focus</span><label class="docs-check docs-is-focus"><input type="checkbox" checked />Remember</label></div>
       <div><span>Disabled</span><label class="docs-check docs-is-disabled"><input type="checkbox" checked disabled />Remember</label></div>
       <div><span>Error</span><label class="docs-check docs-has-error"><input type="checkbox" />Required</label></div>

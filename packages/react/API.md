@@ -140,19 +140,23 @@ import { Checkbox } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.CheckboxProps.Checkbox -->
 
-| Prop               | Type                         | Required | Description                                      |
-| ------------------ | ---------------------------- | -------- | ------------------------------------------------ |
-| `label`            | `ReactNode`                  | No       | Visible label rendered next to the control.      |
-| `description`      | `ReactNode`                  | No       | Helper text rendered below the checkbox row.     |
-| `wrapperClassName` | `string`                     | No       | Extra CSS class for the clickable label wrapper. |
-| `error`            | `string`                     | No       | Error message rendered for invalid state.        |
-| `checked`          | `boolean`                    | No       | Controlled checked state.                        |
-| `defaultChecked`   | `boolean`                    | No       | Initial checked state for uncontrolled usage.    |
-| `disabled`         | `boolean`                    | No       | Disables interaction.                            |
-| `required`         | `boolean`                    | No       | Marks the checkbox as required.                  |
-| `indeterminate`    | `boolean`                    | No       | Displays and announces a mixed selection state.  |
-| `size`             | `CheckboxSize`               | No       | Checkbox size.                                   |
-| `onCheckedChange`  | `(checked: boolean) => void` | No       | Called when the user changes the state.          |
+| Prop                | Type                                                | Required | Description                                      |
+| ------------------- | --------------------------------------------------- | -------- | ------------------------------------------------ |
+| `label`             | `ReactNode`                                         | No       | Visible label rendered next to the control.      |
+| `description`       | `ReactNode`                                         | No       | Helper text rendered below the checkbox row.     |
+| `wrapperClassName`  | `string`                                            | No       | Extra CSS class for the clickable label wrapper. |
+| `error`             | `string`                                            | No       | Error message rendered for invalid state.        |
+| `checked`           | `boolean`                                           | No       | Controlled checked state.                        |
+| `defaultChecked`    | `boolean`                                           | No       | Initial checked state for uncontrolled usage.    |
+| `disabled`          | `boolean`                                           | No       | Disables interaction.                            |
+| `required`          | `boolean`                                           | No       | Marks the checkbox as required.                  |
+| `indeterminate`     | `boolean`                                           | No       | Displays and announces a mixed selection state.  |
+| `size`              | `CheckboxSize`                                      | No       | Checkbox size.                                   |
+| `onCheckedChange`   | `(checked: boolean) => void`                        | No       | Called when the user changes the state.          |
+| `icon`              | `ReactNode`                                         | No       | Icon rendered inside the component.              |
+| `indeterminateIcon` | `ReactNode`                                         | No       | —                                                |
+| `color`             | `import("@vellira-ui/types").CheckboxColor`         | No       | —                                                |
+| `labelPosition`     | `import("@vellira-ui/types").CheckboxLabelPosition` | No       | —                                                |
 
 <!-- api-docgen:end web.CheckboxProps.Checkbox -->
 

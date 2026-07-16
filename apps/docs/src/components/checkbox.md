@@ -19,10 +19,63 @@ Use Button for commands and Toggle-like buttons for transient pressed state.
 <Checkbox
   checked={accepted}
   onCheckedChange={setAccepted}
+  color='primary'
+  size='md'
   label='Accept terms'
   description='Required before creating the workspace.'
 />
 ```
+
+## API Shape
+
+Use `checked` with `onCheckedChange` for controlled state, or
+`defaultChecked` for uncontrolled state. `color` changes the selected intent,
+while `labelPosition` controls whether the visible label sits before or after
+the checkbox.
+
+```tsx
+<Checkbox
+  checked={enabled}
+  onCheckedChange={setEnabled}
+  color='success'
+  labelPosition='start'
+  label='Enable automation'
+  description='Runs workspace rules when new records arrive.'
+/>
+```
+
+Use `icon` and `indeterminateIcon` only when the default checkmark or mixed mark
+does not match the surrounding product language.
+
+```tsx
+<Checkbox
+  defaultChecked
+  icon={<span aria-hidden='true'>✓</span>}
+  indeterminateIcon={<span aria-hidden='true'>−</span>}
+  label='Custom indicator'
+/>
+```
+
+## Props
+
+| Prop                | Purpose                                                  |
+| ------------------- | -------------------------------------------------------- |
+| `checked`           | Controlled checked state.                                |
+| `defaultChecked`    | Initial checked state for uncontrolled use.              |
+| `onCheckedChange`   | Receives the next boolean checked state.                 |
+| `size`              | `sm`, `md`, or `lg`.                                     |
+| `color`             | `primary`, `neutral`, `success`, `warning`, or `danger`. |
+| `label`             | Visible label text or content.                           |
+| `description`       | Helper text rendered below the row.                      |
+| `error`             | Validation message and invalid state.                    |
+| `required`          | Marks the input as required.                             |
+| `disabled`          | Prevents interaction.                                    |
+| `indeterminate`     | Shows and announces a mixed state.                       |
+| `labelPosition`     | `end` or `start`.                                        |
+| `icon`              | Custom checked-state icon.                               |
+| `indeterminateIcon` | Custom mixed-state icon.                                 |
+| `className`         | Root class name on web.                                  |
+| `wrapperClassName`  | Clickable row class name on web.                         |
 
 ## Common Patterns
 

@@ -63,19 +63,19 @@ Every component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react/API.md).
 
-| Component    | Core props                                                                                       | State model                   |
-| ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
-| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                | disabled, loading             |
-| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | controlled or uncontrolled    |
-| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                      | controlled or uncontrolled    |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`  | controlled or uncontrolled    |
-| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`          | controlled or uncontrolled    |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                          | open state managed internally |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                          | controlled                    |
+| Component    | Core props                                                                                                                | State model                   |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading             |
+| `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
+| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                                                     | controlled                    |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | presentation wrapper          |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                                                 | controlled or uncontrolled    |
+| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                                               | controlled or uncontrolled    |
+| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`                           | controlled or uncontrolled    |
+| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`                                   | controlled or uncontrolled    |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                                                   | controlled                    |
 
 ## Select Usage Guidelines
 

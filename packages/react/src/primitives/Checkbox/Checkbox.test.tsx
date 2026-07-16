@@ -152,6 +152,26 @@ describe('Checkbox', () => {
     unmount();
   });
 
+  it('uses aria-labelledby for an external accessible label', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { container, unmount } = render(
+      <>
+        <span id='external-checkbox-label'>Accept terms</span>
+        <Checkbox aria-labelledby='external-checkbox-label' />
+      </>
+    );
+
+    const checkbox = container.querySelector<HTMLInputElement>(
+      'input[type="checkbox"]'
+    );
+
+    expect(checkbox?.getAttribute('aria-labelledby')).toBe(
+      'external-checkbox-label'
+    );
+    expect(warn).not.toHaveBeenCalled();
+    unmount();
+  });
+
   it('applies size classes used by the checkbox and error layout', () => {
     const { container, unmount } = render(
       <Checkbox id='terms' label='Terms' size='sm' error='Required.' />
@@ -187,6 +207,47 @@ describe('Checkbox', () => {
     expect(wrapper?.classList.contains('custom-wrapper')).toBe(true);
     expect(checkbox?.classList.contains('custom-root')).toBe(false);
     expect(checkbox?.classList.contains('custom-wrapper')).toBe(false);
+    unmount();
+  });
+
+  it('applies color and label position classes', () => {
+    const { container, unmount } = render(
+      <Checkbox label='Accept' color='success' labelPosition='start' />
+    );
+
+    const root = container.firstElementChild;
+    const wrapper = container.querySelector('label');
+
+    expect(root?.className).toContain('containerLabelStart');
+    expect(wrapper?.className).toContain('colorSuccess');
+    expect(wrapper?.className).toContain('labelStart');
+    unmount();
+  });
+
+  it('renders custom checked and indeterminate icons', () => {
+    const { container, rerender, unmount } = render(
+      <Checkbox
+        label='Accept'
+        checked
+        icon={<span data-testid='custom-check'>ok</span>}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="custom-check"]')).not.toBe(
+      null
+    );
+
+    rerender(
+      <Checkbox
+        label='Accept'
+        indeterminate
+        indeterminateIcon={<span data-testid='custom-mixed'>mixed</span>}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="custom-mixed"]')).not.toBe(
+      null
+    );
     unmount();
   });
 });
