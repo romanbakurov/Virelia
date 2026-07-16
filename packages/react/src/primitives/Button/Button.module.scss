@@ -203,8 +203,9 @@ $button-appearances: solid, outline, ghost, soft, link;
 .shortcut {
   display: inline-flex;
   align-items: center;
-  color: color-mix(in srgb, currentcolor 80%, transparent);
+  color: currentcolor;
   font-size: 0.86em;
+  opacity: 0.8;
   font-variant-numeric: tabular-nums;
 }
 
