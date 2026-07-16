@@ -213,6 +213,13 @@
   color: var(--checkbox-checked-hover-label-fg);
 }
 
+.wrapper:hover
+  .input:not(:checked, :indeterminate, :disabled)
+  + .customCheckbox
+  + .label {
+  color: var(--checkbox-hover-label-fg);
+}
+
 .input:checked:active:not(:disabled) + .customCheckbox,
 .input:indeterminate:active:not(:disabled) + .customCheckbox,
 .input:active:not(:disabled) + .customCheckbox.indeterminate {
@@ -267,7 +274,8 @@
 @media (prefers-reduced-motion: reduce) {
   .customCheckbox,
   .checkmark,
-  .indeterminateMark {
+  .indeterminateMark,
+  .label {
     transition: none;
   }
 }

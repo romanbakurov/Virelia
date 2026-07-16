@@ -45,7 +45,12 @@ export const SelectDropdown = ({
             />
           ))
         ) : (
-          <li className={styles.empty} role='presentation'>
+          <li
+            role='option'
+            aria-disabled='true'
+            aria-selected='false'
+            className={styles.empty}
+          >
             {noOptionsText}
           </li>
         )}
