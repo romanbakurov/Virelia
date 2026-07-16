@@ -152,6 +152,26 @@ describe('Checkbox', () => {
     unmount();
   });
 
+  it('uses aria-labelledby for an external accessible label', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { container, unmount } = render(
+      <>
+        <span id='external-checkbox-label'>Accept terms</span>
+        <Checkbox aria-labelledby='external-checkbox-label' />
+      </>
+    );
+
+    const checkbox = container.querySelector<HTMLInputElement>(
+      'input[type="checkbox"]'
+    );
+
+    expect(checkbox?.getAttribute('aria-labelledby')).toBe(
+      'external-checkbox-label'
+    );
+    expect(warn).not.toHaveBeenCalled();
+    unmount();
+  });
+
   it('applies size classes used by the checkbox and error layout', () => {
     const { container, unmount } = render(
       <Checkbox id='terms' label='Terms' size='sm' error='Required.' />
