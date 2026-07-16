@@ -640,6 +640,67 @@ function NativeComponentsOverview() {
                 { color: theme.semantic.text.secondary },
               ]}
             >
+              Colors
+            </Text>
+            <View style={styles.row}>
+              <Radio
+                value='primary'
+                label='Primary'
+                color='primary'
+                defaultChecked
+              />
+              <Radio
+                value='neutral'
+                label='Neutral'
+                color='neutral'
+                defaultChecked
+              />
+              <Radio
+                value='success'
+                label='Success'
+                color='success'
+                defaultChecked
+              />
+              <Radio
+                value='warning'
+                label='Warning'
+                color='warning'
+                defaultChecked
+              />
+              <Radio
+                value='danger'
+                label='Danger'
+                color='danger'
+                defaultChecked
+              />
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Custom indicator
+            </Text>
+            <Radio
+              value='custom-indicator'
+              label='Approved'
+              color='success'
+              defaultChecked
+              icon={<Check />}
+            />
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
               Accessible without visible label
             </Text>
             <Radio value='email' accessibilityLabel='Email notifications' />
@@ -665,11 +726,22 @@ function NativeComponentsOverview() {
           <RadioGroup
             label='Delivery'
             orientation='horizontal'
+            color='success'
             defaultValue='standard'
           >
             <Radio value='standard' label='Standard' />
             <Radio value='express' label='Express' />
             <Radio value='pickup' label='Pickup' disabled />
+          </RadioGroup>
+
+          <RadioGroup
+            label='Status'
+            description='Group color is inherited by child radios.'
+            color='danger'
+            defaultValue='blocked'
+          >
+            <Radio value='blocked' label='Blocked' />
+            <Radio value='active' label='Active' color='success' />
           </RadioGroup>
 
           <RadioGroup
