@@ -16,79 +16,6 @@ const iconSizeBySize = {
   lg: 14,
 } as const;
 
-const getCheckboxColor = (
-  theme: ReturnType<typeof useTheme>['theme'],
-  color: NonNullable<CheckboxProps['color']>
-) => {
-  if (color === 'neutral') {
-    return {
-      bg: theme.colors.gray[900],
-      border: theme.colors.gray[900],
-      fg: theme.colors.gray[50],
-      hoverBg: theme.colors.gray[800],
-      hoverBorder: theme.colors.gray[800],
-      hoverFg: theme.colors.gray[50],
-      pressedBg: theme.colors.gray[700],
-      pressedBorder: theme.colors.gray[700],
-      pressedFg: theme.colors.gray[50],
-    };
-  }
-
-  if (color === 'success') {
-    return {
-      bg: theme.semantic.status.success.strong,
-      border: theme.semantic.status.success.border,
-      fg: theme.colors.success[50],
-      hoverBg: theme.colors.success[700],
-      hoverBorder: theme.colors.success[700],
-      hoverFg: theme.colors.success[50],
-      pressedBg: theme.colors.success[800],
-      pressedBorder: theme.colors.success[800],
-      pressedFg: theme.colors.success[50],
-    };
-  }
-
-  if (color === 'warning') {
-    return {
-      bg: theme.semantic.status.warning.strong,
-      border: theme.semantic.status.warning.border,
-      fg: theme.colors.warning[950],
-      hoverBg: theme.colors.warning[600],
-      hoverBorder: theme.colors.warning[600],
-      hoverFg: theme.colors.warning[950],
-      pressedBg: theme.colors.warning[700],
-      pressedBorder: theme.colors.warning[700],
-      pressedFg: theme.colors.warning[950],
-    };
-  }
-
-  if (color === 'danger') {
-    return {
-      bg: theme.semantic.status.error.strong,
-      border: theme.semantic.status.error.border,
-      fg: theme.colors.error[50],
-      hoverBg: theme.colors.error[700],
-      hoverBorder: theme.colors.error[700],
-      hoverFg: theme.colors.error[50],
-      pressedBg: theme.colors.error[800],
-      pressedBorder: theme.colors.error[800],
-      pressedFg: theme.colors.error[50],
-    };
-  }
-
-  return {
-    bg: theme.components.checkbox.checked.default.bg,
-    border: theme.components.checkbox.checked.default.border,
-    fg: theme.components.checkbox.checked.default.fg,
-    hoverBg: theme.components.checkbox.checked.hover.bg,
-    hoverBorder: theme.components.checkbox.checked.hover.border,
-    hoverFg: theme.components.checkbox.checked.hover.fg,
-    pressedBg: theme.components.checkbox.checked.pressed.bg,
-    pressedBorder: theme.components.checkbox.checked.pressed.border,
-    pressedFg: theme.components.checkbox.checked.pressed.fg,
-  };
-};
-
 export const Checkbox = forwardRef<View, CheckboxProps>(
   (
     {
@@ -115,7 +42,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
   ) => {
     const { theme } = useTheme();
     const styles = useThemeStyles(createStyles);
-    const checkboxColor = getCheckboxColor(theme, color);
+    const checkboxColor = theme.components.checkbox[color];
 
     const boxSizeStyle = {
       sm: styles.boxSm,
@@ -192,8 +119,8 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
             const checkColor = disabled
               ? theme.components.checkbox.disabled.fg
               : pressed && isSelected
-                ? checkboxColor.pressedFg
-                : checkboxColor.fg;
+                ? checkboxColor.pressed.fg
+                : checkboxColor.default.fg;
 
             return (
               <>
@@ -202,13 +129,13 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                     styles.box,
                     boxSizeStyle[size],
                     isSelected && {
-                      backgroundColor: checkboxColor.bg,
-                      borderColor: checkboxColor.border,
+                      backgroundColor: checkboxColor.default.bg,
+                      borderColor: checkboxColor.default.border,
                     },
                     isSelected &&
                       pressed && {
-                        backgroundColor: checkboxColor.pressedBg,
-                        borderColor: checkboxColor.pressedBorder,
+                        backgroundColor: checkboxColor.pressed.bg,
+                        borderColor: checkboxColor.pressed.border,
                         transform: [{ scale: 0.96 }],
                       },
                     hasError && styles.boxError,
@@ -222,8 +149,8 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                             styles.indeterminateMark,
                             {
                               backgroundColor: pressed
-                                ? checkboxColor.pressedFg
-                                : checkboxColor.fg,
+                                ? checkboxColor.pressed.fg
+                                : checkboxColor.default.fg,
                             },
                           ]}
                         />
@@ -239,11 +166,10 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                     style={[
                       styles.label,
                       labelSizeStyle[size],
-                      isSelected && styles.labelChecked,
+                      isSelected && { color: checkboxColor.default.labelFg },
                       isSelected &&
                         pressed && {
-                          color:
-                            theme.components.checkbox.checked.pressed.labelFg,
+                          color: checkboxColor.pressed.labelFg,
                         },
                       disabled && styles.labelDisabled,
                     ]}

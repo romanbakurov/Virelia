@@ -3,16 +3,21 @@
 .wrapper {
   --checkbox-border-width: 2px;
   --checkbox-checkmark-size: 12px;
-  --checkbox-selected-bg: var(--checkbox-checked-default-bg);
-  --checkbox-selected-border: var(--checkbox-checked-default-border);
-  --checkbox-selected-fg: var(--checkbox-checked-default-fg);
-  --checkbox-selected-hover-bg: var(--checkbox-checked-hover-bg);
-  --checkbox-selected-hover-border: var(--checkbox-checked-hover-border);
-  --checkbox-selected-hover-fg: var(--checkbox-checked-hover-fg);
-  --checkbox-selected-pressed-bg: var(--checkbox-checked-pressed-bg);
-  --checkbox-selected-pressed-border: var(--checkbox-checked-pressed-border);
-  --checkbox-selected-pressed-fg: var(--checkbox-checked-pressed-fg);
-  --checkbox-selected-ring: var(--checkbox-focus-ring);
+  --checkbox-selected-bg: var(--checkbox-primary-default-bg);
+  --checkbox-selected-border: var(--checkbox-primary-default-border);
+  --checkbox-selected-fg: var(--checkbox-primary-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-primary-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-primary-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-primary-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-primary-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-primary-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-primary-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-primary-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-primary-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(
+    --checkbox-primary-pressed-label-fg
+  );
+  --checkbox-selected-ring: var(--checkbox-primary-ring);
   --checkbox-size: 20px;
 
   display: flex;
@@ -23,68 +28,91 @@
 }
 
 .colorPrimary {
-  --checkbox-selected-bg: var(--checkbox-checked-default-bg);
-  --checkbox-selected-border: var(--checkbox-checked-default-border);
-  --checkbox-selected-fg: var(--checkbox-checked-default-fg);
-  --checkbox-selected-hover-bg: var(--checkbox-checked-hover-bg);
-  --checkbox-selected-hover-border: var(--checkbox-checked-hover-border);
-  --checkbox-selected-hover-fg: var(--checkbox-checked-hover-fg);
-  --checkbox-selected-pressed-bg: var(--checkbox-checked-pressed-bg);
-  --checkbox-selected-pressed-border: var(--checkbox-checked-pressed-border);
-  --checkbox-selected-pressed-fg: var(--checkbox-checked-pressed-fg);
-  --checkbox-selected-ring: var(--checkbox-focus-ring);
+  --checkbox-selected-bg: var(--checkbox-primary-default-bg);
+  --checkbox-selected-border: var(--checkbox-primary-default-border);
+  --checkbox-selected-fg: var(--checkbox-primary-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-primary-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-primary-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-primary-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-primary-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-primary-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-primary-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-primary-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-primary-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(
+    --checkbox-primary-pressed-label-fg
+  );
+  --checkbox-selected-ring: var(--checkbox-primary-ring);
 }
 
 .colorNeutral {
-  --checkbox-selected-bg: var(--color-gray-900);
-  --checkbox-selected-border: var(--color-gray-900);
-  --checkbox-selected-fg: var(--color-gray-50);
-  --checkbox-selected-hover-bg: var(--color-gray-800);
-  --checkbox-selected-hover-border: var(--color-gray-800);
-  --checkbox-selected-hover-fg: var(--color-gray-50);
-  --checkbox-selected-pressed-bg: var(--color-gray-700);
-  --checkbox-selected-pressed-border: var(--color-gray-700);
-  --checkbox-selected-pressed-fg: var(--color-gray-50);
-  --checkbox-selected-ring: var(--focus-ring-color);
+  --checkbox-selected-bg: var(--checkbox-neutral-default-bg);
+  --checkbox-selected-border: var(--checkbox-neutral-default-border);
+  --checkbox-selected-fg: var(--checkbox-neutral-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-neutral-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-neutral-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-neutral-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-neutral-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-neutral-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-neutral-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-neutral-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-neutral-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(
+    --checkbox-neutral-pressed-label-fg
+  );
+  --checkbox-selected-ring: var(--checkbox-neutral-ring);
 }
 
 .colorSuccess {
-  --checkbox-selected-bg: var(--status-success-strong);
-  --checkbox-selected-border: var(--status-success-border);
-  --checkbox-selected-fg: var(--color-success-50);
-  --checkbox-selected-hover-bg: var(--color-success-700);
-  --checkbox-selected-hover-border: var(--color-success-700);
-  --checkbox-selected-hover-fg: var(--color-success-50);
-  --checkbox-selected-pressed-bg: var(--color-success-800);
-  --checkbox-selected-pressed-border: var(--color-success-800);
-  --checkbox-selected-pressed-fg: var(--color-success-50);
-  --checkbox-selected-ring: var(--status-success-ring);
+  --checkbox-selected-bg: var(--checkbox-success-default-bg);
+  --checkbox-selected-border: var(--checkbox-success-default-border);
+  --checkbox-selected-fg: var(--checkbox-success-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-success-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-success-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-success-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-success-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-success-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-success-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-success-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-success-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(
+    --checkbox-success-pressed-label-fg
+  );
+  --checkbox-selected-ring: var(--checkbox-success-ring);
 }
 
 .colorWarning {
-  --checkbox-selected-bg: var(--status-warning-strong);
-  --checkbox-selected-border: var(--status-warning-border);
-  --checkbox-selected-fg: var(--color-warning-950);
-  --checkbox-selected-hover-bg: var(--color-warning-600);
-  --checkbox-selected-hover-border: var(--color-warning-600);
-  --checkbox-selected-hover-fg: var(--color-warning-950);
-  --checkbox-selected-pressed-bg: var(--color-warning-700);
-  --checkbox-selected-pressed-border: var(--color-warning-700);
-  --checkbox-selected-pressed-fg: var(--color-warning-950);
-  --checkbox-selected-ring: var(--status-warning-ring);
+  --checkbox-selected-bg: var(--checkbox-warning-default-bg);
+  --checkbox-selected-border: var(--checkbox-warning-default-border);
+  --checkbox-selected-fg: var(--checkbox-warning-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-warning-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-warning-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-warning-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-warning-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-warning-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-warning-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-warning-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-warning-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(
+    --checkbox-warning-pressed-label-fg
+  );
+  --checkbox-selected-ring: var(--checkbox-warning-ring);
 }
 
 .colorDanger {
-  --checkbox-selected-bg: var(--status-error-strong);
-  --checkbox-selected-border: var(--status-error-border);
-  --checkbox-selected-fg: var(--color-error-50);
-  --checkbox-selected-hover-bg: var(--color-error-700);
-  --checkbox-selected-hover-border: var(--color-error-700);
-  --checkbox-selected-hover-fg: var(--color-error-50);
-  --checkbox-selected-pressed-bg: var(--color-error-800);
-  --checkbox-selected-pressed-border: var(--color-error-800);
-  --checkbox-selected-pressed-fg: var(--color-error-50);
-  --checkbox-selected-ring: var(--status-error-ring);
+  --checkbox-selected-bg: var(--checkbox-danger-default-bg);
+  --checkbox-selected-border: var(--checkbox-danger-default-border);
+  --checkbox-selected-fg: var(--checkbox-danger-default-fg);
+  --checkbox-selected-hover-bg: var(--checkbox-danger-hover-bg);
+  --checkbox-selected-hover-border: var(--checkbox-danger-hover-border);
+  --checkbox-selected-hover-fg: var(--checkbox-danger-hover-fg);
+  --checkbox-selected-hover-label-fg: var(--checkbox-danger-hover-label-fg);
+  --checkbox-selected-label-fg: var(--checkbox-danger-default-label-fg);
+  --checkbox-selected-pressed-bg: var(--checkbox-danger-pressed-bg);
+  --checkbox-selected-pressed-border: var(--checkbox-danger-pressed-border);
+  --checkbox-selected-pressed-fg: var(--checkbox-danger-pressed-fg);
+  --checkbox-selected-pressed-label-fg: var(--checkbox-danger-pressed-label-fg);
+  --checkbox-selected-ring: var(--checkbox-danger-ring);
 }
 
 .labelStart {
@@ -288,7 +316,7 @@
 .input:checked + .customCheckbox + .label,
 .input:indeterminate + .customCheckbox + .label,
 .customCheckbox.indeterminate + .label {
-  color: var(--checkbox-checked-default-label-fg);
+  color: var(--checkbox-selected-label-fg);
 }
 
 .input:checked + .customCheckbox .checkmark {
@@ -314,7 +342,7 @@
 .wrapper:hover .input:checked:not(:disabled) + .customCheckbox + .label,
 .wrapper:hover .input:indeterminate:not(:disabled) + .customCheckbox + .label,
 .wrapper:hover .input:not(:disabled) + .customCheckbox.indeterminate + .label {
-  color: var(--checkbox-checked-hover-label-fg);
+  color: var(--checkbox-selected-hover-label-fg);
 }
 
 .wrapper:hover
@@ -336,7 +364,7 @@
 .input:checked:active:not(:disabled) + .customCheckbox + .label,
 .input:indeterminate:active:not(:disabled) + .customCheckbox + .label,
 .input:active:not(:disabled) + .customCheckbox.indeterminate + .label {
-  color: var(--checkbox-checked-pressed-label-fg);
+  color: var(--checkbox-selected-pressed-label-fg);
 }
 
 .wrapper:hover
