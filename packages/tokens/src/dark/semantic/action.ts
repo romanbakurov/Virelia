@@ -61,18 +61,18 @@ export const action = {
 
   close: {
     default: {
-      bg: colors.vellira[400],
-      fg: text.inverse,
-      border: colors.vellira[400],
-    },
-    hover: {
       bg: colors.vellira[300],
       fg: text.inverse,
       border: colors.vellira[300],
     },
+    hover: {
+      bg: colors.vellira[200],
+      fg: text.inverse,
+      border: colors.vellira[200],
+    },
     active: {
       bg: colors.vellira[500],
-      fg: text.inverse,
+      fg: colors.mono[50],
       border: colors.vellira[500],
     },
     muted: {
@@ -81,7 +81,7 @@ export const action = {
       border: colors.vellira[700],
     },
     subtle: {
-      bg: colors.vellira[200],
+      bg: colors.vellira[150],
       fg: text.secondary,
       border: 'transparent',
     },

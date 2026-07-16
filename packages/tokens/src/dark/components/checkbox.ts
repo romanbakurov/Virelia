@@ -13,9 +13,8 @@ export const checkbox = {
   },
 
   hover: {
-    bg: control.hover.bg,
-    fg: control.hover.fg,
-    border: control.hover.border,
+    ...control.hover,
+    labelFg: text.interactiveHover,
   },
 
   checked: {
