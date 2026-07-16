@@ -209,9 +209,9 @@
 .input:focus-visible + .customCheckbox {
   @include focus-border(
     var(--checkbox-default-border),
-    var(--checkbox-focus-ring)
+    var(--checkbox-selected-ring)
   );
-  @include focus-ring(var(--checkbox-focus-ring));
+  @include focus-ring(var(--checkbox-selected-ring));
 }
 
 .input:focus-visible + .customCheckbox.error {
@@ -311,6 +311,7 @@
     var(--checkbox-selected-border),
     var(--checkbox-selected-ring)
   );
+  @include focus-ring(var(--checkbox-selected-ring));
 }
 
 .input:checked + .customCheckbox + .label,
