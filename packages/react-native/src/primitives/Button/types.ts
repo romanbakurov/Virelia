@@ -28,8 +28,10 @@ export interface ButtonProps
     > {
   children?: ReactNode;
 
-  leftIcon?: ButtonIconElement;
-  rightIcon?: ButtonIconElement;
+  iconStart?: ButtonIconElement;
+  iconEnd?: ButtonIconElement;
+  badge?: ReactNode;
+  shortcut?: ReactNode;
   iconSize?: number;
 
   onPress?: (event: GestureResponderEvent) => void;

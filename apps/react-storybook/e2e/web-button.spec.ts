@@ -9,7 +9,7 @@ async function openStory(page: Page, id: string) {
 }
 
 test.describe('web Button', () => {
-  test('matrix is visually stable across color and variant states', async ({
+  test('matrix is visually stable across color and appearance states', async ({
     page,
   }, testInfo) => {
     await openStory(page, 'primitives-button--matrix');
@@ -17,7 +17,7 @@ test.describe('web Button', () => {
     const matrix = page.getByRole('heading', { name: 'Matrix' }).locator('..');
 
     await expect(matrix).toBeVisible();
-    await expect(matrix.getByRole('button')).toHaveCount(12);
+    await expect(matrix.getByRole('button')).toHaveCount(25);
     await expect(matrix).toHaveScreenshot(
       `web-button-matrix-${testInfo.project.name}.png`,
       {

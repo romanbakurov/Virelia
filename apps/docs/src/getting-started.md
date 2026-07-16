@@ -72,7 +72,7 @@ export function SignInForm() {
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </form>
@@ -100,7 +100,7 @@ export function SignInScreen() {
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </View>

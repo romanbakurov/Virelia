@@ -47,7 +47,7 @@ export function AccountPanel() {
             { label: 'Viewer', value: 'viewer' },
           ]}
         />
-        <Button color='primary' variant='solid'>
+        <Button color='primary' appearance='solid'>
           Save changes
         </Button>
       </Tabs.Panel>
@@ -65,7 +65,7 @@ generated reference lives in
 
 | Component    | Core props                                                                                       | State model                   |
 | ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`                            | disabled, loading             |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                | disabled, loading             |
 | `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
 | `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
@@ -103,25 +103,79 @@ accepts standard DOM attributes such as `className`, `onClick`, and
 `aria-label`.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
-import { Button } from '@vellira-ui/react';
+import { Filter, Save, Search } from '@vellira-ui/icons';
+import { Button, Modal } from '@vellira-ui/react';
+import { useState } from 'react';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
-      <Button color='primary' variant='solid' onClick={handleSave}>
+      <Button color='primary' appearance='solid' onClick={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
-      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+      <Button aria-label='Search' iconOnly iconStart={<Search />} />
+
+      <div role='toolbar' aria-label='Editor toolbar'>
+        <Button
+          aria-label='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+      </div>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onClick={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      <Modal
+        isOpen={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+      >
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onClick={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onClick={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
 ```
+
+Pass `loadingText` even in the idle render when the loading label is longer than
+the default label. Button reserves that label width and avoids horizontal layout
+shift when `loading` turns on.
 
 ## Controlled and Uncontrolled
 

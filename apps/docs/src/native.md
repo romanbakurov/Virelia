@@ -49,7 +49,7 @@ export function PreferencesScreen() {
         label='Send product updates'
         description='Receive release notes and billing updates.'
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Apply
       </Button>
     </View>
@@ -65,7 +65,7 @@ generated reference lives in
 
 | Component    | Core props                                                                                             | Role                  |
 | ------------ | ------------------------------------------------------------------------------------------------------ | --------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `accessibilityLabel`                                       | Buttons and actions   |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `accessibilityLabel`                           | Buttons and actions   |
 | `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | Boolean input         |
 | `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                                           | Text input            |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                    | Labels and validation |
@@ -104,28 +104,78 @@ extra guidance.
 
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts
 native styling hooks through `style` and `textStyle`. Use Vellira icon elements
-for `leftIcon` and `rightIcon`; Button injects the active icon color and size.
+for `iconStart` and `iconEnd`; Button injects the active icon color and size.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
+import { Filter, Save, Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
-      <Button color='primary' variant='solid' onPress={handleSave}>
+      <Button color='primary' appearance='solid' onPress={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
-      <Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />
+      <Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />
+
+      <View accessibilityLabel='Editor toolbar'>
+        <Button
+          accessibilityLabel='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+      </View>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onPress={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      {confirmingDelete ? (
+        <View accessibilityLiveRegion='polite'>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onPress={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onPress={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </View>
+      ) : null}
     </>
   );
 }
 ```
+
+Pass `loadingText` before the loading state is active when the loading label is
+longer than the default label. Button measures both labels and keeps the text
+slot stable as `loading` changes.
 
 ## FormField
 

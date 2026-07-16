@@ -54,7 +54,7 @@ export function Example() {
         checked={accepted}
         onCheckedChange={setAccepted}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </View>
@@ -69,7 +69,7 @@ Use `accessibilityLabel` for icon-only native buttons:
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />;
+<Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />;
 ```
 
 Button icons are React elements from `@vellira-ui/icons`; the component injects

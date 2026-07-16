@@ -34,15 +34,15 @@ function ModalDemo({
         </Modal.Body>
         <Modal.Footer>
           <Button
-            color='secondary'
-            variant='solid'
+            color='neutral'
+            appearance='solid'
             onPress={() => setIsOpen(false)}
           >
             Cancel
           </Button>
           <Button
             color='danger'
-            variant='solid'
+            appearance='solid'
             onPress={() => setIsOpen(false)}
           >
             Delete

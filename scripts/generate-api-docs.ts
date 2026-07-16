@@ -91,6 +91,23 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   'web.InputProps.Input': {
     className: 'Extra CSS class for the input element.',
   },
+  'web.ButtonProps.Button': {
+    appearance: 'Visual style: solid, outline, ghost, soft, or link.',
+    asChild: 'Composes Button behavior and styling onto the child element.',
+    badge: 'Compact badge rendered after the label.',
+    color: 'Visual tone: primary, neutral, success, warning, or danger.',
+    shape: 'Corner shape: square, rounded, or pill.',
+    shortcut: 'Keyboard shortcut hint rendered after the label.',
+    spinner: 'Custom loading indicator.',
+    tooltip: 'Native title tooltip text.',
+  },
+  'native.ButtonProps.Button': {
+    appearance: 'Visual style: solid, outline, ghost, soft, or link.',
+    badge: 'Compact badge rendered after the label.',
+    color: 'Visual tone: primary, neutral, success, warning, or danger.',
+    shape: 'Corner shape: square, rounded, or pill.',
+    shortcut: 'Keyboard shortcut hint rendered after the label.',
+  },
   'web.SelectProps.SelectProps': {
     size: 'Select size.',
   },

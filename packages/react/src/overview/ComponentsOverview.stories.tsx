@@ -271,57 +271,103 @@ function WebComponentsOverview() {
               <h3 style={subtitleStyle}>Colors</h3>
               <div style={rowStyle}>
                 <Button color='primary'>Primary</Button>
-                <Button color='secondary'>Secondary</Button>
-                <Button color='close'>Close</Button>
+                <Button color='neutral'>Neutral</Button>
+                <Button color='success'>Success</Button>
+                <Button color='warning'>Warning</Button>
                 <Button color='danger'>Danger</Button>
               </div>
             </div>
 
             <div style={groupStyle}>
-              <h3 style={subtitleStyle}>Variants</h3>
+              <h3 style={subtitleStyle}>Appearances</h3>
               <div style={stackStyle}>
                 <div style={rowStyle}>
-                  <Button color='primary' variant='solid'>
+                  <Button color='primary' appearance='solid'>
                     Primary solid
                   </Button>
-                  <Button color='secondary' variant='solid'>
-                    Secondary solid
+                  <Button color='neutral' appearance='solid'>
+                    Neutral solid
                   </Button>
-                  <Button color='close' variant='solid'>
-                    Close solid
+                  <Button color='success' appearance='solid'>
+                    Success solid
                   </Button>
-                  <Button color='danger' variant='solid'>
+                  <Button color='warning' appearance='solid'>
+                    Warning solid
+                  </Button>
+                  <Button color='danger' appearance='solid'>
                     Danger solid
                   </Button>
                 </div>
 
                 <div style={rowStyle}>
-                  <Button color='primary' variant='outline'>
+                  <Button color='primary' appearance='outline'>
                     Primary outline
                   </Button>
-                  <Button color='secondary' variant='outline'>
-                    Secondary outline
+                  <Button color='neutral' appearance='outline'>
+                    Neutral outline
                   </Button>
-                  <Button color='close' variant='outline'>
-                    Close outline
+                  <Button color='success' appearance='outline'>
+                    Success outline
                   </Button>
-                  <Button color='danger' variant='outline'>
+                  <Button color='warning' appearance='outline'>
+                    Warning outline
+                  </Button>
+                  <Button color='danger' appearance='outline'>
                     Danger outline
                   </Button>
                 </div>
 
                 <div style={rowStyle}>
-                  <Button color='primary' variant='ghost'>
+                  <Button color='primary' appearance='ghost'>
                     Primary ghost
                   </Button>
-                  <Button color='secondary' variant='ghost'>
-                    Secondary ghost
+                  <Button color='neutral' appearance='ghost'>
+                    Neutral ghost
                   </Button>
-                  <Button color='close' variant='ghost'>
-                    Close ghost
+                  <Button color='success' appearance='ghost'>
+                    Success ghost
                   </Button>
-                  <Button color='danger' variant='ghost'>
+                  <Button color='warning' appearance='ghost'>
+                    Warning ghost
+                  </Button>
+                  <Button color='danger' appearance='ghost'>
                     Danger ghost
+                  </Button>
+                </div>
+
+                <div style={rowStyle}>
+                  <Button color='primary' appearance='soft'>
+                    Primary soft
+                  </Button>
+                  <Button color='neutral' appearance='soft'>
+                    Neutral soft
+                  </Button>
+                  <Button color='success' appearance='soft'>
+                    Success soft
+                  </Button>
+                  <Button color='warning' appearance='soft'>
+                    Warning soft
+                  </Button>
+                  <Button color='danger' appearance='soft'>
+                    Danger soft
+                  </Button>
+                </div>
+
+                <div style={rowStyle}>
+                  <Button color='primary' appearance='link'>
+                    Primary link
+                  </Button>
+                  <Button color='neutral' appearance='link'>
+                    Neutral link
+                  </Button>
+                  <Button color='success' appearance='link'>
+                    Success link
+                  </Button>
+                  <Button color='warning' appearance='link'>
+                    Warning link
+                  </Button>
+                  <Button color='danger' appearance='link'>
+                    Danger link
                   </Button>
                 </div>
               </div>
@@ -333,6 +379,20 @@ function WebComponentsOverview() {
                 <Button size='sm'>Small</Button>
                 <Button size='md'>Medium</Button>
                 <Button size='lg'>Large</Button>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Shapes</h3>
+              <div style={rowStyle}>
+                <Button
+                  shape='square'
+                  iconOnly
+                  aria-label='Save'
+                  iconStart={<Save />}
+                />
+                <Button shape='rounded'>Rounded</Button>
+                <Button shape='pill'>Pill</Button>
               </div>
             </div>
 
@@ -353,12 +413,43 @@ function WebComponentsOverview() {
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>Icons</h3>
               <div style={rowStyle}>
-                <Button leftIcon={<Download />}>Left icon</Button>
-                <Button rightIcon={<Download />}>Right icon</Button>
-                <Button leftIcon={<Download />} rightIcon={<Search />}>
+                <Button iconStart={<Download />}>Start icon</Button>
+                <Button iconEnd={<Download />}>End icon</Button>
+                <Button iconStart={<Download />} iconEnd={<Search />}>
                   Both icons
                 </Button>
-                <Button iconOnly aria-label='Search' leftIcon={<Search />} />
+                <Button iconOnly aria-label='Search' iconStart={<Search />} />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Command and links</h3>
+              <div style={rowStyle}>
+                <Button
+                  appearance='soft'
+                  badge='4'
+                  color='neutral'
+                  iconStart={<Search />}
+                  shortcut='⌘K'
+                  tooltip='Open command menu'
+                >
+                  Command
+                </Button>
+                <Button
+                  appearance='ghost'
+                  color='danger'
+                  iconStart={<Filter />}
+                  shortcut='⌘⌫'
+                >
+                  Clear filters
+                </Button>
+                <Button
+                  appearance='link'
+                  href='https://vellira.dev'
+                  target='_blank'
+                >
+                  Open docs
+                </Button>
               </div>
             </div>
 
@@ -378,22 +469,22 @@ function WebComponentsOverview() {
                   aria-label='Search'
                   color='primary'
                   iconOnly
-                  leftIcon={<Search />}
-                  variant='ghost'
+                  iconStart={<Search />}
+                  appearance='ghost'
                 />
                 <Button
                   aria-label='Filter results'
-                  color='secondary'
+                  color='neutral'
                   iconOnly
-                  leftIcon={<Filter />}
-                  variant='outline'
+                  iconStart={<Filter />}
+                  appearance='outline'
                 />
                 <Button
                   aria-label='Save'
                   color='primary'
                   iconOnly
-                  leftIcon={<Save />}
-                  variant='solid'
+                  iconStart={<Save />}
+                  appearance='solid'
                 />
               </div>
             </div>
@@ -696,16 +787,16 @@ function WebComponentsOverview() {
         <Section title='Tooltip'>
           <div style={rowStyle}>
             <Tooltip content='Tooltip text is shown on hover or focus.'>
-              <Button color='secondary' variant='solid'>
+              <Button color='neutral' appearance='solid'>
                 Hover me
               </Button>
             </Tooltip>
             <Tooltip content='Icon buttons also expose tooltip content.'>
               <Button
-                color='secondary'
-                variant='solid'
+                color='neutral'
+                appearance='solid'
                 aria-label='Open filters'
-                leftIcon={<Filter />}
+                iconStart={<Filter />}
               />
             </Tooltip>
           </div>
@@ -720,15 +811,15 @@ function WebComponentsOverview() {
             </Modal.Body>
             <Modal.Footer>
               <Button
-                color='close'
-                variant='solid'
+                color='neutral'
+                appearance='solid'
                 onClick={() => setModalOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 color='primary'
-                variant='solid'
+                appearance='solid'
                 onClick={() => setModalOpen(false)}
               >
                 Apply

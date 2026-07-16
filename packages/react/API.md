@@ -55,7 +55,9 @@ import {
 
 | Type                | Values                                                                      |
 | ------------------- | --------------------------------------------------------------------------- |
-| `ButtonColor`       | `'primary'`, `'secondary'`, `'close'`, `'danger'`                           |
+| `ButtonAppearance`  | `'solid'`, `'outline'`, `'ghost'`, `'soft'`, `'link'`                       |
+| `ButtonColor`       | `'primary'`, `'neutral'`, `'success'`, `'warning'`, `'danger'`              |
+| `ButtonShape`       | `'square'`, `'rounded'`, `'pill'`                                           |
 | `ButtonSize`        | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputSize`         | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
@@ -76,35 +78,41 @@ type TooltipDelay = {
 
 ## Button
 
-Clickable action component with variants, sizes, optional icons, loading state,
+Clickable action component with appearances, sizes, optional icons, loading state,
 and full-width layout support.
 
 ```tsx
 import { Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react';
 
-<Button color='primary' variant='solid' size='md' onClick={handleSave}>
+<Button color='primary' appearance='solid' size='md' onClick={handleSave}>
   Save
 </Button>;
 
-<Button aria-label='Search' iconOnly leftIcon={<Search />} />;
+<Button aria-label='Search' iconOnly iconStart={<Search />} />;
 ```
 
 <!-- api-docgen:start web.ButtonProps.Button -->
 
-| Prop          | Type            | Required | Description                                             |
-| ------------- | --------------- | -------- | ------------------------------------------------------- |
-| `children`    | `ReactNode`     | No       | Button content.                                         |
-| `leftIcon`    | `ReactNode`     | No       | Icon rendered before content.                           |
-| `rightIcon`   | `ReactNode`     | No       | Icon rendered after content.                            |
-| `fullWidth`   | `boolean`       | No       | Makes the button fill its container width.              |
-| `variant`     | `ButtonVariant` | No       | Visual variant: `solid`, `outline`, or `ghost`.         |
-| `size`        | `ButtonSize`    | No       | Button size.                                            |
-| `disabled`    | `boolean`       | No       | Disables interaction.                                   |
-| `color`       | `ButtonColor`   | No       | Visual tone: `primary`, `secondary`, `close`, `danger`. |
-| `loading`     | `boolean`       | No       | Shows a spinner and disables interaction.               |
-| `loadingText` | `string`        | No       | Replaces visible content while loading.                 |
-| `iconOnly`    | `boolean`       | No       | Hides visible text for icon-only actions.               |
+| Prop          | Type               | Required | Description                                                  |
+| ------------- | ------------------ | -------- | ------------------------------------------------------------ |
+| `children`    | `ReactNode`        | No       | Button content.                                              |
+| `iconStart`   | `ReactNode`        | No       | Icon rendered before content.                                |
+| `iconEnd`     | `ReactNode`        | No       | Icon rendered after content.                                 |
+| `fullWidth`   | `boolean`          | No       | Makes the button fill its container width.                   |
+| `size`        | `ButtonSize`       | No       | Button size.                                                 |
+| `disabled`    | `boolean`          | No       | Disables interaction.                                        |
+| `color`       | `ButtonColor`      | No       | Visual tone: primary, neutral, success, warning, or danger.  |
+| `loading`     | `boolean`          | No       | Shows a spinner and disables interaction.                    |
+| `loadingText` | `string`           | No       | Replaces visible content while loading.                      |
+| `iconOnly`    | `boolean`          | No       | Hides visible text for icon-only actions.                    |
+| `spinner`     | `ReactNode`        | No       | Custom loading indicator.                                    |
+| `tooltip`     | `string`           | No       | Native title tooltip text.                                   |
+| `badge`       | `ReactNode`        | No       | Compact badge rendered after the label.                      |
+| `shortcut`    | `ReactNode`        | No       | Keyboard shortcut hint rendered after the label.             |
+| `asChild`     | `boolean`          | No       | Composes Button behavior and styling onto the child element. |
+| `appearance`  | `ButtonAppearance` | No       | Visual style: solid, outline, ghost, soft, or link.          |
+| `shape`       | `ButtonShape`      | No       | Corner shape: square, rounded, or pill.                      |
 
 <!-- api-docgen:end web.ButtonProps.Button -->
 
@@ -573,7 +581,7 @@ import { Button, Modal } from '@vellira-ui/react';
     <Modal.Header>Delete file</Modal.Header>
     <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
     <Modal.Footer>
-      <Button color='secondary' variant='solid' onClick={closeModal}>
+      <Button color='neutral' appearance='solid' onClick={closeModal}>
         Cancel
       </Button>
     </Modal.Footer>

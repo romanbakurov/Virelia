@@ -109,8 +109,9 @@ function NativeComponentsOverview() {
             </Text>
             <View style={styles.row}>
               <Button color='primary'>Primary</Button>
-              <Button color='secondary'>Secondary</Button>
-              <Button color='close'>Close</Button>
+              <Button color='neutral'>Neutral</Button>
+              <Button color='success'>Success</Button>
+              <Button color='warning'>Warning</Button>
               <Button color='danger'>Danger</Button>
             </View>
           </View>
@@ -122,18 +123,98 @@ function NativeComponentsOverview() {
                 { color: theme.semantic.text.secondary },
               ]}
             >
-              Variants
+              Appearances
             </Text>
-            <View style={styles.row}>
-              <Button color='primary' variant='solid'>
-                Solid
-              </Button>
-              <Button color='primary' variant='outline'>
-                Outline
-              </Button>
-              <Button color='primary' variant='ghost'>
-                Ghost
-              </Button>
+            <View style={styles.stack}>
+              <View style={styles.row}>
+                <Button color='primary' appearance='solid'>
+                  Primary solid
+                </Button>
+                <Button color='neutral' appearance='solid'>
+                  Neutral solid
+                </Button>
+                <Button color='success' appearance='solid'>
+                  Success solid
+                </Button>
+                <Button color='warning' appearance='solid'>
+                  Warning solid
+                </Button>
+                <Button color='danger' appearance='solid'>
+                  Danger solid
+                </Button>
+              </View>
+
+              <View style={styles.row}>
+                <Button color='primary' appearance='outline'>
+                  Primary outline
+                </Button>
+                <Button color='neutral' appearance='outline'>
+                  Neutral outline
+                </Button>
+                <Button color='success' appearance='outline'>
+                  Success outline
+                </Button>
+                <Button color='warning' appearance='outline'>
+                  Warning outline
+                </Button>
+                <Button color='danger' appearance='outline'>
+                  Danger outline
+                </Button>
+              </View>
+
+              <View style={styles.row}>
+                <Button color='primary' appearance='ghost'>
+                  Primary ghost
+                </Button>
+                <Button color='neutral' appearance='ghost'>
+                  Neutral ghost
+                </Button>
+                <Button color='success' appearance='ghost'>
+                  Success ghost
+                </Button>
+                <Button color='warning' appearance='ghost'>
+                  Warning ghost
+                </Button>
+                <Button color='danger' appearance='ghost'>
+                  Danger ghost
+                </Button>
+              </View>
+
+              <View style={styles.row}>
+                <Button color='primary' appearance='soft'>
+                  Primary soft
+                </Button>
+                <Button color='neutral' appearance='soft'>
+                  Neutral soft
+                </Button>
+                <Button color='success' appearance='soft'>
+                  Success soft
+                </Button>
+                <Button color='warning' appearance='soft'>
+                  Warning soft
+                </Button>
+                <Button color='danger' appearance='soft'>
+                  Danger soft
+                </Button>
+              </View>
+
+              <View style={styles.row}>
+                <Button color='primary' appearance='link'>
+                  Primary link
+                </Button>
+                <Button color='neutral' appearance='link'>
+                  Neutral link
+                </Button>
+                <Button color='success' appearance='link'>
+                  Success link
+                </Button>
+                <Button color='warning' appearance='link'>
+                  Warning link
+                </Button>
+                <Button color='danger' appearance='link'>
+                  Danger link
+                </Button>
+              </View>
             </View>
           </View>
 
@@ -150,6 +231,27 @@ function NativeComponentsOverview() {
               <Button size='sm'>Small</Button>
               <Button size='md'>Medium</Button>
               <Button size='lg'>Large</Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Shapes
+            </Text>
+            <View style={styles.row}>
+              <Button
+                accessibilityLabel='Save'
+                iconOnly
+                iconStart={<Save />}
+                shape='square'
+              />
+              <Button shape='rounded'>Rounded</Button>
+              <Button shape='pill'>Pill</Button>
             </View>
           </View>
 
@@ -184,17 +286,47 @@ function NativeComponentsOverview() {
               Icons
             </Text>
             <View style={styles.row}>
-              <Button leftIcon={<Download />}>Left icon</Button>
-              <Button rightIcon={<Download />}>Right icon</Button>
-              <Button leftIcon={<Download />} rightIcon={<Search />}>
+              <Button iconStart={<Download />}>Start icon</Button>
+              <Button iconEnd={<Download />}>End icon</Button>
+              <Button iconStart={<Download />} iconEnd={<Search />}>
                 Both icons
               </Button>
               <Button
                 iconOnly
                 accessibilityLabel='Search'
-                leftIcon={<Search />}
+                iconStart={<Search />}
               >
                 Search
+              </Button>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Command actions
+            </Text>
+            <View style={styles.row}>
+              <Button
+                appearance='soft'
+                badge='4'
+                color='neutral'
+                iconStart={<Search />}
+                shortcut='⌘K'
+              >
+                Command
+              </Button>
+              <Button
+                appearance='ghost'
+                color='danger'
+                iconStart={<Filter />}
+                shortcut='⌘⌫'
+              >
+                Clear filters
               </Button>
             </View>
           </View>
@@ -213,22 +345,22 @@ function NativeComponentsOverview() {
                 accessibilityLabel='Search'
                 color='primary'
                 iconOnly
-                leftIcon={<Search />}
-                variant='ghost'
+                iconStart={<Search />}
+                appearance='ghost'
               />
               <Button
                 accessibilityLabel='Filter results'
-                color='secondary'
+                color='neutral'
                 iconOnly
-                leftIcon={<Filter />}
-                variant='outline'
+                iconStart={<Filter />}
+                appearance='outline'
               />
               <Button
                 accessibilityLabel='Save'
                 color='primary'
                 iconOnly
-                leftIcon={<Save />}
-                variant='solid'
+                iconStart={<Save />}
+                appearance='solid'
               />
             </View>
           </View>
@@ -292,7 +424,7 @@ function NativeComponentsOverview() {
               label='Search'
               type='search'
               placeholder='Search components'
-              leftIcon={<Search />}
+              iconStart={<Search />}
             />
 
             <Input label='Password' placeholder='Password' type='password' />
@@ -300,18 +432,18 @@ function NativeComponentsOverview() {
             <Input
               label='Verified email'
               defaultValue='hello@vellira.dev'
-              rightIcon={<Check />}
-              rightIconTone='success'
+              iconEnd={<Check />}
+              iconEndTone='success'
               placeholder='name@company.com'
               type='email'
             />
 
             <Input
               label='Search settings'
-              leftIcon={<Search />}
-              rightIcon={<Check />}
-              rightIconTone='success'
-              leftIconTone='primary'
+              iconStart={<Search />}
+              iconEnd={<Check />}
+              iconEndTone='success'
+              iconStartTone='primary'
               defaultValue='Theme'
             />
 
@@ -624,16 +756,16 @@ function NativeComponentsOverview() {
         <Section title='Tooltip'>
           <View style={styles.row}>
             <Tooltip content='Long press to show tooltip content.'>
-              <Button color='secondary' variant='solid'>
+              <Button color='neutral' appearance='solid'>
                 Long press
               </Button>
             </Tooltip>
             <Tooltip content='Icon buttons also expose tooltip content.'>
               <Button
-                color='secondary'
-                variant='solid'
+                color='neutral'
+                appearance='solid'
                 accessibilityLabel='Open filters'
-                leftIcon={<Filter />}
+                iconStart={<Filter />}
               />
             </Tooltip>
           </View>
@@ -655,15 +787,15 @@ function NativeComponentsOverview() {
             </Modal.Body>
             <Modal.Footer>
               <Button
-                color='secondary'
-                variant='solid'
+                color='neutral'
+                appearance='solid'
                 onPress={() => setModalOpen(false)}
               >
                 Cancel
               </Button>
               <Button
                 color='primary'
-                variant='solid'
+                appearance='solid'
                 onPress={() => setModalOpen(false)}
               >
                 Apply
@@ -723,6 +855,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+    gap: 12,
+  },
+
+  stack: {
     gap: 12,
   },
 
