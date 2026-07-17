@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { useTheme } from '../../theme';
 import { Input } from '../../primitives/Input';
+import { useTheme } from '../../theme';
 
 import { FormField } from './FormField';
 

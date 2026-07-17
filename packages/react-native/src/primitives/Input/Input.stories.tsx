@@ -5,8 +5,8 @@ import { Check, Close, Search } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useTheme } from '../../theme';
 import { FormField } from '../../patterns/FormField';
+import { useTheme } from '../../theme';
 
 import { Input } from './Input';
 import type { InputProps } from './types';

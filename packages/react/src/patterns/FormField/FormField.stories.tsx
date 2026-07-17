@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Search } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { Input } from '../../primitives/Input';
@@ -70,6 +69,29 @@ function InfoMark() {
     >
       ?
     </span>
+  );
+}
+
+function WithInputContextDemo() {
+  const [email, setEmail] = useState('');
+
+  return (
+    <Section title='FormField + Input context'>
+      <FormField
+        label='Email'
+        description='Input inherits id, aria, required, invalid, and size.'
+        required
+        size='sm'
+      >
+        <Input
+          value={email}
+          onValueChange={setEmail}
+          placeholder='name@company.com'
+          type='email'
+          clearable
+        />
+      </FormField>
+    </Section>
   );
 }
 
@@ -170,28 +192,7 @@ export const Playground: Story = {
 };
 
 export const WithInputContext: Story = {
-  render: () => {
-    const [email, setEmail] = useState('');
-
-    return (
-      <Section title='FormField + Input context'>
-        <FormField
-          label='Email'
-          description='Input inherits id, aria, required, invalid, and size.'
-          required
-          size='sm'
-        >
-          <Input
-            value={email}
-            onValueChange={setEmail}
-            placeholder='name@company.com'
-            type='email'
-            clearable
-          />
-        </FormField>
-      </Section>
-    );
-  },
+  render: () => <WithInputContextDemo />,
 };
 
 export const InputShorthand: Story = {
