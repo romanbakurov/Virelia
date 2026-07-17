@@ -93,20 +93,24 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   },
   'web.ButtonProps.Button': {
     appearance: 'Visual style: solid, outline, ghost, soft, or link.',
-    asChild: 'Composes Button behavior and styling onto the child element.',
-    badge: 'Compact badge rendered after the label.',
+    asChild:
+      'Composes Button behavior and styling onto a single child element.',
+    badge: 'Compact badge rendered after the label when not icon-only.',
     color: 'Visual tone: primary, neutral, success, warning, or danger.',
     shape: 'Corner shape: square, rounded, or pill.',
-    shortcut: 'Keyboard shortcut hint rendered after the label.',
+    shortcut:
+      'Keyboard shortcut hint rendered after the label when not icon-only.',
     spinner: 'Custom loading indicator.',
-    tooltip: 'Native title tooltip text.',
+    tooltip: 'HTML title tooltip text for the button or composed child.',
   },
   'native.ButtonProps.Button': {
     appearance: 'Visual style: solid, outline, ghost, soft, or link.',
-    badge: 'Compact badge rendered after the label.',
+    badge: 'Compact badge rendered after the label when not icon-only.',
     color: 'Visual tone: primary, neutral, success, warning, or danger.',
+    iconSize: 'Overrides the size-derived icon size in pixels.',
     shape: 'Corner shape: square, rounded, or pill.',
-    shortcut: 'Keyboard shortcut hint rendered after the label.',
+    shortcut:
+      'Keyboard shortcut hint rendered after the label when not icon-only.',
   },
   'web.SelectProps.SelectProps': {
     size: 'Select size.',

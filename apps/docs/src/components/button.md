@@ -29,7 +29,8 @@ only behavior is inline text navigation inside prose.
 | Low-emphasis toolbar action     | `appearance="ghost"` with an icon                                              |
 | Non-blocking success action     | `appearance="soft" color="success"`                                            |
 | Destructive intent              | `color="danger"` with confirmation when the action is irreversible             |
-| Text navigation                 | `appearance="link"` or `href` when a button should render as navigation        |
+| Text navigation                 | `href`, `target`, `download`, or `asChild` for router links                     |
+| Dense command surfaces          | `iconStart`, `badge`, `shortcut`, and `tooltip`                                |
 
 ## Appearance And Color
 
@@ -63,26 +64,29 @@ footers do not jump.
 
 ### Icon And Shortcut
 
-Use icons for scanning and shortcuts for command-heavy interfaces. Keep the
-visible label unless the action is truly self-evident and has an accessible
-name.
+Use icons for scanning, `badge` for compact counts or state, and `shortcut` for
+command-heavy interfaces. Keep the visible label unless the action is truly
+self-evident and has an accessible name.
 
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button iconStart={<Search />} shortcut='⌘K'>
+<Button badge='12' iconStart={<Search />} shortcut='⌘K'>
   Search
 </Button>;
 ```
 
 ### Icon Only
 
-Icon-only buttons need an accessible name.
+Icon-only buttons need an accessible name. Button also enters icon-only mode
+automatically when there is an icon and no visible children.
 
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
 <Button aria-label='Open command menu' iconOnly iconStart={<Search />} />;
+
+<Button aria-label='Refresh data' iconStart={<Search />} />;
 ```
 
 On native, use `accessibilityLabel`.
@@ -125,6 +129,23 @@ button inside the modal for the final destructive step.
 </Modal>
 ```
 
+### Tooltip And Custom Spinner
+
+Use `tooltip` for the native `title` attribute on web buttons and composed
+children. Use a custom `spinner` when the loading indicator must match a product
+or brand motion system.
+
+```tsx
+<Button
+  loading={isSyncing}
+  loadingText='Syncing...'
+  spinner={<span aria-hidden='true' className='sync-spinner' />}
+  tooltip='Sync workspace'
+>
+  Sync
+</Button>
+```
+
 ### Real Example: Project Header Actions
 
 ```tsx
@@ -144,9 +165,11 @@ export function ProjectHeaderActions({ project }) {
       </Button>
       <Button
         appearance='outline'
+        badge={project.duplicateCount}
         color='neutral'
         iconStart={<Copy />}
         shortcut='⌘D'
+        tooltip='Duplicate project'
         onClick={() => duplicateProject(project.id)}
       >
         Duplicate
@@ -176,13 +199,19 @@ export function ProjectHeaderActions({ project }) {
 
 ## Web Links And Composition
 
-Use `href`, `target`, `download`, or `asChild` when the action should adopt link
-or router semantics. Preserve accessible names and disabled behavior when
-composing with custom children.
+Use `href`, `target`, `rel`, `download`, or `asChild` when the action should
+adopt link or router semantics. Buttons with `href` render as anchors. When
+`target="_blank"` is used without `rel`, Button adds `noreferrer noopener`.
+When link buttons are disabled or loading, Button removes navigation, sets
+`aria-disabled`, and prevents click handlers.
 
 ```tsx
 <Button href='/billing' appearance='link'>
   Billing settings
+</Button>
+
+<Button href='/invoice.pdf' download>
+  Download invoice
 </Button>
 
 <Button asChild appearance='solid'>
@@ -195,6 +224,9 @@ composing with custom children.
 - Provide `aria-label` for icon-only web buttons.
 - Provide `accessibilityLabel` for icon-only native buttons.
 - Loading disables interaction and should communicate progress with clear text.
+- Link buttons use `aria-disabled` when disabled because anchors do not support
+  the native `disabled` attribute.
+- Use `aria-labelledby` when an icon-only action has a visible external label.
 - Do not use a danger color as the only warning for irreversible actions.
 - Keep target size comfortable for touch surfaces, especially icon-only actions.
 

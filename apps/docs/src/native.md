@@ -105,6 +105,9 @@ extra guidance.
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts
 native styling hooks through `style` and `textStyle`. Use Vellira icon elements
 for `iconStart` and `iconEnd`; Button injects the active icon color and size.
+Use `iconSize` to override the size-derived icon value. `badge` and `shortcut`
+render compact metadata after the label, and are hidden automatically for
+icon-only actions.
 
 ```tsx
 import { Filter, Save, Search } from '@vellira-ui/icons';
@@ -126,7 +129,13 @@ export function ButtonExamples() {
         Save
       </Button>
 
+      <Button badge='3' iconStart={<Filter />} shortcut='⌘F'>
+        Filters
+      </Button>
+
       <Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />
+
+      <Button accessibilityLabel='Save draft' iconStart={<Save />} />
 
       <View accessibilityLabel='Editor toolbar'>
         <Button
@@ -137,6 +146,9 @@ export function ButtonExamples() {
         />
         <Button appearance='ghost' iconStart={<Filter />}>
           Filter
+        </Button>
+        <Button appearance='ghost' iconSize={18} iconStart={<Search />}>
+          Search
         </Button>
       </View>
 
@@ -176,6 +188,10 @@ export function ButtonExamples() {
 Pass `loadingText` before the loading state is active when the loading label is
 longer than the default label. Button measures both labels and keeps the text
 slot stable as `loading` changes.
+
+When `iconOnly` is omitted, Button automatically switches to icon-only layout if
+it receives `iconStart` or `iconEnd` without visible children. Provide
+`accessibilityLabel` in that case.
 
 ## FormField
 
