@@ -6,7 +6,6 @@ import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
 import { FormField } from '../../patterns/FormField';
-
 import { Input } from '../Input';
 
 import type { InputProps } from './types';
@@ -210,6 +209,24 @@ const ClearableInputDemo = () => {
   );
 };
 
+const CounterInputDemo = () => {
+  const [value, setValue] = useState(
+    'Product designer focused on accessible systems, form UX, clear validation, and calm interfaces for fast-moving teams....'
+  );
+
+  return (
+    <Input
+      label='Bio'
+      description='Short profile summary.'
+      value={value}
+      onValueChange={setValue}
+      maxLength={200}
+      showCounter
+      placeholder='Write a short bio'
+    />
+  );
+};
+
 export const Basic: Story = {
   args: {
     label: 'Email',
@@ -352,6 +369,46 @@ export const ColorVariantMatrix: Story = {
   ),
 };
 
+export const FocusStates: Story = {
+  render: () => (
+    <Section title='Focus states'>
+      <div style={matrixStyle}>
+        <Input
+          label='Primary focus'
+          color='primary'
+          variant='outline'
+          defaultValue='Focused'
+          autoFocus
+        />
+        <Input
+          label='Neutral filled'
+          color='neutral'
+          variant='filled'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Success soft'
+          color='success'
+          variant='soft'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Warning outline'
+          color='warning'
+          variant='outline'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Danger filled'
+          color='danger'
+          variant='filled'
+          defaultValue='Tab here'
+        />
+      </div>
+    </Section>
+  ),
+};
+
 export const Types: Story = {
   render: () => (
     <Section title='Types'>
@@ -486,7 +543,11 @@ export const MasksAndFormatting: Story = {
           placeholder='+33 6 00 00 00 00'
           type='tel'
         />
-        <Input label='Card' mask='#### #### #### ####' placeholder='4242 4242 4242 4242' />
+        <Input
+          label='Card'
+          mask='#### #### #### ####'
+          placeholder='4242 4242 4242 4242'
+        />
         <Input
           label='Amount'
           value='12000'
@@ -497,6 +558,14 @@ export const MasksAndFormatting: Story = {
           prefix='$'
         />
       </div>
+    </Section>
+  ),
+};
+
+export const Counter: Story = {
+  render: () => (
+    <Section title='Counter'>
+      <CounterInputDemo />
     </Section>
   ),
 };
@@ -524,7 +593,11 @@ export const States: Story = {
           disabled
           invalid
         >
-          <Input disabled={false} invalid={false} placeholder='Inherited state' />
+          <Input
+            disabled={false}
+            invalid={false}
+            placeholder='Inherited state'
+          />
         </FormField>
       </div>
     </Section>
