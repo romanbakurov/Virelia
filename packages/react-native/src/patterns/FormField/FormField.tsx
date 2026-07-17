@@ -1,10 +1,11 @@
 import { useId } from 'react';
+
 import { Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 
-import { FormFieldContext } from './FormFieldContext';
 import { createStyles } from './FormField.styles';
+import { FormFieldContext } from './FormFieldContext';
 import type { FormFieldProps } from './types';
 
 export function FormField({
@@ -45,7 +46,8 @@ export function FormField({
     invalid: isInvalid,
     size,
     ariaLabelledBy: labelId,
-    ariaDescribedBy: [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
+    ariaDescribedBy:
+      [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
   };
 
   return (

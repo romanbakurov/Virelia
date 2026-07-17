@@ -1,8 +1,8 @@
 import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 
-import { Search } from '@vellira-ui/icons';
 import { FormField, useFormFieldContext } from '@patterns/FormField';
 import { cn } from '@utils/cn';
+import { Search } from '@vellira-ui/icons';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
 import type { InputProps } from './types';
@@ -68,7 +68,9 @@ const applyPatternMask = (value: string, pattern: string) => {
 const applyMask = (value: string, mask: InputProps['mask']) => {
   if (!mask) return value;
 
-  return typeof mask === 'function' ? mask(value) : applyPatternMask(value, mask);
+  return typeof mask === 'function'
+    ? mask(value)
+    : applyPatternMask(value, mask);
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -126,7 +128,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const generatedId = useId();
     const field = useFormFieldContext();
     const hasOwnField = Boolean(label || description || error);
-    const id = providedId ?? (!hasOwnField ? field?.controlId : undefined) ?? generatedId;
+    const id =
+      providedId ??
+      (!hasOwnField ? field?.controlId : undefined) ??
+      generatedId;
 
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [isPasswordRevealed, setIsPasswordRevealed] = useState(false);
@@ -141,7 +146,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const displayValue = format ? format(currentValueText) : currentValueText;
     const hasValue = currentValueText.length > 0;
     const resolvedSize = size ?? field?.size ?? 'md';
-    const isInvalid = invalid || Boolean(error) || (!hasOwnField && Boolean(field?.invalid));
+    const isInvalid =
+      invalid || Boolean(error) || (!hasOwnField && Boolean(field?.invalid));
     const isDisabled = disabled || (!hasOwnField && Boolean(field?.disabled));
     const isRequired = required || (!hasOwnField && Boolean(field?.required));
     const isReadOnly = readOnly || loading;
@@ -157,9 +163,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const showClearButton =
       clearable && hasValue && !isDisabled && !isReadOnly && !showLoading;
     const showRevealButton =
-      revealPassword && isPasswordInput && !isDisabled && !showLoading && !showClearButton;
+      revealPassword &&
+      isPasswordInput &&
+      !isDisabled &&
+      !showLoading &&
+      !showClearButton;
     const showEndIcon =
-      !showLoading && !showClearButton && !showRevealButton && Boolean(resolvedEndIcon);
+      !showLoading &&
+      !showClearButton &&
+      !showRevealButton &&
+      Boolean(resolvedEndIcon);
     const shouldShowCounter = Boolean(showCounterProp && maxLength);
     const descriptionId = description ? `${id}-description` : undefined;
     const errorId = error ? `${id}-error` : undefined;
@@ -178,10 +191,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasStartContent = Boolean(resolvedStartIcon || prefix);
     const hasEndContent = Boolean(
       resolvedEndIcon ||
-        suffix ||
-        showClearButton ||
-        showRevealButton ||
-        showLoading
+      suffix ||
+      showClearButton ||
+      showRevealButton ||
+      showLoading
     );
     const hasStartIconAndPrefix = Boolean(resolvedStartIcon && prefix);
     const hasEndIconAndSuffix = Boolean(resolvedEndIcon && suffix);
@@ -232,17 +245,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const control = (
       <>
         <div
-          className={cn(
-            styles.inputGroup,
-            styles[variant],
-            styles[color],
-            {
-              [styles.hasAddons]: hasAddons,
-              [styles.isDisabled]: isDisabled,
-              [styles.isInvalid]: isInvalid,
-              [styles.isLoading]: showLoading,
-            }
-          )}
+          className={cn(styles.inputGroup, styles[variant], styles[color], {
+            [styles.hasAddons]: hasAddons,
+            [styles.isDisabled]: isDisabled,
+            [styles.isInvalid]: isInvalid,
+            [styles.isLoading]: showLoading,
+          })}
         >
           {startAddon && <span className={styles.addon}>{startAddon}</span>}
 
@@ -266,9 +274,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               </span>
             )}
 
-            {prefix && (
-              <span className={styles.prefix}>{prefix}</span>
-            )}
+            {prefix && <span className={styles.prefix}>{prefix}</span>}
 
             <input
               {...inputProps}
@@ -304,9 +310,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               onMouseLeave={onMouseLeave}
             />
 
-            {suffix && (
-              <span className={styles.suffix}>{suffix}</span>
-            )}
+            {suffix && <span className={styles.suffix}>{suffix}</span>}
 
             <div className={styles.endSlot}>
               {showLoading && (

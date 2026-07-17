@@ -1,9 +1,9 @@
 import {
+  type AriaAttributes,
   cloneElement,
   isValidElement,
-  useId,
-  type AriaAttributes,
   type ReactElement,
+  useId,
 } from 'react';
 
 import { cn } from '@utils/cn';
@@ -124,9 +124,7 @@ export const FormField = ({
             <span className={styles.optional}>{optionalText}</span>
           )}
 
-          {labelInfo && (
-            <span className={styles.labelInfo}>{labelInfo}</span>
-          )}
+          {labelInfo && <span className={styles.labelInfo}>{labelInfo}</span>}
         </label>
       )}
 

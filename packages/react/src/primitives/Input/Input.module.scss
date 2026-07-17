@@ -32,12 +32,8 @@
 @each $color in primary, neutral, success, warning, danger {
   @each $variant in outline, filled, soft {
     .#{$color}.#{$variant} {
-      --input-current-default-bg: var(
-        --input-#{$color}-#{$variant}-default-bg
-      );
-      --input-current-default-fg: var(
-        --input-#{$color}-#{$variant}-default-fg
-      );
+      --input-current-default-bg: var(--input-#{$color}-#{$variant}-default-bg);
+      --input-current-default-fg: var(--input-#{$color}-#{$variant}-default-fg);
       --input-current-default-border: var(
         --input-#{$color}-#{$variant}-default-border
       );
@@ -55,9 +51,7 @@
       --input-current-hover-placeholder: var(
         --input-#{$color}-#{$variant}-hover-placeholder
       );
-      --input-current-hover-icon: var(
-        --input-#{$color}-#{$variant}-hover-icon
-      );
+      --input-current-hover-icon: var(--input-#{$color}-#{$variant}-hover-icon);
       --input-current-focus-bg: var(--input-#{$color}-#{$variant}-focus-bg);
       --input-current-focus-fg: var(--input-#{$color}-#{$variant}-focus-fg);
       --input-current-focus-border: var(
@@ -66,9 +60,7 @@
       --input-current-focus-placeholder: var(
         --input-#{$color}-#{$variant}-focus-placeholder
       );
-      --input-current-focus-icon: var(
-        --input-#{$color}-#{$variant}-focus-icon
-      );
+      --input-current-focus-icon: var(--input-#{$color}-#{$variant}-focus-icon);
       --input-current-ring: var(--input-#{$color}-ring);
     }
   }

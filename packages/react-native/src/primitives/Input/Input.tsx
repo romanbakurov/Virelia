@@ -6,10 +6,7 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { FormField, useFormFieldContext } from '../../patterns/FormField';
 import { useTheme, useThemeStyles } from '../../theme';
 
-import {
-  createStyles,
-  getDisabledPlaceholderTextColor,
-} from './Input.styles';
+import { createStyles, getDisabledPlaceholderTextColor } from './Input.styles';
 import type { InputProps, NativeInputKeyboardType } from './types';
 
 const keyboardTypeByInputType: Record<
@@ -78,7 +75,9 @@ const applyPatternMask = (value: string, pattern: string) => {
 const applyMask = (value: string, mask: InputProps['mask']) => {
   if (!mask) return value;
 
-  return typeof mask === 'function' ? mask(value) : applyPatternMask(value, mask);
+  return typeof mask === 'function'
+    ? mask(value)
+    : applyPatternMask(value, mask);
 };
 
 export const Input = forwardRef<TextInput, InputProps>(
@@ -195,7 +194,8 @@ export const Input = forwardRef<TextInput, InputProps>(
 
     const showClearButton = clearable && hasValue && !isDisabled && !isReadOnly;
     const showRevealButton = revealPassword && isPassword && !isDisabled;
-    const showRightIcon = !showClearButton && !showRevealButton && Boolean(endIcon);
+    const showRightIcon =
+      !showClearButton && !showRevealButton && Boolean(endIcon);
 
     const startIconColor = isDisabled
       ? theme.components.input.disabled.icon
@@ -228,7 +228,9 @@ export const Input = forwardRef<TextInput, InputProps>(
         <TextInput
           {...props}
           ref={ref}
-          nativeID={props.nativeID ?? (!hasOwnField ? field?.controlId : undefined)}
+          nativeID={
+            props.nativeID ?? (!hasOwnField ? field?.controlId : undefined)
+          }
           value={displayValue}
           onChangeText={handleChangeText}
           editable={!isDisabled && !isReadOnly}

@@ -2,9 +2,9 @@ import { act, useState } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
-import { FormField } from '../../patterns/FormField';
 
 import { Input } from './Input';
 
@@ -391,14 +391,22 @@ describe('Input', () => {
     expect(container.textContent).toContain('@');
     expect(container.textContent).toContain('kg');
     expect(container.textContent).toContain('7 / 20');
-    expect(container.querySelector('[data-testid="input-spinner"]')).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="input-spinner"]')
+    ).not.toBeNull();
 
     unmount();
   });
 
   it('reveals password values on demand', () => {
     const { container, unmount } = render(
-      <Input id='password' label='Password' value='secret' type='password' revealPassword />
+      <Input
+        id='password'
+        label='Password'
+        value='secret'
+        type='password'
+        revealPassword
+      />
     );
 
     const input = container.querySelector<HTMLInputElement>('input');
@@ -561,7 +569,9 @@ describe('Input', () => {
       />
     );
 
-    expect(container.querySelector('[data-testid="input-spinner"]')).not.toBeNull();
+    expect(
+      container.querySelector('[data-testid="input-spinner"]')
+    ).not.toBeNull();
     expect(
       container.querySelector('button[aria-label="Clear input"]')
     ).toBeNull();

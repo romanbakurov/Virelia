@@ -34,15 +34,15 @@ For ordinary text fields, prefer the Input shorthand API.
 FormField owns field layout and semantic wiring. Compatible Vellira controls
 consume FormField context automatically.
 
-| Responsibility              | Owner                         |
-| --------------------------- | ----------------------------- |
-| Label and layout            | `FormField`                   |
-| Generated ids               | `FormField`                   |
+| Responsibility              | Owner                          |
+| --------------------------- | ------------------------------ |
+| Label and layout            | `FormField`                    |
+| Generated ids               | `FormField`                    |
 | `aria-labelledby`           | `FormField` + compatible child |
 | `aria-describedby`          | `FormField` + compatible child |
 | `aria-invalid`              | `FormField` + compatible child |
-| Value and validation logic   | App                           |
-| Control-specific appearance | Child control                 |
+| Value and validation logic  | App                            |
+| Control-specific appearance | Child control                  |
 
 FormField provides these values through context:
 

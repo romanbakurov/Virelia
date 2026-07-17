@@ -15,7 +15,8 @@ export type FormFieldContextValue = {
   ariaDescribedBy?: string;
 };
 
-export const FormFieldContext =
-  createContext<FormFieldContextValue | null>(null);
+export const FormFieldContext = createContext<FormFieldContextValue | null>(
+  null
+);
 
 export const useFormFieldContext = () => useContext(FormFieldContext);

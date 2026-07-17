@@ -67,7 +67,7 @@ generated reference lives in
 | ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading             |
 | `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                         | controlled or uncontrolled    |
+| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                          | controlled or uncontrolled    |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics               |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
