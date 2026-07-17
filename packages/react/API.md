@@ -178,7 +178,7 @@ import { Input } from '@vellira-ui/react';
 <Input
   label='Email'
   value={email}
-  onChange={(event) => setEmail(event.target.value)}
+  onValueChange={setEmail}
   type='email'
   placeholder='name@example.com'
 />;
@@ -186,42 +186,56 @@ import { Input } from '@vellira-ui/react';
 
 Clearable inputs use separate callbacks for typing and clear actions:
 
-- typing into the input calls `onChange`;
+- typing into the input calls `onValueChange`;
 - pressing the clear action calls `onClear`;
 - controlled inputs should clear their value inside `onClear`;
 - uncontrolled inputs clear their internal value and then call `onClear`.
 
-`rightAdornment` is an arbitrary slot. Interactive content rendered there is
-responsible for its own accessible name, focus handling, and keyboard behavior.
+`endIcon` is a decorative icon slot. Use clear, reveal, loading, prefix, suffix,
+and addon props for built-in input affordances.
 
 <!-- api-docgen:start web.InputProps.Input -->
 
-| Prop                 | Type                                                     | Required | Description                                      |
-| -------------------- | -------------------------------------------------------- | -------- | ------------------------------------------------ |
-| `id`                 | `string`                                                 | No       | Input id. Generated internally when omitted.     |
-| `className`          | `string`                                                 | No       | Extra CSS class for the input element.           |
-| `autoComplete`       | `string`                                                 | No       | HTML autocomplete value.                         |
-| `name`               | `string`                                                 | No       | —                                                |
-| `description`        | `string`                                                 | No       | Additional descriptive text.                     |
-| `leftAdornment`      | `ReactNode`                                              | No       | —                                                |
-| `rightAdornment`     | `ReactNode`                                              | No       | —                                                |
-| `clearIcon`          | `ReactNode`                                              | No       | —                                                |
-| `type`               | `HTMLInputTypeAttribute`                                 | No       | HTML input type.                                 |
-| `value`              | `string \| number \| readonly string[]`                  | No       | Controlled value.                                |
-| `defaultValue`       | `string \| number \| readonly string[]`                  | No       | Initial uncontrolled value.                      |
-| `onChange`           | `ChangeEventHandler<HTMLInputElement, HTMLInputElement>` | No       | Called when the value changes.                   |
-| `label`              | `string`                                                 | No       | Visible label.                                   |
-| `placeholder`        | `string`                                                 | No       | Placeholder text.                                |
-| `size`               | `InputSize`                                              | No       | Input size.                                      |
-| `disabled`           | `boolean`                                                | No       | Disables interaction.                            |
-| `readOnly`           | `boolean`                                                | No       | Marks the input as read-only.                    |
-| `required`           | `boolean`                                                | No       | Marks the field as required.                     |
-| `clearable`          | `boolean`                                                | No       | Shows a clear action when the input has a value. |
-| `onClear`            | `() => void`                                             | No       | Called when the clear action is pressed.         |
-| `error`              | `string`                                                 | No       | Error message rendered for invalid state.        |
-| `leftAdornmentTone`  | `InputAdornmentTone`                                     | No       | Color tone for the left adornment.               |
-| `rightAdornmentTone` | `InputAdornmentTone`                                     | No       | Color tone for the right adornment.              |
-| `clearIconTone`      | `InputAdornmentTone`                                     | No       | Color tone for the clear icon.                   |
+| Prop               | Type                                    | Required | Description                                      |
+| ------------------ | --------------------------------------- | -------- | ------------------------------------------------ |
+| `id`               | `string`                                | No       | Input id. Generated internally when omitted.     |
+| `className`        | `string`                                | No       | Extra CSS class for the input element.           |
+| `autoComplete`     | `string`                                | No       | HTML autocomplete value.                         |
+| `name`             | `string`                                | No       | —                                                |
+| `description`      | `string`                                | No       | Additional descriptive text.                     |
+| `clearIcon`        | `ReactNode`                             | No       | —                                                |
+| `type`             | `HTMLInputTypeAttribute`                | No       | HTML input type.                                 |
+| `value`            | `string \| number \| readonly string[]` | No       | Controlled value.                                |
+| `defaultValue`     | `string \| number \| readonly string[]` | No       | Initial uncontrolled value.                      |
+| `label`            | `string`                                | No       | Visible label.                                   |
+| `placeholder`      | `string`                                | No       | Placeholder text.                                |
+| `size`             | `InputSize`                             | No       | Input size.                                      |
+| `disabled`         | `boolean`                               | No       | Disables interaction.                            |
+| `readOnly`         | `boolean`                               | No       | Marks the input as read-only.                    |
+| `required`         | `boolean`                               | No       | Marks the field as required.                     |
+| `clearable`        | `boolean`                               | No       | Shows a clear action when the input has a value. |
+| `onClear`          | `() => void`                            | No       | Called when the clear action is pressed.         |
+| `error`            | `string`                                | No       | Error message rendered for invalid state.        |
+| `clearIconTone`    | `InputAdornmentTone`                    | No       | Color tone for the clear icon.                   |
+| `onValueChange`    | `(value: string) => void`               | No       | —                                                |
+| `startIcon`        | `ReactNode`                             | No       | —                                                |
+| `endIcon`          | `ReactNode`                             | No       | —                                                |
+| `startAddon`       | `ReactNode`                             | No       | —                                                |
+| `endAddon`         | `ReactNode`                             | No       | —                                                |
+| `prefix`           | `ReactNode`                             | No       | —                                                |
+| `suffix`           | `ReactNode`                             | No       | —                                                |
+| `mask`             | `InputMask`                             | No       | —                                                |
+| `format`           | `InputFormatter`                        | No       | —                                                |
+| `parse`            | `InputParser`                           | No       | —                                                |
+| `startIconTone`    | `InputAdornmentTone`                    | No       | Color tone for the start icon.                   |
+| `endIconTone`      | `InputAdornmentTone`                    | No       | Color tone for the end icon.                     |
+| `wrapperClassName` | `string`                                | No       | —                                                |
+| `color`            | `InputColor`                            | No       | —                                                |
+| `variant`          | `InputVariant`                          | No       | —                                                |
+| `invalid`          | `boolean`                               | No       | —                                                |
+| `loading`          | `boolean`                               | No       | —                                                |
+| `revealPassword`   | `boolean`                               | No       | —                                                |
+| `showCounter`      | `boolean`                               | No       | —                                                |
 
 <!-- api-docgen:end web.InputProps.Input -->
 
@@ -245,19 +259,26 @@ and `disabled` to that control when needed. The root wrapper does not receive th
 
 <!-- api-docgen:start web.FormFieldProps.FormField -->
 
-| Prop                   | Type        | Required | Description                                         |
-| ---------------------- | ----------- | -------- | --------------------------------------------------- |
-| `id`                   | `string`    | No       | ID used to connect the label with the control.      |
-| `label`                | `ReactNode` | No       | Field label.                                        |
-| `description`          | `ReactNode` | No       | Additional descriptive content.                     |
-| `error`                | `ReactNode` | No       | Error message or custom validation content.         |
-| `children`             | `ReactNode` | Yes      | Field control or custom content.                    |
-| `required`             | `boolean`   | No       | Marks the field as required.                        |
-| `disabled`             | `boolean`   | No       | Renders the disabled field state.                   |
-| `controlClassName`     | `string`    | No       | Extra CSS class for the control wrapper.            |
-| `labelClassName`       | `string`    | No       | Extra CSS class for the label element.              |
-| `descriptionClassName` | `string`    | No       | Extra CSS class for the description element.        |
-| `errorClassName`       | `string`    | No       | Extra CSS class for the validation message element. |
+| Prop                   | Type                         | Required | Description                                         |
+| ---------------------- | ---------------------------- | -------- | --------------------------------------------------- |
+| `id`                   | `string`                     | No       | ID used to connect the label with the control.      |
+| `label`                | `ReactNode`                  | No       | Field label.                                        |
+| `description`          | `ReactNode`                  | No       | Additional descriptive content.                     |
+| `error`                | `ReactNode`                  | No       | Error message or custom validation content.         |
+| `children`             | `ReactNode`                  | Yes      | Field control or custom content.                    |
+| `required`             | `boolean`                    | No       | Marks the field as required.                        |
+| `disabled`             | `boolean`                    | No       | Renders the disabled field state.                   |
+| `controlClassName`     | `string`                     | No       | Extra CSS class for the control wrapper.            |
+| `labelClassName`       | `string`                     | No       | Extra CSS class for the label element.              |
+| `descriptionClassName` | `string`                     | No       | Extra CSS class for the description element.        |
+| `errorClassName`       | `string`                     | No       | Extra CSS class for the validation message element. |
+| `labelInfo`            | `ReactNode`                  | No       | —                                                   |
+| `optionalText`         | `ReactNode`                  | No       | —                                                   |
+| `bindControl`          | `boolean`                    | No       | —                                                   |
+| `size`                 | `'sm' \| 'md' \| 'lg'`       | No       | Input size.                                         |
+| `labelPosition`        | `'start' \| 'top'`           | No       | —                                                   |
+| `invalid`              | `boolean`                    | No       | —                                                   |
+| `orientation`          | `'vertical' \| 'horizontal'` | No       | —                                                   |
 
 <!-- api-docgen:end web.FormFieldProps.FormField -->
 

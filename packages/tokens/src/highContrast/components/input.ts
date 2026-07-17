@@ -1,3 +1,5 @@
+import { createInputColorPalette } from '../../factories/createInputPalette.js';
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
@@ -5,7 +7,94 @@ import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
+const inputPaletteDefaults = {
+  fg: text.primary,
+  placeholder: text.secondary,
+  filledFocusBg: surface.subtle,
+  hoverBg: surface.hover,
+};
+
+const primary = createInputColorPalette({
+  ...inputPaletteDefaults,
+  accent: colors.primary[300],
+  accentHover: colors.primary[400],
+  accentSoft: colors.grayBlue[900],
+  filledBg: colors.primary[950],
+  filledHoverBg: colors.primary[900],
+  filledDefaultBorder: colors.primary[300],
+  filledHoverBorder: colors.primary[400],
+  softDefaultBorder: colors.primary[300],
+  softHoverBorder: colors.primary[400],
+  ring: colors.primary[400],
+});
+
+const neutral = createInputColorPalette({
+  ...inputPaletteDefaults,
+  accent: colors.grayBlue[200],
+  accentHover: colors.gray[200],
+  accentSoft: colors.grayBlue[900],
+  filledBg: colors.grayBlue[950],
+  filledHoverBg: colors.grayBlue[900],
+  filledDefaultBorder: colors.grayBlue[200],
+  filledHoverBorder: colors.gray[200],
+  softDefaultBorder: colors.grayBlue[200],
+  softHoverBorder: colors.gray[200],
+  hoverBg: colors.grayBlue[900],
+  ring: colors.grayBlue[400],
+});
+
+const success = createInputColorPalette({
+  ...inputPaletteDefaults,
+  accent: colors.success[300],
+  accentHover: colors.success[400],
+  accentSoft: colors.success[950],
+  filledBg: colors.success[950],
+  filledHoverBg: colors.success[900],
+  filledDefaultBorder: colors.success[300],
+  filledHoverBorder: colors.success[400],
+  softDefaultBorder: colors.success[300],
+  softHoverBorder: colors.success[400],
+  hoverBg: colors.success[950],
+  ring: colors.success[500],
+});
+
+const warning = createInputColorPalette({
+  ...inputPaletteDefaults,
+  accent: colors.warning[500],
+  accentHover: colors.warning[400],
+  accentSoft: colors.warning[950],
+  filledBg: colors.warning[950],
+  filledHoverBg: colors.warning[900],
+  filledDefaultBorder: colors.warning[500],
+  filledHoverBorder: colors.warning[400],
+  softDefaultBorder: colors.warning[500],
+  softHoverBorder: colors.warning[400],
+  hoverBg: colors.warning[950],
+  ring: colors.warning[500],
+});
+
+const danger = createInputColorPalette({
+  ...inputPaletteDefaults,
+  accent: colors.error[400],
+  accentHover: colors.error[200],
+  accentSoft: colors.error[950],
+  filledBg: colors.error[950],
+  filledHoverBg: colors.error[900],
+  filledDefaultBorder: colors.error[400],
+  filledHoverBorder: colors.error[200],
+  softDefaultBorder: colors.error[400],
+  softHoverBorder: colors.error[200],
+  hoverBg: colors.error[950],
+  ring: colors.error[500],
+});
+
 export const input = {
+  primary,
+  neutral,
+  success,
+  warning,
+  danger,
+
   default: {
     bg: 'transparent',
     fg: text.primary,
@@ -44,11 +133,6 @@ export const input = {
     ring: status.error.ring,
   },
 
-  success: {
-    border: status.success.border,
-    ring: status.success.ring,
-  },
-
   readOnly: {
     bg: surface.subtle,
     fg: text.secondary,
@@ -74,5 +158,29 @@ export const input = {
     hoverBg: status.error.bg,
     focusBg: surface.subtle,
     pressedBg: surface.active,
+  },
+
+  revealButton: {
+    fg: text.primary,
+    hoverFg: text.primary,
+    hoverBg: surface.hover,
+  },
+
+  addon: {
+    bg: surface.muted,
+    fg: text.secondary,
+    border: border.default,
+  },
+
+  affix: {
+    fg: text.primary,
+  },
+
+  counter: {
+    fg: text.secondary,
+  },
+
+  spinner: {
+    fg: icons.muted,
   },
 } as const;

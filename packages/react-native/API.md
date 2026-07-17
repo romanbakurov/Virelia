@@ -168,7 +168,7 @@ import { Input } from '@vellira-ui/react-native';
 <Input
   label='Email'
   value={email}
-  onChange={setEmail}
+  onValueChange={setEmail}
   type='email'
   placeholder='name@example.com'
 />;
@@ -178,7 +178,7 @@ import { Input } from '@vellira-ui/react-native';
 
 Clearable inputs use separate callbacks for typing and clear actions:
 
-- typing into the input calls `onChange`;
+- typing into the input calls `onValueChange`;
 - pressing the clear action calls `onClear`;
 - controlled inputs should clear their value inside `onClear`;
 - uncontrolled inputs clear their internal value and then call `onClear`.
@@ -195,7 +195,6 @@ description/error announcement behavior.
 | `containerStyle`  | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.             |
 | `inputStyle`      | `StyleProp<TextStyle>`    | No       | Extra style for the input element.               |
 | `value`           | `string`                  | No       | Controlled value.                                |
-| `onChange`        | `(value: string) => void` | No       | Called with the next value.                      |
 | `iconSize`        | `number`                  | No       | Icon size in pixels.                             |
 | `clearIcon`       | `InputIconElement`        | No       | —                                                |
 | `testID`          | `string`                  | No       | —                                                |
@@ -213,10 +212,20 @@ description/error announcement behavior.
 | `error`           | `string`                  | No       | Error message rendered for invalid state.        |
 | `description`     | `string`                  | No       | Additional descriptive text.                     |
 | `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
-| `leftIcon`        | `InputIconElement`        | No       | Icon rendered before content.                    |
-| `rightIcon`       | `InputIconElement`        | No       | Icon rendered after content.                     |
-| `leftIconTone`    | `InputAdornmentTone`      | No       | Color tone for the left icon.                    |
-| `rightIconTone`   | `InputAdornmentTone`      | No       | Color tone for the right icon.                   |
+| `onValueChange`   | `(value: string) => void` | No       | —                                                |
+| `startIcon`       | `InputIconElement`        | No       | —                                                |
+| `endIcon`         | `InputIconElement`        | No       | —                                                |
+| `startIconTone`   | `InputAdornmentTone`      | No       | Color tone for the start icon.                   |
+| `endIconTone`     | `InputAdornmentTone`      | No       | Color tone for the end icon.                     |
+| `color`           | `InputColor`              | No       | —                                                |
+| `variant`         | `InputVariant`            | No       | —                                                |
+| `invalid`         | `boolean`                 | No       | —                                                |
+| `loading`         | `boolean`                 | No       | —                                                |
+| `revealPassword`  | `boolean`                 | No       | —                                                |
+| `showCounter`     | `boolean`                 | No       | —                                                |
+| `mask`            | `InputMask`               | No       | —                                                |
+| `format`          | `InputFormatter`          | No       | —                                                |
+| `parse`           | `InputParser`             | No       | —                                                |
 
 <!-- api-docgen:end native.InputProps.Input -->
 
@@ -240,19 +249,25 @@ root exposes disabled state when `disabled` is set.
 
 <!-- api-docgen:start native.FormFieldProps.FormField -->
 
-| Prop               | Type                   | Required | Description                       |
-| ------------------ | ---------------------- | -------- | --------------------------------- |
-| `label`            | `ReactNode`            | No       | Field label.                      |
-| `error`            | `ReactNode`            | No       | Error message.                    |
-| `children`         | `ReactNode`            | Yes      | Field control or custom content.  |
-| `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.            |
-| `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.           |
-| `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.           |
-| `required`         | `boolean`              | No       | Marks the field as required.      |
-| `disabled`         | `boolean`              | No       | Renders the disabled field state. |
-| `description`      | `ReactNode`            | No       | Additional descriptive text.      |
-| `controlStyle`     | `StyleProp<ViewStyle>` | No       | Extra control wrapper style.      |
-| `descriptionStyle` | `StyleProp<TextStyle>` | No       | Extra description text style.     |
+| Prop               | Type                         | Required | Description                       |
+| ------------------ | ---------------------------- | -------- | --------------------------------- |
+| `label`            | `ReactNode`                  | No       | Field label.                      |
+| `error`            | `ReactNode`                  | No       | Error message.                    |
+| `children`         | `ReactNode`                  | Yes      | Field control or custom content.  |
+| `style`            | `StyleProp<ViewStyle>`       | No       | Extra container style.            |
+| `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.           |
+| `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.           |
+| `required`         | `boolean`                    | No       | Marks the field as required.      |
+| `disabled`         | `boolean`                    | No       | Renders the disabled field state. |
+| `description`      | `ReactNode`                  | No       | Additional descriptive text.      |
+| `controlStyle`     | `StyleProp<ViewStyle>`       | No       | Extra control wrapper style.      |
+| `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.     |
+| `labelInfo`        | `ReactNode`                  | No       | —                                 |
+| `optionalText`     | `ReactNode`                  | No       | —                                 |
+| `size`             | `'sm' \| 'md' \| 'lg'`       | No       | Input size.                       |
+| `labelPosition`    | `'start' \| 'top'`           | No       | —                                 |
+| `invalid`          | `boolean`                    | No       | —                                 |
+| `orientation`      | `'vertical' \| 'horizontal'` | No       | —                                 |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 

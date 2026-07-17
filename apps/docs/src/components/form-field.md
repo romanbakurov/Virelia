@@ -1,107 +1,164 @@
 # FormField
 
-FormField provides consistent layout for labels, descriptions, errors, required
-state, disabled state, and custom field controls.
+FormField provides shared field semantics for labels, descriptions, errors,
+required state, disabled state, invalid state, generated ids, and accessible
+relationships. It is the infrastructure layer used by Input and the foundation
+for other form controls.
 
 <StorybookFrame
-  story="formField.complete"
-  title="FormField complete example"
+  story="formField.withInputContext"
+  title="FormField with Input context"
   :height="520"
 />
 
 ## When To Use
 
-Use FormField when a custom control needs the same field chrome as Input,
-Select, Checkbox, or RadioGroup. Do not wrap standard Vellira fields just to add
-another label if the component already supports `label`, `description`, and
-`error`.
+Use FormField when a custom layout needs one field contract for label,
+description, error, required, disabled, invalid, size, and accessibility.
+For ordinary text fields, prefer the Input shorthand API.
 
 ```tsx
 <FormField
-  id='avatar'
-  label='Avatar'
-  description='PNG or JPG up to 2 MB.'
-  error={avatarError}
+  label='Email'
+  description='Used for login.'
+  error={emailError}
+  required
+  size='sm'
 >
-  <FileUpload id='avatar' aria-describedby='avatar-description avatar-error' />
+  <Input value={email} onValueChange={setEmail} />
 </FormField>
 ```
 
 ## Contract
 
-FormField is presentational. The child control owns its own value, disabled
-state, validation attributes, and interaction behavior.
+FormField owns field layout and semantic wiring. Compatible Vellira controls
+consume FormField context automatically.
 
-| Responsibility                               | Owner                   |
-| -------------------------------------------- | ----------------------- |
-| Label and layout                             | `FormField`             |
-| `aria-describedby` and `aria-invalid`        | Child control on web    |
-| `accessibilityLabel` and `accessibilityHint` | Child control on native |
-| Value and validation state                   | App                     |
-| Disabled interaction                         | Child control           |
+| Responsibility              | Owner                         |
+| --------------------------- | ----------------------------- |
+| Label and layout            | `FormField`                   |
+| Generated ids               | `FormField`                   |
+| `aria-labelledby`           | `FormField` + compatible child |
+| `aria-describedby`          | `FormField` + compatible child |
+| `aria-invalid`              | `FormField` + compatible child |
+| Value and validation logic   | App                           |
+| Control-specific appearance | Child control                 |
+
+FormField provides these values through context:
+
+```tsx
+{
+  controlId,
+  labelId,
+  descriptionId,
+  errorId,
+  required,
+  disabled,
+  invalid,
+  size,
+  ariaLabelledBy,
+  ariaDescribedBy,
+}
+```
 
 ## Web Notes
 
-Pass the same `id` to FormField and the wrapped control. Add the generated
-description and error ids to the control when needed.
+Input consumes FormField context automatically. Do not repeat `id`, `required`,
+`disabled`, `invalid`, or `aria-describedby` unless you are building a custom
+control.
 
 ```tsx
-<FormField id='timezone' label='Timezone' error={error}>
-  <TimezonePicker
-    id='timezone'
-    aria-invalid={Boolean(error)}
-    aria-describedby={error ? 'timezone-error' : undefined}
-  />
+<FormField label='Workspace' required disabled invalid size='lg'>
+  <Input placeholder='vellira-design' />
 </FormField>
 ```
 
-## Real Example: File Upload Field
+Child props still have clear precedence. For `size`, the child prop wins over
+FormField context. For `required`, `disabled`, and `invalid`, FormField and the
+child are combined so a child cannot accidentally unset a field-level state.
+
+## Optional And Info Content
+
+Use `optionalText` instead of manually composing the label. Do not combine
+`required` and `optionalText`.
 
 ```tsx
-import { Button, FormField } from '@vellira-ui/react';
-import { useId, useState } from 'react';
+<FormField label='Display name' optionalText='Optional'>
+  <Input />
+</FormField>
+```
 
-export function AvatarField() {
-  const id = useId();
-  const [fileName, setFileName] = useState('');
-  const error = fileName.endsWith('.svg') ? 'Upload PNG or JPG instead.' : '';
+Use `labelInfo` for an info affordance next to the label. FormField accepts a
+ReactNode and does not create a tooltip by itself.
 
+```tsx
+<FormField label='API key' labelInfo={<InfoTooltip />}>
+  <Input />
+</FormField>
+```
+
+## Layout
+
+Use vertical layout for most forms. Use horizontal layout for dense settings
+surfaces.
+
+```tsx
+<FormField
+  label='Workspace'
+  description='Visible in audit logs.'
+  orientation='horizontal'
+  labelPosition='start'
+>
+  <Input />
+</FormField>
+```
+
+## Custom Controls
+
+For non-Vellira controls, FormField still provides layout and stable ids. The
+custom control must consume the context or receive the relevant props from your
+adapter.
+
+```tsx
+import { FormField, useFormFieldContext } from '@vellira-ui/react';
+
+function FileUploadControl() {
+  const field = useFormFieldContext();
   return (
-    <FormField
-      id={id}
-      label='Avatar'
-      description='PNG or JPG up to 2 MB.'
-      error={error}
-    >
-      <input
-        id={id}
-        type='file'
-        accept='image/png,image/jpeg'
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : `${id}-description`}
-        onChange={(event) => {
-          setFileName(event.target.files?.[0]?.name ?? '');
-        }}
-      />
-      <Button type='button' appearance='outline' color='neutral'>
-        Upload new avatar
-      </Button>
-    </FormField>
+    <input
+      id={field?.controlId}
+      type='file'
+      aria-labelledby={field?.ariaLabelledBy}
+      aria-describedby={field?.ariaDescribedBy}
+      aria-invalid={field?.invalid || undefined}
+      required={field?.required}
+      disabled={field?.disabled}
+    />
   );
 }
+
+<FormField label='Avatar' description='PNG or JPG up to 2 MB.'>
+  <FileUploadControl />
+</FormField>;
 ```
 
 ## Native Notes
 
-Native FormField wraps the visual layout, but the wrapped control must still
-provide screen reader labels and hints.
+Native FormField keeps the same conceptual props. Native controls may support a
+smaller layout surface in the first version, but the contract stays aligned
+with web.
 
 ```tsx
-<FormField label='Timezone' error={error}>
-  <TimezonePicker
-    accessibilityLabel='Timezone'
-    accessibilityHint={error ?? 'Choose your reporting timezone.'}
-  />
+<FormField
+  label='Email'
+  description='Used for login.'
+  error='Invalid email'
+  required
+  disabled
+  invalid
+  size='md'
+>
+  <Input />
 </FormField>
 ```
 

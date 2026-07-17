@@ -47,7 +47,7 @@ export function Example() {
 
   return (
     <View style={{ gap: 16 }}>
-      <Input label='Email' value={email} onChange={setEmail} />
+      <Input label='Email' value={email} onValueChange={setEmail} />
       <Checkbox
         label='Accept terms'
         description='Required to create an account.'

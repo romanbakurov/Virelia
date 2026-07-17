@@ -73,7 +73,7 @@ describe('Native Input', () => {
       <Input
         label='Age'
         defaultValue='40'
-        onChange={change}
+        onValueChange={change}
         type='number'
         accessibilityHint='Numbers only'
       />
@@ -148,10 +148,10 @@ describe('Native Input', () => {
       <Input
         label='Search'
         value='Theme'
-        leftIcon={<TestIcon testID='left-icon' />}
-        rightIcon={<TestIcon testID='right-icon' />}
-        leftIconTone='primary'
-        rightIconTone='success'
+        startIcon={<TestIcon testID='left-icon' />}
+        endIcon={<TestIcon testID='right-icon' />}
+        startIconTone='primary'
+        endIconTone='success'
         iconSize={24}
       />
     );
@@ -178,12 +178,12 @@ describe('Native Input', () => {
       <Input
         label='Clearable'
         defaultValue='Clear me'
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
         clearIcon={<TestIcon testID='clear-icon' />}
         clearIconTone='secondary'
-        rightIcon={<TestIcon testID='right-icon' />}
+        endIcon={<TestIcon testID='right-icon' />}
       />
     );
 
@@ -206,7 +206,7 @@ describe('Native Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledWith('');
     expect(clear).toHaveBeenCalledTimes(1);
     expect(container.querySelector('input')?.value).toBe('');
 
@@ -220,7 +220,7 @@ describe('Native Input', () => {
       <Input
         label='Controlled clearable'
         value='Clear me'
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
       />
@@ -236,7 +236,7 @@ describe('Native Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledWith('');
     expect(clear).toHaveBeenCalledTimes(1);
     expect(container.querySelector('input')?.value).toBe('Clear me');
 
@@ -244,7 +244,7 @@ describe('Native Input', () => {
       <Input
         label='Controlled clearable'
         value=''
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
       />

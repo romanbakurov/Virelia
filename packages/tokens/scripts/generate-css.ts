@@ -114,7 +114,9 @@ function generateThemeBlock(
   return `${selector} {\n${generateVariables(theme.colors, 'color')}${generateVariables(
     theme.semantic,
     ''
-  )}${generateVariables(theme.components, '')}}\n`;
+  )}${generateVariables(theme.components, '', {
+    numberUnit: 'px',
+  })}}\n`;
 }
 
 let css = `/**

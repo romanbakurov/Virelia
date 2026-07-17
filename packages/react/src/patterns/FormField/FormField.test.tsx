@@ -51,6 +51,7 @@ describe('FormField', () => {
           <span data-testid='custom-description'>Visible in URLs</span>
         }
         error={<span data-testid='custom-error'>Already taken</span>}
+        optionalText=''
       >
         <input id='workspace' />
       </FormField>
@@ -82,6 +83,51 @@ describe('FormField', () => {
     expect(root?.getAttribute('aria-disabled')).toBe('true');
     expect(root?.getAttribute('data-disabled')).toBe('true');
     expect(root?.getAttribute('data-invalid')).toBe('true');
+
+    unmount();
+  });
+
+  it('exposes invalid state without requiring visible error text', () => {
+    const { container, unmount } = render(
+      <FormField id='email' label='Email' invalid>
+        <input id='email' aria-invalid />
+      </FormField>
+    );
+
+    const root = container.firstElementChild;
+
+    expect(root?.getAttribute('data-invalid')).toBe('true');
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('binds control ids and aria metadata to a direct child control', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Email'
+        description='Used for login.'
+        error='Invalid email.'
+        required
+        invalid
+      >
+        <input />
+      </FormField>
+    );
+
+    const input = container.querySelector('input');
+    const label = container.querySelector('label');
+    const description = container.querySelector('[id$="-description"]');
+    const error = container.querySelector('[id$="-error"]');
+
+    expect(input?.id).toBeTruthy();
+    expect(label?.getAttribute('for')).toBe(input?.id);
+    expect(input?.required).toBe(true);
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(input?.getAttribute('aria-labelledby')).toBe(`${input?.id}-label`);
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      `${description?.id} ${error?.id}`
+    );
 
     unmount();
   });
@@ -119,7 +165,7 @@ describe('FormField', () => {
     unmount();
   });
 
-  it('omits generated supporting ids when no control id is provided', () => {
+  it('generates supporting ids when no control id is provided', () => {
     const { container, unmount } = render(
       <FormField
         label='Loose field'
@@ -131,14 +177,12 @@ describe('FormField', () => {
     );
 
     const label = container.querySelector('label');
-    const description = Array.from(container.querySelectorAll('div')).find(
-      (node) => node.textContent === 'Detached hint.'
-    );
+    const description = container.querySelector('[id$="-description"]');
     const error = container.querySelector('[role="alert"]');
 
-    expect(label?.hasAttribute('for')).toBe(false);
-    expect(description?.hasAttribute('id')).toBe(false);
-    expect(error?.hasAttribute('id')).toBe(false);
+    expect(label?.getAttribute('for')).toBeTruthy();
+    expect(description?.id).toBeTruthy();
+    expect(error?.id).toBeTruthy();
 
     unmount();
   });

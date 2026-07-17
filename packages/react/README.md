@@ -52,7 +52,7 @@ export function Example() {
       <Input
         label='Email'
         value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <Checkbox

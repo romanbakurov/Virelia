@@ -1,10 +1,10 @@
 import { act, useState } from 'react';
 
-import type { ChangeEvent } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
+import { FormField } from '../../patterns/FormField';
 
 import { Input } from './Input';
 
@@ -49,12 +49,14 @@ describe('Input', () => {
   });
 
   it('handles changes, disabled state, and object refs', () => {
-    const enabledValues: string[] = [];
-    const enabledChange = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
-      enabledValues.push(event.target.value);
-    });
+    const enabledChange = vi.fn();
     const { container: enabledContainer, unmount: unmountEnabled } = render(
-      <Input id='nickname' label='Nickname' value='' onChange={enabledChange} />
+      <Input
+        id='nickname'
+        label='Nickname'
+        value=''
+        onValueChange={enabledChange}
+      />
     );
     const enabledInput =
       enabledContainer.querySelector<HTMLInputElement>('input');
@@ -70,7 +72,7 @@ describe('Input', () => {
     });
 
     expect(enabledChange).toHaveBeenCalledTimes(1);
-    expect(enabledValues).toEqual(['Roman']);
+    expect(enabledChange).toHaveBeenCalledWith('Roman');
 
     unmountEnabled();
 
@@ -82,7 +84,7 @@ describe('Input', () => {
         id='name'
         label='Name'
         value=''
-        onChange={disabledChange}
+        onValueChange={disabledChange}
         required
         disabled
         autoComplete='name'
@@ -232,10 +234,7 @@ describe('Input', () => {
   });
 
   it('supports uncontrolled changes, function refs, and adornments', () => {
-    const changedValues: string[] = [];
-    const change = vi.fn((event: ChangeEvent<HTMLInputElement>) => {
-      changedValues.push(event.target.value);
-    });
+    const change = vi.fn();
     const ref = vi.fn();
     const { container, unmount } = render(
       <Input
@@ -243,11 +242,11 @@ describe('Input', () => {
         id='search'
         label='Search'
         defaultValue='theme'
-        onChange={change}
-        leftAdornment={<span data-testid='left-icon'>L</span>}
-        rightAdornment={<span data-testid='right-icon'>R</span>}
-        leftAdornmentTone='primary'
-        rightAdornmentTone='success'
+        onValueChange={change}
+        startIcon={<span data-testid='left-icon'>L</span>}
+        endIcon={<span data-testid='right-icon'>R</span>}
+        startIconTone='primary'
+        endIconTone='success'
       />
     );
 
@@ -271,7 +270,7 @@ describe('Input', () => {
     });
 
     expect(change).toHaveBeenCalledTimes(1);
-    expect(changedValues).toEqual(['tokens']);
+    expect(change).toHaveBeenCalledWith('tokens');
     expect(input?.value).toBe('tokens');
 
     unmount();
@@ -289,7 +288,7 @@ describe('Input', () => {
           id='controlled-clearable'
           label='Controlled clearable'
           value={value}
-          onChange={change}
+          onValueChange={change}
           onClear={() => {
             clear();
             setValue('');
@@ -313,7 +312,7 @@ describe('Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledWith('');
     expect(clear).toHaveBeenCalledTimes(1);
     expect(input?.value).toBe('');
     expect(
@@ -347,6 +346,279 @@ describe('Input', () => {
     expect(
       container.querySelector('button[aria-label="Clear input"]')
     ).toBeNull();
+
+    unmount();
+  });
+
+  it('supports invalid state without visible error text', () => {
+    const { container, unmount } = render(
+      <Input id='email' label='Email' value='' invalid />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(container.firstElementChild?.getAttribute('data-invalid')).toBe(
+      'true'
+    );
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('renders addons, prefix, suffix, counter, and loading state', () => {
+    const { container, unmount } = render(
+      <Input
+        id='url'
+        label='URL'
+        value='vellira'
+        startAddon='https://'
+        endAddon='.com'
+        prefix='@'
+        suffix='kg'
+        maxLength={20}
+        showCounter
+        loading
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.readOnly).toBe(true);
+    expect(input?.getAttribute('aria-busy')).toBe('true');
+    expect(container.textContent).toContain('https://');
+    expect(container.textContent).toContain('.com');
+    expect(container.textContent).toContain('@');
+    expect(container.textContent).toContain('kg');
+    expect(container.textContent).toContain('7 / 20');
+    expect(container.querySelector('[data-testid="input-spinner"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('reveals password values on demand', () => {
+    const { container, unmount } = render(
+      <Input id='password' label='Password' value='secret' type='password' revealPassword />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const revealButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Show password"]'
+    );
+
+    expect(input?.type).toBe('password');
+
+    act(() => {
+      revealButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(input?.type).toBe('text');
+    expect(
+      container.querySelector('button[aria-label="Hide password"]')
+    ).not.toBeNull();
+
+    unmount();
+  });
+
+  it('applies string masks before onValueChange', () => {
+    const valueChange = vi.fn();
+    const { container, unmount } = render(
+      <Input
+        id='phone'
+        label='Phone'
+        defaultValue=''
+        mask='+33 # ## ## ## ##'
+        onValueChange={valueChange}
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    )?.set;
+
+    act(() => {
+      valueSetter?.call(input, '612345678');
+      input?.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      input?.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(valueChange).toHaveBeenCalledWith('+33 6 12 34 56 78');
+    expect(input?.value).toBe('+33 6 12 34 56 78');
+
+    unmount();
+  });
+
+  it('formats displayed values and parses edits', () => {
+    const valueChange = vi.fn();
+    const { container, unmount } = render(
+      <Input
+        id='amount'
+        label='Amount'
+        value='12000'
+        format={(nextValue) => Number(nextValue).toLocaleString('en-US')}
+        parse={(displayValue) => displayValue.replace(/,/g, '')}
+        onValueChange={valueChange}
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    )?.set;
+
+    expect(input?.value).toBe('12,000');
+
+    act(() => {
+      valueSetter?.call(input, '12,500');
+      input?.dispatchEvent(new InputEvent('input', { bubbles: true }));
+      input?.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(valueChange).toHaveBeenCalledWith('12500');
+
+    unmount();
+  });
+
+  it('inherits field semantics from an enclosing FormField', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Email'
+        description='Used for login.'
+        error='Invalid email.'
+        required
+        disabled
+        size='sm'
+      >
+        <Input placeholder='name@example.com' />
+      </FormField>
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const label = container.querySelector('label');
+    const description = container.querySelector('[id$="-description"]');
+    const error = container.querySelector('[id$="-error"]');
+
+    expect(input?.id).toBeTruthy();
+    expect(label?.getAttribute('for')).toBe(input?.id);
+    expect(input?.required).toBe(true);
+    expect(input?.disabled).toBe(true);
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(input?.getAttribute('aria-labelledby')).toBe(`${input?.id}-label`);
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      `${description?.id} ${error?.id}`
+    );
+    expect(input?.className).toContain('sm');
+
+    unmount();
+  });
+
+  it('keeps explicit Input size above FormField size', () => {
+    const { container, unmount } = render(
+      <FormField label='Email' size='sm'>
+        <Input size='lg' />
+      </FormField>
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.className).toContain('lg');
+    expect(input?.className).not.toContain('sm');
+
+    unmount();
+  });
+
+  it('does not let child Input unset required, disabled, or invalid from FormField', () => {
+    const { container, unmount } = render(
+      <FormField label='Email' required disabled invalid>
+        <Input required={false} disabled={false} invalid={false} />
+      </FormField>
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.required).toBe(true);
+    expect(input?.disabled).toBe(true);
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+
+    unmount();
+  });
+
+  it('uses a stable right slot priority: loading, clear, reveal, then endIcon', () => {
+    const endIcon = <span data-testid='end-icon'>E</span>;
+    const { container, rerender, unmount } = render(
+      <Input
+        id='slot'
+        label='Slot'
+        value='secret'
+        type='password'
+        loading
+        clearable
+        revealPassword
+        endIcon={endIcon}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="input-spinner"]')).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Show password"]')
+    ).toBeNull();
+    expect(container.querySelector('[data-testid="end-icon"]')).toBeNull();
+
+    rerender(
+      <Input
+        id='slot'
+        label='Slot'
+        value='secret'
+        type='password'
+        clearable
+        revealPassword
+        endIcon={endIcon}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="input-spinner"]')).toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Show password"]')
+    ).toBeNull();
+    expect(container.querySelector('[data-testid="end-icon"]')).toBeNull();
+
+    rerender(
+      <Input
+        id='slot'
+        label='Slot'
+        value=''
+        type='password'
+        clearable
+        revealPassword
+        endIcon={endIcon}
+      />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Show password"]')
+    ).not.toBeNull();
+    expect(container.querySelector('[data-testid="end-icon"]')).toBeNull();
+
+    rerender(
+      <Input id='slot' label='Slot' value='' type='text' endIcon={endIcon} />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Show password"]')
+    ).toBeNull();
+    expect(container.querySelector('[data-testid="end-icon"]')).not.toBeNull();
 
     unmount();
   });

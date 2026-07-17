@@ -181,7 +181,7 @@ export function FormExample() {
       <Input
         label='Email'
         value={email}
-        onChange={setEmail}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <Checkbox

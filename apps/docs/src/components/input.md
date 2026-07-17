@@ -1,8 +1,9 @@
 # Input
 
-Input captures short free-form text with a stable label, validation state, and
-optional adornments. It is the right choice for names, emails, search terms,
-URLs, numbers, and other compact text values.
+Input captures short free-form text with field semantics, validation state,
+icons, addons, clear actions, password reveal, masks, formatting, and counters.
+It is the right choice for names, emails, search terms, URLs, numbers, and
+other compact text values.
 
 <StorybookFrame
   story="input.validation"
@@ -21,15 +22,44 @@ and selection is safer than typing.
   label='Email'
   type='email'
   value={email}
-  onChange={(event) => setEmail(event.target.value)}
+  onValueChange={setEmail}
   placeholder='name@example.com'
 />
 ```
 
-Native Input uses a value callback instead of a DOM event.
+The same value callback is used by Native Input.
+
+## Field Composition
+
+For common fields, use the shorthand API directly on Input. Input renders
+FormField internally and wires the label, description, error, required state,
+and accessibility attributes.
 
 ```tsx
-<Input label='Email' type='email' value={email} onChange={setEmail} />
+<Input
+  label='Email'
+  description='Used for login.'
+  error={emailError}
+  required
+  value={email}
+  onValueChange={setEmail}
+/>
+```
+
+For custom layouts, compose Input inside FormField. Input receives `id`,
+`aria-labelledby`, `aria-describedby`, `required`, `disabled`, `invalid`, and
+`size` from FormField context.
+
+```tsx
+<FormField
+  label='Email'
+  description='Used for login.'
+  error={emailError}
+  required
+  size='sm'
+>
+  <Input value={email} onValueChange={setEmail} />
+</FormField>
 ```
 
 ## Field Anatomy
@@ -39,8 +69,31 @@ Native Input uses a value callback instead of a DOM event.
 | Label        | Prefer a visible label over placeholder-only UI.                         |
 | Description  | Use for format, business rule, or persistence hints.                     |
 | Error        | Keep it actionable and specific.                                         |
-| Adornment    | Use icons or compact text for context, not long instructions.            |
+| Icons        | Use `startIcon` and `endIcon` for visual context.                        |
+| Addons       | Use `startAddon` and `endAddon` for segmented values like URLs.          |
+| Prefix       | Use `prefix` and `suffix` for inline units or symbols.                   |
 | Clear action | Use for search, filters, and optional text fields where reset is common. |
+
+## Appearance
+
+Input supports the same color language as the newer controls.
+
+```tsx
+<Input color='primary' variant='outline' />
+<Input color='neutral' variant='filled' />
+<Input color='success' variant='soft' />
+<Input color='warning' />
+<Input color='danger' />
+```
+
+Use `size='sm' | 'md' | 'lg'` directly on Input, or set size once on
+FormField and let Input inherit it.
+
+```tsx
+<FormField label='Workspace' size='sm'>
+  <Input placeholder='vellira-design' />
+</FormField>
+```
 
 ## Validation
 
@@ -52,10 +105,18 @@ valid.
 <Input
   label='Workspace slug'
   value={slug}
-  onChange={(event) => setSlug(event.target.value)}
+  onValueChange={setSlug}
   description='Use lowercase letters, numbers, and hyphens.'
+  invalid={Boolean(slugError)}
   error={slugError}
 />
+```
+
+`error` implies invalid styling. Use `invalid` when the field should look
+invalid without showing an error message.
+
+```tsx
+<Input label='Invite code' invalid />
 ```
 
 ## Real Example: Profile Settings
@@ -74,14 +135,14 @@ export function ProfileSettings() {
       <Input
         label='Display name'
         value={name}
-        onChange={(event) => setName(event.target.value)}
+        onValueChange={setName}
         autoComplete='name'
       />
       <Input
         label='Work email'
         type='email'
         value={email}
-        onChange={(event) => setEmail(event.target.value)}
+        onValueChange={setEmail}
         autoComplete='email'
         description='Used for invoices, audit logs, and security alerts.'
         error={emailError}
@@ -103,9 +164,59 @@ inputs should clear their state in `onClear`.
 <Input
   label='Search'
   value={query}
-  onChange={(event) => setQuery(event.target.value)}
+  onValueChange={setQuery}
   clearable
   onClear={() => setQuery('')}
+/>
+```
+
+When a right-side action is available, Input uses a predictable priority:
+`loading` first, then `clearable`, then `revealPassword`, then `endIcon`.
+
+```tsx
+<Input
+  label='Password'
+  type='password'
+  value={password}
+  onValueChange={setPassword}
+  clearable
+  revealPassword
+/>
+```
+
+## Icons, Addons, And Affixes
+
+Use icons for visual context, addons for segmented field chrome, and prefix or
+suffix for inline units.
+
+```tsx
+<Input label='Search' type='search' clearable />
+
+<Input
+  label='Domain'
+  startAddon='https://'
+  endAddon='.com'
+  placeholder='vellira'
+/>
+
+<Input label='Weight' suffix='kg' type='number' />
+```
+
+## Masks And Formatting
+
+String masks use `#` for digits. Use `format` and `parse` when the displayed
+value should differ from the stored value.
+
+```tsx
+<Input label='Phone' mask='+33 # ## ## ## ##' onValueChange={setPhone} />
+
+<Input
+  label='Amount'
+  value={amount}
+  onValueChange={setAmount}
+  format={(value) => Number(value).toLocaleString('en-US')}
+  parse={(value) => value.replace(/,/g, '')}
+  prefix='$'
 />
 ```
 
@@ -114,8 +225,9 @@ inputs should clear their state in `onClear`.
 - Prefer visible `label`.
 - Use `description` for persistent help text, not placeholders.
 - Error content should describe how to fix the value.
-- Interactive right adornments need their own accessible names and focus
-  behavior.
+- Input and FormField automatically connect label, description, error, and
+  counter ids when using the built-in API.
+- `loading` makes the control read-only while preserving the current value.
 - Native behavior should be checked on iOS VoiceOver and Android TalkBack when
   using custom keyboard types or secure text entry.
 

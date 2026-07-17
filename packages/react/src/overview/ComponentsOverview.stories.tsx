@@ -1,9 +1,8 @@
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Check,
-  Close,
   Delete,
   Download,
   DropdownMenu,
@@ -107,135 +106,39 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 function WorkspaceFormFieldDemo() {
-  const workspaceId = useId();
-  const projectId = useId();
-  const disabledId = useId();
-  const errorId = useId();
-
   return (
     <div style={stackStyle}>
       <FormField
-        id={workspaceId}
         label='Workspace'
-        description='Used in URLs and notifications.'
+        description='Input inherits size, id, aria, required and invalid state.'
         required
+        size='sm'
       >
-        <input
-          id={workspaceId}
-          name='workspace'
-          autoComplete='organization'
-          placeholder='vellira-design'
-          required
-          aria-describedby={`${workspaceId}-description`}
-          style={{
-            width: '100%',
-            minHeight: 40,
-            padding: '0 12px',
-            color: 'var(--input-default-fg)',
-            background: 'var(--input-default-bg)',
-            border: '1px solid var(--input-default-border)',
-            borderRadius: 'var(--radius-md)',
-            boxSizing: 'border-box',
-          }}
-        />
+        <Input placeholder='vellira-design' />
       </FormField>
 
       <FormField
-        id={projectId}
-        label={
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-            }}
-          >
-            Project
-            <span
-              style={{
-                padding: '2px 6px',
-                color: 'var(--color-primary-50)',
-                fontSize: 12,
-                lineHeight: '16px',
-                background: 'var(--color-primary-600)',
-                borderRadius: 'var(--radius-full)',
-              }}
-            >
-              Public
-            </span>
-          </span>
-        }
-        description='Custom label content.'
+        label='Display name'
+        optionalText='Optional'
+        description='Optional text is handled by FormField.'
       >
-        <input
-          id={projectId}
-          name='project'
-          autoComplete='off'
-          placeholder='launch-plan'
-          aria-describedby={`${projectId}-description`}
-          style={{
-            width: '100%',
-            minHeight: 40,
-            padding: '0 12px',
-            color: 'var(--input-default-fg)',
-            background: 'var(--input-default-bg)',
-            border: '1px solid var(--input-default-border)',
-            borderRadius: 'var(--radius-md)',
-            boxSizing: 'border-box',
-          }}
-        />
+        <Input placeholder='Alex Taylor' />
       </FormField>
 
       <FormField
-        id={errorId}
         label='Slug'
+        description='Error text is merged into aria-describedby.'
         error='Only lowercase letters, numbers, and hyphens are allowed.'
       >
-        <input
-          id={errorId}
-          name='slug'
-          autoComplete='off'
-          placeholder='Launch Plan'
-          aria-invalid
-          aria-describedby={`${errorId}-error`}
-          style={{
-            width: '100%',
-            minHeight: 40,
-            padding: '0 12px',
-            color: 'var(--input-default-fg)',
-            background: 'var(--input-default-bg)',
-            border: '1px solid var(--status-error-border)',
-            borderRadius: 'var(--radius-md)',
-            boxSizing: 'border-box',
-          }}
-        />
+        <Input placeholder='Launch Plan' />
       </FormField>
 
       <FormField
-        id={disabledId}
         label='Organization'
         description='Locked by workspace policy.'
         disabled
       >
-        <input
-          id={disabledId}
-          name='organization'
-          autoComplete='organization'
-          placeholder='Vellira'
-          disabled
-          aria-describedby={`${disabledId}-description`}
-          style={{
-            width: '100%',
-            minHeight: 40,
-            padding: '0 12px',
-            color: 'var(--input-disabled-fg)',
-            background: 'var(--input-disabled-bg)',
-            border: '1px solid var(--input-disabled-border)',
-            borderRadius: 'var(--radius-md)',
-            boxSizing: 'border-box',
-            cursor: 'not-allowed',
-          }}
-        />
+        <Input placeholder='Vellira' />
       </FormField>
     </div>
   );
@@ -496,16 +399,51 @@ function WebComponentsOverview() {
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>Basic</h3>
               <Input
-                label='Name'
-                description='Basic uncontrolled input.'
-                placeholder='Ada Lovelace'
-              />
-              <Input
-                label='Required email'
+                label='Email'
+                description='Shorthand API renders FormField internally.'
                 placeholder='name@example.com'
                 type='email'
-                required
+                clearable
+                clearIconTone='default'
               />
+              <Input
+                label='Workspace URL'
+                startAddon='https://'
+                endAddon='.com'
+                placeholder='vellira'
+                color='primary'
+                variant='outline'
+              />
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Color variants</h3>
+              <Input
+                label='Primary'
+                color='primary'
+                placeholder='Primary input'
+              />
+              <Input
+                label='Neutral'
+                color='neutral'
+                placeholder='Neutral input'
+              />
+              <Input
+                label='Success'
+                color='success'
+                variant='filled'
+                defaultValue='hello@vellira.dev'
+                endIcon={<Check size={12} />}
+                endIconTone='success'
+                type='email'
+              />
+              <Input
+                label='Warning'
+                color='warning'
+                variant='soft'
+                placeholder='Warning input'
+              />
+              <Input label='Danger' color='danger' placeholder='Danger input' />
             </div>
 
             <div style={groupStyle}>
@@ -529,27 +467,34 @@ function WebComponentsOverview() {
                 label='Search'
                 type='search'
                 size='sm'
-                leftAdornment={<Search />}
+                defaultValue='Components'
+                clearable
+                clearIconTone='default'
                 placeholder='Search components'
               />
 
-              <Input label='Password' type='password' placeholder='Password' />
+              <Input
+                label='Password'
+                type='password'
+                revealPassword
+                placeholder='Password'
+              />
 
               <Input
                 label='Verified email'
                 defaultValue='hello@vellira.dev'
-                rightAdornment={<Check />}
-                rightAdornmentTone='success'
+                endIcon={<Check size={12} />}
+                endIconTone='success'
                 placeholder='name@company.com'
                 type='email'
               />
 
               <Input
                 label='Search settings'
-                leftAdornment={<Search />}
-                rightAdornment={<Check />}
-                rightAdornmentTone='success'
-                leftAdornmentTone='primary'
+                startIcon={<Search />}
+                endIcon={<Check size={12} />}
+                endIconTone='success'
+                startIconTone='primary'
                 defaultValue='Theme'
               />
 
@@ -558,7 +503,7 @@ function WebComponentsOverview() {
                 placeholder='Type something'
                 defaultValue='Theme'
                 clearable
-                clearIcon={<Close />}
+                clearIconTone='default'
               />
             </div>
 
