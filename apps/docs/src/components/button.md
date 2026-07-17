@@ -29,7 +29,7 @@ only behavior is inline text navigation inside prose.
 | Low-emphasis toolbar action     | `appearance="ghost"` with an icon                                              |
 | Non-blocking success action     | `appearance="soft" color="success"`                                            |
 | Destructive intent              | `color="danger"` with confirmation when the action is irreversible             |
-| Text navigation                 | `href`, `target`, `download`, or `asChild` for router links                     |
+| Text navigation                 | `href`, `target`, `download`, or `asChild` for router links                    |
 | Dense command surfaces          | `iconStart`, `badge`, `shortcut`, and `tooltip`                                |
 
 ## Appearance And Color
