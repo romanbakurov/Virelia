@@ -84,28 +84,28 @@ import { Button } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.ButtonProps.Button -->
 
-| Prop                 | Type                                     | Required | Description                                                 |
-| -------------------- | ---------------------------------------- | -------- | ----------------------------------------------------------- |
-| `children`           | `ReactNode`                              | No       | Button content.                                             |
-| `iconStart`          | `ButtonIconElement`                      | No       | Icon rendered before content.                               |
-| `iconEnd`            | `ButtonIconElement`                      | No       | Icon rendered after content.                                |
-| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.               |
-| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                                 |
-| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                           |
-| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                        |
-| `iconSize`           | `number`                                 | No       | Icon size in pixels.                                        |
-| `size`               | `ButtonSize`                             | No       | Button size.                                                |
-| `disabled`           | `boolean`                                | No       | Disables interaction.                                       |
-| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                           |
-| `testID`             | `string`                                 | No       | Test identifier.                                            |
-| `color`              | `ButtonColor`                            | No       | Visual tone: primary, neutral, success, warning, or danger. |
-| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction.       |
-| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.                     |
-| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.                   |
-| `badge`              | `ReactNode`                              | No       | Compact badge rendered after the label.                     |
-| `shortcut`           | `ReactNode`                              | No       | Keyboard shortcut hint rendered after the label.            |
-| `appearance`         | `ButtonAppearance`                       | No       | Visual style: solid, outline, ghost, soft, or link.         |
-| `shape`              | `ButtonShape`                            | No       | Corner shape: square, rounded, or pill.                     |
+| Prop                 | Type                                     | Required | Description                                                         |
+| -------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------- |
+| `children`           | `ReactNode`                              | No       | Button content.                                                     |
+| `iconStart`          | `ButtonIconElement`                      | No       | Icon rendered before content.                                       |
+| `iconEnd`            | `ButtonIconElement`                      | No       | Icon rendered after content.                                        |
+| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.                       |
+| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                                         |
+| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                                   |
+| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                                |
+| `iconSize`           | `number`                                 | No       | Overrides the size-derived icon size in pixels.                     |
+| `size`               | `ButtonSize`                             | No       | Button size.                                                        |
+| `disabled`           | `boolean`                                | No       | Disables interaction.                                               |
+| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                                   |
+| `testID`             | `string`                                 | No       | Test identifier.                                                    |
+| `color`              | `ButtonColor`                            | No       | Visual tone: primary, neutral, success, warning, or danger.         |
+| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction.               |
+| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.                             |
+| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.                           |
+| `badge`              | `ReactNode`                              | No       | Compact badge rendered after the label when not icon-only.          |
+| `shortcut`           | `ReactNode`                              | No       | Keyboard shortcut hint rendered after the label when not icon-only. |
+| `appearance`         | `ButtonAppearance`                       | No       | Visual style: solid, outline, ghost, soft, or link.                 |
+| `shape`              | `ButtonShape`                            | No       | Corner shape: square, rounded, or pill.                             |
 
 <!-- api-docgen:end native.ButtonProps.Button -->
 
