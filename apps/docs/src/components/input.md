@@ -74,6 +74,179 @@ For custom layouts, compose Input inside FormField. Input receives `id`,
 | Prefix       | Use `prefix` and `suffix` for inline units or symbols.                   |
 | Clear action | Use for search, filters, and optional text fields where reset is common. |
 
+## Recommended Patterns
+
+Use the full FormField composition when the field participates in a larger form
+layout or needs shared field state.
+
+```tsx
+<FormField
+  label='Email'
+  description='Used for login.'
+  error={emailError}
+  required
+>
+  <Input
+    type='email'
+    value={email}
+    onValueChange={setEmail}
+    placeholder='name@example.com'
+  />
+</FormField>
+```
+
+Use a clearable search input when the value is temporary and reset is a primary
+action.
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+
+<Input
+  aria-label='Search projects'
+  type='search'
+  value={query}
+  onValueChange={setQuery}
+  placeholder='Search projects'
+  startIcon={<Search />}
+  clearable
+/>;
+```
+
+Use password reveal on the normal Input component instead of creating a separate
+PasswordInput.
+
+```tsx
+<Input
+  label='Password'
+  type='password'
+  value={password}
+  onValueChange={setPassword}
+  revealPassword
+/>
+```
+
+## Composition
+
+Input is designed to compose with other Vellira primitives instead of owning
+every workflow itself.
+
+### Input + FormField
+
+Use this when the page owns field layout, or when several controls need the same
+semantic contract.
+
+```tsx
+<FormField
+  label='Workspace slug'
+  description='Used in workspace URLs.'
+  size='sm'
+>
+  <Input
+    value={slug}
+    onValueChange={setSlug}
+    startAddon='https://'
+    endAddon='.vellira.dev'
+  />
+</FormField>
+```
+
+### Input + Tooltip
+
+Use Tooltip for a short explanation of an icon or terse affordance. Keep
+required instructions in `description`.
+
+```tsx
+import { Settings } from '@vellira-ui/icons';
+import { Button, FormField, Input, Tooltip } from '@vellira-ui/react';
+
+<FormField
+  label='API key'
+  description='Never share this value in public channels.'
+  labelInfo={
+    <Tooltip content='Create keys in workspace settings.'>
+      <Button
+        aria-label='Where to create API keys'
+        iconOnly
+        iconStart={<Settings />}
+      />
+    </Tooltip>
+  }
+>
+  <Input value={apiKey} onValueChange={setApiKey} />
+</FormField>;
+```
+
+### Input + Validation
+
+Keep validation logic in the app and pass the result into Input.
+
+```tsx
+const emailError = email.includes('@') ? undefined : 'Enter a valid email.';
+
+<Input
+  label='Work email'
+  type='email'
+  value={email}
+  onValueChange={setEmail}
+  error={emailError}
+/>;
+```
+
+### Input + Dropdown
+
+Use Dropdown next to Input for contextual commands, not for saved field values.
+
+```tsx
+import { Button, Dropdown, Input } from '@vellira-ui/react';
+import { DropdownMenu } from '@vellira-ui/icons';
+
+<div className='fieldRow'>
+  <Input
+    label='Project name'
+    value={projectName}
+    onValueChange={setProjectName}
+  />
+  <Dropdown
+    ariaLabel='Project name actions'
+    trigger={
+      <Button
+        aria-label='Project name actions'
+        iconOnly
+        iconStart={<DropdownMenu />}
+      />
+    }
+    items={[
+      { value: 'copy', label: 'Copy name' },
+      { value: 'reset', label: 'Reset' },
+    ]}
+    onSelect={handleProjectNameAction}
+  />
+</div>;
+```
+
+### Input + Command Palette
+
+Use Input as the query control inside a command palette, while the command list
+owns filtering, selection, and keyboard behavior.
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+import { Input } from '@vellira-ui/react';
+
+<div role='dialog' aria-label='Command palette'>
+  <Input
+    aria-label='Search commands'
+    value={query}
+    onValueChange={setQuery}
+    placeholder='Search commands'
+    startIcon={<Search />}
+    clearable
+    autoFocus
+  />
+  <CommandList query={query} onSelect={runCommand} />
+</div>;
+```
+
 ## Appearance
 
 Input supports the same color language as the newer controls.
