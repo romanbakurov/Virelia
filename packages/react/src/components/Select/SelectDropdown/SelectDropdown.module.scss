@@ -1,9 +1,33 @@
+$select-colors: primary, neutral, success, warning, danger;
+$select-variants: outline, filled, soft;
+
 .dropdown {
+  --select-dropdown-current-bg: var(--select-dropdown-bg);
+  --select-dropdown-current-fg: var(--select-dropdown-fg);
+  --select-dropdown-current-border: var(--select-dropdown-border);
+  --select-dropdown-current-ring: var(--select-primary-ring);
+  --select-option-current-active-bg: var(--select-primary-outline-hover-bg);
+  --select-option-current-active-fg: var(--select-primary-outline-hover-fg);
+  --select-option-current-active-border: var(
+    --select-primary-outline-hover-border
+  );
+  --select-option-current-active-ring: var(--select-primary-ring);
+  --select-option-current-selected-bg: var(--select-primary-outline-default-bg);
+  --select-option-current-selected-fg: var(--select-primary-outline-default-fg);
+  --select-option-current-selected-border: var(
+    --select-primary-outline-default-border
+  );
+  --select-option-current-badge-bg: var(--select-primary-soft-default-bg);
+  --select-option-current-badge-fg: var(--select-primary-soft-default-fg);
+  --select-option-current-badge-border: var(
+    --select-primary-soft-default-border
+  );
+
   z-index: var(--z-index-dropdown);
   padding: var(--space-1);
-  color: var(--select-dropdown-fg);
-  background-color: var(--select-dropdown-bg);
-  border: 1px solid var(--select-dropdown-border);
+  color: var(--select-dropdown-current-fg);
+  background-color: var(--select-dropdown-current-bg);
+  border: 1px solid var(--select-dropdown-current-border);
   border-radius: var(--radius-md);
   box-shadow: var(--select-dropdown-shadow);
   animation: dropdownIn 0.12s ease-out;
@@ -12,6 +36,38 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   outline: none;
+}
+
+@each $color in $select-colors {
+  @each $variant in $select-variants {
+    .#{$color}.#{$variant} {
+      --select-dropdown-current-ring: var(--select-#{$color}-ring);
+      --select-option-current-active-bg: var(
+        --select-#{$color}-#{$variant}-hover-bg
+      );
+      --select-option-current-active-fg: var(
+        --select-#{$color}-#{$variant}-hover-fg
+      );
+      --select-option-current-active-border: var(
+        --select-#{$color}-#{$variant}-hover-border
+      );
+      --select-option-current-active-ring: var(--select-#{$color}-ring);
+      --select-option-current-selected-bg: var(
+        --select-#{$color}-#{$variant}-default-bg
+      );
+      --select-option-current-selected-fg: var(
+        --select-#{$color}-#{$variant}-default-fg
+      );
+      --select-option-current-selected-border: var(
+        --select-#{$color}-#{$variant}-default-border
+      );
+      --select-option-current-badge-bg: var(--select-#{$color}-soft-default-bg);
+      --select-option-current-badge-fg: var(--select-#{$color}-soft-default-fg);
+      --select-option-current-badge-border: var(
+        --select-#{$color}-soft-default-border
+      );
+    }
+  }
 }
 
 .dropdown ul {
@@ -50,8 +106,8 @@
   }
 
   &:focus {
-    border-color: var(--select-dropdown-search-ring);
-    box-shadow: 0 0 0 2px var(--select-dropdown-search-ring);
+    border-color: var(--select-dropdown-current-ring);
+    box-shadow: 0 0 0 2px var(--select-dropdown-current-ring);
   }
 }
 

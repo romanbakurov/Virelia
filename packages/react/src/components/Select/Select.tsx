@@ -290,6 +290,8 @@ const SelectRoot = ({
     options: filteredOptions,
     entries: isSearchable || searchValue ? undefined : resolvedEntries,
     multiple,
+    color,
+    variant,
     searchable: isSearchable,
     command,
     virtual,

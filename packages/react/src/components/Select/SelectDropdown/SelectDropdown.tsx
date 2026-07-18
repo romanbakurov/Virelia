@@ -18,6 +18,8 @@ export const SelectDropdown = ({
   entries,
   multiple,
   selectedValues,
+  color = 'primary',
+  variant = 'outline',
   searchable,
   command,
   virtual,
@@ -84,6 +86,8 @@ export const SelectDropdown = ({
       ref={setDropdownRef}
       className={[
         styles.dropdown,
+        styles[color],
+        styles[variant],
         command ? styles.command : undefined,
         className,
       ]

@@ -1,5 +1,7 @@
 import type {
   BaseSelectDropdownProps,
+  SelectColor,
+  SelectVariant,
   SelectVirtualConfig,
 } from '@vellira-ui/types';
 import type { CSSProperties, ReactNode } from 'react';
@@ -17,6 +19,8 @@ export interface SelectDropdownProps extends Omit<
   entries?: SelectRenderEntry[];
   multiple?: boolean;
   selectedValues?: string[];
+  color?: SelectColor;
+  variant?: SelectVariant;
   searchable?: boolean;
   command?: boolean;
   virtual?: boolean | SelectVirtualConfig;
