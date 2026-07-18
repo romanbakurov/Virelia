@@ -174,8 +174,10 @@ export const SelectDropdown = ({
                 return (
                   <li
                     key={entry.id}
-                    role='separator'
+                    role='presentation'
+                    aria-hidden='true'
                     className={styles.separator}
+                    data-vellira-select-separator='true'
                   />
                 );
               }

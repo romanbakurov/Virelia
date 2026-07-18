@@ -339,7 +339,10 @@ describe('Select', () => {
 
     expect(listbox?.textContent).toContain('Europe');
     expect(listbox?.textContent).toContain('Americas');
-    expect(document.querySelector('[role="separator"]')).not.toBeNull();
+    expect(document.querySelector('[role="separator"]')).toBeNull();
+    expect(
+      document.querySelector('[data-vellira-select-separator="true"]')
+    ).not.toBeNull();
     expect(
       document.getElementById('country-listbox-option-2')?.textContent
     ).toContain('United States');
