@@ -68,24 +68,24 @@ const asyncOptions = [
 
 const userOptions = [
   {
-    label: 'Roman Bakurov',
-    value: 'roman',
+    label: 'Alex Morgan',
+    value: 'alex',
     description: 'Design systems',
-    icon: 'RB',
+    icon: 'AM',
     badge: 'Owner',
   },
   {
-    label: 'Anna Petrova',
-    value: 'anna',
+    label: 'Taylor Smith',
+    value: 'taylor',
     description: 'Frontend platform',
-    icon: 'AP',
+    icon: 'TS',
     badge: 'Admin',
   },
   {
-    label: 'Mikhail Orlov',
-    value: 'mikhail',
+    label: 'Jordan Lee',
+    value: 'jordan',
     description: 'Product engineering',
-    icon: 'MO',
+    icon: 'JL',
   },
 ];
 
