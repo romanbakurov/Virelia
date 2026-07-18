@@ -177,7 +177,7 @@ export const select = {
     },
 
     groupLabel: {
-      fg: text.muted,
+      fg: colors.primary[300],
     },
 
     separator: {
