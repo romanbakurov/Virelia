@@ -621,7 +621,6 @@ const AdvancedUsageSelect = () => {
           >
             <span>{option.icon}</span>
             <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
-            {option.value === value && <Check />}
           </span>
         )}
         renderValue={(option) =>
