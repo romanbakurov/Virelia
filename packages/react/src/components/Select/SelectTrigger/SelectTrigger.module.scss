@@ -38,7 +38,9 @@ $select-variants: outline, filled, soft;
     color 0.15s ease,
     border-color 0.15s ease,
     box-shadow 0.15s ease,
-    background-color 0.15s ease;
+    background-color 0.15s ease,
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
   cursor: pointer;
   min-width: 0;
   max-width: 100%;
@@ -66,6 +68,10 @@ $select-variants: outline, filled, soft;
       var(--select-current-ring)
     );
     @include focus-ring(var(--select-current-ring));
+  }
+
+  &:active:not(.disabled) {
+    transform: scale(0.997);
   }
 }
 
@@ -214,7 +220,7 @@ $select-variants: outline, filled, soft;
   color: var(--select-current-default-icon);
   transition:
     color 0.15s ease,
-    transform 0.2s ease;
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center;
 
   svg {

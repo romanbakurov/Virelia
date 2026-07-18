@@ -13,7 +13,8 @@
     color 0.15s ease,
     background-color 0.15s ease,
     border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   box-sizing: border-box;
   min-height: 36px;
@@ -23,12 +24,14 @@
     color: var(--select-option-current-hover-fg);
     background-color: var(--select-option-current-hover-bg);
     border-color: var(--select-option-current-hover-border);
+    transform: translateX(2px);
   }
 
   &:active:not(.selected, .disabled) {
     color: var(--select-option-current-pressed-fg);
     background-color: var(--select-option-current-pressed-bg);
     border-color: var(--select-option-current-pressed-border);
+    transform: translateX(1px) scale(0.995);
   }
 }
 
@@ -37,6 +40,7 @@
   background-color: var(--select-option-current-selected-bg);
   border-color: var(--select-option-current-selected-border);
   box-shadow: var(--select-option-selected-shadow);
+  animation: selectedSettle 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .active:not(.selected, .disabled, :focus-visible) {
@@ -130,6 +134,7 @@
   width: 16px;
   height: 16px;
   color: currentcolor;
+  animation: checkPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   svg {
     width: 100%;
@@ -137,8 +142,33 @@
   }
 }
 
+@keyframes selectedSettle {
+  from {
+    transform: scale(0.99);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes checkPop {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .option {
+  .option,
+  .selected,
+  .check {
     transition: none;
+    animation: none;
   }
 }
