@@ -3,6 +3,7 @@ import type {
   BaseSelectMultipleProps,
   BaseSelectOption,
   BaseSelectSingleProps,
+  SelectVirtualConfig,
 } from '@vellira-ui/types';
 import type { FocusEventHandler, ReactNode } from 'react';
 
@@ -57,3 +58,5 @@ export type SelectMultipleProps = Omit<
   SelectOwnProps;
 
 export type SelectProps = SelectSingleProps | SelectMultipleProps;
+
+export type { SelectVirtualConfig };

@@ -54,6 +54,12 @@
   cursor: default;
 }
 
+.virtualSpacer {
+  flex: 0 0 auto;
+  padding: 0;
+  pointer-events: none;
+}
+
 @keyframes dropdownIn {
   from {
     opacity: 0;

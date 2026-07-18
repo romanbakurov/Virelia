@@ -236,6 +236,7 @@ const publicSymbolContracts = {
     'SelectSize',
     'SelectValue',
     'SelectVariant',
+    'SelectVirtualConfig',
     'BaseTabProps',
     'BaseTabsListProps',
     'BaseTabsPanelProps',

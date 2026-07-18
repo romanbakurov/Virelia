@@ -453,6 +453,7 @@ explicitly.
 | `maxSelected`       | `number`                                                                 | No       | —                                                |
 | `closeOnSelect`     | `boolean`                                                                | No       | —                                                |
 | `children`          | `ReactNode`                                                              | No       | Content rendered inside the component.           |
+| `virtual`           | `boolean \| SelectVirtualConfig`                                         | No       | —                                                |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 

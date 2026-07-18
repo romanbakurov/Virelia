@@ -6,6 +6,9 @@ export type SelectColor =
 export type SelectVariant = 'outline' | 'filled' | 'soft';
 export type SelectValue = string;
 export type SelectMultipleValue = string[];
+export type SelectVirtualConfig = {
+  itemHeight?: number;
+};
 
 export interface BaseSelectOption {
   label: string;
@@ -33,6 +36,7 @@ export interface BaseSelectSharedProps extends Pick<
   searchable?: boolean;
   maxSelected?: number;
   closeOnSelect?: boolean;
+  virtual?: boolean | SelectVirtualConfig;
 }
 
 export interface BaseSelectSingleProps extends BaseSelectSharedProps {

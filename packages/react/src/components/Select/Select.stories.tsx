@@ -30,6 +30,11 @@ const longOptions = [
   { label: 'Germany - Engineering platform team', value: 'de' },
 ];
 
+const virtualOptions = Array.from({ length: 500 }, (_, index) => ({
+  label: `Workspace ${index + 1}`,
+  value: `workspace-${index + 1}`,
+}));
+
 const richOptions = [
   {
     label: 'France',
@@ -285,6 +290,14 @@ Single-value select control for choosing from a predefined list.
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    virtual: {
+      description: 'Virtualizes long option lists.',
+      control: 'object',
+      table: {
+        type: { summary: 'boolean | { itemHeight?: number }' },
         defaultValue: { summary: 'false' },
       },
     },
@@ -753,6 +766,19 @@ export const MatchTriggerWidthDisabled: Story = {
   render: (args) => (
     <Section title='Dropdown natural width'>
       <SelectWithOpenState {...args} storyOptions={longOptions} />
+    </Section>
+  ),
+};
+
+export const VirtualizedList: Story = {
+  args: {
+    defaultOpen: true,
+    virtual: { itemHeight: 40 },
+    placeholder: 'Choose workspace',
+  },
+  render: (args) => (
+    <Section title='Virtualized list'>
+      <SelectWithOpenState {...args} storyOptions={virtualOptions} />
     </Section>
   ),
 };

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { Portal } from '@utils/Portal';
 
 import { SelectOption } from '../SelectOption/SelectOption';
@@ -16,6 +18,7 @@ export const SelectDropdown = ({
   multiple,
   selectedValues,
   searchable,
+  virtual,
   portal = true,
   searchValue = '',
   searchPlaceholder = 'Search...',
@@ -30,13 +33,48 @@ export const SelectDropdown = ({
   onMouseEnter,
   onSearchChange,
 }: SelectDropdownProps) => {
+  const [scrollTop, setScrollTop] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setScrollTop(0);
+    }
+  }, [isOpen, searchValue]);
+
   if (!isOpen) return null;
+
+  const virtualConfig =
+    typeof virtual === 'object' ? virtual : virtual ? {} : undefined;
+  const itemHeight = virtualConfig?.itemHeight ?? 40;
+  const viewportHeight = 300;
+  const isVirtual = Boolean(virtualConfig && options.length > 0 && !loading);
+  const startIndex = isVirtual
+    ? Math.max(0, Math.floor(scrollTop / itemHeight) - 2)
+    : 0;
+  const visibleCount = isVirtual
+    ? Math.ceil(viewportHeight / itemHeight) + 4
+    : options.length;
+  const visibleOptions = isVirtual
+    ? options.slice(startIndex, startIndex + visibleCount)
+    : options;
+  const topSpacerHeight = isVirtual ? startIndex * itemHeight : 0;
+  const bottomSpacerHeight = isVirtual
+    ? Math.max(
+        0,
+        (options.length - startIndex - visibleOptions.length) * itemHeight
+      )
+    : 0;
 
   const dropdown = (
     <div
       ref={setDropdownRef}
       className={[styles.dropdown, className].filter(Boolean).join(' ')}
       style={style}
+      onScroll={(event) => {
+        if (!isVirtual) return;
+
+        setScrollTop(event.currentTarget.scrollTop);
+      }}
     >
       {searchable && (
         <div className={styles.searchWrap}>
@@ -68,22 +106,42 @@ export const SelectDropdown = ({
             {loadingText}
           </li>
         ) : options.length ? (
-          options.map((option, index) => (
-            <SelectOption
-              key={option.value}
-              option={option}
-              isSelected={
-                selectedValues
-                  ? selectedValues.includes(option.value)
-                  : option.value === selectedValue
-              }
-              isActive={index === activeIndex}
-              optionId={`${listboxId}-option-${index}`}
-              renderOption={renderOption}
-              onSelect={onSelect}
-              onMouseEnter={() => onMouseEnter(index)}
-            />
-          ))
+          <>
+            {isVirtual && (
+              <li
+                aria-hidden='true'
+                className={styles.virtualSpacer}
+                style={{ height: topSpacerHeight }}
+              />
+            )}
+            {visibleOptions.map((option, visibleIndex) => {
+              const index = startIndex + visibleIndex;
+
+              return (
+                <SelectOption
+                  key={option.value}
+                  option={option}
+                  isSelected={
+                    selectedValues
+                      ? selectedValues.includes(option.value)
+                      : option.value === selectedValue
+                  }
+                  isActive={index === activeIndex}
+                  optionId={`${listboxId}-option-${index}`}
+                  renderOption={renderOption}
+                  onSelect={onSelect}
+                  onMouseEnter={() => onMouseEnter(index)}
+                />
+              );
+            })}
+            {isVirtual && (
+              <li
+                aria-hidden='true'
+                className={styles.virtualSpacer}
+                style={{ height: bottomSpacerHeight }}
+              />
+            )}
+          </>
         ) : (
           <li
             role='option'
