@@ -876,6 +876,45 @@ describe('Select', () => {
     });
   });
 
+  it('wraps label, description, and error shorthand with FormField', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          description='Choose one'
+          error='Required'
+        />
+      );
+    });
+
+    const label = form.querySelector('label');
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(label?.getAttribute('for')).toBe('country');
+    expect(label?.textContent).toBe('Country');
+    expect(document.getElementById('country-description')?.textContent).toBe(
+      'Choose one'
+    );
+    expect(document.getElementById('country-error')?.textContent).toBe(
+      'Required'
+    );
+    expect(trigger?.id).toBe('country');
+    expect(trigger?.getAttribute('aria-invalid')).toBe('true');
+    expect(trigger?.getAttribute('aria-describedby')).toBe(
+      'country-description country-error'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('supports clearable, searchable, loading, and rich option content', () => {
     const onValueChange = vi.fn();
     const onSearch = vi.fn();

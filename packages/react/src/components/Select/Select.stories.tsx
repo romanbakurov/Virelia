@@ -663,6 +663,14 @@ export const AdvancedUsage: Story = {
   ),
 };
 
+export const Shorthand: Story = {
+  render: () => (
+    <Section title='Shorthand'>
+      <Select label='Country' description='Choose one' error='Required' />
+    </Section>
+  ),
+};
+
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
