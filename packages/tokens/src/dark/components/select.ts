@@ -73,11 +73,11 @@ const danger = createInputColorPalette({
 });
 
 export const select = {
-  primary: createSelectPalette(primary),
-  neutral: createSelectPalette(neutral),
-  success: createSelectPalette(success),
-  warning: createSelectPalette(warning),
-  danger: createSelectPalette(danger),
+  primary: createSelectPalette(primary, { dropdownBorder: 'transparent' }),
+  neutral: createSelectPalette(neutral, { dropdownBorder: 'transparent' }),
+  success: createSelectPalette(success, { dropdownBorder: 'transparent' }),
+  warning: createSelectPalette(warning, { dropdownBorder: 'transparent' }),
+  danger: createSelectPalette(danger, { dropdownBorder: 'transparent' }),
 
   trigger: {
     default: {
@@ -122,7 +122,7 @@ export const select = {
   dropdown: {
     bg: menu.background,
     fg: menu.item.default.fg,
-    border: menu.border,
+    border: 'transparent',
     shadow: shadow.lg,
 
     search: {
