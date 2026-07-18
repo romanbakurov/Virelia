@@ -188,7 +188,11 @@ $select-variants: outline, filled, soft;
   color: var(--select-dropdown-search-placeholder);
   background: transparent;
   border: 0;
+  border-radius: var(--radius-full);
   transform: translateY(-50%);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
   cursor: pointer;
 
   svg {
@@ -197,7 +201,15 @@ $select-variants: outline, filled, soft;
   }
 
   &:hover {
-    color: var(--select-dropdown-search-fg);
+    color: var(--button-danger-soft-default-fg);
+    background: var(--button-danger-soft-default-bg);
+  }
+
+  &:focus-visible {
+    color: var(--button-danger-soft-default-fg);
+    background: var(--button-danger-soft-default-bg);
+    outline: 2px solid var(--select-dropdown-current-ring);
+    outline-offset: 2px;
   }
 }
 
