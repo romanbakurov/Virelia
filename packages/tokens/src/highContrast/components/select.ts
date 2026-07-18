@@ -169,6 +169,26 @@ export const select = {
     fg: menu.item.default.fg,
     border: menu.border,
     shadow: shadow.lg,
+
+    search: {
+      bg: surface.default,
+      fg: text.primary,
+      border: border.muted,
+      placeholder: text.secondary,
+      ring: focus.ring.color,
+    },
+
+    empty: {
+      fg: text.secondary,
+    },
+
+    groupLabel: {
+      fg: text.secondary,
+    },
+
+    separator: {
+      bg: border.muted,
+    },
   },
 
   option: {
@@ -203,6 +223,38 @@ export const select = {
     disabled: {
       ...menu.item.disabled,
       border: 'transparent',
+    },
+
+    description: {
+      fg: text.secondary,
+    },
+
+    icon: {
+      fg: icons.default,
+    },
+
+    badge: {
+      bg: surface.subtle,
+      fg: text.secondary,
+      border: border.muted,
+    },
+
+    shortcut: {
+      bg: surface.subtle,
+      fg: text.secondary,
+      border: border.muted,
+    },
+
+    success: {
+      fg: status.success.fg,
+    },
+
+    warning: {
+      fg: status.warning.fg,
+    },
+
+    danger: {
+      fg: status.error.fg,
     },
   },
 } as const;

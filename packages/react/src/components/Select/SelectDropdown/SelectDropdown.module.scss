@@ -37,23 +37,27 @@
   width: 100%;
   box-sizing: border-box;
   padding: var(--space-2) var(--space-3);
-  color: var(--text-primary);
+  color: var(--select-dropdown-search-fg);
   font: inherit;
   font-size: var(--font-size-sm);
-  background: var(--surface-default);
-  border: 1px solid var(--border-muted);
+  background: var(--select-dropdown-search-bg);
+  border: 1px solid var(--select-dropdown-search-border);
   border-radius: var(--radius-sm);
   outline: none;
 
+  &::placeholder {
+    color: var(--select-dropdown-search-placeholder);
+  }
+
   &:focus {
-    border-color: var(--focus-ring-color);
-    box-shadow: 0 0 0 2px var(--focus-ring-color);
+    border-color: var(--select-dropdown-search-ring);
+    box-shadow: 0 0 0 2px var(--select-dropdown-search-ring);
   }
 }
 
 .empty {
   padding: var(--space-3);
-  color: var(--text-secondary);
+  color: var(--select-dropdown-empty-fg);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-sm);
   cursor: default;
@@ -61,7 +65,7 @@
 
 .groupLabel {
   padding: var(--space-2) var(--space-3) var(--space-1);
-  color: var(--text-secondary);
+  color: var(--select-dropdown-group-label-fg);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-xs);
@@ -70,7 +74,7 @@
 .separator {
   height: 1px;
   margin: var(--space-1) var(--space-2);
-  background: var(--border-muted);
+  background: var(--select-dropdown-separator-bg);
 }
 
 .virtualSpacer {
