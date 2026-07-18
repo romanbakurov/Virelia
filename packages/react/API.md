@@ -138,6 +138,25 @@ import { Checkbox } from '@vellira-ui/react';
 />;
 ```
 
+```tsx
+<Checkbox
+  label='Marketing updates'
+  description='Receive release notes and product emails.'
+  checked={enabled}
+  onCheckedChange={setEnabled}
+  color='primary'
+  size='md'
+/>
+
+<Checkbox label='Partially selected' indeterminate />
+
+<Checkbox
+  label='Required consent'
+  required
+  error='Accept terms to continue.'
+/>
+```
+
 <!-- api-docgen:start web.CheckboxProps.Checkbox -->
 
 | Prop                | Type                                                | Required | Description                                      |
@@ -251,6 +270,27 @@ import { FormField, Input } from '@vellira-ui/react';
 </FormField>;
 ```
 
+```tsx
+<FormField
+  label='Workspace'
+  description='Connected through generated id and aria props.'
+  error='Use lowercase letters, numbers and hyphens.'
+  required
+  bindControl
+>
+  <input placeholder='vellira-design' />
+</FormField>
+
+<FormField
+  label='Horizontal field'
+  description='Useful for dense settings rows.'
+  orientation='horizontal'
+  bindControl
+>
+  <input placeholder='workspace-slug' />
+</FormField>
+```
+
 `FormField` uses `id` to connect the visible label and generated
 `{id}-description` / `{id}-error` content with the control. Pass the same `id`
 to the wrapped control and add `aria-describedby`, `aria-invalid`, `required`,
@@ -298,6 +338,34 @@ import { Radio, RadioGroup } from '@vellira-ui/react';
   <Radio value='basic' label='Basic' />
   <Radio value='pro' label='Pro' />
 </RadioGroup>;
+```
+
+```tsx
+<RadioGroup
+  name='billing-plan'
+  label='Billing plan'
+  description='Choose one plan for this workspace.'
+  value={plan}
+  onValueChange={setPlan}
+  color='primary'
+  size='md'
+>
+  <Radio value='starter' label='Starter' />
+  <Radio value='pro' label='Pro' />
+  <Radio value='enterprise' label='Enterprise' />
+</RadioGroup>
+
+<RadioGroup
+  name='delivery'
+  label='Delivery'
+  orientation='horizontal'
+  color='success'
+  defaultValue='standard'
+>
+  <Radio value='standard' label='Standard' />
+  <Radio value='express' label='Express' />
+  <Radio value='pickup' label='Pickup' disabled />
+</RadioGroup>
 ```
 
 ### RadioGroup Props
