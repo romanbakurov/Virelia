@@ -18,6 +18,7 @@ export interface SelectDropdownProps extends Omit<
   multiple?: boolean;
   selectedValues?: string[];
   searchable?: boolean;
+  command?: boolean;
   virtual?: boolean | SelectVirtualConfig;
   portal?: boolean;
   searchValue?: string;

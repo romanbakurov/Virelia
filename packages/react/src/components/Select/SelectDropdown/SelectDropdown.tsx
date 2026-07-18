@@ -19,6 +19,7 @@ export const SelectDropdown = ({
   multiple,
   selectedValues,
   searchable,
+  command,
   virtual,
   portal = true,
   searchValue = '',
@@ -77,7 +78,13 @@ export const SelectDropdown = ({
   const dropdown = (
     <div
       ref={setDropdownRef}
-      className={[styles.dropdown, className].filter(Boolean).join(' ')}
+      className={[
+        styles.dropdown,
+        command ? styles.command : undefined,
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={style}
       onScroll={(event) => {
         if (!isVirtual) return;
@@ -90,7 +97,7 @@ export const SelectDropdown = ({
           <input
             className={styles.search}
             value={searchValue}
-            placeholder={searchPlaceholder}
+            placeholder={command ? 'Type a command...' : searchPlaceholder}
             aria-label='Search options'
             onInput={(event) => onSearchChange?.(event.currentTarget.value)}
             onChange={(event) => onSearchChange?.(event.target.value)}

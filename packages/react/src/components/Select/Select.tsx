@@ -1,4 +1,11 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { useOutsideClick } from '@hooks/useOutsideClick';
@@ -18,6 +25,9 @@ import {
 } from './SelectCompound';
 import { SelectProvider } from './SelectContext';
 import type { SelectProps } from './types';
+
+let lockedSelectCount = 0;
+let originalBodyOverflow = '';
 
 const SelectRoot = ({
   children,
@@ -48,6 +58,8 @@ const SelectRoot = ({
   clearable = false,
   searchable = false,
   virtual,
+  modal = false,
+  command = false,
   error,
   placement = 'bottom',
   matchTriggerWidth = true,
@@ -96,13 +108,14 @@ const SelectRoot = ({
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const isSearchable = searchable || command;
   const { entries: resolvedEntries, options: resolvedOptions } = useMemo(
     () => collectSelectStructure(children),
     [children]
   );
 
   const filteredOptions = useMemo(() => {
-    if (!searchable || !searchValue) return resolvedOptions;
+    if (!isSearchable || !searchValue) return resolvedOptions;
 
     const normalizedSearch = searchValue.toLocaleLowerCase();
 
@@ -111,7 +124,7 @@ const SelectRoot = ({
         .toLocaleLowerCase()
         .includes(normalizedSearch)
     );
-  }, [resolvedOptions, searchable, searchValue]);
+  }, [isSearchable, resolvedOptions, searchValue]);
 
   const {
     selectedValue,
@@ -182,6 +195,25 @@ const SelectRoot = ({
 
   useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
 
+  useEffect(() => {
+    if (!modal || !isOpen) return;
+
+    if (lockedSelectCount === 0) {
+      originalBodyOverflow = document.body.style.overflow;
+    }
+
+    lockedSelectCount += 1;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      lockedSelectCount = Math.max(0, lockedSelectCount - 1);
+
+      if (lockedSelectCount === 0) {
+        document.body.style.overflow = originalBodyOverflow;
+      }
+    };
+  }, [isOpen, modal]);
+
   const setTriggerRef = useCallback(
     (node: HTMLButtonElement | null) => {
       buttonRef.current = node;
@@ -248,9 +280,10 @@ const SelectRoot = ({
     labelledById: triggerId,
     style: floatingStyles,
     options: filteredOptions,
-    entries: searchable || searchValue ? undefined : resolvedEntries,
+    entries: isSearchable || searchValue ? undefined : resolvedEntries,
     multiple,
-    searchable,
+    searchable: isSearchable,
+    command,
     virtual,
     portal,
     searchValue,

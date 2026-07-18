@@ -20,6 +20,11 @@
   list-style: none;
 }
 
+.command {
+  width: min(560px, calc(100vw - var(--space-4)));
+  max-height: 420px;
+}
+
 .searchWrap {
   position: sticky;
   top: 0;

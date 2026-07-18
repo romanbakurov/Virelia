@@ -38,6 +38,8 @@ export interface BaseSelectSharedProps extends Pick<
   closeOnSelect?: boolean;
   virtual?: boolean | SelectVirtualConfig;
   avoidCollisions?: boolean;
+  modal?: boolean;
+  command?: boolean;
 }
 
 export interface BaseSelectSingleProps extends BaseSelectSharedProps {

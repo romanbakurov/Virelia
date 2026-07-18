@@ -56,6 +56,7 @@ function pressKey(target: EventTarget, key: string) {
 
 afterEach(() => {
   document.body.innerHTML = '';
+  document.body.style.overflow = '';
 });
 
 describe('Select', () => {
@@ -950,6 +951,67 @@ describe('Select', () => {
     });
 
     expect(document.getElementById('country-listbox-option-50')).not.toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('locks body scroll when modal dropdown is open', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+    document.body.style.overflow = 'auto';
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' modal>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    act(() => {
+      form.querySelector<HTMLButtonElement>('[role="combobox"]')?.click();
+    });
+
+    expect(document.body.style.overflow).toBe('hidden');
+
+    pressKey(
+      form.querySelector<HTMLButtonElement>('[role="combobox"]')!,
+      'Escape'
+    );
+
+    expect(document.body.style.overflow).toBe('auto');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('enables command search without searchable', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='command' label='Command' command>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    act(() => {
+      form.querySelector<HTMLButtonElement>('[role="combobox"]')?.click();
+    });
+
+    expect(
+      document.querySelector<HTMLInputElement>('[aria-label="Search options"]')
+        ?.placeholder
+    ).toBe('Type a command...');
 
     act(() => {
       root.unmount();

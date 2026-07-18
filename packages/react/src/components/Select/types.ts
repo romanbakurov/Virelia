@@ -28,6 +28,8 @@ interface SelectOwnProps {
   matchTriggerWidth?: boolean;
   avoidCollisions?: boolean;
   portal?: boolean;
+  modal?: boolean;
+  command?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;

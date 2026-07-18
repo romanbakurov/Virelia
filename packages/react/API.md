@@ -455,6 +455,8 @@ explicitly.
 | `children`          | `ReactNode`                                                              | No       | Content rendered inside the component.           |
 | `virtual`           | `boolean \| SelectVirtualConfig`                                         | No       | —                                                |
 | `avoidCollisions`   | `boolean`                                                                | No       | —                                                |
+| `modal`             | `boolean`                                                                | No       | —                                                |
+| `command`           | `boolean`                                                                | No       | —                                                |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 

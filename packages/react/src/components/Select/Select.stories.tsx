@@ -311,6 +311,22 @@ Single-value select control for choosing from a predefined list.
         defaultValue: { summary: 'false' },
       },
     },
+    modal: {
+      description: 'Locks page scroll while the dropdown is open.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    command: {
+      description: 'Enables command-palette style search behavior.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
     virtual: {
       description: 'Virtualizes long option lists.',
       control: 'object',
@@ -729,6 +745,38 @@ export const AsyncSearch: Story = {
   render: (args) => (
     <Section title='Async search'>
       <AsyncSearchSelect {...args} />
+    </Section>
+  ),
+};
+
+export const CommandMode: Story = {
+  args: {
+    command: true,
+    defaultOpen: true,
+    matchTriggerWidth: false,
+    modal: true,
+    placeholder: 'Run command',
+    startIcon: <Search />,
+  },
+  render: (args) => (
+    <Section title='Command mode'>
+      <Select {...args}>
+        <Select.Group label='Navigation'>
+          <Select.Item value='dashboard' shortcut='⌘1'>
+            Dashboard
+          </Select.Item>
+          <Select.Item value='projects' shortcut='⌘2'>
+            Projects
+          </Select.Item>
+        </Select.Group>
+        <Select.Separator />
+        <Select.Group label='Actions'>
+          <Select.Item value='create' badge='NEW'>
+            Create workspace
+          </Select.Item>
+          <Select.Item value='settings'>Open settings</Select.Item>
+        </Select.Group>
+      </Select>
     </Section>
   ),
 };
