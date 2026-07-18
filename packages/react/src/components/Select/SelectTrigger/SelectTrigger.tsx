@@ -1,5 +1,5 @@
 import { cn } from '@utils/cn';
-import { ChevronDown } from '@vellira-ui/icons';
+import { ChevronDown, Close } from '@vellira-ui/icons';
 
 import type { SelectTriggerProps } from './types';
 
@@ -7,7 +7,8 @@ import styles from './SelectTrigger.module.scss';
 
 export const SelectTrigger = ({
   id,
-  errorId,
+  describedBy,
+  labelledBy,
   isOpen,
   disabled,
   required,
@@ -18,6 +19,15 @@ export const SelectTrigger = ({
   displayText,
   isPlaceholder,
   size = 'md',
+  color,
+  variant,
+  loading,
+  startIcon,
+  endIcon,
+  prefix,
+  suffix,
+  clearable,
+  onClear,
   className,
   buttonRef,
   onClick,
@@ -37,9 +47,10 @@ export const SelectTrigger = ({
       aria-expanded={isOpen}
       aria-haspopup='listbox'
       aria-label={ariaLabel}
+      aria-labelledby={labelledBy}
       aria-invalid={error || undefined}
       aria-controls={isOpen ? listboxId : undefined}
-      aria-describedby={errorId}
+      aria-describedby={describedBy}
       aria-activedescendant={
         isOpen && activeIndex >= 0
           ? `${listboxId}-option-${activeIndex}`
@@ -48,9 +59,12 @@ export const SelectTrigger = ({
       className={cn(
         styles.control,
         styles[size],
+        styles[variant],
+        styles[color],
         {
           [styles.error]: !!error,
           [styles.disabled]: disabled,
+          [styles.loading]: loading,
         },
         className
       )}
@@ -59,13 +73,35 @@ export const SelectTrigger = ({
       onBlur={onBlur}
       onFocus={onFocus}
     >
-      <span
-        className={cn(styles.value, {
-          [styles.placeholder]: isPlaceholder,
-        })}
-      >
-        {displayText}
+      {startIcon && <span className={styles.adornment}>{startIcon}</span>}
+      {prefix && <span className={styles.affix}>{prefix}</span>}
+
+      <span className={styles.valueWrap}>
+        <span
+          className={cn(styles.value, {
+            [styles.placeholder]: isPlaceholder,
+          })}
+        >
+          {displayText}
+        </span>
       </span>
+
+      {suffix && <span className={styles.affix}>{suffix}</span>}
+
+      {clearable && (
+        <span
+          role='button'
+          aria-label='Clear selection'
+          tabIndex={-1}
+          className={styles.clear}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClear?.();
+          }}
+        >
+          <Close />
+        </span>
+      )}
 
       <span
         className={cn(styles.arrow, {
@@ -73,7 +109,11 @@ export const SelectTrigger = ({
         })}
         aria-hidden='true'
       >
-        <ChevronDown />
+        {loading ? (
+          <span className={styles.spinner} />
+        ) : (
+          (endIcon ?? <ChevronDown />)
+        )}
       </span>
     </button>
   );

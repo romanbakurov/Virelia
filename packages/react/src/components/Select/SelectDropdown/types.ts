@@ -10,9 +10,19 @@ export interface SelectDropdownProps extends Omit<
   listboxId: string;
   labelledById: string;
   options: SelectOption[];
+  multiple?: boolean;
+  selectedValues?: string[];
+  searchable?: boolean;
+  portal?: boolean;
+  searchValue?: string;
+  searchPlaceholder?: string;
+  loading?: boolean;
+  loadingText?: ReactNode;
   noOptionsText: ReactNode;
+  renderOption?: (option: SelectOption) => ReactNode;
   className?: string;
   onMouseEnter: (index: number) => void;
+  onSearchChange?: (value: string) => void;
   style: CSSProperties;
-  setDropdownRef: (node: HTMLUListElement | null) => void;
+  setDropdownRef: (node: HTMLDivElement | null) => void;
 }

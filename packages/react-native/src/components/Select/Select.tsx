@@ -16,8 +16,12 @@ export function Select({
   description,
   value,
   defaultValue,
+  onValueChange,
   onChange,
   options,
+  multiple = false,
+  maxSelected,
+  closeOnSelect,
   placeholder = 'Select...',
   size = 'md',
   required = false,
@@ -33,21 +37,37 @@ export function Select({
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
 
-  const { selectedValue, setSelectedValue, selectedOption, isOpen, setIsOpen } =
-    useSelect({
-      value,
-      defaultValue,
-      onChange,
-      options,
-      disabled,
-    });
+  const {
+    selectedValue,
+    selectedValues,
+    selectedOption,
+    selectedOptions,
+    isOpen,
+    setIsOpen,
+    selectValue,
+  } = useSelect({
+    value,
+    defaultValue,
+    onValueChange: onValueChange as
+      ((value: string | string[]) => void) | undefined,
+    onChange: onChange as ((value: string | string[]) => void) | undefined,
+    options,
+    multiple,
+    maxSelected,
+    closeOnSelect,
+    disabled,
+  });
 
-  const [draftValue, setDraftValue] = useState(selectedValue);
+  const [draftValue, setDraftValue] = useState(
+    Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
+  );
   const hasError = !!error;
 
   useEffect(() => {
     if (isOpen) {
-      setDraftValue(selectedValue);
+      setDraftValue(
+        Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
+      );
     }
   }, [isOpen, selectedValue]);
 
@@ -61,7 +81,9 @@ export function Select({
   const openPicker = () => {
     if (disabled) return;
 
-    setDraftValue(selectedValue);
+    setDraftValue(
+      Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
+    );
     setIsOpen(true);
   };
 
@@ -87,9 +109,14 @@ export function Select({
       return;
     }
 
-    setSelectedValue(draftValue);
+    selectValue(draftValue);
     setIsOpen(false);
   };
+
+  const displayText =
+    multiple && selectedOptions.length
+      ? selectedOptions.map((option) => option.label).join(', ')
+      : (selectedOption?.label ?? placeholder);
 
   return (
     <FormField
@@ -101,8 +128,8 @@ export function Select({
       style={style}
     >
       <SelectTrigger
-        displayText={selectedOption?.label ?? placeholder}
-        isPlaceholder={!selectedOption}
+        displayText={displayText}
+        isPlaceholder={selectedValues.length === 0}
         isOpen={isOpen}
         size={size}
         disabled={disabled}

@@ -281,14 +281,11 @@ export function SelectionExample() {
           { label: 'Light theme', value: 'light' },
         ]}
       />
-      <Select
-        label='Role'
-        options={[
-          { label: 'Admin', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Viewer', value: 'viewer' },
-        ]}
-      />
+      <Select label='Role'>
+        <Select.Item value='admin'>Admin</Select.Item>
+        <Select.Item value='editor'>Editor</Select.Item>
+        <Select.Item value='viewer'>Viewer</Select.Item>
+      </Select>
     </>
   );
 }

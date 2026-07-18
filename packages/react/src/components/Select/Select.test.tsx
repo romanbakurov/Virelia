@@ -1,8 +1,10 @@
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 
 import { Select } from './Select';
@@ -12,6 +14,39 @@ const options = [
   { label: 'Germany', value: 'de' },
   { label: 'Spain', value: 'es' },
 ];
+
+type TestSelectOption = {
+  label: string;
+  value: string;
+  disabled?: boolean;
+  description?: string;
+  icon?: ReactNode;
+  badge?: string;
+  shortcut?: string;
+  color?: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+};
+
+function renderSelectItems(items: TestSelectOption[] = options) {
+  return (
+    <>
+      {items.map((option) => (
+        <Select.Item
+          key={option.value}
+          value={option.value}
+          disabled={option.disabled}
+          label={option.label}
+          description={option.description}
+          icon={option.icon}
+          badge={option.badge}
+          shortcut={option.shortcut}
+          color={option.color}
+        >
+          {option.label}
+        </Select.Item>
+      ))}
+    </>
+  );
+}
 
 function pressKey(target: EventTarget, key: string) {
   act(() => {
@@ -38,8 +73,9 @@ describe('Select', () => {
           label='Country'
           value='fr'
           error='Choose a valid country'
-          options={[{ label: 'France', value: 'fr' }]}
-        />
+        >
+          <Select.Item value='fr'>France</Select.Item>
+        </Select>
       );
     });
 
@@ -58,7 +94,7 @@ describe('Select', () => {
   });
 
   it('opens from keyboard, exposes active option, and selects with Enter', async () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -70,9 +106,10 @@ describe('Select', () => {
           id='country'
           name='country'
           label='Country'
-          onChange={onChange}
-          options={options}
-        />
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -127,7 +164,7 @@ describe('Select', () => {
 
     pressKey(trigger!, 'Enter');
 
-    expect(onChange).toHaveBeenCalledWith('es');
+    expect(onValueChange).toHaveBeenCalledWith('es');
     expect(new FormData(form).get('country')).toBe('es');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.querySelector('[role="listbox"]')).toBeNull();
@@ -137,8 +174,58 @@ describe('Select', () => {
     });
   });
 
+  it('supports explicit compound Trigger, Content, and Item children', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          onValueChange={onValueChange}
+          placeholder='Choose country'
+        >
+          <Select.Trigger className='compound-trigger' />
+          <Select.Content className='compound-content'>
+            <Select.Item value='fr'>France</Select.Item>
+            <Select.Item value='de' description='Berlin'>
+              Germany
+            </Select.Item>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.className).toContain('compound-trigger');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.querySelector('[role="listbox"]')?.className).toContain(
+      'compound-content'
+    );
+
+    act(() => {
+      document.getElementById('country-listbox-option-1')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('de');
+    expect(trigger?.textContent).toContain('Germany');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('closes with Escape without selecting a new value', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -151,9 +238,10 @@ describe('Select', () => {
           name='country'
           label='Country'
           defaultValue='de'
-          onChange={onChange}
-          options={options}
-        />
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -167,7 +255,7 @@ describe('Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.querySelector('[role="listbox"]')).toBeNull();
     expect(new FormData(form).get('country')).toBe('de');
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
 
     act(() => {
       root.unmount();
@@ -175,7 +263,7 @@ describe('Select', () => {
   });
 
   it('closes on outside pointerdown without changing the selected value', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -193,9 +281,10 @@ describe('Select', () => {
           name='country'
           label='Country'
           defaultValue='de'
-          onChange={onChange}
-          options={options}
-        />
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -216,7 +305,7 @@ describe('Select', () => {
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.querySelector('[role="listbox"]')).toBeNull();
     expect(new FormData(form).get('country')).toBe('de');
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
 
     act(() => {
       root.unmount();
@@ -224,7 +313,7 @@ describe('Select', () => {
   });
 
   it('ignores disabled option click and selects enabled option click', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -237,9 +326,10 @@ describe('Select', () => {
           name='country'
           label='Country'
           defaultValue='de'
-          onChange={onChange}
-          options={options}
-        />
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -259,7 +349,7 @@ describe('Select', () => {
       france?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(trigger?.getAttribute('aria-activedescendant')).toBe(
       'country-listbox-option-1'
@@ -269,7 +359,7 @@ describe('Select', () => {
       germany?.click();
     });
 
-    expect(onChange).toHaveBeenCalledWith('de');
+    expect(onValueChange).toHaveBeenCalledWith('de');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
     act(() => {
@@ -285,13 +375,9 @@ describe('Select', () => {
 
     act(() => {
       root.render(
-        <Select
-          id='country'
-          name='country'
-          label='Country'
-          disabled
-          options={options}
-        />
+        <Select id='country' name='country' label='Country' disabled>
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -322,15 +408,16 @@ describe('Select', () => {
         <Select
           id='country'
           label='Country'
-          options={options}
           open
           onOpenChange={onOpenChange}
-          placement='top-end'
+          placement='top'
           matchTriggerWidth={false}
           size='lg'
           triggerClassName='custom-trigger'
           dropdownClassName='custom-dropdown'
-        />
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -362,13 +449,9 @@ describe('Select', () => {
 
     act(() => {
       root.render(
-        <Select
-          id='country'
-          name='country'
-          label='Country'
-          value='de'
-          options={options}
-        />
+        <Select id='country' name='country' label='Country' value='de'>
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -379,13 +462,9 @@ describe('Select', () => {
 
     act(() => {
       root.render(
-        <Select
-          id='country'
-          name='country'
-          label='Country'
-          value='es'
-          options={options}
-        />
+        <Select id='country' name='country' label='Country' value='es'>
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -408,10 +487,11 @@ describe('Select', () => {
         <Select
           id='country'
           label='Country'
-          options={options}
           defaultOpen
           error={<span data-testid='custom-error'>Country required</span>}
-        />
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -443,10 +523,11 @@ describe('Select', () => {
         <Select
           id='country'
           aria-label='Billing country'
-          options={options}
           onFocus={onFocus}
           onBlur={onBlur}
-        />
+        >
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -478,7 +559,11 @@ describe('Select', () => {
     const root = createRoot(form);
 
     act(() => {
-      root.render(<Select id='country' defaultValue='es' options={options} />);
+      root.render(
+        <Select id='country' defaultValue='es'>
+          {renderSelectItems()}
+        </Select>
+      );
     });
 
     const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
@@ -498,7 +583,9 @@ describe('Select', () => {
 
     act(() => {
       root.render(
-        <Select id='country' label='Country' required options={options} />
+        <Select id='country' label='Country' required>
+          {renderSelectItems()}
+        </Select>
       );
     });
 
@@ -512,7 +599,7 @@ describe('Select', () => {
   });
 
   it('opens an empty state when no options are available', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -524,9 +611,8 @@ describe('Select', () => {
           id='country'
           label='Country'
           name='country'
-          options={[]}
           noOptionsText='No countries found'
-          onChange={onChange}
+          onValueChange={onValueChange}
         />
       );
     });
@@ -543,7 +629,7 @@ describe('Select', () => {
 
     pressKey(trigger!, 'Enter');
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(new FormData(form).get('country')).toBe('');
 
     act(() => {
@@ -561,13 +647,9 @@ describe('Select', () => {
 
     act(() => {
       root.render(
-        <Select
-          id='country'
-          label='Country'
-          defaultValue='long'
-          defaultOpen
-          options={[{ label: longLabel, value: 'long' }]}
-        />
+        <Select id='country' label='Country' defaultValue='long' defaultOpen>
+          <Select.Item value='long'>{longLabel}</Select.Item>
+        </Select>
       );
     });
 
@@ -575,13 +657,211 @@ describe('Select', () => {
       '[role="combobox"] span'
     );
     const optionLabel = document.querySelector<HTMLSpanElement>(
-      '[role="option"] span'
+      '[role="option"] span[class*="label"]'
     );
 
     expect(triggerValue?.className).toContain('value');
     expect(optionLabel?.className).toContain('label');
     expect(triggerValue?.textContent).toBe(longLabel);
     expect(optionLabel?.textContent).toBe(longLabel);
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('inherits FormField context when composed externally', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <FormField
+          id='country'
+          label='Country'
+          description='Shipping destination'
+          error='Required'
+          required
+          disabled
+          size='lg'
+        >
+          <Select name='country'>{renderSelectItems()}</Select>
+        </FormField>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.id).toBe('country');
+    expect(trigger?.disabled).toBe(true);
+    expect(trigger?.getAttribute('aria-required')).toBe('true');
+    expect(trigger?.getAttribute('aria-invalid')).toBe('true');
+    expect(trigger?.getAttribute('aria-describedby')).toBe(
+      'country-description country-error'
+    );
+    expect(trigger?.className).toContain('lg');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports clearable, searchable, loading, and rich option content', () => {
+    const onValueChange = vi.fn();
+    const onSearch = vi.fn();
+    const onClear = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultValue='de'
+          clearable
+          searchable
+          color='success'
+          variant='soft'
+          onValueChange={onValueChange}
+          onSearch={onSearch}
+          onClear={onClear}
+        >
+          {renderSelectItems([
+            {
+              label: 'France',
+              value: 'fr',
+              description: 'Paris',
+              icon: 'FR',
+              badge: 'EU',
+              shortcut: '⌘1',
+              color: 'success',
+            },
+            { label: 'Germany', value: 'de', description: 'Berlin' },
+          ])}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.className).toContain('success');
+    expect(trigger?.className).toContain('soft');
+    expect(trigger?.textContent).toContain('Germany');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const search = document.querySelector<HTMLInputElement>(
+      '[aria-label="Search options"]'
+    );
+
+    act(() => {
+      search!.value = 'fra';
+      search?.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('fra');
+    expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
+      'France'
+    );
+    expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
+      'Paris'
+    );
+    expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
+      'EU'
+    );
+
+    const clear = form.querySelector('[aria-label="Clear selection"]');
+
+    act(() => {
+      clear?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('');
+    expect(onClear).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' loading>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    act(() => {
+      form.querySelector<HTMLButtonElement>('[role="combobox"]')?.click();
+    });
+
+    expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
+      'Loading...'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports multiple values, maxSelected, and closeOnSelect', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='countries'
+          name='countries'
+          label='Countries'
+          multiple
+          defaultValue={['de']}
+          maxSelected={2}
+          closeOnSelect={false}
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems([
+            { label: 'Germany', value: 'de' },
+            { label: 'Spain', value: 'es' },
+            { label: 'Portugal', value: 'pt' },
+          ])}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const listbox = document.querySelector('[role="listbox"]');
+    const germany = document.getElementById('countries-listbox-option-0');
+    const spain = document.getElementById('countries-listbox-option-1');
+    const portugal = document.getElementById('countries-listbox-option-2');
+
+    expect(listbox?.getAttribute('aria-multiselectable')).toBe('true');
+    expect(germany?.getAttribute('aria-selected')).toBe('true');
+
+    act(() => {
+      spain?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith(['de', 'es']);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(new FormData(form).getAll('countries')).toEqual(['de', 'es']);
+
+    act(() => {
+      portugal?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledTimes(1);
 
     act(() => {
       root.unmount();

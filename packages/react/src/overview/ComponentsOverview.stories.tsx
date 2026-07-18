@@ -43,6 +43,18 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+function renderSelectItems() {
+  return (
+    <>
+      {selectOptions.map((option) => (
+        <Select.Item key={option.value} value={option.value}>
+          {option.label}
+        </Select.Item>
+      ))}
+    </>
+  );
+}
+
 const dropdownItems = [
   { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
@@ -736,27 +748,29 @@ function WebComponentsOverview() {
           <Select
             label='Team'
             description='Choose the owning team.'
-            options={selectOptions}
             value={team}
-            onChange={setTeam}
-          />
+            onValueChange={setTeam}
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
             label='Required team'
-            options={selectOptions}
             placeholder='Select a team'
             required
             error='Team is required'
-          />
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
             aria-label='Billing team'
             placeholder='Billing team'
             description='Accessible name comes from aria-label when the visible label is omitted.'
-            options={selectOptions}
             defaultValue='product'
-          />
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
             label='Archived team'
-            options={[]}
             placeholder='No archived team'
             noOptionsText='No archived teams available'
             defaultOpen

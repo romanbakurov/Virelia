@@ -50,11 +50,62 @@
 }
 
 .label {
+  display: block;
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.content,
+.custom {
+  flex: 1;
+  min-width: 0;
+}
+
+.description {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+.badge,
+.shortcut {
+  flex: 0 0 auto;
+  padding: 1px var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+}
+
+.success {
+  color: var(--color-success-700);
+}
+
+.warning {
+  color: var(--color-warning-700);
+}
+
+.danger {
+  color: var(--color-danger-700);
 }
 
 .check {

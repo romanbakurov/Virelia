@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Check, Search } from '@vellira-ui/icons';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
+
+import { FormField } from '../../patterns/FormField';
 
 import { Select } from './Select';
 
@@ -25,6 +28,32 @@ const longOptions = [
   },
   { label: 'Spain - Customer success and regional operations', value: 'es' },
   { label: 'Germany - Engineering platform team', value: 'de' },
+];
+
+const richOptions = [
+  {
+    label: 'France',
+    value: 'fr',
+    description: 'Paris workspace',
+    icon: '🇫🇷',
+    badge: 'EU',
+    shortcut: '⌘1',
+  },
+  {
+    label: 'Germany',
+    value: 'de',
+    description: 'Berlin operations',
+    icon: '🇩🇪',
+    badge: 'NEW',
+    shortcut: '⌘2',
+  },
+  {
+    label: 'Spain',
+    value: 'es',
+    description: 'Madrid support',
+    icon: '🇪🇸',
+    color: 'success' as const,
+  },
 ];
 
 const meta = {
@@ -55,10 +84,15 @@ Single-value select control for choosing from a predefined list.
   label='Country'
   description='Choose your country of residence.'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Select country...'
-  options={countries}
-/>
+>
+  <Select.Trigger />
+  <Select.Content>
+    <Select.Item value='fr'>France</Select.Item>
+    <Select.Item value='de'>Germany</Select.Item>
+  </Select.Content>
+</Select>
 \`\`\`
 `,
       },
@@ -68,12 +102,13 @@ Single-value select control for choosing from a predefined list.
     label: 'Country',
     placeholder: 'Select country...',
     size: 'md',
-    placement: 'bottom-start',
+    color: 'primary',
+    variant: 'outline',
+    placement: 'bottom',
     matchTriggerWidth: true,
     disabled: false,
     required: false,
-    options: defaultOptions,
-    onChange: noop,
+    onValueChange: noop,
     onOpenChange: noop,
   },
   argTypes: {
@@ -143,16 +178,6 @@ Single-value select control for choosing from a predefined list.
         type: { summary: 'string' },
       },
     },
-    options: {
-      description: 'List of select options.',
-      control: 'object',
-      table: {
-        type: {
-          summary:
-            'Array<{ label: string; value: string; disabled?: boolean }>',
-        },
-      },
-    },
     size: {
       description: 'Visual size of the Select trigger.',
       control: 'radio',
@@ -162,15 +187,35 @@ Single-value select control for choosing from a predefined list.
         defaultValue: { summary: 'md' },
       },
     },
+    color: {
+      description: 'Semantic color palette for the Select trigger.',
+      control: 'radio',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      table: {
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    variant: {
+      description: 'Visual variant for the Select trigger.',
+      control: 'radio',
+      options: ['outline', 'filled', 'soft'],
+      table: {
+        type: { summary: `'outline' | 'filled' | 'soft'` },
+        defaultValue: { summary: 'outline' },
+      },
+    },
     placement: {
       description: 'Preferred dropdown placement.',
       control: 'select',
-      options: ['bottom-start', 'bottom-end', 'top-start', 'top-end'],
+      options: ['bottom', 'top', 'left', 'right'],
       table: {
         type: {
-          summary: `'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'`,
+          summary: `'bottom' | 'top' | 'left' | 'right'`,
         },
-        defaultValue: { summary: 'bottom-start' },
+        defaultValue: { summary: 'bottom' },
       },
     },
     matchTriggerWidth: {
@@ -219,6 +264,30 @@ Single-value select control for choosing from a predefined list.
         type: { summary: 'ReactNode' },
       },
     },
+    clearable: {
+      description: 'Shows a clear action when a value is selected.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    searchable: {
+      description: 'Shows an option search field in the dropdown.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    loading: {
+      description: 'Shows loading affordances in the trigger and dropdown.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
     className: {
       description: 'Additional class name for the Select root field wrapper.',
       control: 'text',
@@ -240,7 +309,7 @@ Single-value select control for choosing from a predefined list.
         type: { summary: 'string' },
       },
     },
-    onChange: {
+    onValueChange: {
       description: 'Called when the selected value changes.',
       action: 'changed',
       table: {
@@ -311,8 +380,35 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 type SelectStoryProps = ComponentProps<typeof Select>;
+type StoryOption = (typeof richOptions)[number];
 
-const SelectWithState = (args: SelectStoryProps) => {
+function renderSelectItems(items: StoryOption[] = defaultOptions) {
+  return (
+    <>
+      {items.map((option) => (
+        <Select.Item
+          key={option.value}
+          value={option.value}
+          label={option.label}
+          disabled={'disabled' in option ? option.disabled : undefined}
+          description={'description' in option ? option.description : undefined}
+          icon={'icon' in option ? option.icon : undefined}
+          badge={'badge' in option ? option.badge : undefined}
+          shortcut={'shortcut' in option ? option.shortcut : undefined}
+          color={'color' in option ? option.color : undefined}
+        >
+          {option.label}
+        </Select.Item>
+      ))}
+    </>
+  );
+}
+
+const SelectWithState = ({
+  children,
+  storyOptions = defaultOptions,
+  ...args
+}: SelectStoryProps & { storyOptions?: StoryOption[] }) => {
   const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
 
   useEffect(() => {
@@ -323,15 +419,21 @@ const SelectWithState = (args: SelectStoryProps) => {
     <Select
       {...args}
       value={value}
-      onChange={(newValue) => {
+      onValueChange={(newValue) => {
         setValue(newValue);
-        args.onChange?.(newValue);
+        args.onValueChange?.(newValue);
       }}
-    />
+    >
+      {children ?? renderSelectItems(storyOptions)}
+    </Select>
   );
 };
 
-const SelectWithOpenState = (args: SelectStoryProps) => {
+const SelectWithOpenState = ({
+  children,
+  storyOptions = defaultOptions,
+  ...args
+}: SelectStoryProps & { storyOptions?: StoryOption[] }) => {
   const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? true);
 
   useEffect(() => {
@@ -346,7 +448,9 @@ const SelectWithOpenState = (args: SelectStoryProps) => {
         setOpen(nextOpen);
         args.onOpenChange?.(nextOpen);
       }}
-    />
+    >
+      {children ?? renderSelectItems(storyOptions)}
+    </Select>
   );
 };
 
@@ -447,24 +551,22 @@ export const Disabled: Story = {
 export const DisabledOption: Story = {
   args: {
     value: '',
-    options: optionsWithDisabled,
   },
   render: (args) => (
     <Section title='Disabled option'>
-      <SelectWithState {...args} />
+      <SelectWithState {...args} storyOptions={optionsWithDisabled} />
     </Section>
   ),
 };
 
 export const EmptyOptions: Story = {
   args: {
-    options: [],
     defaultOpen: true,
     noOptionsText: 'No countries found',
   },
   render: (args) => (
     <Section title='Empty options'>
-      <SelectWithOpenState {...args} />
+      <SelectWithOpenState {...args} storyOptions={[]} />
     </Section>
   ),
 };
@@ -473,25 +575,144 @@ export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
       <div style={gridStyle}>
-        <Select
-          label='Small'
-          placeholder='Small select'
-          size='sm'
-          options={defaultOptions}
-        />
-        <Select
-          label='Medium'
-          placeholder='Medium select'
-          size='md'
-          options={defaultOptions}
-        />
-        <Select
-          label='Large'
-          placeholder='Large select'
-          size='lg'
-          options={defaultOptions}
-        />
+        <Select label='Small' placeholder='Small select' size='sm'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Medium' placeholder='Medium select' size='md'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Large' placeholder='Large select' size='lg'>
+          {renderSelectItems()}
+        </Select>
       </div>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <div style={gridStyle}>
+        {(['primary', 'neutral', 'success', 'warning', 'danger'] as const).map(
+          (color) => (
+            <Select key={color} label={color} color={color} defaultValue='fr'>
+              {renderSelectItems()}
+            </Select>
+          )
+        )}
+      </div>
+    </Section>
+  ),
+};
+
+export const Variants: Story = {
+  render: () => (
+    <Section title='Variants'>
+      <div style={gridStyle}>
+        {(['outline', 'filled', 'soft'] as const).map((variant) => (
+          <Select
+            key={variant}
+            label={variant}
+            variant={variant}
+            defaultValue='fr'
+          >
+            {renderSelectItems()}
+          </Select>
+        ))}
+      </div>
+    </Section>
+  ),
+};
+
+export const FormFieldIntegration: Story = {
+  render: () => (
+    <Section title='FormField integration'>
+      <FormField
+        id='shipping-country'
+        label='Country'
+        description='Shipping destination'
+        required
+      >
+        <Select placeholder='Choose country'>{renderSelectItems()}</Select>
+      </FormField>
+    </Section>
+  ),
+};
+
+export const Searchable: Story = {
+  args: {
+    searchable: true,
+    startIcon: <Search />,
+    placeholder: 'Search countries',
+  },
+  render: (args) => (
+    <Section title='Searchable'>
+      <SelectWithState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const Clearable: Story = {
+  args: {
+    defaultValue: 'fr',
+    clearable: true,
+  },
+  render: (args) => (
+    <Section title='Clearable'>
+      <SelectWithState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const Loading: Story = {
+  args: {
+    defaultOpen: true,
+    loading: true,
+    loadingText: 'Searching...',
+  },
+  render: (args) => (
+    <Section title='Loading'>
+      <SelectWithOpenState {...args} />
+    </Section>
+  ),
+};
+
+export const RichOptions: Story = {
+  args: {
+    defaultOpen: true,
+    renderValue: (option) =>
+      option ? `${option.icon ?? ''} ${option.label}` : 'Choose country',
+  },
+  render: (args) => (
+    <Section title='Rich options'>
+      <SelectWithOpenState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const CustomRender: Story = {
+  args: {
+    defaultOpen: true,
+    renderOption: (option) => (
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          minWidth: 0,
+        }}
+      >
+        <span>{option.icon}</span>
+        <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
+        {option.value === 'fr' && <Check />}
+      </span>
+    ),
+    renderValue: (option) =>
+      option ? `${option.icon ?? ''} ${option.label}` : 'Choose country',
+  },
+  render: (args) => (
+    <Section title='Custom render'>
+      <SelectWithOpenState {...args} storyOptions={richOptions} />
     </Section>
   ),
 };
@@ -500,18 +721,12 @@ export const Placements: Story = {
   render: () => (
     <Section title='Placements'>
       <div style={gridStyle}>
-        <Select
-          label='Bottom start'
-          defaultOpen
-          placement='bottom-start'
-          options={defaultOptions}
-        />
-        <Select
-          label='Bottom end'
-          defaultOpen
-          placement='bottom-end'
-          options={defaultOptions}
-        />
+        <Select label='Bottom' defaultOpen placement='bottom'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Top' defaultOpen placement='top'>
+          {renderSelectItems()}
+        </Select>
       </div>
     </Section>
   ),
@@ -533,12 +748,11 @@ export const MatchTriggerWidthDisabled: Story = {
   args: {
     defaultOpen: true,
     matchTriggerWidth: false,
-    options: longOptions,
     placeholder: 'Select a team with a long label',
   },
   render: (args) => (
     <Section title='Dropdown natural width'>
-      <SelectWithOpenState {...args} />
+      <SelectWithOpenState {...args} storyOptions={longOptions} />
     </Section>
   ),
 };
@@ -571,9 +785,10 @@ export const CustomContent: Story = {
           </span>
         }
         error={<strong>Select an available country.</strong>}
-        options={optionsWithDisabled}
         required
-      />
+      >
+        {renderSelectItems(optionsWithDisabled)}
+      </Select>
     </Section>
   ),
 };
@@ -582,25 +797,19 @@ export const States: Story = {
   render: () => (
     <Section title='States'>
       <div style={gridStyle}>
-        <Select label='Default' options={defaultOptions} />
-        <Select label='With value' defaultValue='fr' options={defaultOptions} />
-        <Select
-          label='Required'
-          required
-          placeholder='Required select'
-          options={defaultOptions}
-        />
-        <Select
-          label='Disabled'
-          defaultValue='fr'
-          disabled
-          options={defaultOptions}
-        />
-        <Select
-          label='Error'
-          error='This field is required.'
-          options={defaultOptions}
-        />
+        <Select label='Default'>{renderSelectItems()}</Select>
+        <Select label='With value' defaultValue='fr'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Required' required placeholder='Required select'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Disabled' defaultValue='fr' disabled>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Error' error='This field is required.'>
+          {renderSelectItems()}
+        </Select>
       </div>
     </Section>
   ),
@@ -657,12 +866,11 @@ export const OpenDropdown: Story = {
 
 export const DisabledOptionsOpen: Story = {
   args: {
-    options: optionsWithDisabled,
     defaultOpen: true,
   },
   render: (args) => (
     <Section title='Disabled options'>
-      <SelectWithState {...args} />
+      <SelectWithState {...args} storyOptions={optionsWithDisabled} />
     </Section>
   ),
 };

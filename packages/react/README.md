@@ -102,16 +102,11 @@ export function RoleSelect() {
   const [role, setRole] = useState('editor');
 
   return (
-    <Select
-      label='Role'
-      value={role}
-      onChange={setRole}
-      options={[
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Viewer', value: 'viewer' },
-      ]}
-    />
+    <Select label='Role' value={role} onValueChange={setRole}>
+      <Select.Item value='admin'>Admin</Select.Item>
+      <Select.Item value='editor'>Editor</Select.Item>
+      <Select.Item value='viewer'>Viewer</Select.Item>
+    </Select>
   );
 }
 ```

@@ -14,6 +14,38 @@
   outline: none;
 }
 
+.dropdown ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.searchWrap {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--space-1);
+  background: var(--select-dropdown-bg);
+}
+
+.search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  outline: none;
+
+  &:focus {
+    border-color: var(--focus-ring-color);
+    box-shadow: 0 0 0 2px var(--focus-ring-color);
+  }
+}
+
 .empty {
   padding: var(--space-3);
   color: var(--text-secondary);

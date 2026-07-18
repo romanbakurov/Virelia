@@ -13,33 +13,73 @@ export const SelectDropdown = ({
   setDropdownRef,
   style,
   options,
+  multiple,
+  selectedValues,
+  searchable,
+  portal = true,
+  searchValue = '',
+  searchPlaceholder = 'Search...',
+  loading,
+  loadingText = 'Loading...',
   noOptionsText,
+  renderOption,
   selectedValue,
   activeIndex,
   className,
   onSelect,
   onMouseEnter,
+  onSearchChange,
 }: SelectDropdownProps) => {
   if (!isOpen) return null;
 
-  return (
-    <Portal>
+  const dropdown = (
+    <div
+      ref={setDropdownRef}
+      className={[styles.dropdown, className].filter(Boolean).join(' ')}
+      style={style}
+    >
+      {searchable && (
+        <div className={styles.searchWrap}>
+          <input
+            className={styles.search}
+            value={searchValue}
+            placeholder={searchPlaceholder}
+            aria-label='Search options'
+            onInput={(event) => onSearchChange?.(event.currentTarget.value)}
+            onChange={(event) => onSearchChange?.(event.target.value)}
+          />
+        </div>
+      )}
+
       <ul
-        ref={setDropdownRef}
         id={listboxId}
         role='listbox'
+        aria-multiselectable={multiple || undefined}
         aria-labelledby={labelledById}
-        className={[styles.dropdown, className].filter(Boolean).join(' ')}
-        style={style}
+        className={className}
       >
-        {options.length ? (
+        {loading ? (
+          <li
+            role='option'
+            aria-disabled='true'
+            aria-selected='false'
+            className={styles.empty}
+          >
+            {loadingText}
+          </li>
+        ) : options.length ? (
           options.map((option, index) => (
             <SelectOption
               key={option.value}
               option={option}
-              isSelected={option.value === selectedValue}
+              isSelected={
+                selectedValues
+                  ? selectedValues.includes(option.value)
+                  : option.value === selectedValue
+              }
               isActive={index === activeIndex}
               optionId={`${listboxId}-option-${index}`}
+              renderOption={renderOption}
               onSelect={onSelect}
               onMouseEnter={() => onMouseEnter(index)}
             />
@@ -55,8 +95,10 @@ export const SelectDropdown = ({
           </li>
         )}
       </ul>
-    </Portal>
+    </div>
   );
+
+  return portal ? <Portal>{dropdown}</Portal> : dropdown;
 };
 
 SelectDropdown.displayName = 'SelectDropdown';

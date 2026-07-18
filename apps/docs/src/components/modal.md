@@ -89,16 +89,11 @@ export function InviteTeammateDialog() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
             />
-            <Select
-              label='Role'
-              value={role}
-              onChange={setRole}
-              options={[
-                { value: 'admin', label: 'Admin' },
-                { value: 'editor', label: 'Editor' },
-                { value: 'viewer', label: 'Viewer' },
-              ]}
-            />
+            <Select label='Role' value={role} onValueChange={setRole}>
+              <Select.Item value='admin'>Admin</Select.Item>
+              <Select.Item value='editor'>Editor</Select.Item>
+              <Select.Item value='viewer'>Viewer</Select.Item>
+            </Select>
           </Modal.Body>
           <Modal.Footer>
             <Button
