@@ -138,6 +138,7 @@ export const SelectDropdown = ({
   const dropdown = (
     <div
       ref={handleDropdownRef}
+      tabIndex={0}
       className={[
         styles.dropdown,
         styles[color],

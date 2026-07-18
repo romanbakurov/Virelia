@@ -1108,6 +1108,7 @@ describe('Select', () => {
     const listbox = document.querySelector('[role="listbox"]');
     const dropdown = listbox?.parentElement;
 
+    expect(dropdown?.getAttribute('tabindex')).toBe('0');
     expect(document.querySelectorAll('[role="option"]').length).toBeLessThan(
       longItems.length
     );
