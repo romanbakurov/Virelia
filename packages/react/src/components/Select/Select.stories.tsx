@@ -53,7 +53,6 @@ const richOptions = [
     value: 'es',
     description: 'Madrid support',
     icon: '🇪🇸',
-    color: 'success' as const,
   },
 ];
 
@@ -875,7 +874,6 @@ export const CustomRender: Story = {
       >
         <span>{option.icon}</span>
         <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
-        {option.value === 'fr' && <Check />}
       </span>
     ),
     renderValue: (option) =>
