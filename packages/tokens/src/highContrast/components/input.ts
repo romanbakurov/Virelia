@@ -18,13 +18,18 @@ const primary = createInputColorPalette({
   ...inputPaletteDefaults,
   accent: colors.primary[300],
   accentHover: colors.primary[400],
-  accentSoft: colors.grayBlue[900],
+
+  accentSoft: colors.primary[900],
+
   filledBg: colors.primary[950],
   filledHoverBg: colors.primary[900],
+
   filledDefaultBorder: colors.primary[300],
   filledHoverBorder: colors.primary[400],
+
   softDefaultBorder: colors.primary[300],
   softHoverBorder: colors.primary[400],
+
   ring: colors.primary[400],
 });
 
@@ -32,13 +37,18 @@ const neutral = createInputColorPalette({
   ...inputPaletteDefaults,
   accent: colors.grayBlue[200],
   accentHover: colors.gray[200],
-  accentSoft: colors.grayBlue[900],
-  filledBg: colors.grayBlue[950],
-  filledHoverBg: colors.grayBlue[900],
+
+  accentSoft: colors.grayBlue[800],
+
+  filledBg: colors.grayBlue[900],
+  filledHoverBg: colors.grayBlue[800],
+
   filledDefaultBorder: colors.grayBlue[200],
   filledHoverBorder: colors.gray[200],
+
   softDefaultBorder: colors.grayBlue[200],
   softHoverBorder: colors.gray[200],
+
   hoverBg: colors.grayBlue[900],
   ring: colors.grayBlue[400],
 });
@@ -47,13 +57,18 @@ const success = createInputColorPalette({
   ...inputPaletteDefaults,
   accent: colors.success[300],
   accentHover: colors.success[400],
-  accentSoft: colors.success[950],
+
+  accentSoft: colors.success[900],
+
   filledBg: colors.success[950],
   filledHoverBg: colors.success[900],
+
   filledDefaultBorder: colors.success[300],
   filledHoverBorder: colors.success[400],
+
   softDefaultBorder: colors.success[300],
   softHoverBorder: colors.success[400],
+
   hoverBg: colors.success[950],
   ring: colors.success[500],
 });
@@ -62,13 +77,18 @@ const warning = createInputColorPalette({
   ...inputPaletteDefaults,
   accent: colors.warning[500],
   accentHover: colors.warning[400],
-  accentSoft: colors.warning[950],
-  filledBg: colors.warning[950],
-  filledHoverBg: colors.warning[900],
+
+  accentSoft: colors.warning[900],
+
+  filledBg: colors.warning[900],
+  filledHoverBg: colors.warning[800],
+
   filledDefaultBorder: colors.warning[500],
   filledHoverBorder: colors.warning[400],
+
   softDefaultBorder: colors.warning[500],
   softHoverBorder: colors.warning[400],
+
   hoverBg: colors.warning[950],
   ring: colors.warning[500],
 });
@@ -76,14 +96,20 @@ const warning = createInputColorPalette({
 const danger = createInputColorPalette({
   ...inputPaletteDefaults,
   accent: colors.error[400],
-  accentHover: colors.error[200],
-  accentSoft: colors.error[950],
+
+  accentHover: colors.error[300],
+
+  accentSoft: colors.error[900],
+
   filledBg: colors.error[950],
   filledHoverBg: colors.error[900],
+
   filledDefaultBorder: colors.error[400],
-  filledHoverBorder: colors.error[200],
+  filledHoverBorder: colors.error[300],
+
   softDefaultBorder: colors.error[400],
-  softHoverBorder: colors.error[200],
+  softHoverBorder: colors.error[300],
+
   hoverBg: colors.error[950],
   ring: colors.error[500],
 });
