@@ -6,6 +6,7 @@ import type { SelectTriggerProps } from './types';
 import styles from './SelectTrigger.module.scss';
 
 export const SelectTrigger = ({
+  children,
   id,
   describedBy,
   labelledBy,
@@ -73,48 +74,52 @@ export const SelectTrigger = ({
       onBlur={onBlur}
       onFocus={onFocus}
     >
-      {startIcon && <span className={styles.adornment}>{startIcon}</span>}
-      {prefix && <span className={styles.affix}>{prefix}</span>}
+      {children ?? (
+        <>
+          {startIcon && <span className={styles.adornment}>{startIcon}</span>}
+          {prefix && <span className={styles.affix}>{prefix}</span>}
 
-      <span className={styles.valueWrap}>
-        <span
-          className={cn(styles.value, {
-            [styles.placeholder]: isPlaceholder,
-          })}
-        >
-          {displayText}
-        </span>
-      </span>
+          <span className={styles.valueWrap}>
+            <span
+              className={cn(styles.value, {
+                [styles.placeholder]: isPlaceholder,
+              })}
+            >
+              {displayText}
+            </span>
+          </span>
 
-      {suffix && <span className={styles.affix}>{suffix}</span>}
+          {suffix && <span className={styles.affix}>{suffix}</span>}
 
-      {clearable && (
-        <span
-          role='button'
-          aria-label='Clear selection'
-          tabIndex={-1}
-          className={styles.clear}
-          onClick={(event) => {
-            event.stopPropagation();
-            onClear?.();
-          }}
-        >
-          <Close />
-        </span>
+          {clearable && (
+            <span
+              role='button'
+              aria-label='Clear selection'
+              tabIndex={-1}
+              className={styles.clear}
+              onClick={(event) => {
+                event.stopPropagation();
+                onClear?.();
+              }}
+            >
+              <Close />
+            </span>
+          )}
+
+          <span
+            className={cn(styles.arrow, {
+              [styles.open]: isOpen,
+            })}
+            aria-hidden='true'
+          >
+            {loading ? (
+              <span className={styles.spinner} />
+            ) : (
+              (endIcon ?? <ChevronDown />)
+            )}
+          </span>
+        </>
       )}
-
-      <span
-        className={cn(styles.arrow, {
-          [styles.open]: isOpen,
-        })}
-        aria-hidden='true'
-      >
-        {loading ? (
-          <span className={styles.spinner} />
-        ) : (
-          (endIcon ?? <ChevronDown />)
-        )}
-      </span>
     </button>
   );
 };

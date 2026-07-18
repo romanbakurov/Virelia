@@ -225,6 +225,89 @@ describe('Select', () => {
     });
   });
 
+  it('supports public compound slots for trigger, content, and option metadata', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultOpen searchable>
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Icon />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Search placeholder='Find country' />
+            <Select.Label>Europe</Select.Label>
+            <Select.Item value='fr'>
+              <Select.ItemIcon>FR</Select.ItemIcon>
+              France
+              <Select.ItemDescription>Paris</Select.ItemDescription>
+            </Select.Item>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    expect(
+      document.querySelector<HTMLInputElement>(
+        'input[aria-label="Search options"]'
+      )?.placeholder
+    ).toBe('Find country');
+    expect(document.body.textContent).toContain('Europe');
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('FR');
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('Paris');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports compound empty and loading content slots', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultOpen>
+          <Select.Content>
+            <Select.Empty>No countries</Select.Empty>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    expect(document.querySelector('[role="option"]')?.textContent).toBe(
+      'No countries'
+    );
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultOpen loading>
+          <Select.Content>
+            <Select.Loading>Loading countries</Select.Loading>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    expect(document.querySelector('[role="option"]')?.textContent).toBe(
+      'Loading countries'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('renders grouped options and separators without affecting option indexes', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');

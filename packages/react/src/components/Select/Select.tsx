@@ -18,10 +18,18 @@ import {
   collectSelectStructure,
   hasSelectLayoutChildren,
   SelectCompoundContent,
+  SelectCompoundEmpty,
   SelectCompoundGroup,
+  SelectCompoundIcon,
   SelectCompoundItem,
+  SelectCompoundItemDescription,
+  SelectCompoundItemIcon,
+  SelectCompoundLabel,
+  SelectCompoundLoading,
+  SelectCompoundSearch,
   SelectCompoundSeparator,
   SelectCompoundTrigger,
+  SelectCompoundValue,
 } from './SelectCompound';
 import { SelectProvider } from './SelectContext';
 import type { SelectProps } from './types';
@@ -120,7 +128,7 @@ const SelectRoot = ({
     const normalizedSearch = searchValue.toLocaleLowerCase();
 
     return resolvedOptions.filter((option) =>
-      `${option.label} ${option.description ?? ''}`
+      `${option.label} ${getSearchableText(option.description)}`
         .toLocaleLowerCase()
         .includes(normalizedSearch)
     );
@@ -374,10 +382,26 @@ const SelectRoot = ({
 
 export const Select = Object.assign(SelectRoot, {
   Trigger: SelectCompoundTrigger,
+  Value: SelectCompoundValue,
+  Icon: SelectCompoundIcon,
   Content: SelectCompoundContent,
+  Search: SelectCompoundSearch,
   Group: SelectCompoundGroup,
+  Label: SelectCompoundLabel,
   Item: SelectCompoundItem,
+  ItemIcon: SelectCompoundItemIcon,
+  ItemDescription: SelectCompoundItemDescription,
   Separator: SelectCompoundSeparator,
+  Empty: SelectCompoundEmpty,
+  Loading: SelectCompoundLoading,
 });
 
 (Select as { displayName?: string }).displayName = 'Select';
+
+function getSearchableText(value: unknown) {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+
+  return '';
+}

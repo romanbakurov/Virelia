@@ -26,6 +26,10 @@ export interface SelectDropdownProps extends Omit<
   loading?: boolean;
   loadingText?: ReactNode;
   noOptionsText: ReactNode;
+  searchSlot?: ReactNode;
+  headerSlot?: ReactNode;
+  emptySlot?: ReactNode;
+  loadingSlot?: ReactNode;
   renderOption?: (option: SelectOption) => ReactNode;
   className?: string;
   onMouseEnter: (index: number) => void;

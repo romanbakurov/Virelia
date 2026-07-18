@@ -27,6 +27,10 @@ export const SelectDropdown = ({
   loading,
   loadingText = 'Loading...',
   noOptionsText,
+  searchSlot,
+  headerSlot,
+  emptySlot,
+  loadingSlot,
   renderOption,
   selectedValue,
   activeIndex,
@@ -92,18 +96,21 @@ export const SelectDropdown = ({
         setScrollTop(event.currentTarget.scrollTop);
       }}
     >
-      {searchable && (
-        <div className={styles.searchWrap}>
-          <input
-            className={styles.search}
-            value={searchValue}
-            placeholder={command ? 'Type a command...' : searchPlaceholder}
-            aria-label='Search options'
-            onInput={(event) => onSearchChange?.(event.currentTarget.value)}
-            onChange={(event) => onSearchChange?.(event.target.value)}
-          />
-        </div>
-      )}
+      {headerSlot}
+
+      {searchSlot ??
+        (searchable && (
+          <div className={styles.searchWrap}>
+            <input
+              className={styles.search}
+              value={searchValue}
+              placeholder={command ? 'Type a command...' : searchPlaceholder}
+              aria-label='Search options'
+              onInput={(event) => onSearchChange?.(event.currentTarget.value)}
+              onChange={(event) => onSearchChange?.(event.target.value)}
+            />
+          </div>
+        ))}
 
       <ul
         id={listboxId}
@@ -119,7 +126,7 @@ export const SelectDropdown = ({
             aria-selected='false'
             className={styles.empty}
           >
-            {loadingText}
+            {loadingSlot ?? loadingText}
           </li>
         ) : options.length ? (
           <>
@@ -187,7 +194,7 @@ export const SelectDropdown = ({
             aria-selected='false'
             className={styles.empty}
           >
-            {noOptionsText}
+            {emptySlot ?? noOptionsText}
           </li>
         )}
       </ul>

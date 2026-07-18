@@ -7,6 +7,7 @@ import type {
 import type { FocusEventHandler, KeyboardEvent, ReactNode, Ref } from 'react';
 
 export interface SelectTriggerProps extends BaseSelectTriggerProps {
+  children?: ReactNode;
   displayText: ReactNode;
   isPlaceholder: boolean;
   size?: SelectSize;

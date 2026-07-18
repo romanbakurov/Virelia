@@ -471,7 +471,7 @@ explicitly.
 | `disabled`    | `boolean`     | No       | Disables this option.               |
 | `icon`        | `ReactNode`   | No       | Icon rendered inside the component. |
 | `color`       | `SelectColor` | No       | —                                   |
-| `description` | `string`      | No       | Additional descriptive text.        |
+| `description` | `ReactNode`   | No       | Additional descriptive text.        |
 | `badge`       | `string`      | No       | —                                   |
 | `shortcut`    | `string`      | No       | —                                   |
 

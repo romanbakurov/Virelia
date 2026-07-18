@@ -7,7 +7,11 @@ import type {
 } from '@vellira-ui/types';
 import type { FocusEventHandler, ReactNode } from 'react';
 
-export interface SelectOption extends Omit<BaseSelectOption, 'icon'> {
+export interface SelectOption extends Omit<
+  BaseSelectOption,
+  'description' | 'icon'
+> {
+  description?: ReactNode;
   icon?: ReactNode;
 }
 
