@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import type { ComponentProps } from 'react';
 import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -270,6 +271,31 @@ describe('Native Select', () => {
 
     expect(onChange).not.toHaveBeenCalled();
     expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('treats missing runtime options as an empty list', () => {
+    const props = {
+      label: 'Country',
+      onChange: vi.fn(),
+    } as unknown as ComponentProps<typeof Select>;
+
+    const { container, unmount } = render(<Select {...props} />);
+
+    expect(container.textContent).toContain('Select...');
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(picker?.querySelectorAll('button')).toHaveLength(1);
 
     unmount();
   });

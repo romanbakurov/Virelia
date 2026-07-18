@@ -58,19 +58,20 @@ export function Select({
     closeOnSelect,
     disabled,
   });
+  const resolvedSelectedValues = selectedValues ?? [];
+  const resolvedSelectedOptions = selectedOptions ?? [];
+  const selectedValueText = Array.isArray(selectedValue)
+    ? (selectedValue[0] ?? '')
+    : (selectedValue ?? '');
 
-  const [draftValue, setDraftValue] = useState(
-    Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
-  );
+  const [draftValue, setDraftValue] = useState(selectedValueText);
   const hasError = !!error;
 
   useEffect(() => {
     if (isOpen) {
-      setDraftValue(
-        Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
-      );
+      setDraftValue(selectedValueText);
     }
-  }, [isOpen, selectedValue]);
+  }, [isOpen, selectedValueText]);
 
   const resolvedLabel =
     accessibilityLabel ??
@@ -82,9 +83,7 @@ export function Select({
   const openPicker = () => {
     if (disabled) return;
 
-    setDraftValue(
-      Array.isArray(selectedValue) ? (selectedValue[0] ?? '') : selectedValue
-    );
+    setDraftValue(selectedValueText);
     setIsOpen(true);
   };
 
@@ -115,8 +114,8 @@ export function Select({
   };
 
   const displayText =
-    multiple && selectedOptions.length
-      ? selectedOptions.map((option) => option.label).join(', ')
+    multiple && resolvedSelectedOptions.length
+      ? resolvedSelectedOptions.map((option) => option.label).join(', ')
       : (selectedOption?.label ?? placeholder);
 
   return (
@@ -130,7 +129,7 @@ export function Select({
     >
       <SelectTrigger
         displayText={displayText}
-        isPlaceholder={selectedValues.length === 0}
+        isPlaceholder={resolvedSelectedValues.length === 0}
         isOpen={isOpen}
         size={size}
         disabled={disabled}
