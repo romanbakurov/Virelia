@@ -6,7 +6,6 @@ import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
-import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -164,7 +163,7 @@ export const select = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: 'transparent',
-    shadow: shadow.lg,
+    shadow: 'none',
 
     search: {
       bg: surface.default,
@@ -213,7 +212,7 @@ export const select = {
       bg: control.selected.muted.bg,
       fg: control.selected.muted.fg,
       border: control.selected.muted.border,
-      shadow: shadow.inset,
+      shadow: 'none',
     },
 
     disabled: {
