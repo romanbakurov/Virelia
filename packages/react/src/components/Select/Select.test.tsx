@@ -984,6 +984,15 @@ describe('Select', () => {
       'EU'
     );
 
+    const clearSearch = document.querySelector('[aria-label="Clear search"]');
+
+    act(() => {
+      clearSearch?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('');
+    expect(search?.value).toBe('');
+
     const clear = form.querySelector('[aria-label="Clear selection"]');
 
     act(() => {

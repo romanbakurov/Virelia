@@ -155,7 +155,8 @@ $select-variants: outline, filled, soft;
 .search {
   width: 100%;
   box-sizing: border-box;
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2) calc(var(--space-8) + var(--space-1)) var(--space-2)
+    var(--space-3);
   color: var(--select-dropdown-search-fg);
   font: inherit;
   font-size: var(--font-size-sm);
@@ -171,6 +172,32 @@ $select-variants: outline, filled, soft;
   &:focus {
     border-color: var(--select-dropdown-current-ring);
     box-shadow: 0 0 0 2px var(--select-dropdown-current-ring);
+  }
+}
+
+.searchClear {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--space-1) + var(--space-2));
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  padding: 0;
+  color: var(--select-dropdown-search-placeholder);
+  background: transparent;
+  border: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    color: var(--select-dropdown-search-fg);
   }
 }
 

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Portal } from '@utils/Portal';
+import { Close } from '@vellira-ui/icons';
 
 import { SelectOption } from '../SelectOption/SelectOption';
 
@@ -41,6 +42,7 @@ export const SelectDropdown = ({
   onMouseEnter,
   onSearchChange,
 }: SelectDropdownProps) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export const SelectDropdown = ({
         (searchable && (
           <div className={styles.searchWrap}>
             <input
+              ref={searchInputRef}
               className={styles.search}
               value={searchValue}
               placeholder={command ? 'Type a command...' : searchPlaceholder}
@@ -113,6 +116,19 @@ export const SelectDropdown = ({
               onInput={(event) => onSearchChange?.(event.currentTarget.value)}
               onChange={(event) => onSearchChange?.(event.target.value)}
             />
+            {searchValue && (
+              <button
+                type='button'
+                className={styles.searchClear}
+                aria-label='Clear search'
+                onClick={() => {
+                  onSearchChange?.('');
+                  searchInputRef.current?.focus();
+                }}
+              >
+                <Close />
+              </button>
+            )}
           </div>
         ))}
 

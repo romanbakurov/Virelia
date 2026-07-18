@@ -1,7 +1,7 @@
-import { Children, isValidElement } from 'react';
+import { Children, isValidElement, useRef } from 'react';
 
 import { cn } from '@utils/cn';
-import { ChevronDown } from '@vellira-ui/icons';
+import { ChevronDown, Close } from '@vellira-ui/icons';
 import type { SelectColor } from '@vellira-ui/types';
 import type { ReactElement, ReactNode } from 'react';
 
@@ -206,12 +206,15 @@ export const SelectCompoundSearch: SelectCompoundComponent<
   SelectCompoundSearchProps
 > = ({ placeholder, className }) => {
   const { dropdownProps } = useSelectContext();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchValue = dropdownProps.searchValue ?? '';
 
   return (
     <div className={dropdownStyles.searchWrap}>
       <input
+        ref={searchInputRef}
         className={cn(dropdownStyles.search, className)}
-        value={dropdownProps.searchValue ?? ''}
+        value={searchValue}
         placeholder={
           placeholder ??
           (dropdownProps.command ? 'Type a command...' : 'Search...')
@@ -222,6 +225,19 @@ export const SelectCompoundSearch: SelectCompoundComponent<
         }
         onChange={(event) => dropdownProps.onSearchChange?.(event.target.value)}
       />
+      {searchValue && (
+        <button
+          type='button'
+          className={dropdownStyles.searchClear}
+          aria-label='Clear search'
+          onClick={() => {
+            dropdownProps.onSearchChange?.('');
+            searchInputRef.current?.focus();
+          }}
+        >
+          <Close />
+        </button>
+      )}
     </div>
   );
 };
