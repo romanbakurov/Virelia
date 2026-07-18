@@ -41,8 +41,8 @@
   ],
   "scripts": {
     "clean": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', { recursive: true, force: true }); fs.rmSync('src/generated', { recursive: true, force: true })\"",
-    "generate": "tsx scripts/generate-icons.ts && pnpm --workspace-root exec prettier 'packages/icons/src/**/*.{ts,tsx}' --write",
-    "build": "pnpm run clean && pnpm run generate && tsc -p tsconfig.build.json",
+    "generate": "tsx scripts/generate-icons.ts",
+    "build": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', { recursive: true, force: true })\" && pnpm run generate && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
