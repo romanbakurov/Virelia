@@ -95,18 +95,27 @@ Single-value select control for choosing from a predefined list.
 
 \`\`\`tsx
 <Select
-  label='Country'
-  description='Choose your country of residence.'
-  value={country}
-  onValueChange={setCountry}
-  placeholder='Select country...'
+  placeholder='Country'
 >
-  <Select.Trigger />
-  <Select.Content>
+  <Select.Item value='fr'>France</Select.Item>
+  <Select.Item value='de'>Germany</Select.Item>
+</Select>
+\`\`\`
+
+\`\`\`tsx
+<FormField label='Country' description='Shipping destination'>
+  <Select
+    searchable
+    clearable
+    color='primary'
+    variant='outline'
+    renderOption={(option) => ...}
+    renderValue={(option) => ...}
+  >
     <Select.Item value='fr'>France</Select.Item>
     <Select.Item value='de'>Germany</Select.Item>
-  </Select.Content>
-</Select>
+  </Select>
+</FormField>
 \`\`\`
 `,
       },
@@ -539,6 +548,45 @@ const AsyncSearchSelect = (args: SelectStoryProps) => {
   );
 };
 
+const AdvancedUsageSelect = () => {
+  const [value, setValue] = useState('fr');
+
+  return (
+    <FormField label='Country' description='Shipping destination'>
+      <Select
+        value={value}
+        searchable
+        clearable
+        color='primary'
+        variant='outline'
+        placeholder='Country'
+        onValueChange={(nextValue) => {
+          setValue(Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue);
+        }}
+        renderOption={(option) => (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              minWidth: 0,
+            }}
+          >
+            <span>{option.icon}</span>
+            <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
+            {option.value === value && <Check />}
+          </span>
+        )}
+        renderValue={(option) =>
+          option ? `${option.icon ?? ''} ${option.label}` : 'Country'
+        }
+      >
+        {renderSelectItems(richOptions)}
+      </Select>
+    </FormField>
+  );
+};
+
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -550,13 +598,32 @@ export const Playground: Story = {
   ),
 };
 
+export const SimpleUsage: Story = {
+  render: () => (
+    <Section title='Simple usage'>
+      <Select placeholder='Country'>
+        <Select.Item value='fr'>France</Select.Item>
+        <Select.Item value='de'>Germany</Select.Item>
+      </Select>
+    </Section>
+  ),
+};
+
+export const AdvancedUsage: Story = {
+  render: () => (
+    <Section title='Advanced usage'>
+      <AdvancedUsageSelect />
+    </Section>
+  ),
+};
+
 export const Default: Story = {
   args: {
     defaultValue: '',
   },
   render: (args) => (
     <Section title='Default'>
-      <Select {...args} />
+      <Select {...args}>{renderSelectItems()}</Select>
     </Section>
   ),
 };
@@ -578,7 +645,7 @@ export const Uncontrolled: Story = {
   },
   render: (args) => (
     <Section title='Uncontrolled'>
-      <Select {...args} />
+      <Select {...args}>{renderSelectItems()}</Select>
     </Section>
   ),
 };
@@ -988,7 +1055,7 @@ export const WithFormName: Story = {
   },
   render: (args) => (
     <Section title='Form submission'>
-      <Select {...args} />
+      <Select {...args}>{renderSelectItems()}</Select>
     </Section>
   ),
 };
