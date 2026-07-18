@@ -1213,6 +1213,60 @@ describe('Select', () => {
     });
   });
 
+  it('does not pin virtualized scrolling to the selected option after opening', () => {
+    const longItems = Array.from({ length: 100 }, (_, index) => ({
+      label: `Country ${index + 1}`,
+      value: `country-${index + 1}`,
+    }));
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultValue='country-51' virtual>
+          {renderSelectItems(longItems)}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const listbox = document.querySelector('[role="listbox"]');
+    const dropdown = listbox?.parentElement;
+
+    expect(document.getElementById('country-listbox-option-50')).not.toBeNull();
+
+    act(() => {
+      Object.defineProperty(dropdown!, 'scrollTop', {
+        configurable: true,
+        writable: true,
+        value: 0,
+      });
+      dropdown?.dispatchEvent(new Event('scroll', { bubbles: true }));
+    });
+
+    expect(document.getElementById('country-listbox-option-0')).not.toBeNull();
+
+    act(() => {
+      document
+        .getElementById('country-listbox-option-0')
+        ?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    });
+
+    expect(dropdown?.scrollTop).toBe(0);
+    expect(document.getElementById('country-listbox-option-0')).not.toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('locks body scroll when modal dropdown is open', () => {
     const form = document.createElement('form');
     document.body.append(form);

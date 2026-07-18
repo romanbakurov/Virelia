@@ -43,6 +43,7 @@ export const SelectDropdown = ({
   onSearchChange,
 }: SelectDropdownProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const didPositionOnOpenRef = useRef(false);
   const [dropdownNode, setDropdownNode] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const virtualConfig =
@@ -61,12 +62,15 @@ export const SelectDropdown = ({
 
   useEffect(() => {
     if (!isOpen) {
+      didPositionOnOpenRef.current = false;
       setScrollTop(0);
     }
   }, [isOpen, searchValue]);
 
   useEffect(() => {
-    if (!isOpen || loading || !dropdownNode) return;
+    if (!isOpen || loading || !dropdownNode || didPositionOnOpenRef.current) {
+      return;
+    }
 
     const selectedIndex = options.findIndex((option) =>
       selectedValues
@@ -75,7 +79,12 @@ export const SelectDropdown = ({
     );
     const targetIndex = selectedIndex >= 0 ? selectedIndex : activeIndex;
 
-    if (targetIndex < 0) return;
+    if (targetIndex < 0) {
+      didPositionOnOpenRef.current = true;
+      return;
+    }
+
+    didPositionOnOpenRef.current = true;
 
     if (isVirtual) {
       const nextScrollTop = Math.max(
