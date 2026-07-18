@@ -61,6 +61,15 @@ const richOptions = [
   },
 ];
 
+const asyncOptions = [
+  { label: 'France', value: 'fr' },
+  { label: 'Germany', value: 'de' },
+  { label: 'Spain', value: 'es' },
+  { label: 'Portugal', value: 'pt' },
+  { label: 'Poland', value: 'pl' },
+  { label: 'Netherlands', value: 'nl' },
+];
+
 const meta = {
   title: 'Components/Select',
   component: Select,
@@ -467,6 +476,44 @@ const SelectWithOpenState = ({
   );
 };
 
+const AsyncSearchSelect = (args: SelectStoryProps) => {
+  const [value, setValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState(asyncOptions);
+
+  return (
+    <Select
+      {...args}
+      value={value}
+      searchable
+      loading={loading}
+      loadingText='Searching...'
+      onValueChange={(newValue) => {
+        setValue(newValue);
+        args.onValueChange?.(newValue);
+      }}
+      onSearch={(query) => {
+        setLoading(true);
+
+        window.setTimeout(() => {
+          const normalizedQuery = query.trim().toLocaleLowerCase();
+
+          setItems(
+            normalizedQuery
+              ? asyncOptions.filter((option) =>
+                  option.label.toLocaleLowerCase().includes(normalizedQuery)
+                )
+              : asyncOptions
+          );
+          setLoading(false);
+        }, 450);
+      }}
+    >
+      {renderSelectItems(items)}
+    </Select>
+  );
+};
+
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -661,6 +708,18 @@ export const Searchable: Story = {
   render: (args) => (
     <Section title='Searchable'>
       <SelectWithState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const AsyncSearch: Story = {
+  args: {
+    placeholder: 'Search countries',
+    startIcon: <Search />,
+  },
+  render: (args) => (
+    <Section title='Async search'>
+      <AsyncSearchSelect {...args} />
     </Section>
   ),
 };
