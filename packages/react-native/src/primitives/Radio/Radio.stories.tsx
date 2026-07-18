@@ -26,6 +26,8 @@ Radio allows selecting a single option.
 
 - Controlled and uncontrolled usage
 - Sizes: sm, md and lg
+- Selected colors: primary, neutral, success, warning and danger
+- Custom selected indicator
 - Optional label and description
 - Disabled and error states
 - Accessibility support
@@ -53,6 +55,7 @@ Standalone usage is also supported.
     value: 'option',
     label: 'Select option',
     size: 'md',
+    color: 'primary',
     disabled: false,
     required: false,
     checked: false,
@@ -88,6 +91,12 @@ Standalone usage is also supported.
       control: 'radio',
       options: ['sm', 'md', 'lg'],
       description: 'Radio control size.',
+    },
+
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      description: 'Selected radio color.',
     },
 
     disabled: {
@@ -139,6 +148,11 @@ Standalone usage is also supported.
 
     style: {
       control: false,
+    },
+
+    icon: {
+      control: false,
+      description: 'Custom indicator rendered for the checked state.',
     },
   },
 };
@@ -346,6 +360,35 @@ export const Sizes: Story = {
         <Radio value='medium' label='Medium' size='md' />
         <Radio value='large' label='Large' size='lg' />
       </View>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <View style={storyStyles.column}>
+        <Radio value='primary' label='Primary' color='primary' defaultChecked />
+        <Radio value='neutral' label='Neutral' color='neutral' defaultChecked />
+        <Radio value='success' label='Success' color='success' defaultChecked />
+        <Radio value='warning' label='Warning' color='warning' defaultChecked />
+        <Radio value='danger' label='Danger' color='danger' defaultChecked />
+      </View>
+    </Section>
+  ),
+};
+
+export const CustomIndicator: Story = {
+  args: {
+    value: 'custom-indicator',
+    label: 'Custom indicator',
+    color: 'success',
+    checked: true,
+    icon: <Text>✓</Text>,
+  },
+  render: (args) => (
+    <Section title='CustomIndicator'>
+      <Radio {...args} />
     </Section>
   ),
 };

@@ -47,14 +47,14 @@ export function Example() {
 
   return (
     <View style={{ gap: 16 }}>
-      <Input label='Email' value={email} onChange={setEmail} />
+      <Input label='Email' value={email} onValueChange={setEmail} />
       <Checkbox
         label='Accept terms'
         description='Required to create an account.'
         checked={accepted}
         onCheckedChange={setAccepted}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </View>
@@ -69,7 +69,7 @@ Use `accessibilityLabel` for icon-only native buttons:
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />;
+<Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />;
 ```
 
 Button icons are React elements from `@vellira-ui/icons`; the component injects
@@ -100,7 +100,7 @@ export function RoleSelect() {
     <Select
       label='Role'
       value={role}
-      onChange={setRole}
+      onValueChange={setRole}
       options={[
         { label: 'Admin', value: 'admin' },
         { label: 'Editor', value: 'editor' },

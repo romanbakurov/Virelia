@@ -23,6 +23,8 @@ A single radio control for selecting one option.
 **Features**
 - Controlled and uncontrolled usage
 - Checked and unchecked states
+- Selected colors: primary, neutral, success, warning and danger
+- Custom selected indicator
 - Optional label and description
 - Required, disabled and error states
 - Standalone usage or composition inside RadioGroup
@@ -65,6 +67,7 @@ Group usage:
     label: 'Country',
     orientation: 'vertical',
     size: 'md',
+    color: 'primary',
     disabled: false,
     required: false,
     onCheckedChange: noop,
@@ -136,6 +139,17 @@ Group usage:
         },
       },
     },
+    color: {
+      description: 'Selected radio color.',
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      table: {
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
+        defaultValue: { summary: 'primary' },
+      },
+    },
     onCheckedChange: {
       description: 'Called when the standalone checked state changes.',
       action: 'changed',
@@ -170,6 +184,13 @@ Group usage:
       control: 'text',
       table: {
         type: { summary: 'string' },
+      },
+    },
+    icon: {
+      description: 'Custom indicator rendered for the checked state.',
+      control: false,
+      table: {
+        type: { summary: 'ReactNode' },
       },
     },
   },
@@ -356,6 +377,35 @@ export const Sizes: Story = {
           <Radio value='de' label='Germany' />
         </RadioGroup>
       </div>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <div style={{ display: 'grid', gap: 12 }}>
+        <Radio value='primary' label='Primary' color='primary' defaultChecked />
+        <Radio value='neutral' label='Neutral' color='neutral' defaultChecked />
+        <Radio value='success' label='Success' color='success' defaultChecked />
+        <Radio value='warning' label='Warning' color='warning' defaultChecked />
+        <Radio value='danger' label='Danger' color='danger' defaultChecked />
+      </div>
+    </Section>
+  ),
+};
+
+export const CustomIndicator: Story = {
+  args: {
+    value: 'custom-indicator',
+    label: 'Custom indicator',
+    color: 'success',
+    checked: true,
+    icon: <span aria-hidden='true'>✓</span>,
+  },
+  render: (args) => (
+    <Section title='Custom indicator'>
+      <Radio {...args} />
     </Section>
   ),
 };

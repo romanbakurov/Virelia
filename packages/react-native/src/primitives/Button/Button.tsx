@@ -1,7 +1,7 @@
 import { cloneElement, useState } from 'react';
 
-import type { PressableProps } from 'react-native';
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import type { LayoutChangeEvent, PressableProps } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 import { devWarning } from '../../utils/devWarning';
@@ -47,7 +47,8 @@ const sizeMap: Record<
 export function Button({
   children,
   color = 'primary',
-  variant = 'solid',
+  appearance = 'solid',
+  shape = 'pill',
   disabled = false,
   loading = false,
   loadingText,
@@ -57,8 +58,10 @@ export function Button({
   onHoverIn,
   onHoverOut,
   size = 'md',
-  leftIcon,
-  rightIcon,
+  iconStart,
+  iconEnd,
+  badge,
+  shortcut,
   fullWidth = false,
   iconOnly: iconOnlyProp = false,
   style,
@@ -71,16 +74,28 @@ export function Button({
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const config = sizeMap[size];
+  const radius =
+    shape === 'square'
+      ? theme.tokens.radius.sm
+      : shape === 'rounded'
+        ? theme.tokens.radius.md
+        : theme.tokens.radius.full;
 
-  const variantTheme = theme.components.button[color][variant];
+  const appearanceTheme = theme.components.button[color][appearance];
 
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [labelWidth, setLabelWidth] = useState(0);
 
   const isDisabled = disabled || loading;
-  const iconOnly =
-    iconOnlyProp || (!children && Boolean(leftIcon || rightIcon));
+  const iconOnly = iconOnlyProp || (!children && Boolean(iconStart || iconEnd));
   const content = loading && loadingText ? loadingText : children;
+  const measureLabel =
+    loadingText && children && !iconOnly
+      ? loading
+        ? children
+        : loadingText
+      : undefined;
 
   devWarning(
     !iconOnly || Boolean(accessibilityLabel),
@@ -115,14 +130,22 @@ export function Button({
       size: resolvedIconSize,
     });
 
+  const handleLabelLayout = (event: LayoutChangeEvent) => {
+    const width = event.nativeEvent.layout.width;
+
+    setLabelWidth((currentWidth) =>
+      width > currentWidth ? width : currentWidth
+    );
+  };
+
   const getInteractionTheme = (pressed: boolean) =>
     isDisabled
       ? theme.components.button.disabled
       : pressed
-        ? variantTheme.pressed
+        ? appearanceTheme.pressed
         : isHovered
-          ? variantTheme.hover
-          : variantTheme.default;
+          ? appearanceTheme.hover
+          : appearanceTheme.default;
 
   return (
     <Pressable
@@ -148,6 +171,7 @@ export function Button({
           {
             backgroundColor: interactionTheme.bg,
             borderColor: interactionTheme.border,
+            borderRadius: radius,
             paddingHorizontal: iconOnly ? 0 : config.px,
             paddingVertical: iconOnly ? 0 : config.py,
             width: iconOnly ? config.height : undefined,
@@ -169,24 +193,73 @@ export function Button({
           <>
             {loading && <ActivityIndicator size='small' color={contentColor} />}
 
-            {!loading && leftIcon && renderIcon(leftIcon, contentColor)}
+            {!loading && iconStart && renderIcon(iconStart, contentColor)}
 
             {content && !iconOnly && (
+              <View style={styles.labelSlot}>
+                <Text
+                  onLayout={handleLabelLayout}
+                  style={[
+                    styles.text,
+                    labelWidth > 0 && { minWidth: labelWidth },
+                    {
+                      fontSize: config.fontSize,
+                      color: contentColor,
+                    },
+                    textStyle,
+                  ]}
+                >
+                  {content}
+                </Text>
+
+                {measureLabel && (
+                  <Text
+                    accessibilityElementsHidden
+                    importantForAccessibility='no-hide-descendants'
+                    onLayout={handleLabelLayout}
+                    style={[
+                      styles.text,
+                      styles.labelMeasure,
+                      {
+                        fontSize: config.fontSize,
+                      },
+                      textStyle,
+                    ]}
+                  >
+                    {measureLabel}
+                  </Text>
+                )}
+              </View>
+            )}
+
+            {badge && !iconOnly && (
               <Text
                 style={[
-                  styles.text,
+                  styles.badge,
                   {
-                    fontSize: config.fontSize,
+                    backgroundColor: `${contentColor}24`,
                     color: contentColor,
                   },
-                  textStyle,
                 ]}
               >
-                {content}
+                {badge}
               </Text>
             )}
 
-            {!loading && rightIcon && renderIcon(rightIcon, contentColor)}
+            {shortcut && !iconOnly && (
+              <Text
+                style={[
+                  styles.shortcut,
+                  {
+                    color: contentColor,
+                  },
+                ]}
+              >
+                {shortcut}
+              </Text>
+            )}
+
+            {!loading && iconEnd && renderIcon(iconEnd, contentColor)}
           </>
         );
       }}

@@ -1,37 +1,13 @@
-import { useId } from 'react';
+import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps, CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
-import { Checkbox } from '../../primitives/Checkbox';
+import { Input } from '../../primitives/Input';
 
 import { FormField } from './FormField';
 
 import styles from './FormField.stories.module.scss';
-
-const inputStyle = {
-  width: '100%',
-  padding: 'var(--space-3) var(--space-4)',
-  color: 'var(--input-default-fg)',
-  font: 'inherit',
-  backgroundColor: 'var(--input-default-bg)',
-  border: '1px solid var(--input-default-border)',
-  borderRadius: 'var(--radius-md)',
-  outline: 'none',
-} satisfies CSSProperties;
-
-const errorInputStyle = {
-  ...inputStyle,
-  borderColor: 'var(--status-error-border)',
-} satisfies CSSProperties;
-
-const disabledInputStyle = {
-  ...inputStyle,
-  color: 'var(--input-disabled-fg)',
-  backgroundColor: 'var(--input-disabled-bg)',
-  cursor: 'not-allowed',
-  opacity: 0.6,
-} satisfies CSSProperties;
 
 const sectionStyle = {
   display: 'flex',
@@ -56,20 +32,24 @@ const subtitleStyle = {
 const columnStyle = {
   display: 'grid',
   width: '100%',
-  gap: 24,
+  gap: 18,
 } satisfies CSSProperties;
 
-const customLabelStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 'var(--space-2)',
+const rowStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  gap: 18,
 } satisfies CSSProperties;
 
-const badgeStyle = {
-  padding: '2px 6px',
-  fontSize: 12,
-  lineHeight: '16px',
-  borderRadius: 'var(--radius-full)',
+const rawInputStyle = {
+  width: '100%',
+  padding: 'var(--space-3) var(--space-4)',
+  color: 'var(--input-primary-outline-default-fg)',
+  font: 'inherit',
+  backgroundColor: 'var(--input-primary-outline-default-bg)',
+  border: '1px solid var(--input-primary-outline-default-border)',
+  borderRadius: 'var(--radius-md)',
+  outline: 'none',
 } satisfies CSSProperties;
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -78,6 +58,40 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       <h3 style={subtitleStyle}>{title}</h3>
       {children}
     </section>
+  );
+}
+
+function InfoMark() {
+  return (
+    <span
+      aria-label='Why this is needed'
+      title='Used for audit logs and billing notifications.'
+    >
+      ?
+    </span>
+  );
+}
+
+function WithInputContextDemo() {
+  const [email, setEmail] = useState('');
+
+  return (
+    <Section title='FormField + Input context'>
+      <FormField
+        label='Email'
+        description='Input inherits id, aria, required, invalid, and size.'
+        required
+        size='sm'
+      >
+        <Input
+          value={email}
+          onValueChange={setEmail}
+          placeholder='name@company.com'
+          type='email'
+          clearable
+        />
+      </FormField>
+    </Section>
   );
 }
 
@@ -91,652 +105,254 @@ const meta = {
         component: `
 ### FormField Pattern
 
-Layout wrapper for composing labels, descriptions, validation content, and custom form controls.
+Infrastructure for field semantics, layout, state propagation, and accessible labeling.
 
-**Features**
-
-- String or custom ReactNode label
-- String or custom ReactNode description
-- String or custom ReactNode error
-- Required indicator
-- Disabled visual state
-- Separate class names for internal elements
-- Native div attributes on the root
-- Works with native inputs and custom Vellira controls
-
-### Usage
-
-Use FormField when a custom control needs consistent field layout and validation presentation.
+**Core contract**
+- Generates and shares control, label, description, and error ids
+- Provides \`required\`, \`disabled\`, \`invalid\`, and \`size\` through context
+- Merges description and error ids into \`aria-describedby\`
+- Lets Vellira controls such as Input inherit field state automatically
+- Still supports direct child native controls through automatic binding
 
 \`\`\`tsx
 <FormField
-  id='email'
   label='Email'
-  description='Used for account notifications.'
+  description='Used for login.'
   error={emailError}
   required
+  size='md'
 >
-  <input
-    id='email'
-    name='email'
-    type='email'
-    autoComplete='email'
-    aria-describedby='email-description email-error'
-    aria-invalid={Boolean(emailError)}
-  />
+  <Input value={email} onValueChange={setEmail} />
 </FormField>
 \`\`\`
 
-### ID behavior
+For common fields, use the shorthand API on Input:
 
-- \`id\` associates the label and supporting content with the control.
-- FormField does not inject props into children.
-- Pass \`id\` to FormField and the same \`id\` to the control.
-- Add \`aria-describedby\`, \`aria-invalid\`, \`required\`, and \`disabled\` to the control when needed.
+\`\`\`tsx
+<Input label='Email' description='Used for login.' error={emailError} />
+\`\`\`
 `,
       },
     },
   },
   args: {
-    label: 'Label',
+    label: 'Email',
+    description: 'Used for account notifications.',
     required: false,
     disabled: false,
+    invalid: false,
+    size: 'md',
+    orientation: 'vertical',
+    labelPosition: 'top',
   },
   argTypes: {
-    id: {
-      description:
-        'ID used to associate the field label and supporting content with the form control.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
+    id: { control: 'text' },
+    label: { control: 'text' },
+    description: { control: 'text' },
+    error: { control: 'text' },
+    required: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    invalid: { control: 'boolean' },
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
     },
-
-    label: {
-      description: 'Label content displayed above the control.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
+    orientation: {
+      control: 'radio',
+      options: ['vertical', 'horizontal'],
     },
-
-    description: {
-      description: 'Supporting content displayed below the label.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
+    labelPosition: {
+      control: 'radio',
+      options: ['top', 'start'],
     },
-
-    error: {
-      description: 'Validation content displayed below the control.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-
-    children: {
-      description: 'Form control rendered inside the field.',
-      control: false,
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-
-    required: {
-      description: 'Displays a required indicator next to the label.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-
-    disabled: {
-      description: 'Applies disabled styling to the field content.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-
-    className: {
-      description: 'Class name applied to the root container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-
-    controlClassName: {
-      description: 'Class name applied to the control wrapper.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-
-    labelClassName: {
-      description: 'Class name applied to the label.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-
-    descriptionClassName: {
-      description: 'Class name applied to the description container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-
-    errorClassName: {
-      description: 'Class name applied to the error container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
+    optionalText: { control: 'text' },
+    labelInfo: { control: false },
+    children: { control: false },
+    bindControl: { control: 'boolean' },
+    className: { control: 'text' },
+    controlClassName: { control: 'text' },
+    labelClassName: { control: 'text' },
+    descriptionClassName: { control: 'text' },
+    errorClassName: { control: 'text' },
   },
 } satisfies Meta<typeof FormField>;
 
 export default meta;
 
-type FormFieldStoryProps = ComponentProps<typeof FormField>;
-
-function PlaygroundExample({
-  children: _children,
-  id,
-  description,
-  error,
-  ...args
-}: FormFieldStoryProps) {
-  const generatedId = useId();
-  const resolvedId = id?.trim() || generatedId;
-
-  const describedBy =
-    [
-      description ? `${resolvedId}-description` : undefined,
-      error ? `${resolvedId}-error` : undefined,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined;
-
-  return (
-    <FormField
-      {...args}
-      id={resolvedId}
-      description={description}
-      error={error}
-    >
-      <input
-        id={resolvedId}
-        name='storybook-form-field'
-        className={styles.storyInput}
-        autoComplete='off'
-        placeholder='Field value'
-        required={args.required}
-        disabled={args.disabled}
-        aria-invalid={Boolean(error) || undefined}
-        aria-describedby={describedBy}
-        style={
-          args.disabled
-            ? disabledInputStyle
-            : error
-              ? errorInputStyle
-              : inputStyle
-        }
-      />
-    </FormField>
-  );
-}
-
-function WithInputExample() {
-  const id = useId();
-
-  return (
-    <FormField id={id} label='Email'>
-      <input
-        id={id}
-        name='email'
-        type='email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function WithDescriptionExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Username'
-      description='Use 3–20 characters. Letters, numbers, and underscores are allowed.'
-    >
-      <input
-        id={id}
-        name='username'
-        autoComplete='username'
-        placeholder='alex_johnson'
-        aria-describedby={`${id}-description`}
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function RequiredExample() {
-  const id = useId();
-
-  return (
-    <FormField id={id} label='Full name' required>
-      <input
-        id={id}
-        type='text'
-        name='full-name'
-        autoComplete='name'
-        placeholder='Alex Johnson'
-        required
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function WithErrorExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Password'
-      error='Password must be at least 8 characters.'
-    >
-      <input
-        id={id}
-        name='password'
-        type='password'
-        autoComplete='current-password'
-        placeholder='Enter password'
-        aria-invalid
-        aria-describedby={`${id}-error`}
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function DisabledExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Email'
-      description='This field is currently unavailable.'
-      disabled
-    >
-      <input
-        id={id}
-        type='email'
-        name='disabled-email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-describedby={`${id}-description`}
-        disabled
-        style={disabledInputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function WithCheckboxExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      description='This example uses a custom Vellira control.'
-    >
-      <Checkbox
-        id={id}
-        name='agreement'
-        label='Accept terms and conditions'
-        aria-describedby={`${id}-description`}
-      />
-    </FormField>
-  );
-}
-
-function CustomLabelExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label={
-        <span style={customLabelStyle}>
-          Workspace
-          <span className={styles.storyBadge} style={badgeStyle}>
-            Public
-          </span>
-        </span>
-      }
-      required
-    >
-      <input
-        id={id}
-        name='workspace'
-        autoComplete='off'
-        placeholder='vellira-design'
-        required
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function CustomDescriptionExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Password'
-      description={
-        <div style={{ display: 'grid', gap: 'var(--space-1)' }}>
-          <span>Your password must contain:</span>
-
-          <ul style={{ margin: 0, paddingLeft: 20 }}>
-            <li>At least 8 characters</li>
-            <li>One number</li>
-            <li>One uppercase letter</li>
-          </ul>
-        </div>
-      }
-    >
-      <input
-        id={id}
-        type='password'
-        name='new-password'
-        autoComplete='new-password'
-        placeholder='Enter password'
-        aria-describedby={`${id}-description`}
-        style={inputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function CustomErrorExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Email'
-      error={
-        <div
-          style={{
-            padding: 'var(--space-2)',
-            background: 'var(--surface-subtle)',
-            borderRadius: 'var(--radius-md)',
-          }}
-        >
-          This email address is already registered.
-        </div>
-      }
-    >
-      <input
-        id={id}
-        type='email'
-        name='registered-email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-invalid
-        aria-describedby={`${id}-error`}
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function CompleteExampleDemo() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Email'
-      description='We will use this email for account notifications.'
-      required
-      error='Email is required.'
-    >
-      <input
-        id={id}
-        type='email'
-        name='complete-email'
-        autoComplete='email'
-        placeholder='name@company.com'
-        aria-invalid
-        aria-describedby={`${id}-description ${id}-error`}
-        required
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function CustomClassesExample() {
-  const id = useId();
-
-  return (
-    <FormField
-      id={id}
-      label='Repository'
-      description='Class slots allow apps to integrate with local CSS modules.'
-      error='Repository name is already taken.'
-      required
-      className={styles.storyCustomRoot}
-      labelClassName={styles.storyCustomLabel}
-      controlClassName={styles.storyCustomControl}
-      descriptionClassName={styles.storyCustomDescription}
-      errorClassName={styles.storyCustomError}
-    >
-      <input
-        id={id}
-        name='repository'
-        autoComplete='off'
-        placeholder='vellira'
-        required
-        aria-invalid
-        aria-describedby={`${id}-description ${id}-error`}
-        style={errorInputStyle}
-        className={styles.storyInput}
-      />
-    </FormField>
-  );
-}
-
-function StatesExample() {
-  const defaultId = useId();
-  const descriptionId = useId();
-  const requiredId = useId();
-  const disabledId = useId();
-  const errorId = useId();
-
-  return (
-    <div style={columnStyle}>
-      <FormField id={defaultId} label='Default'>
-        <input
-          id={defaultId}
-          name='state-default'
-          autoComplete='off'
-          placeholder='Default field'
-          style={inputStyle}
-          className={styles.storyInput}
-        />
-      </FormField>
-
-      <FormField
-        id={descriptionId}
-        label='With description'
-        description='Additional supporting information.'
-      >
-        <input
-          id={descriptionId}
-          name='state-username'
-          autoComplete='username'
-          placeholder='Field with description'
-          aria-describedby={`${descriptionId}-description`}
-          style={inputStyle}
-          className={styles.storyInput}
-        />
-      </FormField>
-
-      <FormField id={requiredId} label='Required' required>
-        <input
-          id={requiredId}
-          name='state-required'
-          autoComplete='off'
-          placeholder='Required field'
-          required
-          style={inputStyle}
-          className={styles.storyInput}
-        />
-      </FormField>
-
-      <FormField id={disabledId} label='Disabled' disabled>
-        <input
-          id={disabledId}
-          name='state-disabled'
-          autoComplete='off'
-          placeholder='Disabled field'
-          disabled
-          style={disabledInputStyle}
-          className={styles.storyInput}
-        />
-      </FormField>
-
-      <FormField id={errorId} label='Error' error='This field is invalid.'>
-        <input
-          id={errorId}
-          name='state-error'
-          autoComplete='off'
-          placeholder='Invalid field'
-          aria-invalid
-          aria-describedby={`${errorId}-error`}
-          style={errorInputStyle}
-          className={styles.storyInput}
-        />
-      </FormField>
-    </div>
-  );
-}
-
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {
-  render: (args) => (
+  render: ({ children: _children, labelInfo: _labelInfo, ...args }) => (
     <Section title='Playground'>
-      <PlaygroundExample {...args} />
+      <FormField {...args} labelInfo={<InfoMark />}>
+        <Input placeholder='name@company.com' type='email' />
+      </FormField>
     </Section>
   ),
 };
 
-export const WithInput: Story = {
+export const WithInputContext: Story = {
+  render: () => <WithInputContextDemo />,
+};
+
+export const InputShorthand: Story = {
   render: () => (
-    <Section title='With input'>
-      <WithInputExample />
+    <Section title='Input shorthand'>
+      <Input
+        label='Email'
+        description='Input still renders FormField internally for common usage.'
+        error='Enter a valid email address.'
+        required
+        value='wrong-email'
+        type='email'
+        clearable
+      />
     </Section>
   ),
 };
 
-export const WithDescription: Story = {
+export const SizeInheritance: Story = {
   render: () => (
-    <Section title='With description'>
-      <WithDescriptionExample />
+    <Section title='Size inheritance'>
+      <div style={columnStyle}>
+        <FormField label='Small field' size='sm'>
+          <Input placeholder='Inherited sm' />
+        </FormField>
+
+        <FormField label='Medium field' size='md'>
+          <Input placeholder='Inherited md' />
+        </FormField>
+
+        <FormField label='Large field' size='lg'>
+          <Input placeholder='Inherited lg' />
+        </FormField>
+
+        <FormField
+          label='Explicit control size'
+          description='Input size wins over FormField size.'
+          size='sm'
+        >
+          <Input size='lg' placeholder='Explicit lg' />
+        </FormField>
+      </div>
     </Section>
   ),
 };
 
-export const Required: Story = {
+export const StatePropagation: Story = {
   render: () => (
-    <Section title='Required'>
-      <RequiredExample />
+    <Section title='State propagation'>
+      <div style={columnStyle}>
+        <FormField label='Required from field' required>
+          <Input placeholder='Required input' />
+        </FormField>
+
+        <FormField
+          label='Invalid without error text'
+          description='Invalid state can be visual only.'
+          invalid
+        >
+          <Input placeholder='Invalid input' />
+        </FormField>
+
+        <FormField label='Disabled from field' disabled>
+          <Input placeholder='Disabled input' />
+        </FormField>
+
+        <FormField label='Error implies invalid' error='This field is invalid.'>
+          <Input placeholder='Invalid input' />
+        </FormField>
+      </div>
     </Section>
   ),
 };
 
-export const WithError: Story = {
+export const Layout: Story = {
   render: () => (
-    <Section title='With error'>
-      <WithErrorExample />
+    <Section title='Layout'>
+      <div style={columnStyle}>
+        <FormField
+          label='Vertical'
+          description='Default layout for forms.'
+          orientation='vertical'
+        >
+          <Input placeholder='Vertical field' />
+        </FormField>
+
+        <FormField
+          label='Horizontal'
+          description='Useful in dense settings surfaces.'
+          orientation='horizontal'
+          labelPosition='start'
+        >
+          <Input placeholder='Horizontal field' />
+        </FormField>
+      </div>
     </Section>
   ),
 };
 
-export const Disabled: Story = {
+export const OptionalAndInfo: Story = {
   render: () => (
-    <Section title='Disabled'>
-      <DisabledExample />
+    <Section title='Optional and info'>
+      <div style={columnStyle}>
+        <FormField
+          label='Display name'
+          optionalText='Optional'
+          description='Shown in profile surfaces.'
+        >
+          <Input placeholder='Alex Taylor' />
+        </FormField>
+
+        <FormField
+          label='API key'
+          labelInfo={<InfoMark />}
+          description='Create and rotate keys in account settings.'
+          required
+        >
+          <Input placeholder='vk_live_...' />
+        </FormField>
+      </div>
     </Section>
   ),
 };
 
-export const WithCheckbox: Story = {
+export const NativeControlBinding: Story = {
   render: () => (
-    <Section title='With checkbox'>
-      <WithCheckboxExample />
+    <Section title='Native control binding'>
+      <FormField
+        label='Workspace'
+        description='A direct child native input receives id and aria props.'
+        error='Workspace is already taken.'
+        required
+      >
+        <input
+          name='workspace'
+          placeholder='vellira-design'
+          className={styles.storyInput}
+          style={rawInputStyle}
+        />
+      </FormField>
     </Section>
   ),
 };
 
-export const CustomLabel: Story = {
+export const VariantsTogether: Story = {
   render: () => (
-    <Section title='Custom label'>
-      <CustomLabelExample />
-    </Section>
-  ),
-};
+    <Section title='Fields with input variants'>
+      <div style={rowStyle}>
+        <FormField label='Primary outline' description='Default field chrome.'>
+          <Input color='primary' variant='outline' placeholder='Outline' />
+        </FormField>
 
-export const CustomDescription: Story = {
-  render: () => (
-    <Section title='Custom description'>
-      <CustomDescriptionExample />
-    </Section>
-  ),
-};
+        <FormField label='Success soft' description='Positive semantic field.'>
+          <Input color='success' variant='soft' placeholder='Soft' />
+        </FormField>
 
-export const CustomError: Story = {
-  render: () => (
-    <Section title='Custom error'>
-      <CustomErrorExample />
-    </Section>
-  ),
-};
-
-export const CompleteExample: Story = {
-  render: () => (
-    <Section title='Complete example'>
-      <CompleteExampleDemo />
+        <FormField label='Warning filled' description='Attention state.'>
+          <Input color='warning' variant='filled' placeholder='Filled' />
+        </FormField>
+      </div>
     </Section>
   ),
 };
@@ -744,15 +360,19 @@ export const CompleteExample: Story = {
 export const CustomClasses: Story = {
   render: () => (
     <Section title='Custom classes'>
-      <CustomClassesExample />
-    </Section>
-  ),
-};
-
-export const States: Story = {
-  render: () => (
-    <Section title='States'>
-      <StatesExample />
+      <FormField
+        label='Repository'
+        description='Class slots allow apps to integrate with local CSS modules.'
+        error='Repository name is already taken.'
+        required
+        className={styles.storyCustomRoot}
+        labelClassName={styles.storyCustomLabel}
+        controlClassName={styles.storyCustomControl}
+        descriptionClassName={styles.storyCustomDescription}
+        errorClassName={styles.storyCustomError}
+      >
+        <Input placeholder='vellira' />
+      </FormField>
     </Section>
   ),
 };

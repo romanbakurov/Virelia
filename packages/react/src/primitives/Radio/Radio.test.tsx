@@ -156,4 +156,25 @@ describe('Radio', () => {
 
     unmount();
   });
+
+  it('applies color and renders a custom selected indicator', () => {
+    const { container, unmount } = render(
+      <Radio
+        value='security'
+        label='Security alerts'
+        color='success'
+        checked
+        icon={<span data-testid='custom-radio-indicator'>selected</span>}
+      />
+    );
+
+    const root = container.firstElementChild;
+
+    expect(root?.className).toContain('colorSuccess');
+    expect(
+      container.querySelector('[data-testid="custom-radio-indicator"]')
+    ).not.toBeNull();
+
+    unmount();
+  });
 });

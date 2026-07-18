@@ -10,12 +10,12 @@ export const action = {
     hover: {
       bg: colors.primary[400],
       fg: colors.mono[950],
-      border: colors.warning[300],
+      border: colors.primary[200],
     },
     active: {
       bg: colors.primary[600],
       fg: colors.mono[50],
-      border: colors.warning[300],
+      border: colors.primary[300],
     },
     muted: {
       bg: colors.primary[950],
@@ -38,7 +38,7 @@ export const action = {
     hover: {
       bg: colors.secondary[200],
       fg: colors.mono[950],
-      border: colors.warning[300],
+      border: colors.secondary[300],
     },
     active: {
       bg: colors.secondary[400],
@@ -61,17 +61,17 @@ export const action = {
     default: {
       bg: colors.mono[50],
       fg: colors.mono[950],
-      border: colors.mono[50],
+      border: colors.mono[950],
     },
     hover: {
       bg: colors.gray[200],
       fg: colors.mono[950],
-      border: colors.warning[300],
+      border: colors.gray[950],
     },
     active: {
       bg: colors.gray[400],
       fg: colors.mono[950],
-      border: colors.warning[300],
+      border: colors.gray[950],
     },
     muted: {
       bg: colors.gray[800],

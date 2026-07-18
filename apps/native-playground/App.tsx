@@ -18,7 +18,7 @@ export default function App() {
     <View style={styles.container}>
       <Button
         color='primary'
-        variant='solid'
+        appearance='solid'
         size='md'
         onPress={() => Alert.alert('Vellira!')}
       >

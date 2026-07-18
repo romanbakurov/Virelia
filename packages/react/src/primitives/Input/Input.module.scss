@@ -1,24 +1,91 @@
 @use '@styles/mixins' as *;
 
+.inputGroup {
+  --input-current-default-bg: var(--input-primary-outline-default-bg);
+  --input-current-default-fg: var(--input-primary-outline-default-fg);
+  --input-current-default-border: var(--input-primary-outline-default-border);
+  --input-current-default-placeholder: var(
+    --input-primary-outline-default-placeholder
+  );
+  --input-current-default-icon: var(--input-primary-outline-default-icon);
+  --input-current-hover-bg: var(--input-primary-outline-hover-bg);
+  --input-current-hover-fg: var(--input-primary-outline-hover-fg);
+  --input-current-hover-border: var(--input-primary-outline-hover-border);
+  --input-current-hover-placeholder: var(
+    --input-primary-outline-hover-placeholder
+  );
+  --input-current-hover-icon: var(--input-primary-outline-hover-icon);
+  --input-current-focus-bg: var(--input-primary-outline-focus-bg);
+  --input-current-focus-fg: var(--input-primary-outline-focus-fg);
+  --input-current-focus-border: var(--input-primary-outline-focus-border);
+  --input-current-focus-placeholder: var(
+    --input-primary-outline-focus-placeholder
+  );
+  --input-current-focus-icon: var(--input-primary-outline-focus-icon);
+  --input-current-ring: var(--input-primary-ring);
+
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+@each $color in primary, neutral, success, warning, danger {
+  @each $variant in outline, filled, soft {
+    .#{$color}.#{$variant} {
+      --input-current-default-bg: var(--input-#{$color}-#{$variant}-default-bg);
+      --input-current-default-fg: var(--input-#{$color}-#{$variant}-default-fg);
+      --input-current-default-border: var(
+        --input-#{$color}-#{$variant}-default-border
+      );
+      --input-current-default-placeholder: var(
+        --input-#{$color}-#{$variant}-default-placeholder
+      );
+      --input-current-default-icon: var(
+        --input-#{$color}-#{$variant}-default-icon
+      );
+      --input-current-hover-bg: var(--input-#{$color}-#{$variant}-hover-bg);
+      --input-current-hover-fg: var(--input-#{$color}-#{$variant}-hover-fg);
+      --input-current-hover-border: var(
+        --input-#{$color}-#{$variant}-hover-border
+      );
+      --input-current-hover-placeholder: var(
+        --input-#{$color}-#{$variant}-hover-placeholder
+      );
+      --input-current-hover-icon: var(--input-#{$color}-#{$variant}-hover-icon);
+      --input-current-focus-bg: var(--input-#{$color}-#{$variant}-focus-bg);
+      --input-current-focus-fg: var(--input-#{$color}-#{$variant}-focus-fg);
+      --input-current-focus-border: var(
+        --input-#{$color}-#{$variant}-focus-border
+      );
+      --input-current-focus-placeholder: var(
+        --input-#{$color}-#{$variant}-focus-placeholder
+      );
+      --input-current-focus-icon: var(--input-#{$color}-#{$variant}-focus-icon);
+      --input-current-ring: var(--input-#{$color}-ring);
+    }
+  }
+}
+
 .inputWrapper {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
+  min-width: 0;
 }
 
 .input {
   appearance: none;
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  color: var(--input-default-fg);
+  color: var(--input-current-default-fg);
   font-family: var(--font-family-base);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-md);
   letter-spacing: inherit;
-  background-color: var(--input-default-bg);
-  border: 1px solid var(--input-default-border);
+  background-color: var(--input-current-default-bg);
+  border: 1px solid var(--input-current-default-border);
   border-radius: var(--radius-md);
   outline: none;
   transition:
@@ -28,19 +95,30 @@
     box-shadow 0.2s;
 
   &::placeholder {
-    color: var(--input-default-placeholder);
+    color: var(--input-current-default-placeholder);
     font: inherit;
   }
 
-  &:focus-visible {
-    color: var(--input-focus-fg);
-    background-color: var(--input-focus-bg);
+  &[type='search']::-webkit-search-cancel-button,
+  &[type='search']::-webkit-search-decoration,
+  &[type='search']::-webkit-search-results-button,
+  &[type='search']::-webkit-search-results-decoration {
+    display: none;
+    appearance: none;
+  }
 
-    @include focus-border(var(--input-focus-border), var(--input-focus-ring));
-    @include focus-ring(var(--input-focus-ring));
+  &:focus-visible {
+    color: var(--input-current-focus-fg);
+    background-color: var(--input-current-focus-bg);
+
+    @include focus-border(
+      var(--input-current-focus-border),
+      var(--input-current-ring)
+    );
+    @include focus-ring(var(--input-current-ring));
 
     &::placeholder {
-      color: var(--input-focus-placeholder);
+      color: var(--input-current-focus-placeholder);
     }
   }
 
@@ -82,28 +160,38 @@
 
   &:-webkit-autofill,
   &:-webkit-autofill:hover {
-    -webkit-text-fill-color: var(--input-default-fg);
-    caret-color: var(--input-default-fg);
-    box-shadow: 0 0 0 1000px var(--input-default-bg) inset;
+    -webkit-text-fill-color: var(--input-current-default-fg);
+    caret-color: var(--input-current-default-fg);
+    box-shadow: 0 0 0 1000px var(--input-current-default-bg) inset;
     transition: background-color 9999s ease-out;
   }
 
   &:-webkit-autofill:focus {
-    -webkit-text-fill-color: var(--input-focus-fg);
-    caret-color: var(--input-focus-fg);
+    -webkit-text-fill-color: var(--input-current-focus-fg);
+    caret-color: var(--input-current-focus-fg);
     box-shadow:
-      0 0 0 1000px var(--input-focus-bg) inset,
-      0 0 0 var(--focus-ring-width) var(--input-focus-ring);
+      0 0 0 1000px var(--input-current-focus-bg) inset,
+      0 0 0 var(--focus-ring-width) var(--input-current-ring);
+  }
+}
+
+.isInvalid .input {
+  border-color: var(--input-error-border);
+
+  &:focus-visible {
+    border-color: var(--input-error-border);
+
+    @include focus-ring(var(--input-error-ring));
   }
 }
 
 .input:not(:disabled, :focus-visible, :read-only):hover {
-  color: var(--input-hover-fg);
-  background-color: var(--input-hover-bg);
-  border-color: var(--input-hover-border);
+  color: var(--input-current-hover-fg);
+  background-color: var(--input-current-hover-bg);
+  border-color: var(--input-current-hover-border);
 
   &::placeholder {
-    color: var(--input-hover-placeholder);
+    color: var(--input-current-hover-placeholder);
   }
 }
 
@@ -126,8 +214,16 @@
   padding-right: var(--space-12);
 }
 
-.leftAdornment,
-.rightAdornment {
+.hasStartIconAndPrefix .input {
+  padding-left: var(--space-16);
+}
+
+.hasEndIconAndSuffix .input {
+  padding-right: var(--space-16);
+}
+
+.startAdornment,
+.endAdornment {
   position: absolute;
   top: 50%;
   z-index: 1;
@@ -136,52 +232,98 @@
   align-items: center;
   width: var(--space-6);
   height: var(--space-6);
-  color: var(--input-default-icon);
+  color: var(--input-current-default-icon);
   transform: translateY(-50%);
   pointer-events: none;
 }
 
-.leftAdornment {
+.startAdornment {
   left: var(--space-3);
 }
 
-.rightAdornment {
-  right: var(--space-3);
+.prefix,
+.suffix {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.prefix {
+  left: var(--space-4);
+}
+
+.hasStartIconAndPrefix .prefix {
+  left: var(--space-10);
+}
+
+.suffix {
+  right: var(--space-4);
+}
+
+.hasEndIconAndSuffix .suffix {
+  right: var(--space-10);
+}
+
+.endSlot {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  transform: translateY(-50%);
+}
+
+.isLoading .endSlot {
+  right: var(--space-4);
+}
+
+.endAdornment {
+  position: static;
+  transform: none;
+}
+
+.startAdornment svg,
+.endAdornment svg {
+  display: block;
+  flex: 0 0 auto;
 }
 
 .inputWrapper:has(.input:hover:not(:disabled, :focus-visible)) {
-  .leftAdornment,
-  .rightAdornment {
-    color: var(--input-hover-icon);
+  .startAdornment,
+  .endAdornment {
+    color: var(--input-current-hover-icon);
   }
 }
 
 .inputWrapper:has(.input:focus-visible) {
-  .leftAdornment,
-  .rightAdornment {
-    color: var(--input-focus-icon);
+  .startAdornment,
+  .endAdornment {
+    color: var(--input-current-focus-icon);
   }
 }
 
 .inputWrapper:has(.input:disabled) {
-  .leftAdornment,
-  .rightAdornment {
+  .startAdornment,
+  .endAdornment {
     color: var(--input-disabled-icon);
   }
 }
 
 .inputWrapper:has(.input:read-only:not(:disabled)) {
-  .leftAdornment,
-  .rightAdornment {
+  .startAdornment,
+  .endAdornment {
     color: var(--input-read-only-icon);
   }
 }
 
 .clearButton {
-  position: absolute;
-  top: 50%;
-  right: var(--space-2);
-  z-index: 1;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -192,12 +334,88 @@
   background: transparent;
   border: none;
   border-radius: var(--radius-full);
-  transform: translateY(-50%);
   transition:
     color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease;
   cursor: pointer;
+}
+
+.iconButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: var(--space-10);
+  height: var(--space-8);
+  padding: 0 var(--space-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  color: var(--text-primary);
+  background-color: var(--input-reveal-button-hover-bg);
+}
+
+.iconButton:focus-visible {
+  @include focus-ring(var(--input-current-ring));
+}
+
+.spinner {
+  width: var(--space-4);
+  height: var(--space-4);
+  border: 2px solid var(--input-spinner-fg);
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: input-spin 0.75s linear infinite;
+}
+
+.addon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  color: var(--input-addon-fg);
+  font-size: var(--font-size-sm);
+  background-color: var(--input-addon-bg);
+  border: 1px solid var(--input-addon-border);
+  white-space: nowrap;
+}
+
+.addon:first-child {
+  border-right: 0;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.addon:last-child {
+  border-left: 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.hasAddons .input {
+  border-radius: 0;
+}
+
+.hasAddons .inputWrapper:first-child .input,
+.hasAddons .inputWrapper:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.hasAddons .inputWrapper:last-child .input,
+.hasAddons .inputWrapper:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.counter {
+  margin-top: var(--space-1);
+  color: var(--input-counter-fg);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  text-align: right;
 }
 
 .clearButton svg {
@@ -216,7 +434,7 @@
 }
 
 .clearButton:focus-visible {
-  @include focus-ring(var(--input-focus-ring));
+  @include focus-ring(var(--input-current-ring));
 }
 
 .toneDefault {
@@ -249,7 +467,18 @@
 
 @media (prefers-reduced-motion: reduce) {
   .input,
-  .clearButton {
+  .clearButton,
+  .iconButton {
     transition: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+}
+
+@keyframes input-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

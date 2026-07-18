@@ -36,18 +36,15 @@ export function AccountPanel() {
         <Input
           label='Display name'
           value={displayName}
-          onChange={setDisplayName}
+          onValueChange={setDisplayName}
           placeholder='Roman Bakurov'
         />
-        <Select
-          label='Role'
-          options={[
-            { label: 'Admin', value: 'admin' },
-            { label: 'Editor', value: 'editor' },
-            { label: 'Viewer', value: 'viewer' },
-          ]}
-        />
-        <Button color='primary' variant='solid'>
+        <Select label='Role'>
+          <Select.Item value='admin'>Admin</Select.Item>
+          <Select.Item value='editor'>Editor</Select.Item>
+          <Select.Item value='viewer'>Viewer</Select.Item>
+        </Select>
+        <Button color='primary' appearance='solid'>
           Save changes
         </Button>
       </Tabs.Panel>
@@ -63,19 +60,19 @@ Every component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react/API.md).
 
-| Component    | Core props                                                                                       | State model                   |
-| ------------ | ------------------------------------------------------------------------------------------------ | ----------------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `fullWidth`, `aria-label`                            | disabled, loading             |
-| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`, `indeterminate` | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                            | controlled                    |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                              | presentation wrapper          |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | controlled or uncontrolled    |
-| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`                      | controlled or uncontrolled    |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`  | controlled or uncontrolled    |
-| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`          | controlled or uncontrolled    |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                     | controlled or uncontrolled    |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                          | open state managed internally |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                          | controlled                    |
+| Component    | Core props                                                                                                                | State model                   |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading             |
+| `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
+| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                          | controlled or uncontrolled    |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics               |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
+| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
+| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled    |
+| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`                                   | controlled or uncontrolled    |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                                                   | controlled                    |
 
 ## Select Usage Guidelines
 
@@ -103,25 +100,79 @@ accepts standard DOM attributes such as `className`, `onClick`, and
 `aria-label`.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
-import { Button } from '@vellira-ui/react';
+import { Filter, Save, Search } from '@vellira-ui/icons';
+import { Button, Modal } from '@vellira-ui/react';
+import { useState } from 'react';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
-      <Button color='primary' variant='solid' onClick={handleSave}>
+      <Button color='primary' appearance='solid' onClick={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
-      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+      <Button aria-label='Search' iconOnly iconStart={<Search />} />
+
+      <div role='toolbar' aria-label='Editor toolbar'>
+        <Button
+          aria-label='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+      </div>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onClick={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      <Modal
+        isOpen={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+      >
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onClick={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onClick={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
 ```
+
+Pass `loadingText` even in the idle render when the loading label is longer than
+the default label. Button reserves that label width and avoids horizontal layout
+shift when `loading` turns on.
 
 ## Controlled and Uncontrolled
 
@@ -145,16 +196,11 @@ export function ControlledSettings() {
         label='Enable notifications'
         description='Send product and billing updates to this account.'
       />
-      <Select
-        label='Role'
-        value={role}
-        onChange={setRole}
-        options={[
-          { label: 'Admin', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Viewer', value: 'viewer' },
-        ]}
-      />
+      <Select label='Role' value={role} onValueChange={setRole}>
+        <Select.Item value='admin'>Admin</Select.Item>
+        <Select.Item value='editor'>Editor</Select.Item>
+        <Select.Item value='viewer'>Viewer</Select.Item>
+      </Select>
     </>
   );
 }

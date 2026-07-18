@@ -11,7 +11,7 @@ export const icons = {
   brand: colors.primary[700],
   hover: colors.primary[800],
 
-  success: colors.success[700],
+  success: colors.success[500],
   danger: colors.error[700],
 
   inverse: colors.mono[50],

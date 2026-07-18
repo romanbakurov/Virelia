@@ -26,16 +26,29 @@ export interface ButtonProps
       | 'accessibilityState'
       | 'children'
     > {
+  /** Visible button content. */
   children?: ReactNode;
 
-  leftIcon?: ButtonIconElement;
-  rightIcon?: ButtonIconElement;
+  /** Icon rendered before the button content. */
+  iconStart?: ButtonIconElement;
+  /** Icon rendered after the button content. */
+  iconEnd?: ButtonIconElement;
+  /** Compact badge rendered after the label when not icon-only. */
+  badge?: ReactNode;
+  /** Keyboard shortcut hint rendered after the label when not icon-only. */
+  shortcut?: ReactNode;
+  /** Overrides the size-derived icon size in pixels. */
   iconSize?: number;
 
+  /** Called when the user presses the button. */
   onPress?: (event: GestureResponderEvent) => void;
+  /** Extra root style. */
   style?: StyleProp<ViewStyle>;
+  /** Extra text style. */
   textStyle?: StyleProp<TextStyle>;
 
+  /** Accessible label for screen readers. */
   accessibilityLabel?: string;
+  /** Test identifier. */
   testID?: string;
 }

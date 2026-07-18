@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { RadioSize, RadioValue } from '@vellira-ui/types';
+import type { RadioColor, RadioSize, RadioValue } from '@vellira-ui/types';
 
 export interface RadioGroupContextValue {
   name: string;
@@ -9,6 +9,7 @@ export interface RadioGroupContextValue {
   required: boolean;
   invalid: boolean;
   size: RadioSize;
+  color: RadioColor;
   describedBy?: string;
   onValueChange: (value: RadioValue) => void;
 }

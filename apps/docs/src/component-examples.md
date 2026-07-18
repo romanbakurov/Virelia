@@ -5,6 +5,9 @@ into the renderer-specific API documentation.
 
 Use this page as a visual overview of the component library.
 
+For usage guidance, accessibility contracts, and platform notes, use the
+[component documentation](/components/).
+
 > 💡 Looking for interactive examples?
 >
 > Open Storybook →
@@ -50,8 +53,11 @@ Use this page as a visual overview of the component library.
     <div class="docs-state-grid">
       <div><span>Default</span><label class="docs-check"><input type="checkbox" />Remember</label></div>
       <div><span>Checked</span><label class="docs-check"><input type="checkbox" checked />Remember</label></div>
+      <div><span>Success</span><label class="docs-check docs-check-success"><input type="checkbox" checked />Automate</label></div>
+      <div><span>Danger</span><label class="docs-check docs-check-danger"><input type="checkbox" checked />Delete</label></div>
       <div><span>Description</span><label class="docs-check"><input type="checkbox" />Updates</label><small>Receive product news.</small></div>
       <div><span>Mixed</span><label class="docs-check"><input type="checkbox" aria-checked="mixed" />Select all</label></div>
+      <div><span>Label start</span><label class="docs-check docs-check-start"><input type="checkbox" checked />Manual approval</label></div>
       <div><span>Focus</span><label class="docs-check docs-is-focus"><input type="checkbox" checked />Remember</label></div>
       <div><span>Disabled</span><label class="docs-check docs-is-disabled"><input type="checkbox" checked disabled />Remember</label></div>
       <div><span>Error</span><label class="docs-check docs-has-error"><input type="checkbox" />Required</label></div>
@@ -175,7 +181,7 @@ export function FormExample() {
       <Input
         label='Email'
         value={email}
-        onChange={setEmail}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <Checkbox
@@ -184,7 +190,7 @@ export function FormExample() {
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </form>
@@ -195,19 +201,65 @@ export function FormExample() {
 ### Button Actions
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
-import { Button } from '@vellira-ui/react';
+import { Filter, Save, Search } from '@vellira-ui/icons';
+import { Button, Modal } from '@vellira-ui/react';
+import { useState } from 'react';
 
 export function ButtonActions() {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Save
       </Button>
-      <Button loading loadingText='Saving...'>
-        Save
+
+      <Button loadingText='Saving...'>Save</Button>
+
+      <Button
+        aria-label='Save'
+        appearance='ghost'
+        iconOnly
+        iconStart={<Save />}
+      />
+
+      <Button appearance='ghost' iconStart={<Filter />}>
+        Filter
       </Button>
-      <Button aria-label='Search' iconOnly leftIcon={<Search />} />
+
+      <Button aria-label='Search' iconOnly iconStart={<Search />} />
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onClick={() => setConfirming(true)}
+      >
+        Delete workspace
+      </Button>
+
+      <Modal isOpen={confirming} onClose={() => setConfirming(false)}>
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onClick={() => setConfirming(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onClick={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
@@ -229,14 +281,11 @@ export function SelectionExample() {
           { label: 'Light theme', value: 'light' },
         ]}
       />
-      <Select
-        label='Role'
-        options={[
-          { label: 'Admin', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Viewer', value: 'viewer' },
-        ]}
-      />
+      <Select label='Role'>
+        <Select.Item value='admin'>Admin</Select.Item>
+        <Select.Item value='editor'>Editor</Select.Item>
+        <Select.Item value='viewer'>Viewer</Select.Item>
+      </Select>
     </>
   );
 }

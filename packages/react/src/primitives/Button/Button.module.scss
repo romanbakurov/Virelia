@@ -1,21 +1,21 @@
 @use '@styles/mixins' as *;
 
-$button-colors: primary, secondary, danger, close;
-$button-variants: solid, outline, ghost;
+$button-colors: primary, neutral, success, warning, danger;
+$button-appearances: solid, outline, ghost, soft, link;
 
-@mixin button-state($color, $variant, $state) {
-  color: var(--button-#{$color}-#{$variant}-#{$state}-fg);
-  background-color: var(--button-#{$color}-#{$variant}-#{$state}-bg);
+@mixin button-state($color, $appearance, $state) {
+  color: var(--button-#{$color}-#{$appearance}-#{$state}-fg);
+  background-color: var(--button-#{$color}-#{$appearance}-#{$state}-bg);
   box-shadow: inset 0 0 0 1px
-    var(--button-#{$color}-#{$variant}-#{$state}-border);
+    var(--button-#{$color}-#{$appearance}-#{$state}-border);
 }
 
-@mixin button-focus-border($color, $variant) {
+@mixin button-focus-border($color, $appearance) {
   box-shadow: inset 0 0 0 1px
     color-mix(
       in srgb,
-      var(--button-#{$color}-#{$variant}-default-border) 70%,
-      var(--focus-ring-color)
+      var(--button-#{$color}-#{$appearance}-default-border) 70%,
+      var(--button-#{$color}-ring)
     );
 }
 
@@ -29,7 +29,7 @@ $button-variants: solid, outline, ghost;
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-md);
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: var(--button-radius, var(--radius-full));
   box-shadow: inset 0 0 0 1px transparent;
   transition:
     color 0.2s ease,
@@ -41,34 +41,32 @@ $button-variants: solid, outline, ghost;
   font-family: var(--font-family-base);
   white-space: nowrap;
   vertical-align: middle;
+  text-decoration: none;
 }
 
-@each $variant in $button-variants {
+@each $appearance in $button-appearances {
   @each $color in $button-colors {
-    .button.#{$variant}.#{$color}:not(:disabled, .loading) {
-      @include button-state($color, $variant, default);
+    .button.#{$appearance}.#{$color}:not(:disabled, .loading) {
+      @include button-state($color, $appearance, default);
     }
 
-    .button.#{$variant}.#{$color}:not(:disabled, .loading):hover {
-      @include button-state($color, $variant, hover);
+    .button.#{$appearance}.#{$color}:not(:disabled, .loading):hover {
+      @include button-state($color, $appearance, hover);
 
       transform: translateY(-1px);
     }
 
-    .button.#{$variant}.#{$color}:not(:disabled, .loading):active {
-      @include button-state($color, $variant, pressed);
+    .button.#{$appearance}.#{$color}:not(:disabled, .loading):active {
+      @include button-state($color, $appearance, pressed);
 
       transform: scale(0.98);
     }
 
-    .button.#{$variant}.#{$color}:focus-visible:not(:disabled, .loading) {
-      @include button-focus-border($color, $variant);
+    .button.#{$appearance}.#{$color}:focus-visible:not(:disabled, .loading) {
+      @include button-focus-border($color, $appearance);
+      @include focus-ring(var(--button-#{$color}-ring));
     }
   }
-}
-
-.button:focus-visible {
-  @include focus-ring;
 }
 
 .button:disabled,
@@ -82,6 +80,18 @@ $button-variants: solid, outline, ghost;
 
 .button.loading {
   cursor: progress;
+}
+
+.square {
+  --button-radius: var(--radius-sm);
+}
+
+.rounded {
+  --button-radius: var(--radius-md);
+}
+
+.pill {
+  --button-radius: var(--radius-full);
 }
 
 .sm {
@@ -130,11 +140,30 @@ $button-variants: solid, outline, ghost;
 }
 
 .label {
-  display: inline-flex;
+  display: inline-grid;
   align-items: center;
+  min-width: 0;
 }
 
-.icon,
+.labelText,
+.label::after {
+  grid-area: 1 / 1;
+}
+
+.label[data-measure]::after {
+  visibility: hidden;
+  content: attr(data-measure);
+}
+
+.icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  flex-shrink: 0;
+}
+
 .spinner {
   display: inline-flex;
   justify-content: center;
@@ -157,6 +186,29 @@ $button-variants: solid, outline, ghost;
   animation: button-spin 0.8s linear infinite;
 }
 
+.badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.25em;
+  padding: 0 var(--space-1);
+  font-size: 0.78em;
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  background: color-mix(in srgb, currentcolor 14%, transparent);
+  border-radius: var(--radius-full);
+  min-width: 1.25em;
+}
+
+.shortcut {
+  display: inline-flex;
+  align-items: center;
+  color: currentcolor;
+  font-size: 0.86em;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
 @keyframes button-spin {
   to {
     transform: rotate(360deg);
@@ -170,10 +222,10 @@ $button-variants: solid, outline, ghost;
     animation: none;
   }
 
-  @each $variant in $button-variants {
+  @each $appearance in $button-appearances {
     @each $color in $button-colors {
-      .button.#{$variant}.#{$color}:not(:disabled, .loading):hover,
-      .button.#{$variant}.#{$color}:not(:disabled, .loading):active {
+      .button.#{$appearance}.#{$color}:not(:disabled, .loading):hover,
+      .button.#{$appearance}.#{$color}:not(:disabled, .loading):active {
         transform: none;
       }
     }

@@ -21,12 +21,16 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
     {
       label,
       description,
+      icon,
+      indeterminateIcon,
       checked,
       defaultChecked = false,
       disabled = false,
       required = false,
       indeterminate = false,
       size = 'md',
+      color = 'primary',
+      labelPosition = 'end',
       onCheckedChange,
       error,
       style,
@@ -38,6 +42,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
   ) => {
     const { theme } = useTheme();
     const styles = useThemeStyles(createStyles);
+    const checkboxColor = theme.components.checkbox[color];
 
     const boxSizeStyle = {
       sm: styles.boxSm,
@@ -102,6 +107,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
           accessibilityLabel={resolvedAccessibilityLabel}
           style={[
             styles.wrapper,
+            labelPosition === 'start' && styles.wrapperLabelStart,
             !label && styles.iconOnly,
             disabled && styles.disabled,
             style,
@@ -113,8 +119,8 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
             const checkColor = disabled
               ? theme.components.checkbox.disabled.fg
               : pressed && isSelected
-                ? theme.components.checkbox.checked.pressed.fg
-                : theme.components.checkbox.checked.default.fg;
+                ? checkboxColor.pressed.fg
+                : checkboxColor.default.fg;
 
             return (
               <>
@@ -122,24 +128,37 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                   style={[
                     styles.box,
                     boxSizeStyle[size],
-                    isSelected && styles.boxChecked,
-                    isSelected && pressed && styles.boxCheckedPressed,
+                    isSelected && {
+                      backgroundColor: checkboxColor.default.bg,
+                      borderColor: checkboxColor.default.border,
+                    },
+                    isSelected &&
+                      pressed && {
+                        backgroundColor: checkboxColor.pressed.bg,
+                        borderColor: checkboxColor.pressed.border,
+                        transform: [{ scale: 0.96 }],
+                      },
                     hasError && styles.boxError,
                     disabled && styles.boxDisabled,
                   ]}
                 >
-                  {indeterminate ? (
-                    <View
-                      style={[
-                        styles.indeterminateMark,
-                        pressed && styles.indeterminateMarkPressed,
-                      ]}
-                    />
-                  ) : (
-                    isChecked && (
-                      <Check size={iconSizeBySize[size]} color={checkColor} />
-                    )
-                  )}
+                  {indeterminate
+                    ? (indeterminateIcon ?? (
+                        <View
+                          style={[
+                            styles.indeterminateMark,
+                            {
+                              backgroundColor: pressed
+                                ? checkboxColor.pressed.fg
+                                : checkboxColor.default.fg,
+                            },
+                          ]}
+                        />
+                      ))
+                    : isChecked &&
+                      (icon ?? (
+                        <Check size={iconSizeBySize[size]} color={checkColor} />
+                      ))}
                 </View>
 
                 {label && (
@@ -147,8 +166,11 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                     style={[
                       styles.label,
                       labelSizeStyle[size],
-                      isSelected && styles.labelChecked,
-                      isSelected && pressed && styles.labelCheckedPressed,
+                      isSelected && { color: checkboxColor.default.labelFg },
+                      isSelected &&
+                        pressed && {
+                          color: checkboxColor.pressed.labelFg,
+                        },
                       disabled && styles.labelDisabled,
                     ]}
                   >

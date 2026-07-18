@@ -63,7 +63,7 @@ export function SignInForm() {
       <Input
         label='Email'
         value={email}
-        onChange={setEmail}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <Checkbox
@@ -72,7 +72,7 @@ export function SignInForm() {
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </form>
@@ -93,14 +93,14 @@ export function SignInScreen() {
 
   return (
     <View style={{ gap: 16, padding: 24 }}>
-      <Input label='Email' value={email} onChange={setEmail} />
+      <Input label='Email' value={email} onValueChange={setEmail} />
       <Checkbox
         label='Remember me'
         description='Keep this device signed in.'
         checked={remember}
         onCheckedChange={setRemember}
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Continue
       </Button>
     </View>

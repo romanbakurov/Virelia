@@ -46,7 +46,9 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 
 | Type                | Values                                                                      |
 | ------------------- | --------------------------------------------------------------------------- |
-| `ButtonColor`       | `'primary'`, `'secondary'`, `'close'`, `'danger'`                           |
+| `ButtonAppearance`  | `'solid'`, `'outline'`, `'ghost'`, `'soft'`, `'link'`                       |
+| `ButtonColor`       | `'primary'`, `'neutral'`, `'success'`, `'warning'`, `'danger'`              |
+| `ButtonShape`       | `'square'`, `'rounded'`, `'pill'`                                           |
 | `ButtonSize`        | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputSize`         | `'sm'`, `'md'`, `'lg'`                                                      |
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
@@ -66,41 +68,44 @@ type TooltipDelay = {
 
 ## Button
 
-Pressable action component with variants, sizes, optional icons, loading state,
+Pressable action component with appearances, sizes, optional icons, loading state,
 and full-width layout support.
 
 ```tsx
 import { Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react-native';
 
-<Button color='primary' variant='solid' size='md' onPress={handleSave}>
+<Button color='primary' appearance='solid' size='md' onPress={handleSave}>
   Save
 </Button>;
 
-<Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />;
+<Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />;
 ```
 
 <!-- api-docgen:start native.ButtonProps.Button -->
 
-| Prop                 | Type                                     | Required | Description                                           |
-| -------------------- | ---------------------------------------- | -------- | ----------------------------------------------------- |
-| `children`           | `ReactNode`                              | No       | Button content.                                       |
-| `leftIcon`           | `ButtonIconElement`                      | No       | Icon rendered before content.                         |
-| `rightIcon`          | `ButtonIconElement`                      | No       | Icon rendered after content.                          |
-| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.         |
-| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                           |
-| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                     |
-| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                  |
-| `iconSize`           | `number`                                 | No       | Icon size in pixels.                                  |
-| `variant`            | `ButtonVariant`                          | No       | Visual variant: `solid`, `outline`, `ghost`.          |
-| `size`               | `ButtonSize`                             | No       | Button size.                                          |
-| `disabled`           | `boolean`                                | No       | Disables interaction.                                 |
-| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                     |
-| `testID`             | `string`                                 | No       | Test identifier.                                      |
-| `color`              | `ButtonColor`                            | No       | Tone: `primary`, `secondary`, `close`, `danger`.      |
-| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction. |
-| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.               |
-| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.             |
+| Prop                 | Type                                     | Required | Description                                                         |
+| -------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------- |
+| `children`           | `ReactNode`                              | No       | Button content.                                                     |
+| `iconStart`          | `ButtonIconElement`                      | No       | Icon rendered before content.                                       |
+| `iconEnd`            | `ButtonIconElement`                      | No       | Icon rendered after content.                                        |
+| `fullWidth`          | `boolean`                                | No       | Makes the component fill its container width.                       |
+| `onPress`            | `(event: GestureResponderEvent) => void` | No       | React Native press handler.                                         |
+| `style`              | `StyleProp<ViewStyle>`                   | No       | Extra root style.                                                   |
+| `accessibilityLabel` | `string`                                 | No       | Accessible label for screen readers.                                |
+| `iconSize`           | `number`                                 | No       | Overrides the size-derived icon size in pixels.                     |
+| `size`               | `ButtonSize`                             | No       | Button size.                                                        |
+| `disabled`           | `boolean`                                | No       | Disables interaction.                                               |
+| `textStyle`          | `StyleProp<TextStyle>`                   | No       | Extra text style.                                                   |
+| `testID`             | `string`                                 | No       | Test identifier.                                                    |
+| `color`              | `ButtonColor`                            | No       | Visual tone: primary, neutral, success, warning, or danger.         |
+| `loading`            | `boolean`                                | No       | Shows an activity indicator and disables interaction.               |
+| `loadingText`        | `string`                                 | No       | Replaces visible content while loading.                             |
+| `iconOnly`           | `boolean`                                | No       | Hides visible text for icon-only actions.                           |
+| `badge`              | `ReactNode`                              | No       | Compact badge rendered after the label when not icon-only.          |
+| `shortcut`           | `ReactNode`                              | No       | Keyboard shortcut hint rendered after the label when not icon-only. |
+| `appearance`         | `ButtonAppearance`                       | No       | Visual style: solid, outline, ghost, soft, or link.                 |
+| `shape`              | `ButtonShape`                            | No       | Corner shape: square, rounded, or pill.                             |
 
 <!-- api-docgen:end native.ButtonProps.Button -->
 
@@ -127,19 +132,23 @@ import { Checkbox } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.CheckboxProps.Checkbox -->
 
-| Prop              | Type                         | Required | Description                                   |
-| ----------------- | ---------------------------- | -------- | --------------------------------------------- |
-| `label`           | `string`                     | No       | Visible label rendered next to the control.   |
-| `description`     | `string`                     | No       | Helper text rendered below the checkbox row.  |
-| `style`           | `StyleProp<ViewStyle>`       | No       | Extra style for the clickable wrapper.        |
-| `error`           | `string`                     | No       | Error message rendered for invalid state.     |
-| `checked`         | `boolean`                    | No       | Controlled checked state.                     |
-| `defaultChecked`  | `boolean`                    | No       | Initial checked state for uncontrolled usage. |
-| `disabled`        | `boolean`                    | No       | Disables interaction.                         |
-| `required`        | `boolean`                    | No       | Marks the checkbox as required.               |
-| `indeterminate`   | `boolean`                    | No       | Displays a mixed selection state.             |
-| `size`            | `CheckboxSize`               | No       | Checkbox size.                                |
-| `onCheckedChange` | `(checked: boolean) => void` | No       | Called when the user changes the state.       |
+| Prop                | Type                                                | Required | Description                                   |
+| ------------------- | --------------------------------------------------- | -------- | --------------------------------------------- |
+| `label`             | `string`                                            | No       | Visible label rendered next to the control.   |
+| `description`       | `string`                                            | No       | Helper text rendered below the checkbox row.  |
+| `style`             | `StyleProp<ViewStyle>`                              | No       | Extra style for the clickable wrapper.        |
+| `error`             | `string`                                            | No       | Error message rendered for invalid state.     |
+| `checked`           | `boolean`                                           | No       | Controlled checked state.                     |
+| `defaultChecked`    | `boolean`                                           | No       | Initial checked state for uncontrolled usage. |
+| `disabled`          | `boolean`                                           | No       | Disables interaction.                         |
+| `required`          | `boolean`                                           | No       | Marks the checkbox as required.               |
+| `indeterminate`     | `boolean`                                           | No       | Displays a mixed selection state.             |
+| `size`              | `CheckboxSize`                                      | No       | Checkbox size.                                |
+| `onCheckedChange`   | `(checked: boolean) => void`                        | No       | Called when the user changes the state.       |
+| `icon`              | `ReactNode`                                         | No       | Icon rendered inside the component.           |
+| `indeterminateIcon` | `ReactNode`                                         | No       | —                                             |
+| `color`             | `import("@vellira-ui/types").CheckboxColor`         | No       | —                                             |
+| `labelPosition`     | `import("@vellira-ui/types").CheckboxLabelPosition` | No       | —                                             |
 
 <!-- api-docgen:end native.CheckboxProps.Checkbox -->
 
@@ -159,7 +168,7 @@ import { Input } from '@vellira-ui/react-native';
 <Input
   label='Email'
   value={email}
-  onChange={setEmail}
+  onValueChange={setEmail}
   type='email'
   placeholder='name@example.com'
 />;
@@ -169,7 +178,7 @@ import { Input } from '@vellira-ui/react-native';
 
 Clearable inputs use separate callbacks for typing and clear actions:
 
-- typing into the input calls `onChange`;
+- typing into the input calls `onValueChange`;
 - pressing the clear action calls `onClear`;
 - controlled inputs should clear their value inside `onClear`;
 - uncontrolled inputs clear their internal value and then call `onClear`.
@@ -186,7 +195,6 @@ description/error announcement behavior.
 | `containerStyle`  | `StyleProp<ViewStyle>`    | No       | Extra style for the field container.             |
 | `inputStyle`      | `StyleProp<TextStyle>`    | No       | Extra style for the input element.               |
 | `value`           | `string`                  | No       | Controlled value.                                |
-| `onChange`        | `(value: string) => void` | No       | Called with the next value.                      |
 | `iconSize`        | `number`                  | No       | Icon size in pixels.                             |
 | `clearIcon`       | `InputIconElement`        | No       | —                                                |
 | `testID`          | `string`                  | No       | —                                                |
@@ -203,11 +211,21 @@ description/error announcement behavior.
 | `onClear`         | `() => void`              | No       | Called when the clear action is pressed.         |
 | `error`           | `string`                  | No       | Error message rendered for invalid state.        |
 | `description`     | `string`                  | No       | Additional descriptive text.                     |
-| `leftIcon`        | `InputIconElement`        | No       | Icon rendered before content.                    |
-| `rightIcon`       | `InputIconElement`        | No       | Icon rendered after content.                     |
-| `leftIconTone`    | `InputAdornmentTone`      | No       | Color tone for the left icon.                    |
-| `rightIconTone`   | `InputAdornmentTone`      | No       | Color tone for the right icon.                   |
 | `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
+| `onValueChange`   | `(value: string) => void` | No       | —                                                |
+| `startIcon`       | `InputIconElement`        | No       | —                                                |
+| `endIcon`         | `InputIconElement`        | No       | —                                                |
+| `startIconTone`   | `InputAdornmentTone`      | No       | Color tone for the start icon.                   |
+| `endIconTone`     | `InputAdornmentTone`      | No       | Color tone for the end icon.                     |
+| `color`           | `InputColor`              | No       | —                                                |
+| `variant`         | `InputVariant`            | No       | —                                                |
+| `invalid`         | `boolean`                 | No       | —                                                |
+| `loading`         | `boolean`                 | No       | —                                                |
+| `revealPassword`  | `boolean`                 | No       | —                                                |
+| `showCounter`     | `boolean`                 | No       | —                                                |
+| `mask`            | `InputMask`               | No       | —                                                |
+| `format`          | `InputFormatter`          | No       | —                                                |
+| `parse`           | `InputParser`             | No       | —                                                |
 
 <!-- api-docgen:end native.InputProps.Input -->
 
@@ -231,19 +249,25 @@ root exposes disabled state when `disabled` is set.
 
 <!-- api-docgen:start native.FormFieldProps.FormField -->
 
-| Prop               | Type                   | Required | Description                       |
-| ------------------ | ---------------------- | -------- | --------------------------------- |
-| `label`            | `ReactNode`            | No       | Field label.                      |
-| `error`            | `ReactNode`            | No       | Error message.                    |
-| `children`         | `ReactNode`            | Yes      | Field control or custom content.  |
-| `style`            | `StyleProp<ViewStyle>` | No       | Extra container style.            |
-| `labelStyle`       | `StyleProp<TextStyle>` | No       | Extra label text style.           |
-| `errorStyle`       | `StyleProp<TextStyle>` | No       | Extra error text style.           |
-| `required`         | `boolean`              | No       | Marks the field as required.      |
-| `disabled`         | `boolean`              | No       | Renders the disabled field state. |
-| `description`      | `ReactNode`            | No       | Additional descriptive text.      |
-| `controlStyle`     | `StyleProp<ViewStyle>` | No       | Extra control wrapper style.      |
-| `descriptionStyle` | `StyleProp<TextStyle>` | No       | Extra description text style.     |
+| Prop               | Type                         | Required | Description                       |
+| ------------------ | ---------------------------- | -------- | --------------------------------- |
+| `label`            | `ReactNode`                  | No       | Field label.                      |
+| `error`            | `ReactNode`                  | No       | Error message.                    |
+| `children`         | `ReactNode`                  | Yes      | Field control or custom content.  |
+| `style`            | `StyleProp<ViewStyle>`       | No       | Extra container style.            |
+| `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.           |
+| `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.           |
+| `required`         | `boolean`                    | No       | Marks the field as required.      |
+| `disabled`         | `boolean`                    | No       | Renders the disabled field state. |
+| `description`      | `ReactNode`                  | No       | Additional descriptive text.      |
+| `controlStyle`     | `StyleProp<ViewStyle>`       | No       | Extra control wrapper style.      |
+| `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.     |
+| `labelInfo`        | `ReactNode`                  | No       | —                                 |
+| `optionalText`     | `ReactNode`                  | No       | —                                 |
+| `size`             | `'sm' \| 'md' \| 'lg'`       | No       | Input size.                       |
+| `labelPosition`    | `'start' \| 'top'`           | No       | —                                 |
+| `invalid`          | `boolean`                    | No       | —                                 |
+| `orientation`      | `'vertical' \| 'horizontal'` | No       | —                                 |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 
@@ -282,6 +306,7 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 | `size`             | `RadioSize`                   | No       | Size inherited by child radios.       |
 | `descriptionStyle` | `StyleProp<TextStyle>`        | No       | —                                     |
 | `errorStyle`       | `StyleProp<TextStyle>`        | No       | —                                     |
+| `color`            | `RadioColor`                  | No       | —                                     |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 
@@ -305,8 +330,15 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 | `labelStyle`       | `StyleProp<TextStyle>`       | No       | Extra label text style.                                |
 | `descriptionStyle` | `StyleProp<TextStyle>`       | No       | Extra description text style.                          |
 | `errorStyle`       | `StyleProp<TextStyle>`       | No       | Extra error text style.                                |
+| `icon`             | `ReactNode`                  | No       | Icon rendered inside the component.                    |
+| `color`            | `RadioColor`                 | No       | —                                                      |
 
 <!-- api-docgen:end native.RadioProps.RadioProps -->
+
+`RadioGroup color` sets the default selected color for child radios. Individual
+`Radio` items can override it with their own `color`. Use `icon` on `Radio`
+only when the default selected dot should be replaced by a product-specific
+indicator.
 
 ## Select
 
@@ -318,7 +350,7 @@ import { Select } from '@vellira-ui/react-native';
 <Select
   label='Country'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Choose country'
   options={[
     { value: 'fr', label: 'France' },
@@ -352,25 +384,34 @@ default picker hint.
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                      | Required | Description                                       |
-| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
-| `label`              | `string`                  | No       | Visible field label.                              |
-| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.                 |
-| `placeholder`        | `string`                  | No       | Text shown when no value is selected.             |
-| `error`              | `ReactNode`               | No       | Error message.                                    |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                            |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
-| `value`              | `string`                  | No       | Controlled selected value.                        |
-| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage.    |
-| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.           |
-| `required`           | `boolean`                 | No       | Marks the field as required.                      |
-| `disabled`           | `boolean`                 | No       | Disables interaction.                             |
-| `description`        | `string`                  | No       | Additional descriptive text.                      |
-| `pickerStyle`        | `StyleProp<ViewStyle>`    | No       | Extra picker style.                               |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
-| `size`               | `SelectSize`              | No       | Select size.                                      |
-| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
+| Prop                 | Type                                                                     | Required | Description                                       |
+| -------------------- | ------------------------------------------------------------------------ | -------- | ------------------------------------------------- |
+| `label`              | `string`                                                                 | No       | Visible field label.                              |
+| `options`            | `SelectOption[]`                                                         | Yes      | Options rendered in the dropdown.                 |
+| `placeholder`        | `string`                                                                 | No       | Text shown when no value is selected.             |
+| `error`              | `ReactNode`                                                              | No       | Error message.                                    |
+| `style`              | `StyleProp<ViewStyle>`                                                   | No       | Extra container style.                            |
+| `triggerStyle`       | `StyleProp<ViewStyle>`                                                   | No       | Extra trigger style.                              |
+| `textStyle`          | `StyleProp<TextStyle>`                                                   | No       | Extra text style.                                 |
+| `value`              | `string \| SelectMultipleValue`                                          | No       | Controlled selected value.                        |
+| `defaultValue`       | `string \| SelectMultipleValue`                                          | No       | Initial selected value for uncontrolled usage.    |
+| `onValueChange`      | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                 |
+| `required`           | `boolean`                                                                | No       | Marks the field as required.                      |
+| `disabled`           | `boolean`                                                                | No       | Disables interaction.                             |
+| `description`        | `string`                                                                 | No       | Additional descriptive text.                      |
+| `pickerStyle`        | `StyleProp<ViewStyle>`                                                   | No       | Extra picker style.                               |
+| `accessibilityLabel` | `string`                                                                 | No       | Accessible label for screen readers.              |
+| `size`               | `SelectSize`                                                             | No       | Select size.                                      |
+| `accessibilityHint`  | `string`                                                                 | No       | Additional accessibility hint for screen readers. |
+| `color`              | `SelectColor`                                                            | No       | —                                                 |
+| `invalid`            | `boolean`                                                                | No       | —                                                 |
+| `variant`            | `SelectVariant`                                                          | No       | —                                                 |
+| `loading`            | `boolean`                                                                | No       | —                                                 |
+| `clearable`          | `boolean`                                                                | No       | Shows a clear action when the input has a value.  |
+| `searchable`         | `boolean`                                                                | No       | —                                                 |
+| `multiple`           | `boolean`                                                                | No       | —                                                 |
+| `maxSelected`        | `number`                                                                 | No       | —                                                 |
+| `closeOnSelect`      | `boolean`                                                                | No       | —                                                 |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -378,11 +419,16 @@ default picker hint.
 
 <!-- api-docgen:start native.SelectOption.SelectOption -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop          | Type          | Required | Description                         |
+| ------------- | ------------- | -------- | ----------------------------------- |
+| `label`       | `string`      | Yes      | Visible option label.               |
+| `value`       | `string`      | Yes      | Option value.                       |
+| `disabled`    | `boolean`     | No       | Disables this option.               |
+| `description` | `string`      | No       | Additional descriptive text.        |
+| `icon`        | `unknown`     | No       | Icon rendered inside the component. |
+| `badge`       | `string`      | No       | —                                   |
+| `shortcut`    | `string`      | No       | —                                   |
+| `color`       | `SelectColor` | No       | —                                   |
 
 <!-- api-docgen:end native.SelectOption.SelectOption -->
 
@@ -485,8 +531,8 @@ import { Tabs } from '@vellira-ui/react-native';
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
 | `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
 | `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 | `orientation`        | `Orientation`             | No       | Layout orientation.                                |
+| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
@@ -569,7 +615,7 @@ import { Button, Modal } from '@vellira-ui/react-native';
     <Modal.Header title='Delete file' />
     <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
     <Modal.Footer>
-      <Button color='secondary' variant='solid' onPress={closeModal}>
+      <Button color='neutral' appearance='solid' onPress={closeModal}>
         Cancel
       </Button>
     </Modal.Footer>

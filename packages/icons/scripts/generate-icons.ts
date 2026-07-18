@@ -3,11 +3,33 @@ import path from 'node:path';
 
 import { transform } from '@svgr/core';
 import fg from 'fast-glob';
+import { format } from 'prettier';
 
 const ROOT = process.cwd();
 
 const ASSETS = path.join(ROOT, 'assets');
 const ICONS = path.join(ROOT, 'src/generated');
+const PRETTIER_OPTIONS = {
+  semi: true,
+  trailingComma: 'es5',
+  singleQuote: true,
+  jsxSingleQuote: true,
+  printWidth: 80,
+  useTabs: false,
+  tabWidth: 2,
+  endOfLine: 'lf',
+  parser: 'typescript',
+} as const;
+
+function writeFileIfChanged(filePath: string, content: string): void {
+  const current = fs.existsSync(filePath)
+    ? fs.readFileSync(filePath, 'utf8')
+    : '';
+
+  if (current !== content) {
+    fs.writeFileSync(filePath, content);
+  }
+}
 
 function toName(file: string): string {
   return path
@@ -87,11 +109,6 @@ async function compile(
 }
 
 async function run(): Promise<void> {
-  fs.rmSync(ICONS, {
-    recursive: true,
-    force: true,
-  });
-
   fs.mkdirSync(ICONS, {
     recursive: true,
   });
@@ -109,17 +126,26 @@ async function run(): Promise<void> {
 
   const webExports: string[] = [];
   const nativeExports: string[] = [];
+  const generatedFiles = new Set<string>();
 
   for (const file of files) {
     const svg = fs.readFileSync(path.join(ASSETS, file), 'utf8');
 
     const name = toName(file);
 
-    const webComponent = await compile(svg, name, false);
-    const nativeComponent = await compile(svg, name, true);
+    const webComponent = await format(
+      await compile(svg, name, false),
+      PRETTIER_OPTIONS
+    );
+    const nativeComponent = await format(
+      await compile(svg, name, true),
+      PRETTIER_OPTIONS
+    );
 
-    fs.writeFileSync(path.join(ICONS, `${name}.web.tsx`), webComponent);
-    fs.writeFileSync(path.join(ICONS, `${name}.native.tsx`), nativeComponent);
+    writeFileIfChanged(path.join(ICONS, `${name}.web.tsx`), webComponent);
+    writeFileIfChanged(path.join(ICONS, `${name}.native.tsx`), nativeComponent);
+    generatedFiles.add(`${name}.web.tsx`);
+    generatedFiles.add(`${name}.native.tsx`);
 
     webExports.push(
       `export { default as ${name} } from './generated/${name}.web.js';`
@@ -130,11 +156,20 @@ async function run(): Promise<void> {
     );
   }
 
-  fs.writeFileSync(path.join(ROOT, 'src/web.ts'), `${webExports.join('\n')}\n`);
+  for (const file of fs.readdirSync(ICONS)) {
+    if (/\.tsx$/.test(file) && !generatedFiles.has(file)) {
+      fs.rmSync(path.join(ICONS, file));
+    }
+  }
 
-  fs.writeFileSync(
+  writeFileIfChanged(
+    path.join(ROOT, 'src/web.ts'),
+    await format(`${webExports.join('\n')}\n`, PRETTIER_OPTIONS)
+  );
+
+  writeFileIfChanged(
     path.join(ROOT, 'src/native.ts'),
-    `${nativeExports.join('\n')}\n`
+    await format(`${nativeExports.join('\n')}\n`, PRETTIER_OPTIONS)
   );
 
   console.log(`✅ Generated ${files.length} icons`);

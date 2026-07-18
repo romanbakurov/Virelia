@@ -10,6 +10,14 @@ import type { RadioProps } from './types';
 
 import styles from './Radio.module.scss';
 
+const colorClassNameByColor = {
+  primary: styles.colorPrimary,
+  neutral: styles.colorNeutral,
+  success: styles.colorSuccess,
+  warning: styles.colorWarning,
+  danger: styles.colorDanger,
+} as const;
+
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(
   (
     {
@@ -19,10 +27,12 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
       disabled: disabledProp = false,
       required: requiredProp = false,
       size: sizeProp,
+      color: colorProp,
       error,
       onCheckedChange,
       label,
       description,
+      icon,
       wrapperClassName,
       className,
       id,
@@ -62,6 +72,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
     const resolvedName = group?.name ?? name;
     const resolvedInvalid = Boolean(error || group?.invalid);
     const resolvedSize = sizeProp ?? group?.size ?? 'md';
+    const resolvedColor = colorProp ?? group?.color ?? 'primary';
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       if (resolvedDisabled) {
@@ -83,6 +94,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
           styles[resolvedSize],
           resolvedInvalid && styles.invalid,
           resolvedDisabled && styles.disabled,
+          colorClassNameByColor[resolvedColor],
           className
         )}
       >
@@ -107,7 +119,9 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
           />
 
           <span className={styles.control} aria-hidden='true'>
-            <span className={styles.indicator} />
+            <span className={cn(styles.indicator, icon && styles.customIcon)}>
+              {icon}
+            </span>
           </span>
 
           {(label || description) && (

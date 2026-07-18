@@ -44,7 +44,7 @@ Correct usage:
 
   <Modal.Footer>
     <Button onClick={handleClose}>Cancel</Button>
-    <Button variant="danger" onClick={handleDelete}>Delete</Button>
+    <Button color="danger" appearance="solid" onClick={handleDelete}>Delete</Button>
   </Modal.Footer>
 </Modal>
 \`\`\`
@@ -124,10 +124,10 @@ const BasicModalDemo = ({ onClose }: { onClose?: () => void }) => {
         <Modal.Header>Delete file</Modal.Header>
         <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
         <Modal.Footer>
-          <Button color='close' variant='solid' onClick={handleClose}>
+          <Button color='neutral' appearance='solid' onClick={handleClose}>
             Cancel
           </Button>
-          <Button color='danger' variant='solid' onClick={handleClose}>
+          <Button color='danger' appearance='solid' onClick={handleClose}>
             Delete
           </Button>
         </Modal.Footer>
@@ -153,8 +153,8 @@ const WithoutBackdropCloseDemo = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            color='secondary'
-            variant='solid'
+            color='neutral'
+            appearance='solid'
             onClick={() => setIsOpen(false)}
           >
             Got it
@@ -187,7 +187,7 @@ const LongContentDemo = () => {
         <Modal.Footer>
           <Button
             color='primary'
-            variant='solid'
+            appearance='solid'
             onClick={() => setIsOpen(false)}
           >
             Accept

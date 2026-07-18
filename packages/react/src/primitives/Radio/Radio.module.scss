@@ -7,6 +7,19 @@
   --radio-label-line-height: var(--line-height-md);
   --radio-description-font-size: var(--font-size-sm);
   --radio-description-line-height: var(--line-height-sm);
+  --radio-selected-bg: var(--radio-primary-default-bg);
+  --radio-selected-border: var(--radio-primary-default-border);
+  --radio-selected-fg: var(--radio-primary-default-fg);
+  --radio-selected-hover-bg: var(--radio-primary-hover-bg);
+  --radio-selected-hover-border: var(--radio-primary-hover-border);
+  --radio-selected-hover-fg: var(--radio-primary-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-primary-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-primary-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-primary-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-primary-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-primary-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-primary-pressed-label-fg);
+  --radio-selected-ring: var(--radio-primary-ring);
 
   display: flex;
   flex-direction: column;
@@ -44,6 +57,86 @@
       color: var(--radio-disabled-fg);
     }
   }
+}
+
+.colorPrimary {
+  --radio-selected-bg: var(--radio-primary-default-bg);
+  --radio-selected-border: var(--radio-primary-default-border);
+  --radio-selected-fg: var(--radio-primary-default-fg);
+  --radio-selected-hover-bg: var(--radio-primary-hover-bg);
+  --radio-selected-hover-border: var(--radio-primary-hover-border);
+  --radio-selected-hover-fg: var(--radio-primary-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-primary-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-primary-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-primary-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-primary-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-primary-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-primary-pressed-label-fg);
+  --radio-selected-ring: var(--radio-primary-ring);
+}
+
+.colorNeutral {
+  --radio-selected-bg: var(--radio-neutral-default-bg);
+  --radio-selected-border: var(--radio-neutral-default-border);
+  --radio-selected-fg: var(--radio-neutral-default-fg);
+  --radio-selected-hover-bg: var(--radio-neutral-hover-bg);
+  --radio-selected-hover-border: var(--radio-neutral-hover-border);
+  --radio-selected-hover-fg: var(--radio-neutral-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-neutral-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-neutral-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-neutral-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-neutral-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-neutral-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-neutral-pressed-label-fg);
+  --radio-selected-ring: var(--radio-neutral-ring);
+}
+
+.colorSuccess {
+  --radio-selected-bg: var(--radio-success-default-bg);
+  --radio-selected-border: var(--radio-success-default-border);
+  --radio-selected-fg: var(--radio-success-default-fg);
+  --radio-selected-hover-bg: var(--radio-success-hover-bg);
+  --radio-selected-hover-border: var(--radio-success-hover-border);
+  --radio-selected-hover-fg: var(--radio-success-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-success-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-success-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-success-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-success-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-success-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-success-pressed-label-fg);
+  --radio-selected-ring: var(--radio-success-ring);
+}
+
+.colorWarning {
+  --radio-selected-bg: var(--radio-warning-default-bg);
+  --radio-selected-border: var(--radio-warning-default-border);
+  --radio-selected-fg: var(--radio-warning-default-fg);
+  --radio-selected-hover-bg: var(--radio-warning-hover-bg);
+  --radio-selected-hover-border: var(--radio-warning-hover-border);
+  --radio-selected-hover-fg: var(--radio-warning-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-warning-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-warning-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-warning-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-warning-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-warning-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-warning-pressed-label-fg);
+  --radio-selected-ring: var(--radio-warning-ring);
+}
+
+.colorDanger {
+  --radio-selected-bg: var(--radio-danger-default-bg);
+  --radio-selected-border: var(--radio-danger-default-border);
+  --radio-selected-fg: var(--radio-danger-default-fg);
+  --radio-selected-hover-bg: var(--radio-danger-hover-bg);
+  --radio-selected-hover-border: var(--radio-danger-hover-border);
+  --radio-selected-hover-fg: var(--radio-danger-hover-fg);
+  --radio-selected-hover-label-fg: var(--radio-danger-hover-label-fg);
+  --radio-selected-label-fg: var(--radio-danger-default-label-fg);
+  --radio-selected-pressed-bg: var(--radio-danger-pressed-bg);
+  --radio-selected-pressed-border: var(--radio-danger-pressed-border);
+  --radio-selected-pressed-fg: var(--radio-danger-pressed-fg);
+  --radio-selected-pressed-label-fg: var(--radio-danger-pressed-label-fg);
+  --radio-selected-ring: var(--radio-danger-ring);
 }
 
 .sm {
@@ -84,7 +177,7 @@
   user-select: none;
 
   &:has(.input:checked) {
-    color: var(--radio-checked-default-label-fg);
+    color: var(--radio-selected-label-fg);
   }
 
   &:has(.input:disabled) {
@@ -126,9 +219,13 @@
 }
 
 .indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: var(--radio-indicator-size);
   height: var(--radio-indicator-size);
-  background-color: var(--radio-checked-default-fg);
+  color: var(--radio-selected-fg);
+  background-color: var(--radio-selected-fg);
   border-radius: 50%;
   opacity: 0;
   transform: scale(0.6);
@@ -138,24 +235,47 @@
     transform 0.15s ease;
 }
 
+.customIcon {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 0;
+
+  svg {
+    width: var(--radio-indicator-size);
+    height: var(--radio-indicator-size);
+    fill: currentcolor;
+  }
+}
+
 .input:checked + .control {
-  background-color: var(--radio-checked-default-bg);
-  border-color: var(--radio-checked-default-border);
+  background-color: var(--radio-selected-bg);
+  border-color: var(--radio-selected-border);
 }
 
 .input:checked + .control .indicator {
-  background-color: var(--radio-checked-default-fg);
+  color: var(--radio-selected-fg);
+  background-color: var(--radio-selected-fg);
   opacity: 1;
   transform: scale(1);
 }
 
+.input:checked + .control .customIcon {
+  background-color: transparent;
+}
+
 .input:checked:active:not(:disabled) + .control {
-  background-color: var(--radio-checked-pressed-bg);
-  border-color: var(--radio-checked-pressed-border);
+  background-color: var(--radio-selected-pressed-bg);
+  border-color: var(--radio-selected-pressed-border);
 }
 
 .input:checked:active:not(:disabled) + .control .indicator {
-  background-color: var(--radio-checked-pressed-fg);
+  color: var(--radio-selected-pressed-fg);
+  background-color: var(--radio-selected-pressed-fg);
+}
+
+.input:checked:active:not(:disabled) + .control .customIcon {
+  background-color: transparent;
 }
 
 .wrapper:not(:has(.input:disabled)):hover {
@@ -168,25 +288,30 @@
 }
 
 .wrapper:not(:has(.input:disabled)):has(.input:checked):hover {
-  color: var(--radio-checked-hover-label-fg);
+  color: var(--radio-selected-hover-label-fg);
 
   .control {
-    background-color: var(--radio-checked-hover-bg);
-    border-color: var(--radio-checked-hover-border);
+    background-color: var(--radio-selected-hover-bg);
+    border-color: var(--radio-selected-hover-border);
   }
 
   .indicator {
-    background-color: var(--radio-checked-hover-fg);
+    color: var(--radio-selected-hover-fg);
+    background-color: var(--radio-selected-hover-fg);
+  }
+
+  .customIcon {
+    background-color: transparent;
   }
 }
 
 .wrapper:not(:has(.input:disabled)):has(.input:checked):active {
-  color: var(--radio-checked-pressed-label-fg);
+  color: var(--radio-selected-pressed-label-fg);
 }
 
 .input:focus-visible + .control {
-  @include focus-border(var(--radio-focus-border), var(--radio-focus-ring));
-  @include focus-ring(var(--radio-focus-ring));
+  @include focus-border(var(--radio-focus-border), var(--radio-selected-ring));
+  @include focus-ring(var(--radio-selected-ring));
 }
 
 .root.invalid .input:focus-visible + .control {
@@ -201,12 +326,17 @@
 }
 
 .input:checked:active:not(:disabled) + .control {
-  background-color: var(--radio-checked-pressed-bg);
-  border-color: var(--radio-checked-pressed-border);
+  background-color: var(--radio-selected-pressed-bg);
+  border-color: var(--radio-selected-pressed-border);
 }
 
 .input:checked:active:not(:disabled) + .control .indicator {
-  background-color: var(--radio-checked-pressed-fg);
+  color: var(--radio-selected-pressed-fg);
+  background-color: var(--radio-selected-pressed-fg);
+}
+
+.input:checked:active:not(:disabled) + .control .customIcon {
+  background-color: transparent;
 }
 
 .input:disabled + .control {
@@ -215,12 +345,17 @@
 }
 
 .input:disabled:checked + .control {
-  background-color: var(--radio-checked-disabled-bg);
-  border-color: var(--radio-checked-disabled-border);
+  background-color: var(--radio-selected-disabled-bg);
+  border-color: var(--radio-selected-disabled-border);
 }
 
 .input:disabled:checked + .control .indicator {
-  background-color: var(--radio-checked-disabled-fg);
+  color: var(--radio-selected-disabled-fg);
+  background-color: var(--radio-selected-disabled-fg);
+}
+
+.input:disabled:checked + .control .customIcon {
+  background-color: transparent;
 }
 
 .content {

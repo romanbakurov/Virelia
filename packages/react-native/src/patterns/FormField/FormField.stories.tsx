@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { Input } from '../../primitives/Input';
 import { useTheme } from '../../theme';
 
 import { FormField } from './FormField';
@@ -73,6 +74,7 @@ Composable field wrapper for custom form controls in React Native.
 - Required indicator
 - Error message and custom error content
 - Disabled visual state
+- Size and state context for Vellira controls
 - Control layout customization
 - Works with any custom form control
 
@@ -80,7 +82,7 @@ Composable field wrapper for custom form controls in React Native.
 
 Use FormField when building custom form controls or composing field layouts.
 
-Components that already include FormField internally, such as Input, Select and RadioGroup, should not be wrapped again.
+Controls such as Input can inherit size, required, disabled and invalid state from FormField.
 
 \`\`\`tsx
 <FormField
@@ -88,16 +90,13 @@ Components that already include FormField internally, such as Input, Select and 
   description='Visible to other users.'
   required
 >
-  <TextInput
-    accessibilityLabel='Workspace'
-    placeholder='vellira-design'
-  />
+  <Input placeholder='vellira-design' />
 </FormField>
 \`\`\`
 
 ### Accessibility
 
-FormField provides visual field structure and announces error content with a polite live region. The wrapped control remains responsible for its own accessibility role, accessibility label, disabled/editable state and interaction behavior.
+FormField provides visual field structure and announces error content with a polite live region. Vellira controls consume FormField context automatically; custom controls can still use FormField as a visual and semantic wrapper.
 `,
       },
     },
@@ -106,6 +105,8 @@ FormField provides visual field structure and announces error content with a pol
     label: 'Label',
     required: false,
     disabled: false,
+    invalid: false,
+    size: 'md',
     children: <Text>Field content</Text>,
   },
   argTypes: {
@@ -132,6 +133,37 @@ FormField provides visual field structure and announces error content with a pol
     disabled: {
       control: 'boolean',
       description: 'Applies disabled styling to field text.',
+    },
+
+    invalid: {
+      control: 'boolean',
+      description: 'Marks the field invalid without requiring error text.',
+    },
+
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      description: 'Field size passed to compatible controls through context.',
+    },
+
+    orientation: {
+      control: 'radio',
+      options: ['vertical', 'horizontal'],
+    },
+
+    labelPosition: {
+      control: 'radio',
+      options: ['top', 'start'],
+    },
+
+    optionalText: {
+      control: 'text',
+      description: 'Optional marker rendered next to non-required labels.',
+    },
+
+    labelInfo: {
+      control: false,
+      description: 'Additional label content, such as an info affordance.',
     },
 
     children: {
@@ -268,6 +300,21 @@ function CustomLabelExample() {
   );
 }
 
+function InfoMark() {
+  const { theme } = useTheme();
+
+  return (
+    <Text
+      style={{
+        color: theme.components.formField.labelInfo.fg,
+        fontFamily: theme.tokens.typography.family.medium,
+      }}
+    >
+      ?
+    </Text>
+  );
+}
+
 function CustomDescriptionExample() {
   const { theme } = useTheme();
 
@@ -358,6 +405,67 @@ export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
       <FormField {...args} />
+    </Section>
+  ),
+};
+
+export const WithInputContext: Story = {
+  render: () => (
+    <Section title='WithInputContext'>
+      <FormField
+        label='Email'
+        description='Input inherits size, required, invalid and disabled state.'
+        size='sm'
+        required
+        invalid
+      >
+        <Input placeholder='name@company.com' type='email' />
+      </FormField>
+    </Section>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <View style={storyStyles.column}>
+        <FormField label='Small' size='sm'>
+          <Input placeholder='Small field' />
+        </FormField>
+
+        <FormField label='Medium' size='md'>
+          <Input placeholder='Medium field' />
+        </FormField>
+
+        <FormField label='Large' size='lg'>
+          <Input placeholder='Large field' />
+        </FormField>
+      </View>
+    </Section>
+  ),
+};
+
+export const OptionalAndInfo: Story = {
+  render: () => (
+    <Section title='OptionalAndInfo'>
+      <View style={storyStyles.column}>
+        <FormField
+          label='Display name'
+          optionalText='Optional'
+          description='Shown in profile surfaces.'
+        >
+          <Input placeholder='Alex Taylor' />
+        </FormField>
+
+        <FormField
+          label='API key'
+          labelInfo={<InfoMark />}
+          description='Create and rotate keys in account settings.'
+          required
+        >
+          <Input placeholder='vk_live_...' />
+        </FormField>
+      </View>
     </Section>
   ),
 };

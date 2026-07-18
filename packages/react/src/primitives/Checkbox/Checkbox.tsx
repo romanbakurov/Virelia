@@ -28,14 +28,26 @@ const containerSizeClassNameBySize = {
   lg: styles.containerLg,
 } as const;
 
+const colorClassNameByColor = {
+  primary: styles.colorPrimary,
+  neutral: styles.colorNeutral,
+  success: styles.colorSuccess,
+  warning: styles.colorWarning,
+  danger: styles.colorDanger,
+} as const;
+
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
     {
       id: providedId,
       label,
       description,
+      icon,
+      indeterminateIcon,
       checked,
       size = 'md',
+      color = 'primary',
+      labelPosition = 'end',
       defaultChecked = false,
       disabled = false,
       required = false,
@@ -106,6 +118,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         className={cn(
           styles.container,
           containerSizeClassNameBySize[size],
+          labelPosition === 'start' && styles.containerLabelStart,
           className
         )}
       >
@@ -114,6 +127,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           className={cn(
             styles.wrapper,
             wrapperSizeClassNameBySize[size],
+            colorClassNameByColor[color],
+            labelPosition === 'start' && styles.labelStart,
             !label && styles.iconOnly,
             disabled && styles.disabled,
             wrapperClassName
@@ -145,12 +160,17 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             aria-hidden='true'
           >
             {indeterminate ? (
-              <span className={styles.indeterminateMark} />
+              <span
+                className={cn(
+                  styles.indeterminateMark,
+                  indeterminateIcon && styles.customMark
+                )}
+              >
+                {indeterminateIcon}
+              </span>
             ) : (
               isChecked && (
-                <span className={styles.checkmark}>
-                  <Check />
-                </span>
+                <span className={styles.checkmark}>{icon ?? <Check />}</span>
               )
             )}
           </span>

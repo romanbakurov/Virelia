@@ -11,11 +11,18 @@ export interface SelectOptionLike extends NavigableItem {
   value: string;
 }
 
+export type SelectStateValue = string | string[];
+
 export interface UseSelectParams<TOption extends SelectOptionLike> {
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  value?: SelectStateValue;
+  defaultValue?: SelectStateValue;
+  onValueChange?: (value: SelectStateValue) => void;
+  /** @deprecated Use onValueChange. */
+  onChange?: (value: SelectStateValue) => void;
   options: TOption[];
+  multiple?: boolean;
+  maxSelected?: number;
+  closeOnSelect?: boolean;
   disabled?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
@@ -25,8 +32,12 @@ export interface UseSelectParams<TOption extends SelectOptionLike> {
 export const useSelect = <TOption extends SelectOptionLike>({
   value,
   defaultValue,
+  onValueChange,
   onChange,
   options,
+  multiple = false,
+  maxSelected,
+  closeOnSelect = !multiple,
   disabled = false,
   open,
   defaultOpen = false,
@@ -34,8 +45,8 @@ export const useSelect = <TOption extends SelectOptionLike>({
 }: UseSelectParams<TOption>) => {
   const [selectedValue, setSelectedValue] = useControllableState({
     value,
-    defaultValue: defaultValue ?? '',
-    onChange,
+    defaultValue: defaultValue ?? (multiple ? [] : ''),
+    onChange: onValueChange ?? onChange,
   });
 
   const [isOpen, setIsOpen] = useControllableState({
@@ -45,20 +56,35 @@ export const useSelect = <TOption extends SelectOptionLike>({
   });
   const [activeIndex, setActiveIndex] = useState(-1);
 
+  const selectedValues = useMemo(
+    () =>
+      Array.isArray(selectedValue)
+        ? selectedValue
+        : selectedValue
+          ? [selectedValue]
+          : [],
+    [selectedValue]
+  );
+
   const selectedOption = useMemo(
-    () => options.find((option) => option.value === selectedValue),
-    [options, selectedValue]
+    () => options.find((option) => selectedValues.includes(option.value)),
+    [options, selectedValues]
+  );
+
+  const selectedOptions = useMemo(
+    () => options.filter((option) => selectedValues.includes(option.value)),
+    [options, selectedValues]
   );
 
   const getInitialActiveIndex = useCallback(() => {
     const selectedIndex = options.findIndex(
-      (option) => option.value === selectedValue && !option.disabled
+      (option) => selectedValues.includes(option.value) && !option.disabled
     );
 
     if (selectedIndex >= 0) return selectedIndex;
 
     return options.findIndex((option) => !option.disabled);
-  }, [options, selectedValue]);
+  }, [options, selectedValues]);
 
   const openDropdown = useCallback(() => {
     if (disabled) return;
@@ -84,14 +110,50 @@ export const useSelect = <TOption extends SelectOptionLike>({
 
   const selectValue = useCallback(
     (nextValue: string) => {
+      if (nextValue === '') {
+        setSelectedValue(multiple ? [] : '');
+        closeDropdown();
+        return;
+      }
+
       const nextOption = options.find((option) => option.value === nextValue);
 
       if (!nextOption || nextOption.disabled) return;
 
+      if (multiple) {
+        const isSelected = selectedValues.includes(nextValue);
+
+        if (
+          !isSelected &&
+          typeof maxSelected === 'number' &&
+          selectedValues.length >= maxSelected
+        ) {
+          return;
+        }
+
+        const nextValues = selectedValues.includes(nextValue)
+          ? selectedValues.filter((value) => value !== nextValue)
+          : [...selectedValues, nextValue];
+
+        setSelectedValue(nextValues);
+        if (closeOnSelect) {
+          closeDropdown();
+        }
+        return;
+      }
+
       setSelectedValue(nextValue);
       closeDropdown();
     },
-    [closeDropdown, options, setSelectedValue]
+    [
+      closeDropdown,
+      closeOnSelect,
+      maxSelected,
+      multiple,
+      options,
+      selectedValues,
+      setSelectedValue,
+    ]
   );
 
   const selectActiveOption = useCallback(() => {
@@ -115,8 +177,10 @@ export const useSelect = <TOption extends SelectOptionLike>({
 
   return {
     selectedValue,
+    selectedValues,
     setSelectedValue,
     selectedOption,
+    selectedOptions,
     isOpen,
     open: isOpen,
     setIsOpen,

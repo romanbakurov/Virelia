@@ -1,4 +1,4 @@
-import type { BaseRadioGroupProps } from '@vellira-ui/types';
+import type { BaseRadioGroupProps, RadioColor } from '@vellira-ui/types';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export interface RadioGroupProps
@@ -6,11 +6,13 @@ export interface RadioGroupProps
     BaseRadioGroupProps,
     Omit<
       ComponentPropsWithoutRef<'div'>,
-      'defaultValue' | 'onChange' | 'role'
+      'color' | 'defaultValue' | 'onChange' | 'role'
     > {
   name?: string;
   label?: ReactNode;
   children?: ReactNode;
   description?: ReactNode;
   error?: string;
+  /** Selected color inherited by child radios. */
+  color?: RadioColor;
 }

@@ -38,9 +38,11 @@ export const Radio = forwardRef<View, RadioProps>(
       disabled: disabledProp = false,
       required: requiredProp = false,
       size: sizeProp,
+      color: colorProp,
       onCheckedChange,
       label,
       description,
+      icon,
       error,
       accessibilityLabel,
       accessibilityHint,
@@ -73,6 +75,8 @@ export const Radio = forwardRef<View, RadioProps>(
     const resolvedRequired = Boolean(group?.required) || requiredProp;
     const resolvedInvalid = Boolean(group?.invalid) || Boolean(error);
     const resolvedSize = sizeProp ?? group?.size ?? 'md';
+    const resolvedColor = colorProp ?? group?.color ?? 'primary';
+    const radioColor = theme.components.radio[resolvedColor];
 
     const controlSize = controlSizeBySize[resolvedSize];
     const indicatorSize = indicatorSizeBySize[resolvedSize];
@@ -166,76 +170,105 @@ export const Radio = forwardRef<View, RadioProps>(
           onPress={handlePress}
           style={resolvePressableStyle}
         >
-          <View
-            pointerEvents='none'
-            style={[
-              styles.control,
-              {
-                width: controlSize,
-                height: controlSize,
-                marginTop: controlMarginTop,
-              },
-              resolvedChecked && styles.controlChecked,
-              resolvedInvalid && styles.controlInvalid,
-              resolvedDisabled && styles.controlDisabled,
-            ]}
-          >
-            {resolvedChecked && (
+          {(state) => (
+            <>
               <View
+                pointerEvents='none'
                 style={[
-                  styles.indicator,
+                  styles.control,
                   {
-                    width: indicatorSize,
-                    height: indicatorSize,
+                    width: controlSize,
+                    height: controlSize,
+                    marginTop: controlMarginTop,
                   },
-                  resolvedDisabled && styles.indicatorDisabled,
+                  resolvedChecked && {
+                    backgroundColor: radioColor.default.bg,
+                    borderColor: radioColor.default.border,
+                  },
+                  resolvedChecked &&
+                    state.pressed &&
+                    !resolvedDisabled && {
+                      backgroundColor: radioColor.pressed.bg,
+                      borderColor: radioColor.pressed.border,
+                      transform: [{ scale: 0.96 }],
+                    },
+                  resolvedInvalid && styles.controlInvalid,
+                  resolvedDisabled && styles.controlDisabled,
+                  resolvedChecked &&
+                    resolvedDisabled &&
+                    styles.controlCheckedDisabled,
                 ]}
-              />
-            )}
-          </View>
+              >
+                {resolvedChecked &&
+                  (icon ?? (
+                    <View
+                      style={[
+                        styles.indicator,
+                        {
+                          width: indicatorSize,
+                          height: indicatorSize,
+                          backgroundColor:
+                            state.pressed && !resolvedDisabled
+                              ? radioColor.pressed.fg
+                              : radioColor.default.fg,
+                        },
+                        resolvedDisabled && styles.indicatorDisabled,
+                      ]}
+                    />
+                  ))}
+              </View>
 
-          {(label || description) && (
-            <View pointerEvents='none' style={styles.content}>
-              {label &&
-                (typeof label === 'string' ? (
-                  <Text
-                    style={[
-                      styles.label,
-                      {
-                        fontSize: typographySize.labelSize,
-                        lineHeight: typographySize.labelLineHeight,
-                      },
-                      resolvedChecked && styles.labelChecked,
-                      resolvedInvalid && styles.labelInvalid,
-                      resolvedDisabled && styles.textDisabled,
-                      labelStyle,
-                    ]}
-                  >
-                    {label}
-                  </Text>
-                ) : (
-                  label
-                ))}
+              {(label || description) && (
+                <View pointerEvents='none' style={styles.content}>
+                  {label &&
+                    (typeof label === 'string' ? (
+                      <Text
+                        style={[
+                          styles.label,
+                          {
+                            fontSize: typographySize.labelSize,
+                            lineHeight: typographySize.labelLineHeight,
+                          },
+                          resolvedChecked && {
+                            color: radioColor.default.labelFg,
+                          },
+                          resolvedChecked &&
+                            state.pressed &&
+                            !resolvedDisabled && {
+                              color: radioColor.pressed.labelFg,
+                            },
+                          resolvedInvalid && styles.labelInvalid,
+                          resolvedDisabled && styles.textDisabled,
+                          labelStyle,
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                    ) : (
+                      label
+                    ))}
 
-              {description &&
-                (typeof description === 'string' ? (
-                  <Text
-                    style={[
-                      styles.description,
-                      {
-                        fontSize: typographySize.descriptionSize,
-                        lineHeight: typographySize.descriptionLineHeight,
-                      },
-                      resolvedDisabled && styles.textDisabled,
-                      descriptionStyle,
-                    ]}
-                  >
-                    {description}
-                  </Text>
-                ) : (
-                  description
-                ))}
-            </View>
+                  {description &&
+                    (typeof description === 'string' ? (
+                      <Text
+                        style={[
+                          styles.description,
+                          {
+                            fontSize: typographySize.descriptionSize,
+                            lineHeight: typographySize.descriptionLineHeight,
+                          },
+                          resolvedDisabled && styles.textDisabled,
+                          descriptionStyle,
+                        ]}
+                      >
+                        {description}
+                      </Text>
+                    ) : (
+                      description
+                    ))}
+                </View>
+              )}
+            </>
           )}
         </Pressable>
 

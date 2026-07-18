@@ -160,4 +160,21 @@ describe('Native RadioGroup', () => {
 
     unmount();
   });
+
+  it('accepts group color and item color overrides', () => {
+    const { container, unmount } = render(
+      <RadioGroup label='Status' color='danger' defaultValue='blocked'>
+        <Radio value='blocked' label='Blocked' />
+        <Radio value='active' label='Active' color='success' />
+      </RadioGroup>
+    );
+
+    const radios =
+      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+
+    expect(radios[0].getAttribute('aria-checked')).toBe('true');
+    expect(radios[1].textContent).toContain('Active');
+
+    unmount();
+  });
 });

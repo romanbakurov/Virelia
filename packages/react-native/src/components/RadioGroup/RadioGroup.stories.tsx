@@ -31,6 +31,7 @@ Accessible group for selecting exactly one option in React Native.
 - Required indicator
 - Error message
 - Vertical and horizontal orientation
+- Shared selected color inherited by child Radio controls
 - Disabled group state
 - Disabled individual Radio controls
 - Sizes: sm, md and lg
@@ -67,6 +68,7 @@ Use RadioGroup when users must choose one option from a set.
     defaultValue: 'pro',
     orientation: 'vertical',
     size: 'md',
+    color: 'primary',
     required: false,
     disabled: false,
     onValueChange: fn(),
@@ -102,6 +104,12 @@ Use RadioGroup when users must choose one option from a set.
       control: 'radio',
       options: ['sm', 'md', 'lg'],
       description: 'Size inherited by Radio controls in the group.',
+    },
+
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      description: 'Default selected color inherited by Radio controls.',
     },
 
     required: {
@@ -362,6 +370,34 @@ export const Sizes: Story = {
         </RadioGroup>
 
         <RadioGroup label='Large' defaultValue='enterprise' size='lg'>
+          <PlanRadios />
+        </RadioGroup>
+      </View>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <View style={storyStyles.column}>
+        <RadioGroup label='Primary' color='primary' defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Neutral' color='neutral' defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Success' color='success' defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Warning' color='warning' defaultValue='starter'>
+          <PlanRadios />
+        </RadioGroup>
+
+        <RadioGroup label='Danger' color='danger' defaultValue='starter'>
           <PlanRadios />
         </RadioGroup>
       </View>

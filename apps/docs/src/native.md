@@ -37,7 +37,7 @@ export function PreferencesScreen() {
       <Input
         label='Email'
         value={email}
-        onChange={setEmail}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <RadioGroup label='Theme'>
@@ -49,7 +49,7 @@ export function PreferencesScreen() {
         label='Send product updates'
         description='Receive release notes and billing updates.'
       />
-      <Button color='primary' variant='solid'>
+      <Button color='primary' appearance='solid'>
         Apply
       </Button>
     </View>
@@ -63,19 +63,19 @@ Every native component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react-native/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react-native/API.md).
 
-| Component    | Core props                                                                                             | Role                  |
-| ------------ | ------------------------------------------------------------------------------------------------------ | --------------------- |
-| `Button`     | `variant`, `size`, `leftIcon`, `rightIcon`, `accessibilityLabel`                                       | Buttons and actions   |
-| `Checkbox`   | `label`, `description`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                        | Boolean input         |
-| `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                                           | Text input            |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                    | Labels and validation |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `error`                              | Radio option          |
-| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`                           | Single selection      |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error` | Selection control     |
-| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                              | Context menu          |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                           | Tab navigation        |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                            | Contextual helper     |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                              | Dialog and overlay    |
+| Component    | Core props                                                                                                                | Role                  |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `accessibilityLabel`                                              | Buttons and actions   |
+| `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | Boolean input         |
+| `Input`      | `label`, `description`, `value`, `onValueChange`, `type`, `error`, `mask`, `format`                                       | Text input            |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | Labels and validation |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
+| `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
+| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error`                    | Selection control     |
+| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                                                 | Context menu          |
+| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |
+| `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
+| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                                                 | Dialog and overlay    |
 
 Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
 value only; the selection is committed through `Done`, while `Cancel` and the
@@ -104,28 +104,94 @@ extra guidance.
 
 Native Button maps to React Native `Pressable`, uses `onPress`, and accepts
 native styling hooks through `style` and `textStyle`. Use Vellira icon elements
-for `leftIcon` and `rightIcon`; Button injects the active icon color and size.
+for `iconStart` and `iconEnd`; Button injects the active icon color and size.
+Use `iconSize` to override the size-derived icon value. `badge` and `shortcut`
+render compact metadata after the label, and are hidden automatically for
+icon-only actions.
 
 ```tsx
-import { Search } from '@vellira-ui/icons';
+import { Filter, Save, Search } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 
 export function ButtonExamples() {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   return (
     <>
-      <Button color='primary' variant='solid' onPress={handleSave}>
+      <Button color='primary' appearance='solid' onPress={handleSave}>
         Save
       </Button>
 
-      <Button loading loadingText='Saving...'>
+      <Button loading={isSaving} loadingText='Saving...'>
         Save
       </Button>
 
-      <Button accessibilityLabel='Search' iconOnly leftIcon={<Search />} />
+      <Button badge='3' iconStart={<Filter />} shortcut='⌘F'>
+        Filters
+      </Button>
+
+      <Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />
+
+      <Button accessibilityLabel='Save draft' iconStart={<Save />} />
+
+      <View accessibilityLabel='Editor toolbar'>
+        <Button
+          accessibilityLabel='Save'
+          appearance='ghost'
+          iconOnly
+          iconStart={<Save />}
+        />
+        <Button appearance='ghost' iconStart={<Filter />}>
+          Filter
+        </Button>
+        <Button appearance='ghost' iconSize={18} iconStart={<Search />}>
+          Search
+        </Button>
+      </View>
+
+      <Button
+        color='danger'
+        appearance='soft'
+        onPress={() => setConfirmingDelete(true)}
+      >
+        Delete workspace
+      </Button>
+
+      {confirmingDelete ? (
+        <View accessibilityLiveRegion='polite'>
+          <Button
+            color='neutral'
+            appearance='ghost'
+            disabled={deleting}
+            onPress={() => setConfirmingDelete(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            color='danger'
+            loading={deleting}
+            loadingText='Deleting...'
+            onPress={() => setDeleting(true)}
+          >
+            Delete
+          </Button>
+        </View>
+      ) : null}
     </>
   );
 }
 ```
+
+Pass `loadingText` before the loading state is active when the loading label is
+longer than the default label. Button measures both labels and keeps the text
+slot stable as `loading` changes.
+
+When `iconOnly` is omitted, Button automatically switches to icon-only layout if
+it receives `iconStart` or `iconEnd` without visible children. Provide
+`accessibilityLabel` in that case.
 
 ## FormField
 

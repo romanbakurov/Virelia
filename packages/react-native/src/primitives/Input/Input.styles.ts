@@ -85,6 +85,26 @@ export const createStyles = (theme: NativeTheme) =>
       justifyContent: 'center',
     },
 
+    revealButton: {
+      position: 'absolute',
+      right: theme.tokens.spacing[3],
+      top: '50%',
+      zIndex: 1,
+      minWidth: 40,
+      height: 28,
+      marginTop: -14,
+      borderRadius: theme.tokens.radius.sm,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    revealButtonText: {
+      color: theme.components.input.icon.muted,
+      fontFamily: theme.tokens.typography.family.medium,
+      fontSize: theme.tokens.typography.size.xs,
+      lineHeight: theme.tokens.typography.lineHeight.xs,
+    },
+
     clearButtonText: {
       color: theme.components.input.clearButton.fg,
       fontSize: 16,
@@ -142,22 +162,6 @@ export const createStyles = (theme: NativeTheme) =>
         height: 0,
       },
       shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 1,
-    },
-
-    success: {
-      borderColor: theme.components.input.success.border,
-    },
-
-    successFocused: {
-      borderColor: theme.components.input.success.border,
-      shadowColor: resolveRingColor(theme.components.input.success.ring),
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.18,
       shadowRadius: 6,
       elevation: 1,
     },

@@ -1,32 +1,149 @@
-@use '@styles/mixins' as *;
-
 .wrapper {
+  --form-field-current-gap: var(--form-field-size-md-gap);
+  --form-field-current-horizontal-gap: var(--form-field-size-md-horizontal-gap);
+  --form-field-current-label-font-size: var(
+    --form-field-size-md-label-font-size
+  );
+  --form-field-current-label-line-height: var(
+    --form-field-size-md-label-line-height
+  );
+  --form-field-current-description-font-size: var(
+    --form-field-size-md-description-font-size
+  );
+  --form-field-current-description-line-height: var(
+    --form-field-size-md-description-line-height
+  );
+  --form-field-current-helper-text-font-size: var(
+    --form-field-size-md-helper-text-font-size
+  );
+  --form-field-current-helper-text-line-height: var(
+    --form-field-size-md-helper-text-line-height
+  );
+  --form-field-current-optional-font-size: var(
+    --form-field-size-md-optional-font-size
+  );
+  --form-field-current-optional-line-height: var(
+    --form-field-size-md-optional-line-height
+  );
+  --form-field-current-label-info-size: var(
+    --form-field-size-md-label-info-size
+  );
+  --form-field-current-label-info-font-size: var(
+    --form-field-size-md-label-info-font-size
+  );
+
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: var(--space-2);
+  gap: var(--form-field-current-gap);
+}
+
+@each $size in sm, md, lg {
+  .#{$size} {
+    --form-field-current-gap: var(--form-field-size-#{$size}-gap);
+    --form-field-current-horizontal-gap: var(
+      --form-field-size-#{$size}-horizontal-gap
+    );
+    --form-field-current-label-font-size: var(
+      --form-field-size-#{$size}-label-font-size
+    );
+    --form-field-current-label-line-height: var(
+      --form-field-size-#{$size}-label-line-height
+    );
+    --form-field-current-description-font-size: var(
+      --form-field-size-#{$size}-description-font-size
+    );
+    --form-field-current-description-line-height: var(
+      --form-field-size-#{$size}-description-line-height
+    );
+    --form-field-current-helper-text-font-size: var(
+      --form-field-size-#{$size}-helper-text-font-size
+    );
+    --form-field-current-helper-text-line-height: var(
+      --form-field-size-#{$size}-helper-text-line-height
+    );
+    --form-field-current-optional-font-size: var(
+      --form-field-size-#{$size}-optional-font-size
+    );
+    --form-field-current-optional-line-height: var(
+      --form-field-size-#{$size}-optional-line-height
+    );
+    --form-field-current-label-info-size: var(
+      --form-field-size-#{$size}-label-info-size
+    );
+    --form-field-current-label-info-font-size: var(
+      --form-field-size-#{$size}-label-info-font-size
+    );
+  }
+}
+
+.horizontal,
+.start {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) minmax(0, 1fr);
+  align-items: start;
+  column-gap: var(--form-field-current-horizontal-gap);
+}
+
+.horizontal .description,
+.horizontal .control,
+.horizontal .errorText,
+.start .description,
+.start .control,
+.start .errorText {
+  grid-column: 2;
+}
+
+.horizontal .label,
+.start .label {
+  grid-row: span 3;
+  margin-top: var(--space-2);
 }
 
 .label {
-  @include text-md;
-
   display: inline-flex;
+  gap: var(--space-1);
   align-items: center;
   width: fit-content;
   color: var(--form-field-label-fg);
+  font-size: var(--form-field-current-label-font-size);
   font-weight: var(--font-weight-medium);
+  line-height: var(--form-field-current-label-line-height);
+}
+
+.labelText {
+  min-width: 0;
 }
 
 .required {
-  margin-left: var(--space-1);
   color: var(--form-field-required-mark-fg);
 }
 
-.description {
-  @include text-sm;
+.optional {
+  color: var(--form-field-optional-fg);
+  font-size: var(--form-field-current-optional-font-size);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--form-field-current-optional-line-height);
+}
 
+.labelInfo {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--form-field-current-label-info-size);
+  height: var(--form-field-current-label-info-size);
+  color: var(--form-field-label-info-fg);
+  font-size: var(--form-field-current-label-info-font-size);
+  border: 1px solid var(--form-field-label-info-border);
+  border-radius: var(--form-field-label-info-radius);
+  cursor: help;
+}
+
+.description {
   color: var(--form-field-description-fg);
+  font-size: var(--form-field-current-description-font-size);
+  line-height: var(--form-field-current-description-line-height);
 }
 
 .control {
@@ -34,19 +151,21 @@
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: var(--space-2);
+  gap: var(--form-field-current-gap);
 }
 
 .errorText {
-  @include text-sm;
-
   color: var(--form-field-helper-text-error-fg);
+  font-size: var(--form-field-current-helper-text-font-size);
+  line-height: var(--form-field-current-helper-text-line-height);
 }
 
 .label,
 .description,
 .errorText,
-.required {
+.required,
+.optional,
+.labelInfo {
   transition: color 0.2s ease;
 }
 
@@ -68,13 +187,20 @@
   .required {
     color: var(--form-field-disabled-label-fg);
   }
+
+  .optional,
+  .labelInfo {
+    color: var(--form-field-disabled-description-fg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .label,
   .description,
   .errorText,
-  .required {
+  .required,
+  .optional,
+  .labelInfo {
     transition: none;
   }
 }

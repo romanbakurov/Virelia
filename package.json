@@ -1,7 +1,7 @@
 {
   "name": "vellira",
   "private": true,
-  "version": "2.26.0",
+  "version": "2.30.0",
   "description": "Vellira Design System monorepo",
   "type": "module",
   "author": "Roman Bakurov",
@@ -92,7 +92,7 @@
     "tsx": "^4.23.1",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.64.0",
-    "wrangler": "^4.106.0"
+    "wrangler": "^4.111.0"
   },
   "overrides": {
     "react": "19.2.7",
