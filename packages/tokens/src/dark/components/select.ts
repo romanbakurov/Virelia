@@ -1,29 +1,112 @@
+import { createInputColorPalette } from '../../factories/createInputPalette.js';
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
+import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
 import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
+import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
+const selectPaletteDefaults = {
+  fg: text.primary,
+  placeholder: text.secondary,
+  filledFocusBg: surface.subtle,
+  hoverBg: surface.hover,
+};
+
+const primary = createInputColorPalette({
+  ...selectPaletteDefaults,
+  accent: colors.primary[400],
+  accentHover: colors.primary[500],
+  accentSoft: colors.primary[900],
+  filledBg: colors.primary[950],
+  filledHoverBg: colors.primary[900],
+  ring: colors.primary[400],
+});
+
+const neutral = createInputColorPalette({
+  ...selectPaletteDefaults,
+  accent: colors.vellira[300],
+  accentHover: colors.vellira[400],
+  accentSoft: colors.vellira[800],
+  filledBg: colors.vellira[900],
+  filledHoverBg: colors.vellira[800],
+  hoverBg: colors.vellira[900],
+  ring: colors.vellira[400],
+});
+
+const success = createInputColorPalette({
+  ...selectPaletteDefaults,
+  accent: colors.success[400],
+  accentHover: colors.success[500],
+  accentSoft: colors.success[900],
+  filledBg: colors.success[950],
+  filledHoverBg: colors.success[900],
+  hoverBg: colors.success[950],
+  ring: colors.success[500],
+});
+
+const warning = createInputColorPalette({
+  ...selectPaletteDefaults,
+  accent: colors.warning[400],
+  accentHover: colors.warning[500],
+  accentSoft: colors.warning[900],
+  filledBg: colors.warning[950],
+  filledHoverBg: colors.warning[900],
+  hoverBg: colors.warning[950],
+  ring: colors.warning[500],
+});
+
+const danger = createInputColorPalette({
+  ...selectPaletteDefaults,
+  accent: colors.error[400],
+  accentHover: colors.error[500],
+  accentSoft: colors.error[900],
+  filledBg: colors.error[950],
+  filledHoverBg: colors.error[900],
+  hoverBg: colors.error[950],
+  ring: colors.error[500],
+});
+
 export const select = {
+  primary,
+  neutral,
+  success,
+  warning,
+  danger,
+
   trigger: {
     default: {
       bg: 'transparent',
       fg: text.primary,
       border: border.default,
+      icon: icons.brand,
+      placeholder: text.secondary,
     },
 
-    hover: control.hover,
+    hover: {
+      ...control.hover,
+      icon: icons.hover,
+      placeholder: text.secondary,
+    },
 
     focus: {
       bg: 'transparent',
       fg: text.primary,
       border: border.focus,
       ring: focus.ring.color,
+      icon: icons.brand,
+      placeholder: text.secondary,
     },
 
-    disabled: control.disabled,
+    disabled: {
+      ...control.disabled,
+      icon: icons.disabled,
+      placeholder: text.disabled,
+    },
 
     placeholder: {
       fg: text.secondary,

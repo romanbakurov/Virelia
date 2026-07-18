@@ -1,13 +1,38 @@
 @use '@styles/mixins' as *;
-@use '@styles/mixins' as *;
+
+$select-colors: primary, neutral, success, warning, danger;
+$select-variants: outline, filled, soft;
 
 .control {
+  --select-current-default-bg: var(--select-primary-outline-default-bg);
+  --select-current-default-fg: var(--select-primary-outline-default-fg);
+  --select-current-default-border: var(--select-primary-outline-default-border);
+  --select-current-default-placeholder: var(
+    --select-primary-outline-default-placeholder
+  );
+  --select-current-default-icon: var(--select-primary-outline-default-icon);
+  --select-current-hover-bg: var(--select-primary-outline-hover-bg);
+  --select-current-hover-fg: var(--select-primary-outline-hover-fg);
+  --select-current-hover-border: var(--select-primary-outline-hover-border);
+  --select-current-hover-placeholder: var(
+    --select-primary-outline-hover-placeholder
+  );
+  --select-current-hover-icon: var(--select-primary-outline-hover-icon);
+  --select-current-focus-bg: var(--select-primary-outline-focus-bg);
+  --select-current-focus-fg: var(--select-primary-outline-focus-fg);
+  --select-current-focus-border: var(--select-primary-outline-focus-border);
+  --select-current-focus-placeholder: var(
+    --select-primary-outline-focus-placeholder
+  );
+  --select-current-focus-icon: var(--select-primary-outline-focus-icon);
+  --select-current-ring: var(--select-primary-ring);
+
   display: flex;
   align-items: center;
   width: 100%;
-  color: var(--select-trigger-default-fg);
-  background-color: var(--select-trigger-default-bg);
-  border: 1px solid var(--select-trigger-default-border);
+  color: var(--select-current-default-fg);
+  background-color: var(--select-current-default-bg);
+  border: 1px solid var(--select-current-default-border);
   border-radius: var(--radius-md);
   transition:
     color 0.15s ease,
@@ -23,59 +48,70 @@
   user-select: none;
 
   &:hover:not(.disabled) {
-    color: var(--select-trigger-hover-fg);
-    background-color: var(--select-trigger-hover-bg);
-    border-color: var(--select-trigger-hover-border);
+    color: var(--select-current-hover-fg);
+    background-color: var(--select-current-hover-bg);
+    border-color: var(--select-current-hover-border);
 
     .arrow {
-      color: var(--select-trigger-hover-fg);
+      color: var(--select-current-hover-icon);
     }
   }
 
   &:focus-visible:not(.disabled) {
-    color: var(--select-trigger-focus-fg);
-    background-color: var(--select-trigger-focus-bg);
+    color: var(--select-current-focus-fg);
+    background-color: var(--select-current-focus-bg);
 
     @include focus-border(
-      var(--select-accent, var(--select-trigger-focus-border)),
-      var(--select-trigger-focus-ring)
+      var(--select-current-focus-border),
+      var(--select-current-ring)
     );
-    @include focus-ring(var(--select-trigger-focus-ring));
+    @include focus-ring(var(--select-current-ring));
   }
 }
 
-.outline {
-  background-color: var(--select-trigger-default-bg);
-}
-
-.filled {
-  background-color: var(--surface-muted);
-  border-color: transparent;
-}
-
-.soft {
-  background-color: var(--surface-subtle);
-  border-color: transparent;
-}
-
-.primary {
-  --select-accent: var(--color-primary-500);
-}
-
-.neutral {
-  --select-accent: var(--border-strong);
-}
-
-.success {
-  --select-accent: var(--color-success-500);
-}
-
-.warning {
-  --select-accent: var(--color-warning-500);
-}
-
-.danger {
-  --select-accent: var(--color-danger-500);
+@each $color in $select-colors {
+  @each $variant in $select-variants {
+    .#{$color}.#{$variant} {
+      --select-current-default-bg: var(
+        --select-#{$color}-#{$variant}-default-bg
+      );
+      --select-current-default-fg: var(
+        --select-#{$color}-#{$variant}-default-fg
+      );
+      --select-current-default-border: var(
+        --select-#{$color}-#{$variant}-default-border
+      );
+      --select-current-default-placeholder: var(
+        --select-#{$color}-#{$variant}-default-placeholder
+      );
+      --select-current-default-icon: var(
+        --select-#{$color}-#{$variant}-default-icon
+      );
+      --select-current-hover-bg: var(--select-#{$color}-#{$variant}-hover-bg);
+      --select-current-hover-fg: var(--select-#{$color}-#{$variant}-hover-fg);
+      --select-current-hover-border: var(
+        --select-#{$color}-#{$variant}-hover-border
+      );
+      --select-current-hover-placeholder: var(
+        --select-#{$color}-#{$variant}-hover-placeholder
+      );
+      --select-current-hover-icon: var(
+        --select-#{$color}-#{$variant}-hover-icon
+      );
+      --select-current-focus-bg: var(--select-#{$color}-#{$variant}-focus-bg);
+      --select-current-focus-fg: var(--select-#{$color}-#{$variant}-focus-fg);
+      --select-current-focus-border: var(
+        --select-#{$color}-#{$variant}-focus-border
+      );
+      --select-current-focus-placeholder: var(
+        --select-#{$color}-#{$variant}-focus-placeholder
+      );
+      --select-current-focus-icon: var(
+        --select-#{$color}-#{$variant}-focus-icon
+      );
+      --select-current-ring: var(--select-#{$color}-ring);
+    }
+  }
 }
 
 .sm {
@@ -144,7 +180,7 @@
 }
 
 .placeholder {
-  color: var(--select-trigger-placeholder-fg);
+  color: var(--select-current-default-placeholder);
 }
 
 .error {
@@ -175,7 +211,7 @@
   align-items: center;
   width: 16px;
   height: 16px;
-  color: var(--select-trigger-default-fg);
+  color: var(--select-current-default-icon);
   transition:
     color 0.15s ease,
     transform 0.2s ease;
