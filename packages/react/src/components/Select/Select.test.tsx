@@ -1128,6 +1128,90 @@ describe('Select', () => {
     });
   });
 
+  it('scrolls the selected option into view when reopening a long list', () => {
+    const longItems = Array.from({ length: 100 }, (_, index) => ({
+      label: `Country ${index + 1}`,
+      value: `country-${index + 1}`,
+    }));
+    const scrollIntoView = vi.fn();
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = scrollIntoView;
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultValue='country-51'>
+          {renderSelectItems(longItems)}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+    expect(
+      document.getElementById('country-listbox-option-50')
+    ).toHaveAttribute('aria-selected', 'true');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+
+    act(() => {
+      root.unmount();
+    });
+
+    HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+  });
+
+  it('opens a virtualized list around the selected option', () => {
+    const longItems = Array.from({ length: 100 }, (_, index) => ({
+      label: `Country ${index + 1}`,
+      value: `country-${index + 1}`,
+    }));
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultValue='country-51' virtual>
+          {renderSelectItems(longItems)}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.getElementById('country-listbox-option-50')).not.toBeNull();
+    expect(
+      document.getElementById('country-listbox-option-50')
+    ).toHaveAttribute('aria-selected', 'true');
+    expect(document.getElementById('country-listbox-option-0')).toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('locks body scroll when modal dropdown is open', () => {
     const form = document.createElement('form');
     document.body.append(form);

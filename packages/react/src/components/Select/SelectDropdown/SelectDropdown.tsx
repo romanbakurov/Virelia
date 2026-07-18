@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Portal } from '@utils/Portal';
 import { Close } from '@vellira-ui/icons';
@@ -43,7 +43,21 @@ export const SelectDropdown = ({
   onSearchChange,
 }: SelectDropdownProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [dropdownNode, setDropdownNode] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
+  const virtualConfig =
+    typeof virtual === 'object' ? virtual : virtual ? {} : undefined;
+  const itemHeight = virtualConfig?.itemHeight ?? 40;
+  const viewportHeight = 300;
+  const isVirtual = Boolean(virtualConfig && options.length > 0 && !loading);
+
+  const handleDropdownRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      setDropdownNode(node);
+      setDropdownRef(node);
+    },
+    [setDropdownRef]
+  );
 
   useEffect(() => {
     if (!isOpen) {
@@ -51,13 +65,51 @@ export const SelectDropdown = ({
     }
   }, [isOpen, searchValue]);
 
+  useEffect(() => {
+    if (!isOpen || loading || !dropdownNode) return;
+
+    const selectedIndex = options.findIndex((option) =>
+      selectedValues
+        ? selectedValues.includes(option.value)
+        : option.value === selectedValue
+    );
+    const targetIndex = selectedIndex >= 0 ? selectedIndex : activeIndex;
+
+    if (targetIndex < 0) return;
+
+    if (isVirtual) {
+      const nextScrollTop = Math.max(
+        0,
+        targetIndex * itemHeight - (viewportHeight - itemHeight) / 2
+      );
+
+      setScrollTop(nextScrollTop);
+
+      dropdownNode.scrollTop = nextScrollTop;
+
+      return;
+    }
+
+    const selectedElement = document.getElementById(
+      `${listboxId}-option-${targetIndex}`
+    );
+
+    selectedElement?.scrollIntoView?.({ block: 'nearest' });
+  }, [
+    activeIndex,
+    dropdownNode,
+    isOpen,
+    isVirtual,
+    itemHeight,
+    listboxId,
+    loading,
+    options,
+    selectedValue,
+    selectedValues,
+  ]);
+
   if (!isOpen) return null;
 
-  const virtualConfig =
-    typeof virtual === 'object' ? virtual : virtual ? {} : undefined;
-  const itemHeight = virtualConfig?.itemHeight ?? 40;
-  const viewportHeight = 300;
-  const isVirtual = Boolean(virtualConfig && options.length > 0 && !loading);
   const startIndex = isVirtual
     ? Math.max(0, Math.floor(scrollTop / itemHeight) - 2)
     : 0;
@@ -85,7 +137,7 @@ export const SelectDropdown = ({
 
   const dropdown = (
     <div
-      ref={setDropdownRef}
+      ref={handleDropdownRef}
       className={[
         styles.dropdown,
         styles[color],
