@@ -19,14 +19,13 @@ RadioGroup for short lists where comparison matters.
 <Select
   label='Role'
   value={role}
-  onChange={setRole}
+  onValueChange={setRole}
   placeholder='Choose role'
-  options={[
-    { value: 'admin', label: 'Admin' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'viewer', label: 'Viewer' },
-  ]}
-/>
+>
+  <Select.Item value='admin'>Admin</Select.Item>
+  <Select.Item value='editor'>Editor</Select.Item>
+  <Select.Item value='viewer'>Viewer</Select.Item>
+</Select>
 ```
 
 ## Option Model
@@ -35,11 +34,11 @@ Keep option values stable and serializable. Labels are user-facing; values are
 application state.
 
 ```tsx
-const roleOptions = [
-  { value: 'admin', label: 'Admin' },
-  { value: 'editor', label: 'Editor' },
-  { value: 'viewer', label: 'Viewer', disabled: true },
-];
+<Select.Item value='admin'>Admin</Select.Item>
+<Select.Item value='editor'>Editor</Select.Item>
+<Select.Item value='viewer' disabled>
+  Viewer
+</Select.Item>
 ```
 
 ## Web Behavior
@@ -77,9 +76,13 @@ export function MemberRoleForm() {
         label='Workspace role'
         description='Role changes take effect immediately.'
         value={role}
-        onChange={setRole}
-        options={roleOptions}
-      />
+        onValueChange={setRole}
+      >
+        <Select.Item value='owner'>Owner</Select.Item>
+        <Select.Item value='admin'>Admin</Select.Item>
+        <Select.Item value='editor'>Editor</Select.Item>
+        <Select.Item value='viewer'>Viewer</Select.Item>
+      </Select>
       <Button type='submit'>Save role</Button>
     </form>
   );

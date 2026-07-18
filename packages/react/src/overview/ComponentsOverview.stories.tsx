@@ -43,6 +43,45 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+function renderSelectItems() {
+  return (
+    <>
+      {selectOptions.map((option) => (
+        <Select.Item key={option.value} value={option.value}>
+          {option.label}
+        </Select.Item>
+      ))}
+    </>
+  );
+}
+
+function renderGroupedSelectItems() {
+  return (
+    <>
+      <Select.Group label='Core teams'>
+        <Select.Item value='product'>
+          <Select.ItemIcon>
+            <Check size={14} />
+          </Select.ItemIcon>
+          Product
+          <Select.ItemDescription>Roadmap and delivery</Select.ItemDescription>
+        </Select.Item>
+        <Select.Item value='engineering'>
+          Engineering
+          <Select.ItemDescription>Platform and quality</Select.ItemDescription>
+        </Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group label='Support'>
+        <Select.Item value='support' badge='NEW'>
+          Support
+          <Select.ItemDescription>Customer operations</Select.ItemDescription>
+        </Select.Item>
+      </Select.Group>
+    </>
+  );
+}
+
 const dropdownItems = [
   { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
@@ -108,38 +147,100 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 function WorkspaceFormFieldDemo() {
   return (
     <div style={stackStyle}>
-      <FormField
-        label='Workspace'
-        description='Input inherits size, id, aria, required and invalid state.'
-        required
-        size='sm'
-      >
-        <Input placeholder='vellira-design' />
-      </FormField>
+      <div style={groupStyle}>
+        <h3 style={subtitleStyle}>Basic</h3>
+        <FormField
+          label='Workspace'
+          description='BindControl connects id, aria, required, disabled and invalid state.'
+          required
+          bindControl
+        >
+          <input placeholder='vellira-design' />
+        </FormField>
 
-      <FormField
-        label='Display name'
-        optionalText='Optional'
-        description='Optional text is handled by FormField.'
-      >
-        <Input placeholder='Alex Taylor' />
-      </FormField>
+        <FormField
+          label='Display name'
+          optionalText='Optional'
+          description='Optional text is handled by FormField.'
+          bindControl
+        >
+          <input placeholder='Alex Taylor' />
+        </FormField>
+      </div>
 
-      <FormField
-        label='Slug'
-        description='Error text is merged into aria-describedby.'
-        error='Only lowercase letters, numbers, and hyphens are allowed.'
-      >
-        <Input placeholder='Launch Plan' />
-      </FormField>
+      <div style={groupStyle}>
+        <h3 style={subtitleStyle}>Sizes</h3>
+        <FormField label='Small' size='sm' bindControl>
+          <input placeholder='Small field' />
+        </FormField>
+        <FormField label='Medium' size='md' bindControl>
+          <input placeholder='Medium field' />
+        </FormField>
+        <FormField label='Large' size='lg' bindControl>
+          <input placeholder='Large field' />
+        </FormField>
+      </div>
 
-      <FormField
-        label='Organization'
-        description='Locked by workspace policy.'
-        disabled
-      >
-        <Input placeholder='Vellira' />
-      </FormField>
+      <div style={groupStyle}>
+        <h3 style={subtitleStyle}>Layout</h3>
+        <FormField
+          label='Horizontal'
+          description='Horizontal fields keep metadata beside the control.'
+          orientation='horizontal'
+          bindControl
+        >
+          <input placeholder='horizontal-field' />
+        </FormField>
+
+        <FormField
+          label='Start label'
+          description='Label position can be used for dense settings rows.'
+          labelPosition='start'
+          bindControl
+        >
+          <input placeholder='start-label' />
+        </FormField>
+      </div>
+
+      <div style={groupStyle}>
+        <h3 style={subtitleStyle}>States</h3>
+        <FormField
+          label='Slug'
+          description='Error text is merged into aria-describedby.'
+          error='Only lowercase letters, numbers, and hyphens are allowed.'
+          bindControl
+        >
+          <input placeholder='Launch Plan' />
+        </FormField>
+
+        <FormField
+          label='Organization'
+          description='Locked by workspace policy.'
+          disabled
+          bindControl
+        >
+          <input placeholder='Vellira' />
+        </FormField>
+      </div>
+
+      <div style={groupStyle}>
+        <h3 style={subtitleStyle}>Custom content</h3>
+        <FormField
+          label='Invoice email'
+          optionalText='Optional'
+          description={
+            <span>Used for receipts, invoices, and billing updates.</span>
+          }
+          error={
+            <span>
+              Use a shared workspace inbox instead of a personal email address.
+            </span>
+          }
+          bindControl
+        >
+          <input placeholder='billing@company.com' />
+        </FormField>
+      </div>
     </div>
   );
 }
@@ -148,6 +249,7 @@ function WebComponentsOverview() {
   const [accepted, setAccepted] = useState(true);
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
+  const [teams, setTeams] = useState<string[]>(['product']);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -534,108 +636,92 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Checkbox'>
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>Settings row</h3>
-            <Checkbox
-              label='Receive product updates'
-              description='Get release notes and billing notifications.'
-              checked={accepted}
-              onCheckedChange={setAccepted}
-            />
-          </div>
-
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>States</h3>
-            <Checkbox label='Unchecked' />
-            <Checkbox label='Checked' defaultChecked />
-            <Checkbox label='Indeterminate' indeterminate />
-            <Checkbox label='Required' required />
-            <Checkbox label='Disabled checked' defaultChecked disabled />
-            <Checkbox
-              label='Validation state'
-              description='This setting is required to continue.'
-              error='Required field'
-            />
-          </div>
-
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>Colors</h3>
-            <div style={rowStyle}>
-              <Checkbox label='Primary' color='primary' defaultChecked />
-              <Checkbox label='Success' color='success' defaultChecked />
-              <Checkbox label='Warning' color='warning' defaultChecked />
-              <Checkbox label='Danger' color='danger' defaultChecked />
-            </div>
-          </div>
-
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>Label position</h3>
-            <div style={{ display: 'grid', gap: 12, maxWidth: 320 }}>
-              <Checkbox label='Label at end' labelPosition='end' />
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
               <Checkbox
-                label='Label at start'
-                labelPosition='start'
-                defaultChecked
+                label='Receive product updates'
+                description='Get release notes and billing notifications.'
+                checked={accepted}
+                onCheckedChange={setAccepted}
+              />
+              <Checkbox
+                label='Accept terms'
+                description='Required to create a workspace.'
+                required
               />
             </div>
-          </div>
 
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>Sizes</h3>
-            <div style={rowStyle}>
-              <Checkbox label='Small' size='sm' />
-              <Checkbox label='Medium' size='md' />
-              <Checkbox label='Large' size='lg' />
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Color variants</h3>
+              <div style={rowStyle}>
+                <Checkbox label='Primary' color='primary' defaultChecked />
+                <Checkbox label='Neutral' color='neutral' defaultChecked />
+                <Checkbox label='Success' color='success' defaultChecked />
+                <Checkbox label='Warning' color='warning' defaultChecked />
+                <Checkbox label='Danger' color='danger' defaultChecked />
+              </div>
             </div>
-          </div>
 
-          <div style={groupStyle}>
-            <h3 style={subtitleStyle}>Accessible without visible label</h3>
-            <Checkbox aria-label='Enable notifications' />
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <div style={rowStyle}>
+                <Checkbox label='Small' size='sm' />
+                <Checkbox label='Medium' size='md' />
+                <Checkbox label='Large' size='lg' />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Label position</h3>
+              <div style={{ display: 'grid', gap: 12, maxWidth: 320 }}>
+                <Checkbox label='Label at end' labelPosition='end' />
+                <Checkbox
+                  label='Label at start'
+                  labelPosition='start'
+                  defaultChecked
+                />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Checkbox label='Unchecked' />
+              <Checkbox label='Checked' defaultChecked />
+              <Checkbox label='Indeterminate' indeterminate />
+              <Checkbox label='Required' required />
+              <Checkbox label='Disabled checked' defaultChecked disabled />
+              <Checkbox
+                label='Validation state'
+                description='This setting is required to continue.'
+                error='Required field'
+              />
+              <Checkbox aria-label='Enable notifications' />
+            </div>
           </div>
         </Section>
 
         <Section title='Radio'>
           <div style={stackStyle}>
             <div style={groupStyle}>
-              <h3 style={subtitleStyle}>States</h3>
+              <h3 style={subtitleStyle}>Basic</h3>
               <Radio
-                name='overview-radio'
-                value='unchecked'
-                label='Unchecked'
-              />
-              <Radio
-                name='overview-radio'
-                value='checked'
-                label='Checked'
+                name='overview-radio-basic'
+                value='email'
+                label='Email'
+                description='Send notifications by email.'
                 defaultChecked
               />
-              <Radio value='required' label='Required' required />
-              <Radio value='disabled' label='Disabled' disabled />
               <Radio
-                value='description'
-                label='With description'
-                description='Useful when an option needs supporting context.'
-              />
-              <Radio
-                value='error'
-                label='Validation state'
-                description='This choice is required to continue.'
-                error='Select this option first.'
+                name='overview-radio-basic'
+                value='sms'
+                label='SMS'
+                description='Use SMS for urgent notifications.'
               />
             </div>
 
             <div style={groupStyle}>
-              <h3 style={subtitleStyle}>Sizes</h3>
-              <div style={rowStyle}>
-                <Radio value='small' label='Small' size='sm' />
-                <Radio value='medium' label='Medium' size='md' />
-                <Radio value='large' label='Large' size='lg' />
-              </div>
-            </div>
-
-            <div style={groupStyle}>
-              <h3 style={subtitleStyle}>Colors</h3>
+              <h3 style={subtitleStyle}>Color variants</h3>
               <div style={rowStyle}>
                 <Radio
                   value='primary'
@@ -671,6 +757,43 @@ function WebComponentsOverview() {
             </div>
 
             <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <div style={rowStyle}>
+                <Radio value='small' label='Small' size='sm' />
+                <Radio value='medium' label='Medium' size='md' />
+                <Radio value='large' label='Large' size='lg' />
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Radio
+                name='overview-radio'
+                value='unchecked'
+                label='Unchecked'
+              />
+              <Radio
+                name='overview-radio'
+                value='checked'
+                label='Checked'
+                defaultChecked
+              />
+              <Radio value='required' label='Required' required />
+              <Radio value='disabled' label='Disabled' disabled />
+              <Radio
+                value='description'
+                label='With description'
+                description='Useful when an option needs supporting context.'
+              />
+              <Radio
+                value='error'
+                label='Validation state'
+                description='This choice is required to continue.'
+                error='Select this option first.'
+              />
+            </div>
+
+            <div style={groupStyle}>
               <h3 style={subtitleStyle}>Custom indicator</h3>
               <Radio
                 value='custom-indicator'
@@ -685,82 +808,243 @@ function WebComponentsOverview() {
 
         <Section title='RadioGroup'>
           <div style={stackStyle}>
-            <RadioGroup
-              name='overview-plan'
-              label='Plan'
-              description='Choose the billing plan for this workspace.'
-              value={plan}
-              onValueChange={setPlan}
-            >
-              <Radio value='starter' label='Starter' />
-              <Radio value='pro' label='Pro' />
-              <Radio value='enterprise' label='Enterprise' />
-            </RadioGroup>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <RadioGroup
+                name='overview-plan'
+                label='Plan'
+                description='Choose the billing plan for this workspace.'
+                value={plan}
+                onValueChange={setPlan}
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+                <Radio value='enterprise' label='Enterprise' />
+              </RadioGroup>
+            </div>
 
-            <RadioGroup
-              name='overview-delivery'
-              label='Delivery'
-              orientation='horizontal'
-              color='success'
-              defaultValue='standard'
-            >
-              <Radio value='standard' label='Standard' />
-              <Radio value='express' label='Express' />
-              <Radio value='pickup' label='Pickup' disabled />
-            </RadioGroup>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Color variants</h3>
+              <RadioGroup
+                name='overview-group-primary'
+                label='Primary'
+                color='primary'
+                defaultValue='starter'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-group-success'
+                label='Success'
+                color='success'
+                defaultValue='standard'
+              >
+                <Radio value='standard' label='Standard' />
+                <Radio value='express' label='Express' />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-status'
+                label='Danger with override'
+                description='Group color is inherited by child radios unless an item overrides it.'
+                color='danger'
+                defaultValue='blocked'
+              >
+                <Radio value='blocked' label='Blocked' />
+                <Radio value='active' label='Active' color='success' />
+              </RadioGroup>
+            </div>
 
-            <RadioGroup
-              name='overview-status'
-              label='Status'
-              description='Group color is inherited by child radios.'
-              color='danger'
-              defaultValue='blocked'
-            >
-              <Radio value='blocked' label='Blocked' />
-              <Radio value='active' label='Active' color='success' />
-            </RadioGroup>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <RadioGroup
+                name='overview-group-small'
+                label='Small'
+                size='sm'
+                defaultValue='starter'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-group-medium'
+                label='Medium'
+                size='md'
+                defaultValue='starter'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-group-large'
+                label='Large'
+                size='lg'
+                defaultValue='starter'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+            </div>
 
-            <RadioGroup
-              name='overview-required-plan'
-              label='Required plan'
-              required
-              error='Choose one plan to continue.'
-            >
-              <Radio value='starter' label='Starter' />
-              <Radio value='pro' label='Pro' />
-            </RadioGroup>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Layout and states</h3>
+              <RadioGroup
+                name='overview-delivery'
+                label='Delivery'
+                orientation='horizontal'
+                color='success'
+                defaultValue='standard'
+              >
+                <Radio value='standard' label='Standard' />
+                <Radio value='express' label='Express' />
+                <Radio value='pickup' label='Pickup' disabled />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-required-plan'
+                label='Required plan'
+                required
+                error='Choose one plan to continue.'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+              <RadioGroup
+                name='overview-disabled-plan'
+                label='Disabled plan'
+                disabled
+                defaultValue='pro'
+              >
+                <Radio value='starter' label='Starter' />
+                <Radio value='pro' label='Pro' />
+              </RadioGroup>
+            </div>
           </div>
         </Section>
 
         <Section title='Select'>
-          <Select
-            label='Team'
-            description='Choose the owning team.'
-            options={selectOptions}
-            value={team}
-            onChange={setTeam}
-          />
-          <Select
-            label='Required team'
-            options={selectOptions}
-            placeholder='Select a team'
-            required
-            error='Team is required'
-          />
-          <Select
-            aria-label='Billing team'
-            placeholder='Billing team'
-            description='Accessible name comes from aria-label when the visible label is omitted.'
-            options={selectOptions}
-            defaultValue='product'
-          />
-          <Select
-            label='Archived team'
-            options={[]}
-            placeholder='No archived team'
-            noOptionsText='No archived teams available'
-            defaultOpen
-          />
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <Select
+                label='Team'
+                description='Shorthand API renders FormField internally.'
+                value={team}
+                onValueChange={setTeam}
+                placeholder='Select a team'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                aria-label='Billing team'
+                placeholder='Billing team'
+                description='Accessible name comes from aria-label when the visible label is omitted.'
+                defaultValue='product'
+              >
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Color variants</h3>
+              <Select label='Primary' color='primary' placeholder='Primary'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Neutral' color='neutral' placeholder='Neutral'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Success'
+                color='success'
+                variant='filled'
+                defaultValue='product'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select label='Warning' color='warning' variant='soft'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Danger' color='danger' error='Team is required'>
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <Select label='Small' size='sm' placeholder='Small select'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Medium' size='md' placeholder='Medium select'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Large' size='lg' placeholder='Large select'>
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Search and multiple</h3>
+              <Select
+                label='Searchable'
+                placeholder='Search teams'
+                searchable
+                clearable
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Teams'
+                description='Multiple selection with a maximum of two teams.'
+                value={teams}
+                onValueChange={setTeams}
+                multiple
+                maxSelected={2}
+                closeOnSelect={false}
+                placeholder='Select teams'
+                color='primary'
+              >
+                {renderGroupedSelectItems()}
+              </Select>
+              <Select
+                label='Grouped teams'
+                placeholder='Choose from groups'
+                defaultValue='engineering'
+              >
+                {renderGroupedSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Select label='Required' required placeholder='Required select'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Invalid'
+                required
+                error='Team is required'
+                placeholder='Select a team'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select label='Disabled' disabled defaultValue='support'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Loading'
+                placeholder='Searching teams'
+                loading
+                loadingText='Searching teams...'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Archived team'
+                placeholder='No archived team'
+                noOptionsText='No archived teams available'
+                defaultOpen
+              />
+            </div>
+          </div>
         </Section>
 
         <Section title='Dropdown'>

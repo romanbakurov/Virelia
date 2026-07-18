@@ -1,13 +1,14 @@
-import type { BaseSelectOption, BaseSelectProps } from '@vellira-ui/types';
+import type {
+  BaseSelectMultipleProps,
+  BaseSelectOption,
+  BaseSelectSingleProps,
+} from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export type SelectOption = BaseSelectOption;
 
-export interface SelectProps extends Omit<
-  BaseSelectProps,
-  'options' | 'error'
-> {
+interface SelectOwnProps {
   label?: string;
   description?: string;
   options: SelectOption[];
@@ -19,3 +20,29 @@ export interface SelectProps extends Omit<
   accessibilityLabel?: string;
   accessibilityHint?: string;
 }
+
+export type SelectSingleProps = Omit<
+  BaseSelectSingleProps,
+  | 'options'
+  | 'error'
+  | 'onChange'
+  | 'virtual'
+  | 'avoidCollisions'
+  | 'modal'
+  | 'command'
+> &
+  SelectOwnProps;
+
+export type SelectMultipleProps = Omit<
+  BaseSelectMultipleProps,
+  | 'options'
+  | 'error'
+  | 'onChange'
+  | 'virtual'
+  | 'avoidCollisions'
+  | 'modal'
+  | 'command'
+> &
+  SelectOwnProps;
+
+export type SelectProps = SelectSingleProps | SelectMultipleProps;

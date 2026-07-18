@@ -760,7 +760,7 @@ function NativeComponentsOverview() {
             description='Choose the owning team.'
             options={selectOptions}
             value={team}
-            onChange={setTeam}
+            onValueChange={setTeam}
           />
           <Select
             label='Required team'

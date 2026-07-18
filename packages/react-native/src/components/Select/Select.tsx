@@ -16,8 +16,11 @@ export function Select({
   description,
   value,
   defaultValue,
-  onChange,
-  options,
+  onValueChange,
+  options: optionsProp,
+  multiple = false,
+  maxSelected,
+  closeOnSelect,
   placeholder = 'Select...',
   size = 'md',
   required = false,
@@ -32,24 +35,41 @@ export function Select({
 }: SelectProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const options = optionsProp ?? [];
 
-  const { selectedValue, setSelectedValue, selectedOption, isOpen, setIsOpen } =
-    useSelect({
-      value,
-      defaultValue,
-      onChange,
-      options,
-      disabled,
-    });
+  const {
+    selectedValue,
+    selectedValues,
+    selectedOption,
+    selectedOptions,
+    isOpen,
+    setIsOpen,
+    selectValue,
+  } = useSelect({
+    value,
+    defaultValue,
+    onValueChange: onValueChange as
+      ((value: string | string[]) => void) | undefined,
+    options,
+    multiple,
+    maxSelected,
+    closeOnSelect,
+    disabled,
+  });
+  const resolvedSelectedValues = selectedValues ?? [];
+  const resolvedSelectedOptions = selectedOptions ?? [];
+  const selectedValueText = Array.isArray(selectedValue)
+    ? (selectedValue[0] ?? '')
+    : (selectedValue ?? '');
 
-  const [draftValue, setDraftValue] = useState(selectedValue);
+  const [draftValue, setDraftValue] = useState(selectedValueText);
   const hasError = !!error;
 
   useEffect(() => {
     if (isOpen) {
-      setDraftValue(selectedValue);
+      setDraftValue(selectedValueText);
     }
-  }, [isOpen, selectedValue]);
+  }, [isOpen, selectedValueText]);
 
   const resolvedLabel =
     accessibilityLabel ??
@@ -61,7 +81,7 @@ export function Select({
   const openPicker = () => {
     if (disabled) return;
 
-    setDraftValue(selectedValue);
+    setDraftValue(selectedValueText);
     setIsOpen(true);
   };
 
@@ -87,9 +107,14 @@ export function Select({
       return;
     }
 
-    setSelectedValue(draftValue);
+    selectValue(draftValue);
     setIsOpen(false);
   };
+
+  const displayText =
+    multiple && resolvedSelectedOptions.length
+      ? resolvedSelectedOptions.map((option) => option.label).join(', ')
+      : (selectedOption?.label ?? placeholder);
 
   return (
     <FormField
@@ -101,8 +126,8 @@ export function Select({
       style={style}
     >
       <SelectTrigger
-        displayText={selectedOption?.label ?? placeholder}
-        isPlaceholder={!selectedOption}
+        displayText={displayText}
+        isPlaceholder={resolvedSelectedValues.length === 0}
         isOpen={isOpen}
         size={size}
         disabled={disabled}

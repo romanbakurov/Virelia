@@ -350,7 +350,7 @@ import { Select } from '@vellira-ui/react-native';
 <Select
   label='Country'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Choose country'
   options={[
     { value: 'fr', label: 'France' },
@@ -384,25 +384,34 @@ default picker hint.
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                      | Required | Description                                       |
-| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
-| `label`              | `string`                  | No       | Visible field label.                              |
-| `options`            | `SelectOption[]`          | Yes      | Options rendered in the dropdown.                 |
-| `placeholder`        | `string`                  | No       | Text shown when no value is selected.             |
-| `error`              | `ReactNode`               | No       | Error message.                                    |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra container style.                            |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
-| `value`              | `string`                  | No       | Controlled selected value.                        |
-| `defaultValue`       | `string`                  | No       | Initial selected value for uncontrolled usage.    |
-| `onChange`           | `(value: string) => void` | No       | Called when the user selects an option.           |
-| `required`           | `boolean`                 | No       | Marks the field as required.                      |
-| `disabled`           | `boolean`                 | No       | Disables interaction.                             |
-| `description`        | `string`                  | No       | Additional descriptive text.                      |
-| `pickerStyle`        | `StyleProp<ViewStyle>`    | No       | Extra picker style.                               |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
-| `size`               | `SelectSize`              | No       | Select size.                                      |
-| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
+| Prop                 | Type                                                                     | Required | Description                                       |
+| -------------------- | ------------------------------------------------------------------------ | -------- | ------------------------------------------------- |
+| `label`              | `string`                                                                 | No       | Visible field label.                              |
+| `options`            | `SelectOption[]`                                                         | Yes      | Options rendered in the dropdown.                 |
+| `placeholder`        | `string`                                                                 | No       | Text shown when no value is selected.             |
+| `error`              | `ReactNode`                                                              | No       | Error message.                                    |
+| `style`              | `StyleProp<ViewStyle>`                                                   | No       | Extra container style.                            |
+| `triggerStyle`       | `StyleProp<ViewStyle>`                                                   | No       | Extra trigger style.                              |
+| `textStyle`          | `StyleProp<TextStyle>`                                                   | No       | Extra text style.                                 |
+| `value`              | `string \| SelectMultipleValue`                                          | No       | Controlled selected value.                        |
+| `defaultValue`       | `string \| SelectMultipleValue`                                          | No       | Initial selected value for uncontrolled usage.    |
+| `onValueChange`      | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                 |
+| `required`           | `boolean`                                                                | No       | Marks the field as required.                      |
+| `disabled`           | `boolean`                                                                | No       | Disables interaction.                             |
+| `description`        | `string`                                                                 | No       | Additional descriptive text.                      |
+| `pickerStyle`        | `StyleProp<ViewStyle>`                                                   | No       | Extra picker style.                               |
+| `accessibilityLabel` | `string`                                                                 | No       | Accessible label for screen readers.              |
+| `size`               | `SelectSize`                                                             | No       | Select size.                                      |
+| `accessibilityHint`  | `string`                                                                 | No       | Additional accessibility hint for screen readers. |
+| `color`              | `SelectColor`                                                            | No       | —                                                 |
+| `invalid`            | `boolean`                                                                | No       | —                                                 |
+| `variant`            | `SelectVariant`                                                          | No       | —                                                 |
+| `loading`            | `boolean`                                                                | No       | —                                                 |
+| `clearable`          | `boolean`                                                                | No       | Shows a clear action when the input has a value.  |
+| `searchable`         | `boolean`                                                                | No       | —                                                 |
+| `multiple`           | `boolean`                                                                | No       | —                                                 |
+| `maxSelected`        | `number`                                                                 | No       | —                                                 |
+| `closeOnSelect`      | `boolean`                                                                | No       | —                                                 |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -410,11 +419,16 @@ default picker hint.
 
 <!-- api-docgen:start native.SelectOption.SelectOption -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop          | Type          | Required | Description                         |
+| ------------- | ------------- | -------- | ----------------------------------- |
+| `label`       | `string`      | Yes      | Visible option label.               |
+| `value`       | `string`      | Yes      | Option value.                       |
+| `disabled`    | `boolean`     | No       | Disables this option.               |
+| `description` | `string`      | No       | Additional descriptive text.        |
+| `icon`        | `unknown`     | No       | Icon rendered inside the component. |
+| `badge`       | `string`      | No       | —                                   |
+| `shortcut`    | `string`      | No       | —                                   |
+| `color`       | `SelectColor` | No       | —                                   |
 
 <!-- api-docgen:end native.SelectOption.SelectOption -->
 
@@ -517,8 +531,8 @@ import { Tabs } from '@vellira-ui/react-native';
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
 | `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
 | `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 | `orientation`        | `Orientation`             | No       | Layout orientation.                                |
+| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
