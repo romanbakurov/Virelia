@@ -310,6 +310,43 @@ describe('Select', () => {
     });
   });
 
+  it('closes with Tab while preserving normal tab navigation', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          defaultValue='de'
+          onValueChange={onValueChange}
+        >
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    pressKey(trigger!, 'Enter');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+
+    pressKey(trigger!, 'Tab');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(document.querySelector('[role="listbox"]')).toBeNull();
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('closes on outside pointerdown without changing the selected value', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');
@@ -1012,6 +1049,50 @@ describe('Select', () => {
       document.querySelector<HTMLInputElement>('[aria-label="Search options"]')
         ?.placeholder
     ).toBe('Type a command...');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('lets searchable input handle text keys without trigger typeahead', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' searchable>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const search = document.querySelector<HTMLInputElement>(
+      '[aria-label="Search options"]'
+    );
+    const activeBeforeSearch = trigger?.getAttribute('aria-activedescendant');
+
+    act(() => {
+      search?.focus();
+      search!.value = 's';
+      search?.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 's', bubbles: true })
+      );
+      search?.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(search?.value).toBe('s');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      activeBeforeSearch
+    );
 
     act(() => {
       root.unmount();
