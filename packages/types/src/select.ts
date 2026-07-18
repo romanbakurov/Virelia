@@ -46,6 +46,7 @@ export interface BaseSelectSingleProps extends BaseSelectSharedProps {
   multiple?: false;
   value?: SelectValue;
   defaultValue?: SelectValue;
+  /** Called when the selected value changes. */
   onValueChange?: (value: SelectValue) => void;
   /** @deprecated Use onValueChange. */
   onChange?: (value: SelectValue) => void;
@@ -55,6 +56,7 @@ export interface BaseSelectMultipleProps extends BaseSelectSharedProps {
   multiple: true;
   value?: SelectMultipleValue;
   defaultValue?: SelectMultipleValue;
+  /** Called when the selected values change. */
   onValueChange?: (value: SelectMultipleValue) => void;
   /** @deprecated Use onValueChange. */
   onChange?: (value: SelectMultipleValue) => void;

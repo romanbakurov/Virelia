@@ -17,7 +17,6 @@ export function Select({
   value,
   defaultValue,
   onValueChange,
-  onChange,
   options: optionsProp,
   multiple = false,
   maxSelected,
@@ -51,7 +50,6 @@ export function Select({
     defaultValue,
     onValueChange: onValueChange as
       ((value: string | string[]) => void) | undefined,
-    onChange: onChange as ((value: string | string[]) => void) | undefined,
     options,
     multiple,
     maxSelected,

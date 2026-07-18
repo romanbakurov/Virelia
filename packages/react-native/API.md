@@ -350,7 +350,7 @@ import { Select } from '@vellira-ui/react-native';
 <Select
   label='Country'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Choose country'
   options={[
     { value: 'fr', label: 'France' },
@@ -395,7 +395,7 @@ default picker hint.
 | `textStyle`          | `StyleProp<TextStyle>`                                                   | No       | Extra text style.                                 |
 | `value`              | `string \| SelectMultipleValue`                                          | No       | Controlled selected value.                        |
 | `defaultValue`       | `string \| SelectMultipleValue`                                          | No       | Initial selected value for uncontrolled usage.    |
-| `onChange`           | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | Called when the user selects an option.           |
+| `onValueChange`      | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                 |
 | `required`           | `boolean`                                                                | No       | Marks the field as required.                      |
 | `disabled`           | `boolean`                                                                | No       | Disables interaction.                             |
 | `description`        | `string`                                                                 | No       | Additional descriptive text.                      |
@@ -405,7 +405,6 @@ default picker hint.
 | `accessibilityHint`  | `string`                                                                 | No       | Additional accessibility hint for screen readers. |
 | `color`              | `SelectColor`                                                            | No       | —                                                 |
 | `invalid`            | `boolean`                                                                | No       | —                                                 |
-| `onValueChange`      | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                 |
 | `variant`            | `SelectVariant`                                                          | No       | —                                                 |
 | `loading`            | `boolean`                                                                | No       | —                                                 |
 | `clearable`          | `boolean`                                                                | No       | Shows a clear action when the input has a value.  |
@@ -532,8 +531,8 @@ import { Tabs } from '@vellira-ui/react-native';
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
 | `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
 | `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 | `orientation`        | `Orientation`             | No       | Layout orientation.                                |
+| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 

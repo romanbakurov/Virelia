@@ -65,7 +65,7 @@ Native single-value select control for choosing from a predefined list.
 <Select
   label='Country'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Select country...'
   options={countries}
 />
@@ -81,7 +81,7 @@ Native single-value select control for choosing from a predefined list.
     required: false,
     disabled: false,
     options: defaultOptions,
-    onChange: fn(),
+    onValueChange: fn(),
   },
   argTypes: {
     label: {
@@ -145,7 +145,7 @@ Native single-value select control for choosing from a predefined list.
       description: 'Accessible hint for the picker trigger.',
     },
 
-    onChange: {
+    onValueChange: {
       action: 'changed',
       description: 'Called when the selected value changes.',
     },
@@ -227,9 +227,9 @@ function InteractiveSelect(args: SelectStoryProps) {
     <Select
       {...args}
       value={value}
-      onChange={(nextValue) => {
+      onValueChange={(nextValue) => {
         setValue(nextValue);
-        args.onChange?.(nextValue);
+        args.onValueChange?.(nextValue);
       }}
     />
   );

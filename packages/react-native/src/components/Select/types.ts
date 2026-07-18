@@ -23,13 +23,25 @@ interface SelectOwnProps {
 
 export type SelectSingleProps = Omit<
   BaseSelectSingleProps,
-  'options' | 'error' | 'virtual' | 'avoidCollisions' | 'modal' | 'command'
+  | 'options'
+  | 'error'
+  | 'onChange'
+  | 'virtual'
+  | 'avoidCollisions'
+  | 'modal'
+  | 'command'
 > &
   SelectOwnProps;
 
 export type SelectMultipleProps = Omit<
   BaseSelectMultipleProps,
-  'options' | 'error' | 'virtual' | 'avoidCollisions' | 'modal' | 'command'
+  | 'options'
+  | 'error'
+  | 'onChange'
+  | 'virtual'
+  | 'avoidCollisions'
+  | 'modal'
+  | 'command'
 > &
   SelectOwnProps;
 

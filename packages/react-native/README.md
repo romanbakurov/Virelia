@@ -100,7 +100,7 @@ export function RoleSelect() {
     <Select
       label='Role'
       value={role}
-      onChange={setRole}
+      onValueChange={setRole}
       options={[
         { label: 'Admin', value: 'admin' },
         { label: 'Editor', value: 'editor' },
