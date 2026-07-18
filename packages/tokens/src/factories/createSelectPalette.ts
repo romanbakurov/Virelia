@@ -4,6 +4,16 @@ type SelectBasePalette = ReturnType<typeof createInputColorPalette>;
 type SelectVariantName = 'outline' | 'filled' | 'soft';
 type SelectPaletteConfig = {
   dropdownBorder?: string;
+  optionActiveBorder?: string;
+  optionActiveRing?: string;
+  optionHoverBg?: string;
+  optionHoverBorder?: string;
+  optionHoverFg?: string;
+  optionPressedBg?: string;
+  optionPressedBorder?: string;
+  optionPressedFg?: string;
+  optionSelectedBg?: string;
+  optionSelectedBorder?: string;
 };
 
 const createSelectVariant = (
@@ -20,13 +30,23 @@ const createSelectVariant = (
     active: {
       bg: palette[variant].hover.bg,
       fg: palette[variant].hover.fg,
-      border: palette[variant].hover.border,
-      ring: palette.ring,
+      border: config.optionActiveBorder ?? palette[variant].hover.border,
+      ring: config.optionActiveRing ?? palette.ring,
+    },
+    hover: {
+      bg: config.optionHoverBg ?? palette[variant].hover.bg,
+      fg: config.optionHoverFg ?? palette[variant].hover.fg,
+      border: config.optionHoverBorder ?? palette[variant].hover.border,
     },
     selected: {
-      bg: palette.soft.default.bg,
+      bg: config.optionSelectedBg ?? palette.soft.default.bg,
       fg: palette.soft.default.fg,
-      border: palette.outline.default.border,
+      border: config.optionSelectedBorder ?? palette.outline.default.border,
+    },
+    pressed: {
+      bg: config.optionPressedBg ?? palette[variant].focus.bg,
+      fg: config.optionPressedFg ?? palette[variant].focus.fg,
+      border: config.optionPressedBorder ?? palette[variant].focus.border,
     },
     badge: {
       bg: palette.soft.default.bg,

@@ -20,6 +20,15 @@ $select-variants: outline, filled, soft;
   --select-option-current-active-ring: var(
     --select-primary-outline-option-active-ring
   );
+  --select-option-current-hover-bg: var(
+    --select-primary-outline-option-hover-bg
+  );
+  --select-option-current-hover-fg: var(
+    --select-primary-outline-option-hover-fg
+  );
+  --select-option-current-hover-border: var(
+    --select-primary-outline-option-hover-border
+  );
   --select-option-current-selected-bg: var(
     --select-primary-outline-option-selected-bg
   );
@@ -28,6 +37,15 @@ $select-variants: outline, filled, soft;
   );
   --select-option-current-selected-border: var(
     --select-primary-outline-option-selected-border
+  );
+  --select-option-current-pressed-bg: var(
+    --select-primary-outline-option-pressed-bg
+  );
+  --select-option-current-pressed-fg: var(
+    --select-primary-outline-option-pressed-fg
+  );
+  --select-option-current-pressed-border: var(
+    --select-primary-outline-option-pressed-border
   );
   --select-option-current-badge-bg: var(
     --select-primary-outline-option-badge-bg
@@ -75,6 +93,15 @@ $select-variants: outline, filled, soft;
       --select-option-current-active-ring: var(
         --select-#{$color}-#{$variant}-option-active-ring
       );
+      --select-option-current-hover-bg: var(
+        --select-#{$color}-#{$variant}-option-hover-bg
+      );
+      --select-option-current-hover-fg: var(
+        --select-#{$color}-#{$variant}-option-hover-fg
+      );
+      --select-option-current-hover-border: var(
+        --select-#{$color}-#{$variant}-option-hover-border
+      );
       --select-option-current-selected-bg: var(
         --select-#{$color}-#{$variant}-option-selected-bg
       );
@@ -83,6 +110,15 @@ $select-variants: outline, filled, soft;
       );
       --select-option-current-selected-border: var(
         --select-#{$color}-#{$variant}-option-selected-border
+      );
+      --select-option-current-pressed-bg: var(
+        --select-#{$color}-#{$variant}-option-pressed-bg
+      );
+      --select-option-current-pressed-fg: var(
+        --select-#{$color}-#{$variant}-option-pressed-fg
+      );
+      --select-option-current-pressed-border: var(
+        --select-#{$color}-#{$variant}-option-pressed-border
       );
       --select-option-current-badge-bg: var(
         --select-#{$color}-#{$variant}-option-badge-bg

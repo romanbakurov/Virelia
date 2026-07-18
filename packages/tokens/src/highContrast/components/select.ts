@@ -119,11 +119,56 @@ const danger = createInputColorPalette({
 });
 
 export const select = {
-  primary: createSelectPalette(primary),
-  neutral: createSelectPalette(neutral),
-  success: createSelectPalette(success),
-  warning: createSelectPalette(warning),
-  danger: createSelectPalette(danger),
+  primary: createSelectPalette(primary, {
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: menu.item.hover.bg,
+    optionHoverBorder: 'transparent',
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: menu.item.pressed.bg,
+    optionPressedBorder: 'transparent',
+    optionPressedFg: menu.item.pressed.fg,
+  }),
+  neutral: createSelectPalette(neutral, {
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: menu.item.hover.bg,
+    optionHoverBorder: 'transparent',
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: menu.item.pressed.bg,
+    optionPressedBorder: 'transparent',
+    optionPressedFg: menu.item.pressed.fg,
+  }),
+  success: createSelectPalette(success, {
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: menu.item.hover.bg,
+    optionHoverBorder: 'transparent',
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: menu.item.pressed.bg,
+    optionPressedBorder: 'transparent',
+    optionPressedFg: menu.item.pressed.fg,
+  }),
+  warning: createSelectPalette(warning, {
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: menu.item.hover.bg,
+    optionHoverBorder: 'transparent',
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: menu.item.pressed.bg,
+    optionPressedBorder: 'transparent',
+    optionPressedFg: menu.item.pressed.fg,
+  }),
+  danger: createSelectPalette(danger, {
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: menu.item.hover.bg,
+    optionHoverBorder: 'transparent',
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: menu.item.pressed.bg,
+    optionPressedBorder: 'transparent',
+    optionPressedFg: menu.item.pressed.fg,
+  }),
 
   trigger: {
     default: {

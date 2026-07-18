@@ -73,11 +73,52 @@ const danger = createInputColorPalette({
 });
 
 export const select = {
-  primary: createSelectPalette(primary, { dropdownBorder: 'transparent' }),
-  neutral: createSelectPalette(neutral, { dropdownBorder: 'transparent' }),
-  success: createSelectPalette(success, { dropdownBorder: 'transparent' }),
-  warning: createSelectPalette(warning, { dropdownBorder: 'transparent' }),
-  danger: createSelectPalette(danger, { dropdownBorder: 'transparent' }),
+  primary: createSelectPalette(primary, {
+    dropdownBorder: 'transparent',
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBg: colors.primary[50],
+    optionHoverBorder: 'transparent',
+    optionPressedBg: colors.primary[200],
+    optionPressedBorder: 'transparent',
+    optionSelectedBg: colors.primary[100],
+  }),
+  neutral: createSelectPalette(neutral, {
+    dropdownBorder: 'transparent',
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBorder: 'transparent',
+    optionPressedBg: colors.vellira[200],
+    optionPressedBorder: 'transparent',
+    optionSelectedBg: colors.vellira[150],
+  }),
+  success: createSelectPalette(success, {
+    dropdownBorder: 'transparent',
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBorder: 'transparent',
+    optionPressedBg: colors.success[200],
+    optionPressedBorder: 'transparent',
+    optionSelectedBg: colors.success[100],
+  }),
+  warning: createSelectPalette(warning, {
+    dropdownBorder: 'transparent',
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBorder: 'transparent',
+    optionPressedBg: colors.warning[200],
+    optionPressedBorder: 'transparent',
+    optionSelectedBg: colors.warning[100],
+  }),
+  danger: createSelectPalette(danger, {
+    dropdownBorder: 'transparent',
+    optionActiveBorder: 'transparent',
+    optionActiveRing: 'transparent',
+    optionHoverBorder: 'transparent',
+    optionPressedBg: colors.error[200],
+    optionPressedBorder: 'transparent',
+    optionSelectedBg: colors.error[100],
+  }),
 
   trigger: {
     default: {

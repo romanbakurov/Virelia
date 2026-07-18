@@ -20,14 +20,15 @@
   gap: var(--space-3);
 
   &:hover:not(.selected, .disabled) {
-    color: var(--select-option-hover-fg);
-    background-color: var(--select-option-hover-bg);
-    border-color: var(--select-option-hover-border);
+    color: var(--select-option-current-hover-fg);
+    background-color: var(--select-option-current-hover-bg);
+    border-color: var(--select-option-current-hover-border);
   }
 
   &:active:not(.selected, .disabled) {
-    color: var(--select-option-pressed-fg);
-    background-color: var(--select-option-pressed-bg);
+    color: var(--select-option-current-pressed-fg);
+    background-color: var(--select-option-current-pressed-bg);
+    border-color: var(--select-option-current-pressed-border);
   }
 }
 
