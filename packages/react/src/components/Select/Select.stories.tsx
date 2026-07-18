@@ -1039,9 +1039,8 @@ export const Mobile: Story = {
 
 export const HighContrast: Story = {
   parameters: {
-    backgrounds: {
-      default: 'dark',
-      values: [{ name: 'dark', value: '#0a0a0a' }],
+    globals: {
+      theme: 'high-contrast',
     },
   },
   render: () => (
