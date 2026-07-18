@@ -102,16 +102,42 @@ export function RoleSelect() {
   const [role, setRole] = useState('editor');
 
   return (
+    <Select label='Role' value={role} onValueChange={setRole}>
+      <Select.Item value='admin'>Admin</Select.Item>
+      <Select.Item value='editor'>Editor</Select.Item>
+      <Select.Item value='viewer'>Viewer</Select.Item>
+    </Select>
+  );
+}
+```
+
+```tsx
+export function TeamSelect() {
+  const [teams, setTeams] = useState<string[]>(['product']);
+
+  return (
     <Select
-      label='Role'
-      value={role}
-      onChange={setRole}
-      options={[
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Viewer', value: 'viewer' },
-      ]}
-    />
+      label='Teams'
+      description='Choose up to two teams.'
+      value={teams}
+      onValueChange={setTeams}
+      multiple
+      maxSelected={2}
+      closeOnSelect={false}
+      searchable
+      clearable
+      color='primary'
+      variant='outline'
+    >
+      <Select.Group label='Core teams'>
+        <Select.Item value='product'>Product</Select.Item>
+        <Select.Item value='engineering'>Engineering</Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Item value='support' badge='NEW'>
+        Support
+      </Select.Item>
+    </Select>
   );
 }
 ```

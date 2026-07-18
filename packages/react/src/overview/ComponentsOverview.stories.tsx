@@ -43,6 +43,45 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+function renderSelectItems() {
+  return (
+    <>
+      {selectOptions.map((option) => (
+        <Select.Item key={option.value} value={option.value}>
+          {option.label}
+        </Select.Item>
+      ))}
+    </>
+  );
+}
+
+function renderGroupedSelectItems() {
+  return (
+    <>
+      <Select.Group label='Core teams'>
+        <Select.Item value='product'>
+          <Select.ItemIcon>
+            <Check size={14} />
+          </Select.ItemIcon>
+          Product
+          <Select.ItemDescription>Roadmap and delivery</Select.ItemDescription>
+        </Select.Item>
+        <Select.Item value='engineering'>
+          Engineering
+          <Select.ItemDescription>Platform and quality</Select.ItemDescription>
+        </Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group label='Support'>
+        <Select.Item value='support' badge='NEW'>
+          Support
+          <Select.ItemDescription>Customer operations</Select.ItemDescription>
+        </Select.Item>
+      </Select.Group>
+    </>
+  );
+}
+
 const dropdownItems = [
   { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
@@ -148,6 +187,7 @@ function WebComponentsOverview() {
   const [accepted, setAccepted] = useState(true);
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
+  const [teams, setTeams] = useState<string[]>(['product']);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -733,34 +773,129 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Select'>
-          <Select
-            label='Team'
-            description='Choose the owning team.'
-            options={selectOptions}
-            value={team}
-            onChange={setTeam}
-          />
-          <Select
-            label='Required team'
-            options={selectOptions}
-            placeholder='Select a team'
-            required
-            error='Team is required'
-          />
-          <Select
-            aria-label='Billing team'
-            placeholder='Billing team'
-            description='Accessible name comes from aria-label when the visible label is omitted.'
-            options={selectOptions}
-            defaultValue='product'
-          />
-          <Select
-            label='Archived team'
-            options={[]}
-            placeholder='No archived team'
-            noOptionsText='No archived teams available'
-            defaultOpen
-          />
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <Select
+                label='Team'
+                description='Shorthand API renders FormField internally.'
+                value={team}
+                onValueChange={setTeam}
+                placeholder='Select a team'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                aria-label='Billing team'
+                placeholder='Billing team'
+                description='Accessible name comes from aria-label when the visible label is omitted.'
+                defaultValue='product'
+              >
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Color variants</h3>
+              <Select label='Primary' color='primary' placeholder='Primary'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Neutral' color='neutral' placeholder='Neutral'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Success'
+                color='success'
+                variant='filled'
+                defaultValue='product'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select label='Warning' color='warning' variant='soft'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Danger' color='danger' error='Team is required'>
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <Select label='Small' size='sm' placeholder='Small select'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Medium' size='md' placeholder='Medium select'>
+                {renderSelectItems()}
+              </Select>
+              <Select label='Large' size='lg' placeholder='Large select'>
+                {renderSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Search and multiple</h3>
+              <Select
+                label='Searchable'
+                placeholder='Search teams'
+                searchable
+                clearable
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Teams'
+                description='Multiple selection with a maximum of two teams.'
+                value={teams}
+                onValueChange={setTeams}
+                multiple
+                maxSelected={2}
+                closeOnSelect={false}
+                placeholder='Select teams'
+                color='primary'
+              >
+                {renderGroupedSelectItems()}
+              </Select>
+              <Select
+                label='Grouped teams'
+                placeholder='Choose from groups'
+                defaultValue='engineering'
+              >
+                {renderGroupedSelectItems()}
+              </Select>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <Select label='Required' required placeholder='Required select'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Invalid'
+                required
+                error='Team is required'
+                placeholder='Select a team'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select label='Disabled' disabled defaultValue='support'>
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Loading'
+                placeholder='Searching teams'
+                loading
+                loadingText='Searching teams...'
+              >
+                {renderSelectItems()}
+              </Select>
+              <Select
+                label='Archived team'
+                placeholder='No archived team'
+                noOptionsText='No archived teams available'
+                defaultOpen
+              />
+            </div>
+          </div>
         </Section>
 
         <Section title='Dropdown'>

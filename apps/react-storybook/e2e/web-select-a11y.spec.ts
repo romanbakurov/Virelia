@@ -77,16 +77,16 @@ async function expectNoAxeViolations(page: Page) {
 
 test.describe('web Select accessibility', () => {
   for (const theme of themes) {
-    test(`states story has no axe violations in ${theme}`, async ({ page }) => {
-      await openStory(page, 'components-select--states', theme);
+    test(`validation story has no axe violations in ${theme}`, async ({
+      page,
+    }) => {
+      await openStory(page, 'components-select--validation', theme);
 
       await expectNoAxeViolations(page);
     });
 
-    test(`open dropdown story has no axe violations in ${theme}`, async ({
-      page,
-    }) => {
-      await openStory(page, 'components-select--open-dropdown', theme);
+    test(`groups story has no axe violations in ${theme}`, async ({ page }) => {
+      await openStory(page, 'components-select--groups', theme);
       await expect(page.getByRole('listbox')).toBeVisible();
 
       await expectNoAxeViolations(page);

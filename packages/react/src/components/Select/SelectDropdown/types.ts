@@ -1,6 +1,12 @@
-import type { BaseSelectDropdownProps } from '@vellira-ui/types';
+import type {
+  BaseSelectDropdownProps,
+  SelectColor,
+  SelectVariant,
+  SelectVirtualConfig,
+} from '@vellira-ui/types';
 import type { CSSProperties, ReactNode } from 'react';
 
+import type { SelectRenderEntry } from '../SelectCompound';
 import type { SelectOption } from '../types';
 
 export interface SelectDropdownProps extends Omit<
@@ -10,9 +16,28 @@ export interface SelectDropdownProps extends Omit<
   listboxId: string;
   labelledById: string;
   options: SelectOption[];
+  entries?: SelectRenderEntry[];
+  multiple?: boolean;
+  selectedValues?: string[];
+  color?: SelectColor;
+  variant?: SelectVariant;
+  searchable?: boolean;
+  command?: boolean;
+  virtual?: boolean | SelectVirtualConfig;
+  portal?: boolean;
+  searchValue?: string;
+  searchPlaceholder?: string;
+  loading?: boolean;
+  loadingText?: ReactNode;
   noOptionsText: ReactNode;
+  searchSlot?: ReactNode;
+  headerSlot?: ReactNode;
+  emptySlot?: ReactNode;
+  loadingSlot?: ReactNode;
+  renderOption?: (option: SelectOption) => ReactNode;
   className?: string;
   onMouseEnter: (index: number) => void;
+  onSearchChange?: (value: string) => void;
   style: CSSProperties;
-  setDropdownRef: (node: HTMLUListElement | null) => void;
+  setDropdownRef: (node: HTMLDivElement | null) => void;
 }

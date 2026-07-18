@@ -10,6 +10,7 @@ export const SelectOption = ({
   isSelected,
   isActive,
   optionId,
+  renderOption,
   onSelect,
   onMouseEnter,
 }: SelectOptionProps) => {
@@ -25,6 +26,9 @@ export const SelectOption = ({
         [styles.selected]: isSelected,
         [styles.active]: isActive,
         [styles.disabled]: isDisabled,
+        [styles.success]: option.color === 'success',
+        [styles.warning]: option.color === 'warning',
+        [styles.danger]: option.color === 'danger',
       })}
       onClick={() => {
         if (isDisabled) return;
@@ -37,7 +41,25 @@ export const SelectOption = ({
         onMouseEnter();
       }}
     >
-      <span className={styles.label}>{option.label}</span>
+      {renderOption ? (
+        <span className={styles.custom}>{renderOption(option)}</span>
+      ) : (
+        <>
+          {option.icon && <span className={styles.icon}>{option.icon}</span>}
+
+          <span className={styles.content}>
+            <span className={styles.label}>{option.label}</span>
+            {option.description && (
+              <span className={styles.description}>{option.description}</span>
+            )}
+          </span>
+
+          {option.badge && <span className={styles.badge}>{option.badge}</span>}
+          {option.shortcut && (
+            <kbd className={styles.shortcut}>{option.shortcut}</kbd>
+          )}
+        </>
+      )}
 
       <span className={styles.check} aria-hidden='true'>
         {isSelected && <Check />}

@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import type { ComponentProps } from 'react';
 import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -34,10 +35,10 @@ afterEach(() => {
 
 describe('Native Select', () => {
   it('opens options and selects a value after confirmation', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, unmount } = render(
-      <Select label='Country' options={options} onChange={onChange} />
+      <Select label='Country' options={options} onValueChange={onValueChange} />
     );
 
     const trigger =
@@ -57,7 +58,7 @@ describe('Native Select', () => {
       option?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
 
     const doneButton = getButtonByText('Done');
 
@@ -67,7 +68,7 @@ describe('Native Select', () => {
       doneButton?.click();
     });
 
-    expect(onChange).toHaveBeenCalledWith('fr');
+    expect(onValueChange).toHaveBeenCalledWith('fr');
     expect(container.textContent).toContain('France');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
@@ -75,14 +76,14 @@ describe('Native Select', () => {
   });
 
   it('ignores disabled options and closes without change on cancel', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, unmount } = render(
       <Select
         label='Country'
         options={options}
         defaultValue='es'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -103,7 +104,7 @@ describe('Native Select', () => {
       cancelButton?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(container.textContent).toContain('Spain');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
@@ -111,14 +112,14 @@ describe('Native Select', () => {
   });
 
   it('closes from the backdrop without committing a draft value', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, unmount } = render(
       <Select
         label='Country'
         options={options}
         defaultValue='es'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -133,13 +134,13 @@ describe('Native Select', () => {
       getButtonByText('France')?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
 
     act(() => {
       getPickerBackdrop()?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(container.textContent).toContain('Spain');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.body.textContent).not.toContain('Done');
@@ -148,14 +149,14 @@ describe('Native Select', () => {
   });
 
   it('resets the picker draft to the latest controlled value when reopened', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, rerender, unmount } = render(
       <Select
         label='Country'
         options={options}
         value='fr'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -173,7 +174,7 @@ describe('Native Select', () => {
         label='Country'
         options={options}
         value='es'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -183,7 +184,7 @@ describe('Native Select', () => {
       getButtonByText('Cancel')?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
     act(() => {
@@ -194,21 +195,21 @@ describe('Native Select', () => {
       getButtonByText('Done')?.click();
     });
 
-    expect(onChange).toHaveBeenCalledWith('es');
+    expect(onValueChange).toHaveBeenCalledWith('es');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
     unmount();
   });
 
   it('confirms the latest controlled value after rerender while open', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, rerender, unmount } = render(
       <Select
         label='Country'
         options={options}
         value='fr'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -228,7 +229,7 @@ describe('Native Select', () => {
         label='Country'
         options={options}
         value='es'
-        onChange={onChange}
+        onValueChange={onValueChange}
       />
     );
 
@@ -236,17 +237,17 @@ describe('Native Select', () => {
       getButtonByText('Done')?.click();
     });
 
-    expect(onChange).toHaveBeenCalledWith('es');
+    expect(onValueChange).toHaveBeenCalledWith('es');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
 
     unmount();
   });
 
   it('renders an empty picker with only the disabled placeholder option', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
 
     const { container, unmount } = render(
-      <Select label='Country' options={[]} onChange={onChange} />
+      <Select label='Country' options={[]} onValueChange={onValueChange} />
     );
 
     const trigger =
@@ -268,8 +269,33 @@ describe('Native Select', () => {
       getButtonByText('Done')?.click();
     });
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('treats missing runtime options as an empty list', () => {
+    const props = {
+      label: 'Country',
+      onValueChange: vi.fn(),
+    } as unknown as ComponentProps<typeof Select>;
+
+    const { container, unmount } = render(<Select {...props} />);
+
+    expect(container.textContent).toContain('Select...');
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const picker = document.body.querySelector('[data-testid="native-picker"]');
+
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+    expect(picker?.querySelectorAll('button')).toHaveLength(1);
 
     unmount();
   });

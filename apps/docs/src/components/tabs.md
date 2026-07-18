@@ -77,14 +77,10 @@ export function AccountSettings() {
         </Button>
       </Tabs.Panel>
       <Tabs.Panel index={2}>
-        <Select
-          label='Plan'
-          defaultValue='pro'
-          options={[
-            { value: 'starter', label: 'Starter' },
-            { value: 'pro', label: 'Pro' },
-          ]}
-        />
+        <Select label='Plan' defaultValue='pro'>
+          <Select.Item value='starter'>Starter</Select.Item>
+          <Select.Item value='pro'>Pro</Select.Item>
+        </Select>
       </Tabs.Panel>
     </Tabs>
   );

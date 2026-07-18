@@ -359,13 +359,12 @@ import { Select } from '@vellira-ui/react';
 <Select
   label='Country'
   value={country}
-  onChange={setCountry}
+  onValueChange={setCountry}
   placeholder='Choose country'
-  options={[
-    { value: 'fr', label: 'France' },
-    { value: 'us', label: 'United States' },
-  ]}
-/>;
+>
+  <Select.Item value='fr'>France</Select.Item>
+  <Select.Item value='us'>United States</Select.Item>
+</Select>;
 ```
 
 ### Select Usage Guidelines
@@ -385,37 +384,107 @@ invalid. Keyboard users can open the list with Enter, Space or Arrow keys,
 navigate with ArrowUp/ArrowDown, jump with Home/End, type to search matching
 options, select with Enter or Space, and close with Escape.
 
+### Select Compound API
+
+Use `Select.Item` to declare options. `Select.Trigger` and `Select.Content` are
+available when the trigger or dropdown placement needs to be composed
+explicitly.
+
+```tsx
+<Select value={country} onValueChange={setCountry}>
+  <Select.Trigger />
+  <Select.Content>
+    <Select.Item value='fr'>France</Select.Item>
+    <Select.Item value='de'>Germany</Select.Item>
+  </Select.Content>
+</Select>
+```
+
+Advanced usage can stay in the same component instead of switching to a
+separate MultiSelect or AsyncSelect:
+
+```tsx
+<Select
+  label='Teams'
+  description='Choose up to two teams.'
+  value={teams}
+  onValueChange={setTeams}
+  multiple
+  maxSelected={2}
+  closeOnSelect={false}
+  searchable
+  clearable
+  color='primary'
+  variant='outline'
+>
+  <Select.Group label='Core teams'>
+    <Select.Item value='product'>Product</Select.Item>
+    <Select.Item value='engineering'>Engineering</Select.Item>
+  </Select.Group>
+  <Select.Separator />
+  <Select.Item value='support' badge='NEW'>
+    Support
+  </Select.Item>
+</Select>
+```
+
 ### Select Props
 
 <!-- api-docgen:start web.SelectProps.SelectProps -->
 
-| Prop                | Type                                                         | Required | Description                                      |
-| ------------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------ |
-| `label`             | `ReactNode`                                                  | No       | Visible field label.                             |
-| `id`                | `string`                                                     | No       | Trigger id.                                      |
-| `name`              | `string`                                                     | No       | Field name.                                      |
-| `options`           | `SelectOption[]`                                             | Yes      | Options rendered in the dropdown.                |
-| `placeholder`       | `string`                                                     | No       | Text shown when no value is selected.            |
-| `error`             | `ReactNode`                                                  | No       | Error message.                                   |
-| `className`         | `string`                                                     | No       | Extra CSS class for the root element.            |
-| `value`             | `string`                                                     | No       | Controlled selected value.                       |
-| `defaultValue`      | `string`                                                     | No       | Initial selected value for uncontrolled usage.   |
-| `onChange`          | `(value: string) => void`                                    | No       | Called when the user selects an option.          |
-| `required`          | `boolean`                                                    | No       | Marks the field as required.                     |
-| `disabled`          | `boolean`                                                    | No       | Disables interaction.                            |
-| `description`       | `ReactNode`                                                  | No       | Additional descriptive text.                     |
-| `placement`         | `'top-start' \| 'top-end' \| 'bottom-start' \| 'bottom-end'` | No       | Preferred dropdown placement.                    |
-| `matchTriggerWidth` | `boolean`                                                    | No       | Matches the dropdown width to the trigger width. |
-| `open`              | `boolean`                                                    | No       | Controlled open state.                           |
-| `defaultOpen`       | `boolean`                                                    | No       | Initial uncontrolled open state.                 |
-| `onOpenChange`      | `(open: boolean) => void`                                    | No       | Called when the open state changes.              |
-| `triggerClassName`  | `string`                                                     | No       | Extra CSS class for the trigger element.         |
-| `dropdownClassName` | `string`                                                     | No       | Extra CSS class for the dropdown element.        |
-| `size`              | `SelectSize`                                                 | No       | Select size.                                     |
-| `aria-label`        | `string`                                                     | No       | Accessible trigger label.                        |
-| `noOptionsText`     | `ReactNode`                                                  | No       | Content shown when no options are available.     |
-| `onBlur`            | `FocusEventHandler<HTMLButtonElement>`                       | No       | Called when the trigger loses focus.             |
-| `onFocus`           | `FocusEventHandler<HTMLButtonElement>`                       | No       | Called when the trigger receives focus.          |
+| Prop                | Type                                                                     | Required | Description                                      |
+| ------------------- | ------------------------------------------------------------------------ | -------- | ------------------------------------------------ |
+| `label`             | `ReactNode`                                                              | No       | Visible field label.                             |
+| `id`                | `string`                                                                 | No       | Trigger id.                                      |
+| `name`              | `string`                                                                 | No       | Field name.                                      |
+| `placeholder`       | `string`                                                                 | No       | Text shown when no value is selected.            |
+| `error`             | `ReactNode`                                                              | No       | Error message.                                   |
+| `className`         | `string`                                                                 | No       | Extra CSS class for the root element.            |
+| `value`             | `string \| SelectMultipleValue`                                          | No       | Controlled selected value.                       |
+| `defaultValue`      | `string \| SelectMultipleValue`                                          | No       | Initial selected value for uncontrolled usage.   |
+| `required`          | `boolean`                                                                | No       | Marks the field as required.                     |
+| `disabled`          | `boolean`                                                                | No       | Disables interaction.                            |
+| `description`       | `ReactNode`                                                              | No       | Additional descriptive text.                     |
+| `placement`         | `'top' \| 'right' \| 'bottom' \| 'left'`                                 | No       | Preferred dropdown placement.                    |
+| `matchTriggerWidth` | `boolean`                                                                | No       | Matches the dropdown width to the trigger width. |
+| `open`              | `boolean`                                                                | No       | Controlled open state.                           |
+| `defaultOpen`       | `boolean`                                                                | No       | Initial uncontrolled open state.                 |
+| `onOpenChange`      | `(open: boolean) => void`                                                | No       | Called when the open state changes.              |
+| `triggerClassName`  | `string`                                                                 | No       | Extra CSS class for the trigger element.         |
+| `dropdownClassName` | `string`                                                                 | No       | Extra CSS class for the dropdown element.        |
+| `size`              | `SelectSize`                                                             | No       | Select size.                                     |
+| `aria-label`        | `string`                                                                 | No       | Accessible trigger label.                        |
+| `noOptionsText`     | `ReactNode`                                                              | No       | Content shown when no options are available.     |
+| `onBlur`            | `FocusEventHandler<HTMLButtonElement>`                                   | No       | Called when the trigger loses focus.             |
+| `onFocus`           | `FocusEventHandler<HTMLButtonElement>`                                   | No       | Called when the trigger receives focus.          |
+| `aria-describedby`  | `string`                                                                 | No       | —                                                |
+| `aria-labelledby`   | `string`                                                                 | No       | —                                                |
+| `empty`             | `ReactNode`                                                              | No       | —                                                |
+| `loadingText`       | `ReactNode`                                                              | No       | —                                                |
+| `portal`            | `boolean`                                                                | No       | —                                                |
+| `onSearch`          | `(value: string) => void`                                                | No       | —                                                |
+| `onClear`           | `() => void`                                                             | No       | Called when the clear action is pressed.         |
+| `startIcon`         | `ReactNode`                                                              | No       | —                                                |
+| `endIcon`           | `ReactNode`                                                              | No       | —                                                |
+| `prefix`            | `ReactNode`                                                              | No       | —                                                |
+| `suffix`            | `ReactNode`                                                              | No       | —                                                |
+| `renderValue`       | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
+| `renderOption`      | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
+| `color`             | `SelectColor`                                                            | No       | —                                                |
+| `invalid`           | `boolean`                                                                | No       | —                                                |
+| `onValueChange`     | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                |
+| `variant`           | `SelectVariant`                                                          | No       | —                                                |
+| `loading`           | `boolean`                                                                | No       | —                                                |
+| `clearable`         | `boolean`                                                                | No       | Shows a clear action when the input has a value. |
+| `searchable`        | `boolean`                                                                | No       | —                                                |
+| `multiple`          | `boolean`                                                                | No       | —                                                |
+| `maxSelected`       | `number`                                                                 | No       | —                                                |
+| `closeOnSelect`     | `boolean`                                                                | No       | —                                                |
+| `children`          | `ReactNode`                                                              | No       | Content rendered inside the component.           |
+| `virtual`           | `boolean \| SelectVirtualConfig`                                         | No       | —                                                |
+| `avoidCollisions`   | `boolean`                                                                | No       | —                                                |
+| `modal`             | `boolean`                                                                | No       | —                                                |
+| `command`           | `boolean`                                                                | No       | —                                                |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 
@@ -423,11 +492,16 @@ options, select with Enter or Space, and close with Escape.
 
 <!-- api-docgen:start web.SelectOption.SelectOption -->
 
-| Prop       | Type      | Required | Description           |
-| ---------- | --------- | -------- | --------------------- |
-| `label`    | `string`  | Yes      | Visible option label. |
-| `value`    | `string`  | Yes      | Option value.         |
-| `disabled` | `boolean` | No       | Disables this option. |
+| Prop          | Type          | Required | Description                         |
+| ------------- | ------------- | -------- | ----------------------------------- |
+| `label`       | `string`      | Yes      | Visible option label.               |
+| `value`       | `string`      | Yes      | Option value.                       |
+| `disabled`    | `boolean`     | No       | Disables this option.               |
+| `icon`        | `ReactNode`   | No       | Icon rendered inside the component. |
+| `color`       | `SelectColor` | No       | —                                   |
+| `description` | `ReactNode`   | No       | Additional descriptive text.        |
+| `badge`       | `string`      | No       | —                                   |
+| `shortcut`    | `string`      | No       | —                                   |
 
 <!-- api-docgen:end web.SelectOption.SelectOption -->
 

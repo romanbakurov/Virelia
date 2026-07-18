@@ -39,14 +39,11 @@ export function AccountPanel() {
           onValueChange={setDisplayName}
           placeholder='Roman Bakurov'
         />
-        <Select
-          label='Role'
-          options={[
-            { label: 'Admin', value: 'admin' },
-            { label: 'Editor', value: 'editor' },
-            { label: 'Viewer', value: 'viewer' },
-          ]}
-        />
+        <Select label='Role'>
+          <Select.Item value='admin'>Admin</Select.Item>
+          <Select.Item value='editor'>Editor</Select.Item>
+          <Select.Item value='viewer'>Viewer</Select.Item>
+        </Select>
         <Button color='primary' appearance='solid'>
           Save changes
         </Button>
@@ -71,7 +68,7 @@ generated reference lives in
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics               |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`                           | controlled or uncontrolled    |
+| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled    |
 | `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`                                   | controlled or uncontrolled    |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
@@ -199,16 +196,11 @@ export function ControlledSettings() {
         label='Enable notifications'
         description='Send product and billing updates to this account.'
       />
-      <Select
-        label='Role'
-        value={role}
-        onChange={setRole}
-        options={[
-          { label: 'Admin', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Viewer', value: 'viewer' },
-        ]}
-      />
+      <Select label='Role' value={role} onValueChange={setRole}>
+        <Select.Item value='admin'>Admin</Select.Item>
+        <Select.Item value='editor'>Editor</Select.Item>
+        <Select.Item value='viewer'>Viewer</Select.Item>
+      </Select>
     </>
   );
 }
