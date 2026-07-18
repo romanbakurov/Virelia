@@ -51,6 +51,7 @@ const SelectRoot = ({
   error,
   placement = 'bottom',
   matchTriggerWidth = true,
+  avoidCollisions = true,
   portal = true,
   open,
   defaultOpen = false,
@@ -153,6 +154,7 @@ const SelectRoot = ({
         ? `${placement}-start`
         : placement,
     matchTriggerWidth,
+    avoidCollisions,
     mobileSheetBreakpoint: 640,
   });
 

@@ -454,6 +454,7 @@ explicitly.
 | `closeOnSelect`     | `boolean`                                                                | No       | —                                                |
 | `children`          | `ReactNode`                                                              | No       | Content rendered inside the component.           |
 | `virtual`           | `boolean \| SelectVirtualConfig`                                         | No       | —                                                |
+| `avoidCollisions`   | `boolean`                                                                | No       | —                                                |
 
 <!-- api-docgen:end web.SelectProps.SelectProps -->
 

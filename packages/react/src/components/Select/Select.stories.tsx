@@ -120,6 +120,7 @@ Single-value select control for choosing from a predefined list.
     variant: 'outline',
     placement: 'bottom',
     matchTriggerWidth: true,
+    avoidCollisions: true,
     disabled: false,
     required: false,
     onValueChange: noop,
@@ -234,6 +235,14 @@ Single-value select control for choosing from a predefined list.
     },
     matchTriggerWidth: {
       description: 'Matches dropdown width to the trigger width.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    avoidCollisions: {
+      description: 'Flips and shifts the dropdown to keep it in view.',
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },

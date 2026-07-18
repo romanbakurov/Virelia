@@ -37,6 +37,7 @@ export interface BaseSelectSharedProps extends Pick<
   maxSelected?: number;
   closeOnSelect?: boolean;
   virtual?: boolean | SelectVirtualConfig;
+  avoidCollisions?: boolean;
 }
 
 export interface BaseSelectSingleProps extends BaseSelectSharedProps {

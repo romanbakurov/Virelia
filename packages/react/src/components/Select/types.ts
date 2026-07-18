@@ -26,6 +26,7 @@ interface SelectOwnProps {
   noOptionsText?: ReactNode;
   placement?: Extract<Placement, 'bottom' | 'top' | 'left' | 'right'>;
   matchTriggerWidth?: boolean;
+  avoidCollisions?: boolean;
   portal?: boolean;
   open?: boolean;
   defaultOpen?: boolean;
