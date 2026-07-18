@@ -1,15 +1,4 @@
 .option {
-  --select-option-current-active-bg: var(--select-option-active-bg);
-  --select-option-current-active-fg: var(--select-option-active-fg);
-  --select-option-current-active-border: var(--select-option-active-border);
-  --select-option-current-active-ring: var(--select-option-active-ring);
-  --select-option-current-selected-bg: var(--select-option-selected-bg);
-  --select-option-current-selected-fg: var(--select-option-selected-fg);
-  --select-option-current-selected-border: var(--select-option-selected-border);
-  --select-option-current-badge-bg: var(--select-option-badge-bg);
-  --select-option-current-badge-fg: var(--select-option-badge-fg);
-  --select-option-current-badge-border: var(--select-option-badge-border);
-
   display: flex;
   align-items: center;
   width: 100%;

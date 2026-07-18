@@ -1,4 +1,5 @@
 import { createInputColorPalette } from '../../factories/createInputPalette.js';
+import { createSelectPalette } from '../../factories/createSelectPalette.js';
 import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
@@ -118,11 +119,11 @@ const danger = createInputColorPalette({
 });
 
 export const select = {
-  primary,
-  neutral,
-  success,
-  warning,
-  danger,
+  primary: createSelectPalette(primary),
+  neutral: createSelectPalette(neutral),
+  success: createSelectPalette(success),
+  warning: createSelectPalette(warning),
+  danger: createSelectPalette(danger),
 
   trigger: {
     default: {
