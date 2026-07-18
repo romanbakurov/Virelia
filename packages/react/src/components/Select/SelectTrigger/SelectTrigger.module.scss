@@ -167,21 +167,33 @@ $select-variants: outline, filled, soft;
 .adornment,
 .clear {
   justify-content: center;
-  width: 16px;
-  height: 16px;
 
   svg {
-    width: 100%;
-    height: 100%;
+    width: 16px;
+    height: 16px;
   }
 }
 
 .clear {
+  width: var(--space-5);
+  height: var(--space-5);
   color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
   cursor: pointer;
 
   &:hover {
-    color: var(--text-primary);
+    color: var(--button-danger-soft-default-fg);
+    background: var(--button-danger-soft-default-bg);
+  }
+
+  &:focus-visible {
+    color: var(--button-danger-soft-default-fg);
+    background: var(--button-danger-soft-default-bg);
+    outline: 2px solid var(--select-current-ring);
+    outline-offset: 2px;
   }
 }
 
