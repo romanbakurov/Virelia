@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Check, Search } from '@vellira-ui/icons';
+import { Check, Info, Search, User, Users } from '@vellira-ui/icons';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
@@ -21,18 +21,14 @@ const optionsWithDisabled = [
   { label: 'Germany', value: 'de' },
 ];
 
-const longOptions = [
-  {
-    label: 'France - European workspace with a deliberately long label',
-    value: 'fr',
-  },
-  { label: 'Spain - Customer success and regional operations', value: 'es' },
-  { label: 'Germany - Engineering platform team', value: 'de' },
-];
-
 const virtualOptions = Array.from({ length: 500 }, (_, index) => ({
   label: `Workspace ${index + 1}`,
   value: `workspace-${index + 1}`,
+}));
+
+const longListOptions = Array.from({ length: 40 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
 }));
 
 const richOptions = [
@@ -68,6 +64,53 @@ const asyncOptions = [
   { label: 'Portugal', value: 'pt' },
   { label: 'Poland', value: 'pl' },
   { label: 'Netherlands', value: 'nl' },
+];
+
+const userOptions = [
+  {
+    label: 'Roman Bakurov',
+    value: 'roman',
+    description: 'Design systems',
+    icon: 'RB',
+    badge: 'Owner',
+  },
+  {
+    label: 'Anna Petrova',
+    value: 'anna',
+    description: 'Frontend platform',
+    icon: 'AP',
+    badge: 'Admin',
+  },
+  {
+    label: 'Mikhail Orlov',
+    value: 'mikhail',
+    description: 'Product engineering',
+    icon: 'MO',
+  },
+];
+
+const statusOptions = [
+  {
+    label: 'Ready',
+    value: 'ready',
+    description: 'Available for release',
+    icon: <Check />,
+    color: 'success' as const,
+  },
+  {
+    label: 'Needs review',
+    value: 'review',
+    description: 'Waiting on approval',
+    icon: <Info />,
+    color: 'warning' as const,
+  },
+  {
+    label: 'Blocked',
+    value: 'blocked',
+    description: 'Requires a fix',
+    icon: '!',
+    color: 'danger' as const,
+  },
 ];
 
 const meta = {
@@ -420,12 +463,6 @@ const gridStyle = {
   gap: 16,
 } satisfies CSSProperties;
 
-const customLabelStyle = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: 'var(--space-2)',
-} satisfies CSSProperties;
-
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section style={sectionStyle}>
@@ -436,7 +473,16 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 type SelectStoryProps = ComponentProps<typeof Select>;
-type StoryOption = (typeof richOptions)[number];
+type StoryOption = {
+  label: string;
+  value: string;
+  disabled?: boolean;
+  description?: ReactNode;
+  icon?: ReactNode;
+  badge?: string;
+  shortcut?: string;
+  color?: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+};
 
 function renderSelectItems(items: StoryOption[] = defaultOptions) {
   return (
@@ -617,112 +663,6 @@ export const AdvancedUsage: Story = {
   ),
 };
 
-export const Default: Story = {
-  args: {
-    defaultValue: '',
-  },
-  render: (args) => (
-    <Section title='Default'>
-      <Select {...args}>{renderSelectItems()}</Select>
-    </Section>
-  ),
-};
-
-export const Controlled: Story = {
-  args: {
-    value: 'fr',
-  },
-  render: (args) => (
-    <Section title='Controlled'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const Uncontrolled: Story = {
-  args: {
-    defaultValue: 'fr',
-  },
-  render: (args) => (
-    <Section title='Uncontrolled'>
-      <Select {...args}>{renderSelectItems()}</Select>
-    </Section>
-  ),
-};
-
-export const WithDescription: Story = {
-  args: {
-    defaultValue: '',
-    description: 'Choose your country of residence.',
-  },
-  render: (args) => (
-    <Section title='With description'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const Required: Story = {
-  args: {
-    required: true,
-    defaultValue: '',
-  },
-  render: (args) => (
-    <Section title='Required'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const WithError: Story = {
-  args: {
-    id: 'country-error-example',
-    required: true,
-    value: '',
-    error: 'Select a country to continue.',
-  },
-  render: (args) => (
-    <Section title='With error'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const Disabled: Story = {
-  args: {
-    value: 'fr',
-    disabled: true,
-  },
-  render: (args) => (
-    <Section title='Disabled'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const DisabledOption: Story = {
-  args: {
-    value: '',
-  },
-  render: (args) => (
-    <Section title='Disabled option'>
-      <SelectWithState {...args} storyOptions={optionsWithDisabled} />
-    </Section>
-  ),
-};
-
-export const EmptyOptions: Story = {
-  args: {
-    defaultOpen: true,
-    noOptionsText: 'No countries found',
-  },
-  render: (args) => (
-    <Section title='Empty options'>
-      <SelectWithOpenState {...args} storyOptions={[]} />
-    </Section>
-  ),
-};
-
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
@@ -804,50 +744,6 @@ export const Searchable: Story = {
   ),
 };
 
-export const AsyncSearch: Story = {
-  args: {
-    placeholder: 'Search countries',
-    startIcon: <Search />,
-  },
-  render: (args) => (
-    <Section title='Async search'>
-      <AsyncSearchSelect {...args} />
-    </Section>
-  ),
-};
-
-export const CommandMode: Story = {
-  args: {
-    command: true,
-    defaultOpen: true,
-    matchTriggerWidth: false,
-    modal: true,
-    placeholder: 'Run command',
-    startIcon: <Search />,
-  },
-  render: (args) => (
-    <Section title='Command mode'>
-      <Select {...args}>
-        <Select.Group label='Navigation'>
-          <Select.Item value='dashboard' shortcut='⌘1'>
-            Dashboard
-          </Select.Item>
-          <Select.Item value='projects' shortcut='⌘2'>
-            Projects
-          </Select.Item>
-        </Select.Group>
-        <Select.Separator />
-        <Select.Group label='Actions'>
-          <Select.Item value='create' badge='NEW'>
-            Create workspace
-          </Select.Item>
-          <Select.Item value='settings'>Open settings</Select.Item>
-        </Select.Group>
-      </Select>
-    </Section>
-  ),
-};
-
 export const Clearable: Story = {
   args: {
     defaultValue: 'fr',
@@ -855,6 +751,21 @@ export const Clearable: Story = {
   },
   render: (args) => (
     <Section title='Clearable'>
+      <SelectWithState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const Multiple: Story = {
+  args: {
+    multiple: true,
+    defaultValue: ['fr', 'de'],
+    maxSelected: 2,
+    closeOnSelect: false,
+    placeholder: 'Choose countries',
+  },
+  render: (args) => (
+    <Section title='Multiple'>
       <SelectWithState {...args} storyOptions={richOptions} />
     </Section>
   ),
@@ -869,19 +780,6 @@ export const Loading: Story = {
   render: (args) => (
     <Section title='Loading'>
       <SelectWithOpenState {...args} />
-    </Section>
-  ),
-};
-
-export const RichOptions: Story = {
-  args: {
-    defaultOpen: true,
-    renderValue: (option) =>
-      option ? `${option.icon ?? ''} ${option.label}` : 'Choose country',
-  },
-  render: (args) => (
-    <Section title='Rich options'>
-      <SelectWithOpenState {...args} storyOptions={richOptions} />
     </Section>
   ),
 };
@@ -904,6 +802,54 @@ export const Groups: Story = {
           <Select.Item value='ca'>Canada</Select.Item>
         </Select.Group>
       </Select>
+    </Section>
+  ),
+};
+
+export const DisabledItems: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Disabled items'>
+      <SelectWithOpenState {...args} storyOptions={optionsWithDisabled} />
+    </Section>
+  ),
+};
+
+export const AsyncSearch: Story = {
+  args: {
+    placeholder: 'Search countries',
+    startIcon: <Search />,
+  },
+  render: (args) => (
+    <Section title='Async search'>
+      <AsyncSearchSelect {...args} />
+    </Section>
+  ),
+};
+
+export const LongList: Story = {
+  args: {
+    defaultOpen: true,
+    placeholder: 'Choose country',
+  },
+  render: (args) => (
+    <Section title='Long list'>
+      <SelectWithOpenState {...args} storyOptions={longListOptions} />
+    </Section>
+  ),
+};
+
+export const VirtualizedList: Story = {
+  args: {
+    defaultOpen: true,
+    virtual: { itemHeight: 40 },
+    placeholder: 'Choose workspace',
+  },
+  render: (args) => (
+    <Section title='Virtualized list'>
+      <SelectWithOpenState {...args} storyOptions={virtualOptions} />
     </Section>
   ),
 };
@@ -935,17 +881,108 @@ export const CustomRender: Story = {
   ),
 };
 
-export const Placements: Story = {
+export const CountrySelector: Story = {
   render: () => (
-    <Section title='Placements'>
-      <div style={gridStyle}>
-        <Select label='Bottom' defaultOpen placement='bottom'>
-          {renderSelectItems()}
-        </Select>
-        <Select label='Top' defaultOpen placement='top'>
-          {renderSelectItems()}
-        </Select>
-      </div>
+    <Section title='Country selector'>
+      <Select
+        label='Country'
+        placeholder='Choose country'
+        searchable
+        startIcon={<Search />}
+        renderValue={(option) =>
+          option ? `${option.icon ?? ''} ${option.label}` : 'Choose country'
+        }
+      >
+        {renderSelectItems(richOptions)}
+      </Select>
+    </Section>
+  ),
+};
+
+export const UserSelector: Story = {
+  render: () => (
+    <Section title='User selector'>
+      <Select
+        label='Assignee'
+        placeholder='Choose assignee'
+        startIcon={<User />}
+        searchable
+      >
+        {renderSelectItems(userOptions)}
+      </Select>
+    </Section>
+  ),
+};
+
+export const StatusSelector: Story = {
+  render: () => (
+    <Section title='Status selector'>
+      <Select label='Status' defaultValue='ready'>
+        {renderSelectItems(statusOptions)}
+      </Select>
+    </Section>
+  ),
+};
+
+export const Icons: Story = {
+  render: () => (
+    <Section title='Icons'>
+      <Select label='Team' placeholder='Choose team' startIcon={<Users />}>
+        <Select.Item value='design' icon={<Users />}>
+          Design system
+        </Select.Item>
+        <Select.Item value='support' icon={<User />}>
+          Support
+        </Select.Item>
+        <Select.Item value='search' icon={<Search />}>
+          Research
+        </Select.Item>
+      </Select>
+    </Section>
+  ),
+};
+
+export const Badges: Story = {
+  render: () => (
+    <Section title='Badges'>
+      <Select label='Plan' defaultOpen>
+        <Select.Item value='free' badge='Free'>
+          Starter
+        </Select.Item>
+        <Select.Item value='pro' badge='Pro'>
+          Professional
+        </Select.Item>
+        <Select.Item value='enterprise' badge='NEW'>
+          Enterprise
+        </Select.Item>
+      </Select>
+    </Section>
+  ),
+};
+
+export const Description: Story = {
+  render: () => (
+    <Section title='Description'>
+      <Select
+        label='Workspace'
+        description='Descriptions can live on the field and inside options.'
+        defaultOpen
+      >
+        {renderSelectItems(richOptions)}
+      </Select>
+    </Section>
+  ),
+};
+
+export const KeyboardNavigation: Story = {
+  args: {
+    defaultOpen: true,
+    searchable: true,
+    startIcon: <Search />,
+  },
+  render: (args) => (
+    <Section title='Keyboard navigation'>
+      <SelectWithOpenState {...args} storyOptions={richOptions} />
     </Section>
   ),
 };
@@ -962,146 +999,61 @@ export const ControlledOpen: Story = {
   ),
 };
 
-export const MatchTriggerWidthDisabled: Story = {
-  args: {
-    defaultOpen: true,
-    matchTriggerWidth: false,
-    placeholder: 'Select a team with a long label',
-  },
-  render: (args) => (
-    <Section title='Dropdown natural width'>
-      <SelectWithOpenState {...args} storyOptions={longOptions} />
-    </Section>
-  ),
-};
-
-export const VirtualizedList: Story = {
-  args: {
-    defaultOpen: true,
-    virtual: { itemHeight: 40 },
-    placeholder: 'Choose workspace',
-  },
-  render: (args) => (
-    <Section title='Virtualized list'>
-      <SelectWithOpenState {...args} storyOptions={virtualOptions} />
-    </Section>
-  ),
-};
-
-export const CustomContent: Story = {
+export const Validation: Story = {
   render: () => (
-    <Section title='Custom content'>
-      <Select
-        label={
-          <span style={customLabelStyle}>
-            Country
-            <span
-              style={{
-                padding: '2px 6px',
-                color: 'var(--color-primary-50)',
-                fontSize: 12,
-                lineHeight: '16px',
-                background: 'var(--color-primary-600)',
-                borderRadius: 'var(--radius-full)',
-              }}
-            >
-              Required
-            </span>
-          </span>
-        }
-        description={
-          <span>
-            This example uses ReactNode label, description, and validation
-            content.
-          </span>
-        }
-        error={<strong>Select an available country.</strong>}
-        required
-      >
-        {renderSelectItems(optionsWithDisabled)}
-      </Select>
-    </Section>
-  ),
-};
-
-export const States: Story = {
-  render: () => (
-    <Section title='States'>
+    <Section title='Validation'>
       <div style={gridStyle}>
-        <Select label='Default'>{renderSelectItems()}</Select>
-        <Select label='With value' defaultValue='fr'>
+        <Select label='Required' required placeholder='Choose country'>
           {renderSelectItems()}
         </Select>
-        <Select label='Required' required placeholder='Required select'>
-          {renderSelectItems()}
-        </Select>
-        <Select label='Disabled' defaultValue='fr' disabled>
-          {renderSelectItems()}
-        </Select>
-        <Select label='Error' error='This field is required.'>
-          {renderSelectItems()}
+        <Select
+          id='country-error-example'
+          label='Country'
+          required
+          error='Select a country to continue.'
+        >
+          {renderSelectItems(optionsWithDisabled)}
         </Select>
       </div>
     </Section>
   ),
 };
 
-export const WithFormName: Story = {
-  args: {
-    id: 'country',
-    name: 'country',
-    defaultValue: 'fr',
-    description: 'This value is submitted through a hidden input.',
+export const Mobile: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
   },
-  render: (args) => (
-    <Section title='Form submission'>
-      <Select {...args}>{renderSelectItems()}</Select>
-    </Section>
-  ),
-};
-
-export const AccessibleWithoutVisibleLabel: Story = {
-  args: {
-    label: undefined,
-    'aria-label': 'Billing country',
-    placeholder: 'Choose billing country',
-  },
-  render: (args) => (
-    <Section title='Accessible without visible label'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const Selection: Story = {
-  args: {
-    defaultValue: 'fr',
-  },
-  render: (args) => (
-    <Section title='Selection'>
-      <SelectWithState {...args} />
-    </Section>
-  ),
-};
-
-export const OpenDropdown: Story = {
   args: {
     defaultOpen: true,
+    searchable: true,
+    placeholder: 'Choose country',
   },
   render: (args) => (
-    <Section title='Open dropdown'>
-      <SelectWithState {...args} />
+    <Section title='Mobile'>
+      <SelectWithOpenState {...args} storyOptions={richOptions} />
     </Section>
   ),
 };
 
-export const DisabledOptionsOpen: Story = {
-  args: {
-    defaultOpen: true,
+export const HighContrast: Story = {
+  parameters: {
+    backgrounds: {
+      default: 'dark',
+      values: [{ name: 'dark', value: '#0a0a0a' }],
+    },
   },
-  render: (args) => (
-    <Section title='Disabled options'>
-      <SelectWithState {...args} storyOptions={optionsWithDisabled} />
+  render: () => (
+    <Section title='High contrast'>
+      <div style={gridStyle}>
+        <Select label='Primary' color='primary' defaultValue='fr'>
+          {renderSelectItems()}
+        </Select>
+        <Select label='Danger' color='danger' error='Required field'>
+          {renderSelectItems()}
+        </Select>
+      </div>
     </Section>
   ),
 };
