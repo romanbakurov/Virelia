@@ -15,6 +15,7 @@ export const SelectDropdown = ({
   setDropdownRef,
   style,
   options,
+  entries,
   multiple,
   selectedValues,
   searchable,
@@ -57,6 +58,14 @@ export const SelectDropdown = ({
   const visibleOptions = isVirtual
     ? options.slice(startIndex, startIndex + visibleCount)
     : options;
+  const visibleEntries =
+    entries && !isVirtual
+      ? entries
+      : visibleOptions.map((option, visibleIndex) => ({
+          type: 'option' as const,
+          option,
+          optionIndex: startIndex + visibleIndex,
+        }));
   const topSpacerHeight = isVirtual ? startIndex * itemHeight : 0;
   const bottomSpacerHeight = isVirtual
     ? Math.max(
@@ -114,8 +123,30 @@ export const SelectDropdown = ({
                 style={{ height: topSpacerHeight }}
               />
             )}
-            {visibleOptions.map((option, visibleIndex) => {
-              const index = startIndex + visibleIndex;
+            {visibleEntries.map((entry) => {
+              if (entry.type === 'group') {
+                return (
+                  <li
+                    key={entry.id}
+                    role='presentation'
+                    className={styles.groupLabel}
+                  >
+                    {entry.label}
+                  </li>
+                );
+              }
+
+              if (entry.type === 'separator') {
+                return (
+                  <li
+                    key={entry.id}
+                    role='separator'
+                    className={styles.separator}
+                  />
+                );
+              }
+
+              const { option, optionIndex } = entry;
 
               return (
                 <SelectOption
@@ -126,11 +157,11 @@ export const SelectDropdown = ({
                       ? selectedValues.includes(option.value)
                       : option.value === selectedValue
                   }
-                  isActive={index === activeIndex}
-                  optionId={`${listboxId}-option-${index}`}
+                  isActive={optionIndex === activeIndex}
+                  optionId={`${listboxId}-option-${optionIndex}`}
                   renderOption={renderOption}
                   onSelect={onSelect}
-                  onMouseEnter={() => onMouseEnter(index)}
+                  onMouseEnter={() => onMouseEnter(optionIndex)}
                 />
               );
             })}

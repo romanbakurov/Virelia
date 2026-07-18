@@ -224,6 +224,53 @@ describe('Select', () => {
     });
   });
 
+  it('renders grouped options and separators without affecting option indexes', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultOpen
+          onValueChange={onValueChange}
+        >
+          <Select.Group label='Europe'>
+            <Select.Item value='fr'>France</Select.Item>
+            <Select.Item value='de'>Germany</Select.Item>
+          </Select.Group>
+          <Select.Separator />
+          <Select.Group label='Americas'>
+            <Select.Item value='us'>United States</Select.Item>
+          </Select.Group>
+        </Select>
+      );
+    });
+
+    const listbox = document.querySelector('[role="listbox"]');
+
+    expect(listbox?.textContent).toContain('Europe');
+    expect(listbox?.textContent).toContain('Americas');
+    expect(document.querySelector('[role="separator"]')).not.toBeNull();
+    expect(
+      document.getElementById('country-listbox-option-2')?.textContent
+    ).toContain('United States');
+
+    act(() => {
+      document.getElementById('country-listbox-option-2')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('us');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('closes with Escape without selecting a new value', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');

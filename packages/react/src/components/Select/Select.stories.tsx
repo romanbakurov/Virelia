@@ -762,6 +762,28 @@ export const RichOptions: Story = {
   ),
 };
 
+export const Groups: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Groups'>
+      <Select {...args}>
+        <Select.Group label='Europe'>
+          <Select.Item value='fr'>France</Select.Item>
+          <Select.Item value='de'>Germany</Select.Item>
+          <Select.Item value='es'>Spain</Select.Item>
+        </Select.Group>
+        <Select.Separator />
+        <Select.Group label='Americas'>
+          <Select.Item value='us'>United States</Select.Item>
+          <Select.Item value='ca'>Canada</Select.Item>
+        </Select.Group>
+      </Select>
+    </Section>
+  ),
+};
+
 export const CustomRender: Story = {
   args: {
     defaultOpen: true,

@@ -8,10 +8,12 @@ import { useSelect } from '@vellira-ui/core';
 import { SelectDropdown } from './SelectDropdown/SelectDropdown';
 import { SelectTrigger } from './SelectTrigger/SelectTrigger';
 import {
-  collectSelectOptions,
+  collectSelectStructure,
   hasSelectLayoutChildren,
   SelectCompoundContent,
+  SelectCompoundGroup,
   SelectCompoundItem,
+  SelectCompoundSeparator,
   SelectCompoundTrigger,
 } from './SelectCompound';
 import { SelectProvider } from './SelectContext';
@@ -93,8 +95,8 @@ const SelectRoot = ({
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
-  const resolvedOptions = useMemo(
-    () => collectSelectOptions(children),
+  const { entries: resolvedEntries, options: resolvedOptions } = useMemo(
+    () => collectSelectStructure(children),
     [children]
   );
 
@@ -244,6 +246,7 @@ const SelectRoot = ({
     labelledById: triggerId,
     style: floatingStyles,
     options: filteredOptions,
+    entries: searchable || searchValue ? undefined : resolvedEntries,
     multiple,
     searchable,
     virtual,
@@ -337,7 +340,9 @@ const SelectRoot = ({
 export const Select = Object.assign(SelectRoot, {
   Trigger: SelectCompoundTrigger,
   Content: SelectCompoundContent,
+  Group: SelectCompoundGroup,
   Item: SelectCompoundItem,
+  Separator: SelectCompoundSeparator,
 });
 
 (Select as { displayName?: string }).displayName = 'Select';

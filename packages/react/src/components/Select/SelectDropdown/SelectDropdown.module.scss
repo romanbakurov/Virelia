@@ -54,6 +54,20 @@
   cursor: default;
 }
 
+.groupLabel {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xs);
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--border-muted);
+}
+
 .virtualSpacer {
   flex: 0 0 auto;
   padding: 0;

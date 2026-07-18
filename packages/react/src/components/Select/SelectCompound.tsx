@@ -8,7 +8,8 @@ import { SelectTrigger as SelectTriggerPrimitive } from './SelectTrigger/SelectT
 import { useSelectContext } from './SelectContext';
 import type { SelectOption } from './types';
 
-type SelectCompoundPart = 'content' | 'item' | 'trigger';
+type SelectCompoundPart =
+  'content' | 'group' | 'item' | 'separator' | 'trigger';
 
 type SelectCompoundComponent<P> = ((props: P) => ReactElement | null) & {
   __velliraSelectPart?: SelectCompoundPart;
@@ -25,6 +26,11 @@ export interface SelectCompoundContentProps {
   className?: string;
 }
 
+export interface SelectCompoundGroupProps {
+  children?: ReactNode;
+  label: ReactNode;
+}
+
 export interface SelectCompoundItemProps {
   value: string;
   children?: ReactNode;
@@ -36,6 +42,26 @@ export interface SelectCompoundItemProps {
   shortcut?: string;
   color?: SelectColor;
 }
+
+export interface SelectCompoundSeparatorProps {
+  children?: never;
+}
+
+export type SelectRenderEntry =
+  | {
+      type: 'group';
+      id: string;
+      label: ReactNode;
+    }
+  | {
+      type: 'option';
+      option: SelectOption;
+      optionIndex: number;
+    }
+  | {
+      type: 'separator';
+      id: string;
+    };
 
 export const SelectCompoundTrigger = ({
   children,
@@ -71,6 +97,13 @@ export const SelectCompoundContent = ({
 SelectCompoundContent.__velliraSelectPart = 'content';
 SelectCompoundContent.displayName = 'Select.Content';
 
+export const SelectCompoundGroup: SelectCompoundComponent<
+  SelectCompoundGroupProps
+> = () => null;
+
+SelectCompoundGroup.__velliraSelectPart = 'group';
+SelectCompoundGroup.displayName = 'Select.Group';
+
 export const SelectCompoundItem: SelectCompoundComponent<
   SelectCompoundItemProps
 > = () => null;
@@ -78,8 +111,24 @@ export const SelectCompoundItem: SelectCompoundComponent<
 SelectCompoundItem.__velliraSelectPart = 'item';
 SelectCompoundItem.displayName = 'Select.Item';
 
-export function collectSelectOptions(children: ReactNode): SelectOption[] {
+export const SelectCompoundSeparator: SelectCompoundComponent<
+  SelectCompoundSeparatorProps
+> = () => null;
+
+SelectCompoundSeparator.__velliraSelectPart = 'separator';
+SelectCompoundSeparator.displayName = 'Select.Separator';
+
+export function collectSelectOptions(children: ReactNode) {
+  return collectSelectStructure(children).options;
+}
+
+export function collectSelectStructure(children: ReactNode): {
+  entries: SelectRenderEntry[];
+  options: SelectOption[];
+} {
+  const entries: SelectRenderEntry[] = [];
   const options: SelectOption[] = [];
+  let generatedEntryId = 0;
 
   function visit(node: ReactNode) {
     Children.forEach(node, (child) => {
@@ -87,11 +136,23 @@ export function collectSelectOptions(children: ReactNode): SelectOption[] {
 
       const type = child.type as SelectCompoundComponent<unknown>;
 
+      if (type.__velliraSelectPart === 'group') {
+        const props = child.props as SelectCompoundGroupProps;
+
+        entries.push({
+          type: 'group',
+          id: `group-${generatedEntryId++}`,
+          label: props.label,
+        });
+        visit(props.children);
+        return;
+      }
+
       if (type.__velliraSelectPart === 'item') {
         const props = child.props as SelectCompoundItemProps;
         const label = props.label ?? getTextLabel(props.children, props.value);
-
-        options.push({
+        const optionIndex = options.length;
+        const option = {
           label,
           value: props.value,
           disabled: props.disabled,
@@ -100,6 +161,17 @@ export function collectSelectOptions(children: ReactNode): SelectOption[] {
           badge: props.badge,
           shortcut: props.shortcut,
           color: props.color,
+        };
+
+        options.push(option);
+        entries.push({ type: 'option', option, optionIndex });
+        return;
+      }
+
+      if (type.__velliraSelectPart === 'separator') {
+        entries.push({
+          type: 'separator',
+          id: `separator-${generatedEntryId++}`,
         });
         return;
       }
@@ -110,7 +182,7 @@ export function collectSelectOptions(children: ReactNode): SelectOption[] {
 
   visit(children);
 
-  return options;
+  return { entries, options };
 }
 
 export function hasSelectLayoutChildren(children: ReactNode) {

@@ -4,6 +4,7 @@ import type {
 } from '@vellira-ui/types';
 import type { CSSProperties, ReactNode } from 'react';
 
+import type { SelectRenderEntry } from '../SelectCompound';
 import type { SelectOption } from '../types';
 
 export interface SelectDropdownProps extends Omit<
@@ -13,6 +14,7 @@ export interface SelectDropdownProps extends Omit<
   listboxId: string;
   labelledById: string;
   options: SelectOption[];
+  entries?: SelectRenderEntry[];
   multiple?: boolean;
   selectedValues?: string[];
   searchable?: boolean;
