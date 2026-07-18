@@ -1,7 +1,8 @@
 import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 
-import { FormField } from '@patterns/FormField';
+import { FormField, useFormFieldContext } from '@patterns/FormField';
 import { cn } from '@utils/cn';
+import { Search } from '@vellira-ui/icons';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
 import type { InputProps } from './types';
@@ -40,6 +41,38 @@ const getAutoComplete = (
   }
 };
 
+const applyPatternMask = (value: string, pattern: string) => {
+  const digits = value.replace(/\D/g, '');
+  let digitIndex = 0;
+  let maskedValue = '';
+
+  for (const character of pattern) {
+    if (character === '#') {
+      const nextDigit = digits[digitIndex];
+
+      if (!nextDigit) break;
+
+      maskedValue += nextDigit;
+      digitIndex += 1;
+      continue;
+    }
+
+    if (digitIndex < digits.length) {
+      maskedValue += character;
+    }
+  }
+
+  return maskedValue;
+};
+
+const applyMask = (value: string, mask: InputProps['mask']) => {
+  if (!mask) return value;
+
+  return typeof mask === 'function'
+    ? mask(value)
+    : applyPatternMask(value, mask);
+};
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -50,22 +83,36 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       value,
       defaultValue,
-      onChange,
       type = 'text',
-      size = 'md',
+      size,
+      color = 'primary',
+      variant = 'outline',
       error,
+      invalid = false,
       disabled = false,
       required = false,
+      loading = false,
       className,
+      wrapperClassName,
       autoComplete,
       readOnly = false,
       clearable = false,
       onClear,
-      leftAdornment,
-      rightAdornment,
+      onValueChange,
+      revealPassword = false,
+      showCounter: showCounterProp = false,
+      startIcon,
+      endIcon,
+      startAddon,
+      endAddon,
+      prefix,
+      suffix,
       clearIcon,
-      leftAdornmentTone = 'default',
-      rightAdornmentTone = 'default',
+      mask,
+      format,
+      parse,
+      startIconTone = 'default',
+      endIconTone = 'default',
       clearIconTone = 'danger',
       autoFocus,
       maxLength,
@@ -73,14 +120,21 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       onMouseLeave,
       'aria-describedby': ariaDescribedBy,
       'aria-invalid': ariaInvalid,
+      'aria-labelledby': ariaLabelledBy,
       ...inputProps
     },
     ref
   ) => {
     const generatedId = useId();
-    const id = providedId ?? generatedId;
+    const field = useFormFieldContext();
+    const hasOwnField = Boolean(label || description || error);
+    const id =
+      providedId ??
+      (!hasOwnField ? field?.controlId : undefined) ??
+      generatedId;
 
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const [isPasswordRevealed, setIsPasswordRevealed] = useState(false);
 
     const [uncontrolledValue, setUncontrolledValue] = useState(
       defaultValue ?? ''
@@ -88,17 +142,63 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const isControlled = value !== undefined;
     const currentValue = isControlled ? value : uncontrolledValue;
-    const hasValue = currentValue !== '';
+    const currentValueText = String(currentValue ?? '');
+    const displayValue = format ? format(currentValueText) : currentValueText;
+    const hasValue = currentValueText.length > 0;
+    const resolvedSize = size ?? field?.size ?? 'md';
+    const isInvalid =
+      invalid || Boolean(error) || (!hasOwnField && Boolean(field?.invalid));
+    const isDisabled = disabled || (!hasOwnField && Boolean(field?.disabled));
+    const isRequired = required || (!hasOwnField && Boolean(field?.required));
+    const isReadOnly = readOnly || loading;
+    const isPasswordInput = type === 'password';
+    const resolvedType =
+      isPasswordInput && revealPassword && isPasswordRevealed ? 'text' : type;
+    const resolvedStartIcon =
+      startIcon ?? (type === 'search' ? <Search /> : null);
+    const resolvedEndIcon = endIcon;
 
     const resolvedAutoComplete = getAutoComplete(type, autoComplete);
-    const showClearButton = clearable && hasValue && !disabled && !readOnly;
+    const showLoading = loading && !isDisabled;
+    const showClearButton =
+      clearable && hasValue && !isDisabled && !isReadOnly && !showLoading;
+    const showRevealButton =
+      revealPassword &&
+      isPasswordInput &&
+      !isDisabled &&
+      !showLoading &&
+      !showClearButton;
+    const showEndIcon =
+      !showLoading &&
+      !showClearButton &&
+      !showRevealButton &&
+      Boolean(resolvedEndIcon);
+    const shouldShowCounter = Boolean(showCounterProp && maxLength);
     const descriptionId = description ? `${id}-description` : undefined;
     const errorId = error ? `${id}-error` : undefined;
-    const describedBy = [ariaDescribedBy, descriptionId, errorId]
+    const counterId = shouldShowCounter ? `${id}-counter` : undefined;
+    const describedBy = [
+      ariaDescribedBy,
+      !hasOwnField && !ariaDescribedBy ? field?.ariaDescribedBy : undefined,
+      descriptionId,
+      errorId,
+      counterId,
+    ]
       .filter(Boolean)
       .join(' ');
 
     const clearIconNode = clearIcon ?? '×';
+    const hasStartContent = Boolean(resolvedStartIcon || prefix);
+    const hasEndContent = Boolean(
+      resolvedEndIcon ||
+      suffix ||
+      showClearButton ||
+      showRevealButton ||
+      showLoading
+    );
+    const hasStartIconAndPrefix = Boolean(resolvedStartIcon && prefix);
+    const hasEndIconAndSuffix = Boolean(resolvedEndIcon && suffix);
+    const hasAddons = Boolean(startAddon || endAddon);
 
     const setRefs = useCallback(
       (element: HTMLInputElement | null) => {
@@ -118,15 +218,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const handleChange = useCallback(
       (event: ChangeEvent<HTMLInputElement>) => {
-        const nextValue = event.target.value;
+        const parsedValue = parse
+          ? parse(event.target.value)
+          : event.target.value;
+        const nextValue = applyMask(parsedValue, mask);
 
         if (!isControlled) {
           setUncontrolledValue(nextValue);
         }
 
-        onChange?.(event);
+        onValueChange?.(nextValue);
       },
-      [isControlled, onChange]
+      [isControlled, mask, onValueChange, parse]
     );
 
     const handleClear = useCallback(() => {
@@ -134,11 +237,145 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         setUncontrolledValue('');
       }
 
+      onValueChange?.('');
       onClear?.();
       inputRef.current?.focus();
-    }, [isControlled, onClear]);
+    }, [isControlled, onClear, onValueChange]);
 
-    const showRightAdornment = !showClearButton && Boolean(rightAdornment);
+    const control = (
+      <>
+        <div
+          className={cn(styles.inputGroup, styles[variant], styles[color], {
+            [styles.hasAddons]: hasAddons,
+            [styles.isDisabled]: isDisabled,
+            [styles.isInvalid]: isInvalid,
+            [styles.isLoading]: showLoading,
+          })}
+        >
+          {startAddon && <span className={styles.addon}>{startAddon}</span>}
+
+          <div
+            className={cn(styles.inputWrapper, {
+              [styles.hasLeftAdornment]: hasStartContent,
+              [styles.hasRightAdornment]: hasEndContent,
+              [styles.hasStartIconAndPrefix]: hasStartIconAndPrefix,
+              [styles.hasEndIconAndSuffix]: hasEndIconAndSuffix,
+            })}
+          >
+            {resolvedStartIcon && (
+              <span
+                aria-hidden='true'
+                className={cn(
+                  styles.startAdornment,
+                  toneClassNameByTone[startIconTone]
+                )}
+              >
+                {resolvedStartIcon}
+              </span>
+            )}
+
+            {prefix && <span className={styles.prefix}>{prefix}</span>}
+
+            <input
+              {...inputProps}
+              ref={setRefs}
+              id={id}
+              name={name}
+              type={resolvedType}
+              autoComplete={resolvedAutoComplete}
+              className={cn(
+                styles.input,
+                styles[resolvedSize],
+                {
+                  [styles.error]: isInvalid,
+                },
+                className
+              )}
+              value={displayValue}
+              onChange={handleChange}
+              placeholder={placeholder}
+              disabled={isDisabled}
+              readOnly={isReadOnly}
+              required={isRequired}
+              autoFocus={autoFocus}
+              maxLength={maxLength}
+              aria-invalid={isInvalid ? true : ariaInvalid}
+              aria-labelledby={
+                ariaLabelledBy ??
+                (!hasOwnField ? field?.ariaLabelledBy : undefined)
+              }
+              aria-describedby={describedBy || undefined}
+              aria-busy={loading || undefined}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+            />
+
+            {suffix && <span className={styles.suffix}>{suffix}</span>}
+
+            <div className={styles.endSlot}>
+              {showLoading && (
+                <span
+                  className={styles.spinner}
+                  aria-hidden='true'
+                  data-testid='input-spinner'
+                />
+              )}
+
+              {showRevealButton && (
+                <button
+                  type='button'
+                  className={styles.iconButton}
+                  onClick={() => setIsPasswordRevealed((revealed) => !revealed)}
+                  aria-label={
+                    isPasswordRevealed ? 'Hide password' : 'Show password'
+                  }
+                >
+                  {isPasswordRevealed ? 'Hide' : 'Show'}
+                </button>
+              )}
+
+              {showClearButton && (
+                <button
+                  type='button'
+                  className={cn(
+                    styles.clearButton,
+                    toneClassNameByTone[clearIconTone]
+                  )}
+                  onClick={handleClear}
+                  aria-label='Clear input'
+                >
+                  {clearIconNode}
+                </button>
+              )}
+
+              {showEndIcon && resolvedEndIcon && (
+                <span
+                  aria-hidden='true'
+                  className={cn(
+                    styles.endAdornment,
+                    toneClassNameByTone[endIconTone]
+                  )}
+                >
+                  {resolvedEndIcon}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {endAddon && <span className={styles.addon}>{endAddon}</span>}
+        </div>
+
+        {shouldShowCounter && (
+          <div id={counterId} className={styles.counter}>
+            {currentValueText.length} / {maxLength}
+          </div>
+        )}
+      </>
+    );
+
+    if (!hasOwnField && field) {
+      return control;
+    }
 
     return (
       <FormField
@@ -146,81 +383,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         label={label}
         description={description}
         error={error}
-        required={required}
-        disabled={disabled}
+        required={isRequired}
+        disabled={isDisabled}
+        invalid={isInvalid}
+        size={resolvedSize}
+        className={wrapperClassName}
+        bindControl={false}
       >
-        <div
-          className={cn(styles.inputWrapper, {
-            [styles.hasLeftAdornment]: !!leftAdornment,
-            [styles.hasRightAdornment]: !!rightAdornment || showClearButton,
-          })}
-        >
-          {leftAdornment && (
-            <span
-              aria-hidden='true'
-              className={cn(
-                styles.leftAdornment,
-                toneClassNameByTone[leftAdornmentTone]
-              )}
-            >
-              {leftAdornment}
-            </span>
-          )}
-
-          <input
-            {...inputProps}
-            ref={setRefs}
-            id={id}
-            name={name}
-            type={type}
-            autoComplete={resolvedAutoComplete}
-            className={cn(
-              styles.input,
-              styles[size],
-              {
-                [styles.error]: !!error,
-              },
-              className
-            )}
-            value={currentValue}
-            onChange={handleChange}
-            placeholder={placeholder}
-            disabled={disabled}
-            readOnly={readOnly}
-            required={required}
-            autoFocus={autoFocus}
-            maxLength={maxLength}
-            aria-invalid={error ? true : ariaInvalid}
-            aria-describedby={describedBy || undefined}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-          />
-
-          {showClearButton && (
-            <button
-              type='button'
-              className={cn(
-                styles.clearButton,
-                toneClassNameByTone[clearIconTone]
-              )}
-              onClick={handleClear}
-              aria-label='Clear input'
-            >
-              {clearIconNode}
-            </button>
-          )}
-
-          {showRightAdornment && (
-            <div
-              className={cn(
-                styles.rightAdornment,
-                toneClassNameByTone[rightAdornmentTone]
-              )}
-            >
-              {rightAdornment}
-            </div>
-          )}
-        </div>
+        {control}
       </FormField>
     );
   }

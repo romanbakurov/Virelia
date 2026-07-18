@@ -31,21 +31,37 @@ export interface InputProps
       | 'style'
       | 'placeholder'
     > {
+  /** Controlled value. */
   value?: string;
+  /** Initial uncontrolled value. */
   defaultValue?: string;
-  onChange?: (value: string) => void;
+  /** Called with the next string value. */
+  onValueChange?: (value: string) => void;
+  /** Semantic input type used to derive keyboard and secure entry behavior. */
   type?: InputType;
 
-  leftIcon?: InputIconElement;
-  rightIcon?: InputIconElement;
+  /** Icon rendered at the start of the control. */
+  startIcon?: InputIconElement;
+  /** Icon rendered at the end of the control when no action is active. */
+  endIcon?: InputIconElement;
+  /** Custom clear action icon. */
   clearIcon?: InputIconElement;
-  leftIconTone?: InputAdornmentTone;
-  rightIconTone?: InputAdornmentTone;
+  /** Tone for startIcon. */
+  startIconTone?: InputAdornmentTone;
+  /** Tone for endIcon. */
+  endIconTone?: InputAdornmentTone;
+  /** Tone for clearIcon. */
   clearIconTone?: InputAdornmentTone;
+  /** Icon size in pixels. */
   iconSize?: number;
+  /** Style for the outer container. */
   containerStyle?: StyleProp<ViewStyle>;
+  /** Style for the TextInput. */
   inputStyle?: StyleProp<TextStyle>;
+  /** Test identifier. */
   testID?: string;
+  /** Native keyboard type override. */
   keyboardType?: NativeInputKeyboardType;
+  /** Native secure text entry override. */
   secureTextEntry?: boolean;
 }

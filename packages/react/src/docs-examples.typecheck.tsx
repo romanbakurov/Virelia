@@ -2,19 +2,14 @@ import { useState } from 'react';
 
 import { Input } from './primitives/Input';
 
-export function WebInputDomOnChangeExample() {
+export function WebInputValueChangeExample() {
   const [email, setEmail] = useState('');
 
   return (
     <Input
       label='Email'
       value={email}
-      onChange={(event) => {
-        const input: HTMLInputElement = event.currentTarget;
-
-        setEmail(input.value);
-        setEmail(event.target.value);
-      }}
+      onValueChange={setEmail}
       type='email'
       placeholder='name@example.com'
     />

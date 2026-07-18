@@ -37,7 +37,7 @@ export function PreferencesScreen() {
       <Input
         label='Email'
         value={email}
-        onChange={setEmail}
+        onValueChange={setEmail}
         placeholder='name@example.com'
       />
       <RadioGroup label='Theme'>
@@ -67,7 +67,7 @@ generated reference lives in
 | ------------ | ------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `accessibilityLabel`                                              | Buttons and actions   |
 | `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | Boolean input         |
-| `Input`      | `label`, `description`, `value`, `onChange`, `type`, `error`                                                              | Text input            |
+| `Input`      | `label`, `description`, `value`, `onValueChange`, `type`, `error`, `mask`, `format`                                       | Text input            |
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | Labels and validation |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |

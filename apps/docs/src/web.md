@@ -36,7 +36,7 @@ export function AccountPanel() {
         <Input
           label='Display name'
           value={displayName}
-          onChange={setDisplayName}
+          onValueChange={setDisplayName}
           placeholder='Roman Bakurov'
         />
         <Select
@@ -67,8 +67,8 @@ generated reference lives in
 | ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading             |
 | `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onChange`, `type`, `size`, `error`, `autoComplete`                                                     | controlled                    |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | presentation wrapper          |
+| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                          | controlled or uncontrolled    |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics               |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
 | `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `open`, `error`                           | controlled or uncontrolled    |

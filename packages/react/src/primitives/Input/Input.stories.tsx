@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Check, Close, Search } from '@vellira-ui/icons';
-import type { ChangeEvent, CSSProperties, ReactNode } from 'react';
+import { Check, Search } from '@vellira-ui/icons';
+import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
+import { FormField } from '../../patterns/FormField';
 import { Input } from '../Input';
 
 import type { InputProps } from './types';
@@ -24,11 +25,13 @@ Labeled text input primitive for short form values.
 **Features**
 - Controlled and uncontrolled usage
 - Label, description and placeholder support
+- Colors: primary, neutral, success, warning and danger
+- Variants: outline, filled and soft
 - Sizes: sm, md and lg
 - Smart type handling for email, password, tel, url, number and search
-- Left and right icon support
-- Clearable state
-- Disabled, read-only, required and error states
+- Icons, addons, prefix and suffix support
+- Clearable, loading, password reveal, masks, formatting and counters
+- Disabled, read-only, required, invalid and error states
 `,
       },
     },
@@ -42,7 +45,8 @@ Labeled text input primitive for short form values.
     required: false,
     readOnly: false,
     clearable: false,
-    onChange: noop,
+    clearIconTone: 'default',
+    onValueChange: noop,
   },
   argTypes: {
     id: { control: 'text' },
@@ -56,11 +60,19 @@ Labeled text input primitive for short form values.
       control: 'radio',
       options: ['sm', 'md', 'lg'],
     },
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+    },
+    variant: {
+      control: 'radio',
+      options: ['outline', 'filled', 'soft'],
+    },
     type: {
       control: 'select',
       options: ['text', 'email', 'password', 'number', 'tel', 'url', 'search'],
     },
-    leftAdornmentTone: {
+    startIconTone: {
       control: 'select',
       options: [
         'default',
@@ -72,7 +84,7 @@ Labeled text input primitive for short form values.
         'inverse',
       ],
     },
-    rightAdornmentTone: {
+    endIconTone: {
       control: 'select',
       options: [
         'default',
@@ -85,18 +97,38 @@ Labeled text input primitive for short form values.
       ],
     },
     required: { control: 'boolean' },
+    invalid: { control: 'boolean' },
+    loading: { control: 'boolean' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
     clearable: { control: 'boolean' },
+    clearIconTone: {
+      control: 'select',
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'success',
+        'danger',
+        'muted',
+        'inverse',
+      ],
+    },
+    revealPassword: { control: 'boolean' },
+    showCounter: { control: 'boolean' },
     error: { control: 'text' },
+    mask: { control: 'text' },
     autoComplete: { control: 'text' },
     autoFocus: { control: 'boolean' },
     maxLength: { control: 'number' },
-    onChange: { action: 'changed' },
+    onValueChange: { action: 'changed' },
     onClear: { action: 'cleared' },
-    leftAdornment: { control: false },
-    rightAdornment: { control: false },
+    startIcon: { control: false },
+    endIcon: { control: false },
+    format: { control: false },
+    parse: { control: false },
     className: { control: false },
+    wrapperClassName: { control: false },
   },
 } satisfies Meta<typeof Input>;
 
@@ -108,6 +140,13 @@ const fieldColumnStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: 12,
+  width: '100%',
+} satisfies CSSProperties;
+
+const matrixStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  gap: 16,
   width: '100%',
 } satisfies CSSProperties;
 
@@ -146,12 +185,12 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 const ControlledInputDemo = (args: InputProps) => {
   const [value, setValue] = useState(args.value ?? '');
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-    args.onChange?.(event);
+  const handleValueChange = (nextValue: string) => {
+    setValue(nextValue);
+    args.onValueChange?.(nextValue);
   };
 
-  return <Input {...args} value={value} onChange={handleChange} />;
+  return <Input {...args} value={value} onValueChange={handleValueChange} />;
 };
 
 const ClearableInputDemo = () => {
@@ -161,12 +200,29 @@ const ClearableInputDemo = () => {
     <Input
       label='Clearable input'
       value={value}
-      onChange={(event) => setValue(event.target.value)}
+      onValueChange={setValue}
       clearable
-      clearIcon={<Close />}
-      rightAdornmentTone='danger'
+      clearIconTone='default'
       onClear={() => setValue('')}
       placeholder='Type something'
+    />
+  );
+};
+
+const CounterInputDemo = () => {
+  const [value, setValue] = useState(
+    'Product designer focused on accessible systems, form UX, clear validation, and calm interfaces for fast-moving teams....'
+  );
+
+  return (
+    <Input
+      label='Bio'
+      description='Short profile summary.'
+      value={value}
+      onValueChange={setValue}
+      maxLength={200}
+      showCounter
+      placeholder='Write a short bio'
     />
   );
 };
@@ -182,6 +238,35 @@ export const Basic: Story = {
   render: (args) => (
     <Section title='Basic'>
       <ControlledInputDemo {...args} />
+    </Section>
+  ),
+};
+
+export const ShorthandAndComposed: Story = {
+  render: () => (
+    <Section title='Shorthand and composed'>
+      <div style={fieldColumnStyle}>
+        <Input
+          label='Shorthand'
+          description='Input renders FormField internally.'
+          placeholder='name@company.com'
+          type='email'
+        />
+
+        <FormField
+          label='Composed'
+          description='Input inherits id, aria, state, and size from FormField.'
+          required
+          size='sm'
+        >
+          <Input
+            placeholder='name@company.com'
+            type='email'
+            clearable
+            clearIconTone='default'
+          />
+        </FormField>
+      </div>
     </Section>
   ),
 };
@@ -213,6 +298,117 @@ export const Sizes: Story = {
   ),
 };
 
+export const FieldSizeInheritance: Story = {
+  render: () => (
+    <Section title='Field size inheritance'>
+      <div style={fieldColumnStyle}>
+        <FormField label='Inherited small' size='sm'>
+          <Input placeholder='Input inherits sm' />
+        </FormField>
+
+        <FormField label='Inherited large' size='lg'>
+          <Input placeholder='Input inherits lg' />
+        </FormField>
+
+        <FormField
+          label='Explicit input size'
+          description='Input size wins over FormField size.'
+          size='sm'
+        >
+          <Input size='lg' placeholder='Explicit lg input' />
+        </FormField>
+      </div>
+    </Section>
+  ),
+};
+
+export const Variants: Story = {
+  render: () => (
+    <Section title='Variants'>
+      <div style={fieldColumnStyle}>
+        <Input label='Outline' variant='outline' placeholder='Outline input' />
+        <Input label='Filled' variant='filled' placeholder='Filled input' />
+        <Input label='Soft' variant='soft' placeholder='Soft input' />
+      </div>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <div style={fieldColumnStyle}>
+        <Input label='Primary' color='primary' placeholder='Primary input' />
+        <Input label='Neutral' color='neutral' placeholder='Neutral input' />
+        <Input label='Success' color='success' placeholder='Success input' />
+        <Input label='Warning' color='warning' placeholder='Warning input' />
+        <Input label='Danger' color='danger' placeholder='Danger input' />
+      </div>
+    </Section>
+  ),
+};
+
+export const ColorVariantMatrix: Story = {
+  render: () => (
+    <Section title='Color and variant matrix'>
+      <div style={matrixStyle}>
+        {(['primary', 'neutral', 'success', 'warning', 'danger'] as const).map(
+          (color) =>
+            (['outline', 'filled', 'soft'] as const).map((variant) => (
+              <Input
+                key={`${color}-${variant}`}
+                label={`${color} ${variant}`}
+                color={color}
+                variant={variant}
+                placeholder='Field value'
+              />
+            ))
+        )}
+      </div>
+    </Section>
+  ),
+};
+
+export const FocusStates: Story = {
+  render: () => (
+    <Section title='Focus states'>
+      <div style={matrixStyle}>
+        <Input
+          label='Primary focus'
+          color='primary'
+          variant='outline'
+          defaultValue='Focused'
+          autoFocus
+        />
+        <Input
+          label='Neutral filled'
+          color='neutral'
+          variant='filled'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Success soft'
+          color='success'
+          variant='soft'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Warning outline'
+          color='warning'
+          variant='outline'
+          defaultValue='Tab here'
+        />
+        <Input
+          label='Danger filled'
+          color='danger'
+          variant='filled'
+          defaultValue='Tab here'
+        />
+      </div>
+    </Section>
+  ),
+};
+
 export const Types: Story = {
   render: () => (
     <Section title='Types'>
@@ -223,7 +419,14 @@ export const Types: Story = {
         <Input label='Number' type='number' placeholder='42' />
         <Input label='Phone' type='tel' placeholder='+33 6 00 00 00 00' />
         <Input label='URL' type='url' placeholder='https://vellira.dev' />
-        <Input label='Search' type='search' placeholder='Search components' />
+        <Input
+          label='Search'
+          type='search'
+          defaultValue='Components'
+          clearable
+          clearIconTone='default'
+          placeholder='Search components'
+        />
       </div>
     </Section>
   ),
@@ -235,8 +438,11 @@ export const Adornments: Story = {
       <div style={fieldColumnStyle}>
         <Input
           label='Search'
-          leftAdornment={<Search />}
-          leftAdornmentTone='primary'
+          defaultValue='Theme'
+          startIcon={<Search />}
+          startIconTone='primary'
+          clearable
+          clearIconTone='default'
           placeholder='Search components'
           type='search'
         />
@@ -244,23 +450,122 @@ export const Adornments: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
+          endIcon={<Check size={14} />}
+          endIconTone='success'
           placeholder='name@company.com'
           type='email'
         />
 
         <Input
           label='Search settings'
-          leftAdornment={<Search />}
-          rightAdornment={<Check />}
-          rightAdornmentTone='success'
-          leftAdornmentTone='primary'
+          startIcon={<Search />}
+          endIcon={<Check size={14} />}
+          endIconTone='success'
+          startIconTone='primary'
           defaultValue='Theme'
         />
 
         <ClearableInputDemo />
       </div>
+    </Section>
+  ),
+};
+
+export const RightSlotPriority: Story = {
+  render: () => (
+    <Section title='Right slot priority'>
+      <div style={fieldColumnStyle}>
+        <Input
+          label='Loading wins'
+          value='Searching'
+          loading
+          clearable
+          clearIconTone='default'
+          endIcon={<Search />}
+          placeholder='Loading'
+        />
+
+        <Input
+          label='Clear wins over reveal and icon'
+          value='secret'
+          type='password'
+          clearable
+          clearIconTone='default'
+          revealPassword
+          endIcon={<Check size={14} />}
+        />
+
+        <Input
+          label='Reveal wins over icon'
+          value=''
+          type='password'
+          revealPassword
+          endIcon={<Check size={14} />}
+          placeholder='Password'
+        />
+
+        <Input
+          label='Icon renders when no action is active'
+          value=''
+          endIcon={<Check size={14} />}
+          endIconTone='success'
+          placeholder='Verified value'
+        />
+      </div>
+    </Section>
+  ),
+};
+
+export const AddonsAndAffixes: Story = {
+  render: () => (
+    <Section title='Addons and affixes'>
+      <div style={fieldColumnStyle}>
+        <Input
+          label='Domain'
+          startAddon='https://'
+          endAddon='.com'
+          placeholder='vellira'
+        />
+        <Input label='Handle' prefix='@' placeholder='roman' />
+        <Input label='Weight' suffix='kg' type='number' placeholder='72' />
+      </div>
+    </Section>
+  ),
+};
+
+export const MasksAndFormatting: Story = {
+  render: () => (
+    <Section title='Masks and formatting'>
+      <div style={fieldColumnStyle}>
+        <Input
+          label='Phone'
+          mask='+33 # ## ## ## ##'
+          placeholder='+33 6 00 00 00 00'
+          type='tel'
+        />
+        <Input
+          label='Card'
+          mask='#### #### #### ####'
+          placeholder='4242 4242 4242 4242'
+        />
+        <Input
+          label='Amount'
+          value='12000'
+          format={(nextValue) =>
+            nextValue ? Number(nextValue).toLocaleString('en-US') : ''
+          }
+          parse={(displayValue) => displayValue.replace(/,/g, '')}
+          prefix='$'
+        />
+      </div>
+    </Section>
+  ),
+};
+
+export const Counter: Story = {
+  render: () => (
+    <Section title='Counter'>
+      <CounterInputDemo />
     </Section>
   ),
 };
@@ -279,6 +584,21 @@ export const States: Story = {
           error='This field is required'
           placeholder='Invalid value'
         />
+        <Input label='Invalid' invalid placeholder='Invalid without message' />
+        <Input label='Loading' loading value='Syncing value' />
+
+        <FormField
+          label='Inherited disabled and invalid'
+          description='Input cannot unset field-level state.'
+          disabled
+          invalid
+        >
+          <Input
+            disabled={false}
+            invalid={false}
+            placeholder='Inherited state'
+          />
+        </FormField>
       </div>
     </Section>
   ),
@@ -299,6 +619,7 @@ export const Validation: Story = {
         <Input
           label='Password'
           type='password'
+          revealPassword
           required
           error='Password must contain at least 8 characters'
           value=''

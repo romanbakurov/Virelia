@@ -13,6 +13,16 @@ import { zIndex } from '../src/tokens/zIndex';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+function writeFileIfChanged(filePath: string, content: string): void {
+  const current = fs.existsSync(filePath)
+    ? fs.readFileSync(filePath, 'utf8')
+    : '';
+
+  if (current !== content) {
+    fs.writeFileSync(filePath, content, 'utf8');
+  }
+}
+
 function toKebabCase(str: string): string {
   return str
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
@@ -114,13 +124,14 @@ function generateThemeBlock(
   return `${selector} {\n${generateVariables(theme.colors, 'color')}${generateVariables(
     theme.semantic,
     ''
-  )}${generateVariables(theme.components, '')}}\n`;
+  )}${generateVariables(theme.components, '', {
+    numberUnit: 'px',
+  })}}\n`;
 }
 
 let css = `/**
  * AUTO-GENERATED FILE
  * DO NOT EDIT MANUALLY
- * Generated: ${new Date().toISOString()}
  */
 
 :root {
@@ -154,7 +165,7 @@ fs.mkdirSync(path.dirname(outputPath), {
   recursive: true,
 });
 
-fs.writeFileSync(outputPath, css, 'utf8');
+writeFileIfChanged(outputPath, css);
 
 console.log('✅ tokens.css generated');
 console.log(outputPath);

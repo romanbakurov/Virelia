@@ -7,8 +7,8 @@ import {
   Home,
   Image,
   Music,
-  Profile,
   Settings,
+  User,
 } from '@vellira-ui/icons';
 const noop = () => undefined;
 
@@ -129,7 +129,7 @@ const TextTabs = () => (
 const IconTabs = () => (
   <>
     <Tabs.Tab index={0} icon={<Home />} aria-label='Home' />
-    <Tabs.Tab index={1} icon={<Profile />} aria-label='Profile' />
+    <Tabs.Tab index={1} icon={<User />} aria-label='Profile' />
     <Tabs.Tab index={2} icon={<Settings />} aria-label='Settings' />
     <Tabs.Tab index={3} icon={<Alarm />} aria-label='Notifications' />
   </>
@@ -140,7 +140,7 @@ const DisabledTabs = () => (
     <Tabs.Tab index={0} icon={<Home />}>
       Home
     </Tabs.Tab>
-    <Tabs.Tab index={1} icon={<Profile />}>
+    <Tabs.Tab index={1} icon={<User />}>
       Profile
     </Tabs.Tab>
     <Tabs.Tab index={2} disabled icon={<Settings />}>

@@ -14,6 +14,16 @@ const naturalCollator = new Intl.Collator('en', {
   sensitivity: 'base',
 });
 
+function writeFileIfChanged(filePath: string, content: string): void {
+  const current = fs.existsSync(filePath)
+    ? fs.readFileSync(filePath, 'utf8')
+    : '';
+
+  if (current !== content) {
+    fs.writeFileSync(filePath, content, 'utf8');
+  }
+}
+
 function sortValues<T extends string>(values: T[]): T[] {
   return values.sort(naturalCollator.compare);
 }
@@ -214,7 +224,7 @@ fs.mkdirSync(path.dirname(outputPath), {
   recursive: true,
 });
 
-fs.writeFileSync(outputPath, content, 'utf8');
+writeFileIfChanged(outputPath, content);
 
 console.log('✅ token types generated');
 console.log(outputPath);

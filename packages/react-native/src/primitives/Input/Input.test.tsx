@@ -2,6 +2,7 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { FormField } from '../../patterns/FormField';
 import { render } from '../../test-utils/render';
 import { nativeThemes } from '../../theme';
 
@@ -73,7 +74,7 @@ describe('Native Input', () => {
       <Input
         label='Age'
         defaultValue='40'
-        onChange={change}
+        onValueChange={change}
         type='number'
         accessibilityHint='Numbers only'
       />
@@ -95,6 +96,65 @@ describe('Native Input', () => {
 
     expect(change).toHaveBeenCalledWith('41');
     expect(input?.value).toBe('41');
+
+    unmount();
+  });
+
+  it('formats display values while emitting parsed and masked values', () => {
+    const change = vi.fn();
+    const { container, unmount } = render(
+      <Input
+        label='Card'
+        value='42424242'
+        onValueChange={change}
+        format={(nextValue) => nextValue.replace(/(\d{4})(?=\d)/g, '$1 ')}
+        parse={(nextValue) => nextValue.replace(/\s/g, '')}
+        mask='#### #### #### ####'
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    )?.set;
+
+    expect(input?.value).toBe('4242 4242');
+
+    act(() => {
+      valueSetter?.call(input, '4242 4242 4242');
+      input?.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(change).toHaveBeenCalledWith('4242 4242 4242');
+
+    unmount();
+  });
+
+  it('supports functional masks for uncontrolled values', () => {
+    const change = vi.fn();
+    const { container, unmount } = render(
+      <Input
+        label='Phone'
+        defaultValue=''
+        onValueChange={change}
+        mask={(nextValue) => `+33 ${nextValue.replace(/\D/g, '')}`}
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value'
+    )?.set;
+
+    act(() => {
+      valueSetter?.call(input, '1 23');
+      input?.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(change).toHaveBeenCalledWith('+33 123');
+    expect(input?.value).toBe('+33 123');
 
     unmount();
   });
@@ -148,10 +208,10 @@ describe('Native Input', () => {
       <Input
         label='Search'
         value='Theme'
-        leftIcon={<TestIcon testID='left-icon' />}
-        rightIcon={<TestIcon testID='right-icon' />}
-        leftIconTone='primary'
-        rightIconTone='success'
+        startIcon={<TestIcon testID='left-icon' />}
+        endIcon={<TestIcon testID='right-icon' />}
+        startIconTone='primary'
+        endIconTone='success'
         iconSize={24}
       />
     );
@@ -178,12 +238,12 @@ describe('Native Input', () => {
       <Input
         label='Clearable'
         defaultValue='Clear me'
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
         clearIcon={<TestIcon testID='clear-icon' />}
         clearIconTone='secondary'
-        rightIcon={<TestIcon testID='right-icon' />}
+        endIcon={<TestIcon testID='right-icon' />}
       />
     );
 
@@ -206,7 +266,7 @@ describe('Native Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledWith('');
     expect(clear).toHaveBeenCalledTimes(1);
     expect(container.querySelector('input')?.value).toBe('');
 
@@ -220,7 +280,7 @@ describe('Native Input', () => {
       <Input
         label='Controlled clearable'
         value='Clear me'
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
       />
@@ -236,7 +296,7 @@ describe('Native Input', () => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(change).not.toHaveBeenCalled();
+    expect(change).toHaveBeenCalledWith('');
     expect(clear).toHaveBeenCalledTimes(1);
     expect(container.querySelector('input')?.value).toBe('Clear me');
 
@@ -244,7 +304,7 @@ describe('Native Input', () => {
       <Input
         label='Controlled clearable'
         value=''
-        onChange={change}
+        onValueChange={change}
         onClear={clear}
         clearable
       />
@@ -253,6 +313,58 @@ describe('Native Input', () => {
     expect(
       container.querySelector('button[aria-label="Clear input"]')
     ).toBeNull();
+
+    unmount();
+  });
+
+  it('prioritizes clear over reveal and toggles password reveal when clear is hidden', () => {
+    const { container, rerender, unmount } = render(
+      <Input
+        label='Password'
+        value='secret'
+        type='password'
+        revealPassword
+        clearable
+        endIcon={<TestIcon testID='right-icon' />}
+      />
+    );
+
+    expect(
+      container.querySelector('button[aria-label="Clear input"]')
+    ).not.toBeNull();
+    expect(
+      container.querySelector('button[aria-label="Show password"]')
+    ).toBeNull();
+    expect(container.querySelector('[data-testid="right-icon"]')).toBeNull();
+
+    rerender(
+      <Input
+        label='Password'
+        value=''
+        type='password'
+        revealPassword
+        clearable
+        endIcon={<TestIcon testID='right-icon' />}
+      />
+    );
+
+    const revealButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Show password"]'
+    );
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(revealButton).not.toBeNull();
+    expect(input?.type).toBe('password');
+    expect(container.querySelector('[data-testid="right-icon"]')).toBeNull();
+
+    act(() => {
+      revealButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(container.querySelector('input')?.type).toBe('text');
+    expect(
+      container.querySelector('button[aria-label="Hide password"]')
+    ).not.toBeNull();
 
     unmount();
   });
@@ -297,6 +409,30 @@ describe('Native Input', () => {
     expect(container.querySelector('input')?.getAttribute('aria-label')).toBe(
       'Work email'
     );
+
+    unmount();
+  });
+
+  it('uses FormField context without rendering a nested field wrapper', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Email'
+        description='Used for login.'
+        error='Invalid email.'
+        required
+        disabled
+        invalid
+        size='sm'
+      >
+        <Input value='' size='lg' />
+      </FormField>
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+    expect(input?.disabled).toBe(true);
+    expect(input?.style.fontSize).toBe('20px');
+    expect(input?.style.minHeight).toBe('52px');
+    expect(container.querySelectorAll('input')).toHaveLength(1);
 
     unmount();
   });

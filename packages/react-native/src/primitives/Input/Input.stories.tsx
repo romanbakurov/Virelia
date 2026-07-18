@@ -5,6 +5,7 @@ import { Check, Close, Search } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { FormField } from '../../patterns/FormField';
 import { useTheme } from '../../theme';
 
 import { Input } from './Input';
@@ -26,9 +27,11 @@ Text input primitive for collecting user data in forms.
 - Controlled and uncontrolled usage
 - Smart input type behavior
 - Sizes: sm, md, lg
+- Colors: primary, neutral, success, warning, danger
+- Variants: outline, filled, soft
 - Description, required, disabled, read-only and error states
-- Left and right icon support
-- Clearable input
+- Start and end icon support
+- Clearable input, password reveal, masks and formatting
 `,
       },
     },
@@ -38,10 +41,13 @@ Text input primitive for collecting user data in forms.
     placeholder: 'name@company.com',
     size: 'md',
     type: 'email',
+    color: 'primary',
+    variant: 'outline',
     disabled: false,
     required: false,
     readOnly: false,
     clearable: false,
+    onValueChange: () => undefined,
   },
   argTypes: {
     id: { control: 'text' },
@@ -57,6 +63,16 @@ Text input primitive for collecting user data in forms.
       options: ['sm', 'md', 'lg'],
     },
 
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+    },
+
+    variant: {
+      control: 'radio',
+      options: ['outline', 'filled', 'soft'],
+    },
+
     type: {
       control: 'select',
       options: ['text', 'email', 'password', 'number', 'tel', 'url', 'search'],
@@ -66,17 +82,23 @@ Text input primitive for collecting user data in forms.
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
     clearable: { control: 'boolean' },
+    invalid: { control: 'boolean' },
+    loading: { control: 'boolean' },
+    revealPassword: { control: 'boolean' },
     error: { control: 'text' },
+    mask: { control: 'text' },
     autoFocus: { control: 'boolean' },
     maxLength: { control: 'number' },
 
-    onChange: { action: 'changed' },
+    onValueChange: { action: 'changed' },
     onClear: { action: 'cleared' },
 
-    leftIcon: { control: false },
-    rightIcon: { control: false },
+    startIcon: { control: false },
+    endIcon: { control: false },
     clearIcon: { control: false },
-    leftIconTone: {
+    format: { control: false },
+    parse: { control: false },
+    startIconTone: {
       control: 'select',
       options: [
         'default',
@@ -88,7 +110,7 @@ Text input primitive for collecting user data in forms.
         'inverse',
       ],
     },
-    rightIconTone: {
+    endIconTone: {
       control: 'select',
       options: [
         'default',
@@ -121,6 +143,11 @@ type Story = StoryObj<typeof meta>;
 
 const storyStyles = StyleSheet.create({
   column: {
+    width: '100%',
+    gap: 12,
+  },
+
+  matrix: {
     width: '100%',
     gap: 12,
   },
@@ -160,10 +187,10 @@ function ControlledInputDemo(args: InputProps) {
 
   const handleChange = (nextValue: string) => {
     setValue(nextValue);
-    args.onChange?.(nextValue);
+    args.onValueChange?.(nextValue);
   };
 
-  return <Input {...args} value={value} onChange={handleChange} />;
+  return <Input {...args} value={value} onValueChange={handleChange} />;
 }
 
 function ClearableInputDemo() {
@@ -174,7 +201,7 @@ function ClearableInputDemo() {
       label='Clearable input'
       description='Shows a clear action when the field has a value.'
       value={value}
-      onChange={setValue}
+      onValueChange={setValue}
       clearable
       clearIcon={<Close />}
       clearIconTone='danger'
@@ -214,7 +241,7 @@ export const Uncontrolled: Story = {
         <ControlledInputDemo
           label='Controlled'
           value='Controlled value'
-          onChange={() => undefined}
+          onValueChange={() => undefined}
         />
 
         <Input
@@ -227,6 +254,32 @@ export const Uncontrolled: Story = {
   ),
 };
 
+export const FormFieldContext: Story = {
+  render: () => (
+    <Section title='FormField context'>
+      <View style={storyStyles.column}>
+        <FormField
+          label='Inherited field'
+          description='Input inherits size, required, disabled and invalid.'
+          size='sm'
+          required
+          invalid
+        >
+          <Input placeholder='Inherited from FormField' />
+        </FormField>
+
+        <FormField
+          label='Explicit input size'
+          description='Input size wins over FormField size.'
+          size='sm'
+        >
+          <Input size='lg' placeholder='Explicit large input' />
+        </FormField>
+      </View>
+    </Section>
+  ),
+};
+
 export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
@@ -234,6 +287,32 @@ export const Sizes: Story = {
         <Input label='Small' size='sm' placeholder='Small input' />
         <Input label='Medium' size='md' placeholder='Medium input' />
         <Input label='Large' size='lg' placeholder='Large input' />
+      </View>
+    </Section>
+  ),
+};
+
+export const Variants: Story = {
+  render: () => (
+    <Section title='Variants'>
+      <View style={storyStyles.column}>
+        <Input label='Outline' variant='outline' placeholder='Outline input' />
+        <Input label='Filled' variant='filled' placeholder='Filled input' />
+        <Input label='Soft' variant='soft' placeholder='Soft input' />
+      </View>
+    </Section>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
+      <View style={storyStyles.column}>
+        <Input label='Primary' color='primary' placeholder='Primary input' />
+        <Input label='Neutral' color='neutral' placeholder='Neutral input' />
+        <Input label='Success' color='success' placeholder='Success input' />
+        <Input label='Warning' color='warning' placeholder='Warning input' />
+        <Input label='Danger' color='danger' placeholder='Danger input' />
       </View>
     </Section>
   ),
@@ -253,7 +332,32 @@ export const Types: Story = {
           label='Search'
           type='search'
           placeholder='Search components'
-          leftIcon={<Search />}
+          startIcon={<Search />}
+        />
+      </View>
+    </Section>
+  ),
+};
+
+export const Actions: Story = {
+  render: () => (
+    <Section title='Actions'>
+      <View style={storyStyles.column}>
+        <ClearableInputDemo />
+
+        <Input
+          label='Reveal password'
+          type='password'
+          revealPassword
+          value='secret'
+        />
+
+        <Input
+          label='End icon'
+          value=''
+          endIcon={<Check />}
+          endIconTone='success'
+          placeholder='Verified value'
         />
       </View>
     </Section>
@@ -266,8 +370,8 @@ export const WithIcons: Story = {
       <View style={storyStyles.column}>
         <Input
           label='Search'
-          leftIcon={<Search />}
-          leftIconTone='primary'
+          startIcon={<Search />}
+          startIconTone='primary'
           placeholder='Search components'
           type='search'
         />
@@ -275,18 +379,18 @@ export const WithIcons: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          rightIcon={<Check />}
-          rightIconTone='success'
+          endIcon={<Check />}
+          endIconTone='success'
           placeholder='name@company.com'
           type='email'
         />
 
         <Input
           label='Search settings'
-          leftIcon={<Search />}
-          rightIcon={<Check />}
-          rightIconTone='success'
-          leftIconTone='primary'
+          startIcon={<Search />}
+          endIcon={<Check />}
+          endIconTone='success'
+          startIconTone='primary'
           defaultValue='Theme'
         />
 
@@ -313,6 +417,10 @@ export const States: Story = {
           placeholder='Invalid value'
           value=''
         />
+
+        <FormField label='Inherited disabled' disabled>
+          <Input disabled={false} placeholder='Disabled by field' />
+        </FormField>
       </View>
     </Section>
   ),

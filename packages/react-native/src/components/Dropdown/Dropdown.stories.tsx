@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import {
-  Copy,
-  Delete,
-  DropdownMenu,
-  Edit,
-  Restart,
-  Settings,
-} from '@vellira-ui/icons';
+import { Copy, Edit, More, Refresh, Settings, Trash } from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
@@ -21,16 +14,16 @@ const actionItems = [
   { type: 'group' as const, label: 'Actions' },
   { label: 'Edit profile', value: 'edit', icon: <Edit /> },
   { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-  { label: 'Refresh', value: 'refresh', icon: <Restart /> },
+  { label: 'Refresh', value: 'refresh', icon: <Refresh /> },
   { type: 'separator' as const },
-  { label: 'Delete account', value: 'delete', icon: <Delete />, danger: true },
+  { label: 'Delete account', value: 'delete', icon: <Trash />, danger: true },
 ];
 
 function DropdownIcon() {
   const { theme } = useTheme();
 
   return (
-    <DropdownMenu
+    <More
       style={{
         transform: [{ rotate: '90deg' }],
       }}
@@ -363,7 +356,7 @@ export const WithGroups: Story = {
       { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
       { type: 'separator' },
       { type: 'group', label: 'Danger' },
-      { label: 'Delete', value: 'delete', icon: <Delete />, danger: true },
+      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
     ],
   },
   render: (args) => (
@@ -378,8 +371,8 @@ export const WithDisabledItems: Story = {
     label: 'Project actions',
     items: [
       { label: 'Edit', value: 'edit', icon: <Edit /> },
-      { label: 'Refresh', value: 'refresh', icon: <Restart />, disabled: true },
-      { label: 'Delete', value: 'delete', icon: <Delete />, danger: true },
+      { label: 'Refresh', value: 'refresh', icon: <Refresh />, disabled: true },
+      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
     ],
   },
   render: (args) => (

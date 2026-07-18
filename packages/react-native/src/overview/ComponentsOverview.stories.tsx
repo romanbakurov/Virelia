@@ -4,13 +4,13 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import {
   Check,
   Close,
-  Delete,
   Download,
-  DropdownMenu,
   Filter,
+  More,
   Save,
   Search,
   Settings,
+  Trash,
 } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -52,7 +52,7 @@ const dropdownItems = [
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
   { type: 'separator' as const },
-  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
+  { label: 'Delete report', value: 'delete', icon: <Trash />, danger: true },
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -806,7 +806,7 @@ function NativeComponentsOverview() {
                 label='More report actions'
                 accessibilityLabel='More report actions'
                 accessibilityHint='Opens report action menu'
-                icon={<DropdownMenu />}
+                icon={<More />}
                 showArrow={false}
                 items={dropdownItems}
                 onSelect={fn()}
