@@ -88,6 +88,77 @@ Use `description` for settings-style helper text when the checkbox is not
 wrapped in `FormField`. For checkbox rows without a visible label, provide
 `aria-label` or `aria-labelledby`.
 
+```tsx
+import { Checkbox } from '@vellira-ui/react';
+import { useState } from 'react';
+
+export function TermsCheckbox() {
+  const [accepted, setAccepted] = useState(false);
+
+  return (
+    <Checkbox
+      label='Accept terms'
+      description='Required to continue.'
+      checked={accepted}
+      onCheckedChange={setAccepted}
+      required
+      color='primary'
+      size='md'
+    />
+  );
+}
+```
+
+### Radio Notes
+
+Use standalone `Radio` for low-level composition. Prefer `RadioGroup` when the
+choice belongs to a single saved form value.
+
+```tsx
+import { Radio, RadioGroup } from '@vellira-ui/react';
+import { useState } from 'react';
+
+export function PlanRadioGroup() {
+  const [plan, setPlan] = useState('pro');
+
+  return (
+    <RadioGroup
+      name='plan'
+      label='Plan'
+      description='Choose the billing plan.'
+      value={plan}
+      onValueChange={setPlan}
+      color='primary'
+      size='md'
+    >
+      <Radio value='starter' label='Starter' />
+      <Radio value='pro' label='Pro' />
+      <Radio value='enterprise' label='Enterprise' />
+    </RadioGroup>
+  );
+}
+```
+
+### FormField Notes
+
+Use `FormField` for custom controls that do not render their own field chrome.
+`bindControl` is useful for native form controls because it injects generated
+ids and ARIA state into the direct child.
+
+```tsx
+import { FormField } from '@vellira-ui/react';
+
+<FormField
+  label='Workspace'
+  description='Connected through generated id and aria props.'
+  error='Use lowercase letters, numbers and hyphens.'
+  required
+  bindControl
+>
+  <input placeholder='vellira-design' />
+</FormField>;
+```
+
 ### Select Notes
 
 Use `Select` for one form value from a compact list, `RadioGroup` for a few
