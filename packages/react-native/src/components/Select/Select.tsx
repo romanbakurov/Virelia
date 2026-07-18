@@ -18,7 +18,7 @@ export function Select({
   defaultValue,
   onValueChange,
   onChange,
-  options,
+  options: optionsProp,
   multiple = false,
   maxSelected,
   closeOnSelect,
@@ -36,6 +36,7 @@ export function Select({
 }: SelectProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const options = optionsProp ?? [];
 
   const {
     selectedValue,
