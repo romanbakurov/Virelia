@@ -209,11 +209,7 @@ import { More } from '@vellira-ui/icons';
   <Dropdown
     ariaLabel='Project name actions'
     trigger={
-      <Button
-        aria-label='Project name actions'
-        iconOnly
-        iconStart={<More />}
-      />
+      <Button aria-label='Project name actions' iconOnly iconStart={<More />} />
     }
     items={[
       { value: 'copy', label: 'Copy name' },

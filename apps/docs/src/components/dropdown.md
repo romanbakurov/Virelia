@@ -53,11 +53,7 @@ import { Button, Dropdown } from '@vellira-ui/react';
 <Dropdown
   ariaLabel='More invoice actions'
   trigger={
-    <Button
-      aria-label='More invoice actions'
-      iconOnly
-      iconStart={<More />}
-    />
+    <Button aria-label='More invoice actions' iconOnly iconStart={<More />} />
   }
   items={items}
 />;
