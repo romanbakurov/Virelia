@@ -566,6 +566,7 @@ const AsyncSearchSelect = (args: SelectStoryProps) => {
       {...args}
       value={value}
       searchable
+      clearable
       loading={loading}
       loadingText='Searching...'
       onValueChange={(newValue) => {
@@ -742,6 +743,7 @@ export const FormFieldIntegration: Story = {
 export const Searchable: Story = {
   args: {
     searchable: true,
+    clearable: true,
     startIcon: <Search />,
     placeholder: 'Search countries',
   },
@@ -896,6 +898,7 @@ export const CountrySelector: Story = {
         label='Country'
         placeholder='Choose country'
         searchable
+        clearable
         startIcon={<Search />}
         renderValue={(option) =>
           option ? `${option.icon ?? ''} ${option.label}` : 'Choose country'
@@ -915,6 +918,7 @@ export const UserSelector: Story = {
         placeholder='Choose assignee'
         startIcon={<User />}
         searchable
+        clearable
       >
         {renderSelectItems(userOptions)}
       </Select>
@@ -986,6 +990,7 @@ export const KeyboardNavigation: Story = {
   args: {
     defaultOpen: true,
     searchable: true,
+    clearable: true,
     startIcon: <Search />,
   },
   render: (args) => (
@@ -1036,6 +1041,7 @@ export const Mobile: Story = {
   args: {
     defaultOpen: true,
     searchable: true,
+    clearable: true,
     placeholder: 'Choose country',
   },
   render: (args) => (
