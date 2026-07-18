@@ -198,7 +198,7 @@ Use Dropdown next to Input for contextual commands, not for saved field values.
 
 ```tsx
 import { Button, Dropdown, Input } from '@vellira-ui/react';
-import { DropdownMenu } from '@vellira-ui/icons';
+import { More } from '@vellira-ui/icons';
 
 <div className='fieldRow'>
   <Input
@@ -212,7 +212,7 @@ import { DropdownMenu } from '@vellira-ui/icons';
       <Button
         aria-label='Project name actions'
         iconOnly
-        iconStart={<DropdownMenu />}
+        iconStart={<More />}
       />
     }
     items={[

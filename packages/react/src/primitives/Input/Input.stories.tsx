@@ -450,7 +450,7 @@ export const Adornments: Story = {
         <Input
           label='Verified email'
           defaultValue='hello@vellira.dev'
-          endIcon={<Check size={12} />}
+          endIcon={<Check size={14} />}
           endIconTone='success'
           placeholder='name@company.com'
           type='email'
@@ -459,7 +459,7 @@ export const Adornments: Story = {
         <Input
           label='Search settings'
           startIcon={<Search />}
-          endIcon={<Check size={12} />}
+          endIcon={<Check size={14} />}
           endIconTone='success'
           startIconTone='primary'
           defaultValue='Theme'
@@ -492,7 +492,7 @@ export const RightSlotPriority: Story = {
           clearable
           clearIconTone='default'
           revealPassword
-          endIcon={<Check size={12} />}
+          endIcon={<Check size={14} />}
         />
 
         <Input
@@ -500,14 +500,14 @@ export const RightSlotPriority: Story = {
           value=''
           type='password'
           revealPassword
-          endIcon={<Check size={12} />}
+          endIcon={<Check size={14} />}
           placeholder='Password'
         />
 
         <Input
           label='Icon renders when no action is active'
           value=''
-          endIcon={<Check size={12} />}
+          endIcon={<Check size={14} />}
           endIconTone='success'
           placeholder='Verified value'
         />

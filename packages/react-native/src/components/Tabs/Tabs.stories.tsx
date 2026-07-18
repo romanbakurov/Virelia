@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Home, Profile, Settings } from '@vellira-ui/icons';
+import { Home, Settings, User } from '@vellira-ui/icons';
 import { Text } from 'react-native';
 
 import { useThemeStyles } from '../../theme';
@@ -149,7 +149,7 @@ const IconOnlyTabsStory = () => {
     <Tabs appearance='pills'>
       <Tabs.List>
         <Tabs.Tab index={0} icon={<Home />} />
-        <Tabs.Tab index={1} icon={<Profile />} />
+        <Tabs.Tab index={1} icon={<User />} />
         <Tabs.Tab index={2} icon={<Settings />} />
       </Tabs.List>
 

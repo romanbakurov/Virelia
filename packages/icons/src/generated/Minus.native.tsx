@@ -1,0 +1,16 @@
+import Svg, { Path } from 'react-native-svg';
+import type { SvgProps } from 'react-native-svg';
+
+type IconProps = SvgProps & {
+  size?: number | string;
+  color?: string;
+};
+const Minus = ({ size = 16, color = 'currentColor', ...props }: IconProps) => (
+  <Svg width={size} height={size} viewBox='0 0 24 24' fill={color} {...props}>
+    <Path
+      d='M20 11.2998C20.3866 11.2998 20.7002 11.6134 20.7002 12C20.7002 12.3866 20.3866 12.7002 20 12.7002H4C3.6134 12.7002 3.2998 12.3866 3.2998 12C3.2998 11.6134 3.6134 11.2998 4 11.2998H20Z'
+      fill={color}
+    />
+  </Svg>
+);
+export default Minus;

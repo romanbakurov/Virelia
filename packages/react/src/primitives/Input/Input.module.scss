@@ -289,15 +289,10 @@
   transform: none;
 }
 
-.startAdornment svg {
-  width: var(--space-4);
-  height: var(--space-4);
-}
-
+.startAdornment svg,
 .endAdornment svg {
-  flex: 0 0 var(--space-3);
-  width: var(--space-3);
-  height: var(--space-3);
+  display: block;
+  flex: 0 0 auto;
 }
 
 .inputWrapper:has(.input:hover:not(:disabled, :focus-visible)) {

@@ -6,7 +6,7 @@ type IconProps = SVGProps<SVGSVGElement> & {
 };
 const Exit = ({ size = 16, color = 'currentColor', ...props }: IconProps) => (
   <svg
-    viewBox='0 0 16 16'
+    viewBox='0 0 24 24'
     fill={color}
     xmlns='http://www.w3.org/2000/svg'
     width={size}

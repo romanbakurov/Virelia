@@ -1,0 +1,22 @@
+import type { SVGProps } from 'react';
+
+type IconProps = SVGProps<SVGSVGElement> & {
+  size?: number | string;
+  color?: string;
+};
+const Pause = ({ size = 16, color = 'currentColor', ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox='0 0 24 24'
+    fill={color}
+    xmlns='http://www.w3.org/2000/svg'
+    {...props}
+  >
+    <path
+      d='M6.2998 19V5C6.2998 4.6134 6.6134 4.2998 7 4.2998C7.3866 4.2998 7.7002 4.6134 7.7002 5V19C7.7002 19.3866 7.3866 19.7002 7 19.7002C6.6134 19.7002 6.2998 19.3866 6.2998 19ZM16.2998 15V5C16.2998 4.6134 16.6134 4.2998 17 4.2998C17.3866 4.2998 17.7002 4.6134 17.7002 5V15C17.7002 15.3866 17.3866 15.7002 17 15.7002C16.6134 15.7002 16.2998 15.3866 16.2998 15Z'
+      fill={color}
+    />
+  </svg>
+);
+export default Pause;

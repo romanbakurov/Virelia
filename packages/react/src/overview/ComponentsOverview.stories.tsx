@@ -3,13 +3,13 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Check,
-  Delete,
   Download,
-  DropdownMenu,
   Filter,
+  More,
   Save,
   Search,
   Settings,
+  Trash,
 } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
@@ -49,7 +49,7 @@ const dropdownItems = [
   { label: 'Download report', value: 'download', icon: <Download /> },
   { label: 'Filter view', value: 'filter', icon: <Filter /> },
   { type: 'separator' as const },
-  { label: 'Delete report', value: 'delete', icon: <Delete />, danger: true },
+  { label: 'Delete report', value: 'delete', icon: <Trash />, danger: true },
 ];
 
 const sectionStyle = {
@@ -433,7 +433,7 @@ function WebComponentsOverview() {
                 color='success'
                 variant='filled'
                 defaultValue='hello@vellira.dev'
-                endIcon={<Check size={12} />}
+                endIcon={<Check size={14} />}
                 endIconTone='success'
                 type='email'
               />
@@ -483,7 +483,7 @@ function WebComponentsOverview() {
               <Input
                 label='Verified email'
                 defaultValue='hello@vellira.dev'
-                endIcon={<Check size={12} />}
+                endIcon={<Check size={14} />}
                 endIconTone='success'
                 placeholder='name@company.com'
                 type='email'
@@ -492,7 +492,7 @@ function WebComponentsOverview() {
               <Input
                 label='Search settings'
                 startIcon={<Search />}
-                endIcon={<Check size={12} />}
+                endIcon={<Check size={14} />}
                 endIconTone='success'
                 startIconTone='primary'
                 defaultValue='Theme'
@@ -779,7 +779,7 @@ function WebComponentsOverview() {
               <Dropdown
                 label='More report actions'
                 ariaLabel='More report actions'
-                icon={<DropdownMenu />}
+                icon={<More />}
                 showArrow={false}
                 items={dropdownItems}
                 onSelect={noop}

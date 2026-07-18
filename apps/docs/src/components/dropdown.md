@@ -47,7 +47,7 @@ Prefer visible text for important actions. Icon-only triggers need a stable
 accessible label.
 
 ```tsx
-import { DropdownMenu } from '@vellira-ui/icons';
+import { More } from '@vellira-ui/icons';
 import { Button, Dropdown } from '@vellira-ui/react';
 
 <Dropdown
@@ -56,7 +56,7 @@ import { Button, Dropdown } from '@vellira-ui/react';
     <Button
       aria-label='More invoice actions'
       iconOnly
-      iconStart={<DropdownMenu />}
+      iconStart={<More />}
     />
   }
   items={items}
