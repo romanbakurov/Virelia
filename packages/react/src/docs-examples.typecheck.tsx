@@ -81,3 +81,35 @@ export function WebSelectMultipleValueChangeExample() {
     </Select>
   );
 }
+
+export function WebSelectAdvancedContractExample() {
+  const [teams, setTeams] = useState<string[]>(['product']);
+
+  return (
+    <Select
+      label='Teams'
+      description='Choose up to two teams.'
+      value={teams}
+      onValueChange={setTeams}
+      multiple
+      maxSelected={2}
+      closeOnSelect={false}
+      searchable
+      clearable
+      color='primary'
+      variant='outline'
+      onSearch={() => undefined}
+      empty='Nothing found'
+      loadingText='Searching...'
+    >
+      <Select.Group label='Core teams'>
+        <Select.Item value='product'>Product</Select.Item>
+        <Select.Item value='engineering'>Engineering</Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Item value='support' badge='NEW'>
+        Support
+      </Select.Item>
+    </Select>
+  );
+}
