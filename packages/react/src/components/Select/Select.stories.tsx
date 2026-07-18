@@ -536,10 +536,10 @@ const SelectWithOpenState = ({
   storyOptions = defaultOptions,
   ...args
 }: SelectStoryProps & { storyOptions?: StoryOption[] }) => {
-  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? true);
+  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? false);
 
   useEffect(() => {
-    setOpen(args.open ?? args.defaultOpen ?? true);
+    setOpen(args.open ?? args.defaultOpen ?? false);
   }, [args.open, args.defaultOpen]);
 
   return (
@@ -840,7 +840,6 @@ export const AsyncSearch: Story = {
 
 export const LongList: Story = {
   args: {
-    defaultOpen: true,
     placeholder: 'Choose country',
   },
   render: (args) => (
@@ -852,7 +851,6 @@ export const LongList: Story = {
 
 export const VirtualizedList: Story = {
   args: {
-    defaultOpen: true,
     virtual: { itemHeight: 40 },
     placeholder: 'Choose workspace',
   },
