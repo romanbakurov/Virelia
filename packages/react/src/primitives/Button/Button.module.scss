@@ -63,6 +63,10 @@ $button-appearances: solid, outline, ghost, soft, link;
   pointer-events: none;
 }
 
+.button.link::after {
+  content: none;
+}
+
 @each $appearance in $button-appearances {
   @each $color in $button-colors {
     .button.#{$appearance}.#{$color}:not(:disabled, .loading) {
@@ -96,6 +100,13 @@ $button-appearances: solid, outline, ghost, soft, link;
       @include button-focus-border($color, $appearance);
       @include focus-ring(var(--button-#{$color}-ring));
     }
+  }
+}
+
+@each $color in $button-colors {
+  .button.link.#{$color}:not(:disabled, .loading):hover,
+  .button.link.#{$color}:not(:disabled, .loading):active {
+    transform: none;
   }
 }
 
