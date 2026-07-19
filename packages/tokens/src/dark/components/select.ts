@@ -86,7 +86,7 @@ export const select = {
     optionPressedBorder: 'transparent',
     optionSelectedActiveBg: colors.primary[700],
     optionSelectedHoverBg: colors.primary[700],
-    optionSelectedPressedBg: colors.primary[600],
+    optionSelectedPressedBg: colors.vellira[850],
     optionSelectedBg: colors.primary[800],
   }),
   neutral: createSelectPalette(neutral, {
