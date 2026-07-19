@@ -318,7 +318,7 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('renders long option lists with FlatList', async () => {
+  it('renders long option lists with FlatList without forcing scroll on open', () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -337,22 +337,16 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
-    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
+    expect(list?.getAttribute('data-initial-scroll-index')).toBeNull();
     expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
-
-    await act(async () => {
-      await waitForSelectScroll();
-    });
-
-    expect(list?.getAttribute('data-scroll-to-index')).toBe('11');
-    expect(list?.getAttribute('data-scroll-to-offset')).toBe('594');
+    expect(list?.getAttribute('data-scroll-to-offset')).toBeNull();
     expect(list?.getAttribute('data-scroll-view-position')).toBeNull();
     expect(getButtonByText('Country 24')).toBeTruthy();
 
     unmount();
   });
 
-  it('keeps the selected middle option focused when reopening a virtual list', async () => {
+  it('does not force scroll when reopening a virtual list after middle selection', () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -363,10 +357,6 @@ describe('Native Select', () => {
     );
 
     openSelect(container);
-
-    await act(async () => {
-      await waitForSelectScroll();
-    });
 
     act(() => {
       getButtonByText('Country 16')?.click();
@@ -380,15 +370,9 @@ describe('Native Select', () => {
       '[data-testid="native-flat-list"]'
     );
 
-    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('15');
+    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBeNull();
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
-
-    await act(async () => {
-      await waitForSelectScroll();
-    });
-
-    expect(reopenedList?.getAttribute('data-scroll-to-index')).toBe('15');
-    expect(reopenedList?.getAttribute('data-scroll-to-offset')).toBe('810');
+    expect(reopenedList?.getAttribute('data-scroll-to-offset')).toBeNull();
     expect(reopenedList?.getAttribute('data-scroll-view-position')).toBeNull();
 
     unmount();
@@ -431,7 +415,7 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('delays search input focus until virtual selected option scroll settles', async () => {
+  it('does not auto focus search while opening a virtual list at a selected item', async () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -453,7 +437,7 @@ describe('Native Select', () => {
       await waitForSelectScroll();
     });
 
-    expect(document.activeElement).toBe(searchInput);
+    expect(document.activeElement).not.toBe(searchInput);
 
     unmount();
   });

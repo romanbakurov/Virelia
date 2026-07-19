@@ -1,6 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
-
-import type { FlatList as NativeFlatList } from 'react-native';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
@@ -28,10 +25,6 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
 
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
-  const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
-  const wasOpenRef = useRef(false);
-  const didScrollToSelectedRef = useRef(false);
-  const [openCycle, setOpenCycle] = useState(0);
   const context = useSelectContext();
   const {
     isOpen,
@@ -53,55 +46,7 @@ export const SelectContentSurface = () => {
     selectOption,
     selectGroup,
     itemHeight,
-    selectedRowIndex,
-    query,
   } = context;
-  const shouldScrollToSelected =
-    Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
-  const initialScrollIndex = shouldScrollToSelected
-    ? selectedRowIndex
-    : undefined;
-
-  useEffect(() => {
-    if (isOpen && !wasOpenRef.current) {
-      setOpenCycle((cycle) => cycle + 1);
-    }
-
-    wasOpenRef.current = isOpen;
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      didScrollToSelectedRef.current = false;
-      return;
-    }
-
-    if (!shouldScrollToSelected || didScrollToSelectedRef.current) return;
-
-    const scrollToSelected = () => {
-      didScrollToSelectedRef.current = true;
-      const selectedOffset = Math.max(0, selectedRowIndex * itemHeight);
-
-      listRef.current?.scrollToOffset({
-        offset: selectedOffset,
-        animated: false,
-      });
-      listRef.current?.scrollToIndex({
-        index: selectedRowIndex,
-        animated: false,
-      });
-    };
-
-    const scrollTimers = [0, 80, 180, 320].map((delay) =>
-      setTimeout(() => {
-        scrollToSelected();
-      }, delay)
-    );
-
-    return () => {
-      scrollTimers.forEach((timer) => clearTimeout(timer));
-    };
-  }, [isOpen, itemHeight, selectedRowIndex, shouldScrollToSelected]);
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -189,26 +134,17 @@ export const SelectContentSurface = () => {
         <SelectEmptyState />
       ) : (
         <FlatList
-          ref={listRef}
-          key={`select-list-${openCycle}`}
           data={filteredRows}
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
           style={styles.list}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
-          initialScrollIndex={initialScrollIndex}
           initialNumToRender={
             typeof context.virtual === 'object'
               ? context.virtual.initialNumToRender
               : 12
           }
-          onScrollToIndexFailed={(info) => {
-            listRef.current?.scrollToOffset({
-              offset: Math.max(0, info.index * itemHeight),
-              animated: false,
-            });
-          }}
           windowSize={
             typeof context.virtual === 'object' ? context.virtual.windowSize : 7
           }

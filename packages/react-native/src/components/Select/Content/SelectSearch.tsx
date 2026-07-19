@@ -27,16 +27,17 @@ export const SelectSearchField = () => {
     selectedRowIndex,
     virtual,
   } = useSelectContext();
-  const shouldDelayFocus = Boolean(virtual && selectedRowIndex > 0);
+  const shouldAutoFocus = !virtual || selectedRowIndex === 0;
 
   useEffect(() => {
-    const focusDelay = shouldDelayFocus ? 220 : 0;
+    if (!shouldAutoFocus) return;
+
     const focusTimer = setTimeout(() => {
       searchInputRef.current?.focus();
-    }, focusDelay);
+    }, 0);
 
     return () => clearTimeout(focusTimer);
-  }, [searchInputRef, shouldDelayFocus]);
+  }, [searchInputRef, shouldAutoFocus]);
 
   return (
     <View style={styles.searchWrap}>
@@ -56,7 +57,7 @@ export const SelectSearchField = () => {
         value={query}
         onChangeText={setQuery}
         placeholder={searchPlaceholder}
-        autoFocus={!shouldDelayFocus}
+        autoFocus={shouldAutoFocus}
         returnKeyType='search'
         placeholderTextColor={
           theme.components.select.dropdown.search.placeholder
