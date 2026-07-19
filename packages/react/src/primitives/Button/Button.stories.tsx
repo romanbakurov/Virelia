@@ -526,7 +526,11 @@ export const WithIcons: Story = {
               ['Settings', animatedIcons.Settings],
             ] as const
           ).map(([label, icon]) => (
-            <span key={label} style={animatedIconTileStyle}>
+            <span
+              key={label}
+              data-animated-icon-trigger=''
+              style={animatedIconTileStyle}
+            >
               <AnimatedIconPreview data={icon} size={18} />
               {label}
             </span>

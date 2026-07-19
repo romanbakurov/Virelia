@@ -387,6 +387,9 @@ importers:
       eslint-plugin-storybook:
         specifier: ^10.5.0
         version: 10.5.0(eslint@9.39.5(jiti@2.6.1))(storybook@10.5.0(@types/react@19.2.17)(prettier@3.9.5)(react@19.2.7))(typescript@6.0.3)
+      lottie-web:
+        specifier: ^5.13.0
+        version: 5.13.0
       sass:
         specifier: ^1.99.0
         version: 1.101.0
@@ -499,6 +502,9 @@ importers:
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
+      lottie-web:
+        specifier: ^5.13.0
+        version: 5.13.0
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -6609,6 +6615,9 @@ packages:
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
+
+  lottie-web@5.13.0:
+    resolution: {integrity: sha512-+gfBXl6sxXMPe8tKQm7qzLnUy5DUPJPKIyRHwtpCpyUEYjHYRJC/5gjUvdkuO2c3JllrPtHXH5UJJK8LRYl5yQ==}
 
   loupe@3.2.1:
     resolution: {integrity: sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ==}
@@ -15806,6 +15815,8 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
+
+  lottie-web@5.13.0: {}
 
   loupe@3.2.1: {}
 

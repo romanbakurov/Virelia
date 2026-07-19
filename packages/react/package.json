@@ -64,6 +64,7 @@
     "@vitest/coverage-v8": "^4.1.10",
     "axe-core": "^4.12.1",
     "jsdom": "^28.1.0",
+    "lottie-web": "^5.13.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "vite": "^8.1.4",
