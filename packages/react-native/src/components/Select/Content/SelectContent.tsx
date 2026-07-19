@@ -42,6 +42,8 @@ export const SelectContentSurface = () => {
     itemHeight,
     selectedRowIndex,
   } = context;
+  const shouldScrollToSelected =
+    Boolean(context.virtual) && selectedRowIndex > 0;
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -116,7 +118,9 @@ export const SelectContentSurface = () => {
           style={styles.list}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
-          initialScrollIndex={selectedRowIndex}
+          initialScrollIndex={
+            shouldScrollToSelected ? selectedRowIndex : undefined
+          }
           initialNumToRender={
             typeof context.virtual === 'object'
               ? context.virtual.initialNumToRender

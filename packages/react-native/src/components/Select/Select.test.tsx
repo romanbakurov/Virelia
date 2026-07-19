@@ -139,6 +139,11 @@ describe('Native Select', () => {
     expect(document.body.textContent).toContain('France');
     expect(document.body.textContent).toContain('Germany');
     expect(document.body.textContent).toContain('Spain');
+    expect(
+      document.body
+        .querySelector('[data-testid="native-flat-list"]')
+        ?.getAttribute('data-initial-scroll-index')
+    ).toBeNull();
 
     unmount();
   });
@@ -300,7 +305,12 @@ describe('Native Select', () => {
 
   it('renders long option lists with FlatList', () => {
     const { container, unmount } = render(
-      <Select label='Country' options={longOptions} defaultValue='country-12' />
+      <Select
+        label='Country'
+        options={longOptions}
+        defaultValue='country-12'
+        virtual
+      />
     );
 
     expect(container.textContent).toContain('Country 12');
@@ -312,6 +322,7 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
     expect(getButtonByText('Country 24')).toBeTruthy();
 
     unmount();

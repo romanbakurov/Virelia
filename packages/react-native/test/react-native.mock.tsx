@@ -359,14 +359,17 @@ export const FlatList = <T,>({
   keyExtractor,
   style,
   contentContainerStyle,
+  initialScrollIndex,
   testID,
 }: NativeProps & {
   data?: T[];
   renderItem: (info: { item: T; index: number }) => React.ReactNode;
   keyExtractor?: (item: T, index: number) => string;
+  initialScrollIndex?: number;
 }) => (
   <div
     data-testid={testID ?? 'native-flat-list'}
+    data-initial-scroll-index={initialScrollIndex}
     data-keyboard-should-persist-taps={undefined}
     style={flattenStyle(style)}
   >
