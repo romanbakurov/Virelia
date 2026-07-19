@@ -46,8 +46,44 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+const groupedSelectOptions = {
+  core: [
+    { label: 'Product', value: 'team-product' },
+    { label: 'Engineering', value: 'team-engineering' },
+    { label: 'Design', value: 'team-design' },
+    { label: 'Research', value: 'team-research' },
+    { label: 'Data', value: 'team-data' },
+  ],
+  operations: [
+    { label: 'Support', value: 'team-support' },
+    { label: 'Success', value: 'team-success' },
+    { label: 'Sales', value: 'team-sales' },
+    { label: 'Marketing', value: 'team-marketing' },
+    { label: 'Finance', value: 'team-finance' },
+  ],
+  platform: [
+    { label: 'Infrastructure', value: 'team-infrastructure' },
+    { label: 'Security', value: 'team-security' },
+    { label: 'Developer Experience', value: 'team-devex' },
+    { label: 'QA', value: 'team-qa' },
+  ],
+};
+
+const longSelectOptions = Array.from({ length: 80 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
+}));
+
 function renderSelectItems() {
   return selectOptions.map((option) => (
+    <Select.Item key={option.value} value={option.value} label={option.label} />
+  ));
+}
+
+function renderGroupedSelectItems(
+  items: Array<{ label: string; value: string }>
+) {
+  return items.map((option) => (
     <Select.Item key={option.value} value={option.value} label={option.label} />
   ));
 }
@@ -808,6 +844,40 @@ function NativeComponentsOverview() {
               <Select.Item value='support' label='Support' disabled />
             </Select.Group>
           </Select>
+          <Select
+            label='Grouped teams'
+            multiple
+            closeOnSelect={false}
+            searchable
+            clearable
+            defaultValue={['team-product', 'team-engineering', 'team-support']}
+            placeholder='Select teams'
+          >
+            <Select.Group label='Core teams' selectable selectLabel='All core'>
+              {renderGroupedSelectItems(groupedSelectOptions.core)}
+            </Select.Group>
+            <Select.Group
+              label='Operations'
+              selectable
+              selectLabel='All operations'
+            >
+              {renderGroupedSelectItems(groupedSelectOptions.operations)}
+            </Select.Group>
+            <Select.Group
+              label='Platform'
+              selectable
+              selectLabel='All platform'
+            >
+              {renderGroupedSelectItems(groupedSelectOptions.platform)}
+            </Select.Group>
+          </Select>
+          <Select
+            label='Long virtualized countries'
+            searchable
+            virtual={{ estimatedItemSize: 46, initialNumToRender: 16 }}
+            defaultValue='country-70'
+            options={longSelectOptions}
+          />
         </Section>
 
         <Section title='Dropdown'>
