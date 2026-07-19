@@ -1,55 +1,150 @@
 import type { Placement } from '@floating-ui/react';
 import type {
-  BaseDropdownGroup,
-  BaseDropdownMenuItem,
-  BaseDropdownProps,
-  BaseDropdownSeparator,
-  TextWrap,
-} from '@vellira-ui/types';
-import type { ReactNode } from 'react';
+  AnchorHTMLAttributes,
+  CSSProperties,
+  MouseEvent,
+  ReactNode,
+} from 'react';
 
-export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
-  label: ReactNode;
-  icon?: ReactNode;
-  shortcut?: string;
-}
+export type DropdownSize = 'sm' | 'md' | 'lg';
+export type DropdownColor =
+  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+export type DropdownItemColor =
+  'default' | 'primary' | 'success' | 'warning' | 'danger';
 
-export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {
-  label: ReactNode;
-}
+export type DropdownSelectEvent = {
+  originalEvent:
+    MouseEvent<HTMLElement> | KeyboardEvent | React.KeyboardEvent<HTMLElement>;
+  preventDefault: () => void;
+  defaultPrevented: boolean;
+};
 
-export type DropdownSeparator = BaseDropdownSeparator;
-
-export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
-
-export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
-  label?: ReactNode;
-  ariaLabel?: string;
-
-  trigger?: ReactNode;
-  icon?: ReactNode;
-  arrowIcon?: ReactNode;
-
-  items: DropdownItem[];
-
+export type DropdownProps = {
+  children: ReactNode;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  size?: DropdownSize;
+  color?: DropdownColor;
   placement?: Placement;
+  offset?: number;
   matchTriggerWidth?: boolean;
-
-  showArrow?: boolean;
-  rotateAngle?: number;
-  textWrap?: TextWrap;
-
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  portal?: boolean;
+  avoidCollisions?: boolean;
+  modal?: boolean;
+  closeOnSelect?: boolean;
+  loop?: boolean;
+  disabled?: boolean;
   className?: string;
-  triggerClassName?: string;
-  contentClassName?: string;
-  itemClassName?: string;
-}
+  loading?: boolean;
+  loadingText?: ReactNode;
+};
 
-export const isMenuItem = (item: DropdownItem): item is DropdownMenuItem =>
-  item.type === undefined || item.type === 'item';
+export type DropdownTriggerProps = {
+  children: ReactNode;
+  asChild?: boolean;
+  disabled?: boolean;
+  className?: string;
+};
 
-export const isGroup = (item: DropdownItem): item is DropdownGroup =>
-  item.type === 'group';
+export type DropdownContentProps = {
+  children?: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+};
 
-export const isSeparator = (item: DropdownItem): item is DropdownSeparator =>
-  item.type === 'separator';
+export type DropdownItemProps = {
+  children: ReactNode;
+  icon?: ReactNode;
+  description?: ReactNode;
+  badge?: ReactNode;
+  shortcut?: ReactNode;
+  color?: DropdownItemColor;
+  disabled?: boolean;
+  closeOnSelect?: boolean;
+  onSelect?: (event: DropdownSelectEvent) => void;
+  href?: string;
+  target?: AnchorHTMLAttributes<HTMLAnchorElement>['target'];
+  rel?: string;
+  download?: boolean | string;
+  className?: string;
+};
+
+export type DropdownCheckboxItemProps = {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  closeOnSelect?: boolean;
+  icon?: ReactNode;
+  shortcut?: ReactNode;
+  children: ReactNode;
+  className?: string;
+};
+
+export type DropdownRadioGroupProps = {
+  children?: ReactNode;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+};
+
+export type DropdownRadioItemProps = {
+  children: ReactNode;
+  value: string;
+  disabled?: boolean;
+  closeOnSelect?: boolean;
+  icon?: ReactNode;
+  shortcut?: ReactNode;
+  className?: string;
+};
+
+export type DropdownGroupProps = {
+  children?: ReactNode;
+};
+
+export type DropdownLabelProps = {
+  children?: ReactNode;
+  className?: string;
+};
+
+export type DropdownSeparatorProps = {
+  className?: string;
+};
+
+export type DropdownSubProps = {
+  children?: ReactNode;
+};
+
+export type DropdownSubTriggerProps = Omit<DropdownItemProps, 'onSelect'>;
+
+export type DropdownSubContentProps = {
+  children?: ReactNode;
+  className?: string;
+};
+
+export type DropdownItemIconProps = {
+  children?: ReactNode;
+};
+
+export type DropdownItemDescriptionProps = {
+  children?: ReactNode;
+};
+
+export type DropdownItemBadgeProps = {
+  children?: ReactNode;
+};
+
+export type DropdownItemShortcutProps = {
+  children?: ReactNode;
+};
+
+export type DropdownEmptyProps = {
+  children?: ReactNode;
+};
+
+export type DropdownLoadingProps = {
+  children?: ReactNode;
+};

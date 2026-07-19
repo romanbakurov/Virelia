@@ -1,3 +1,7 @@
+import { createDropdownPalette } from '../../factories/createDropdownPalette.js';
+import { createInputColorPalette } from '../../factories/createInputPalette.js';
+import { colors } from '../../primitives/colors.js';
+import { withAlpha } from '../../utils/color.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { menu } from '../semantic/menu.js';
@@ -5,7 +9,116 @@ import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
+const dropdownPaletteDefaults = {
+  fg: text.primary,
+  placeholder: text.secondary,
+  filledFocusBg: surface.subtle,
+  hoverBg: surface.hover,
+};
+
+const primary = createInputColorPalette({
+  ...dropdownPaletteDefaults,
+  accent: colors.primary[400],
+  accentHover: colors.primary[500],
+  accentSoft: colors.primary[900],
+  filledBg: colors.primary[950],
+  filledHoverBg: colors.primary[900],
+  ring: colors.primary[400],
+});
+
+const neutral = createInputColorPalette({
+  ...dropdownPaletteDefaults,
+  accent: colors.vellira[300],
+  accentHover: colors.vellira[400],
+  accentSoft: colors.vellira[800],
+  filledBg: colors.vellira[900],
+  filledHoverBg: colors.vellira[800],
+  hoverBg: colors.vellira[900],
+  ring: colors.vellira[400],
+});
+
+const success = createInputColorPalette({
+  ...dropdownPaletteDefaults,
+  accent: colors.success[400],
+  accentHover: colors.success[500],
+  accentSoft: colors.success[900],
+  filledBg: colors.success[950],
+  filledHoverBg: colors.success[900],
+  hoverBg: colors.success[950],
+  ring: colors.success[500],
+});
+
+const warning = createInputColorPalette({
+  ...dropdownPaletteDefaults,
+  accent: colors.warning[400],
+  accentHover: colors.warning[500],
+  accentSoft: colors.warning[900],
+  filledBg: colors.warning[950],
+  filledHoverBg: colors.warning[900],
+  hoverBg: colors.warning[950],
+  ring: colors.warning[500],
+});
+
+const danger = createInputColorPalette({
+  ...dropdownPaletteDefaults,
+  accent: colors.error[400],
+  accentHover: colors.error[500],
+  accentSoft: colors.error[900],
+  filledBg: colors.error[950],
+  filledHoverBg: colors.error[900],
+  hoverBg: colors.error[950],
+  ring: colors.error[500],
+});
+
 export const dropdown = {
+  primary: createDropdownPalette(primary, {
+    contentBorder: 'transparent',
+    itemActiveBg: withAlpha(colors.primary[400], 0.18),
+    itemActiveRing: 'transparent',
+    itemHoverBg: withAlpha(colors.primary[400], 0.14),
+    itemPressedBg: withAlpha(colors.primary[400], 0.22),
+  }),
+  neutral: createDropdownPalette(neutral, {
+    contentBorder: 'transparent',
+    itemActiveBg: colors.vellira[850],
+    itemActiveFg: text.primary,
+    itemActiveRing: 'transparent',
+    itemHoverBg: colors.vellira[700],
+    itemHoverFg: menu.item.hover.fg,
+    itemPressedBg: colors.vellira[900],
+    itemPressedFg: text.primary,
+  }),
+  success: createDropdownPalette(success, {
+    contentBorder: 'transparent',
+    itemActiveBg: withAlpha(colors.success[400], 0.18),
+    itemActiveFg: colors.success[300],
+    itemActiveRing: 'transparent',
+    itemHoverBg: withAlpha(colors.success[400], 0.14),
+    itemHoverFg: colors.success[300],
+    itemPressedBg: withAlpha(colors.success[400], 0.22),
+    itemPressedFg: colors.success[200],
+  }),
+  warning: createDropdownPalette(warning, {
+    contentBorder: 'transparent',
+    itemActiveBg: withAlpha(colors.warning[400], 0.18),
+    itemActiveFg: colors.warning[300],
+    itemActiveRing: 'transparent',
+    itemHoverBg: withAlpha(colors.warning[400], 0.14),
+    itemHoverFg: colors.warning[300],
+    itemPressedBg: withAlpha(colors.warning[400], 0.22),
+    itemPressedFg: colors.warning[200],
+  }),
+  danger: createDropdownPalette(danger, {
+    contentBorder: 'transparent',
+    itemActiveBg: withAlpha(colors.error[400], 0.18),
+    itemActiveFg: colors.error[300],
+    itemActiveRing: 'transparent',
+    itemHoverBg: withAlpha(colors.error[400], 0.14),
+    itemHoverFg: colors.error[300],
+    itemPressedBg: withAlpha(colors.error[400], 0.22),
+    itemPressedFg: colors.error[200],
+  }),
+
   trigger: {
     default: {
       bg: 'transparent',

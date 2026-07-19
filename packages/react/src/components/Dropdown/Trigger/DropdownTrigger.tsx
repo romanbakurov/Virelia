@@ -1,91 +1,100 @@
-import { type CSSProperties, forwardRef } from 'react';
+import { cloneElement, isValidElement } from 'react';
 
 import { cn } from '@utils/cn';
 import { ChevronDown } from '@vellira-ui/icons';
+import type {
+  HTMLAttributes,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  ReactElement,
+  Ref,
+} from 'react';
 
-import type { DropdownTriggerProps } from './types';
+import {
+  composeEventHandlers,
+  composeRefs,
+} from '../internal/composeEventHandlers';
+import {
+  useDropdownContext,
+  useDropdownTriggerContext,
+} from '../internal/DropdownContext';
+import type { DropdownSlotComponent } from '../internal/types';
+import type { DropdownTriggerProps } from '../types';
 
 import styles from './DropdownTrigger.module.scss';
 
-export const DropdownTrigger = forwardRef<
-  HTMLButtonElement,
-  DropdownTriggerProps
->(
-  (
-    {
-      children,
-      isOpen,
-      icon,
-      arrowIcon,
-      showArrow = true,
-      rotateAngle = 90,
-      size = 'md',
-      label,
-      ariaLabel,
-      className,
-      ...buttonProps
-    },
-    ref
-  ) => {
-    // const hasText = typeof children === 'string' && children.trim().length > 0;
-    const hasIcon = Boolean(icon);
-    const hasContent = Boolean(children);
+type TriggerChildProps = HTMLAttributes<HTMLElement> & {
+  disabled?: boolean;
+  ref?: Ref<HTMLElement>;
+};
 
-    const isOnlyIcon = hasIcon && !hasContent;
-    const shouldShowArrow = showArrow && hasContent;
-    const arrow = arrowIcon ?? <ChevronDown />;
-    const resolvedAriaLabel =
-      ariaLabel ??
-      (isOnlyIcon
-        ? typeof label === 'string'
-          ? label
-          : 'Open menu'
-        : undefined);
+export const DropdownTrigger: DropdownSlotComponent<DropdownTriggerProps> = (
+  props
+) => <DropdownTriggerSurface {...props} />;
 
-    return (
-      <button
-        {...buttonProps}
-        ref={ref}
-        type='button'
-        className={cn(
-          styles.button,
-          styles[size],
-          {
-            [styles.disabled]: buttonProps.disabled,
-            [styles.iconOnly]: isOnlyIcon,
-          },
-          className
-        )}
-        aria-label={resolvedAriaLabel}
-        aria-expanded={isOpen}
-        aria-haspopup='menu'
-        style={
-          {
-            '--dropdown-rotate-angle': `${rotateAngle}deg`,
-          } as CSSProperties
-        }
-      >
-        {hasIcon && (
-          <span aria-hidden='true' className={styles.iconLeft}>
-            {icon}
-          </span>
-        )}
+DropdownTrigger.__velliraDropdownPart = 'trigger';
+DropdownTrigger.displayName = 'Dropdown.Trigger';
 
-        {children}
+export const DropdownTriggerSurface = ({
+  children,
+  asChild = false,
+  disabled,
+  className,
+}: DropdownTriggerProps) => {
+  const root = useDropdownContext();
+  const trigger = useDropdownTriggerContext();
+  const child =
+    asChild && isValidElement<TriggerChildProps>(children)
+      ? (children as ReactElement<TriggerChildProps>)
+      : undefined;
+  const isDisabled = root.disabled || disabled;
+  const triggerProps = {
+    id: trigger.triggerId,
+    ref: child
+      ? composeRefs(child.props.ref, trigger.setTriggerRef)
+      : trigger.setTriggerRef,
+    'aria-controls': trigger.isOpen ? trigger.contentId : undefined,
+    'aria-disabled': isDisabled || undefined,
+    'aria-expanded': trigger.isOpen,
+    'aria-haspopup': 'menu' as const,
+    className: cn(
+      !child && styles.button,
+      !child && styles[root.size],
+      !child && styles[root.color],
+      className
+    ),
+    'data-state': trigger.isOpen ? 'open' : 'closed',
+    disabled: isDisabled || undefined,
+    onClick: composeEventHandlers(
+      child?.props.onClick as MouseEventHandler<HTMLElement> | undefined,
+      trigger.onClick
+    ),
+    onKeyDown: composeEventHandlers(
+      child?.props.onKeyDown as KeyboardEventHandler<HTMLElement> | undefined,
+      trigger.onKeyDown
+    ),
+  };
 
-        {shouldShowArrow && (
-          <span
-            aria-hidden='true'
-            className={cn(styles.arrow, {
-              [styles.open]: isOpen,
-            })}
-          >
-            {arrow}
-          </span>
-        )}
-      </button>
-    );
+  if (child) {
+    return cloneElement(child, {
+      ...triggerProps,
+      className: cn(child.props.className, className),
+    });
   }
-);
 
-DropdownTrigger.displayName = 'DropdownTrigger';
+  return (
+    <button type='button' {...triggerProps}>
+      <span className={styles.label}>{children}</span>
+      <span
+        className={cn(styles.arrow, {
+          [styles.open]: trigger.isOpen,
+        })}
+        aria-hidden='true'
+      >
+        <ChevronDown />
+      </span>
+    </button>
+  );
+};
+
+DropdownTriggerSurface.displayName = 'DropdownTriggerSurface';

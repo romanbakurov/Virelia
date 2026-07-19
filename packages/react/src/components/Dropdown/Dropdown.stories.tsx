@@ -2,25 +2,84 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
+  ChevronDown,
   Copy,
+  Download,
   Edit,
+  Exit,
+  File,
+  Folder,
   More,
-  Plus,
   Refresh,
+  Save,
   Settings,
   Trash,
+  Upload,
+  User,
+  Users,
 } from '@vellira-ui/icons';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
-import { Dropdown } from '../Dropdown';
+import { Button } from '../../primitives/Button';
+
+import { Dropdown } from './Dropdown';
 
 const actionItems = [
-  { label: 'Edit', value: 'edit', icon: <Edit /> },
-  { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-  { label: 'Refresh', value: 'refresh', icon: <Refresh /> },
-  { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
+  {
+    label: 'Edit',
+    icon: <Edit />,
+    shortcut: '⌘E',
+  },
+  {
+    label: 'Duplicate',
+    icon: <Copy />,
+    shortcut: '⌘D',
+  },
+  {
+    label: 'Move to folder',
+    icon: <Folder />,
+  },
 ];
+
+const richActionItems = [
+  {
+    label: 'Profile settings',
+    description: 'Account, billing, and security',
+    icon: <Settings />,
+    badge: 'Pro',
+    shortcut: '⌘P',
+  },
+  {
+    label: 'Workspace members',
+    description: 'Manage roles and invitations',
+    icon: <Users />,
+    badge: '12',
+    shortcut: '⌘M',
+  },
+  {
+    label: 'Export report',
+    description: 'Download the current workspace report',
+    icon: <Download />,
+    shortcut: '⌘⇧E',
+  },
+];
+
+const groupedActions = {
+  project: [
+    { label: 'Rename', icon: <Edit />, shortcut: '⌘R' },
+    { label: 'Duplicate', icon: <Copy />, shortcut: '⌘D' },
+    { label: 'Move to folder', icon: <Folder /> },
+  ],
+  sharing: [
+    { label: 'Invite members', icon: <Users /> },
+    { label: 'Copy invite link', icon: <Copy /> },
+  ],
+  system: [
+    { label: 'Refresh', icon: <Refresh />, shortcut: '⌘⇧R' },
+    { label: 'Export', icon: <Download /> },
+  ],
+};
 
 const meta = {
   title: 'Components/Dropdown',
@@ -32,98 +91,150 @@ const meta = {
         component: `
 ### Dropdown Component
 
-Contextual action menu opened from a trigger. Dropdown is for commands and
-secondary actions, not for selecting a saved form value.
+Action menu for commands, toggles, radio choices, links, and submenus.
 
 **Features**
+- Compound API with Trigger, Content, Group, Label, Item, CheckboxItem,
+  RadioGroup, RadioItem, Separator, Sub, SubTrigger, SubContent, Empty, and
+  Loading parts
+- Trigger composition through asChild, usually with Button
 - Controlled and uncontrolled open state
-- Text, icon and custom triggers
-- Item groups and separators
-- Disabled and danger action items
-- Keyboard navigation, Home/End and typeahead search
-- Accessible trigger and menu semantics
-- Custom placement and trigger-width matching
+- Sizes, semantic focus color, disabled state, placement, collision avoidance,
+  custom width, trigger-width matching, modal scroll lock, and keyboard loop
+- Item metadata through icon, description, badge, shortcut props or compound
+  item slots
+- Action selection with onSelect for pointer, keyboard, touch, and typeahead;
+  preventDefault keeps the menu open
+- Link items through href without a separate Link component
+- Checkbox and radio menu items for action-menu settings
+- Menu semantics with role="menu", role="menuitem", role="menuitemcheckbox",
+  and role="menuitemradio"
 
 ### Usage
 
-Use Dropdown for secondary actions that should not be visible all the time, such
-as edit, duplicate, archive, delete or account commands. Use Select when the
-user is choosing a form value from a compact list. Use RadioGroup when a small
-set of choices should stay visible for comparison.
+\`\`\`tsx
+<Dropdown color='primary' size='md' placement='bottom-end'>
+  <Dropdown.Trigger asChild>
+    <Button appearance='outline' color='neutral' iconEnd={<ChevronDown />}>
+      Actions
+    </Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content>
+    <Dropdown.Item icon={<Edit />} shortcut='⌘E' onSelect={handleEdit}>
+      Edit
+    </Dropdown.Item>
+    <Dropdown.Item icon={<Copy />} onSelect={handleDuplicate}>
+      Duplicate
+    </Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger' icon={<Trash />} onSelect={handleDelete}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>
+\`\`\`
 
 \`\`\`tsx
-<Dropdown
-  label='Actions'
-  trigger='Actions'
-  items={[
-    { label: 'Edit', value: 'edit' },
-    { label: 'Delete', value: 'delete', danger: true },
-  ]}
-  onSelect={handleAction}
-/>
+<Dropdown closeOnSelect={false}>
+  <Dropdown.Trigger asChild>
+    <Button appearance='outline' color='neutral'>
+      View options
+    </Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content>
+    <Dropdown.CheckboxItem checked={showArchived} onCheckedChange={setShowArchived}>
+      Show archived
+    </Dropdown.CheckboxItem>
+    <Dropdown.RadioGroup value={density} onValueChange={setDensity}>
+      <Dropdown.RadioItem value='comfortable'>Comfortable</Dropdown.RadioItem>
+      <Dropdown.RadioItem value='compact'>Compact</Dropdown.RadioItem>
+    </Dropdown.RadioGroup>
+  </Dropdown.Content>
+</Dropdown>
 \`\`\`
 `,
       },
     },
   },
   args: {
-    label: 'Actions',
-    trigger: 'Actions',
-    items: actionItems,
+    color: 'primary',
+    size: 'md',
+    placement: 'bottom-start',
+    closeOnSelect: true,
+    loop: true,
+    portal: true,
+    avoidCollisions: true,
+    offset: 2,
     disabled: false,
-    showArrow: true,
-    onSelect: noop,
-    onOpenChange: noop,
+    loading: false,
   },
   argTypes: {
-    label: {
-      description:
-        'Trigger label. Use ariaLabel when the rendered label is not plain text.',
-      control: 'text',
+    children: {
+      description: 'Compound Dropdown parts.',
+      control: false,
       table: {
         type: { summary: 'ReactNode' },
       },
     },
-    ariaLabel: {
-      description:
-        'Accessible trigger label used when label is not plain text or the trigger is icon-only.',
-      control: 'text',
+    open: {
+      description: 'Controlled open state.',
+      control: false,
       table: {
-        type: { summary: 'string' },
+        type: { summary: 'boolean' },
       },
     },
-    trigger: {
-      description:
-        'Custom trigger content displayed inside the dropdown button.',
-      control: 'text',
+    defaultOpen: {
+      description: 'Initial uncontrolled open state.',
+      control: 'boolean',
       table: {
-        type: { summary: 'ReactNode' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
-    items: {
-      description: 'List of dropdown items, groups, and separators.',
-      control: 'object',
+    onOpenChange: {
+      description: 'Called when the open state changes.',
+      action: 'open changed',
+      table: {
+        type: { summary: '(open: boolean) => void' },
+      },
+    },
+    size: {
+      description: 'Menu item density and default trigger size.',
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: `'sm' | 'md' | 'lg'` },
+        defaultValue: { summary: 'md' },
+      },
+    },
+    color: {
+      description: 'Semantic color used for active and focus item states.',
+      control: 'radio',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
       table: {
         type: {
-          summary: 'Array<DropdownItem | DropdownGroup | DropdownSeparator>',
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
         },
+        defaultValue: { summary: 'primary' },
       },
     },
     placement: {
-      description: 'Preferred dropdown menu placement.',
+      description: 'Preferred floating menu placement.',
       control: 'select',
       options: [
-        'top',
         'top-start',
+        'top',
         'top-end',
-        'right',
         'right-start',
+        'right',
         'right-end',
-        'bottom',
         'bottom-start',
+        'bottom',
         'bottom-end',
-        'left',
         'left-start',
+        'left',
         'left-end',
       ],
       table: {
@@ -131,115 +242,117 @@ set of choices should stay visible for comparison.
         defaultValue: { summary: 'bottom-start' },
       },
     },
+    offset: {
+      description: 'Gap in pixels between trigger and content.',
+      control: 'number',
+      table: {
+        type: { summary: 'number' },
+        defaultValue: { summary: '2' },
+      },
+    },
     matchTriggerWidth: {
-      description: 'Makes the menu match the trigger width.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    open: {
-      description: 'Controlled open state.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    defaultOpen: {
-      description: 'Initial open state for uncontrolled usage.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    disabled: {
-      description: 'Disables user interaction.',
+      description: 'Matches menu width to the trigger width.',
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
       },
     },
-    showArrow: {
-      description: 'Controls whether the trigger arrow is rendered.',
+    minWidth: {
+      description: 'Minimum content width.',
+      control: 'text',
+      table: {
+        type: { summary: 'number | string' },
+      },
+    },
+    maxWidth: {
+      description: 'Maximum content width.',
+      control: 'text',
+      table: {
+        type: { summary: 'number | string' },
+      },
+    },
+    portal: {
+      description: 'Renders content in a portal.',
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' },
       },
     },
-    rotateAngle: {
-      description: 'Rotation angle applied to the icon-only trigger on hover.',
-      control: 'number',
+    avoidCollisions: {
+      description: 'Flips and shifts content to keep it in view.',
+      control: 'boolean',
       table: {
-        type: { summary: 'number' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
-    textWrap: {
-      description: 'Default text wrapping behavior for dropdown item labels.',
-      control: 'radio',
-      options: ['truncate', 'wrap', 'nowrap'],
+    modal: {
+      description: 'Locks page scroll while open.',
+      control: 'boolean',
       table: {
-        type: { summary: `'truncate' | 'wrap' | 'nowrap'` },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
-    onSelect: {
-      description: 'Called when a dropdown action item is selected.',
-      action: 'selected',
+    closeOnSelect: {
+      description:
+        'Default close behavior for action and radio items. Checkbox items default to staying open.',
+      control: 'boolean',
       table: {
-        type: { summary: '(value: string) => void' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
-    onOpenChange: {
-      description: 'Called when the dropdown requests an open state change.',
-      action: 'open changed',
+    loop: {
+      description: 'Loops keyboard navigation at menu boundaries.',
+      control: 'boolean',
       table: {
-        type: { summary: '(open: boolean) => void' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    disabled: {
+      description: 'Disables the trigger and prevents opening.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    loading: {
+      description: 'Blocks item selection and renders loading content.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    loadingText: {
+      description: 'Accessible loading message.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+        defaultValue: { summary: 'Loading actions...' },
       },
     },
     className: {
-      description: 'Class name applied to the root container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    triggerClassName: {
-      description: 'Class name applied to the trigger button.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    contentClassName: {
-      description: 'Class name applied to the menu content.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    itemClassName: {
-      description: 'Class name applied to every menu item.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    icon: {
+      description: 'Additional class name for the Dropdown root wrapper.',
       control: false,
-      table: { disable: true },
-    },
-    arrowIcon: {
-      control: false,
-      table: { disable: true },
+      table: {
+        type: { summary: 'string' },
+      },
     },
   },
 } satisfies Meta<typeof Dropdown>;
 
-export default meta;
-
-type Story = StoryObj<typeof meta>;
-type DropdownStoryProps = ComponentProps<typeof Dropdown>;
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
 
 const sectionStyle = {
   display: 'flex',
@@ -253,18 +366,38 @@ const sectionStyle = {
   background: 'var(--surface-subtle)',
 } satisfies CSSProperties;
 
-const subtitleStyle = {
-  margin: 0,
-  color: 'var(--text-secondary)',
-  fontSize: 13,
-  fontWeight: 600,
+const gridStyle = {
+  display: 'grid',
+  gap: 16,
 } satisfies CSSProperties;
 
-const statusStyle = {
-  margin: 0,
-  color: 'var(--text-secondary)',
-  fontSize: 13,
+const matrixStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, max-content))',
+  gap: 12,
+  alignItems: 'start',
 } satisfies CSSProperties;
+
+const placementExamples = [
+  { label: 'bottomLeft', placement: 'bottom-start' },
+  { label: 'bottom', placement: 'bottom' },
+  { label: 'bottomRight', placement: 'bottom-end' },
+  { label: 'topLeft', placement: 'top-start' },
+  { label: 'top', placement: 'top' },
+  { label: 'topRight', placement: 'top-end' },
+  { label: 'leftTop', placement: 'left-start' },
+  { label: 'left', placement: 'left' },
+  { label: 'leftBottom', placement: 'left-end' },
+  { label: 'rightTop', placement: 'right-start' },
+  { label: 'right', placement: 'right' },
+  { label: 'rightBottom', placement: 'right-end' },
+] as const;
+
+const triggerButtonPaddingBySize = {
+  sm: 'var(--space-2) var(--space-3)',
+  md: 'var(--space-3) var(--space-4)',
+  lg: 'var(--space-4) var(--space-5)',
+} satisfies Record<NonNullable<DropdownStoryProps['size']>, string>;
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -275,37 +408,157 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function InteractiveDropdown(args: DropdownStoryProps) {
-  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? false);
-  const [selected, setSelected] = useState<string>();
+export default meta;
 
-  useEffect(() => {
-    setOpen(args.open ?? args.defaultOpen ?? false);
-  }, [args.open, args.defaultOpen]);
+type Story = StoryObj<typeof meta>;
+type DropdownStoryProps = ComponentProps<typeof Dropdown>;
+type StoryAction = {
+  label: string;
+  icon?: ReactNode;
+  description?: ReactNode;
+  badge?: ReactNode;
+  shortcut?: ReactNode;
+  disabled?: boolean;
+};
 
+function renderActionItems(items: StoryAction[] = actionItems) {
   return (
     <>
-      <Dropdown
-        {...args}
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen);
-          args.onOpenChange?.(nextOpen);
-        }}
-        onSelect={(value) => {
-          setSelected(value);
-          args.onSelect?.(value);
-        }}
-      />
-      <p style={statusStyle}>Selected action: {selected ?? 'none'}</p>
+      {items.map((item) => (
+        <Dropdown.Item
+          key={item.label}
+          icon={item.icon}
+          description={item.description}
+          badge={item.badge}
+          shortcut={item.shortcut}
+          disabled={item.disabled}
+          onSelect={noop}
+        >
+          {item.label}
+        </Dropdown.Item>
+      ))}
     </>
+  );
+}
+
+function ActionDropdown({
+  trigger = 'Actions',
+  buttonIcon,
+  children,
+  ...args
+}: DropdownStoryProps & {
+  trigger?: ReactNode;
+  buttonIcon?: ReactNode;
+}) {
+  return (
+    <Dropdown {...args}>
+      <Dropdown.Trigger asChild>
+        <Button
+          appearance='link'
+          color={args.color ?? 'primary'}
+          iconStart={buttonIcon}
+          iconEnd={<ChevronDown />}
+          size={args.size}
+          style={{
+            padding: triggerButtonPaddingBySize[args.size ?? 'md'],
+          }}
+        >
+          {trigger}
+        </Button>
+      </Dropdown.Trigger>
+      <Dropdown.Content>{children ?? renderActionItems()}</Dropdown.Content>
+    </Dropdown>
+  );
+}
+
+function DropdownWithOpenState({
+  children,
+  defaultOpen,
+  open,
+  ...args
+}: DropdownStoryProps) {
+  const [isOpen, setIsOpen] = useState(open ?? defaultOpen ?? false);
+
+  useEffect(() => {
+    setIsOpen(open ?? defaultOpen ?? false);
+  }, [open, defaultOpen]);
+
+  return (
+    <ActionDropdown
+      {...args}
+      open={isOpen}
+      onOpenChange={(nextOpen) => {
+        setIsOpen(nextOpen);
+        args.onOpenChange?.(nextOpen);
+      }}
+    >
+      {children}
+    </ActionDropdown>
+  );
+}
+
+function CheckboxAndRadioMenu(args: DropdownStoryProps) {
+  const [showArchived, setShowArchived] = useState(false);
+  const [compactMode, setCompactMode] = useState(true);
+  const [density, setDensity] = useState('comfortable');
+
+  return (
+    <ActionDropdown {...args} trigger='View options' closeOnSelect={false}>
+      <Dropdown.Group>
+        <Dropdown.Label>Visibility</Dropdown.Label>
+        <Dropdown.CheckboxItem
+          checked={showArchived}
+          onCheckedChange={setShowArchived}
+        >
+          Show archived
+        </Dropdown.CheckboxItem>
+        <Dropdown.CheckboxItem
+          checked={compactMode}
+          onCheckedChange={setCompactMode}
+        >
+          Compact rows
+        </Dropdown.CheckboxItem>
+      </Dropdown.Group>
+
+      <Dropdown.Separator />
+
+      <Dropdown.Group>
+        <Dropdown.Label>Density</Dropdown.Label>
+        <Dropdown.RadioGroup value={density} onValueChange={setDensity}>
+          <Dropdown.RadioItem value='comfortable'>
+            Comfortable
+          </Dropdown.RadioItem>
+          <Dropdown.RadioItem value='compact'>Compact</Dropdown.RadioItem>
+          <Dropdown.RadioItem value='dense'>Dense</Dropdown.RadioItem>
+        </Dropdown.RadioGroup>
+      </Dropdown.Group>
+    </ActionDropdown>
+  );
+}
+
+function ControlledOpenMenu(args: DropdownStoryProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={gridStyle}>
+      <Button appearance='soft' color='neutral' onClick={() => setOpen(true)}>
+        Open from outside
+      </Button>
+
+      <ActionDropdown
+        {...args}
+        trigger='Controlled menu'
+        open={open}
+        onOpenChange={setOpen}
+      />
+    </div>
   );
 }
 
 export const Playground: Story = {
   render: (args) => (
     <Section title='Playground'>
-      <InteractiveDropdown {...args} />
+      <ActionDropdown {...args} minWidth={220} />
     </Section>
   ),
 };
@@ -313,18 +566,7 @@ export const Playground: Story = {
 export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const Controlled: Story = {
-  args: {
-    open: false,
-  },
-  render: (args) => (
-    <Section title='Controlled'>
-      <InteractiveDropdown {...args} />
+      <ActionDropdown {...args} minWidth={220} />
     </Section>
   ),
 };
@@ -335,161 +577,418 @@ export const Uncontrolled: Story = {
   },
   render: (args) => (
     <Section title='Uncontrolled'>
-      <Dropdown {...args} />
+      <ActionDropdown {...args} minWidth={220} />
     </Section>
   ),
 };
 
 export const IconOnly: Story = {
-  args: {
-    label: 'More actions',
-    ariaLabel: 'More actions',
-    trigger: undefined,
-    icon: <More style={{ width: 20, height: 20 }} />,
-    showArrow: false,
-  },
   render: (args) => (
-    <Section title='IconOnly'>
-      <Dropdown {...args} />
+    <Section title='Icon only'>
+      <ActionDropdown {...args} trigger='More actions' minWidth={220}>
+        {renderActionItems()}
+      </ActionDropdown>
     </Section>
   ),
 };
 
-export const CustomTrigger: Story = {
-  args: {
-    label: 'Account actions',
-    trigger: (
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 8,
-          minWidth: 0,
-        }}
-      >
-        <Settings style={{ width: 16, height: 16 }} />
-        Account actions
-      </span>
-    ),
-  },
-  render: (args) => (
-    <Section title='CustomTrigger'>
-      <Dropdown {...args} />
+export const SimpleUsage: Story = {
+  render: () => (
+    <Section title='Simple usage'>
+      <Dropdown>
+        <Dropdown.Trigger asChild>
+          <Button appearance='outline' color='neutral'>
+            Actions
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item onSelect={noop}>Edit</Dropdown.Item>
+          <Dropdown.Item onSelect={noop}>Duplicate</Dropdown.Item>
+          <Dropdown.Item color='danger' onSelect={noop}>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
 
-export const WithGroups: Story = {
-  args: {
-    label: 'Document actions',
-    trigger: 'Document actions',
-    items: [
-      { type: 'group', label: 'File' },
-      { label: 'New document', value: 'new', icon: <Plus /> },
-      { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-      { type: 'separator' },
-      { type: 'group', label: 'Settings' },
-      { label: 'Preferences', value: 'settings', icon: <Settings /> },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='WithGroups'>
-      <Dropdown {...args} />
+export const AdvancedUsage: Story = {
+  render: () => (
+    <Section title='Advanced usage'>
+      <ActionDropdown trigger='Project actions' minWidth={280}>
+        <Dropdown.Group>
+          <Dropdown.Label>Project</Dropdown.Label>
+          <Dropdown.Item icon={<Edit />} shortcut='⌘E'>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item icon={<Copy />} shortcut='⌘D'>
+            Duplicate
+          </Dropdown.Item>
+        </Dropdown.Group>
+
+        <Dropdown.Separator />
+
+        <Dropdown.Sub>
+          <Dropdown.SubTrigger icon={<Upload />}>Export</Dropdown.SubTrigger>
+          <Dropdown.SubContent>
+            <Dropdown.Item icon={<File />}>Export as PDF</Dropdown.Item>
+            <Dropdown.Item icon={<Download />}>Download archive</Dropdown.Item>
+          </Dropdown.SubContent>
+        </Dropdown.Sub>
+
+        <Dropdown.Separator />
+
+        <Dropdown.Item color='danger' icon={<Trash />}>
+          Delete
+        </Dropdown.Item>
+      </ActionDropdown>
     </Section>
   ),
 };
 
-export const WithDisabledItems: Story = {
-  args: {
-    label: 'Project actions',
-    trigger: 'Project actions',
-    items: [
-      { label: 'Edit', value: 'edit', icon: <Edit /> },
-      { label: 'Refresh', value: 'refresh', icon: <Refresh />, disabled: true },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='WithDisabledItems'>
-      <Dropdown {...args} />
+export const AsChildTrigger: Story = {
+  render: () => (
+    <Section title='asChild trigger'>
+      <Dropdown placement='bottom-start' minWidth={220}>
+        <Dropdown.Trigger asChild>
+          <Button appearance='soft' color='neutral' iconStart={<More />}>
+            More actions
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content>{renderActionItems()}</Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
 
-export const DangerActions: Story = {
-  args: {
-    label: 'Danger actions',
-    trigger: 'Danger actions',
-    items: [
-      { label: 'Archive project', value: 'archive' },
-      { label: 'Delete draft', value: 'delete-draft', danger: true },
-      { label: 'Delete project', value: 'delete-project', danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='DangerActions'>
-      <Dropdown {...args} />
+export const Sizes: Story = {
+  render: () => (
+    <Section title='Sizes'>
+      <div style={matrixStyle}>
+        {(['sm', 'md', 'lg'] as const).map((size) => (
+          <ActionDropdown
+            key={size}
+            trigger={size}
+            size={size}
+            minWidth={200}
+          />
+        ))}
+      </div>
     </Section>
   ),
 };
 
-export const LongLabels: Story = {
-  args: {
-    label: 'Long labels',
-    trigger: 'Long labels',
-    textWrap: 'wrap',
-    matchTriggerWidth: true,
-    items: [
-      {
-        label:
-          'Rename this project using the full generated customer workspace title',
-        value: 'rename-long',
-      },
-      {
-        label:
-          'Archive all completed tasks and notify every workspace collaborator',
-        value: 'archive-long',
-      },
-    ],
-  },
-  render: (args) => (
-    <Section title='LongLabels'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const Placement: Story = {
-  args: {
-    placement: 'bottom-end',
-  },
-  render: (args) => (
-    <Section title='Placement'>
+export const Colors: Story = {
+  render: () => (
+    <Section title='Colors'>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: 16,
-          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, max-content))',
+          gap: 12,
+          alignItems: 'start',
         }}
       >
-        <Dropdown {...args} placement='bottom-start' trigger='Bottom start' />
-        <Dropdown {...args} placement='bottom-end' trigger='Bottom end' />
+        {(['primary', 'neutral', 'success', 'warning', 'danger'] as const).map(
+          (color) => (
+            <ActionDropdown
+              key={color}
+              trigger={color}
+              color={color}
+              minWidth={200}
+            />
+          )
+        )}
       </div>
+    </Section>
+  ),
+};
+
+export const Placements: Story = {
+  render: () => (
+    <Section title='Placements'>
+      <div style={matrixStyle}>
+        {placementExamples.map(({ label, placement }) => (
+          <ActionDropdown
+            key={label}
+            trigger={label}
+            placement={placement}
+            minWidth={200}
+          />
+        ))}
+      </div>
+    </Section>
+  ),
+};
+
+export const Width: Story = {
+  render: () => (
+    <Section title='Width'>
+      <div style={gridStyle}>
+        <ActionDropdown
+          trigger='Match trigger width'
+          matchTriggerWidth
+          minWidth={260}
+        />
+        <ActionDropdown trigger='Fixed max width' minWidth={240} maxWidth={260}>
+          {renderActionItems(richActionItems)}
+        </ActionDropdown>
+      </div>
+    </Section>
+  ),
+};
+
+export const Groups: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Groups'>
+      <DropdownWithOpenState {...args} minWidth={260}>
+        <Dropdown.Group>
+          <Dropdown.Label>Project</Dropdown.Label>
+          {renderActionItems(groupedActions.project)}
+        </Dropdown.Group>
+        <Dropdown.Separator />
+        <Dropdown.Group>
+          <Dropdown.Label>Sharing</Dropdown.Label>
+          {renderActionItems(groupedActions.sharing)}
+        </Dropdown.Group>
+        <Dropdown.Separator />
+        <Dropdown.Group>
+          <Dropdown.Label>System</Dropdown.Label>
+          {renderActionItems(groupedActions.system)}
+        </Dropdown.Group>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const RichItems: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Rich items'>
+      <DropdownWithOpenState {...args} minWidth={320}>
+        {renderActionItems(richActionItems)}
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const CompoundSlots: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Compound slots'>
+      <DropdownWithOpenState {...args} minWidth={320}>
+        <Dropdown.Item>
+          <Dropdown.ItemIcon>
+            <User />
+          </Dropdown.ItemIcon>
+          Roman Bakurov
+          <Dropdown.ItemDescription>roman@example.com</Dropdown.ItemDescription>
+          <Dropdown.ItemBadge>Owner</Dropdown.ItemBadge>
+          <Dropdown.ItemShortcut>⌘1</Dropdown.ItemShortcut>
+        </Dropdown.Item>
+        <Dropdown.Item>
+          <Dropdown.ItemIcon>
+            <Settings />
+          </Dropdown.ItemIcon>
+          Workspace settings
+          <Dropdown.ItemDescription>
+            Members, billing, and access
+          </Dropdown.ItemDescription>
+        </Dropdown.Item>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const CheckboxAndRadio: Story = {
+  render: (args) => (
+    <Section title='Checkbox and radio'>
+      <CheckboxAndRadioMenu {...args} minWidth={260} />
+    </Section>
+  ),
+};
+
+export const Submenus: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Submenus'>
+      <DropdownWithOpenState {...args} minWidth={240}>
+        <Dropdown.Item icon={<Copy />}>Copy link</Dropdown.Item>
+
+        <Dropdown.Sub>
+          <Dropdown.SubTrigger icon={<Upload />}>Export</Dropdown.SubTrigger>
+          <Dropdown.SubContent>
+            <Dropdown.Item icon={<File />}>Export as PDF</Dropdown.Item>
+            <Dropdown.Item icon={<Download />}>Download archive</Dropdown.Item>
+          </Dropdown.SubContent>
+        </Dropdown.Sub>
+
+        <Dropdown.Sub>
+          <Dropdown.SubTrigger icon={<Users />}>Share with</Dropdown.SubTrigger>
+          <Dropdown.SubContent>
+            <Dropdown.Item>Workspace</Dropdown.Item>
+            <Dropdown.Item>Public link</Dropdown.Item>
+          </Dropdown.SubContent>
+        </Dropdown.Sub>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const Links: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Links'>
+      <DropdownWithOpenState {...args} minWidth={220}>
+        <Dropdown.Item href='/settings' icon={<Settings />}>
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item
+          href='https://example.com'
+          target='_blank'
+          icon={<File />}
+        >
+          External link
+        </Dropdown.Item>
+        <Dropdown.Item href='/disabled' disabled>
+          Disabled link
+        </Dropdown.Item>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const DisabledItems: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Disabled items'>
+      <DropdownWithOpenState {...args} minWidth={240}>
+        {renderActionItems([
+          ...actionItems,
+          { label: 'Archived action', icon: <Exit />, disabled: true },
+        ])}
+        <Dropdown.Separator />
+        <Dropdown.Item color='danger' icon={<Trash />} disabled>
+          Delete disabled
+        </Dropdown.Item>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const PreventCloseOnSelect: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Prevent close on select'>
+      <DropdownWithOpenState {...args} minWidth={300}>
+        <Dropdown.Item
+          icon={<Refresh />}
+          description='Runs the action and keeps the menu open'
+          onSelect={(event) => {
+            event.preventDefault();
+          }}
+        >
+          Refresh preview
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Save />}>Save and close</Dropdown.Item>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const Loading: Story = {
+  args: {
+    defaultOpen: true,
+    loading: true,
+    loadingText: 'Loading actions...',
+  },
+  render: (args) => (
+    <Section title='Loading'>
+      <DropdownWithOpenState {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const Empty: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Empty'>
+      <DropdownWithOpenState {...args} minWidth={220}>
+        <Dropdown.Empty>No actions available</Dropdown.Empty>
+      </DropdownWithOpenState>
     </Section>
   ),
 };
 
 export const Disabled: Story = {
   args: {
-    label: 'Disabled actions',
-    trigger: 'Unavailable actions',
     disabled: true,
   },
   render: (args) => (
     <Section title='Disabled'>
-      <Dropdown {...args} />
+      <ActionDropdown {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const KeyboardNavigation: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Keyboard navigation'>
+      <DropdownWithOpenState {...args} minWidth={260}>
+        <Dropdown.Item icon={<Edit />}>Edit</Dropdown.Item>
+        <Dropdown.Item icon={<Copy />}>Duplicate</Dropdown.Item>
+        <Dropdown.Item icon={<Folder />} disabled>
+          Move disabled
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Refresh />}>Refresh</Dropdown.Item>
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const ControlledOpen: Story = {
+  render: (args) => (
+    <Section title='Controlled open'>
+      <ControlledOpenMenu {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const Mobile: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Mobile'>
+      <DropdownWithOpenState {...args} minWidth={240}>
+        {renderActionItems(richActionItems)}
+      </DropdownWithOpenState>
     </Section>
   ),
 };

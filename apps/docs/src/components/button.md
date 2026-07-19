@@ -174,9 +174,8 @@ export function ProjectHeaderActions({ project }) {
       >
         Duplicate
       </Button>
-      <Dropdown
-        ariaLabel='More project actions'
-        trigger={
+      <Dropdown>
+        <Dropdown.Trigger asChild>
           <Button
             aria-label='More project actions'
             appearance='ghost'
@@ -184,14 +183,23 @@ export function ProjectHeaderActions({ project }) {
             iconOnly
             iconStart={<Settings />}
           />
-        }
-        items={[
-          { value: 'archive', label: 'Archive', icon: <Folder /> },
-          { type: 'separator' },
-          { value: 'delete', label: 'Delete', danger: true },
-        ]}
-        onSelect={(value) => runProjectAction(project.id, value)}
-      />
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item
+            icon={<Folder />}
+            onSelect={() => runProjectAction(project.id, 'archive')}
+          >
+            Archive
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item
+            color='danger'
+            onSelect={() => runProjectAction(project.id, 'delete')}
+          >
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </div>
   );
 }

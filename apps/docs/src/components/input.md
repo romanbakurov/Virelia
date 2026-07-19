@@ -206,17 +206,19 @@ import { More } from '@vellira-ui/icons';
     value={projectName}
     onValueChange={setProjectName}
   />
-  <Dropdown
-    ariaLabel='Project name actions'
-    trigger={
+  <Dropdown>
+    <Dropdown.Trigger asChild>
       <Button aria-label='Project name actions' iconOnly iconStart={<More />} />
-    }
-    items={[
-      { value: 'copy', label: 'Copy name' },
-      { value: 'reset', label: 'Reset' },
-    ]}
-    onSelect={handleProjectNameAction}
-  />
+    </Dropdown.Trigger>
+    <Dropdown.Content>
+      <Dropdown.Item onSelect={() => handleProjectNameAction('copy')}>
+        Copy name
+      </Dropdown.Item>
+      <Dropdown.Item onSelect={() => handleProjectNameAction('reset')}>
+        Reset
+      </Dropdown.Item>
+    </Dropdown.Content>
+  </Dropdown>
 </div>;
 ```
 

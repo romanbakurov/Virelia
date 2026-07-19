@@ -258,23 +258,26 @@ dropdown keeps the selected item active and visible.
 
 ### Dropdown Notes
 
-Use `Dropdown` for contextual actions, not saved form values. The `items` model
-is flat: use `{ type: 'group', label }` as a heading before related actions and
-`{ type: 'separator' }` between sections. Use `open`, `defaultOpen`, and
-`onOpenChange` for menu state, and `onSelect` for the selected action value.
+Use `Dropdown` for contextual actions, not saved form values. Compose actions
+with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`, groups, labels,
+and separators. Use `open`, `defaultOpen`, and `onOpenChange` for menu state.
 
 ```tsx
-import type { DropdownItem } from '@vellira-ui/react';
 import { Dropdown } from '@vellira-ui/react';
 
-const items: DropdownItem[] = [
-  { type: 'group', label: 'File' },
-  { label: 'Duplicate', value: 'duplicate' },
-  { type: 'separator' },
-  { label: 'Delete', value: 'delete', danger: true },
-];
-
-<Dropdown label='Actions' items={items} onSelect={handleAction} />;
+<Dropdown>
+  <Dropdown.Trigger>Actions</Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Group>
+      <Dropdown.Label>File</Dropdown.Label>
+      <Dropdown.Item onSelect={duplicate}>Duplicate</Dropdown.Item>
+    </Dropdown.Group>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger' onSelect={deleteFile}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>;
 ```
 
 ### FormField Notes

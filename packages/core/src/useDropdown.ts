@@ -13,8 +13,9 @@ export interface UseDropdownParams<TItem extends NavigableItem> {
   disabled?: boolean;
   onOpenChange?: (open: boolean) => void;
   onSelect?: (value: string) => void;
-  getItemValue: (item: TItem) => string;
+  getItemValue: (item: TItem, index: number) => string;
   getItemText?: (item: TItem) => string;
+  loop?: boolean;
 }
 
 export const useDropdown = <TItem extends NavigableItem>({
@@ -26,6 +27,7 @@ export const useDropdown = <TItem extends NavigableItem>({
   onSelect,
   getItemValue,
   getItemText,
+  loop = true,
 }: UseDropdownParams<TItem>) => {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -112,10 +114,10 @@ export const useDropdown = <TItem extends NavigableItem>({
     (item: TItem) => {
       if (item.disabled) return;
 
-      onSelect?.(getItemValue(item));
+      onSelect?.(getItemValue(item, items.indexOf(item)));
       closeDropdown();
     },
-    [closeDropdown, getItemValue, onSelect]
+    [closeDropdown, getItemValue, items, onSelect]
   );
 
   const selectActiveItem = useCallback(() => {
@@ -138,6 +140,7 @@ export const useDropdown = <TItem extends NavigableItem>({
     onSelect: selectActiveItem,
     onClose: closeDropdown,
     getItemText,
+    loop,
   });
 
   return {

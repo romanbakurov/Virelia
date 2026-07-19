@@ -135,15 +135,6 @@ function renderLargeGroupedSelectItems() {
   );
 }
 
-const dropdownItems = [
-  { type: 'group' as const, label: 'Report actions' },
-  { label: 'Open settings', value: 'settings', icon: <Settings /> },
-  { label: 'Download report', value: 'download', icon: <Download /> },
-  { label: 'Filter view', value: 'filter', icon: <Filter /> },
-  { type: 'separator' as const },
-  { label: 'Delete report', value: 'delete', icon: <Trash />, danger: true },
-];
-
 const sectionStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -1134,27 +1125,64 @@ function WebComponentsOverview() {
               saved form values.
             </p>
             <div style={rowStyle}>
-              <Dropdown
-                label='Report actions'
-                trigger='Report actions'
-                items={dropdownItems}
-                onSelect={noop}
-              />
-              <Dropdown
-                label='More report actions'
-                ariaLabel='More report actions'
-                icon={<More />}
-                showArrow={false}
-                items={dropdownItems}
-                onSelect={noop}
-              />
-              <Dropdown
-                label='Disabled actions'
-                trigger='Disabled actions'
-                disabled
-                items={dropdownItems}
-                onSelect={noop}
-              />
+              <Dropdown>
+                <Dropdown.Trigger asChild>
+                  <Button appearance='outline' color='neutral'>
+                    Report actions
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content>
+                  <Dropdown.Group>
+                    <Dropdown.Label>Report actions</Dropdown.Label>
+                    <Dropdown.Item icon={<Settings />} onSelect={noop}>
+                      Open settings
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={<Download />} onSelect={noop}>
+                      Download report
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={<Filter />} onSelect={noop}>
+                      Filter view
+                    </Dropdown.Item>
+                  </Dropdown.Group>
+                  <Dropdown.Separator />
+                  <Dropdown.Item
+                    color='danger'
+                    icon={<Trash />}
+                    onSelect={noop}
+                  >
+                    Delete report
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+              <Dropdown>
+                <Dropdown.Trigger asChild>
+                  <Button
+                    appearance='ghost'
+                    color='neutral'
+                    iconOnly
+                    iconStart={<More />}
+                    aria-label='More report actions'
+                  />
+                </Dropdown.Trigger>
+                <Dropdown.Content>
+                  <Dropdown.Item icon={<Settings />} onSelect={noop}>
+                    Settings
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={<Download />} onSelect={noop}>
+                    Export
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+              <Dropdown disabled>
+                <Dropdown.Trigger asChild>
+                  <Button appearance='outline' color='neutral'>
+                    Disabled actions
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content>
+                  <Dropdown.Item>Edit</Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
             </div>
           </div>
         </Section>
