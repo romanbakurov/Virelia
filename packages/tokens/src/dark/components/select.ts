@@ -82,7 +82,7 @@ export const select = {
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
     optionHoverFg: menu.item.hover.fg,
-    optionPressedBg: colors.primary[700],
+    optionPressedBg: colors.vellira[850],
     optionPressedBorder: 'transparent',
     optionSelectedActiveBg: colors.primary[700],
     optionSelectedHoverBg: colors.primary[700],
@@ -250,7 +250,7 @@ export const select = {
     },
 
     pressed: {
-      bg: colors.vellira[600],
+      bg: colors.vellira[850],
       fg: text.primary,
       border: 'transparent',
     },
