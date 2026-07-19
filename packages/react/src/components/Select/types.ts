@@ -9,8 +9,9 @@ import type { FocusEventHandler, ReactNode } from 'react';
 
 export interface SelectOption extends Omit<
   BaseSelectOption,
-  'description' | 'icon'
+  'badge' | 'description' | 'icon'
 > {
+  badge?: ReactNode;
   description?: ReactNode;
   icon?: ReactNode;
 }

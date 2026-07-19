@@ -3,7 +3,19 @@ import type { ReactNode } from 'react';
 
 import type { SelectOption } from '../types';
 
-export interface SelectOptionProps extends Omit<
+export interface SelectItemProps {
+  value: string;
+  children?: ReactNode;
+  label?: string;
+  disabled?: boolean;
+  description?: ReactNode;
+  icon?: ReactNode;
+  badge?: ReactNode;
+  shortcut?: string;
+  color?: SelectOption['color'];
+}
+
+export interface SelectItemRowProps extends Omit<
   BaseSelectOptionProps,
   'option'
 > {

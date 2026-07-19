@@ -1,11 +1,39 @@
 import { cn } from '@utils/cn';
 import { ChevronDown, Close } from '@vellira-ui/icons';
+import type { ReactNode } from 'react';
+
+import { useSelectContext } from '../internal/SelectContext';
+import type { SelectSlotComponent } from '../internal/types';
 
 import type { SelectTriggerProps } from './types';
 
 import styles from './SelectTrigger.module.scss';
 
-export const SelectTrigger = ({
+export interface SelectTriggerSlotProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+export const SelectTrigger: SelectSlotComponent<SelectTriggerSlotProps> = ({
+  children,
+  className,
+}) => {
+  const { triggerProps } = useSelectContext();
+
+  return (
+    <SelectTriggerSurface
+      {...triggerProps}
+      className={[triggerProps.className, className].filter(Boolean).join(' ')}
+    >
+      {children}
+    </SelectTriggerSurface>
+  );
+};
+
+SelectTrigger.__velliraSelectPart = 'trigger';
+SelectTrigger.displayName = 'Select.Trigger';
+
+export const SelectTriggerSurface = ({
   children,
   id,
   describedBy,
@@ -124,4 +152,4 @@ export const SelectTrigger = ({
   );
 };
 
-SelectTrigger.displayName = 'SelectTrigger';
+SelectTriggerSurface.displayName = 'SelectTriggerSurface';

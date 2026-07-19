@@ -6,10 +6,10 @@ import type {
 } from '@vellira-ui/types';
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { SelectRenderEntry } from '../SelectCompound';
+import type { SelectRenderEntry } from '../internal/types';
 import type { SelectOption } from '../types';
 
-export interface SelectDropdownProps extends Omit<
+export interface SelectContentProps extends Omit<
   BaseSelectDropdownProps,
   'options'
 > {
