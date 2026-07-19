@@ -50,6 +50,13 @@
   color: currentcolor;
 }
 
+.selected.active:not(.disabled) {
+  color: var(--select-option-current-active-fg);
+  background-color: var(--select-option-current-active-bg);
+  border-color: var(--select-option-current-active-border);
+  box-shadow: inset 0 0 0 1px var(--select-option-current-active-ring);
+}
+
 .active:not(.selected, .disabled) {
   color: var(--select-option-current-active-fg);
   background-color: var(--select-option-current-active-bg);

@@ -76,7 +76,7 @@ export const select = {
   primary: createSelectPalette(primary, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.vellira[800],
+    optionActiveBg: colors.vellira[600],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
@@ -89,7 +89,7 @@ export const select = {
   neutral: createSelectPalette(neutral, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.vellira[800],
+    optionActiveBg: colors.vellira[600],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
@@ -102,7 +102,7 @@ export const select = {
   success: createSelectPalette(success, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.vellira[800],
+    optionActiveBg: colors.vellira[600],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
@@ -115,7 +115,7 @@ export const select = {
   warning: createSelectPalette(warning, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.vellira[800],
+    optionActiveBg: colors.vellira[600],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
@@ -128,7 +128,7 @@ export const select = {
   danger: createSelectPalette(danger, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.vellira[800],
+    optionActiveBg: colors.vellira[600],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
@@ -228,7 +228,7 @@ export const select = {
     },
 
     active: {
-      bg: colors.vellira[800],
+      bg: colors.vellira[600],
       fg: text.primary,
       border: 'transparent',
       ring: 'transparent',
