@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { Close, Search } from '@vellira-ui/icons';
 import { Pressable, TextInput, View } from 'react-native';
 
@@ -19,6 +21,14 @@ export const SelectSearchField = () => {
   const { query, setQuery, searchPlaceholder, searchInputRef, searchStyle } =
     useSelectContext();
 
+  useEffect(() => {
+    const focusTimer = setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+
+    return () => clearTimeout(focusTimer);
+  }, [searchInputRef]);
+
   return (
     <View style={styles.searchWrap}>
       <View
@@ -37,6 +47,8 @@ export const SelectSearchField = () => {
         value={query}
         onChangeText={setQuery}
         placeholder={searchPlaceholder}
+        autoFocus
+        returnKeyType='search'
         placeholderTextColor={
           theme.components.select.dropdown.search.placeholder
         }

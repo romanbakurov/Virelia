@@ -337,6 +337,9 @@ describe('Native Select', () => {
 
     const searchInput = document.body.querySelector<HTMLInputElement>('input');
 
+    expect(searchInput?.getAttribute('data-auto-focus')).toBe('true');
+    expect(searchInput?.getAttribute('data-return-key-type')).toBe('search');
+
     act(() => {
       searchInput?.focus();
       searchInput?.dispatchEvent(

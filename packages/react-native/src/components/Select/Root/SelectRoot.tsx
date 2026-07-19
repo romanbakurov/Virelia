@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { useSelect } from '@vellira-ui/core';
 import type { TextInput } from 'react-native';
@@ -163,12 +163,6 @@ export function SelectRoot(props: SelectProps) {
   );
   const itemHeight =
     typeof virtual === 'object' ? (virtual.estimatedItemSize ?? 52) : 52;
-
-  useEffect(() => {
-    if (isOpen && shouldSearch) {
-      requestAnimationFrame(() => searchInputRef.current?.focus());
-    }
-  }, [isOpen, shouldSearch]);
 
   const displayValue = useMemo(() => {
     if (renderValue) {

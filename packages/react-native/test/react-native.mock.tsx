@@ -34,6 +34,8 @@ type NativeProps = {
   placeholderTextColor?: string;
   secureTextEntry?: boolean;
   keyboardType?: string;
+  returnKeyType?: string;
+  autoFocus?: boolean;
   keyboardShouldPersistTaps?: string;
   contentContainerStyle?: unknown;
   testID?: string;
@@ -317,6 +319,8 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
       editable = true,
       secureTextEntry,
       keyboardType,
+      returnKeyType,
+      autoFocus,
       onChangeText,
       onFocus,
       onBlur,
@@ -335,12 +339,15 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
       data-testid={testID}
       id={nativeID}
       data-keyboard-type={keyboardType}
+      data-return-key-type={returnKeyType}
+      data-auto-focus={autoFocus ? 'true' : undefined}
       aria-label={accessibilityLabel}
       aria-description={accessibilityHint}
       aria-labelledby={accessibilityLabelledBy}
       value={value ?? ''}
       placeholder={placeholder}
       disabled={!editable}
+      autoFocus={autoFocus}
       type={secureTextEntry ? 'password' : 'text'}
       inputMode={keyboardType === 'numeric' ? 'numeric' : undefined}
       style={flattenStyle(style)}
