@@ -1,31 +1,60 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { useDropdown } from '@vellira-ui/core';
-import { View } from 'react-native';
+import type { Component } from 'react';
+import {
+  AccessibilityInfo,
+  findNodeHandle,
+  FlatList,
+  Platform,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { useThemeStyles } from '../../theme';
 
 import { DropdownContent } from './Content/DropdownContent';
 import { DropdownGroup } from './Group/DropdownGroup';
+import type { NativeDropdownEntry } from './internal/DropdownCollection';
+import {
+  createDropdownSlot,
+  parseDropdownChildren,
+} from './internal/DropdownCollection';
 import { DropdownItem } from './Item/DropdownItem';
 import { DropdownSeparator } from './Separator/DropdownSeparator';
 import { DropdownTrigger } from './Trigger/DropdownTrigger';
 import { createStyles } from './Dropdown.styles';
-import type { DropdownProps } from './types';
-import { isGroup, isMenuItem, isSeparator } from './types';
+import type {
+  DropdownContentProps,
+  DropdownEmptyProps,
+  DropdownGroupProps,
+  DropdownItemProps,
+  DropdownLabelProps,
+  DropdownLoadingProps,
+  DropdownProps,
+  DropdownSelectEvent,
+  DropdownSeparatorProps,
+  DropdownTriggerProps,
+} from './types';
 
-export function Dropdown({
+function DropdownRoot({
+  children,
   label = 'Menu',
   trigger,
   icon,
   arrowIcon,
   showArrow = true,
-  items,
+  items = [],
   onSelect,
   open,
   defaultOpen = false,
   onOpenChange,
+  presentation = 'auto',
+  closeOnSelect = true,
   disabled = false,
+  loading = false,
+  loadingText = 'Loading actions...',
   size = 'md',
   style,
   triggerStyle,
@@ -36,6 +65,18 @@ export function Dropdown({
   accessibilityHint,
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
+  const { width } = useWindowDimensions();
+  const triggerRef = useRef<Component | number | null>(null);
+  const parsed = useMemo(
+    () => parseDropdownChildren(children, items),
+    [children, items]
+  );
+  const resolvedPresentation =
+    presentation === 'auto'
+      ? width < 768
+        ? 'sheet'
+        : 'popover'
+      : presentation;
   const menuAccessibilityLabel = useMemo(() => {
     if (accessibilityLabel) return accessibilityLabel;
 
@@ -43,8 +84,13 @@ export function Dropdown({
   }, [accessibilityLabel, label]);
 
   const navigableItems = useMemo(
-    () => items.filter((item) => isMenuItem(item)),
-    [items]
+    () =>
+      parsed.items.map((item) => ({
+        disabled: item.disabled,
+        label: item.label,
+        value: item.id,
+      })),
+    [parsed.items]
   );
 
   const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
@@ -53,35 +99,129 @@ export function Dropdown({
     defaultOpen,
     disabled,
     onOpenChange,
-    onSelect,
     getItemValue: (item) => item.value,
     getItemText: (item) =>
       typeof item.label === 'string' ? item.label : item.value,
   });
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    AccessibilityInfo.announceForAccessibility(
+      `${menuAccessibilityLabel} opened`
+    );
+  }, [isOpen, menuAccessibilityLabel]);
+
+  const focusTrigger = useCallback(() => {
+    if (typeof findNodeHandle !== 'function') return;
+
+    const handle = findNodeHandle(triggerRef.current);
+
+    if (handle && AccessibilityInfo.setAccessibilityFocus) {
+      AccessibilityInfo.setAccessibilityFocus(handle);
+    }
+  }, []);
+
+  const closeAndFocusTrigger = useCallback(() => {
+    closeDropdown();
+
+    if (Platform?.OS !== 'web') {
+      requestAnimationFrame(focusTrigger);
+    }
+  }, [closeDropdown, focusTrigger]);
+
   const handleSelect = useCallback(
-    (value: string) => {
-      onSelect?.(value);
-      closeDropdown();
+    (entry: Extract<NativeDropdownEntry, { type: 'item' }>) => {
+      if (entry.disabled || loading) return;
+
+      const event = createDropdownSelectEvent();
+
+      entry.props.onSelect?.(event);
+
+      const value = entry.props.value;
+
+      if (value !== undefined) {
+        onSelect?.(value);
+      }
+
+      const shouldClose = entry.props.closeOnSelect ?? closeOnSelect;
+
+      if (!event.defaultPrevented && shouldClose) {
+        closeAndFocusTrigger();
+      }
     },
-    [closeDropdown, onSelect]
+    [closeAndFocusTrigger, closeOnSelect, loading, onSelect]
   );
 
   const handleTriggerPress = useCallback(() => {
     toggleDropdown();
   }, [toggleDropdown]);
 
+  const renderEntry = useCallback(
+    ({ item }: { item: NativeDropdownEntry }) => {
+      if (item.type === 'label') {
+        return <DropdownGroup label={item.props.children} />;
+      }
+
+      if (item.type === 'separator') {
+        return <DropdownSeparator />;
+      }
+
+      if (item.type === 'empty') {
+        return <Text style={styles.emptyText}>{item.props.children}</Text>;
+      }
+
+      if (item.type === 'loading') {
+        return <Text style={styles.emptyText}>{item.props.children}</Text>;
+      }
+
+      return (
+        <DropdownItem
+          label={item.props.children}
+          value={item.props.value ?? item.id}
+          icon={item.props.icon}
+          danger={item.props.danger}
+          disabled={item.props.disabled}
+          textWrap={item.props.textWrap}
+          itemStyle={itemStyle}
+          textStyle={textStyle}
+          onSelect={() => handleSelect(item)}
+        />
+      );
+    },
+    [handleSelect, itemStyle, styles.emptyText, textStyle]
+  );
+
+  const data: NativeDropdownEntry[] = loading
+    ? [
+        {
+          type: 'loading',
+          id: 'loading',
+          props: { children: loadingText },
+        },
+      ]
+    : parsed.entries;
+
+  const contentStyleFromSlot = parsed.contentProps?.style;
+  const presentationFromSlot =
+    parsed.contentProps?.presentation === 'auto'
+      ? undefined
+      : parsed.contentProps?.presentation;
+
   return (
     <View style={[styles.root, style]}>
       <DropdownTrigger
         label={label}
-        trigger={trigger}
+        trigger={trigger ?? parsed.trigger}
         icon={icon}
         arrowIcon={arrowIcon}
         showArrow={showArrow}
-        disabled={disabled}
+        disabled={disabled || parsed.triggerProps?.disabled}
         isOpen={isOpen}
         size={size}
+        triggerRef={(node) => {
+          triggerRef.current = node as Component | number | null;
+        }}
         triggerStyle={triggerStyle}
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
@@ -90,46 +230,78 @@ export function Dropdown({
 
       <DropdownContent
         isOpen={isOpen}
-        onClose={closeDropdown}
-        contentStyle={contentStyle}
+        onClose={closeAndFocusTrigger}
+        contentStyle={[contentStyle, contentStyleFromSlot]}
         accessibilityLabel={menuAccessibilityLabel}
+        presentation={presentationFromSlot ?? resolvedPresentation}
       >
-        {items.map((item, index) => {
-          if (isGroup(item)) {
-            return (
-              <DropdownGroup
-                key={`group-${item.label}-${index}`}
-                label={item.label}
-              />
-            );
-          }
-
-          if (isSeparator(item)) {
-            return <DropdownSeparator key={`separator-${index}`} />;
-          }
-
-          if (!isMenuItem(item)) {
-            return null;
-          }
-
-          return (
-            <DropdownItem
-              key={`${item.value}-${index}`}
-              label={item.label}
-              value={item.value}
-              icon={item.icon}
-              danger={item.danger}
-              disabled={item.disabled}
-              textWrap={item.textWrap}
-              itemStyle={itemStyle}
-              textStyle={textStyle}
-              onSelect={handleSelect}
-            />
-          );
-        })}
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          renderItem={renderEntry}
+          keyboardShouldPersistTaps='handled'
+          removeClippedSubviews={data.length > 24}
+        />
       </DropdownContent>
     </View>
   );
 }
 
-Dropdown.displayName = 'Dropdown';
+DropdownRoot.displayName = 'Dropdown';
+
+function createDropdownSelectEvent(): DropdownSelectEvent {
+  let defaultPrevented = false;
+
+  return {
+    preventDefault: () => {
+      defaultPrevented = true;
+    },
+    get defaultPrevented() {
+      return defaultPrevented;
+    },
+  };
+}
+
+const DropdownTriggerSlot = createDropdownSlot<DropdownTriggerProps>(
+  'trigger',
+  'Dropdown.Trigger'
+);
+const DropdownContentSlot = createDropdownSlot<DropdownContentProps>(
+  'content',
+  'Dropdown.Content'
+);
+const DropdownItemSlot = createDropdownSlot<DropdownItemProps>(
+  'item',
+  'Dropdown.Item'
+);
+const DropdownGroupSlot = createDropdownSlot<DropdownGroupProps>(
+  'group',
+  'Dropdown.Group'
+);
+const DropdownLabelSlot = createDropdownSlot<DropdownLabelProps>(
+  'label',
+  'Dropdown.Label'
+);
+const DropdownSeparatorSlot = createDropdownSlot<DropdownSeparatorProps>(
+  'separator',
+  'Dropdown.Separator'
+);
+const DropdownEmptySlot = createDropdownSlot<DropdownEmptyProps>(
+  'empty',
+  'Dropdown.Empty'
+);
+const DropdownLoadingSlot = createDropdownSlot<DropdownLoadingProps>(
+  'loading',
+  'Dropdown.Loading'
+);
+
+export const Dropdown = Object.assign(DropdownRoot, {
+  Trigger: DropdownTriggerSlot,
+  Content: DropdownContentSlot,
+  Item: DropdownItemSlot,
+  Group: DropdownGroupSlot,
+  Label: DropdownLabelSlot,
+  Separator: DropdownSeparatorSlot,
+  Empty: DropdownEmptySlot,
+  Loading: DropdownLoadingSlot,
+});

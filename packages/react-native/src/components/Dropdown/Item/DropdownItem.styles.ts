@@ -6,6 +6,7 @@ export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     item: {
       minWidth: 0,
+      minHeight: 44,
       alignItems: 'center',
       flexDirection: 'row',
       gap: theme.tokens.spacing[4],

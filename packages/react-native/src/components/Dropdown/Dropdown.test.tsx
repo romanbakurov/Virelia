@@ -2,6 +2,7 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Button } from '../../primitives/Button';
 import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
@@ -17,6 +18,107 @@ afterEach(() => {
 });
 
 describe('Native Dropdown', () => {
+  it('supports compound trigger, content, and item selection', () => {
+    const onSelect = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown label='Actions'>
+        <Dropdown.Trigger>
+          <Button>Actions</Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content presentation='modal'>
+          <Dropdown.Label>Project</Dropdown.Label>
+          <Dropdown.Item value='edit' onSelect={onSelect}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item value='delete' danger>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    expect(container.textContent).toContain('Project');
+    expect(container.querySelector('[role="menu"]')).not.toBeNull();
+    expect(container.querySelector('[role="heading"]')?.textContent).toContain(
+      'Project'
+    );
+
+    const editItem = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('Edit')
+    );
+
+    act(() => editItem?.click());
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(container.textContent).not.toContain('Edit');
+
+    unmount();
+  });
+
+  it('keeps compound content open when selection prevents default', () => {
+    const onSelect = vi.fn((event) => event.preventDefault());
+    const { container, unmount } = render(
+      <Dropdown label='Actions'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item value='advanced' onSelect={onSelect}>
+            Advanced
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    const item = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('Advanced')
+    );
+
+    act(() => item?.click());
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(container.textContent).toContain('Advanced');
+
+    unmount();
+  });
+
+  it('renders compound loading and empty states through FlatList content', () => {
+    const { container, rerender, unmount } = render(
+      <Dropdown label='Actions' defaultOpen loading loadingText='Loading menu'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content presentation='sheet'>
+          <Dropdown.Item value='edit'>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(container.textContent).toContain('Loading menu');
+    expect(container.textContent).not.toContain('Edit');
+
+    rerender(
+      <Dropdown label='Actions' defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content presentation='popover'>
+          <Dropdown.Empty>No actions</Dropdown.Empty>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(container.textContent).toContain('No actions');
+    expect(container.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
+
+    unmount();
+  });
+
   it('opens and selects an item', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

@@ -5,6 +5,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
   label?: ReactNode;
   trigger?: ReactNode;
+  children?: ReactNode;
   icon?: ReactNode;
   arrowIcon?: ReactNode;
 
@@ -16,5 +17,6 @@ export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
   accessibilityHint?: string;
 
   triggerStyle?: StyleProp<ViewStyle>;
+  triggerRef?: (node: unknown) => void;
   onPress: () => void;
 }

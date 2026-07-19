@@ -6,6 +6,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
+import { Button } from '../../primitives/Button';
 import { useTheme } from '../../theme';
 
 import { Dropdown } from './Dropdown';
@@ -80,6 +81,8 @@ and secondary actions, not for selecting a saved form value.
 - Groups and separators
 - Disabled and danger action items
 - Long text support
+- Compound Trigger, Content and Item API matching web usage
+- Content presentation: auto, sheet, modal or popover
 - Accessibility label, hint and expanded state support
 
 ### Usage
@@ -98,6 +101,25 @@ RadioGroup when a small set of choices should stay visible for comparison.
   onSelect={handleAction}
 />
 \`\`\`
+
+\`\`\`tsx
+<Dropdown>
+  <Dropdown.Trigger>
+    <Button>Actions</Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content presentation='auto'>
+    <Dropdown.Label>Project</Dropdown.Label>
+    <Dropdown.Item value='edit' onSelect={handleEdit}>
+      Edit
+    </Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='delete' danger onSelect={handleDelete}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>
+\`\`\`
 `,
       },
     },
@@ -107,6 +129,7 @@ RadioGroup when a small set of choices should stay visible for comparison.
     items: actionItems,
     showArrow: true,
     disabled: false,
+    presentation: 'auto',
     onSelect: fn(),
     onOpenChange: fn(),
   },
@@ -146,6 +169,13 @@ RadioGroup when a small set of choices should stay visible for comparison.
     defaultOpen: {
       control: 'boolean',
       description: 'Initial open state for uncontrolled usage.',
+    },
+
+    presentation: {
+      control: 'radio',
+      options: ['auto', 'sheet', 'modal', 'popover'],
+      description:
+        'Native content presentation. Auto uses sheet on phones and popover on wider screens.',
     },
 
     disabled: {
@@ -293,6 +323,35 @@ export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
       <Dropdown {...args} />
+    </Section>
+  ),
+};
+
+export const CompoundApi: Story = {
+  render: (args) => (
+    <Section title='Compound API'>
+      <Dropdown
+        presentation={args.presentation}
+        defaultOpen={args.defaultOpen}
+        disabled={args.disabled}
+      >
+        <Dropdown.Trigger>
+          <Button>Actions</Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Label>Project</Dropdown.Label>
+          <Dropdown.Item value='edit' icon={<Edit />}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item value='duplicate' icon={<Copy />}>
+            Duplicate
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };

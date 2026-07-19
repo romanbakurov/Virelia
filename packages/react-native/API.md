@@ -554,7 +554,7 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | -------------------- | ------------------------- | -------- | ------------------------------------------------- |
 | `label`              | `ReactNode`               | No       | Default trigger label.                            |
 | `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
-| `items`              | `DropdownItem[]`          | Yes      | Menu model.                                       |
+| `items`              | `DropdownItem[]`          | No       | Menu model.                                       |
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
 | `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
 | `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
@@ -571,6 +571,11 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `open`               | `boolean`                 | No       | Controlled open state.                            |
 | `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
 | `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
+| `children`           | `ReactNode`               | No       | Content rendered inside the component.            |
+| `presentation`       | `DropdownPresentation`    | No       | —                                                 |
+| `closeOnSelect`      | `boolean`                 | No       | —                                                 |
+| `loading`            | `boolean`                 | No       | —                                                 |
+| `loadingText`        | `ReactNode`               | No       | —                                                 |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 

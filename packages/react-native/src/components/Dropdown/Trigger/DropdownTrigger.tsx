@@ -18,6 +18,7 @@ import type { DropdownTriggerProps } from './types';
 export function DropdownTrigger({
   label,
   trigger,
+  children,
   icon,
   arrowIcon,
   showArrow = true,
@@ -25,6 +26,7 @@ export function DropdownTrigger({
   disabled = false,
   isOpen,
   triggerStyle,
+  triggerRef,
   accessibilityLabel,
   accessibilityHint,
   onPress,
@@ -94,9 +96,39 @@ export function DropdownTrigger({
   );
 
   const renderedIcon = icon ? renderColoredNode(icon, contentColor) : null;
+  const triggerContent = trigger ?? children;
+
+  if (isValidElement(triggerContent)) {
+    const child = triggerContent as ReactElement<{
+      accessibilityHint?: string;
+      accessibilityLabel?: string;
+      accessibilityState?: object;
+      disabled?: boolean;
+      onPress?: () => void;
+      ref?: (node: unknown) => void;
+    }>;
+    const isChildDisabled = disabled || child.props.disabled;
+
+    return cloneElement(child, {
+      ref: triggerRef,
+      disabled: isChildDisabled,
+      accessibilityLabel:
+        accessibilityLabel ?? (typeof label === 'string' ? label : undefined),
+      accessibilityHint,
+      accessibilityState: { expanded: isOpen, disabled: isChildDisabled },
+      onPress: () => {
+        child.props.onPress?.();
+
+        if (!isChildDisabled) {
+          onPress();
+        }
+      },
+    });
+  }
 
   return (
     <Pressable
+      ref={triggerRef}
       disabled={disabled}
       accessibilityRole='button'
       accessibilityLabel={
@@ -120,8 +152,8 @@ export function DropdownTrigger({
       {hasIcon && <View style={styles.icon}>{renderedIcon}</View>}
 
       {!isIconOnly &&
-        (trigger ? (
-          renderColoredNode(trigger, contentColor)
+        (triggerContent ? (
+          renderColoredNode(triggerContent, contentColor)
         ) : (
           <Text
             numberOfLines={1}

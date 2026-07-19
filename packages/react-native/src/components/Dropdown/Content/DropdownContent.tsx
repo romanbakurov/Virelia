@@ -11,17 +11,19 @@ export function DropdownContent({
   onClose,
   contentStyle,
   accessibilityLabel,
+  presentation,
 }: DropdownContentProps) {
   const styles = useThemeStyles(createStyles);
+  const isSheet = presentation === 'sheet';
 
   return (
     <Modal
       transparent
       visible={isOpen}
-      animationType='slide'
+      animationType={isSheet ? 'slide' : 'fade'}
       onRequestClose={onClose}
     >
-      <View style={styles.modalRoot}>
+      <View style={[styles.modalRoot, styles[presentation]]}>
         <Pressable
           accessibilityRole='button'
           accessibilityLabel='Close menu'
@@ -32,7 +34,7 @@ export function DropdownContent({
         <View
           accessibilityRole='menu'
           accessibilityLabel={accessibilityLabel}
-          style={[styles.menu, contentStyle]}
+          style={[styles.menu, styles[`${presentation}Menu`], contentStyle]}
         >
           {children}
         </View>
