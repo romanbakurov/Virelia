@@ -523,9 +523,6 @@ importers:
 
   packages/react-native:
     dependencies:
-      '@react-native-picker/picker':
-        specifier: '>=2'
-        version: 2.11.4(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)
       '@vellira-ui/core':
         specifier: workspace:*
         version: link:../core
@@ -11374,11 +11371,6 @@ snapshots:
       expo: 57.0.4(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(react-dom@19.2.7(react@19.2.7))(react-native-worklets@0.10.2(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7))(react@19.2.7))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
 
   '@react-native-community/slider@5.2.0': {}
-
-  '@react-native-picker/picker@2.11.4(react-native@0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)':
-    dependencies:
-      react: 19.2.7
-      react-native: 0.85.3(@babel/core@7.29.7)(@react-native/metro-config@0.85.3(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7)
 
   '@react-native-picker/picker@2.11.4(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)':
     dependencies:

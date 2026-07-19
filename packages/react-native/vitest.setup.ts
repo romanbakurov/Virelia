@@ -9,11 +9,8 @@ vi.mock('@vellira-ui/icons', () => ({
   ChevronDown: () => React.createElement(Text, null, '⌄'),
   Check: () => React.createElement(Text, null, '✓'),
   Close: () => React.createElement(Text, null, '×'),
+  Search: () => React.createElement(Text, null, '⌕'),
 }));
-
-vi.mock('@react-native-picker/picker', async () => {
-  return await import('./src/test-utils/mocks/react-native-picker');
-});
 
 vi.mock('react-native-svg', () => {
   const React = require('react');

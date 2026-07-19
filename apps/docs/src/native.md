@@ -71,15 +71,15 @@ generated reference lives in
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | Labels and validation |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error`                    | Selection control     |
+| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
 | `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                                                 | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                                                 | Dialog and overlay    |
 
-Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
-value only; the selection is committed through `Done`, while `Cancel` and the
-backdrop close the sheet without changing the selected value.
+Native `Select` opens a sheet, modal, or popover depending on `presentation`.
+Options render through native list content; `Select.Item` is the primary API,
+with `options` still available as a simple fallback.
 
 ## Select Usage Guidelines
 

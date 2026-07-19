@@ -10,7 +10,6 @@ export default defineConfig({
   external: [
     'react',
     'react-native',
-    '@react-native-picker/picker',
     '@vellira-ui/core',
     '@vellira-ui/icons',
     '@vellira-ui/tokens',

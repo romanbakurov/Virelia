@@ -46,6 +46,20 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+function SelectItems() {
+  return (
+    <>
+      {selectOptions.map((option) => (
+        <Select.Item
+          key={option.value}
+          value={option.value}
+          label={option.label}
+        />
+      ))}
+    </>
+  );
+}
+
 const dropdownItems = [
   { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
@@ -83,6 +97,7 @@ function NativeComponentsOverview() {
   const [accepted, setAccepted] = useState(true);
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
+  const [teams, setTeams] = useState<string[]>(['product']);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -758,30 +773,49 @@ function NativeComponentsOverview() {
           <Select
             label='Team'
             description='Choose the owning team.'
-            options={selectOptions}
             value={team}
-            onValueChange={setTeam}
-          />
+            onValueChange={(nextValue) => setTeam(nextValue ?? '')}
+            clearable
+          >
+            <SelectItems />
+          </Select>
           <Select
             label='Required team'
-            options={selectOptions}
             placeholder='Select a team'
             required
             error='Team is required'
-          />
+          >
+            <SelectItems />
+          </Select>
           <Select
-            label='Billing team'
-            description='Picker changes are committed with Done.'
-            options={selectOptions}
+            label='Searchable team'
+            description='Native Select opens as a sheet, modal or popover.'
+            searchable
+            clearable
             defaultValue='product'
             accessibilityHint='Choose the team used for invoices.'
-          />
+          >
+            <SelectItems />
+          </Select>
           <Select
-            label='Archived team'
-            options={[]}
-            placeholder='No archived teams'
-            accessibilityHint='There are no archived teams to choose from.'
-          />
+            label='Multiple teams'
+            multiple
+            maxSelected={2}
+            closeOnSelect={false}
+            value={teams}
+            onValueChange={setTeams}
+            placeholder='Select teams'
+          >
+            <Select.Group label='Teams'>
+              <Select.Item value='product' label='Product' badge='Core' />
+              <Select.Item
+                value='engineering'
+                label='Engineering'
+                description='Platform and quality'
+              />
+              <Select.Item value='support' label='Support' disabled />
+            </Select.Group>
+          </Select>
         </Section>
 
         <Section title='Dropdown'>

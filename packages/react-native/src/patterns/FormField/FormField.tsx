@@ -41,6 +41,8 @@ export function FormField({
     labelId,
     descriptionId,
     errorId,
+    description,
+    error,
     required,
     disabled,
     invalid: isInvalid,
