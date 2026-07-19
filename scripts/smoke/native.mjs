@@ -80,7 +80,12 @@ export const Dimensions = {
 
 export const AccessibilityInfo = {
   announceForAccessibility() {},
+  setAccessibilityFocus() {},
 };
+
+export function findNodeHandle() {
+  return 1;
+}
 
 export function useWindowDimensions() {
   return { width: 1024, height: 768, scale: 1, fontScale: 1 };

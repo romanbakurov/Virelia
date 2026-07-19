@@ -6,7 +6,6 @@ import {
   AccessibilityInfo,
   findNodeHandle,
   FlatList,
-  Platform,
   Text,
   useWindowDimensions,
   View,
@@ -124,10 +123,7 @@ function DropdownRoot({
 
   const closeAndFocusTrigger = useCallback(() => {
     closeDropdown();
-
-    if (Platform?.OS !== 'web') {
-      requestAnimationFrame(focusTrigger);
-    }
+    requestAnimationFrame(focusTrigger);
   }, [closeDropdown, focusTrigger]);
 
   const handleSelect = useCallback(
