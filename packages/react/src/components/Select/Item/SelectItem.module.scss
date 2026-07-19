@@ -42,11 +42,19 @@
   border-color: var(--select-option-current-selected-border);
 }
 
+.selected .description {
+  color: currentcolor;
+}
+
 .active:not(.selected, .disabled, :focus-visible) {
   color: var(--select-option-current-active-fg);
   background-color: var(--select-option-current-active-bg);
   border-color: var(--select-option-current-active-border);
   box-shadow: inset 0 0 0 1px var(--select-option-current-active-ring);
+}
+
+.active:not(.selected, .disabled, :focus-visible) .description {
+  color: currentcolor;
 }
 
 .disabled {
@@ -80,6 +88,10 @@
   line-height: var(--line-height-xs);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.option:hover:not(.selected, .disabled) .description {
+  color: currentcolor;
 }
 
 .icon {
