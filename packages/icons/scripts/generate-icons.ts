@@ -7,7 +7,8 @@ import { format } from 'prettier';
 
 const ROOT = process.cwd();
 
-const ASSETS = path.join(ROOT, 'assets');
+const SVG_ASSETS = path.join(ROOT, 'svg');
+const LOTTIE_ASSETS = path.join(ROOT, 'lottie');
 const ICONS = path.join(ROOT, 'src/generated');
 const PRETTIER_OPTIONS = {
   semi: true,
@@ -29,6 +30,10 @@ function writeFileIfChanged(filePath: string, content: string): void {
   if (current !== content) {
     fs.writeFileSync(filePath, content);
   }
+}
+
+function toGeneratedConst(value: unknown): string {
+  return JSON.stringify(value, null, 2);
 }
 
 function toName(file: string): string {
@@ -121,9 +126,9 @@ async function run(): Promise<void> {
 
   const files = (
     await fg('**/*.svg', {
-      cwd: ASSETS,
+      cwd: SVG_ASSETS,
     })
-  ).sort();
+  ).sort((first, second) => toName(first).localeCompare(toName(second)));
 
   if (files.length === 0) {
     console.warn('⚠️ No SVG icons found');
@@ -135,7 +140,7 @@ async function run(): Promise<void> {
   const generatedFiles = new Set<string>();
 
   for (const file of files) {
-    const svg = fs.readFileSync(path.join(ASSETS, file), 'utf8');
+    const svg = fs.readFileSync(path.join(SVG_ASSETS, file), 'utf8');
 
     const name = toName(file);
 
@@ -179,6 +184,41 @@ async function run(): Promise<void> {
     path.join(ROOT, 'src/native.ts'),
     await format(`${nativeExports.join('\n')}\n`, PRETTIER_OPTIONS)
   );
+
+  const lottieManifestPath = path.join(LOTTIE_ASSETS, 'manifest.json');
+
+  if (fs.existsSync(lottieManifestPath)) {
+    const lottieManifest = JSON.parse(
+      fs.readFileSync(lottieManifestPath, 'utf8')
+    ) as {
+      icons?: Array<{ name: string; file: string }>;
+    };
+
+    const animatedIcons: Record<string, unknown> = {};
+
+    for (const icon of lottieManifest.icons ?? []) {
+      assertIconName(icon.file, icon.name);
+
+      animatedIcons[icon.name] = JSON.parse(
+        fs.readFileSync(path.join(LOTTIE_ASSETS, icon.file), 'utf8')
+      );
+    }
+
+    const lottieSource = `
+export const animatedIconManifest = ${toGeneratedConst(lottieManifest)} as const;
+
+export const animatedIcons = ${toGeneratedConst(animatedIcons)} as const;
+
+export type AnimatedIconName = keyof typeof animatedIcons;
+export type AnimatedIconData = (typeof animatedIcons)[AnimatedIconName];
+export type AnimatedIconManifest = typeof animatedIconManifest;
+`;
+
+    writeFileIfChanged(
+      path.join(ROOT, 'src/lottie.ts'),
+      await format(lottieSource, PRETTIER_OPTIONS)
+    );
+  }
 
   console.log(`✅ Generated ${files.length} icons`);
 }

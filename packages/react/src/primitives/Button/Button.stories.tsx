@@ -2,9 +2,11 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Download, Filter, Save, Search } from '@vellira-ui/icons';
+import { animatedIcons } from '@vellira-ui/icons/lottie';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
+import { AnimatedIconPreview } from '../../storybook/AnimatedIconPreview';
 import { Button } from '../Button';
 
 const meta = {
@@ -208,6 +210,27 @@ const rowStyle = {
   gap: 12,
   alignItems: 'center',
 } as const;
+
+const animatedIconGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))',
+  gap: 8,
+  width: '100%',
+  maxWidth: 520,
+} satisfies CSSProperties;
+
+const animatedIconTileStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  minHeight: 40,
+  padding: '8px 10px',
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-md)',
+  color: 'var(--text-primary)',
+  background: 'var(--surface-primary)',
+  fontSize: 13,
+} satisfies CSSProperties;
 
 const sectionStyle = {
   display: 'flex',
@@ -480,6 +503,38 @@ export const WithIcons: Story = {
           <Button {...args} iconStart={<Save />} iconEnd={<Download />}>
             Both icons
           </Button>
+          <Button
+            {...args}
+            iconStart={<AnimatedIconPreview data={animatedIcons.Download} />}
+          >
+            Animated
+          </Button>
+          <Button
+            {...args}
+            appearance='soft'
+            iconStart={<AnimatedIconPreview data={animatedIcons.Search} />}
+          >
+            Search
+          </Button>
+        </div>
+        <div style={animatedIconGridStyle}>
+          {(
+            [
+              ['Search', animatedIcons.Search],
+              ['Download', animatedIcons.Download],
+              ['Bell', animatedIcons.Bell],
+              ['Settings', animatedIcons.Settings],
+            ] as const
+          ).map(([label, icon]) => (
+            <span
+              key={label}
+              data-animated-icon-trigger=''
+              style={animatedIconTileStyle}
+            >
+              <AnimatedIconPreview data={icon} size={18} />
+              {label}
+            </span>
+          ))}
         </div>
       </div>
     </Section>

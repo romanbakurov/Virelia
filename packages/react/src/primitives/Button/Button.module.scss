@@ -42,6 +42,29 @@ $button-appearances: solid, outline, ghost, soft, link;
   white-space: nowrap;
   vertical-align: middle;
   text-decoration: none;
+  overflow: hidden;
+}
+
+.button::after {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, currentcolor 16%, transparent) 0%,
+    transparent 68%
+  );
+  border-radius: inherit;
+  opacity: 0;
+  transform: scale(0.82);
+  transition:
+    opacity 0.18s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  content: '';
+  pointer-events: none;
+}
+
+.button.link::after {
+  content: none;
 }
 
 @each $appearance in $button-appearances {
@@ -54,18 +77,36 @@ $button-appearances: solid, outline, ghost, soft, link;
       @include button-state($color, $appearance, hover);
 
       transform: translateY(-1px);
+
+      &::after {
+        opacity: 0.65;
+        transform: scale(1);
+      }
     }
 
     .button.#{$appearance}.#{$color}:not(:disabled, .loading):active {
       @include button-state($color, $appearance, pressed);
 
       transform: scale(0.98);
+
+      &::after {
+        opacity: 0.9;
+        transform: scale(1.08);
+        transition-duration: 0.08s;
+      }
     }
 
     .button.#{$appearance}.#{$color}:focus-visible:not(:disabled, .loading) {
       @include button-focus-border($color, $appearance);
       @include focus-ring(var(--button-#{$color}-ring));
     }
+  }
+}
+
+@each $color in $button-colors {
+  .button.link.#{$color}:not(:disabled, .loading):hover,
+  .button.link.#{$color}:not(:disabled, .loading):active {
+    transform: none;
   }
 }
 
@@ -76,6 +117,11 @@ $button-appearances: solid, outline, ghost, soft, link;
   box-shadow: inset 0 0 0 1px var(--button-disabled-border);
   transform: none;
   cursor: not-allowed;
+}
+
+.button:disabled::after,
+.button.loading::after {
+  opacity: 0;
 }
 
 .button.loading {
@@ -217,6 +263,7 @@ $button-appearances: solid, outline, ghost, soft, link;
 
 @media (prefers-reduced-motion: reduce) {
   .button,
+  .button::after,
   .spinner {
     transition: none;
     animation: none;

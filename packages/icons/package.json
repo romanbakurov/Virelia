@@ -32,6 +32,11 @@
       "types": "./dist/native.d.ts",
       "import": "./dist/native.js",
       "default": "./dist/native.js"
+    },
+    "./lottie": {
+      "types": "./dist/lottie.d.ts",
+      "import": "./dist/lottie.js",
+      "default": "./dist/lottie.js"
     }
   },
   "files": [

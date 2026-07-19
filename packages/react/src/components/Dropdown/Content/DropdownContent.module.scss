@@ -39,7 +39,7 @@ $dropdown-colors: primary, neutral, success, warning, danger;
   list-style: none;
   outline: none;
   transform-origin: top;
-  animation: dropdown-in 0.15s ease;
+  animation: dropdown-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @each $color in $dropdown-colors {
@@ -78,7 +78,7 @@ $dropdown-colors: primary, neutral, success, warning, danger;
 @keyframes dropdown-in {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.99);
+    transform: translateY(-6px) scale(0.985);
   }
 
   to {
@@ -90,7 +90,7 @@ $dropdown-colors: primary, neutral, success, warning, danger;
 @keyframes dropdown-sheet-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(18px) scale(0.99);
   }
 
   to {

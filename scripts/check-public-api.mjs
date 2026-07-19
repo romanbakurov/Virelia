@@ -10,7 +10,7 @@ const root = path.resolve(dirname, '..');
 const packageExportContracts = {
   'packages/assets/package.json': ['./fonts/*', './styles', './styles/*'],
   'packages/core/package.json': ['.'],
-  'packages/icons/package.json': ['.', './native', './web'],
+  'packages/icons/package.json': ['.', './lottie', './native', './web'],
   'packages/react-native/package.json': ['.'],
   'packages/tokens/package.json': ['.', './css'],
   'packages/types/package.json': ['.'],
@@ -238,6 +238,13 @@ const publicSymbolContracts = {
     'VolumeOff',
     'Warning',
     'Wallet',
+  ],
+  'packages/icons/src/lottie.ts': [
+    'AnimatedIconData',
+    'AnimatedIconManifest',
+    'AnimatedIconName',
+    'animatedIconManifest',
+    'animatedIcons',
   ],
   'packages/react-native/src/index.ts': [
     'Button',

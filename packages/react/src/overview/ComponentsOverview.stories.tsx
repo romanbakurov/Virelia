@@ -11,6 +11,7 @@ import {
   Settings,
   Trash,
 } from '@vellira-ui/icons';
+import { animatedIcons } from '@vellira-ui/icons/lottie';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
@@ -25,6 +26,7 @@ import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
 import { Radio } from '../primitives/Radio';
+import { AnimatedIconPreview } from '../storybook/AnimatedIconPreview';
 
 const meta = {
   title: 'Overview/Web',
@@ -481,6 +483,12 @@ function WebComponentsOverview() {
                   Both icons
                 </Button>
                 <Button iconOnly aria-label='Search' iconStart={<Search />} />
+                <Button
+                  appearance='soft'
+                  iconStart={<AnimatedIconPreview data={animatedIcons.Bell} />}
+                >
+                  Animated
+                </Button>
               </div>
             </div>
 

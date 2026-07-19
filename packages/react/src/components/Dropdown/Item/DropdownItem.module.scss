@@ -22,16 +22,18 @@ $dropdown-item-colors: primary, success, warning, danger;
   text-decoration: none;
   user-select: none;
 
-  @include smooth-transition((color, background-color, box-shadow));
+  @include smooth-transition((color, background-color, box-shadow, transform));
 
   &:hover:not(.disabled) {
     color: var(--dropdown-item-current-hover-fg);
     background-color: var(--dropdown-item-current-hover-bg);
+    transform: translateX(2px);
   }
 
   &:active:not(.disabled) {
     color: var(--dropdown-item-current-pressed-fg);
     background-color: var(--dropdown-item-current-pressed-bg);
+    transform: translateX(1px) scale(0.995);
   }
 
   &:focus-visible:not(.disabled) {
@@ -43,6 +45,7 @@ $dropdown-item-colors: primary, success, warning, danger;
   color: var(--dropdown-item-current-active-fg);
   background-color: var(--dropdown-item-current-active-bg);
   box-shadow: inset 0 0 0 1px var(--dropdown-item-current-active-ring);
+  transform: translateX(2px);
 }
 
 .item:hover:not(.disabled),
@@ -77,6 +80,7 @@ $dropdown-item-colors: primary, success, warning, danger;
 
 .item.disabled {
   box-shadow: none;
+  transform: none;
   cursor: not-allowed;
   pointer-events: none;
 
@@ -191,6 +195,7 @@ $dropdown-item-colors: primary, success, warning, danger;
   width: 16px;
   height: 16px;
   color: inherit;
+  animation: dropdown-indicator-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 
   svg {
     width: 14px;
@@ -201,6 +206,7 @@ $dropdown-item-colors: primary, success, warning, danger;
 
 .checked {
   font-weight: var(--font-weight-medium);
+  animation: dropdown-item-pop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .subContent {
@@ -224,6 +230,8 @@ $dropdown-item-colors: primary, success, warning, danger;
   border-radius: var(--radius-md);
   box-shadow: var(--dropdown-content-shadow);
   list-style: none;
+  transform-origin: top left;
+  animation: dropdown-sub-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .subLabel {
@@ -244,7 +252,53 @@ $dropdown-item-colors: primary, success, warning, danger;
 
 @media (prefers-reduced-motion: reduce) {
   .item,
-  .itemIcon {
+  .itemIcon,
+  .indicator,
+  .checked,
+  .subContent {
     transition: none;
+    animation: none;
+  }
+}
+
+@keyframes dropdown-indicator-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.45) rotate(-10deg);
+  }
+
+  65% {
+    transform: scale(1.14) rotate(3deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes dropdown-item-pop {
+  0% {
+    transform: scale(0.985);
+  }
+
+  62% {
+    transform: scale(1.015);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dropdown-sub-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
   }
 }
