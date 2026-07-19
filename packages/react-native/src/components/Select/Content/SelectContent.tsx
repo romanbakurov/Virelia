@@ -26,6 +26,8 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
   'Select.Content'
 );
 
+const initialSelectedRowOffset = 4;
+
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
   const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
@@ -60,7 +62,7 @@ export const SelectContentSurface = () => {
   const shouldScrollToSelected =
     Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
   const initialScrollIndex = shouldScrollToSelected
-    ? selectedRowIndex
+    ? Math.max(0, selectedRowIndex - initialSelectedRowOffset)
     : undefined;
 
   useEffect(() => {
@@ -221,7 +223,10 @@ export const SelectContentSurface = () => {
           }
           onScrollToIndexFailed={(info) => {
             listRef.current?.scrollToOffset({
-              offset: Math.max(0, info.index * itemHeight),
+              offset: Math.max(
+                0,
+                (info.index - initialSelectedRowOffset) * itemHeight
+              ),
               animated: false,
             });
           }}
