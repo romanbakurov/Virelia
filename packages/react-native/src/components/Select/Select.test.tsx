@@ -167,10 +167,14 @@ describe('Native Select', () => {
     const selectedLabel = selectedOption?.querySelector('span');
 
     expect(selectedOption?.style.backgroundColor).toBe(
-      hexToRgb(nativeThemes.dark.components.select.option.selected.bg)
+      hexToRgb(
+        nativeThemes.dark.components.select.primary.outline.option.selected.bg
+      )
     );
     expect(selectedLabel?.style.color).toBe(
-      hexToRgb(nativeThemes.dark.components.select.option.selected.fg)
+      hexToRgb(
+        nativeThemes.dark.components.select.primary.outline.option.selected.fg
+      )
     );
 
     unmount();

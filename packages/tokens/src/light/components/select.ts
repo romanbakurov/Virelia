@@ -6,6 +6,7 @@ import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -80,6 +81,9 @@ export const select = {
     optionHoverBorder: 'transparent',
     optionPressedBg: colors.primary[200],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.primary[200],
+    optionSelectedHoverBg: colors.primary[200],
+    optionSelectedPressedBg: colors.primary[300],
     optionSelectedBg: colors.primary[100],
   }),
   neutral: createSelectPalette(neutral, {
@@ -89,6 +93,9 @@ export const select = {
     optionHoverBorder: 'transparent',
     optionPressedBg: colors.vellira[200],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.vellira[250],
+    optionSelectedHoverBg: colors.vellira[200],
+    optionSelectedPressedBg: colors.vellira[300],
     optionSelectedBg: colors.vellira[150],
   }),
   success: createSelectPalette(success, {
@@ -98,6 +105,9 @@ export const select = {
     optionHoverBorder: 'transparent',
     optionPressedBg: colors.success[200],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.success[200],
+    optionSelectedHoverBg: colors.success[200],
+    optionSelectedPressedBg: colors.success[300],
     optionSelectedBg: colors.success[100],
   }),
   warning: createSelectPalette(warning, {
@@ -107,6 +117,9 @@ export const select = {
     optionHoverBorder: 'transparent',
     optionPressedBg: colors.warning[200],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.warning[200],
+    optionSelectedHoverBg: colors.warning[200],
+    optionSelectedPressedBg: colors.warning[300],
     optionSelectedBg: colors.warning[100],
   }),
   danger: createSelectPalette(danger, {
@@ -116,6 +129,9 @@ export const select = {
     optionHoverBorder: 'transparent',
     optionPressedBg: colors.error[200],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.error[200],
+    optionSelectedHoverBg: colors.error[200],
+    optionSelectedPressedBg: colors.error[300],
     optionSelectedBg: colors.error[100],
   }),
 
@@ -163,7 +179,7 @@ export const select = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: 'transparent',
-    shadow: 'none',
+    shadow: shadow.lg,
 
     search: {
       bg: surface.default,
@@ -184,6 +200,14 @@ export const select = {
     separator: {
       bg: border.muted,
     },
+  },
+
+  clearButton: {
+    fg: icons.muted,
+    hoverFg: status.error.fg,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
+    pressedBg: surface.active,
   },
 
   option: {

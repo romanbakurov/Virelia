@@ -1,11 +1,11 @@
 import { createContext, useContext } from 'react';
 
-import type { SelectDropdownProps } from './SelectDropdown/types';
-import type { SelectTriggerProps } from './SelectTrigger/types';
+import type { SelectContentProps } from '../Content/types';
+import type { SelectTriggerProps } from '../Trigger/types';
 
 export interface SelectContextValue {
   triggerProps: SelectTriggerProps;
-  dropdownProps: SelectDropdownProps;
+  contentProps: SelectContentProps;
 }
 
 const SelectContext = createContext<SelectContextValue | null>(null);
@@ -16,7 +16,7 @@ export function useSelectContext() {
   const context = useContext(SelectContext);
 
   if (!context) {
-    throw new Error('Select compound components must be used inside Select');
+    throw new Error('Select compound components must be used inside <Select>');
   }
 
   return context;

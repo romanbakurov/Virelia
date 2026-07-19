@@ -1,15 +1,50 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Children,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { Portal } from '@utils/Portal';
 import { Close } from '@vellira-ui/icons';
+import type { ReactNode } from 'react';
 
-import { SelectOption } from '../SelectOption/SelectOption';
+import { useSelectContext } from '../internal/SelectContext';
+import type { SelectSlotComponent } from '../internal/types';
+import { useSelectVirtualization } from '../internal/useSelectVirtualization';
+import { SelectItemRow } from '../Item/SelectItem';
 
-import type { SelectDropdownProps } from './types';
+import type { SelectContentProps } from './types';
 
-import styles from './SelectDropdown.module.scss';
+import styles from './SelectContent.module.scss';
 
-export const SelectDropdown = ({
+export interface SelectContentSlotProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+export const SelectContent: SelectSlotComponent<SelectContentSlotProps> = ({
+  children,
+  className,
+}) => {
+  const { contentProps } = useSelectContext();
+  const slots = collectSelectContentSlots(children);
+
+  return (
+    <SelectContentSurface
+      {...contentProps}
+      {...slots}
+      className={[contentProps.className, className].filter(Boolean).join(' ')}
+    />
+  );
+};
+
+SelectContent.__velliraSelectPart = 'content';
+SelectContent.displayName = 'Select.Content';
+
+export const SelectContentSurface = ({
   isOpen,
   listboxId,
   labelledById,
@@ -37,20 +72,31 @@ export const SelectDropdown = ({
   renderOption,
   selectedValue,
   activeIndex,
+  visualActiveIndex = activeIndex,
   className,
   onSelect,
+  onSelectGroup,
   onMouseEnter,
   onSearchChange,
-}: SelectDropdownProps) => {
+}: SelectContentProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const didPositionOnOpenRef = useRef(false);
   const [dropdownNode, setDropdownNode] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
-  const virtualConfig =
-    typeof virtual === 'object' ? virtual : virtual ? {} : undefined;
-  const itemHeight = virtualConfig?.itemHeight ?? 40;
-  const viewportHeight = 300;
-  const isVirtual = Boolean(virtualConfig && options.length > 0 && !loading);
+  const {
+    bottomSpacerHeight,
+    isVirtual,
+    itemHeight,
+    startIndex,
+    topSpacerHeight,
+    viewportHeight,
+    visibleOptions,
+  } = useSelectVirtualization({
+    loading,
+    options,
+    scrollTop,
+    virtual,
+  });
 
   const handleDropdownRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -66,6 +112,16 @@ export const SelectDropdown = ({
       setScrollTop(0);
     }
   }, [isOpen, searchValue]);
+
+  useEffect(() => {
+    if (!isOpen || !searchable) return;
+
+    const focusTimerId = window.setTimeout(() => {
+      searchInputRef.current?.focus({ preventScroll: true });
+    }, 0);
+
+    return () => window.clearTimeout(focusTimerId);
+  }, [isOpen, searchable]);
 
   useEffect(() => {
     if (!isOpen || loading || !dropdownNode || didPositionOnOpenRef.current) {
@@ -119,15 +175,6 @@ export const SelectDropdown = ({
 
   if (!isOpen) return null;
 
-  const startIndex = isVirtual
-    ? Math.max(0, Math.floor(scrollTop / itemHeight) - 2)
-    : 0;
-  const visibleCount = isVirtual
-    ? Math.ceil(viewportHeight / itemHeight) + 4
-    : options.length;
-  const visibleOptions = isVirtual
-    ? options.slice(startIndex, startIndex + visibleCount)
-    : options;
   const visibleEntries =
     entries && !isVirtual
       ? entries
@@ -136,13 +183,6 @@ export const SelectDropdown = ({
           option,
           optionIndex: startIndex + visibleIndex,
         }));
-  const topSpacerHeight = isVirtual ? startIndex * itemHeight : 0;
-  const bottomSpacerHeight = isVirtual
-    ? Math.max(
-        0,
-        (options.length - startIndex - visibleOptions.length) * itemHeight
-      )
-    : 0;
 
   const dropdown = (
     <div
@@ -199,7 +239,6 @@ export const SelectDropdown = ({
         role='listbox'
         aria-multiselectable={multiple || undefined}
         aria-labelledby={labelledById}
-        className={className}
       >
         {loading ? (
           <li
@@ -221,6 +260,49 @@ export const SelectDropdown = ({
             )}
             {visibleEntries.map((entry) => {
               if (entry.type === 'group') {
+                if (entry.selectable && multiple) {
+                  const enabledGroupValues = entry.itemValues.filter((value) =>
+                    options.some(
+                      (option) => option.value === value && !option.disabled
+                    )
+                  );
+                  const selectedGroupCount = selectedValues
+                    ? enabledGroupValues.filter((value) =>
+                        selectedValues.includes(value)
+                      ).length
+                    : 0;
+                  const isSelected =
+                    enabledGroupValues.length > 0 &&
+                    selectedGroupCount === enabledGroupValues.length;
+                  const isMixed =
+                    selectedGroupCount > 0 &&
+                    selectedGroupCount < enabledGroupValues.length;
+
+                  return (
+                    <li key={entry.id} role='presentation'>
+                      <button
+                        type='button'
+                        className={styles.groupAction}
+                        aria-label={getTextLabel(
+                          entry.selectLabel ?? entry.label
+                        )}
+                        aria-pressed={
+                          isMixed ? 'mixed' : isSelected ? 'true' : 'false'
+                        }
+                        disabled={enabledGroupValues.length === 0}
+                        onClick={() => onSelectGroup(enabledGroupValues)}
+                      >
+                        <span className={styles.groupActionText}>
+                          {entry.selectLabel ?? entry.label}
+                        </span>
+                        <span className={styles.groupActionMeta}>
+                          {selectedGroupCount}/{enabledGroupValues.length}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
+
                 return (
                   <li
                     key={entry.id}
@@ -247,7 +329,7 @@ export const SelectDropdown = ({
               const { option, optionIndex } = entry;
 
               return (
-                <SelectOption
+                <SelectItemRow
                   key={option.value}
                   option={option}
                   isSelected={
@@ -255,7 +337,7 @@ export const SelectDropdown = ({
                       ? selectedValues.includes(option.value)
                       : option.value === selectedValue
                   }
-                  isActive={optionIndex === activeIndex}
+                  isActive={optionIndex === visualActiveIndex}
                   optionId={`${listboxId}-option-${optionIndex}`}
                   renderOption={renderOption}
                   onSelect={onSelect}
@@ -288,4 +370,43 @@ export const SelectDropdown = ({
   return portal ? <Portal>{dropdown}</Portal> : dropdown;
 };
 
-SelectDropdown.displayName = 'SelectDropdown';
+SelectContentSurface.displayName = 'SelectContentSurface';
+
+function collectSelectContentSlots(children: ReactNode) {
+  let headerSlot: ReactNode;
+  let searchSlot: ReactNode;
+  let emptySlot: ReactNode;
+  let loadingSlot: ReactNode;
+
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) return;
+
+    const type = child.type as SelectSlotComponent<unknown>;
+
+    if (type.__velliraSelectPart === 'label') {
+      headerSlot = child;
+    }
+
+    if (type.__velliraSelectPart === 'search') {
+      searchSlot = child;
+    }
+
+    if (type.__velliraSelectPart === 'empty') {
+      emptySlot = child;
+    }
+
+    if (type.__velliraSelectPart === 'loading') {
+      loadingSlot = child;
+    }
+  });
+
+  return { emptySlot, headerSlot, loadingSlot, searchSlot };
+}
+
+function getTextLabel(value: ReactNode) {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+
+  return 'Select group';
+}

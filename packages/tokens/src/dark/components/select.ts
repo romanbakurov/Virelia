@@ -6,6 +6,7 @@ import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -75,47 +76,82 @@ export const select = {
   primary: createSelectPalette(primary, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
+    optionActiveBg: colors.vellira[850],
+    optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
+    optionHoverBg: colors.vellira[700],
     optionHoverBorder: 'transparent',
-    optionPressedBg: colors.primary[700],
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: colors.vellira[900],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.vellira[850],
+    optionSelectedHoverBg: colors.vellira[700],
+    optionSelectedPressedBg: colors.vellira[900],
     optionSelectedBg: colors.primary[800],
   }),
   neutral: createSelectPalette(neutral, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
+    optionActiveBg: colors.vellira[850],
+    optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
+    optionHoverBg: colors.vellira[700],
     optionHoverBorder: 'transparent',
-    optionPressedBg: colors.vellira[800],
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: colors.vellira[900],
     optionPressedBorder: 'transparent',
-    optionSelectedBg: colors.vellira[850],
+    optionSelectedActiveBg: colors.vellira[850],
+    optionSelectedHoverBg: colors.vellira[700],
+    optionSelectedPressedBg: colors.vellira[900],
+    optionSelectedBg: colors.vellira[600],
   }),
   success: createSelectPalette(success, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
+    optionActiveBg: colors.success[900],
+    optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
+    optionHoverBg: colors.success[800],
     optionHoverBorder: 'transparent',
-    optionPressedBg: colors.success[800],
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: colors.success[950],
     optionPressedBorder: 'transparent',
-    optionSelectedBg: colors.success[900],
+    optionSelectedActiveBg: colors.success[900],
+    optionSelectedHoverBg: colors.success[800],
+    optionSelectedPressedBg: colors.success[950],
+    optionSelectedBg: colors.success[700],
   }),
   warning: createSelectPalette(warning, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
+    optionActiveBg: colors.warning[900],
+    optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
+    optionHoverBg: colors.warning[800],
     optionHoverBorder: 'transparent',
-    optionPressedBg: colors.warning[800],
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: colors.warning[950],
     optionPressedBorder: 'transparent',
-    optionSelectedBg: colors.warning[900],
+    optionSelectedActiveBg: colors.warning[900],
+    optionSelectedHoverBg: colors.warning[800],
+    optionSelectedPressedBg: colors.warning[950],
+    optionSelectedBg: colors.warning[700],
   }),
   danger: createSelectPalette(danger, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
+    optionActiveBg: colors.error[900],
+    optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
+    optionHoverBg: colors.error[800],
     optionHoverBorder: 'transparent',
-    optionPressedBg: colors.error[800],
+    optionHoverFg: menu.item.hover.fg,
+    optionPressedBg: colors.error[950],
     optionPressedBorder: 'transparent',
-    optionSelectedBg: colors.error[900],
+    optionSelectedActiveBg: colors.error[900],
+    optionSelectedHoverBg: colors.error[800],
+    optionSelectedPressedBg: colors.error[950],
+    optionSelectedBg: colors.error[700],
   }),
 
   trigger: {
@@ -162,7 +198,7 @@ export const select = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: 'transparent',
-    shadow: 'none',
+    shadow: shadow.lg,
 
     search: {
       bg: surface.default,
@@ -185,6 +221,14 @@ export const select = {
     },
   },
 
+  clearButton: {
+    fg: icons.muted,
+    hoverFg: status.error.fg,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
+    pressedBg: surface.active,
+  },
+
   option: {
     default: {
       bg: menu.item.default.bg,
@@ -199,15 +243,15 @@ export const select = {
     },
 
     active: {
-      bg: menu.item.active.bg,
-      fg: menu.item.active.fg,
+      bg: colors.vellira[600],
+      fg: text.primary,
       border: 'transparent',
       ring: 'transparent',
     },
 
     pressed: {
-      bg: menu.item.pressed.bg,
-      fg: menu.item.pressed.fg,
+      bg: colors.vellira[850],
+      fg: text.primary,
       border: 'transparent',
     },
 

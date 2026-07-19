@@ -175,9 +175,9 @@ $select-variants: outline, filled, soft;
 }
 
 .clear {
-  width: var(--space-5);
-  height: var(--space-5);
-  color: var(--text-secondary);
+  width: var(--space-6);
+  height: var(--space-6);
+  color: var(--select-clear-button-fg);
   border-radius: var(--radius-full);
   transition:
     color 0.15s ease,
@@ -185,15 +185,19 @@ $select-variants: outline, filled, soft;
   cursor: pointer;
 
   &:hover {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-hover-bg);
   }
 
   &:focus-visible {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-focus-bg);
     outline: 2px solid var(--select-current-ring);
     outline-offset: 2px;
+  }
+
+  &:active {
+    background: var(--select-clear-button-pressed-bg);
   }
 }
 

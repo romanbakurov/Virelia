@@ -76,7 +76,7 @@ export const SelectSearchField = () => {
           <Close
             width={14}
             height={14}
-            color={theme.semantic.status.error.fg}
+            color={theme.components.select.clearButton.hoverFg}
           />
         </Pressable>
       )}

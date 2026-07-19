@@ -1,11 +1,18 @@
 import { cn } from '@utils/cn';
 import { Check } from '@vellira-ui/icons';
 
-import type { SelectOptionProps } from './types';
+import type { SelectSlotComponent } from '../internal/types';
 
-import styles from './SelectOption.module.scss';
+import type { SelectItemProps, SelectItemRowProps } from './types';
 
-export const SelectOption = ({
+import styles from './SelectItem.module.scss';
+
+export const SelectItem: SelectSlotComponent<SelectItemProps> = () => null;
+
+SelectItem.__velliraSelectPart = 'item';
+SelectItem.displayName = 'Select.Item';
+
+export const SelectItemRow = ({
   option,
   isSelected,
   isActive,
@@ -13,7 +20,7 @@ export const SelectOption = ({
   renderOption,
   onSelect,
   onMouseEnter,
-}: SelectOptionProps) => {
+}: SelectItemRowProps) => {
   const isDisabled = !!option.disabled;
 
   return (
@@ -68,4 +75,4 @@ export const SelectOption = ({
   );
 };
 
-SelectOption.displayName = 'SelectOption';
+SelectItemRow.displayName = 'SelectItemRow';

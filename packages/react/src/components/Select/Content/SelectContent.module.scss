@@ -38,6 +38,36 @@ $select-variants: outline, filled, soft;
   --select-option-current-selected-border: var(
     --select-primary-outline-option-selected-border
   );
+  --select-option-current-selected-hover-bg: var(
+    --select-primary-outline-option-selected-hover-bg
+  );
+  --select-option-current-selected-hover-fg: var(
+    --select-primary-outline-option-selected-hover-fg
+  );
+  --select-option-current-selected-hover-border: var(
+    --select-primary-outline-option-selected-hover-border
+  );
+  --select-option-current-selected-active-bg: var(
+    --select-primary-outline-option-selected-active-bg
+  );
+  --select-option-current-selected-active-fg: var(
+    --select-primary-outline-option-selected-active-fg
+  );
+  --select-option-current-selected-active-border: var(
+    --select-primary-outline-option-selected-active-border
+  );
+  --select-option-current-selected-active-ring: var(
+    --select-primary-outline-option-selected-active-ring
+  );
+  --select-option-current-selected-pressed-bg: var(
+    --select-primary-outline-option-selected-pressed-bg
+  );
+  --select-option-current-selected-pressed-fg: var(
+    --select-primary-outline-option-selected-pressed-fg
+  );
+  --select-option-current-selected-pressed-border: var(
+    --select-primary-outline-option-selected-pressed-border
+  );
   --select-option-current-pressed-bg: var(
     --select-primary-outline-option-pressed-bg
   );
@@ -63,7 +93,7 @@ $select-variants: outline, filled, soft;
   background-color: var(--select-dropdown-current-bg);
   border: 1px solid var(--select-dropdown-current-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--select-dropdown-shadow);
+  box-shadow: var(--select-dropdown-shadow, var(--shadow-lg));
   transform-origin: top center;
   animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 300px;
@@ -113,6 +143,36 @@ $select-variants: outline, filled, soft;
       --select-option-current-selected-border: var(
         --select-#{$color}-#{$variant}-option-selected-border
       );
+      --select-option-current-selected-hover-bg: var(
+        --select-#{$color}-#{$variant}-option-selected-hover-bg
+      );
+      --select-option-current-selected-hover-fg: var(
+        --select-#{$color}-#{$variant}-option-selected-hover-fg
+      );
+      --select-option-current-selected-hover-border: var(
+        --select-#{$color}-#{$variant}-option-selected-hover-border
+      );
+      --select-option-current-selected-active-bg: var(
+        --select-#{$color}-#{$variant}-option-selected-active-bg
+      );
+      --select-option-current-selected-active-fg: var(
+        --select-#{$color}-#{$variant}-option-selected-active-fg
+      );
+      --select-option-current-selected-active-border: var(
+        --select-#{$color}-#{$variant}-option-selected-active-border
+      );
+      --select-option-current-selected-active-ring: var(
+        --select-#{$color}-#{$variant}-option-selected-active-ring
+      );
+      --select-option-current-selected-pressed-bg: var(
+        --select-#{$color}-#{$variant}-option-selected-pressed-bg
+      );
+      --select-option-current-selected-pressed-fg: var(
+        --select-#{$color}-#{$variant}-option-selected-pressed-fg
+      );
+      --select-option-current-selected-pressed-border: var(
+        --select-#{$color}-#{$variant}-option-selected-pressed-border
+      );
       --select-option-current-pressed-bg: var(
         --select-#{$color}-#{$variant}-option-pressed-bg
       );
@@ -140,6 +200,55 @@ $select-variants: outline, filled, soft;
   padding: 0;
   list-style: none;
   animation: listReveal 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.groupAction {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  margin-bottom: 2px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--select-dropdown-current-fg);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xs);
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  gap: var(--space-3);
+
+  &:hover:not(:disabled) {
+    background-color: var(--select-option-current-hover-bg);
+    border-color: var(--select-option-current-hover-border);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--select-dropdown-current-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    color: var(--select-option-disabled-fg);
+    cursor: not-allowed;
+  }
+}
+
+.groupActionText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupActionMeta {
+  flex: 0 0 auto;
+  color: var(--select-option-description-fg);
+  font-weight: var(--font-weight-medium);
 }
 
 .command {
@@ -205,15 +314,19 @@ $select-variants: outline, filled, soft;
   }
 
   &:hover {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-hover-bg);
   }
 
   &:focus-visible {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-focus-bg);
     outline: 2px solid var(--select-dropdown-current-ring);
     outline-offset: 2px;
+  }
+
+  &:active {
+    background: var(--select-clear-button-pressed-bg);
   }
 }
 

@@ -1,0 +1,276 @@
+.option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2px;
+  padding: var(--space-3);
+  color: var(--select-option-default-fg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  background-color: var(--select-option-default-bg);
+  border: 1px solid var(--select-option-default-border);
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  box-sizing: border-box;
+  min-height: 36px;
+  gap: var(--space-3);
+
+  &:hover:not(.selected, .disabled) {
+    color: var(--select-option-current-hover-fg);
+    background-color: var(--select-option-current-hover-bg);
+    border-color: var(--select-option-current-hover-border);
+    transform: translateX(2px);
+  }
+
+  &:active:not(.selected, .disabled) {
+    color: var(--select-option-current-pressed-fg);
+    background-color: var(--select-option-current-pressed-bg);
+    border-color: var(--select-option-current-pressed-border);
+    transform: translateX(1px) scale(0.995);
+  }
+}
+
+.selected {
+  color: var(--select-option-current-selected-fg);
+  background-color: var(--select-option-current-selected-bg);
+  border-color: var(--select-option-current-selected-border);
+}
+
+.selected .description {
+  color: currentcolor;
+}
+
+.selected .icon {
+  color: currentcolor;
+}
+
+.selected.active:not(.disabled) {
+  color: var(--select-option-current-selected-active-fg);
+  background-color: var(--select-option-current-selected-active-bg);
+  border-color: var(--select-option-current-selected-active-border);
+  box-shadow: inset 0 0 0 1px var(--select-option-current-selected-active-ring);
+}
+
+.selected:hover:not(.disabled) {
+  color: var(--select-option-current-selected-hover-fg);
+  background-color: var(--select-option-current-selected-hover-bg);
+  border-color: var(--select-option-current-selected-hover-border);
+  transform: translateX(2px);
+}
+
+.selected:active:not(.disabled) {
+  color: var(--select-option-current-selected-pressed-fg);
+  background-color: var(--select-option-current-selected-pressed-bg);
+  border-color: var(--select-option-current-selected-pressed-border);
+  transform: translateX(1px) scale(0.995);
+}
+
+.active:not(.selected, .disabled) {
+  color: var(--select-option-current-active-fg);
+  background-color: var(--select-option-current-active-bg);
+  border-color: var(--select-option-current-active-border);
+  box-shadow: inset 0 0 0 1px var(--select-option-current-active-ring);
+}
+
+.active:not(.selected, .disabled) .description {
+  color: currentcolor;
+}
+
+.active:not(.selected, .disabled) .icon {
+  color: currentcolor;
+}
+
+.disabled {
+  color: var(--select-option-disabled-fg);
+  background-color: var(--select-option-disabled-bg);
+  border-color: var(--select-option-disabled-border);
+  cursor: not-allowed;
+}
+
+.label {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content,
+.custom {
+  flex: 1;
+  min-width: 0;
+}
+
+.description {
+  display: block;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--select-option-description-fg);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.option:hover:not(.selected, .disabled) .description {
+  color: currentcolor;
+}
+
+.option:hover:not(.selected, .disabled) .icon {
+  color: currentcolor;
+}
+
+.icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--select-option-icon-fg);
+}
+
+.badge,
+.shortcut {
+  flex: 0 0 auto;
+  padding: 1px var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  border-radius: var(--radius-sm);
+}
+
+.badge {
+  color: var(--select-option-current-badge-fg);
+  background: var(--select-option-current-badge-bg);
+  border: 1px solid var(--select-option-current-badge-border);
+}
+
+.shortcut {
+  color: var(--select-option-shortcut-fg);
+  background: var(--select-option-shortcut-bg);
+  border: 1px solid var(--select-option-shortcut-border);
+}
+
+@mixin option-color-state($color) {
+  --select-option-current-active-bg: var(
+    --select-#{$color}-outline-option-active-bg
+  );
+  --select-option-current-active-fg: var(
+    --select-#{$color}-outline-option-active-fg
+  );
+  --select-option-current-active-border: var(
+    --select-#{$color}-outline-option-active-border
+  );
+  --select-option-current-active-ring: var(
+    --select-#{$color}-outline-option-active-ring
+  );
+  --select-option-current-hover-bg: var(
+    --select-#{$color}-outline-option-hover-bg
+  );
+  --select-option-current-hover-fg: var(
+    --select-#{$color}-outline-option-hover-fg
+  );
+  --select-option-current-hover-border: var(
+    --select-#{$color}-outline-option-hover-border
+  );
+  --select-option-current-pressed-bg: var(
+    --select-#{$color}-outline-option-pressed-bg
+  );
+  --select-option-current-pressed-fg: var(
+    --select-#{$color}-outline-option-pressed-fg
+  );
+  --select-option-current-pressed-border: var(
+    --select-#{$color}-outline-option-pressed-border
+  );
+  --select-option-current-selected-hover-bg: var(
+    --select-#{$color}-outline-option-selected-hover-bg
+  );
+  --select-option-current-selected-hover-fg: var(
+    --select-#{$color}-outline-option-selected-hover-fg
+  );
+  --select-option-current-selected-hover-border: var(
+    --select-#{$color}-outline-option-selected-hover-border
+  );
+  --select-option-current-selected-active-bg: var(
+    --select-#{$color}-outline-option-selected-active-bg
+  );
+  --select-option-current-selected-active-fg: var(
+    --select-#{$color}-outline-option-selected-active-fg
+  );
+  --select-option-current-selected-active-border: var(
+    --select-#{$color}-outline-option-selected-active-border
+  );
+  --select-option-current-selected-active-ring: var(
+    --select-#{$color}-outline-option-selected-active-ring
+  );
+  --select-option-current-selected-pressed-bg: var(
+    --select-#{$color}-outline-option-selected-pressed-bg
+  );
+  --select-option-current-selected-pressed-fg: var(
+    --select-#{$color}-outline-option-selected-pressed-fg
+  );
+  --select-option-current-selected-pressed-border: var(
+    --select-#{$color}-outline-option-selected-pressed-border
+  );
+}
+
+.success {
+  @include option-color-state(success);
+
+  color: var(--select-option-success-fg);
+}
+
+.warning {
+  @include option-color-state(warning);
+
+  color: var(--select-option-warning-fg);
+}
+
+.danger {
+  @include option-color-state(danger);
+
+  color: var(--select-option-danger-fg);
+}
+
+.check {
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  color: currentcolor;
+  animation: checkPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@keyframes checkPop {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option,
+  .check {
+    transition: none;
+    animation: none;
+  }
+}

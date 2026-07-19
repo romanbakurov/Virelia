@@ -91,6 +91,6 @@ export const createTriggerStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 999,
-      backgroundColor: theme.semantic.status.error.bg,
+      backgroundColor: theme.components.select.clearButton.hoverBg,
     },
   });

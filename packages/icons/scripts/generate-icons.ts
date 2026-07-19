@@ -32,9 +32,15 @@ function writeFileIfChanged(filePath: string, content: string): void {
 }
 
 function toName(file: string): string {
-  return path
-    .basename(file, '.svg')
-    .replace(/(^\w|-\w)/g, (m) => m.replace('-', '').toUpperCase());
+  return path.basename(file, '.svg');
+}
+
+function assertIconName(file: string, name: string): void {
+  if (/^[A-Z][A-Za-z0-9]*$/.test(name)) return;
+
+  throw new Error(
+    `Invalid icon file name "${file}". Use PascalCase ASCII names, for example "Close.svg".`
+  );
 }
 
 function withIconProps(code: string, native: boolean): string {
@@ -132,6 +138,8 @@ async function run(): Promise<void> {
     const svg = fs.readFileSync(path.join(ASSETS, file), 'utf8');
 
     const name = toName(file);
+
+    assertIconName(file, name);
 
     const webComponent = await format(
       await compile(svg, name, false),

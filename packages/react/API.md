@@ -419,7 +419,7 @@ indicator.
 
 ## Select
 
-Single-selection dropdown field.
+Single-selection or multiple-selection dropdown field.
 
 ```tsx
 import { Select } from '@vellira-ui/react';
@@ -437,7 +437,7 @@ import { Select } from '@vellira-ui/react';
 
 ### Select Usage Guidelines
 
-Use `Select` when the user chooses one value from a compact list and the
+Use `Select` when the user chooses one or more saved values from a compact list and the
 available choices do not need to stay visible after selection. Use
 `RadioGroup` when there are only a few choices and comparing them side by side
 helps the decision. Use `Dropdown` for action menus such as copy, rename or
@@ -450,13 +450,18 @@ Provide a visible `label` whenever possible. If the UI cannot show a label, pass
 connected to the trigger through `aria-describedby` and marks the trigger
 invalid. Keyboard users can open the list with Enter, Space or Arrow keys,
 navigate with ArrowUp/ArrowDown, jump with Home/End, type to search matching
-options, select with Enter or Space, and close with Escape.
+options, select with Enter or Space, and close with Escape. Long lists reopen
+with the selected option active and scrolled into view.
 
 ### Select Compound API
 
 Use `Select.Item` to declare options. `Select.Trigger` and `Select.Content` are
 available when the trigger or dropdown placement needs to be composed
-explicitly.
+explicitly. The public compound parts are `Select.Trigger`, `Select.Value`,
+`Select.Icon`, `Select.Content`, `Select.Search`, `Select.Group`,
+`Select.Label`, `Select.Item`, `Select.ItemIcon`,
+`Select.ItemDescription`, `Select.ItemBadge`, `Select.Separator`,
+`Select.Empty`, and `Select.Loading`.
 
 ```tsx
 <Select value={country} onValueChange={setCountry}>
@@ -474,27 +479,47 @@ separate MultiSelect or AsyncSelect:
 ```tsx
 <Select
   label='Teams'
-  description='Choose up to two teams.'
+  description='Choose teams by item or group.'
   value={teams}
   onValueChange={setTeams}
   multiple
-  maxSelected={2}
+  maxSelected={12}
   closeOnSelect={false}
   searchable
   clearable
   color='primary'
   variant='outline'
 >
-  <Select.Group label='Core teams'>
+  <Select.Group label='Core teams' selectable selectLabel='All core teams'>
     <Select.Item value='product'>Product</Select.Item>
     <Select.Item value='engineering'>Engineering</Select.Item>
+    <Select.Item value='design'>Design</Select.Item>
+    <Select.Item value='research'>Research</Select.Item>
+    <Select.Item value='data'>Data</Select.Item>
   </Select.Group>
   <Select.Separator />
-  <Select.Item value='support' badge='NEW'>
-    Support
-  </Select.Item>
+  <Select.Group label='Operations' selectable>
+    <Select.Item value='support'>Support</Select.Item>
+    <Select.Item value='success'>Success</Select.Item>
+    <Select.Item value='sales'>Sales</Select.Item>
+    <Select.Item value='marketing'>Marketing</Select.Item>
+    <Select.Item value='finance'>Finance</Select.Item>
+  </Select.Group>
+  <Select.Separator />
+  <Select.Group label='Platform' selectable>
+    <Select.Item value='infrastructure'>Infrastructure</Select.Item>
+    <Select.Item value='security'>Security</Select.Item>
+    <Select.Item value='devex'>Developer Experience</Select.Item>
+    <Select.Item value='qa'>QA</Select.Item>
+  </Select.Group>
 </Select>
 ```
+
+In multiple mode, `Select.Group selectable` adds a group-level action. The action
+selects enabled group items until `maxSelected` is reached, reports mixed state
+when only some group items are selected, and clears the group when all selectable
+group items are selected. When more than 10 values are selected, the trigger
+shows the first 10 labels and a `+N` overflow count.
 
 ### Select Props
 
@@ -568,7 +593,7 @@ separate MultiSelect or AsyncSelect:
 | `icon`        | `ReactNode`   | No       | Icon rendered inside the component. |
 | `color`       | `SelectColor` | No       | —                                   |
 | `description` | `ReactNode`   | No       | Additional descriptive text.        |
-| `badge`       | `string`      | No       | —                                   |
+| `badge`       | `ReactNode`   | No       | —                                   |
 | `shortcut`    | `string`      | No       | —                                   |
 
 <!-- api-docgen:end web.SelectOption.SelectOption -->
