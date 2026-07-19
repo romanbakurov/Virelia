@@ -1212,20 +1212,3 @@ export const Mobile: Story = {
     </Section>
   ),
 };
-
-export const HighContrast: Story = {
-  render: () => (
-    <div data-theme='high-contrast' data-vellira-theme='high-contrast'>
-      <Section title='High contrast'>
-        <div style={gridStyle}>
-          <Select label='Primary' color='primary' defaultValue='fr'>
-            {renderSelectItems()}
-          </Select>
-          <Select label='Danger' color='danger' error='Required field'>
-            {renderSelectItems()}
-          </Select>
-        </div>
-      </Section>
-    </div>
-  ),
-};
