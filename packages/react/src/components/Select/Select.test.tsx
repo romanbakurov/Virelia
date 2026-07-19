@@ -132,6 +132,9 @@ describe('Select', () => {
       'country-listbox-option-1'
     );
     expect(
+      document.getElementById('country-listbox-option-1')?.className
+    ).toMatch(/active/);
+    expect(
       document
         .getElementById('country-listbox-option-0')
         ?.getAttribute('aria-disabled')
@@ -169,6 +172,39 @@ describe('Select', () => {
     expect(new FormData(form).get('country')).toBe('es');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
     expect(document.querySelector('[role="listbox"]')).toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('opens by pointer without applying the visual active state to selected option', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' name='country' label='Country' defaultValue='de'>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const selectedOption = document.getElementById('country-listbox-option-1');
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+    expect(selectedOption?.className).toMatch(/selected/);
+    expect(selectedOption?.className).not.toMatch(/active/);
 
     act(() => {
       root.unmount();

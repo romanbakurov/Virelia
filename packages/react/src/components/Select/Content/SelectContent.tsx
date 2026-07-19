@@ -72,6 +72,7 @@ export const SelectContentSurface = ({
   renderOption,
   selectedValue,
   activeIndex,
+  visualActiveIndex = activeIndex,
   className,
   onSelect,
   onSelectGroup,
@@ -327,7 +328,7 @@ export const SelectContentSurface = ({
                       ? selectedValues.includes(option.value)
                       : option.value === selectedValue
                   }
-                  isActive={optionIndex === activeIndex}
+                  isActive={optionIndex === visualActiveIndex}
                   optionId={`${listboxId}-option-${optionIndex}`}
                   renderOption={renderOption}
                   onSelect={onSelect}

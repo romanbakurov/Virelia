@@ -36,6 +36,7 @@ export interface SelectContentProps extends Omit<
   loadingSlot?: ReactNode;
   renderOption?: (option: SelectOption) => ReactNode;
   className?: string;
+  visualActiveIndex?: number;
   onSelectGroup: (values: string[]) => void;
   onMouseEnter: (index: number) => void;
   onSearchChange?: (value: string) => void;

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import {
+  type KeyboardEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 
 import { useOutsideClick } from '@hooks/useOutsideClick';
 import { FormField, useFormFieldContext } from '@patterns/FormField';
@@ -95,6 +102,7 @@ export const SelectRoot = ({
 
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
+  const [isActiveOptionVisible, setIsActiveOptionVisible] = useState(false);
   const isSearchable = searchable || command;
   const { entries: resolvedEntries, options: resolvedOptions } =
     useSelectCollection(children);
@@ -225,6 +233,33 @@ export const SelectRoot = ({
     buttonRef.current?.focus();
   }, [onClear, selectValue]);
 
+  const handleTriggerClick = useCallback(() => {
+    if (!isOpen) {
+      setIsActiveOptionVisible(false);
+    }
+
+    toggleDropdown();
+  }, [isOpen, toggleDropdown]);
+
+  const handleTriggerKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (shouldShowActiveOption(event)) {
+        setIsActiveOptionVisible(true);
+      }
+
+      onKeyDown(event);
+    },
+    [onKeyDown]
+  );
+
+  const handleOptionMouseEnter = useCallback(
+    (index: number) => {
+      setIsActiveOptionVisible(true);
+      setActiveIndex(index);
+    },
+    [setActiveIndex]
+  );
+
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchValue(value);
@@ -234,6 +269,12 @@ export const SelectRoot = ({
   );
 
   useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsActiveOptionVisible(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!modal || !isOpen) return;
@@ -308,8 +349,8 @@ export const SelectRoot = ({
     className: triggerClassName,
     buttonRef: setTriggerRef,
     onClear: handleClear,
-    onClick: toggleDropdown,
-    onKeyDown,
+    onClick: handleTriggerClick,
+    onKeyDown: handleTriggerKeyDown,
     onBlur,
     onFocus,
   };
@@ -336,11 +377,12 @@ export const SelectRoot = ({
     selectedValue: singleSelectedValue,
     selectedValues,
     activeIndex,
+    visualActiveIndex: isActiveOptionVisible ? activeIndex : -1,
     className: dropdownClassName,
     setDropdownRef,
     onSelect: handleSelect,
     onSelectGroup: handleSelectGroup,
-    onMouseEnter: setActiveIndex,
+    onMouseEnter: handleOptionMouseEnter,
     onSearchChange: handleSearchChange,
   };
 
@@ -416,3 +458,17 @@ export const SelectRoot = ({
 };
 
 SelectRoot.displayName = 'SelectRoot';
+
+function shouldShowActiveOption(event: KeyboardEvent<HTMLButtonElement>) {
+  if (event.altKey || event.ctrlKey || event.metaKey) return false;
+
+  return (
+    event.key === 'ArrowDown' ||
+    event.key === 'ArrowUp' ||
+    event.key === 'Home' ||
+    event.key === 'End' ||
+    event.key === 'Enter' ||
+    event.key === ' ' ||
+    event.key.length === 1
+  );
+}
