@@ -18,16 +18,25 @@ export const SelectSearch = createSelectSlot<SelectSearchProps>(
 export const SelectSearchField = () => {
   const { theme } = useTheme();
   const styles = useThemeStyles(createSearchStyles);
-  const { query, setQuery, searchPlaceholder, searchInputRef, searchStyle } =
-    useSelectContext();
+  const {
+    query,
+    setQuery,
+    searchPlaceholder,
+    searchInputRef,
+    searchStyle,
+    selectedRowIndex,
+    virtual,
+  } = useSelectContext();
+  const shouldDelayFocus = Boolean(virtual && selectedRowIndex > 0);
 
   useEffect(() => {
+    const focusDelay = shouldDelayFocus ? 220 : 0;
     const focusTimer = setTimeout(() => {
       searchInputRef.current?.focus();
-    }, 0);
+    }, focusDelay);
 
     return () => clearTimeout(focusTimer);
-  }, [searchInputRef]);
+  }, [searchInputRef, shouldDelayFocus]);
 
   return (
     <View style={styles.searchWrap}>
@@ -47,7 +56,7 @@ export const SelectSearchField = () => {
         value={query}
         onChangeText={setQuery}
         placeholder={searchPlaceholder}
-        autoFocus
+        autoFocus={!shouldDelayFocus}
         returnKeyType='search'
         placeholderTextColor={
           theme.components.select.dropdown.search.placeholder

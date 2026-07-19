@@ -101,7 +101,7 @@ export const SelectContentSurface = () => {
       });
     };
 
-    const scrollTimers = [0, 50, 120].map((delay) =>
+    const scrollTimers = [0, 80, 180, 320].map((delay) =>
       setTimeout(() => {
         scrollToSelected();
       }, delay)

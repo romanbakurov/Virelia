@@ -22,7 +22,7 @@ const multipleOptions = [
   { label: 'Italy', value: 'it' },
 ];
 
-const longOptions = Array.from({ length: 24 }, (_, index) => ({
+const longOptions = Array.from({ length: 80 }, (_, index) => ({
   label: `Country ${index + 1}`,
   value: `country-${index + 1}`,
 }));
@@ -67,7 +67,7 @@ const changeInputValue = (input: HTMLInputElement | null, value: string) => {
 };
 
 const waitForSelectScroll = () =>
-  new Promise((resolve) => setTimeout(resolve, 130));
+  new Promise((resolve) => setTimeout(resolve, 340));
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -425,6 +425,33 @@ describe('Native Select', () => {
     });
 
     expect(document.body.textContent).toContain('France');
+
+    unmount();
+  });
+
+  it('delays search input focus until virtual selected option scroll settles', async () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        searchable
+        options={longOptions}
+        defaultValue='country-40'
+        virtual
+      />
+    );
+
+    openSelect(container);
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    expect(searchInput?.getAttribute('data-auto-focus')).toBeNull();
+    expect(document.activeElement).not.toBe(searchInput);
+
+    await act(async () => {
+      await waitForSelectScroll();
+    });
+
+    expect(document.activeElement).toBe(searchInput);
 
     unmount();
   });
