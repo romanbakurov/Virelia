@@ -79,6 +79,7 @@ import { fileURLToPath } from 'node:url';
 import * as web from '@vellira-ui/react';
 import * as core from '@vellira-ui/core';
 import * as icons from '@vellira-ui/icons';
+import * as lottieIcons from '@vellira-ui/icons/lottie';
 import * as tokens from '@vellira-ui/tokens';
 import '@vellira-ui/assets/styles';
 
@@ -148,6 +149,13 @@ if (typeof icons.Check !== 'function') {
 
 if (typeof icons.Search !== 'function') {
   throw new Error('icons Search export invalid');
+}
+
+if (
+  !lottieIcons.animatedIcons.Search ||
+  !lottieIcons.animatedIconManifest.icons?.length
+) {
+  throw new Error('icons lottie export invalid');
 }
 
 const { colors } = tokens.theme;

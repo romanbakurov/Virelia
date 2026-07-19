@@ -22,6 +22,6 @@ Published files are emitted to `dist` and include JavaScript, source maps, and T
 
 ## Notes
 
-- Source SVG assets live in `assets/`.
+- Source SVG assets live in `svg/`.
 - Generated files live in `src/generated/`.
 - The generator currently emits TSX-compatible icon files for native usage.

@@ -1,0 +1,699 @@
+{
+  "name": "Vellira Animated Icons",
+  "count": 99,
+  "icons": [
+    {
+      "name": "ArrowDown",
+      "category": "Navigation",
+      "file": "Navigation/ArrowDown.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ArrowLeft",
+      "category": "Navigation",
+      "file": "Navigation/ArrowLeft.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ArrowRight",
+      "category": "Navigation",
+      "file": "Navigation/ArrowRight.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ArrowUp",
+      "category": "Navigation",
+      "file": "Navigation/ArrowUp.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ChevronDown",
+      "category": "Navigation",
+      "file": "Navigation/ChevronDown.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ChevronLeft",
+      "category": "Navigation",
+      "file": "Navigation/ChevronLeft.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ChevronRight",
+      "category": "Navigation",
+      "file": "Navigation/ChevronRight.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ChevronUp",
+      "category": "Navigation",
+      "file": "Navigation/ChevronUp.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Close",
+      "category": "Navigation",
+      "file": "Navigation/Close.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Collapse",
+      "category": "Navigation",
+      "file": "Navigation/Collapse.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Expand",
+      "category": "Navigation",
+      "file": "Navigation/Expand.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Menu",
+      "category": "Navigation",
+      "file": "Navigation/Menu.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Check",
+      "category": "Actions",
+      "file": "Actions/Check.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Copy",
+      "category": "Actions",
+      "file": "Actions/Copy.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Download",
+      "category": "Actions",
+      "file": "Actions/Download.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Edit",
+      "category": "Actions",
+      "file": "Actions/Edit.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Filter",
+      "category": "Actions",
+      "file": "Actions/Filter.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Minus",
+      "category": "Actions",
+      "file": "Actions/Minus.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Plus",
+      "category": "Actions",
+      "file": "Actions/Plus.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Refresh",
+      "category": "Actions",
+      "file": "Actions/Refresh.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Search",
+      "category": "Actions",
+      "file": "Actions/Search.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Share",
+      "category": "Actions",
+      "file": "Actions/Share.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Trash",
+      "category": "Actions",
+      "file": "Actions/Trash.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Upload",
+      "category": "Actions",
+      "file": "Actions/Upload.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "At",
+      "category": "Communication",
+      "file": "Communication/At.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Bell",
+      "category": "Communication",
+      "file": "Communication/Bell.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "BellOff",
+      "category": "Communication",
+      "file": "Communication/BellOff.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Chat",
+      "category": "Communication",
+      "file": "Communication/Chat.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Inbox",
+      "category": "Communication",
+      "file": "Communication/Inbox.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Mail",
+      "category": "Communication",
+      "file": "Communication/Mail.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Message",
+      "category": "Communication",
+      "file": "Communication/Message.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Microphone",
+      "category": "Communication",
+      "file": "Communication/Microphone.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "MicrophoneOff",
+      "category": "Communication",
+      "file": "Communication/MicrophoneOff.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Phone",
+      "category": "Communication",
+      "file": "Communication/Phone.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Send",
+      "category": "Communication",
+      "file": "Communication/Send.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Video",
+      "category": "Communication",
+      "file": "Communication/Video.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "FastForward",
+      "category": "Media",
+      "file": "Media/FastForward.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Headphones",
+      "category": "Media",
+      "file": "Media/Headphones.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Pause",
+      "category": "Media",
+      "file": "Media/Pause.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Play",
+      "category": "Media",
+      "file": "Media/Play.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Rewind",
+      "category": "Media",
+      "file": "Media/Rewind.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "SkipBack",
+      "category": "Media",
+      "file": "Media/SkipBack.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "SkipForward",
+      "category": "Media",
+      "file": "Media/SkipForward.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Stop",
+      "category": "Media",
+      "file": "Media/Stop.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Volume",
+      "category": "Media",
+      "file": "Media/Volume.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "VolumeHigh",
+      "category": "Media",
+      "file": "Media/VolumeHigh.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "VolumeLow",
+      "category": "Media",
+      "file": "Media/VolumeLow.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "VolumeOff",
+      "category": "Media",
+      "file": "Media/VolumeOff.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Calendar",
+      "category": "System",
+      "file": "System/Calendar.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Camera",
+      "category": "System",
+      "file": "System/Camera.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Clock",
+      "category": "System",
+      "file": "System/Clock.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Exit",
+      "category": "System",
+      "file": "System/Exit.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "File",
+      "category": "System",
+      "file": "System/File.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Folder",
+      "category": "System",
+      "file": "System/Folder.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "FolderOpen",
+      "category": "System",
+      "file": "System/FolderOpen.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Home",
+      "category": "System",
+      "file": "System/Home.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Image",
+      "category": "System",
+      "file": "System/Image.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Lock",
+      "category": "System",
+      "file": "System/Lock.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "LockOpen",
+      "category": "System",
+      "file": "System/LockOpen.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Save",
+      "category": "System",
+      "file": "System/Save.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Settings",
+      "category": "System",
+      "file": "System/Settings.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "User",
+      "category": "System",
+      "file": "System/User.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Users",
+      "category": "System",
+      "file": "System/Users.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Bookmark",
+      "category": "Status",
+      "file": "Status/Bookmark.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Error",
+      "category": "Status",
+      "file": "Status/Error.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Eye",
+      "category": "Status",
+      "file": "Status/Eye.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "EyeOff",
+      "category": "Status",
+      "file": "Status/EyeOff.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Heart",
+      "category": "Status",
+      "file": "Status/Heart.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Help",
+      "category": "Status",
+      "file": "Status/Help.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Info",
+      "category": "Status",
+      "file": "Status/Info.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Loader",
+      "category": "Status",
+      "file": "Status/Loader.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Pin",
+      "category": "Status",
+      "file": "Status/Pin.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Star",
+      "category": "Status",
+      "file": "Status/Star.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Success",
+      "category": "Status",
+      "file": "Status/Success.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Warning",
+      "category": "Status",
+      "file": "Status/Warning.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Bag",
+      "category": "Commerce",
+      "file": "Commerce/Bag.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Cart",
+      "category": "Commerce",
+      "file": "Commerce/Cart.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "CreditCard",
+      "category": "Commerce",
+      "file": "Commerce/CreditCard.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Dollar",
+      "category": "Commerce",
+      "file": "Commerce/Dollar.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Euro",
+      "category": "Commerce",
+      "file": "Commerce/Euro.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Gift",
+      "category": "Commerce",
+      "file": "Commerce/Gift.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Package",
+      "category": "Commerce",
+      "file": "Commerce/Package.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Percent",
+      "category": "Commerce",
+      "file": "Commerce/Percent.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Receipt",
+      "category": "Commerce",
+      "file": "Commerce/Receipt.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Tag",
+      "category": "Commerce",
+      "file": "Commerce/Tag.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Truck",
+      "category": "Commerce",
+      "file": "Commerce/Truck.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Wallet",
+      "category": "Commerce",
+      "file": "Commerce/Wallet.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Grid",
+      "category": "Interface",
+      "file": "Interface/Grid.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Laptop",
+      "category": "Interface",
+      "file": "Interface/Laptop.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Link",
+      "category": "Interface",
+      "file": "Interface/Link.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "List",
+      "category": "Interface",
+      "file": "Interface/List.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Menu",
+      "category": "Interface",
+      "file": "Interface/Menu.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Monitor",
+      "category": "Interface",
+      "file": "Interface/Monitor.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "MoreHorizontal",
+      "category": "Interface",
+      "file": "Interface/MoreHorizontal.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "MoreVertical",
+      "category": "Interface",
+      "file": "Interface/MoreVertical.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Printer",
+      "category": "Interface",
+      "file": "Interface/Printer.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "QrCode",
+      "category": "Interface",
+      "file": "Interface/QrCode.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Smartphone",
+      "category": "Interface",
+      "file": "Interface/Smartphone.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Tablet",
+      "category": "Interface",
+      "file": "Interface/Tablet.json",
+      "frames": 15,
+      "fps": 30
+    }
+  ]
+}

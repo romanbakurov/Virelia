@@ -189,6 +189,7 @@ writeFileSync(
 import * as native from '@vellira-ui/react-native';
 import * as core from '@vellira-ui/core';
 import * as icons from '@vellira-ui/icons';
+import * as lottieIcons from '@vellira-ui/icons/lottie';
 import * as tokens from '@vellira-ui/tokens';
 
 const componentTypes = new Set([
@@ -267,6 +268,13 @@ if (typeof icons.Check !== 'function') {
 
 if (typeof icons.Search !== 'function') {
   throw new Error('icons Search export invalid');
+}
+
+if (
+  !lottieIcons.animatedIcons.Search ||
+  !lottieIcons.animatedIconManifest.icons?.length
+) {
+  throw new Error('icons lottie export invalid');
 }
 
 if (typeof tokens.darkTheme !== 'object' || tokens.darkTheme === null) {
