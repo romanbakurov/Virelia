@@ -369,7 +369,11 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
 TextInput.displayName = 'TextInput';
 
 type FlatListHandle = {
-  scrollToIndex: (params: { index: number; animated?: boolean }) => void;
+  scrollToIndex: (params: {
+    index: number;
+    animated?: boolean;
+    viewPosition?: number;
+  }) => void;
 };
 
 type FlatListProps<T> = NativeProps & {
@@ -391,15 +395,22 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
     ref
   ) {
     const [scrolledIndex, setScrolledIndex] = useState<number | undefined>();
+    const [scrollViewPosition, setScrollViewPosition] = useState<
+      number | undefined
+    >();
 
     useImperativeHandle(ref, () => ({
-      scrollToIndex: ({ index }) => setScrolledIndex(index),
+      scrollToIndex: ({ index, viewPosition }) => {
+        setScrolledIndex(index);
+        setScrollViewPosition(viewPosition);
+      },
     }));
 
     return (
       <div
         data-testid={testID ?? 'native-flat-list'}
         data-scroll-to-index={scrolledIndex}
+        data-scroll-view-position={scrollViewPosition}
         data-keyboard-should-persist-taps={undefined}
         style={flattenStyle(style)}
       >

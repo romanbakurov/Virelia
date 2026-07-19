@@ -69,6 +69,7 @@ export const SelectContentSurface = () => {
       listRef.current?.scrollToIndex({
         index: selectedRowIndex,
         animated: false,
+        viewPosition: 0.5,
       });
       didScrollToSelectedRef.current = true;
     }, 0);

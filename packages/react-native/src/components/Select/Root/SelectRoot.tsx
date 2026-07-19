@@ -73,6 +73,7 @@ export function SelectRoot(props: SelectProps) {
   const hasOwnField = Boolean(label || description || error);
   const [triggerWidth, setTriggerWidth] = useState<number | undefined>();
   const searchInputRef = useRef<TextInput>(null);
+  const selectedFocusValueRef = useRef<string | undefined>(undefined);
   const resolvedPresentation = useSelectPresentation(presentation);
 
   const {
@@ -171,10 +172,15 @@ export function SelectRoot(props: SelectProps) {
     filter,
   });
 
+  const selectedFocusValue = selectedValues.includes(
+    selectedFocusValueRef.current ?? ''
+  )
+    ? selectedFocusValueRef.current
+    : selectedValues[0];
   const selectedRowIndex = Math.max(
     0,
     filteredRows.findIndex(
-      (row) => row.type === 'item' && selectedValues.includes(row.option.value)
+      (row) => row.type === 'item' && row.option.value === selectedFocusValue
     )
   );
   const itemHeight =
@@ -223,6 +229,7 @@ export function SelectRoot(props: SelectProps) {
   const hasValue = selectedValues.length > 0;
 
   const clearValue = () => {
+    selectedFocusValueRef.current = undefined;
     selectValue('');
     announce('Selection cleared');
   };
@@ -239,6 +246,7 @@ export function SelectRoot(props: SelectProps) {
 
     if (maxReached) return;
 
+    selectedFocusValueRef.current = option.value;
     selectValue(option.value);
     announce(`${option.label} selected`);
   };
@@ -265,6 +273,7 @@ export function SelectRoot(props: SelectProps) {
       selectedGroupValues.length >= maxSelectableGroupCount;
 
     if (shouldClearGroup) {
+      selectedFocusValueRef.current = undefined;
       setSelectedValue(
         selectedValues.filter((value) => !enabledValues.includes(value))
       );
@@ -284,6 +293,7 @@ export function SelectRoot(props: SelectProps) {
     }
 
     setSelectedValue(nextValues);
+    selectedFocusValueRef.current = nextValues.at(-1);
     announce('Group selected');
 
     if (closeOnSelect) {

@@ -341,7 +341,48 @@ describe('Native Select', () => {
     });
 
     expect(list?.getAttribute('data-scroll-to-index')).toBe('11');
+    expect(list?.getAttribute('data-scroll-view-position')).toBe('0.5');
     expect(getButtonByText('Country 24')).toBeTruthy();
+
+    unmount();
+  });
+
+  it('keeps the selected middle option focused when reopening a virtual list', async () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={longOptions}
+        defaultValue='country-12'
+        virtual
+      />
+    );
+
+    openSelect(container);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    act(() => {
+      getButtonByText('Country 16')?.click();
+    });
+
+    expect(container.textContent).toContain('Country 16');
+
+    openSelect(container);
+
+    const reopenedList = document.body.querySelector(
+      '[data-testid="native-flat-list"]'
+    );
+
+    expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(reopenedList?.getAttribute('data-scroll-to-index')).toBe('15');
+    expect(reopenedList?.getAttribute('data-scroll-view-position')).toBe('0.5');
 
     unmount();
   });
