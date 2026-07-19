@@ -47,14 +47,16 @@ export const SelectItemRow = ({
   const { color, variant, renderOption } = useSelectContext();
   const optionPalette =
     theme.components.select[option.color ?? color][variant].option;
-  const optionState = isSelected
-    ? theme.components.select.option.selected
-    : optionPalette.hover;
-  const optionFg = isDisabled
-    ? theme.components.select.option.disabled.fg
-    : isSelected
-      ? optionState.fg
-      : theme.components.select.option.default.fg;
+  const getOptionState = (pressed: boolean) => {
+    if (isDisabled) return theme.components.select.option.disabled;
+    if (isSelected) {
+      return pressed ? optionPalette.selectedPressed : optionPalette.selected;
+    }
+
+    return pressed
+      ? optionPalette.pressed
+      : theme.components.select.option.default;
+  };
 
   return (
     <Pressable
@@ -67,83 +69,97 @@ export const SelectItemRow = ({
         disabled: isDisabled,
       }}
       onPress={() => onSelect(option)}
-      style={[
-        styles.option,
-        {
-          backgroundColor: isSelected
-            ? optionState.bg
-            : theme.components.select.option.default.bg,
-          borderColor: isSelected ? optionState.border : 'transparent',
-        },
-        isDisabled && styles.optionDisabled,
-        optionStyle,
-      ]}
+      style={({ pressed }) => {
+        const optionState = getOptionState(pressed);
+
+        return [
+          styles.option,
+          {
+            backgroundColor: optionState.bg,
+            borderColor: optionState.border,
+          },
+          isDisabled && styles.optionDisabled,
+          optionStyle,
+        ];
+      }}
     >
-      {renderOption ? (
-        renderNodeOrText(
-          renderOption(option, {
-            selected: isSelected,
-            disabled: isDisabled,
-          }),
-          [styles.optionLabel, { color: optionFg }]
-        )
-      ) : (
-        <>
-          {option.icon && (
-            <View style={styles.optionIcon}>
-              {isValidElement(option.icon)
-                ? cloneElement(
-                    option.icon as ReactElement<{
-                      color?: string;
-                      size?: number;
-                    }>,
-                    {
-                      color: optionFg,
-                      size: 18,
-                    }
-                  )
-                : option.icon}
-            </View>
-          )}
+      {({ pressed }) => {
+        const optionState = getOptionState(pressed);
+        const optionFg = optionState.fg;
+        const descriptionFg =
+          isSelected || pressed
+            ? optionFg
+            : theme.components.select.option.description.fg;
 
-          <View style={styles.optionTextWrap}>
-            <Text
-              numberOfLines={1}
-              style={[styles.optionLabel, { color: optionFg }]}
-            >
-              {option.label}
-            </Text>
-            {option.description && (
-              <Text numberOfLines={2} style={styles.optionDescription}>
-                {option.description}
-              </Text>
+        return renderOption ? (
+          renderNodeOrText(
+            renderOption(option, {
+              selected: isSelected,
+              disabled: isDisabled,
+            }),
+            [styles.optionLabel, { color: optionFg }]
+          )
+        ) : (
+          <>
+            {option.icon && (
+              <View style={styles.optionIcon}>
+                {isValidElement(option.icon)
+                  ? cloneElement(
+                      option.icon as ReactElement<{
+                        color?: string;
+                        size?: number;
+                      }>,
+                      {
+                        color: optionFg,
+                        size: 18,
+                      }
+                    )
+                  : option.icon}
+              </View>
             )}
-          </View>
 
-          {option.badge && (
-            <View
-              style={[
-                styles.badge,
-                {
-                  backgroundColor: optionPalette.badge.bg,
-                  borderColor: optionPalette.badge.border,
-                },
-              ]}
-            >
-              {renderNodeOrText(option.badge, [
-                styles.badgeText,
-                { color: optionPalette.badge.fg },
-              ])}
+            <View style={styles.optionTextWrap}>
+              <Text
+                numberOfLines={1}
+                style={[styles.optionLabel, { color: optionFg }]}
+              >
+                {option.label}
+              </Text>
+              {option.description && (
+                <Text
+                  numberOfLines={2}
+                  style={[styles.optionDescription, { color: descriptionFg }]}
+                >
+                  {option.description}
+                </Text>
+              )}
             </View>
-          )}
 
-          {isSelected && (
-            <View style={styles.check}>
-              <Check width={16} height={16} color={optionFg} />
-            </View>
-          )}
-        </>
-      )}
+            {option.badge && (
+              <View
+                style={[
+                  styles.badge,
+                  {
+                    backgroundColor: optionPalette.badge.bg,
+                    borderColor: optionPalette.badge.border,
+                  },
+                ]}
+              >
+                {renderNodeOrText(option.badge, [
+                  styles.badgeText,
+                  { color: optionPalette.badge.fg },
+                ])}
+              </View>
+            )}
+
+            {isSelected && (
+              <View style={styles.check}>
+                <Check width={16} height={16} color={optionFg} />
+              </View>
+            )}
+          </>
+        );
+      }}
     </Pressable>
   );
 };
