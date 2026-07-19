@@ -196,6 +196,14 @@ export const select = {
     },
   },
 
+  clearButton: {
+    fg: icons.muted,
+    hoverFg: status.error.fg,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
+    pressedBg: surface.active,
+  },
+
   option: {
     default: {
       bg: menu.item.default.bg,

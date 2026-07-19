@@ -42,6 +42,7 @@ describe.each([
       theme.components.button.danger.solid.default.bg
     );
     expect(theme.components.select.trigger.default.bg).toBeDefined();
+    expect(theme.components.select.clearButton.hoverBg).toBeDefined();
     expect(theme.components.tooltip.content.bg).toBeDefined();
   });
 });

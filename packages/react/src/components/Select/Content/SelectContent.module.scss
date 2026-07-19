@@ -254,15 +254,19 @@ $select-variants: outline, filled, soft;
   }
 
   &:hover {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-hover-bg);
   }
 
   &:focus-visible {
-    color: var(--button-danger-soft-default-fg);
-    background: var(--button-danger-soft-default-bg);
+    color: var(--select-clear-button-hover-fg);
+    background: var(--select-clear-button-focus-bg);
     outline: 2px solid var(--select-dropdown-current-ring);
     outline-offset: 2px;
+  }
+
+  &:active {
+    background: var(--select-clear-button-pressed-bg);
   }
 }
 
