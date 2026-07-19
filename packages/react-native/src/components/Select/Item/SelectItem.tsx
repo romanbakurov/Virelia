@@ -47,7 +47,9 @@ export const SelectItemRow = ({
   const { color, variant, renderOption } = useSelectContext();
   const optionPalette =
     theme.components.select[option.color ?? color][variant].option;
-  const optionState = isSelected ? optionPalette.selected : optionPalette.hover;
+  const optionState = isSelected
+    ? theme.components.select.option.selected
+    : optionPalette.hover;
   const optionFg = isDisabled
     ? theme.components.select.option.disabled.fg
     : isSelected

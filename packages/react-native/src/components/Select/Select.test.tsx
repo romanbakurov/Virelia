@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { FormField } from '../../patterns/FormField';
 import { render } from '../../test-utils/render';
+import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Select } from './Select';
 
@@ -35,6 +36,15 @@ const getButtonByLabel = (label: string) =>
   document.body.querySelector<HTMLButtonElement>(
     `button[aria-label="${label}"]`
   );
+
+const hexToRgb = (hex: string) => {
+  const value = hex.replace('#', '');
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+};
 
 const openSelect = (container: HTMLElement) => {
   const trigger = container.querySelector<HTMLButtonElement>('[role="button"]');
@@ -119,6 +129,41 @@ describe('Native Select', () => {
     expect(document.body.textContent).toContain('France');
     expect(document.body.textContent).toContain('Germany');
     expect(document.body.textContent).toContain('Spain');
+
+    act(() => {
+      getButtonByText('Germany')?.click();
+    });
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('uses readable selected option colors on dark themes', () => {
+    const { container, unmount } = render(
+      <ThemeProvider theme='dark'>
+        <Select label='Country' defaultValue='fr'>
+          <Select.Item value='fr' label='France' />
+          <Select.Item value='de' label='Germany' />
+        </Select>
+      </ThemeProvider>
+    );
+
+    openSelect(container);
+
+    const selectedOption = getButtonByLabel('France');
+    const selectedLabel = selectedOption?.querySelector('span');
+
+    expect(selectedOption?.style.backgroundColor).toBe(
+      hexToRgb(nativeThemes.dark.components.select.option.selected.bg)
+    );
+    expect(selectedLabel?.style.color).toBe(
+      hexToRgb(nativeThemes.dark.components.select.option.selected.fg)
+    );
 
     unmount();
   });
