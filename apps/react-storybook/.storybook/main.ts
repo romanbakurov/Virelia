@@ -27,6 +27,14 @@ const config: StorybookConfig = {
     return mergeConfig(config, {
       resolve: {
         alias: {
+          '@vellira-ui/react/styles': path.resolve(
+            dirname,
+            '../../../packages/react/src/styles.ts'
+          ),
+          '@vellira-ui/react': path.resolve(
+            dirname,
+            '../../../packages/react/src/index.ts'
+          ),
           '@vellira-ui/core': path.resolve(
             dirname,
             '../../../packages/core/src/index.ts'
