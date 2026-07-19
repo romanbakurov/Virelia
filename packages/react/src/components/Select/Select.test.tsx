@@ -658,6 +658,48 @@ describe('Select', () => {
     });
   });
 
+  it('moves the active option to the selected option after single selection', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country'>
+          <Select.Item value='fr'>France</Select.Item>
+          <Select.Item value='de'>Germany</Select.Item>
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      document.getElementById('country-listbox-option-1')?.click();
+    });
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.getElementById('country-listbox-option-1')).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('does not open or submit a value when disabled', () => {
     const form = document.createElement('form');
     document.body.append(form);

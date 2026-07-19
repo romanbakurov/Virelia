@@ -143,6 +143,7 @@ export const useSelect = <TOption extends SelectOptionLike>({
       }
 
       setSelectedValue(nextValue);
+      setActiveIndex(options.indexOf(nextOption));
       closeDropdown();
     },
     [
