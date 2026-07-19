@@ -48,6 +48,22 @@ function assertIconName(file: string, name: string): void {
   );
 }
 
+function withDefaultPathFillRules(svg: string): string {
+  return svg.replace(/<path\b([^>]*)\/>/g, (match, attributes: string) => {
+    let nextAttributes = attributes;
+
+    if (!/\sfill-rule=/.test(nextAttributes)) {
+      nextAttributes += ' fill-rule="evenodd"';
+    }
+
+    if (!/\sclip-rule=/.test(nextAttributes)) {
+      nextAttributes += ' clip-rule="evenodd"';
+    }
+
+    return `<path${nextAttributes}/>`;
+  });
+}
+
 function withIconProps(code: string, native: boolean): string {
   const nextCode = native
     ? code
@@ -91,7 +107,7 @@ async function compile(
   native: boolean
 ): Promise<string> {
   const code = await transform(
-    svg,
+    withDefaultPathFillRules(svg),
     {
       native,
       plugins: ['@svgr/plugin-jsx'],

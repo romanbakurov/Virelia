@@ -37,6 +37,22 @@ const config: StorybookConfig = {
             dirname,
             '../../../packages/react/src/index.ts'
           ),
+          '@vellira-ui/icons/lottie': path.resolve(
+            dirname,
+            '../../../packages/icons/src/lottie.ts'
+          ),
+          '@vellira-ui/icons/native': path.resolve(
+            dirname,
+            '../../../packages/icons/src/native.ts'
+          ),
+          '@vellira-ui/icons/web': path.resolve(
+            dirname,
+            '../../../packages/icons/src/web.ts'
+          ),
+          '@vellira-ui/icons': path.resolve(
+            dirname,
+            '../../../packages/icons/src/web.ts'
+          ),
           '@vellira-ui/core': path.resolve(
             dirname,
             '../../../packages/core/src/index.ts'
