@@ -60,6 +60,36 @@ const getGroupLabel = (props: SelectGroupProps) => {
   return label;
 };
 
+const getGroupItemValues = (children: ReactNode) => {
+  const values: string[] = [];
+
+  const visit = (node: ReactNode) => {
+    Children.forEach(node, (child) => {
+      if (!isValidElement(child)) return;
+
+      const slot = getSelectSlot(child.type);
+
+      if (slot === 'content') {
+        visit((child.props as SelectContentProps).children);
+        return;
+      }
+
+      if (slot === 'group') {
+        visit((child.props as SelectGroupProps).children);
+        return;
+      }
+
+      if (slot === 'item') {
+        values.push((child.props as SelectItemProps).value);
+      }
+    });
+  };
+
+  visit(children);
+
+  return values;
+};
+
 export const parseSelectChildren = (
   children: ReactNode
 ): ParsedSelectChildren => {
@@ -106,6 +136,9 @@ export const parseSelectChildren = (
             type: 'group',
             key: `group-${groupLabel}-${rows.length}`,
             label: groupLabel,
+            selectable: props.selectable,
+            selectLabel: props.selectLabel,
+            itemValues: getGroupItemValues(props.children),
           });
         }
 

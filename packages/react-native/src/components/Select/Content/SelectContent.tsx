@@ -1,7 +1,11 @@
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
-import { SelectGroupLabelRow, SelectSeparatorRow } from '../Group';
+import {
+  SelectGroupActionRow,
+  SelectGroupLabelRow,
+  SelectSeparatorRow,
+} from '../Group';
 import { createSelectSlot } from '../internal/SelectCollection';
 import { useSelectContext } from '../internal/SelectContext';
 import type { SelectCollectionRow } from '../internal/types';
@@ -36,9 +40,11 @@ export const SelectContentSurface = () => {
     loading,
     filteredRows,
     selectedValues,
+    selectedOptions,
     maxSelected,
     optionStyle,
     selectOption,
+    selectGroup,
     itemHeight,
     selectedRowIndex,
   } = context;
@@ -47,6 +53,25 @@ export const SelectContentSurface = () => {
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
+      if (item.selectable && context.multiple) {
+        const enabledGroupValues = item.itemValues.filter((value) =>
+          context.optionsByValue.get(value)
+        );
+        const selectedGroupCount = selectedOptions.filter((option) =>
+          enabledGroupValues.includes(option.value)
+        ).length;
+
+        return (
+          <SelectGroupActionRow
+            label={item.label}
+            selectLabel={item.selectLabel}
+            selectedCount={selectedGroupCount}
+            itemCount={enabledGroupValues.length}
+            onPress={() => selectGroup(enabledGroupValues)}
+          />
+        );
+      }
+
       return <SelectGroupLabelRow label={item.label} />;
     }
 

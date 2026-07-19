@@ -24,7 +24,14 @@ export type SelectSlotComponent = {
 };
 
 export type SelectCollectionRow =
-  | { type: 'group'; key: string; label: string }
+  | {
+      type: 'group';
+      key: string;
+      label: string;
+      selectable?: boolean;
+      selectLabel?: string;
+      itemValues: string[];
+    }
   | { type: 'separator'; key: string }
   | { type: 'item'; key: string; option: SelectOption };
 
@@ -52,6 +59,7 @@ export type SelectContextValue = {
   loading: boolean;
   clearable: boolean;
   searchable: boolean;
+  multiple: boolean;
   maxSelected?: number;
   virtual: SelectProps['virtual'];
   resolvedLabel: string;
@@ -63,6 +71,7 @@ export type SelectContextValue = {
   triggerWidth?: number;
   selectedValues: string[];
   selectedOptions: SelectOption[];
+  optionsByValue: Map<string, SelectOption>;
   rows: SelectCollectionRow[];
   filteredRows: SelectCollectionRow[];
   selectedRowIndex: number;
@@ -76,6 +85,7 @@ export type SelectContextValue = {
   openContent: () => void;
   clearValue: () => void;
   selectOption: (option: SelectOption) => void;
+  selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;
   renderValue: NonNullable<SelectProps['renderValue']> | undefined;
   renderOption: NonNullable<SelectProps['renderOption']> | undefined;

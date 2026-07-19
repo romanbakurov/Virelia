@@ -148,6 +148,8 @@ export type SelectSearchProps = {
 
 export type SelectGroupProps = {
   label?: string;
+  selectable?: boolean;
+  selectLabel?: string;
   children?: ReactNode;
 };
 

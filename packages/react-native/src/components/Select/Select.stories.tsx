@@ -409,7 +409,9 @@ export const Multiple: Story = {
         clearable
         defaultValue={['product']}
       >
-        {renderTeamItems()}
+        <Select.Group label='Teams' selectable selectLabel='All teams'>
+          {renderTeamItems()}
+        </Select.Group>
       </Select>
     </Section>
   ),

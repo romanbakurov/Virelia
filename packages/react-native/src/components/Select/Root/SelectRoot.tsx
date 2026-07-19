@@ -101,37 +101,44 @@ export function SelectRoot(props: SelectProps) {
       ? ''
       : props.defaultValue;
 
-  const { selectedValue, isOpen, openDropdown, closeDropdown, selectValue } =
-    useSelect({
-      value: controlledValue as never,
-      defaultValue: controlledDefaultValue as never,
-      onValueChange: (nextValue: string | string[]) => {
-        if (props.multiple) {
-          (props as SelectMultipleProps).onValueChange?.(
-            nextValue as unknown as string[]
-          );
-          return;
-        }
-
-        (props as SelectSingleProps).onValueChange?.(
-          nextValue === '' ? null : (nextValue as string)
+  const {
+    selectedValue,
+    setSelectedValue,
+    isOpen,
+    openDropdown,
+    closeDropdown,
+    selectValue,
+  } = useSelect({
+    value: controlledValue as never,
+    defaultValue: controlledDefaultValue as never,
+    onValueChange: (nextValue: string | string[]) => {
+      if (props.multiple) {
+        (props as SelectMultipleProps).onValueChange?.(
+          nextValue as unknown as string[]
         );
-      },
-      options,
-      multiple: props.multiple,
-      maxSelected,
-      closeOnSelect,
-      disabled: isDisabled,
-      open,
-      defaultOpen,
-      onOpenChange,
-    } as never) as {
-      selectedValue: string | string[];
-      isOpen: boolean;
-      openDropdown: () => void;
-      closeDropdown: () => void;
-      selectValue: (value: string) => void;
-    };
+        return;
+      }
+
+      (props as SelectSingleProps).onValueChange?.(
+        nextValue === '' ? null : (nextValue as string)
+      );
+    },
+    options,
+    multiple: props.multiple,
+    maxSelected,
+    closeOnSelect,
+    disabled: isDisabled,
+    open,
+    defaultOpen,
+    onOpenChange,
+  } as never) as {
+    selectedValue: string | string[];
+    setSelectedValue: (value: string | string[]) => void;
+    isOpen: boolean;
+    openDropdown: () => void;
+    closeDropdown: () => void;
+    selectValue: (value: string) => void;
+  };
 
   const selectedValues = Array.isArray(selectedValue)
     ? selectedValue
@@ -143,6 +150,15 @@ export function SelectRoot(props: SelectProps) {
   );
   const selectedOptions = options.filter((option: SelectOption) =>
     selectedValues.includes(option.value)
+  );
+  const optionsByValue = useMemo(
+    () =>
+      new Map(
+        options
+          .filter((option: SelectOption) => !option.disabled)
+          .map((option: SelectOption) => [option.value, option])
+      ),
+    [options]
   );
 
   const { query, setQuery, shouldSearch, filteredRows } = useSelectSearch({
@@ -227,6 +243,54 @@ export function SelectRoot(props: SelectProps) {
     announce(`${option.label} selected`);
   };
 
+  const selectGroup = (values: string[]) => {
+    if (!props.multiple || values.length === 0) return;
+
+    const enabledValues = values.filter((value) => optionsByValue.has(value));
+    const selectedGroupValues = enabledValues.filter((value) =>
+      selectedValues.includes(value)
+    );
+    const outsideSelectedCount = selectedValues.filter(
+      (value) => !enabledValues.includes(value)
+    ).length;
+    const maxSelectableGroupCount =
+      typeof maxSelected === 'number'
+        ? Math.max(
+            0,
+            Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
+          )
+        : enabledValues.length;
+    const shouldClearGroup =
+      selectedGroupValues.length > 0 &&
+      selectedGroupValues.length >= maxSelectableGroupCount;
+
+    if (shouldClearGroup) {
+      setSelectedValue(
+        selectedValues.filter((value) => !enabledValues.includes(value))
+      );
+      announce('Group selection cleared');
+      return;
+    }
+
+    const nextValues = [...selectedValues];
+
+    for (const value of enabledValues) {
+      if (nextValues.includes(value)) continue;
+      if (typeof maxSelected === 'number' && nextValues.length >= maxSelected) {
+        break;
+      }
+
+      nextValues.push(value);
+    }
+
+    setSelectedValue(nextValues);
+    announce('Group selected');
+
+    if (closeOnSelect) {
+      closeDropdown();
+    }
+  };
+
   const contextValue = {
     label,
     description,
@@ -240,6 +304,7 @@ export function SelectRoot(props: SelectProps) {
     loading,
     clearable,
     searchable: shouldSearch,
+    multiple: Boolean(props.multiple),
     maxSelected,
     virtual,
     resolvedLabel,
@@ -251,6 +316,7 @@ export function SelectRoot(props: SelectProps) {
     triggerWidth,
     selectedValues,
     selectedOptions,
+    optionsByValue,
     rows,
     filteredRows,
     selectedRowIndex,
@@ -265,6 +331,7 @@ export function SelectRoot(props: SelectProps) {
     openContent: openDropdown,
     clearValue,
     selectOption,
+    selectGroup,
     setQuery,
     renderValue,
     renderOption,

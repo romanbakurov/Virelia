@@ -497,6 +497,51 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('toggles all enabled options in a selectable group for multiple select', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Teams'
+        multiple
+        maxSelected={2}
+        closeOnSelect={false}
+        onValueChange={onValueChange}
+      >
+        <Select.Group label='Core teams' selectable selectLabel='All core'>
+          <Select.Item value='product' label='Product' />
+          <Select.Item value='engineering' label='Engineering' />
+          <Select.Item value='support' label='Support' disabled />
+          <Select.Item value='qa' label='QA' />
+        </Select.Group>
+      </Select>
+    );
+
+    openSelect(container);
+
+    const groupAction = getButtonByLabel('All core');
+
+    expect(groupAction?.textContent).toContain('0/3');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith(['product', 'engineering']);
+    expect(container.textContent).toContain('Product, Engineering');
+    expect(groupAction?.textContent).toContain('2/3');
+    expect(groupAction?.getAttribute('aria-checked')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([]);
+    expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
   it('renders groups, separators, descriptions, icons and badges', () => {
     const { container, unmount } = render(
       <Select label='Country' defaultValue='fr'>

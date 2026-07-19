@@ -71,7 +71,9 @@ const roleFromAccessibility = (role?: string) => {
 
 const stateProps = (state?: Record<string, unknown>) => ({
   'aria-checked':
-    typeof state?.checked === 'boolean' ? String(state.checked) : undefined,
+    typeof state?.checked === 'boolean' || state?.checked === 'mixed'
+      ? String(state.checked)
+      : undefined,
   'aria-disabled':
     typeof state?.disabled === 'boolean' ? String(state.disabled) : undefined,
   'aria-expanded':
