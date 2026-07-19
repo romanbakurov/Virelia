@@ -132,6 +132,9 @@ describe('Select', () => {
       'country-listbox-option-1'
     );
     expect(
+      document.getElementById('country-listbox-option-1')?.className
+    ).toMatch(/active/);
+    expect(
       document
         .getElementById('country-listbox-option-0')
         ?.getAttribute('aria-disabled')
@@ -175,6 +178,39 @@ describe('Select', () => {
     });
   });
 
+  it('opens by pointer without applying the visual active state to selected option', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' name='country' label='Country' defaultValue='de'>
+          {renderSelectItems()}
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const selectedOption = document.getElementById('country-listbox-option-1');
+
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+    expect(selectedOption?.className).toMatch(/selected/);
+    expect(selectedOption?.className).not.toMatch(/active/);
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('supports explicit compound Trigger, Content, and Item children', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');
@@ -209,9 +245,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
-    expect(document.querySelector('[role="listbox"]')?.className).toContain(
-      'compound-content'
-    );
+    expect(
+      document.querySelector('[role="listbox"]')?.parentElement?.className
+    ).toContain('compound-content');
 
     act(() => {
       document.getElementById('country-listbox-option-1')?.click();
@@ -352,6 +388,126 @@ describe('Select', () => {
     });
 
     expect(onValueChange).toHaveBeenCalledWith('us');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('toggles all enabled options in a selectable group for multiple select', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='team'
+          name='team'
+          label='Team'
+          multiple
+          defaultOpen
+          defaultValue={['platform']}
+          closeOnSelect={false}
+          onValueChange={onValueChange}
+        >
+          <Select.Group label='Core' selectable selectLabel='All core'>
+            <Select.Item value='design'>Design</Select.Item>
+            <Select.Item value='platform'>Platform</Select.Item>
+            <Select.Item value='disabled' disabled>
+              Disabled
+            </Select.Item>
+          </Select.Group>
+          <Select.Group label='Operations' selectable>
+            <Select.Item value='qa'>QA</Select.Item>
+          </Select.Group>
+        </Select>
+      );
+    });
+
+    const groupAction = document.querySelector<HTMLButtonElement>(
+      'button[aria-label="All core"]'
+    );
+
+    expect(groupAction?.textContent).toContain('1/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith(['platform', 'design']);
+    expect(groupAction?.textContent).toContain('2/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('true');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([]);
+    expect(groupAction?.textContent).toContain('0/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('false');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('respects maxSelected when selecting a group', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='team'
+          name='team'
+          label='Team'
+          multiple
+          defaultOpen
+          defaultValue={['platform']}
+          maxSelected={3}
+          closeOnSelect={false}
+          onValueChange={onValueChange}
+        >
+          <Select.Group label='Core' selectable selectLabel='All core'>
+            <Select.Item value='design'>Design</Select.Item>
+            <Select.Item value='platform'>Platform</Select.Item>
+            <Select.Item value='docs'>Docs</Select.Item>
+            <Select.Item value='accessibility'>Accessibility</Select.Item>
+          </Select.Group>
+        </Select>
+      );
+    });
+
+    const groupAction = document.querySelector<HTMLButtonElement>(
+      'button[aria-label="All core"]'
+    );
+
+    expect(groupAction?.textContent).toContain('1/4');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([
+      'platform',
+      'design',
+      'docs',
+    ]);
+    expect(new FormData(form).getAll('team')).toEqual([
+      'platform',
+      'design',
+      'docs',
+    ]);
+    expect(groupAction?.textContent).toContain('3/4');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
 
     act(() => {
       root.unmount();
@@ -538,6 +694,48 @@ describe('Select', () => {
     });
   });
 
+  it('moves the active option to the selected option after single selection', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country'>
+          <Select.Item value='fr'>France</Select.Item>
+          <Select.Item value='de'>Germany</Select.Item>
+        </Select>
+      );
+    });
+
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      document.getElementById('country-listbox-option-1')?.click();
+    });
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.getElementById('country-listbox-option-1')).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-1'
+    );
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('does not open or submit a value when disabled', () => {
     const form = document.createElement('form');
     document.body.append(form);
@@ -594,11 +792,13 @@ describe('Select', () => {
 
     const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
     const listbox = document.querySelector('[role="listbox"]');
+    const dropdown = listbox?.parentElement;
 
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(trigger?.className).toContain('custom-trigger');
     expect(trigger?.className).toContain('lg');
-    expect(listbox?.className).toContain('custom-dropdown');
+    expect(dropdown?.className).toContain('custom-dropdown');
+    expect(listbox?.className).not.toContain('custom-dropdown');
 
     act(() => {
       trigger?.click();
@@ -918,7 +1118,7 @@ describe('Select', () => {
     });
   });
 
-  it('supports clearable, searchable, loading, and rich option content', () => {
+  it('supports clearable, searchable, loading, and rich option content', async () => {
     const onValueChange = vi.fn();
     const onSearch = vi.fn();
     const onClear = vi.fn();
@@ -971,12 +1171,22 @@ describe('Select', () => {
       '[aria-label="Search options"]'
     );
 
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    });
+
+    expect(document.activeElement).toBe(search);
+
     act(() => {
       search!.value = 'fra';
       search?.dispatchEvent(new Event('input', { bubbles: true }));
     });
 
     expect(onSearch).toHaveBeenCalledWith('fra');
+    expect(trigger?.textContent).toContain('Germany');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-0'
+    );
     expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
       'France'
     );
@@ -1156,6 +1366,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-50'
+    );
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
     expect(
       document.getElementById('country-listbox-option-50')
@@ -1169,6 +1382,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-50'
+    );
     expect(scrollIntoView).toHaveBeenCalledTimes(2);
 
     act(() => {
@@ -1328,7 +1544,7 @@ describe('Select', () => {
     });
   });
 
-  it('lets searchable input handle text keys without trigger typeahead', () => {
+  it('lets searchable input handle text keys without trigger typeahead', async () => {
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -1351,7 +1567,10 @@ describe('Select', () => {
     const search = document.querySelector<HTMLInputElement>(
       '[aria-label="Search options"]'
     );
-    const activeBeforeSearch = trigger?.getAttribute('aria-activedescendant');
+
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    });
 
     act(() => {
       search?.focus();
@@ -1364,8 +1583,11 @@ describe('Select', () => {
 
     expect(search?.value).toBe('s');
     expect(trigger?.getAttribute('aria-activedescendant')).toBe(
-      activeBeforeSearch
+      'country-listbox-option-0'
     );
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('Spain');
 
     act(() => {
       root.unmount();

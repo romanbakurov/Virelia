@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useControllableState } from './useControllableState.js';
 import {
@@ -108,6 +108,20 @@ export const useSelect = <TOption extends SelectOptionLike>({
     openDropdown();
   }, [closeDropdown, disabled, isOpen, openDropdown]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setActiveIndex((currentIndex) => {
+      const currentOption = options[currentIndex];
+
+      if (currentOption && !currentOption.disabled) {
+        return currentIndex;
+      }
+
+      return getInitialActiveIndex();
+    });
+  }, [getInitialActiveIndex, isOpen, options]);
+
   const selectValue = useCallback(
     (nextValue: string) => {
       if (nextValue === '') {
@@ -143,6 +157,7 @@ export const useSelect = <TOption extends SelectOptionLike>({
       }
 
       setSelectedValue(nextValue);
+      setActiveIndex(options.indexOf(nextOption));
       closeDropdown();
     },
     [

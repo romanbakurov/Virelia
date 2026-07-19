@@ -1,7 +1,7 @@
 # Select
 
-Select lets users choose one saved value from a compact list. It is a field, not
-an action menu.
+Select lets users choose one or more saved values from a compact list. It is a
+field, not an action menu.
 
 <StorybookFrame
   story="select.selection"
@@ -41,11 +41,87 @@ application state.
 </Select.Item>
 ```
 
+## Compound API
+
+Use `Select.Item` for options. Add `Select.Trigger` and `Select.Content` only
+when the trigger or dropdown needs custom composition.
+
+```tsx
+<Select label='Country' value={country} onValueChange={setCountry}>
+  <Select.Trigger>
+    <Select.Value />
+    <Select.Icon />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Search placeholder='Search country' />
+    <Select.Label>Europe</Select.Label>
+    <Select.Item value='fr'>
+      <Select.ItemIcon>FR</Select.ItemIcon>
+      France
+      <Select.ItemDescription>Paris workspace</Select.ItemDescription>
+      <Select.ItemBadge>EU</Select.ItemBadge>
+    </Select.Item>
+    <Select.Separator />
+    <Select.Empty>No countries found</Select.Empty>
+    <Select.Loading>Loading countries...</Select.Loading>
+  </Select.Content>
+</Select>
+```
+
+## Multiple And Group Selection
+
+Set `multiple` when a field can contain several values. The trigger shows the
+first 10 selected labels and then a `+N` count for the rest. Use
+`maxSelected` to cap individual option selection and group selection.
+
+`Select.Group selectable` adds a group-level action in multiple mode. The action
+selects enabled options in that group until `maxSelected` is reached; pressing it
+again clears the group when all selectable group items are selected.
+
+```tsx
+<Select
+  label='Teams'
+  value={teams}
+  onValueChange={setTeams}
+  multiple
+  maxSelected={12}
+  closeOnSelect={false}
+  searchable
+  clearable
+  placeholder='Choose teams'
+>
+  <Select.Group label='Core teams' selectable selectLabel='All core teams'>
+    <Select.Item value='product'>Product</Select.Item>
+    <Select.Item value='engineering'>Engineering</Select.Item>
+    <Select.Item value='design'>Design</Select.Item>
+    <Select.Item value='research'>Research</Select.Item>
+    <Select.Item value='data'>Data</Select.Item>
+  </Select.Group>
+  <Select.Separator />
+  <Select.Group label='Operations' selectable selectLabel='All operations'>
+    <Select.Item value='support'>Support</Select.Item>
+    <Select.Item value='success'>Success</Select.Item>
+    <Select.Item value='sales'>Sales</Select.Item>
+    <Select.Item value='marketing'>Marketing</Select.Item>
+    <Select.Item value='finance'>Finance</Select.Item>
+  </Select.Group>
+  <Select.Separator />
+  <Select.Group label='Platform' selectable selectLabel='All platform'>
+    <Select.Item value='infrastructure'>Infrastructure</Select.Item>
+    <Select.Item value='security'>Security</Select.Item>
+    <Select.Item value='devex'>Developer Experience</Select.Item>
+    <Select.Item value='qa'>QA</Select.Item>
+  </Select.Group>
+</Select>
+```
+
 ## Web Behavior
 
 Web Select supports controlled and uncontrolled open state, placement,
 typeahead, keyboard navigation, disabled options, errors, descriptions, and
-matching dropdown width to the trigger.
+matching dropdown width to the trigger. When a selected option is in the middle
+of a long list, reopening the dropdown keeps that option active and scrolls it
+into view without requiring user scroll.
 
 Use `aria-label` only when a visible label cannot be rendered.
 

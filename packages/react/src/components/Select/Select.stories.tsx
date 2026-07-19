@@ -112,6 +112,87 @@ const statusOptions = [
   },
 ];
 
+const groupedTeamOptions = {
+  core: [
+    {
+      label: 'Design systems',
+      value: 'design-systems',
+      description: 'Components and foundations',
+      badge: 'Core',
+    },
+    {
+      label: 'Frontend platform',
+      value: 'frontend-platform',
+      description: 'Tooling and delivery',
+      badge: 'Core',
+    },
+    {
+      label: 'Accessibility',
+      value: 'accessibility',
+      description: 'Inclusive UX reviews',
+      badge: 'Core',
+    },
+    {
+      label: 'Documentation',
+      value: 'documentation',
+      description: 'Guides and examples',
+      badge: 'Docs',
+    },
+  ],
+  operations: [
+    {
+      label: 'Release management',
+      value: 'release-management',
+      description: 'Versioning and rollout',
+      badge: 'Ops',
+    },
+    {
+      label: 'Quality assurance',
+      value: 'quality-assurance',
+      description: 'Regression coverage',
+      badge: 'QA',
+    },
+    {
+      label: 'Customer support',
+      value: 'customer-support',
+      description: 'Escalations and triage',
+      badge: 'CS',
+    },
+    {
+      label: 'Localization',
+      value: 'localization',
+      description: 'Regional content',
+      badge: 'i18n',
+    },
+  ],
+  platform: [
+    {
+      label: 'Authentication',
+      value: 'authentication',
+      description: 'Identity and access',
+      badge: 'Sec',
+    },
+    {
+      label: 'Billing',
+      value: 'billing',
+      description: 'Plans and invoices',
+      badge: 'Fin',
+    },
+    {
+      label: 'Analytics',
+      value: 'analytics',
+      description: 'Insights and telemetry',
+      badge: 'Data',
+    },
+    {
+      label: 'Integrations',
+      value: 'integrations',
+      description: 'Partner workflows',
+      badge: 'API',
+    },
+  ],
+} satisfies Record<string, StoryOption[]>;
+
 const meta = {
   title: 'Components/Select',
   component: Select,
@@ -122,7 +203,7 @@ const meta = {
         component: `
 ### Select Component
 
-Single-value select control for choosing from a predefined list.
+Single-value or multiple-value select control for choosing from a predefined list.
 
 **Features**
 - Label, description, and ReactNode error support
@@ -132,6 +213,11 @@ Single-value select control for choosing from a predefined list.
 - Sizes, disabled state, required state, and disabled options
 - Keyboard navigation, Escape close behavior, and selected option indicator
 - Floating dropdown placement with trigger-width matching
+- Compound API with Trigger, Value, Icon, Content, Search, Group, Label, Item,
+  ItemIcon, ItemDescription, ItemBadge, Separator, Empty, and Loading parts
+- Multiple selection with maxSelected, 10+ selected value overflow, and
+  selectable group actions
+- Long list support that reopens with the selected option active and visible
 
 ### Usage
 
@@ -145,17 +231,45 @@ Single-value select control for choosing from a predefined list.
 \`\`\`
 
 \`\`\`tsx
-<FormField label='Country' description='Shipping destination'>
+<Select label='Country' value={country} onValueChange={setCountry}>
+  <Select.Trigger>
+    <Select.Value />
+    <Select.Icon />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Search placeholder='Search country' />
+    <Select.Label>Europe</Select.Label>
+    <Select.Item value='fr'>
+      <Select.ItemIcon>FR</Select.ItemIcon>
+      France
+      <Select.ItemDescription>Paris workspace</Select.ItemDescription>
+      <Select.ItemBadge>EU</Select.ItemBadge>
+    </Select.Item>
+    <Select.Separator />
+    <Select.Empty>No countries found</Select.Empty>
+    <Select.Loading>Loading countries...</Select.Loading>
+  </Select.Content>
+</Select>
+\`\`\`
+
+\`\`\`tsx
+<FormField label='Teams' description='Choose teams by item or group'>
   <Select
     searchable
     clearable
+    multiple
+    closeOnSelect={false}
+    maxSelected={12}
     color='primary'
     variant='outline'
-    renderOption={(option) => ...}
-    renderValue={(option) => ...}
   >
-    <Select.Item value='fr'>France</Select.Item>
-    <Select.Item value='de'>Germany</Select.Item>
+    <Select.Group label='Core teams' selectable selectLabel='All core teams'>
+      <Select.Item value='product'>Product</Select.Item>
+      <Select.Item value='engineering'>Engineering</Select.Item>
+      <Select.Item value='design'>Design</Select.Item>
+      <Select.Item value='research'>Research</Select.Item>
+      <Select.Item value='data'>Data</Select.Item>
+    </Select.Group>
   </Select>
 </FormField>
 \`\`\`
@@ -346,6 +460,31 @@ Single-value select control for choosing from a predefined list.
         defaultValue: { summary: 'false' },
       },
     },
+    multiple: {
+      description: 'Allows selecting more than one value.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    maxSelected: {
+      description:
+        'Maximum selected values for multiple Select, including group actions.',
+      control: 'number',
+      table: {
+        type: { summary: 'number' },
+      },
+    },
+    closeOnSelect: {
+      description:
+        'Controls whether the dropdown closes after option or group selection.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true for single, false for multiple' },
+      },
+    },
     searchable: {
       description: 'Shows an option search field in the dropdown.',
       control: 'boolean',
@@ -502,6 +641,14 @@ function renderSelectItems(items: StoryOption[] = defaultOptions) {
         </Select.Item>
       ))}
     </>
+  );
+}
+
+function renderSelectableGroup(label: string, items: StoryOption[]) {
+  return (
+    <Select.Group label={label} selectable selectLabel={`All ${label}`}>
+      {renderSelectItems(items)}
+    </Select.Group>
   );
 }
 
@@ -779,6 +926,26 @@ export const Multiple: Story = {
   ),
 };
 
+export const MultipleGroupedLarge: Story = {
+  args: {
+    multiple: true,
+    defaultValue: ['design-systems', 'frontend-platform', 'authentication'],
+    closeOnSelect: false,
+    placeholder: 'Choose teams',
+  },
+  render: (args) => (
+    <Section title='Multiple grouped large'>
+      <SelectWithState {...args}>
+        {renderSelectableGroup('Core', groupedTeamOptions.core)}
+        <Select.Separator />
+        {renderSelectableGroup('Operations', groupedTeamOptions.operations)}
+        <Select.Separator />
+        {renderSelectableGroup('Platform', groupedTeamOptions.platform)}
+      </SelectWithState>
+    </Section>
+  ),
+};
+
 export const Loading: Story = {
   args: {
     defaultOpen: true,
@@ -1042,26 +1209,6 @@ export const Mobile: Story = {
   render: (args) => (
     <Section title='Mobile'>
       <SelectWithOpenState {...args} storyOptions={richOptions} />
-    </Section>
-  ),
-};
-
-export const HighContrast: Story = {
-  parameters: {
-    globals: {
-      theme: 'high-contrast',
-    },
-  },
-  render: () => (
-    <Section title='High contrast'>
-      <div style={gridStyle}>
-        <Select label='Primary' color='primary' defaultValue='fr'>
-          {renderSelectItems()}
-        </Select>
-        <Select label='Danger' color='danger' error='Required field'>
-          {renderSelectItems()}
-        </Select>
-      </div>
     </Section>
   ),
 };

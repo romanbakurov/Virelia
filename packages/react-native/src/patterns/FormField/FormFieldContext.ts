@@ -1,12 +1,15 @@
 import { createContext, useContext } from 'react';
 
 import type { InputSize } from '@vellira-ui/types';
+import type { ReactNode } from 'react';
 
 export type NativeFormFieldContextValue = {
   controlId: string;
   labelId?: string;
   descriptionId?: string;
   errorId?: string;
+  description?: ReactNode;
+  error?: ReactNode;
   required: boolean;
   disabled: boolean;
   invalid: boolean;

@@ -8,6 +8,7 @@ const dirname =
   typeof __dirname !== 'undefined'
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
+const storybookRoot = path.resolve(dirname, '..');
 
 const config: StorybookConfig = {
   framework: {
@@ -25,8 +26,17 @@ const config: StorybookConfig = {
 
   async viteFinal(config) {
     return mergeConfig(config, {
+      root: storybookRoot,
       resolve: {
         alias: {
+          '@vellira-ui/react/styles': path.resolve(
+            dirname,
+            '../../../packages/react/src/styles.ts'
+          ),
+          '@vellira-ui/react': path.resolve(
+            dirname,
+            '../../../packages/react/src/index.ts'
+          ),
           '@vellira-ui/core': path.resolve(
             dirname,
             '../../../packages/core/src/index.ts'

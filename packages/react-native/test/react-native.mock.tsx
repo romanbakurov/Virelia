@@ -1,4 +1,10 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
 type PressableState = { pressed: boolean; hovered: boolean; focused: boolean };
 
@@ -10,11 +16,14 @@ type NativeProps = {
   accessibilityState?: Record<string, unknown>;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  accessibilityLabelledBy?: string;
+  'aria-describedby'?: string;
   accessibilityLiveRegion?: string;
   ellipsizeMode?: string;
   accessible?: boolean;
   importantForAccessibility?: string;
   numberOfLines?: number;
+  nativeID?: string;
   onPress?: () => void;
   onPressIn?: () => void;
   onPressOut?: () => void;
@@ -24,11 +33,17 @@ type NativeProps = {
   onBlur?: () => void;
   onLongPress?: () => void;
   onChangeText?: (value: string) => void;
+  onRequestClose?: () => void;
   value?: string;
   editable?: boolean;
   placeholder?: string;
+  placeholderTextColor?: string;
   secureTextEntry?: boolean;
   keyboardType?: string;
+  returnKeyType?: string;
+  autoFocus?: boolean;
+  keyboardShouldPersistTaps?: string;
+  contentContainerStyle?: unknown;
   testID?: string;
   color?: string;
   size?: string | number;
@@ -62,7 +77,9 @@ const roleFromAccessibility = (role?: string) => {
 
 const stateProps = (state?: Record<string, unknown>) => ({
   'aria-checked':
-    typeof state?.checked === 'boolean' ? String(state.checked) : undefined,
+    typeof state?.checked === 'boolean' || state?.checked === 'mixed'
+      ? String(state.checked)
+      : undefined,
   'aria-disabled':
     typeof state?.disabled === 'boolean' ? String(state.disabled) : undefined,
   'aria-expanded':
@@ -76,6 +93,8 @@ const stateProps = (state?: Record<string, unknown>) => ({
 const accessibilityProps = ({
   accessibilityLabel,
   accessibilityHint,
+  accessibilityLabelledBy,
+  'aria-describedby': ariaDescribedBy,
   accessibilityLiveRegion,
   accessible,
   importantForAccessibility,
@@ -84,6 +103,8 @@ const accessibilityProps = ({
     NativeProps,
     | 'accessibilityLabel'
     | 'accessibilityHint'
+    | 'accessibilityLabelledBy'
+    | 'aria-describedby'
     | 'accessibilityLiveRegion'
     | 'accessible'
     | 'importantForAccessibility'
@@ -91,6 +112,8 @@ const accessibilityProps = ({
 >) => ({
   'aria-label': accessibilityLabel,
   'aria-description': accessibilityHint,
+  'aria-labelledby': accessibilityLabelledBy,
+  'aria-describedby': ariaDescribedBy,
   'aria-hidden':
     accessible === false || importantForAccessibility === 'no'
       ? 'true'
@@ -108,10 +131,12 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
       accessibilityState,
       accessibilityLabel,
       accessibilityHint,
+      accessibilityLabelledBy,
       accessibilityLiveRegion,
       accessible,
       importantForAccessibility,
       testID,
+      nativeID,
       onLayout,
     },
     ref
@@ -138,12 +163,14 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
       <div
         ref={ref}
         data-testid={testID}
+        id={nativeID}
         role={roleFromAccessibility(accessibilityRole)}
         style={resolvedStyle}
         {...stateProps(accessibilityState)}
         {...accessibilityProps({
           accessibilityLabel,
           accessibilityHint,
+          accessibilityLabelledBy,
           accessibilityLiveRegion,
           accessible,
           importantForAccessibility,
@@ -234,6 +261,8 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
       accessibilityState,
       accessibilityLabel,
       accessibilityHint,
+      accessibilityLabelledBy,
+      'aria-describedby': ariaDescribedBy,
       onPress,
       onPressIn,
       onPressOut,
@@ -243,6 +272,7 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
       onBlur,
       onLongPress,
       testID,
+      nativeID,
     },
     ref
   ) => {
@@ -262,6 +292,7 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         ref={ref}
         type='button'
         data-testid={testID}
+        id={nativeID}
         disabled={disabled}
         role={roleFromAccessibility(accessibilityRole)}
         style={flattenStyle(resolvedStyle)}
@@ -277,6 +308,8 @@ export const Pressable = forwardRef<HTMLButtonElement, NativeProps>(
         {...accessibilityProps({
           accessibilityLabel,
           accessibilityHint,
+          accessibilityLabelledBy,
+          'aria-describedby': ariaDescribedBy,
         })}
       >
         {resolvedChildren}
@@ -294,12 +327,17 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
       editable = true,
       secureTextEntry,
       keyboardType,
+      returnKeyType,
+      autoFocus,
       onChangeText,
       onFocus,
       onBlur,
       style,
       testID,
+      nativeID,
       accessibilityLabel,
+      accessibilityHint,
+      accessibilityLabelledBy,
       accessibilityState,
     },
     ref
@@ -307,11 +345,17 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
     <input
       ref={ref}
       data-testid={testID}
+      id={nativeID}
       data-keyboard-type={keyboardType}
+      data-return-key-type={returnKeyType}
+      data-auto-focus={autoFocus ? 'true' : undefined}
       aria-label={accessibilityLabel}
+      aria-description={accessibilityHint}
+      aria-labelledby={accessibilityLabelledBy}
       value={value ?? ''}
       placeholder={placeholder}
       disabled={!editable}
+      autoFocus={autoFocus}
       type={secureTextEntry ? 'password' : 'text'}
       inputMode={keyboardType === 'numeric' ? 'numeric' : undefined}
       style={flattenStyle(style)}
@@ -323,6 +367,113 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
   )
 );
 TextInput.displayName = 'TextInput';
+
+type FlatListHandle = {
+  scrollToIndex: (params: {
+    index: number;
+    animated?: boolean;
+    viewPosition?: number;
+  }) => void;
+  scrollToOffset: (params: { offset: number; animated?: boolean }) => void;
+};
+
+type FlatListProps<T> = NativeProps & {
+  data?: T[];
+  renderItem: (info: { item: T; index: number }) => React.ReactNode;
+  keyExtractor?: (item: T, index: number) => string;
+  getItemLayout?: (
+    data: ArrayLike<T> | null | undefined,
+    index: number
+  ) => { length: number; offset: number; index: number };
+  initialScrollIndex?: number;
+  onScrollToIndexFailed?: (info: { index: number }) => void;
+};
+
+const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
+  function FlatListComponent(
+    {
+      data,
+      renderItem,
+      keyExtractor,
+      style,
+      contentContainerStyle,
+      testID,
+      onLayout,
+      initialScrollIndex,
+      getItemLayout,
+    }: FlatListProps<unknown>,
+    ref
+  ) {
+    const [scrolledIndex, setScrolledIndex] = useState<number | undefined>();
+    const [scrolledOffset, setScrolledOffset] = useState<number | undefined>();
+    const [scrollViewPosition, setScrollViewPosition] = useState<
+      number | undefined
+    >();
+
+    const resolvedStyle = flattenStyle(style);
+    const initialLayout =
+      typeof initialScrollIndex === 'number'
+        ? getItemLayout?.(data, initialScrollIndex)
+        : undefined;
+
+    useEffect(() => {
+      onLayout?.({
+        nativeEvent: {
+          layout: {
+            width: Number(resolvedStyle?.width ?? 0),
+            height: Number(
+              resolvedStyle?.height ?? resolvedStyle?.maxHeight ?? 0
+            ),
+            x: 0,
+            y: 0,
+          },
+        },
+      });
+    }, [
+      onLayout,
+      resolvedStyle?.height,
+      resolvedStyle?.maxHeight,
+      resolvedStyle?.width,
+    ]);
+
+    useImperativeHandle(ref, () => ({
+      scrollToIndex: ({ index, viewPosition }) => {
+        setScrolledIndex(index);
+        setScrollViewPosition(viewPosition);
+      },
+      scrollToOffset: ({ offset }) => {
+        setScrolledOffset(offset);
+      },
+    }));
+
+    return (
+      <div
+        data-testid={testID ?? 'native-flat-list'}
+        data-initial-scroll-index={initialScrollIndex}
+        data-initial-scroll-offset={initialLayout?.offset}
+        data-initial-scroll-length={initialLayout?.length}
+        data-scroll-to-index={scrolledIndex}
+        data-scroll-to-offset={scrolledOffset}
+        data-scroll-view-position={scrollViewPosition}
+        data-keyboard-should-persist-taps={undefined}
+        style={resolvedStyle}
+      >
+        <div style={flattenStyle(contentContainerStyle)}>
+          {(data ?? []).map((item, index) => (
+            <React.Fragment key={keyExtractor?.(item, index) ?? index}>
+              {renderItem({ item, index })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    );
+  }
+);
+FlatListComponent.displayName = 'FlatList';
+
+export const FlatList = FlatListComponent as <T>(
+  props: FlatListProps<T> & { ref?: React.Ref<FlatListHandle> }
+) => React.ReactElement;
 
 export const Modal = ({
   visible,
@@ -350,4 +501,11 @@ export const Dimensions = {
   get() {
     return { width: 1024, height: 768 };
   },
+};
+
+export const useWindowDimensions = () => Dimensions.get();
+
+export const AccessibilityInfo = {
+  announceForAccessibility: () => undefined,
+  setAccessibilityFocus: () => undefined,
 };

@@ -1,0 +1,44 @@
+import { Modal, View } from 'react-native';
+
+import { useThemeStyles } from '../../../theme';
+
+import { SelectBackdrop } from './SelectBackdrop';
+import { createPresentationStyles } from './SelectPresentation.styles';
+import type { SelectPresentationProps } from './types';
+
+export const SelectModal = ({
+  visible,
+  onClose,
+  dismissOnBackdropPress,
+  contentStyle,
+  children,
+}: SelectPresentationProps) => {
+  const styles = useThemeStyles(createPresentationStyles);
+
+  return (
+    <Modal
+      transparent
+      visible={visible}
+      animationType='slide'
+      onRequestClose={onClose}
+    >
+      <View
+        style={[styles.modalRoot, styles.modalPresentationRoot]}
+        testID='select-content-root'
+      >
+        <SelectBackdrop
+          onClose={onClose}
+          dismissOnBackdropPress={dismissOnBackdropPress}
+        />
+        <View
+          style={[styles.content, styles.modalPresentation, contentStyle]}
+          testID='select-modal'
+        >
+          {children}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+SelectModal.displayName = 'Select.Modal';

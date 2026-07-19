@@ -42,6 +42,15 @@ describe.each([
       theme.components.button.danger.solid.default.bg
     );
     expect(theme.components.select.trigger.default.bg).toBeDefined();
+    expect(theme.components.select.clearButton.hoverBg).toBeDefined();
     expect(theme.components.tooltip.content.bg).toBeDefined();
+  });
+});
+
+describe('dark theme select', () => {
+  it('keeps option hover visible against the dropdown background', () => {
+    expect(
+      darkTheme.components.select.primary.outline.option.hover.bg
+    ).not.toBe(darkTheme.components.select.dropdown.bg);
   });
 });

@@ -6,6 +6,7 @@ import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
+import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -120,6 +121,8 @@ const danger = createInputColorPalette({
 export const select = {
   primary: createSelectPalette(primary, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -127,9 +130,17 @@ export const select = {
     optionPressedBg: menu.item.pressed.bg,
     optionPressedBorder: 'transparent',
     optionPressedFg: menu.item.pressed.fg,
+    optionSelectedActiveBg: menu.item.active.bg,
+    optionSelectedActiveFg: menu.item.active.fg,
+    optionSelectedHoverBg: menu.item.hover.bg,
+    optionSelectedHoverFg: menu.item.hover.fg,
+    optionSelectedPressedBg: menu.item.pressed.bg,
+    optionSelectedPressedFg: menu.item.pressed.fg,
   }),
   neutral: createSelectPalette(neutral, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -137,9 +148,17 @@ export const select = {
     optionPressedBg: menu.item.pressed.bg,
     optionPressedBorder: 'transparent',
     optionPressedFg: menu.item.pressed.fg,
+    optionSelectedActiveBg: menu.item.active.bg,
+    optionSelectedActiveFg: menu.item.active.fg,
+    optionSelectedHoverBg: menu.item.hover.bg,
+    optionSelectedHoverFg: menu.item.hover.fg,
+    optionSelectedPressedBg: menu.item.pressed.bg,
+    optionSelectedPressedFg: menu.item.pressed.fg,
   }),
   success: createSelectPalette(success, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -147,9 +166,17 @@ export const select = {
     optionPressedBg: menu.item.pressed.bg,
     optionPressedBorder: 'transparent',
     optionPressedFg: menu.item.pressed.fg,
+    optionSelectedActiveBg: menu.item.active.bg,
+    optionSelectedActiveFg: menu.item.active.fg,
+    optionSelectedHoverBg: menu.item.hover.bg,
+    optionSelectedHoverFg: menu.item.hover.fg,
+    optionSelectedPressedBg: menu.item.pressed.bg,
+    optionSelectedPressedFg: menu.item.pressed.fg,
   }),
   warning: createSelectPalette(warning, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -157,9 +184,17 @@ export const select = {
     optionPressedBg: menu.item.pressed.bg,
     optionPressedBorder: 'transparent',
     optionPressedFg: menu.item.pressed.fg,
+    optionSelectedActiveBg: menu.item.active.bg,
+    optionSelectedActiveFg: menu.item.active.fg,
+    optionSelectedHoverBg: menu.item.hover.bg,
+    optionSelectedHoverFg: menu.item.hover.fg,
+    optionSelectedPressedBg: menu.item.pressed.bg,
+    optionSelectedPressedFg: menu.item.pressed.fg,
   }),
   danger: createSelectPalette(danger, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -167,6 +202,12 @@ export const select = {
     optionPressedBg: menu.item.pressed.bg,
     optionPressedBorder: 'transparent',
     optionPressedFg: menu.item.pressed.fg,
+    optionSelectedActiveBg: menu.item.active.bg,
+    optionSelectedActiveFg: menu.item.active.fg,
+    optionSelectedHoverBg: menu.item.hover.bg,
+    optionSelectedHoverFg: menu.item.hover.fg,
+    optionSelectedPressedBg: menu.item.pressed.bg,
+    optionSelectedPressedFg: menu.item.pressed.fg,
   }),
 
   trigger: {
@@ -213,7 +254,7 @@ export const select = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: menu.border,
-    shadow: 'none',
+    shadow: shadow.lg,
 
     search: {
       bg: surface.default,
@@ -234,6 +275,14 @@ export const select = {
     separator: {
       bg: border.muted,
     },
+  },
+
+  clearButton: {
+    fg: icons.muted,
+    hoverFg: status.error.fg,
+    hoverBg: status.error.bg,
+    focusBg: surface.subtle,
+    pressedBg: surface.active,
   },
 
   option: {

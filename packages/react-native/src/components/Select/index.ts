@@ -1,2 +1,23 @@
 export { Select } from './Select';
-export type { SelectOption, SelectProps } from './types';
+export type {
+  SelectContentProps,
+  SelectEmptyProps,
+  SelectGroupProps,
+  SelectIconSlotProps,
+  SelectItemBadgeProps,
+  SelectItemDescriptionProps,
+  SelectItemIconProps,
+  SelectItemProps,
+  SelectLabelProps,
+  SelectLoadingProps,
+  SelectOption,
+  SelectPresentation,
+  SelectProps,
+  SelectRenderOption,
+  SelectRenderValue,
+  SelectSearchProps,
+  SelectSeparatorProps,
+  SelectTriggerSlotProps,
+  SelectValueSlotProps,
+  SelectVirtualConfig,
+} from './types';
