@@ -29,7 +29,9 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
   const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
+  const wasOpenRef = useRef(false);
   const didScrollToSelectedRef = useRef(false);
+  const [openCycle, setOpenCycle] = useState(0);
   const [listHeight, setListHeight] = useState(0);
   const context = useSelectContext();
   const {
@@ -57,6 +59,17 @@ export const SelectContentSurface = () => {
   } = context;
   const shouldScrollToSelected =
     Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
+  const initialScrollIndex = shouldScrollToSelected
+    ? selectedRowIndex
+    : undefined;
+
+  useEffect(() => {
+    if (isOpen && !wasOpenRef.current) {
+      setOpenCycle((cycle) => cycle + 1);
+    }
+
+    wasOpenRef.current = isOpen;
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -190,6 +203,7 @@ export const SelectContentSurface = () => {
       ) : (
         <FlatList
           ref={listRef}
+          key={`select-list-${openCycle}`}
           data={filteredRows}
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
@@ -199,11 +213,18 @@ export const SelectContentSurface = () => {
           }}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
+          initialScrollIndex={initialScrollIndex}
           initialNumToRender={
             typeof context.virtual === 'object'
               ? context.virtual.initialNumToRender
               : 12
           }
+          onScrollToIndexFailed={(info) => {
+            listRef.current?.scrollToOffset({
+              offset: Math.max(0, info.index * itemHeight),
+              animated: false,
+            });
+          }}
           windowSize={
             typeof context.virtual === 'object' ? context.virtual.windowSize : 7
           }

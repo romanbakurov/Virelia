@@ -337,6 +337,7 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
     expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {
@@ -378,6 +379,7 @@ describe('Native Select', () => {
       '[data-testid="native-flat-list"]'
     );
 
+    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('15');
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {

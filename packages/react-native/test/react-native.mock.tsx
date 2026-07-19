@@ -381,6 +381,8 @@ type FlatListProps<T> = NativeProps & {
   data?: T[];
   renderItem: (info: { item: T; index: number }) => React.ReactNode;
   keyExtractor?: (item: T, index: number) => string;
+  initialScrollIndex?: number;
+  onScrollToIndexFailed?: (info: { index: number }) => void;
 };
 
 const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
@@ -393,6 +395,7 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
       contentContainerStyle,
       testID,
       onLayout,
+      initialScrollIndex,
     }: FlatListProps<unknown>,
     ref
   ) {
@@ -437,6 +440,7 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
     return (
       <div
         data-testid={testID ?? 'native-flat-list'}
+        data-initial-scroll-index={initialScrollIndex}
         data-scroll-to-index={scrolledIndex}
         data-scroll-to-offset={scrolledOffset}
         data-scroll-view-position={scrollViewPosition}
