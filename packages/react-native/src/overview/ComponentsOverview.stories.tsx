@@ -6,7 +6,7 @@ import {
   Close,
   Download,
   Filter,
-  More,
+  Menu,
   Save,
   Search,
   Settings,
@@ -910,7 +910,7 @@ function NativeComponentsOverview() {
                 label='More report actions'
                 accessibilityLabel='More report actions'
                 accessibilityHint='Opens report action menu'
-                icon={<More />}
+                icon={<Menu />}
                 showArrow={false}
               >
                 {renderDropdownContent()}

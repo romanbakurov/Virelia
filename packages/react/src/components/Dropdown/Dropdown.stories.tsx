@@ -9,7 +9,7 @@ import {
   Exit,
   File,
   Folder,
-  More,
+  Menu,
   Refresh,
   Save,
   Settings,
@@ -652,7 +652,7 @@ export const AsChildTrigger: Story = {
     <Section title='asChild trigger'>
       <Dropdown placement='bottom-start' minWidth={220}>
         <Dropdown.Trigger asChild>
-          <Button appearance='soft' color='neutral' iconStart={<More />}>
+          <Button appearance='soft' color='neutral' iconStart={<Menu />}>
             More actions
           </Button>
         </Dropdown.Trigger>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Copy, Edit, More, Refresh, Settings, Trash } from '@vellira-ui/icons';
+import { Copy, Edit, Menu, Refresh, Settings, Trash } from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
@@ -53,7 +53,7 @@ function DropdownIcon() {
   const { theme } = useTheme();
 
   return (
-    <More
+    <Menu
       style={{
         transform: [{ rotate: '90deg' }],
       }}
