@@ -11,6 +11,7 @@ export const createItemStyles = (theme: NativeTheme) =>
       gap: theme.tokens.spacing[3],
       paddingHorizontal: theme.tokens.spacing[3],
       paddingVertical: theme.tokens.spacing[2],
+      marginBottom: 2,
       borderRadius: theme.tokens.radius.md,
       borderWidth: 1,
       borderColor: 'transparent',
