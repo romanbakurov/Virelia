@@ -191,8 +191,12 @@ export const Animated = {
       this.value = value;
     }
 
-    interpolate() {
-      return '0deg';
+    setValue(value: number) {
+      this.value = value;
+    }
+
+    interpolate({ outputRange }: { outputRange: Array<number | string> }) {
+      return outputRange[this.value >= 1 ? outputRange.length - 1 : 0];
     }
   },
 
