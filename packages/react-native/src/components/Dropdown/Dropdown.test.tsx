@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
@@ -8,10 +9,26 @@ import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Dropdown } from './Dropdown';
 
-const items = [
-  { label: 'Edit', value: 'edit' },
-  { label: 'Delete', value: 'delete', danger: true },
-];
+function renderActionContent({
+  editIcon,
+  deleteIcon,
+  onEdit,
+}: {
+  editIcon?: ReactNode;
+  deleteIcon?: ReactNode;
+  onEdit?: () => void;
+} = {}) {
+  return (
+    <Dropdown.Content>
+      <Dropdown.Item value='edit' icon={editIcon} onSelect={onEdit}>
+        Edit
+      </Dropdown.Item>
+      <Dropdown.Item value='delete' danger icon={deleteIcon}>
+        Delete
+      </Dropdown.Item>
+    </Dropdown.Content>
+  );
+}
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -122,7 +139,9 @@ describe('Native Dropdown', () => {
   it('opens and selects an item', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(
-      <Dropdown label='Actions' items={items} onSelect={onSelect} />
+      <Dropdown label='Actions'>
+        {renderActionContent({ onEdit: () => onSelect('edit') })}
+      </Dropdown>
     );
 
     const trigger =
@@ -143,7 +162,9 @@ describe('Native Dropdown', () => {
 
   it('renders a text trigger safely', () => {
     const { container, unmount } = render(
-      <Dropdown label='Actions' trigger='Actions' items={items} />
+      <Dropdown label='Actions' trigger='Actions'>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     const trigger =
@@ -156,7 +177,9 @@ describe('Native Dropdown', () => {
 
   it('applies the configured trigger size', () => {
     const { container, unmount } = render(
-      <Dropdown label='Actions' trigger='Actions' size='lg' items={items} />
+      <Dropdown label='Actions' trigger='Actions' size='lg'>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     const trigger =
@@ -170,16 +193,22 @@ describe('Native Dropdown', () => {
   it('renders grouped menu content and ignores disabled item presses', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={[
-          { type: 'group', label: 'File' },
-          { label: 'Archive', value: 'archive', disabled: true },
-          { type: 'separator' },
-          { label: 'Duplicate', value: 'duplicate', textWrap: 'wrap' },
-        ]}
-        onSelect={onSelect}
-      />
+      <Dropdown label='Actions'>
+        <Dropdown.Content>
+          <Dropdown.Label>File</Dropdown.Label>
+          <Dropdown.Item value='archive' disabled>
+            Archive
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item
+            value='duplicate'
+            textWrap='wrap'
+            onSelect={() => onSelect('duplicate')}
+          >
+            Duplicate
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger =
@@ -212,7 +241,9 @@ describe('Native Dropdown', () => {
 
   it('does not open when disabled and closes from backdrop', () => {
     const { container, rerender, unmount } = render(
-      <Dropdown disabled label='Actions' items={items} />
+      <Dropdown disabled label='Actions'>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     let trigger = container.querySelector<HTMLButtonElement>('[role="button"]');
@@ -227,8 +258,9 @@ describe('Native Dropdown', () => {
         label='Actions'
         icon={<span data-testid='trigger-icon' />}
         showArrow={false}
-        items={items}
-      />
+      >
+        {renderActionContent()}
+      </Dropdown>
     );
 
     trigger = container.querySelector<HTMLButtonElement>('[role="button"]');
@@ -253,12 +285,9 @@ describe('Native Dropdown', () => {
   it('supports controlled open state and reports open changes', () => {
     const onOpenChange = vi.fn();
     const { container, rerender, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={items}
-        open={false}
-        onOpenChange={onOpenChange}
-      />
+      <Dropdown label='Actions' open={false} onOpenChange={onOpenChange}>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     const trigger =
@@ -270,12 +299,9 @@ describe('Native Dropdown', () => {
     expect(container.textContent).not.toContain('Edit');
 
     rerender(
-      <Dropdown
-        label='Actions'
-        items={items}
-        open
-        onOpenChange={onOpenChange}
-      />
+      <Dropdown label='Actions' open onOpenChange={onOpenChange}>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     expect(container.textContent).toContain('Edit');
@@ -297,8 +323,9 @@ describe('Native Dropdown', () => {
         label='Actions'
         accessibilityLabel='Project actions'
         accessibilityHint='Opens project action menu'
-        items={items}
-      />
+      >
+        {renderActionContent()}
+      </Dropdown>
     );
 
     const trigger =
@@ -317,13 +344,13 @@ describe('Native Dropdown', () => {
       <Dropdown
         label={<span>Actions</span>}
         accessibilityLabel='Project actions'
-        items={[
-          {
-            label: <span data-testid='complex-label'>Copy link</span>,
-            value: 'copy-link',
-          },
-        ]}
-      />
+      >
+        <Dropdown.Content>
+          <Dropdown.Item value='copy-link'>
+            <span data-testid='complex-label'>Copy link</span>
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger =
@@ -342,14 +369,16 @@ describe('Native Dropdown', () => {
   it('renders repeated values with stable menuitem semantics', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={[
-          { label: 'Copy link', value: 'copy' },
-          { label: 'Copy markdown', value: 'copy' },
-        ]}
-        onSelect={onSelect}
-      />
+      <Dropdown label='Actions'>
+        <Dropdown.Content>
+          <Dropdown.Item value='copy' onSelect={() => onSelect('copy')}>
+            Copy link
+          </Dropdown.Item>
+          <Dropdown.Item value='copy' onSelect={() => onSelect('copy')}>
+            Copy markdown
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger =
@@ -371,14 +400,17 @@ describe('Native Dropdown', () => {
 
   it('maps textWrap values to native text truncation behavior', () => {
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={[
-          { label: 'Truncate label', value: 'truncate' },
-          { label: 'No wrap label', value: 'nowrap', textWrap: 'nowrap' },
-          { label: 'Wrapped label', value: 'wrap', textWrap: 'wrap' },
-        ]}
-      />
+      <Dropdown label='Actions'>
+        <Dropdown.Content>
+          <Dropdown.Item value='truncate'>Truncate label</Dropdown.Item>
+          <Dropdown.Item value='nowrap' textWrap='nowrap'>
+            No wrap label
+          </Dropdown.Item>
+          <Dropdown.Item value='wrap' textWrap='wrap'>
+            Wrapped label
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger =
@@ -409,9 +441,10 @@ describe('Native Dropdown', () => {
     const { container, unmount } = render(
       <Dropdown
         label='Empty actions'
-        items={[]}
         contentStyle={{ borderTopLeftRadius: 24 }}
-      />
+      >
+        <Dropdown.Content />
+      </Dropdown>
     );
 
     const trigger =
@@ -436,12 +469,9 @@ describe('Native Dropdown', () => {
   it('keeps disabled menus closed', () => {
     const onOpenChange = vi.fn();
     const { container, unmount } = render(
-      <Dropdown
-        disabled
-        label='Disabled actions'
-        items={items}
-        onOpenChange={onOpenChange}
-      />
+      <Dropdown disabled label='Disabled actions' onOpenChange={onOpenChange}>
+        {renderActionContent()}
+      </Dropdown>
     );
 
     const trigger =
@@ -461,19 +491,19 @@ describe('Native Dropdown', () => {
     );
 
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={[
-          { label: 'Edit', value: 'edit', icon: <Icon /> },
-          { label: 'Delete', value: 'delete', danger: true, icon: <Icon /> },
-          {
-            label: 'Archive',
-            value: 'archive',
-            disabled: true,
-            icon: <Icon />,
-          },
-        ]}
-      />
+      <Dropdown label='Actions'>
+        <Dropdown.Content>
+          <Dropdown.Item value='edit' icon={<Icon />}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item value='delete' danger icon={<Icon />}>
+            Delete
+          </Dropdown.Item>
+          <Dropdown.Item value='archive' disabled icon={<Icon />}>
+            Archive
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger =
@@ -499,13 +529,9 @@ describe('Native Dropdown', () => {
     );
 
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        items={[
-          { label: 'Edit', value: 'edit', icon: <Icon /> },
-          { label: 'Delete', value: 'delete', danger: true, icon: <Icon /> },
-        ]}
-      />
+      <Dropdown label='Actions'>
+        {renderActionContent({ editIcon: <Icon />, deleteIcon: <Icon /> })}
+      </Dropdown>
     );
 
     const trigger =
@@ -553,10 +579,13 @@ describe('Native Dropdown', () => {
 
       const { container, unmount } = render(
         <ThemeProvider defaultTheme={themeName}>
-          <Dropdown
-            label='Actions'
-            items={[{ label: 'Edit', value: 'edit', icon: <Icon /> }]}
-          />
+          <Dropdown label='Actions'>
+            <Dropdown.Content>
+              <Dropdown.Item value='edit' icon={<Icon />}>
+                Edit
+              </Dropdown.Item>
+            </Dropdown.Content>
+          </Dropdown>
         </ThemeProvider>
       );
 

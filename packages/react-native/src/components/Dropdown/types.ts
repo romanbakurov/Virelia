@@ -1,25 +1,6 @@
-import type {
-  BaseDropdownGroup,
-  BaseDropdownMenuItem,
-  BaseDropdownProps,
-  BaseDropdownSeparator,
-  TextWrap,
-} from '@vellira-ui/types';
+import type { BaseDropdownProps, TextWrap } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-
-export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
-  label: ReactNode;
-  icon?: ReactNode;
-}
-
-export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {
-  label: ReactNode;
-}
-
-export type DropdownSeparator = BaseDropdownSeparator;
-
-export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
 
 export type DropdownPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
 
@@ -28,7 +9,10 @@ export type DropdownSelectEvent = {
   defaultPrevented: boolean;
 };
 
-export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
+export interface DropdownProps extends Omit<
+  BaseDropdownProps,
+  'items' | 'onSelect'
+> {
   children?: ReactNode;
   label?: ReactNode;
 
@@ -37,7 +21,6 @@ export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
   arrowIcon?: ReactNode;
   showArrow?: boolean;
 
-  items?: DropdownItem[];
   presentation?: DropdownPresentation;
   closeOnSelect?: boolean;
   loading?: boolean;
@@ -92,12 +75,3 @@ export interface DropdownEmptyProps {
 export interface DropdownLoadingProps {
   children?: ReactNode;
 }
-
-export const isMenuItem = (item: DropdownItem): item is DropdownMenuItem =>
-  item.type === undefined || item.type === 'item';
-
-export const isGroup = (item: DropdownItem): item is DropdownGroup =>
-  item.type === 'group';
-
-export const isSeparator = (item: DropdownItem): item is DropdownSeparator =>
-  item.type === 'separator';

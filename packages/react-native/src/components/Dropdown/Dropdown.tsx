@@ -44,8 +44,6 @@ function DropdownRoot({
   icon,
   arrowIcon,
   showArrow = true,
-  items = [],
-  onSelect,
   open,
   defaultOpen = false,
   onOpenChange,
@@ -66,10 +64,7 @@ function DropdownRoot({
   const styles = useThemeStyles(createStyles);
   const { width } = useWindowDimensions();
   const triggerRef = useRef<Component | number | null>(null);
-  const parsed = useMemo(
-    () => parseDropdownChildren(children, items),
-    [children, items]
-  );
+  const parsed = useMemo(() => parseDropdownChildren(children), [children]);
   const resolvedPresentation =
     presentation === 'auto'
       ? width < 768
@@ -134,19 +129,13 @@ function DropdownRoot({
 
       entry.props.onSelect?.(event);
 
-      const value = entry.props.value;
-
-      if (value !== undefined) {
-        onSelect?.(value);
-      }
-
       const shouldClose = entry.props.closeOnSelect ?? closeOnSelect;
 
       if (!event.defaultPrevented && shouldClose) {
         closeAndFocusTrigger();
       }
     },
-    [closeAndFocusTrigger, closeOnSelect, loading, onSelect]
+    [closeAndFocusTrigger, closeOnSelect, loading]
   );
 
   const handleTriggerPress = useCallback(() => {

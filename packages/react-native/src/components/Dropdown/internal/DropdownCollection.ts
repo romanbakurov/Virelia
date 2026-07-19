@@ -6,15 +6,12 @@ import type {
   DropdownContentProps,
   DropdownEmptyProps,
   DropdownGroupProps,
-  DropdownItem,
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
-  DropdownMenuItem,
   DropdownSeparatorProps,
   DropdownTriggerProps,
 } from '../types';
-import { isGroup, isMenuItem, isSeparator } from '../types';
 
 type DropdownSlotComponent<TProps extends object> = {
   (props: TProps): null;
@@ -62,8 +59,7 @@ export function createDropdownSlot<TProps extends object>(
 }
 
 export function parseDropdownChildren(
-  children: ReactNode,
-  legacyItems: DropdownItem[] = []
+  children: ReactNode
 ): ParsedNativeDropdownChildren {
   let generatedId = 0;
   let trigger: ReactNode;
@@ -152,44 +148,7 @@ export function parseDropdownChildren(
 
   visit(children);
 
-  if (entries.length === 0) {
-    for (const item of legacyItems) {
-      if (isGroup(item)) {
-        entries.push({
-          type: 'label',
-          id: nextId('label'),
-          props: { children: item.label },
-        });
-        continue;
-      }
-
-      if (isSeparator(item)) {
-        entries.push({
-          type: 'separator',
-          id: nextId('separator'),
-          props: {},
-        });
-        continue;
-      }
-
-      if (isMenuItem(item)) {
-        pushItem(fromLegacyItem(item));
-      }
-    }
-  }
-
   return { contentProps, entries, items, trigger, triggerProps };
-}
-
-function fromLegacyItem(item: DropdownMenuItem): DropdownItemProps {
-  return {
-    children: item.label,
-    value: item.value,
-    icon: item.icon,
-    danger: item.danger,
-    disabled: item.disabled,
-    textWrap: item.textWrap,
-  };
 }
 
 function getItemLabel(children: ReactNode) {

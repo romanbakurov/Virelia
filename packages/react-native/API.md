@@ -519,27 +519,33 @@ only the values that still fit are added.
 Native menu component with item, group, and separator entries.
 
 ```tsx
-import { Dropdown } from '@vellira-ui/react-native';
+import { Button, Dropdown } from '@vellira-ui/react-native';
 
-<Dropdown
-  label='Actions'
-  items={[
-    { type: 'group', label: 'File' },
-    { type: 'item', value: 'edit', label: 'Edit' },
-    { type: 'separator' },
-    { type: 'item', value: 'delete', label: 'Delete', danger: true },
-  ]}
-  onSelect={handleSelect}
-/>;
+<Dropdown label='Actions'>
+  <Dropdown.Trigger>
+    <Button>Actions</Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content presentation='auto'>
+    <Dropdown.Label>File</Dropdown.Label>
+    <Dropdown.Item value='edit' onSelect={handleEdit}>
+      Edit
+    </Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='delete' danger onSelect={handleDelete}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>;
 ```
 
 ### Dropdown Usage Guidelines
 
 Use `Dropdown` for contextual actions such as copy, rename, archive, delete or
-account commands. It reports the selected action through `onSelect`; it should
-not be used as a form value control. Use `Select` when the user chooses one
-saved value from a compact list. Use `RadioGroup` when there are only a few
-choices and keeping them visible helps comparison.
+account commands. Handle selection on each `Dropdown.Item`; it should not be
+used as a form value control. Use `Select` when the user chooses one saved value
+from a compact list. Use `RadioGroup` when there are only a few choices and
+keeping them visible helps comparison.
 
 The menu open state can be controlled with `open` and `onOpenChange`, or left
 uncontrolled with `defaultOpen`. Prefer a visible text trigger; for icon-only or
@@ -554,13 +560,11 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | -------------------- | ------------------------- | -------- | ------------------------------------------------- |
 | `label`              | `ReactNode`               | No       | Default trigger label.                            |
 | `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
-| `items`              | `DropdownItem[]`          | No       | Menu model.                                       |
 | `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
 | `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
 | `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
 | `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
 | `disabled`           | `boolean`                 | No       | Disables the trigger.                             |
-| `onSelect`           | `(value: string) => void` | No       | Called when a menu item is selected.              |
 | `icon`               | `ReactNode`               | No       | Icon rendered inside the component.               |
 | `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.        |
 | `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.   |
@@ -578,17 +582,6 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `loadingText`        | `ReactNode`               | No       | —                                                 |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
-
-### Dropdown Items
-
-| Shape               | Required Props           | Optional Props                                   | Description                                     |
-| ------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
-| `DropdownMenuItem`  | `value`, `label`         | `type`, `disabled`, `icon`, `danger`, `textWrap` | Selectable action. `type` defaults to `'item'`. |
-| `DropdownGroup`     | `type: 'group'`, `label` | None                                             | Flat group heading for the following entries.   |
-| `DropdownSeparator` | `type: 'separator'`      | None                                             | Visual separator.                               |
-
-`items` is a flat array. Use a `DropdownGroup` entry as a heading before the
-items it labels; groups do not own nested `items`.
 
 ## Tabs
 
