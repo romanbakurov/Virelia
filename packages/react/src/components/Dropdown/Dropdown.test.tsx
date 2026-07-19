@@ -52,6 +52,15 @@ describe('Dropdown', () => {
     expect(document.querySelector('[role="option"]')).toBeNull();
 
     act(() => {
+      Array.from(document.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+        .find((item) => item.textContent?.includes('Archive'))
+        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    expect(onEdit).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    act(() => {
       document
         .querySelector<HTMLElement>('[role="menuitem"]')
         ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -59,6 +68,31 @@ describe('Dropdown', () => {
 
     expect(onEdit).toHaveBeenCalledTimes(1);
     expect(document.querySelector('[role="menu"]')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+
+    unmount();
+  });
+
+  it('locks body scroll for modal menus and restores focus on Escape', () => {
+    const { container, unmount } = render(
+      <Dropdown modal>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+
+    pressKey(trigger!, 'Enter');
+
+    const menu = document.querySelector<HTMLElement>('[role="menu"]');
+
+    expect(document.body.style.overflow).toBe('hidden');
+
+    pressKey(menu!, 'Escape');
+
+    expect(document.body.style.overflow).toBe('');
     expect(document.activeElement).toBe(trigger);
 
     unmount();
@@ -222,6 +256,38 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('supports controlled radio groups', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown closeOnSelect={false}>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.RadioGroup value='dark' onValueChange={onValueChange}>
+            <Dropdown.RadioItem value='light'>Light</Dropdown.RadioItem>
+            <Dropdown.RadioItem value='dark'>Dark</Dropdown.RadioItem>
+          </Dropdown.RadioGroup>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const radios = document.querySelectorAll<HTMLElement>(
+      '[role="menuitemradio"]'
+    );
+
+    expect(radios[0]?.getAttribute('aria-checked')).toBe('false');
+    expect(radios[1]?.getAttribute('aria-checked')).toBe('true');
+
+    act(() => radios[0]?.click());
+
+    expect(onValueChange).toHaveBeenCalledWith('light');
+
+    unmount();
+  });
+
   it('renders groups, labels, separators, metadata, empty, and loading states', () => {
     const { container, rerender, unmount } = render(
       <Dropdown defaultOpen>
@@ -356,5 +422,61 @@ describe('Dropdown', () => {
     expect(document.querySelector('[role="menu"]')).toBeNull();
 
     unmount();
+  });
+
+  it('opens rich submenu from hover and renders submenu structure', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Sub>
+            <Dropdown.SubTrigger>
+              <Dropdown.ItemIcon>
+                <span data-testid='share-icon' />
+              </Dropdown.ItemIcon>
+              Share
+              <Dropdown.ItemShortcut>⌘S</Dropdown.ItemShortcut>
+            </Dropdown.SubTrigger>
+            <Dropdown.SubContent>
+              <Dropdown.Label>Share via</Dropdown.Label>
+              <Dropdown.Separator />
+              <Dropdown.Item>
+                <Dropdown.ItemIcon>
+                  <span data-testid='email-icon' />
+                </Dropdown.ItemIcon>
+                Email
+              </Dropdown.Item>
+            </Dropdown.SubContent>
+          </Dropdown.Sub>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const subTrigger = document.querySelector<HTMLElement>('[role="menuitem"]');
+
+    act(() => {
+      subTrigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+          relatedTarget: document.body,
+        })
+      );
+      vi.advanceTimersByTime(120);
+    });
+
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(2);
+    expect(document.body.textContent).toContain('Share via');
+    expect(document.body.textContent).toContain('Email');
+    expect(document.querySelector('[data-testid="email-icon"]')).not.toBeNull();
+    expect(document.querySelectorAll('[role="separator"]')).toHaveLength(1);
+
+    unmount();
+    vi.useRealTimers();
   });
 });
