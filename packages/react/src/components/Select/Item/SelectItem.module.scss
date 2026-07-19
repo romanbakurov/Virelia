@@ -50,18 +50,18 @@
   color: currentcolor;
 }
 
-.active:not(.selected, .disabled, :focus-visible) {
+.active:not(.selected, .disabled) {
   color: var(--select-option-current-active-fg);
   background-color: var(--select-option-current-active-bg);
   border-color: var(--select-option-current-active-border);
   box-shadow: inset 0 0 0 1px var(--select-option-current-active-ring);
 }
 
-.active:not(.selected, .disabled, :focus-visible) .description {
+.active:not(.selected, .disabled) .description {
   color: currentcolor;
 }
 
-.active:not(.selected, .disabled, :focus-visible) .icon {
+.active:not(.selected, .disabled) .icon {
   color: currentcolor;
 }
 
