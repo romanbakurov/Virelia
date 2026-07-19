@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
-  Alarm,
+  Bell,
   Folder,
+  Headphones,
   Home,
   Image,
-  Music,
   Settings,
   User,
 } from '@vellira-ui/icons';
@@ -131,7 +131,7 @@ const IconTabs = () => (
     <Tabs.Tab index={0} icon={<Home />} aria-label='Home' />
     <Tabs.Tab index={1} icon={<User />} aria-label='Profile' />
     <Tabs.Tab index={2} icon={<Settings />} aria-label='Settings' />
-    <Tabs.Tab index={3} icon={<Alarm />} aria-label='Notifications' />
+    <Tabs.Tab index={3} icon={<Bell />} aria-label='Notifications' />
   </>
 );
 
@@ -146,7 +146,7 @@ const DisabledTabs = () => (
     <Tabs.Tab index={2} disabled icon={<Settings />}>
       Settings
     </Tabs.Tab>
-    <Tabs.Tab index={3} icon={<Alarm />}>
+    <Tabs.Tab index={3} icon={<Bell />}>
       Notifications
     </Tabs.Tab>
   </>
@@ -177,7 +177,7 @@ const FileTabs = () => (
     <Tabs.Tab index={1} icon={<Image />}>
       Images
     </Tabs.Tab>
-    <Tabs.Tab index={2} icon={<Music />}>
+    <Tabs.Tab index={2} icon={<Headphones />}>
       Music
     </Tabs.Tab>
   </>

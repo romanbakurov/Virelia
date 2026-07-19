@@ -6,7 +6,7 @@ import {
   Close,
   Download,
   Filter,
-  More,
+  Menu,
   Save,
   Search,
   Settings,
@@ -14,7 +14,6 @@ import {
 } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { fn } from 'storybook/test';
 
 import { Dropdown } from '../components/Dropdown';
 import { Modal } from '../components/Modal';
@@ -88,14 +87,26 @@ function renderGroupedSelectItems(
   ));
 }
 
-const dropdownItems = [
-  { type: 'group' as const, label: 'Report actions' },
-  { label: 'Open settings', value: 'settings', icon: <Settings /> },
-  { label: 'Download report', value: 'download', icon: <Download /> },
-  { label: 'Filter view', value: 'filter', icon: <Filter /> },
-  { type: 'separator' as const },
-  { label: 'Delete report', value: 'delete', icon: <Trash />, danger: true },
-];
+function renderDropdownContent() {
+  return (
+    <Dropdown.Content>
+      <Dropdown.Label>Report actions</Dropdown.Label>
+      <Dropdown.Item value='settings' icon={<Settings />}>
+        Open settings
+      </Dropdown.Item>
+      <Dropdown.Item value='download' icon={<Download />}>
+        Download report
+      </Dropdown.Item>
+      <Dropdown.Item value='filter' icon={<Filter />}>
+        Filter view
+      </Dropdown.Item>
+      <Dropdown.Separator />
+      <Dropdown.Item value='delete' icon={<Trash />} danger>
+        Delete report
+      </Dropdown.Item>
+    </Dropdown.Content>
+  );
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   const { theme } = useTheme();
@@ -892,27 +903,21 @@ function NativeComponentsOverview() {
               saved form values.
             </Text>
             <View style={styles.row}>
-              <Dropdown
-                label='Report actions'
-                trigger='Report actions'
-                items={dropdownItems}
-                onSelect={fn()}
-              />
+              <Dropdown label='Report actions' trigger='Report actions'>
+                {renderDropdownContent()}
+              </Dropdown>
               <Dropdown
                 label='More report actions'
                 accessibilityLabel='More report actions'
                 accessibilityHint='Opens report action menu'
-                icon={<More />}
+                icon={<Menu />}
                 showArrow={false}
-                items={dropdownItems}
-                onSelect={fn()}
-              />
-              <Dropdown
-                label='Disabled actions'
-                disabled
-                items={dropdownItems}
-                onSelect={fn()}
-              />
+              >
+                {renderDropdownContent()}
+              </Dropdown>
+              <Dropdown label='Disabled actions' disabled>
+                {renderDropdownContent()}
+              </Dropdown>
             </View>
           </View>
         </Section>

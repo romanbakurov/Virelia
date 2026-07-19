@@ -120,7 +120,7 @@ async function run(): Promise<void> {
   });
 
   const files = (
-    await fg('*.svg', {
+    await fg('**/*.svg', {
       cwd: ASSETS,
     })
   ).sort();

@@ -1,26 +1,19 @@
-import type {
-  BaseDropdownGroup,
-  BaseDropdownMenuItem,
-  BaseDropdownProps,
-  BaseDropdownSeparator,
-} from '@vellira-ui/types';
+import type { BaseDropdownProps, TextWrap } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-export interface DropdownMenuItem extends Omit<BaseDropdownMenuItem, 'label'> {
-  label: ReactNode;
-  icon?: ReactNode;
-}
+export type DropdownPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
 
-export interface DropdownGroup extends Omit<BaseDropdownGroup, 'label'> {
-  label: ReactNode;
-}
+export type DropdownSelectEvent = {
+  preventDefault: () => void;
+  defaultPrevented: boolean;
+};
 
-export type DropdownSeparator = BaseDropdownSeparator;
-
-export type DropdownItem = DropdownMenuItem | DropdownGroup | DropdownSeparator;
-
-export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
+export interface DropdownProps extends Omit<
+  BaseDropdownProps,
+  'items' | 'onSelect'
+> {
+  children?: ReactNode;
   label?: ReactNode;
 
   trigger?: ReactNode;
@@ -28,7 +21,10 @@ export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
   arrowIcon?: ReactNode;
   showArrow?: boolean;
 
-  items: DropdownItem[];
+  presentation?: DropdownPresentation;
+  closeOnSelect?: boolean;
+  loading?: boolean;
+  loadingText?: ReactNode;
 
   style?: StyleProp<ViewStyle>;
   triggerStyle?: StyleProp<ViewStyle>;
@@ -40,11 +36,42 @@ export interface DropdownProps extends Omit<BaseDropdownProps, 'items'> {
   accessibilityHint?: string;
 }
 
-export const isMenuItem = (item: DropdownItem): item is DropdownMenuItem =>
-  item.type === undefined || item.type === 'item';
+export interface DropdownTriggerProps {
+  children?: ReactNode;
+  disabled?: boolean;
+}
 
-export const isGroup = (item: DropdownItem): item is DropdownGroup =>
-  item.type === 'group';
+export interface DropdownContentProps {
+  children?: ReactNode;
+  style?: StyleProp<ViewStyle>;
+  presentation?: DropdownPresentation;
+}
 
-export const isSeparator = (item: DropdownItem): item is DropdownSeparator =>
-  item.type === 'separator';
+export interface DropdownItemProps {
+  children: ReactNode;
+  value?: string;
+  icon?: ReactNode;
+  danger?: boolean;
+  disabled?: boolean;
+  closeOnSelect?: boolean;
+  textWrap?: TextWrap;
+  onSelect?: (event: DropdownSelectEvent) => void;
+}
+
+export interface DropdownGroupProps {
+  children?: ReactNode;
+}
+
+export interface DropdownLabelProps {
+  children?: ReactNode;
+}
+
+export type DropdownSeparatorProps = object;
+
+export interface DropdownEmptyProps {
+  children?: ReactNode;
+}
+
+export interface DropdownLoadingProps {
+  children?: ReactNode;
+}

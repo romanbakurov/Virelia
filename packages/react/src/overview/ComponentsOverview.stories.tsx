@@ -5,7 +5,7 @@ import {
   Check,
   Download,
   Filter,
-  More,
+  Menu,
   Save,
   Search,
   Settings,
@@ -1160,7 +1160,7 @@ function WebComponentsOverview() {
                     appearance='ghost'
                     color='neutral'
                     iconOnly
-                    iconStart={<More />}
+                    iconStart={<Menu />}
                     aria-label='More report actions'
                   />
                 </Dropdown.Trigger>

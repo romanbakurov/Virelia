@@ -252,7 +252,7 @@ await import('@vellira-ui/react/styles');
 
 const assetFiles = [
   '@vellira-ui/assets/styles/fonts.scss',
-  '@vellira-ui/assets/fonts/KantumruyPro-Regular.ttf',
+  '@vellira-ui/assets/fonts/VelliraSans-Regular.woff2',
 ];
 
 for (const assetFile of assetFiles) {

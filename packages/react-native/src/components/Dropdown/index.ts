@@ -4,9 +4,14 @@ export { DropdownGroup } from './Group/DropdownGroup';
 export { DropdownItem } from './Item/DropdownItem';
 export { DropdownTrigger } from './Trigger/DropdownTrigger';
 export type {
-  DropdownGroup as DropdownGroupItem,
-  DropdownItem as DropdownItemConfig,
-  DropdownMenuItem,
+  DropdownContentProps,
+  DropdownEmptyProps,
+  DropdownGroupProps,
+  DropdownItemProps,
+  DropdownLabelProps,
+  DropdownPresentation,
   DropdownProps,
-  DropdownSeparator as DropdownSeparatorItem,
+  DropdownSelectEvent,
+  DropdownSeparatorProps,
+  DropdownTriggerProps,
 } from './types';

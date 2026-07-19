@@ -64,12 +64,12 @@ open.
 Use `Dropdown.Trigger asChild` with Button for most triggers.
 
 ```tsx
-import { More } from '@vellira-ui/icons';
+import { Menu } from '@vellira-ui/icons';
 import { Button, Dropdown } from '@vellira-ui/react';
 
 <Dropdown>
   <Dropdown.Trigger asChild>
-    <Button aria-label='More invoice actions' iconOnly iconStart={<More />} />
+    <Button aria-label='More invoice actions' iconOnly iconStart={<Menu />} />
   </Dropdown.Trigger>
 
   <Dropdown.Content>

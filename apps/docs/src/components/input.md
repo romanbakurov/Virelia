@@ -198,7 +198,7 @@ Use Dropdown next to Input for contextual commands, not for saved field values.
 
 ```tsx
 import { Button, Dropdown, Input } from '@vellira-ui/react';
-import { More } from '@vellira-ui/icons';
+import { Menu } from '@vellira-ui/icons';
 
 <div className='fieldRow'>
   <Input
@@ -208,7 +208,7 @@ import { More } from '@vellira-ui/icons';
   />
   <Dropdown>
     <Dropdown.Trigger asChild>
-      <Button aria-label='Project name actions' iconOnly iconStart={<More />} />
+      <Button aria-label='Project name actions' iconOnly iconStart={<Menu />} />
     </Dropdown.Trigger>
     <Dropdown.Content>
       <Dropdown.Item onSelect={() => handleProjectNameAction('copy')}>

@@ -1,10 +1,15 @@
 export { Dropdown } from './components/Dropdown';
 export type {
-  DropdownGroup as DropdownGroupItem,
-  DropdownItem,
-  DropdownMenuItem,
+  DropdownContentProps,
+  DropdownEmptyProps,
+  DropdownGroupProps,
+  DropdownItemProps,
+  DropdownLabelProps,
+  DropdownPresentation,
   DropdownProps,
-  DropdownSeparator as DropdownSeparatorItem,
+  DropdownSelectEvent,
+  DropdownSeparatorProps,
+  DropdownTriggerProps,
 } from './components/Dropdown/types';
 export type { ModalProps } from './components/Modal';
 export { Modal } from './components/Modal';

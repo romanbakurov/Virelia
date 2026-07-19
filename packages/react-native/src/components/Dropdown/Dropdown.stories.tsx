@@ -1,29 +1,59 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Copy, Edit, More, Refresh, Settings, Trash } from '@vellira-ui/icons';
+import { Copy, Edit, Menu, Refresh, Settings, Trash } from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
+import { Button } from '../../primitives/Button';
 import { useTheme } from '../../theme';
 
 import { Dropdown } from './Dropdown';
 
-const actionItems = [
-  { type: 'group' as const, label: 'Actions' },
-  { label: 'Edit profile', value: 'edit', icon: <Edit /> },
-  { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-  { label: 'Refresh', value: 'refresh', icon: <Refresh /> },
-  { type: 'separator' as const },
-  { label: 'Delete account', value: 'delete', icon: <Trash />, danger: true },
-];
+function renderActionContent(onSelect?: (value: string) => void) {
+  return (
+    <Dropdown.Content>
+      <Dropdown.Label>Actions</Dropdown.Label>
+      <Dropdown.Item
+        value='edit'
+        icon={<Edit />}
+        onSelect={() => onSelect?.('edit')}
+      >
+        Edit profile
+      </Dropdown.Item>
+      <Dropdown.Item
+        value='duplicate'
+        icon={<Copy />}
+        onSelect={() => onSelect?.('duplicate')}
+      >
+        Duplicate
+      </Dropdown.Item>
+      <Dropdown.Item
+        value='refresh'
+        icon={<Refresh />}
+        onSelect={() => onSelect?.('refresh')}
+      >
+        Refresh
+      </Dropdown.Item>
+      <Dropdown.Separator />
+      <Dropdown.Item
+        value='delete'
+        icon={<Trash />}
+        danger
+        onSelect={() => onSelect?.('delete')}
+      >
+        Delete account
+      </Dropdown.Item>
+    </Dropdown.Content>
+  );
+}
 
 function DropdownIcon() {
   const { theme } = useTheme();
 
   return (
-    <More
+    <Menu
       style={{
         transform: [{ rotate: '90deg' }],
       }}
@@ -80,6 +110,8 @@ and secondary actions, not for selecting a saved form value.
 - Groups and separators
 - Disabled and danger action items
 - Long text support
+- Compound Trigger, Content and Item API matching web usage
+- Content presentation: auto, sheet, modal or popover
 - Accessibility label, hint and expanded state support
 
 ### Usage
@@ -89,14 +121,22 @@ Use Select when the user is choosing a form value from a compact list. Use
 RadioGroup when a small set of choices should stay visible for comparison.
 
 \`\`\`tsx
-<Dropdown
-  label='Actions'
-  items={[
-    { label: 'Edit', value: 'edit' },
-    { label: 'Delete', value: 'delete', danger: true },
-  ]}
-  onSelect={handleAction}
-/>
+<Dropdown>
+  <Dropdown.Trigger>
+    <Button>Actions</Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content presentation='auto'>
+    <Dropdown.Label>Project</Dropdown.Label>
+    <Dropdown.Item value='edit' onSelect={handleEdit}>
+      Edit
+    </Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='delete' danger onSelect={handleDelete}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>
 \`\`\`
 `,
       },
@@ -104,10 +144,9 @@ RadioGroup when a small set of choices should stay visible for comparison.
   },
   args: {
     label: 'Actions',
-    items: actionItems,
     showArrow: true,
     disabled: false,
-    onSelect: fn(),
+    presentation: 'auto',
     onOpenChange: fn(),
   },
   argTypes: {
@@ -133,11 +172,6 @@ RadioGroup when a small set of choices should stay visible for comparison.
       description: 'Custom trigger content.',
     },
 
-    items: {
-      control: 'object',
-      description: 'Dropdown items, groups and separators.',
-    },
-
     open: {
       control: 'boolean',
       description: 'Controlled open state.',
@@ -148,6 +182,13 @@ RadioGroup when a small set of choices should stay visible for comparison.
       description: 'Initial open state for uncontrolled usage.',
     },
 
+    presentation: {
+      control: 'radio',
+      options: ['auto', 'sheet', 'modal', 'popover'],
+      description:
+        'Native content presentation. Auto uses sheet on phones and popover on wider screens.',
+    },
+
     disabled: {
       control: 'boolean',
       description: 'Disables user interaction.',
@@ -156,11 +197,6 @@ RadioGroup when a small set of choices should stay visible for comparison.
     showArrow: {
       control: 'boolean',
       description: 'Controls arrow visibility.',
-    },
-
-    onSelect: {
-      action: 'selected',
-      description: 'Called when a dropdown action item is selected.',
     },
 
     onOpenChange: {
@@ -264,11 +300,11 @@ function InteractiveDropdown(args: DropdownStoryProps) {
           setOpen(nextOpen);
           args.onOpenChange?.(nextOpen);
         }}
-        onSelect={(value) => {
+      >
+        {renderActionContent((value) => {
           setSelected(value);
-          args.onSelect?.(value);
-        }}
-      />
+        })}
+      </Dropdown>
       <Text
         style={{
           color: theme.semantic.text.secondary,
@@ -292,7 +328,36 @@ export const Playground: Story = {
 export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>{renderActionContent()}</Dropdown>
+    </Section>
+  ),
+};
+
+export const CompoundApi: Story = {
+  render: (args) => (
+    <Section title='Compound API'>
+      <Dropdown
+        presentation={args.presentation}
+        defaultOpen={args.defaultOpen}
+        disabled={args.disabled}
+      >
+        <Dropdown.Trigger>
+          <Button>Actions</Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Label>Project</Dropdown.Label>
+          <Dropdown.Item value='edit' icon={<Edit />}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item value='duplicate' icon={<Copy />}>
+            Duplicate
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
@@ -314,7 +379,7 @@ export const Uncontrolled: Story = {
   },
   render: (args) => (
     <Section title='Uncontrolled'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>{renderActionContent()}</Dropdown>
     </Section>
   ),
 };
@@ -329,7 +394,7 @@ export const IconOnly: Story = {
   },
   render: (args) => (
     <Section title='IconOnly'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>{renderActionContent()}</Dropdown>
     </Section>
   ),
 };
@@ -342,7 +407,7 @@ export const CustomTrigger: Story = {
   },
   render: (args) => (
     <Section title='CustomTrigger'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>{renderActionContent()}</Dropdown>
     </Section>
   ),
 };
@@ -350,18 +415,25 @@ export const CustomTrigger: Story = {
 export const WithGroups: Story = {
   args: {
     label: 'Document actions',
-    items: [
-      { type: 'group', label: 'File' },
-      { label: 'Edit', value: 'edit', icon: <Edit /> },
-      { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-      { type: 'separator' },
-      { type: 'group', label: 'Danger' },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
   },
   render: (args) => (
     <Section title='WithGroups'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>
+        <Dropdown.Content>
+          <Dropdown.Label>File</Dropdown.Label>
+          <Dropdown.Item value='edit' icon={<Edit />}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item value='duplicate' icon={<Copy />}>
+            Duplicate
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Label>Danger</Dropdown.Label>
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
@@ -369,15 +441,22 @@ export const WithGroups: Story = {
 export const WithDisabledItems: Story = {
   args: {
     label: 'Project actions',
-    items: [
-      { label: 'Edit', value: 'edit', icon: <Edit /> },
-      { label: 'Refresh', value: 'refresh', icon: <Refresh />, disabled: true },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
   },
   render: (args) => (
     <Section title='WithDisabledItems'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>
+        <Dropdown.Content>
+          <Dropdown.Item value='edit' icon={<Edit />}>
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item value='refresh' icon={<Refresh />} disabled>
+            Refresh
+          </Dropdown.Item>
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
@@ -385,15 +464,20 @@ export const WithDisabledItems: Story = {
 export const DangerActions: Story = {
   args: {
     label: 'Danger actions',
-    items: [
-      { label: 'Archive project', value: 'archive' },
-      { label: 'Delete draft', value: 'delete-draft', danger: true },
-      { label: 'Delete project', value: 'delete-project', danger: true },
-    ],
   },
   render: (args) => (
     <Section title='DangerActions'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>
+        <Dropdown.Content>
+          <Dropdown.Item value='archive'>Archive project</Dropdown.Item>
+          <Dropdown.Item value='delete-draft' danger>
+            Delete draft
+          </Dropdown.Item>
+          <Dropdown.Item value='delete-project' danger>
+            Delete project
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
@@ -401,22 +485,19 @@ export const DangerActions: Story = {
 export const LongLabels: Story = {
   args: {
     label: 'Long labels',
-    items: [
-      {
-        label: 'Rename this project using the full generated workspace title',
-        value: 'rename-long',
-        textWrap: 'wrap',
-      },
-      {
-        label: 'Archive completed tasks and notify every collaborator',
-        value: 'archive-long',
-        textWrap: 'wrap',
-      },
-    ],
   },
   render: (args) => (
     <Section title='LongLabels'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>
+        <Dropdown.Content>
+          <Dropdown.Item value='rename-long' textWrap='wrap'>
+            Rename this project using the full generated workspace title
+          </Dropdown.Item>
+          <Dropdown.Item value='archive-long' textWrap='wrap'>
+            Archive completed tasks and notify every collaborator
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     </Section>
   ),
 };
@@ -428,7 +509,7 @@ export const Disabled: Story = {
   },
   render: (args) => (
     <Section title='Disabled'>
-      <Dropdown {...args} />
+      <Dropdown {...args}>{renderActionContent()}</Dropdown>
     </Section>
   ),
 };

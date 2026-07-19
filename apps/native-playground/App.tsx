@@ -5,15 +5,16 @@ import { Button } from '@vellira-ui/react-native';
 
 export default function App() {
   const [loaded] = useFonts({
-    'KantumruyPro-ExtraLight': require('./assets/fonts/KantumruyPro-ExtraLight.ttf'),
-    'KantumruyPro-Regular': require('./assets/fonts/KantumruyPro-Regular.ttf'),
-    'KantumruyPro-Medium': require('./assets/fonts/KantumruyPro-Medium.ttf'),
-    'KantumruyPro-SemiBold': require('./assets/fonts/KantumruyPro-SemiBold.ttf'),
+    'VelliraSans-ExtraLight': require('./assets/fonts/VelliraSans-ExtraLight.ttf'),
+    'VelliraSans-Regular': require('./assets/fonts/VelliraSans-Regular.ttf'),
+    'VelliraSans-Medium': require('./assets/fonts/VelliraSans-Medium.ttf'),
+    'VelliraSans-SemiBold': require('./assets/fonts/VelliraSans-SemiBold.ttf'),
   });
 
   if (!loaded) {
     return null;
   }
+
   return (
     <View style={styles.container}>
       <Button
