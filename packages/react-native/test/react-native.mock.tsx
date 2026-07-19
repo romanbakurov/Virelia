@@ -1,4 +1,10 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
 type PressableState = { pressed: boolean; hovered: boolean; focused: boolean };
 
@@ -362,35 +368,57 @@ export const TextInput = forwardRef<HTMLInputElement, NativeProps>(
 );
 TextInput.displayName = 'TextInput';
 
-export const FlatList = <T,>({
-  data,
-  renderItem,
-  keyExtractor,
-  style,
-  contentContainerStyle,
-  initialScrollIndex,
-  testID,
-}: NativeProps & {
+type FlatListHandle = {
+  scrollToIndex: (params: { index: number; animated?: boolean }) => void;
+};
+
+type FlatListProps<T> = NativeProps & {
   data?: T[];
   renderItem: (info: { item: T; index: number }) => React.ReactNode;
   keyExtractor?: (item: T, index: number) => string;
-  initialScrollIndex?: number;
-}) => (
-  <div
-    data-testid={testID ?? 'native-flat-list'}
-    data-initial-scroll-index={initialScrollIndex}
-    data-keyboard-should-persist-taps={undefined}
-    style={flattenStyle(style)}
-  >
-    <div style={flattenStyle(contentContainerStyle)}>
-      {(data ?? []).map((item, index) => (
-        <React.Fragment key={keyExtractor?.(item, index) ?? index}>
-          {renderItem({ item, index })}
-        </React.Fragment>
-      ))}
-    </div>
-  </div>
+};
+
+const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
+  function FlatListComponent(
+    {
+      data,
+      renderItem,
+      keyExtractor,
+      style,
+      contentContainerStyle,
+      testID,
+    }: FlatListProps<unknown>,
+    ref
+  ) {
+    const [scrolledIndex, setScrolledIndex] = useState<number | undefined>();
+
+    useImperativeHandle(ref, () => ({
+      scrollToIndex: ({ index }) => setScrolledIndex(index),
+    }));
+
+    return (
+      <div
+        data-testid={testID ?? 'native-flat-list'}
+        data-scroll-to-index={scrolledIndex}
+        data-keyboard-should-persist-taps={undefined}
+        style={flattenStyle(style)}
+      >
+        <div style={flattenStyle(contentContainerStyle)}>
+          {(data ?? []).map((item, index) => (
+            <React.Fragment key={keyExtractor?.(item, index) ?? index}>
+              {renderItem({ item, index })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    );
+  }
 );
+FlatListComponent.displayName = 'FlatList';
+
+export const FlatList = FlatListComponent as <T>(
+  props: FlatListProps<T> & { ref?: React.Ref<FlatListHandle> }
+) => React.ReactElement;
 
 export const Modal = ({
   visible,

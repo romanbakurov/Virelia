@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+
+import type { FlatList as NativeFlatList } from 'react-native';
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
@@ -25,6 +28,8 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
 
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
+  const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
+  const didScrollToSelectedRef = useRef(false);
   const context = useSelectContext();
   const {
     isOpen,
@@ -47,9 +52,29 @@ export const SelectContentSurface = () => {
     selectGroup,
     itemHeight,
     selectedRowIndex,
+    query,
   } = context;
   const shouldScrollToSelected =
-    Boolean(context.virtual) && selectedRowIndex > 0;
+    Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
+
+  useEffect(() => {
+    if (!isOpen) {
+      didScrollToSelectedRef.current = false;
+      return;
+    }
+
+    if (!shouldScrollToSelected || didScrollToSelectedRef.current) return;
+
+    const scrollTimer = setTimeout(() => {
+      listRef.current?.scrollToIndex({
+        index: selectedRowIndex,
+        animated: false,
+      });
+      didScrollToSelectedRef.current = true;
+    }, 0);
+
+    return () => clearTimeout(scrollTimer);
+  }, [isOpen, selectedRowIndex, shouldScrollToSelected]);
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -137,15 +162,13 @@ export const SelectContentSurface = () => {
         <SelectEmptyState />
       ) : (
         <FlatList
+          ref={listRef}
           data={filteredRows}
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
           style={styles.list}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
-          initialScrollIndex={
-            shouldScrollToSelected ? selectedRowIndex : undefined
-          }
           initialNumToRender={
             typeof context.virtual === 'object'
               ? context.virtual.initialNumToRender

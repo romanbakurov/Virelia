@@ -23,6 +23,29 @@ const teamItems = [
   { label: 'Support', value: 'support' },
 ];
 
+const groupedTeamItems = {
+  core: [
+    { label: 'Product', value: 'team-product' },
+    { label: 'Engineering', value: 'team-engineering' },
+    { label: 'Design', value: 'team-design' },
+    { label: 'Research', value: 'team-research' },
+    { label: 'Data', value: 'team-data' },
+  ],
+  operations: [
+    { label: 'Support', value: 'team-support' },
+    { label: 'Success', value: 'team-success' },
+    { label: 'Sales', value: 'team-sales' },
+    { label: 'Marketing', value: 'team-marketing' },
+    { label: 'Finance', value: 'team-finance' },
+  ],
+  platform: [
+    { label: 'Infrastructure', value: 'team-infrastructure' },
+    { label: 'Security', value: 'team-security' },
+    { label: 'Developer Experience', value: 'team-devex' },
+    { label: 'QA', value: 'team-qa' },
+  ],
+};
+
 const longItems = Array.from({ length: 80 }, (_, index) => ({
   label: `Country ${index + 1}`,
   value: `country-${index + 1}`,
@@ -160,6 +183,14 @@ function renderCountryItems() {
 
 function renderTeamItems() {
   return teamItems.map((item) => (
+    <Select.Item key={item.value} value={item.value} label={item.label} />
+  ));
+}
+
+function renderGroupedTeamItems(
+  items: Array<{ label: string; value: string }>
+) {
+  return items.map((item) => (
     <Select.Item key={item.value} value={item.value} label={item.label} />
   ));
 }
@@ -411,6 +442,36 @@ export const Multiple: Story = {
       >
         <Select.Group label='Teams' selectable selectLabel='All teams'>
           {renderTeamItems()}
+        </Select.Group>
+      </Select>
+    </Section>
+  ),
+};
+
+export const MultipleGroupedLarge: Story = {
+  render: () => (
+    <Section title='Multiple grouped large'>
+      <Select
+        label='Teams'
+        multiple
+        closeOnSelect={false}
+        clearable
+        searchable
+        defaultValue={['team-product', 'team-engineering', 'team-support']}
+        placeholder='Select teams'
+      >
+        <Select.Group label='Core teams' selectable selectLabel='All core'>
+          {renderGroupedTeamItems(groupedTeamItems.core)}
+        </Select.Group>
+        <Select.Group
+          label='Operations'
+          selectable
+          selectLabel='All operations'
+        >
+          {renderGroupedTeamItems(groupedTeamItems.operations)}
+        </Select.Group>
+        <Select.Group label='Platform' selectable selectLabel='All platform'>
+          {renderGroupedTeamItems(groupedTeamItems.platform)}
         </Select.Group>
       </Select>
     </Section>

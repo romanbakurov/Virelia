@@ -142,7 +142,7 @@ describe('Native Select', () => {
     expect(
       document.body
         .querySelector('[data-testid="native-flat-list"]')
-        ?.getAttribute('data-initial-scroll-index')
+        ?.getAttribute('data-scroll-to-index')
     ).toBeNull();
 
     unmount();
@@ -303,7 +303,7 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('renders long option lists with FlatList', () => {
+  it('renders long option lists with FlatList', async () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -322,7 +322,13 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
-    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
+    expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(list?.getAttribute('data-scroll-to-index')).toBe('11');
     expect(getButtonByText('Country 24')).toBeTruthy();
 
     unmount();
