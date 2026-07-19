@@ -45,3 +45,11 @@ describe.each([
     expect(theme.components.tooltip.content.bg).toBeDefined();
   });
 });
+
+describe('dark theme select', () => {
+  it('keeps option hover visible against the dropdown background', () => {
+    expect(
+      darkTheme.components.select.primary.outline.option.hover.bg
+    ).not.toBe(darkTheme.components.select.dropdown.bg);
+  });
+});
