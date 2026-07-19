@@ -78,6 +78,14 @@ export const Dimensions = {
   },
 };
 
+export const AccessibilityInfo = {
+  announceForAccessibility() {},
+};
+
+export function useWindowDimensions() {
+  return { width: 1024, height: 768, scale: 1, fontScale: 1 };
+}
+
 export const View = Component;
 export const Text = Component;
 export const TextInput = Component;
