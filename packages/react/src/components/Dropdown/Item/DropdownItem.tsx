@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { cn } from '@utils/cn';
 import { Check, ChevronRight } from '@vellira-ui/icons';
@@ -26,6 +26,7 @@ type DropdownItemRowProps = {
 
 export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
   const context = useDropdownContext();
+  const subOpenTimerRef = useRef<number | undefined>(undefined);
   const [uncontrolledChecked, setUncontrolledChecked] = useState(
     item.type === 'checkbox' ? (item.props.defaultChecked ?? false) : false
   );
@@ -118,8 +119,18 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
           context.setActiveIndex(itemIndex);
 
           if (isSubTrigger) {
-            window.setTimeout(() => context.setOpenSubId(item.id), 120);
+            window.clearTimeout(subOpenTimerRef.current);
+            subOpenTimerRef.current = window.setTimeout(
+              () => context.setOpenSubId(item.id),
+              120
+            );
+          } else {
+            window.clearTimeout(subOpenTimerRef.current);
+            context.setOpenSubId(undefined);
           }
+        }}
+        onMouseLeave={() => {
+          window.clearTimeout(subOpenTimerRef.current);
         }}
       >
         {hasIndicator && (
@@ -147,7 +158,11 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
       </Component>
 
       {isSubTrigger && isSubOpen && item.subEntries.length > 0 && (
-        <ul role='menu' className={styles.subContent}>
+        <ul
+          role='menu'
+          className={styles.subContent}
+          onMouseEnter={() => context.setOpenSubId(item.id)}
+        >
           {item.subEntries.map((entry) => {
             if (entry.type === 'label') {
               return (
@@ -214,37 +229,99 @@ function SubMenuItemRow({
   item: DropdownCollectionItem;
 }) {
   const context = useDropdownContext();
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(
+    item.type === 'checkbox' ? (item.props.defaultChecked ?? false) : false
+  );
+  const isCheckbox = item.type === 'checkbox';
+  const isRadio = item.type === 'radio';
+  const isChecked = isCheckbox
+    ? (item.props.checked ?? uncontrolledChecked)
+    : isRadio
+      ? (item.groupProps?.value ?? context.radioValues[item.groupId]) ===
+        item.props.value
+      : false;
   const props = item.props;
   const slots = getItemCompoundSlots(props.children);
   const icon = slots.icon ?? props.icon;
+  const description =
+    slots.description ??
+    ('description' in props ? props.description : undefined);
+  const badge = slots.badge ?? ('badge' in props ? props.badge : undefined);
+  const shortcut = slots.shortcut ?? props.shortcut;
   const content = slots.content.length ? slots.content : props.children;
   const itemColor = 'color' in props ? props.color : undefined;
   const disabled = context.loading || item.disabled;
+  const href = item.type === 'item' ? item.props.href : undefined;
+  const target = item.type === 'item' ? item.props.target : undefined;
+  const download = item.type === 'item' ? item.props.download : undefined;
+  const role = isCheckbox
+    ? 'menuitemcheckbox'
+    : isRadio
+      ? 'menuitemradio'
+      : 'menuitem';
+  const rel =
+    item.type === 'item' && target === '_blank' && !item.props.rel
+      ? 'noreferrer noopener'
+      : item.type === 'item'
+        ? item.props.rel
+        : undefined;
+  const Component = href ? 'a' : 'li';
+  const hasIndicator = isCheckbox || isRadio;
+
+  const handleSelect = (event: MouseEvent<HTMLElement>) => {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
+
+    if (isCheckbox && item.type === 'checkbox') {
+      const nextChecked = !isChecked;
+      setUncontrolledChecked(nextChecked);
+      item.props.onCheckedChange?.(nextChecked);
+    }
+
+    context.selectItem(item, createDropdownSelectEvent(event));
+  };
 
   return (
-    <li
+    <Component
       id={id}
-      role='menuitem'
+      role={role}
+      href={Component === 'a' && !disabled ? href : undefined}
+      target={Component === 'a' && !disabled ? target : undefined}
+      rel={Component === 'a' ? rel : undefined}
+      download={Component === 'a' && !disabled ? download : undefined}
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled || undefined}
+      aria-checked={isCheckbox || isRadio ? isChecked : undefined}
       className={cn(
         styles.item,
         styles[context.size],
         {
           [styles.disabled]: disabled,
+          [styles.checked]: isChecked,
         },
         itemColor && itemColor !== 'default' ? styles[itemColor] : undefined
       )}
-      onClick={(event) => {
-        if (disabled) return;
-
-        context.selectItem(item, createDropdownSelectEvent(event));
-      }}
+      onClick={handleSelect}
     >
+      {hasIndicator && (
+        <span className={styles.indicator} aria-hidden='true'>
+          {isChecked ? <Check /> : null}
+        </span>
+      )}
+
       {icon && <span className={styles.itemIcon}>{icon}</span>}
+
       <span className={styles.itemText}>
         <span className={styles.itemLabel}>{content}</span>
+        {description && (
+          <span className={styles.itemDescription}>{description}</span>
+        )}
       </span>
-    </li>
+
+      {badge && <span className={styles.itemBadge}>{badge}</span>}
+      {shortcut && <span className={styles.itemShortcut}>{shortcut}</span>}
+    </Component>
   );
 }

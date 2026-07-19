@@ -109,6 +109,10 @@ Action menu for commands, toggles, radio choices, links, and submenus.
 - Checkbox and radio menu items for action-menu settings
 - Menu semantics with role="menu", role="menuitem", role="menuitemcheckbox",
   and role="menuitemradio"
+- Public API is compound-first; items are declared with Dropdown.Item,
+  Dropdown.CheckboxItem, Dropdown.RadioItem, and Dropdown.Sub instead of an
+  items array
+- Dropdown.Content accepts className and style for content-level customization
 
 ### Usage
 

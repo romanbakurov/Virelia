@@ -377,6 +377,62 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('applies content className and style from the compound slot', () => {
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content className='content-test' style={{ width: 321 }}>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const menu = document.querySelector<HTMLElement>('[role="menu"]');
+
+    expect(menu?.className).toContain('content-test');
+    expect(menu?.style.width).toBe('321px');
+
+    unmount();
+  });
+
+  it('supports item-level close behavior overrides', () => {
+    const onPersist = vi.fn();
+    const onClose = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item closeOnSelect={false} onSelect={onPersist}>
+            Keep open
+          </Dropdown.Item>
+          <Dropdown.Item onSelect={onClose}>Close</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const items = document.querySelectorAll<HTMLElement>('[role="menuitem"]');
+
+    act(() => items[0]?.click());
+
+    expect(onPersist).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    act(() => items[1]?.click());
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
+
+    unmount();
+  });
+
   it('opens submenu from keyboard and returns with ArrowLeft', () => {
     const onEmail = vi.fn();
     const { container, unmount } = render(
@@ -427,6 +483,8 @@ describe('Dropdown', () => {
   it('opens rich submenu from hover and renders submenu structure', () => {
     vi.useFakeTimers();
 
+    const onCheckedChange = vi.fn();
+    const onValueChange = vi.fn();
     const { container, unmount } = render(
       <Dropdown>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
@@ -447,7 +505,25 @@ describe('Dropdown', () => {
                   <span data-testid='email-icon' />
                 </Dropdown.ItemIcon>
                 Email
+                <Dropdown.ItemDescription>
+                  Send an invitation
+                </Dropdown.ItemDescription>
+                <Dropdown.ItemBadge>New</Dropdown.ItemBadge>
+                <Dropdown.ItemShortcut>⌘E</Dropdown.ItemShortcut>
               </Dropdown.Item>
+              <Dropdown.CheckboxItem
+                defaultChecked
+                onCheckedChange={onCheckedChange}
+              >
+                Include notes
+              </Dropdown.CheckboxItem>
+              <Dropdown.RadioGroup
+                defaultValue='public'
+                onValueChange={onValueChange}
+              >
+                <Dropdown.RadioItem value='private'>Private</Dropdown.RadioItem>
+                <Dropdown.RadioItem value='public'>Public</Dropdown.RadioItem>
+              </Dropdown.RadioGroup>
             </Dropdown.SubContent>
           </Dropdown.Sub>
         </Dropdown.Content>
@@ -473,8 +549,27 @@ describe('Dropdown', () => {
     expect(document.querySelectorAll('[role="menu"]')).toHaveLength(2);
     expect(document.body.textContent).toContain('Share via');
     expect(document.body.textContent).toContain('Email');
+    expect(document.body.textContent).toContain('Send an invitation');
+    expect(document.body.textContent).toContain('New');
+    expect(document.body.textContent).toContain('⌘E');
     expect(document.querySelector('[data-testid="email-icon"]')).not.toBeNull();
     expect(document.querySelectorAll('[role="separator"]')).toHaveLength(1);
+
+    const checkbox = document.querySelector<HTMLElement>(
+      '[role="menuitemcheckbox"]'
+    );
+    const radios = document.querySelectorAll<HTMLElement>(
+      '[role="menuitemradio"]'
+    );
+
+    expect(checkbox?.getAttribute('aria-checked')).toBe('true');
+    expect(radios[1]?.getAttribute('aria-checked')).toBe('true');
+
+    act(() => checkbox?.click());
+    act(() => radios[0]?.click());
+
+    expect(onCheckedChange).toHaveBeenCalledWith(false);
+    expect(onValueChange).toHaveBeenCalledWith('private');
 
     unmount();
     vi.useRealTimers();
