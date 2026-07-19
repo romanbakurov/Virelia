@@ -26,15 +26,12 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
   'Select.Content'
 );
 
-const initialSelectedRowOffset = 4;
-
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
   const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
   const wasOpenRef = useRef(false);
   const didScrollToSelectedRef = useRef(false);
   const [openCycle, setOpenCycle] = useState(0);
-  const [listHeight, setListHeight] = useState(0);
   const context = useSelectContext();
   const {
     isOpen,
@@ -62,7 +59,7 @@ export const SelectContentSurface = () => {
   const shouldScrollToSelected =
     Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
   const initialScrollIndex = shouldScrollToSelected
-    ? Math.max(0, selectedRowIndex - initialSelectedRowOffset)
+    ? selectedRowIndex
     : undefined;
 
   useEffect(() => {
@@ -83,21 +80,15 @@ export const SelectContentSurface = () => {
 
     const scrollToSelected = () => {
       didScrollToSelectedRef.current = true;
-      const effectiveListHeight = listHeight || 420;
-      const centeredOffset = Math.max(
-        0,
-        selectedRowIndex * itemHeight -
-          Math.max(0, effectiveListHeight - itemHeight) / 2
-      );
+      const selectedOffset = Math.max(0, selectedRowIndex * itemHeight);
 
       listRef.current?.scrollToOffset({
-        offset: centeredOffset,
+        offset: selectedOffset,
         animated: false,
       });
       listRef.current?.scrollToIndex({
         index: selectedRowIndex,
         animated: false,
-        viewPosition: 0.5,
       });
     };
 
@@ -110,13 +101,7 @@ export const SelectContentSurface = () => {
     return () => {
       scrollTimers.forEach((timer) => clearTimeout(timer));
     };
-  }, [
-    isOpen,
-    itemHeight,
-    listHeight,
-    selectedRowIndex,
-    shouldScrollToSelected,
-  ]);
+  }, [isOpen, itemHeight, selectedRowIndex, shouldScrollToSelected]);
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -210,9 +195,6 @@ export const SelectContentSurface = () => {
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
           style={styles.list}
-          onLayout={(event) => {
-            setListHeight(event.nativeEvent.layout.height);
-          }}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
           initialScrollIndex={initialScrollIndex}
@@ -223,10 +205,7 @@ export const SelectContentSurface = () => {
           }
           onScrollToIndexFailed={(info) => {
             listRef.current?.scrollToOffset({
-              offset: Math.max(
-                0,
-                (info.index - initialSelectedRowOffset) * itemHeight
-              ),
+              offset: Math.max(0, info.index * itemHeight),
               animated: false,
             });
           }}

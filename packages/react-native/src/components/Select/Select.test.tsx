@@ -337,7 +337,7 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
-    expect(list?.getAttribute('data-initial-scroll-index')).toBe('7');
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
     expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {
@@ -345,7 +345,8 @@ describe('Native Select', () => {
     });
 
     expect(list?.getAttribute('data-scroll-to-index')).toBe('11');
-    expect(list?.getAttribute('data-scroll-view-position')).toBe('0.5');
+    expect(list?.getAttribute('data-scroll-to-offset')).toBe('594');
+    expect(list?.getAttribute('data-scroll-view-position')).toBeNull();
     expect(getButtonByText('Country 24')).toBeTruthy();
 
     unmount();
@@ -379,7 +380,7 @@ describe('Native Select', () => {
       '[data-testid="native-flat-list"]'
     );
 
-    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('11');
+    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('15');
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {
@@ -387,7 +388,8 @@ describe('Native Select', () => {
     });
 
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBe('15');
-    expect(reopenedList?.getAttribute('data-scroll-view-position')).toBe('0.5');
+    expect(reopenedList?.getAttribute('data-scroll-to-offset')).toBe('810');
+    expect(reopenedList?.getAttribute('data-scroll-view-position')).toBeNull();
 
     unmount();
   });
