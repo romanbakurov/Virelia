@@ -28,6 +28,9 @@ export type SelectRenderEntry =
       type: 'group';
       id: string;
       label: ReactNode;
+      selectable?: boolean;
+      selectLabel?: ReactNode;
+      itemValues: string[];
     }
   | {
       type: 'option';

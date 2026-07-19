@@ -31,11 +31,15 @@ export function collectSelectStructure(children: ReactNode): {
 
       if (type.__velliraSelectPart === 'group') {
         const props = child.props as SelectGroupProps;
+        const itemValues = getGroupItemValues(props.children);
 
         entries.push({
           type: 'group',
           id: `group-${generatedEntryId++}`,
           label: props.label,
+          selectable: props.selectable,
+          selectLabel: props.selectLabel,
+          itemValues,
         });
         visit(props.children);
         return;
@@ -117,6 +121,29 @@ export function hasSelectLayoutChildren(children: ReactNode) {
   visit(children);
 
   return hasLayout;
+}
+
+function getGroupItemValues(children: ReactNode) {
+  const values: string[] = [];
+
+  function visit(node: ReactNode) {
+    Children.forEach(node, (child) => {
+      if (!isValidElement(child)) return;
+
+      const type = child.type as SelectSlotComponent<unknown>;
+
+      if (type.__velliraSelectPart === 'item') {
+        values.push((child.props as SelectItemProps).value);
+        return;
+      }
+
+      visit((child.props as { children?: ReactNode }).children);
+    });
+  }
+
+  visit(children);
+
+  return values;
 }
 
 function getItemChildren(children: ReactNode, fallback: string) {

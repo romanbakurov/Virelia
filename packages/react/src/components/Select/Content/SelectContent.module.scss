@@ -142,6 +142,55 @@ $select-variants: outline, filled, soft;
   animation: listReveal 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+.groupAction {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  margin-bottom: 2px;
+  padding: var(--space-2) var(--space-3);
+  color: var(--select-dropdown-current-fg);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-xs);
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  gap: var(--space-3);
+
+  &:hover:not(:disabled) {
+    background-color: var(--select-option-current-hover-bg);
+    border-color: var(--select-option-current-hover-border);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--select-dropdown-current-ring);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    color: var(--select-option-disabled-fg);
+    cursor: not-allowed;
+  }
+}
+
+.groupActionText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupActionMeta {
+  flex: 0 0 auto;
+  color: var(--select-option-description-fg);
+  font-weight: var(--font-weight-medium);
+}
+
 .command {
   width: min(560px, calc(100vw - var(--space-4)));
   max-height: 420px;

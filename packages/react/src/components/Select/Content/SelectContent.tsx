@@ -74,6 +74,7 @@ export const SelectContentSurface = ({
   activeIndex,
   className,
   onSelect,
+  onSelectGroup,
   onMouseEnter,
   onSearchChange,
 }: SelectContentProps) => {
@@ -249,6 +250,49 @@ export const SelectContentSurface = ({
             )}
             {visibleEntries.map((entry) => {
               if (entry.type === 'group') {
+                if (entry.selectable && multiple) {
+                  const enabledGroupValues = entry.itemValues.filter((value) =>
+                    options.some(
+                      (option) => option.value === value && !option.disabled
+                    )
+                  );
+                  const selectedGroupCount = selectedValues
+                    ? enabledGroupValues.filter((value) =>
+                        selectedValues.includes(value)
+                      ).length
+                    : 0;
+                  const isSelected =
+                    enabledGroupValues.length > 0 &&
+                    selectedGroupCount === enabledGroupValues.length;
+                  const isMixed =
+                    selectedGroupCount > 0 &&
+                    selectedGroupCount < enabledGroupValues.length;
+
+                  return (
+                    <li key={entry.id} role='presentation'>
+                      <button
+                        type='button'
+                        className={styles.groupAction}
+                        aria-label={getTextLabel(
+                          entry.selectLabel ?? entry.label
+                        )}
+                        aria-pressed={
+                          isMixed ? 'mixed' : isSelected ? 'true' : 'false'
+                        }
+                        disabled={enabledGroupValues.length === 0}
+                        onClick={() => onSelectGroup(enabledGroupValues)}
+                      >
+                        <span className={styles.groupActionText}>
+                          {entry.selectLabel ?? entry.label}
+                        </span>
+                        <span className={styles.groupActionMeta}>
+                          {selectedGroupCount}/{enabledGroupValues.length}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                }
+
                 return (
                   <li
                     key={entry.id}
@@ -347,4 +391,12 @@ function collectSelectContentSlots(children: ReactNode) {
   });
 
   return { emptySlot, headerSlot, loadingSlot, searchSlot };
+}
+
+function getTextLabel(value: ReactNode) {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+
+  return 'Select group';
 }

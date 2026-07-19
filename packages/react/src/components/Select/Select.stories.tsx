@@ -112,6 +112,87 @@ const statusOptions = [
   },
 ];
 
+const groupedTeamOptions = {
+  core: [
+    {
+      label: 'Design systems',
+      value: 'design-systems',
+      description: 'Components and foundations',
+      badge: 'Core',
+    },
+    {
+      label: 'Frontend platform',
+      value: 'frontend-platform',
+      description: 'Tooling and delivery',
+      badge: 'Core',
+    },
+    {
+      label: 'Accessibility',
+      value: 'accessibility',
+      description: 'Inclusive UX reviews',
+      badge: 'Core',
+    },
+    {
+      label: 'Documentation',
+      value: 'documentation',
+      description: 'Guides and examples',
+      badge: 'Docs',
+    },
+  ],
+  operations: [
+    {
+      label: 'Release management',
+      value: 'release-management',
+      description: 'Versioning and rollout',
+      badge: 'Ops',
+    },
+    {
+      label: 'Quality assurance',
+      value: 'quality-assurance',
+      description: 'Regression coverage',
+      badge: 'QA',
+    },
+    {
+      label: 'Customer support',
+      value: 'customer-support',
+      description: 'Escalations and triage',
+      badge: 'CS',
+    },
+    {
+      label: 'Localization',
+      value: 'localization',
+      description: 'Regional content',
+      badge: 'i18n',
+    },
+  ],
+  platform: [
+    {
+      label: 'Authentication',
+      value: 'authentication',
+      description: 'Identity and access',
+      badge: 'Sec',
+    },
+    {
+      label: 'Billing',
+      value: 'billing',
+      description: 'Plans and invoices',
+      badge: 'Fin',
+    },
+    {
+      label: 'Analytics',
+      value: 'analytics',
+      description: 'Insights and telemetry',
+      badge: 'Data',
+    },
+    {
+      label: 'Integrations',
+      value: 'integrations',
+      description: 'Partner workflows',
+      badge: 'API',
+    },
+  ],
+} satisfies Record<string, StoryOption[]>;
+
 const meta = {
   title: 'Components/Select',
   component: Select,
@@ -505,6 +586,14 @@ function renderSelectItems(items: StoryOption[] = defaultOptions) {
   );
 }
 
+function renderSelectableGroup(label: string, items: StoryOption[]) {
+  return (
+    <Select.Group label={label} selectable selectLabel={`All ${label}`}>
+      {renderSelectItems(items)}
+    </Select.Group>
+  );
+}
+
 const SelectWithState = ({
   children,
   storyOptions = defaultOptions,
@@ -775,6 +864,26 @@ export const Multiple: Story = {
   render: (args) => (
     <Section title='Multiple'>
       <SelectWithState {...args} storyOptions={richOptions} />
+    </Section>
+  ),
+};
+
+export const MultipleGroupedLarge: Story = {
+  args: {
+    multiple: true,
+    defaultValue: ['design-systems', 'frontend-platform', 'authentication'],
+    closeOnSelect: false,
+    placeholder: 'Choose teams',
+  },
+  render: (args) => (
+    <Section title='Multiple grouped large'>
+      <SelectWithState {...args}>
+        {renderSelectableGroup('Core', groupedTeamOptions.core)}
+        <Select.Separator />
+        {renderSelectableGroup('Operations', groupedTeamOptions.operations)}
+        <Select.Separator />
+        {renderSelectableGroup('Platform', groupedTeamOptions.platform)}
+      </SelectWithState>
     </Section>
   ),
 };

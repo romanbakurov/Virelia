@@ -111,6 +111,7 @@ export const SelectRoot = ({
     selectedOptions,
     isOpen,
     setIsOpen,
+    setSelectedValue,
     activeIndex,
     setActiveIndex,
     closeDropdown,
@@ -151,6 +152,71 @@ export const SelectRoot = ({
       buttonRef.current?.focus();
     },
     [selectValue]
+  );
+
+  const handleSelectGroup = useCallback(
+    (values: string[]) => {
+      if (!multiple || values.length === 0) return;
+
+      const enabledValues = values.filter((value) =>
+        resolvedOptions.some(
+          (option) => option.value === value && !option.disabled
+        )
+      );
+      const selectedGroupValues = enabledValues.filter((value) =>
+        selectedValues.includes(value)
+      );
+      const outsideSelectedCount = selectedValues.filter(
+        (value) => !enabledValues.includes(value)
+      ).length;
+      const maxSelectableGroupCount =
+        typeof maxSelected === 'number'
+          ? Math.max(
+              0,
+              Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
+            )
+          : enabledValues.length;
+      const shouldClearGroup =
+        selectedGroupValues.length > 0 &&
+        selectedGroupValues.length >= maxSelectableGroupCount;
+
+      if (shouldClearGroup) {
+        setSelectedValue(
+          selectedValues.filter((value) => !enabledValues.includes(value))
+        );
+        return;
+      }
+
+      const nextValues = [...selectedValues];
+
+      for (const value of enabledValues) {
+        if (nextValues.includes(value)) continue;
+        if (
+          typeof maxSelected === 'number' &&
+          nextValues.length >= maxSelected
+        ) {
+          break;
+        }
+
+        nextValues.push(value);
+      }
+
+      setSelectedValue(nextValues);
+
+      if (closeOnSelect) {
+        closeDropdown();
+        buttonRef.current?.focus();
+      }
+    },
+    [
+      closeDropdown,
+      closeOnSelect,
+      maxSelected,
+      multiple,
+      resolvedOptions,
+      selectedValues,
+      setSelectedValue,
+    ]
   );
 
   const handleClear = useCallback(() => {
@@ -273,6 +339,7 @@ export const SelectRoot = ({
     className: dropdownClassName,
     setDropdownRef,
     onSelect: handleSelect,
+    onSelectGroup: handleSelectGroup,
     onMouseEnter: setActiveIndex,
     onSearchChange: handleSearchChange,
   };

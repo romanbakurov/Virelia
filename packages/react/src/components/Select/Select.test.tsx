@@ -358,6 +358,67 @@ describe('Select', () => {
     });
   });
 
+  it('toggles all enabled options in a selectable group for multiple select', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='team'
+          name='team'
+          label='Team'
+          multiple
+          defaultOpen
+          defaultValue={['platform']}
+          closeOnSelect={false}
+          onValueChange={onValueChange}
+        >
+          <Select.Group label='Core' selectable selectLabel='All core'>
+            <Select.Item value='design'>Design</Select.Item>
+            <Select.Item value='platform'>Platform</Select.Item>
+            <Select.Item value='disabled' disabled>
+              Disabled
+            </Select.Item>
+          </Select.Group>
+          <Select.Group label='Operations' selectable>
+            <Select.Item value='qa'>QA</Select.Item>
+          </Select.Group>
+        </Select>
+      );
+    });
+
+    const groupAction = document.querySelector<HTMLButtonElement>(
+      'button[aria-label="All core"]'
+    );
+
+    expect(groupAction?.textContent).toContain('1/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith(['platform', 'design']);
+    expect(groupAction?.textContent).toContain('2/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('true');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([]);
+    expect(groupAction?.textContent).toContain('0/2');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('false');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('closes with Escape without selecting a new value', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');
