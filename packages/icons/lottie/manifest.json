@@ -104,14 +104,14 @@
       "name": "Download",
       "category": "Actions",
       "file": "Actions/Download.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "Edit",
       "category": "Actions",
       "file": "Actions/Edit.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -139,14 +139,14 @@
       "name": "Refresh",
       "category": "Actions",
       "file": "Actions/Refresh.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "Search",
       "category": "Actions",
       "file": "Actions/Search.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -160,14 +160,14 @@
       "name": "Trash",
       "category": "Actions",
       "file": "Actions/Trash.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "Upload",
       "category": "Actions",
       "file": "Actions/Upload.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -181,7 +181,7 @@
       "name": "Bell",
       "category": "Communication",
       "file": "Communication/Bell.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -209,7 +209,7 @@
       "name": "Mail",
       "category": "Communication",
       "file": "Communication/Mail.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -272,14 +272,14 @@
       "name": "Pause",
       "category": "Media",
       "file": "Media/Pause.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "Play",
       "category": "Media",
       "file": "Media/Play.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -377,14 +377,14 @@
       "name": "Folder",
       "category": "System",
       "file": "System/Folder.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "FolderOpen",
       "category": "System",
       "file": "System/FolderOpen.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -405,14 +405,14 @@
       "name": "Lock",
       "category": "System",
       "file": "System/Lock.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
       "name": "LockOpen",
       "category": "System",
       "file": "System/LockOpen.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -426,7 +426,7 @@
       "name": "Settings",
       "category": "System",
       "file": "System/Settings.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -461,7 +461,7 @@
       "name": "Eye",
       "category": "Status",
       "file": "Status/Eye.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
@@ -475,7 +475,7 @@
       "name": "Heart",
       "category": "Status",
       "file": "Status/Heart.json",
-      "frames": 30,
+      "frames": 15,
       "fps": 30
     },
     {
