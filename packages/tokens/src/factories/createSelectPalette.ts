@@ -3,8 +3,10 @@ import type { createInputColorPalette } from './createInputPalette.js';
 type SelectBasePalette = ReturnType<typeof createInputColorPalette>;
 type SelectVariantName = 'outline' | 'filled' | 'soft';
 type SelectPaletteConfig = {
+  optionActiveBg?: string;
   dropdownBorder?: string;
   optionActiveBorder?: string;
+  optionActiveFg?: string;
   optionActiveRing?: string;
   optionHoverBg?: string;
   optionHoverBorder?: string;
@@ -28,8 +30,8 @@ const createSelectVariant = (
   },
   option: {
     active: {
-      bg: palette[variant].hover.bg,
-      fg: palette[variant].hover.fg,
+      bg: config.optionActiveBg ?? palette[variant].hover.bg,
+      fg: config.optionActiveFg ?? palette[variant].hover.fg,
       border: config.optionActiveBorder ?? palette[variant].hover.border,
       ring: config.optionActiveRing ?? palette.ring,
     },

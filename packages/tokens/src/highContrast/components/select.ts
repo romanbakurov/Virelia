@@ -121,6 +121,8 @@ const danger = createInputColorPalette({
 export const select = {
   primary: createSelectPalette(primary, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -131,6 +133,8 @@ export const select = {
   }),
   neutral: createSelectPalette(neutral, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -141,6 +145,8 @@ export const select = {
   }),
   success: createSelectPalette(success, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -151,6 +157,8 @@ export const select = {
   }),
   warning: createSelectPalette(warning, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
@@ -161,6 +169,8 @@ export const select = {
   }),
   danger: createSelectPalette(danger, {
     optionActiveBorder: 'transparent',
+    optionActiveBg: menu.item.active.bg,
+    optionActiveFg: menu.item.active.fg,
     optionActiveRing: 'transparent',
     optionHoverBg: menu.item.hover.bg,
     optionHoverBorder: 'transparent',
