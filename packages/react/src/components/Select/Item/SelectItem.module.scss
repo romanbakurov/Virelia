@@ -51,10 +51,24 @@
 }
 
 .selected.active:not(.disabled) {
-  color: var(--select-option-current-active-fg);
-  background-color: var(--select-option-current-active-bg);
-  border-color: var(--select-option-current-active-border);
-  box-shadow: inset 0 0 0 1px var(--select-option-current-active-ring);
+  color: var(--select-option-current-selected-active-fg);
+  background-color: var(--select-option-current-selected-active-bg);
+  border-color: var(--select-option-current-selected-active-border);
+  box-shadow: inset 0 0 0 1px var(--select-option-current-selected-active-ring);
+}
+
+.selected:hover:not(.disabled) {
+  color: var(--select-option-current-selected-hover-fg);
+  background-color: var(--select-option-current-selected-hover-bg);
+  border-color: var(--select-option-current-selected-hover-border);
+  transform: translateX(2px);
+}
+
+.selected:active:not(.disabled) {
+  color: var(--select-option-current-selected-pressed-fg);
+  background-color: var(--select-option-current-selected-pressed-bg);
+  border-color: var(--select-option-current-selected-pressed-border);
+  transform: translateX(1px) scale(0.995);
 }
 
 .active:not(.selected, .disabled) {
@@ -174,6 +188,36 @@
   );
   --select-option-current-pressed-border: var(
     --select-#{$color}-outline-option-pressed-border
+  );
+  --select-option-current-selected-hover-bg: var(
+    --select-#{$color}-outline-option-selected-hover-bg
+  );
+  --select-option-current-selected-hover-fg: var(
+    --select-#{$color}-outline-option-selected-hover-fg
+  );
+  --select-option-current-selected-hover-border: var(
+    --select-#{$color}-outline-option-selected-hover-border
+  );
+  --select-option-current-selected-active-bg: var(
+    --select-#{$color}-outline-option-selected-active-bg
+  );
+  --select-option-current-selected-active-fg: var(
+    --select-#{$color}-outline-option-selected-active-fg
+  );
+  --select-option-current-selected-active-border: var(
+    --select-#{$color}-outline-option-selected-active-border
+  );
+  --select-option-current-selected-active-ring: var(
+    --select-#{$color}-outline-option-selected-active-ring
+  );
+  --select-option-current-selected-pressed-bg: var(
+    --select-#{$color}-outline-option-selected-pressed-bg
+  );
+  --select-option-current-selected-pressed-fg: var(
+    --select-#{$color}-outline-option-selected-pressed-fg
+  );
+  --select-option-current-selected-pressed-border: var(
+    --select-#{$color}-outline-option-selected-pressed-border
   );
 }
 

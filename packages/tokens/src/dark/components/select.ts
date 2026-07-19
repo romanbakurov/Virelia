@@ -84,6 +84,9 @@ export const select = {
     optionHoverFg: menu.item.hover.fg,
     optionPressedBg: colors.primary[700],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.primary[700],
+    optionSelectedHoverBg: colors.primary[700],
+    optionSelectedPressedBg: colors.primary[600],
     optionSelectedBg: colors.primary[800],
   }),
   neutral: createSelectPalette(neutral, {
@@ -97,6 +100,9 @@ export const select = {
     optionHoverFg: menu.item.hover.fg,
     optionPressedBg: colors.vellira[600],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.vellira[600],
+    optionSelectedHoverBg: colors.vellira[700],
+    optionSelectedPressedBg: colors.vellira[600],
     optionSelectedBg: colors.vellira[850],
   }),
   success: createSelectPalette(success, {
@@ -110,6 +116,9 @@ export const select = {
     optionHoverFg: menu.item.hover.fg,
     optionPressedBg: colors.success[800],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.success[800],
+    optionSelectedHoverBg: colors.success[800],
+    optionSelectedPressedBg: colors.success[700],
     optionSelectedBg: colors.success[900],
   }),
   warning: createSelectPalette(warning, {
@@ -123,6 +132,9 @@ export const select = {
     optionHoverFg: menu.item.hover.fg,
     optionPressedBg: colors.warning[800],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.warning[800],
+    optionSelectedHoverBg: colors.warning[800],
+    optionSelectedPressedBg: colors.warning[700],
     optionSelectedBg: colors.warning[900],
   }),
   danger: createSelectPalette(danger, {
@@ -136,6 +148,9 @@ export const select = {
     optionHoverFg: menu.item.hover.fg,
     optionPressedBg: colors.error[800],
     optionPressedBorder: 'transparent',
+    optionSelectedActiveBg: colors.error[800],
+    optionSelectedHoverBg: colors.error[800],
+    optionSelectedPressedBg: colors.error[700],
     optionSelectedBg: colors.error[900],
   }),
 
