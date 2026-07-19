@@ -92,7 +92,8 @@
     color 0.2s,
     border-color 0.2s,
     background-color 0.2s,
-    box-shadow 0.2s;
+    box-shadow 0.2s,
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &::placeholder {
     color: var(--input-current-default-placeholder);
@@ -110,6 +111,7 @@
   &:focus-visible {
     color: var(--input-current-focus-fg);
     background-color: var(--input-current-focus-bg);
+    transform: translateY(-1px);
 
     @include focus-border(
       var(--input-current-focus-border),
@@ -189,6 +191,7 @@
   color: var(--input-current-hover-fg);
   background-color: var(--input-current-hover-bg);
   border-color: var(--input-current-hover-border);
+  transform: translateY(-1px);
 
   &::placeholder {
     color: var(--input-current-hover-placeholder);
@@ -199,6 +202,7 @@
   color: var(--input-read-only-fg);
   background-color: var(--input-read-only-bg);
   border-color: var(--input-read-only-border);
+  transform: none;
   cursor: default;
 
   &::placeholder {
@@ -470,6 +474,12 @@
   .clearButton,
   .iconButton {
     transition: none;
+  }
+
+  .input,
+  .input:not(:disabled, :focus-visible, :read-only):hover,
+  .input:focus-visible {
+    transform: none;
   }
 
   .spinner {

@@ -213,7 +213,8 @@
     color 0.15s ease,
     background-color 0.15s ease,
     border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   margin-top: calc((var(--radio-label-line-height) - var(--radio-size)) / 2);
 }
@@ -232,7 +233,7 @@
   transition:
     background-color 0.15s ease,
     opacity 0.15s ease,
-    transform 0.15s ease;
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .customIcon {
@@ -251,6 +252,7 @@
 .input:checked + .control {
   background-color: var(--radio-selected-bg);
   border-color: var(--radio-selected-border);
+  animation: radio-pop 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input:checked + .control .indicator {
@@ -258,6 +260,7 @@
   background-color: var(--radio-selected-fg);
   opacity: 1;
   transform: scale(1);
+  animation: radio-indicator-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input:checked + .control .customIcon {
@@ -284,6 +287,7 @@
   .control {
     background-color: var(--radio-hover-bg);
     border-color: var(--radio-hover-border);
+    transform: translateY(-1px);
   }
 }
 
@@ -323,6 +327,7 @@
 .input:active:not(:disabled) + .control {
   background-color: var(--radio-pressed-bg);
   border-color: var(--radio-pressed-border);
+  transform: scale(0.92);
 }
 
 .input:checked:active:not(:disabled) + .control {
@@ -394,5 +399,36 @@
   .control,
   .indicator {
     transition: none;
+    animation: none;
+  }
+}
+
+@keyframes radio-pop {
+  0% {
+    transform: scale(0.84);
+  }
+
+  62% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes radio-indicator-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+
+  72% {
+    transform: scale(1.18);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

@@ -323,12 +323,14 @@
 .input:checked + .customCheckbox .checkmark {
   opacity: 1;
   transform: scale(1);
+  animation: checkbox-checkmark-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input:indeterminate + .customCheckbox .indeterminateMark,
 .customCheckbox.indeterminate .indeterminateMark {
   opacity: 1;
   transform: scaleX(1);
+  animation: checkbox-indeterminate-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wrapper:hover .input:checked:not(:disabled) + .customCheckbox,
@@ -373,6 +375,11 @@
   + .customCheckbox {
   background: var(--checkbox-hover-bg);
   border-color: var(--checkbox-hover-border);
+  transform: translateY(-1px);
+}
+
+.input:active:not(:checked, :indeterminate, :disabled) + .customCheckbox {
+  transform: scale(0.94);
 }
 
 .wrapper.disabled:hover {
@@ -415,6 +422,38 @@
 
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes checkbox-checkmark-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.45) rotate(-12deg);
+  }
+
+  65% {
+    transform: scale(1.14) rotate(3deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes checkbox-indeterminate-in {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.35);
+  }
+
+  70% {
+    transform: scaleX(1.16);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
   }
 }
 
