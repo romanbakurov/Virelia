@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
+
 import { FlatList, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
@@ -25,6 +27,8 @@ export const SelectContent = createSelectSlot<SelectContentProps>(
 
 export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
+  const wasOpenRef = useRef(false);
+  const [openCycle, setOpenCycle] = useState(0);
   const context = useSelectContext();
   const {
     isOpen,
@@ -46,7 +50,22 @@ export const SelectContentSurface = () => {
     selectOption,
     selectGroup,
     itemHeight,
+    selectedRowIndex,
+    query,
   } = context;
+  const shouldSeedSelectedPosition =
+    Boolean(context.virtual) && selectedRowIndex > 0 && query === '';
+  const initialScrollIndex = shouldSeedSelectedPosition
+    ? selectedRowIndex
+    : undefined;
+
+  useEffect(() => {
+    if (isOpen && !wasOpenRef.current) {
+      setOpenCycle((cycle) => cycle + 1);
+    }
+
+    wasOpenRef.current = isOpen;
+  }, [isOpen]);
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -134,12 +153,14 @@ export const SelectContentSurface = () => {
         <SelectEmptyState />
       ) : (
         <FlatList
+          key={`select-list-${openCycle}`}
           data={filteredRows}
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
           style={styles.list}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
+          initialScrollIndex={initialScrollIndex}
           initialNumToRender={
             typeof context.virtual === 'object'
               ? context.virtual.initialNumToRender

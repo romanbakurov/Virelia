@@ -318,7 +318,7 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('renders long option lists with FlatList without forcing scroll on open', () => {
+  it('renders long option lists with FlatList seeded at the selected option', () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -337,7 +337,7 @@ describe('Native Select', () => {
     );
 
     expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
-    expect(list?.getAttribute('data-initial-scroll-index')).toBeNull();
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
     expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
     expect(list?.getAttribute('data-scroll-to-offset')).toBeNull();
     expect(list?.getAttribute('data-scroll-view-position')).toBeNull();
@@ -346,7 +346,7 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('does not force scroll when reopening a virtual list after middle selection', () => {
+  it('seeds virtual list position when reopening after middle selection', () => {
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -370,7 +370,7 @@ describe('Native Select', () => {
       '[data-testid="native-flat-list"]'
     );
 
-    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBeNull();
+    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('15');
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
     expect(reopenedList?.getAttribute('data-scroll-to-offset')).toBeNull();
     expect(reopenedList?.getAttribute('data-scroll-view-position')).toBeNull();
