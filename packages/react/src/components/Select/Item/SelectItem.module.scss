@@ -46,6 +46,10 @@
   color: currentcolor;
 }
 
+.selected .icon {
+  color: currentcolor;
+}
+
 .active:not(.selected, .disabled, :focus-visible) {
   color: var(--select-option-current-active-fg);
   background-color: var(--select-option-current-active-bg);
@@ -54,6 +58,10 @@
 }
 
 .active:not(.selected, .disabled, :focus-visible) .description {
+  color: currentcolor;
+}
+
+.active:not(.selected, .disabled, :focus-visible) .icon {
   color: currentcolor;
 }
 
@@ -91,6 +99,10 @@
 }
 
 .option:hover:not(.selected, .disabled) .description {
+  color: currentcolor;
+}
+
+.option:hover:not(.selected, .disabled) .icon {
   color: currentcolor;
 }
 
