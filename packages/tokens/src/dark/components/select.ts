@@ -76,17 +76,17 @@ export const select = {
   primary: createSelectPalette(primary, {
     dropdownBorder: 'transparent',
     optionActiveBorder: 'transparent',
-    optionActiveBg: colors.primary[900],
+    optionActiveBg: colors.vellira[850],
     optionActiveFg: text.primary,
     optionActiveRing: 'transparent',
-    optionHoverBg: colors.primary[800],
+    optionHoverBg: colors.vellira[700],
     optionHoverBorder: 'transparent',
     optionHoverFg: menu.item.hover.fg,
-    optionPressedBg: colors.primary[950],
+    optionPressedBg: colors.vellira[900],
     optionPressedBorder: 'transparent',
-    optionSelectedActiveBg: colors.primary[800],
-    optionSelectedHoverBg: colors.primary[700],
-    optionSelectedPressedBg: colors.primary[900],
+    optionSelectedActiveBg: colors.vellira[850],
+    optionSelectedHoverBg: colors.vellira[700],
+    optionSelectedPressedBg: colors.vellira[900],
     optionSelectedBg: colors.primary[800],
   }),
   neutral: createSelectPalette(neutral, {
@@ -103,7 +103,7 @@ export const select = {
     optionSelectedActiveBg: colors.vellira[850],
     optionSelectedHoverBg: colors.vellira[700],
     optionSelectedPressedBg: colors.vellira[900],
-    optionSelectedBg: colors.vellira[850],
+    optionSelectedBg: colors.vellira[600],
   }),
   success: createSelectPalette(success, {
     dropdownBorder: 'transparent',
@@ -119,7 +119,7 @@ export const select = {
     optionSelectedActiveBg: colors.success[900],
     optionSelectedHoverBg: colors.success[800],
     optionSelectedPressedBg: colors.success[950],
-    optionSelectedBg: colors.success[900],
+    optionSelectedBg: colors.success[700],
   }),
   warning: createSelectPalette(warning, {
     dropdownBorder: 'transparent',
@@ -135,7 +135,7 @@ export const select = {
     optionSelectedActiveBg: colors.warning[900],
     optionSelectedHoverBg: colors.warning[800],
     optionSelectedPressedBg: colors.warning[950],
-    optionSelectedBg: colors.warning[900],
+    optionSelectedBg: colors.warning[700],
   }),
   danger: createSelectPalette(danger, {
     dropdownBorder: 'transparent',
@@ -151,7 +151,7 @@ export const select = {
     optionSelectedActiveBg: colors.error[900],
     optionSelectedHoverBg: colors.error[800],
     optionSelectedPressedBg: colors.error[950],
-    optionSelectedBg: colors.error[900],
+    optionSelectedBg: colors.error[700],
   }),
 
   trigger: {
