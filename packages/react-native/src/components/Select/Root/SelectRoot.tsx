@@ -184,7 +184,7 @@ export function SelectRoot(props: SelectProps) {
     )
   );
   const itemHeight =
-    typeof virtual === 'object' ? (virtual.estimatedItemSize ?? 54) : 54;
+    typeof virtual === 'object' ? (virtual.estimatedItemSize ?? 46) : 46;
 
   const displayValue = useMemo(() => {
     if (renderValue) {

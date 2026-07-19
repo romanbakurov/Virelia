@@ -381,6 +381,10 @@ type FlatListProps<T> = NativeProps & {
   data?: T[];
   renderItem: (info: { item: T; index: number }) => React.ReactNode;
   keyExtractor?: (item: T, index: number) => string;
+  getItemLayout?: (
+    data: ArrayLike<T> | null | undefined,
+    index: number
+  ) => { length: number; offset: number; index: number };
   initialScrollIndex?: number;
   onScrollToIndexFailed?: (info: { index: number }) => void;
 };
@@ -396,6 +400,7 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
       testID,
       onLayout,
       initialScrollIndex,
+      getItemLayout,
     }: FlatListProps<unknown>,
     ref
   ) {
@@ -406,6 +411,10 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
     >();
 
     const resolvedStyle = flattenStyle(style);
+    const initialLayout =
+      typeof initialScrollIndex === 'number'
+        ? getItemLayout?.(data, initialScrollIndex)
+        : undefined;
 
     useEffect(() => {
       onLayout?.({
@@ -441,6 +450,8 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
       <div
         data-testid={testID ?? 'native-flat-list'}
         data-initial-scroll-index={initialScrollIndex}
+        data-initial-scroll-offset={initialLayout?.offset}
+        data-initial-scroll-length={initialLayout?.length}
         data-scroll-to-index={scrolledIndex}
         data-scroll-to-offset={scrolledOffset}
         data-scroll-view-position={scrollViewPosition}

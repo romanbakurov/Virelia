@@ -378,6 +378,29 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('uses the real compact option height for deep virtual selected items', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={longOptions}
+        defaultValue='country-70'
+        virtual
+      />
+    );
+
+    openSelect(container);
+
+    const list = document.body.querySelector(
+      '[data-testid="native-flat-list"]'
+    );
+
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('69');
+    expect(list?.getAttribute('data-initial-scroll-length')).toBe('46');
+    expect(list?.getAttribute('data-initial-scroll-offset')).toBe('3174');
+
+    unmount();
+  });
+
   it('searches locally and clears the search query', () => {
     const { container, unmount } = render(
       <Select label='Country' searchable options={options} />
