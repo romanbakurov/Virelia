@@ -1,26 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  Copy,
-  Edit,
-  More,
-  Plus,
-  Refresh,
-  Settings,
-  Trash,
-} from '@vellira-ui/icons';
-import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-const noop = () => undefined;
+import { ChevronDown, Copy, Edit, Settings, Trash } from '@vellira-ui/icons';
+import type { ComponentProps } from 'react';
 
-import { Dropdown } from '../Dropdown';
+import { Button } from '../../primitives/Button';
 
-const actionItems = [
-  { label: 'Edit', value: 'edit', icon: <Edit /> },
-  { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-  { label: 'Refresh', value: 'refresh', icon: <Refresh /> },
-  { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-];
+import { Dropdown } from './Dropdown';
 
 const meta = {
   title: 'Components/Dropdown',
@@ -29,467 +15,201 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: `
-### Dropdown Component
-
-Contextual action menu opened from a trigger. Dropdown is for commands and
-secondary actions, not for selecting a saved form value.
-
-**Features**
-- Controlled and uncontrolled open state
-- Text, icon and custom triggers
-- Item groups and separators
-- Disabled and danger action items
-- Keyboard navigation, Home/End and typeahead search
-- Accessible trigger and menu semantics
-- Custom placement and trigger-width matching
-
-### Usage
-
-Use Dropdown for secondary actions that should not be visible all the time, such
-as edit, duplicate, archive, delete or account commands. Use Select when the
-user is choosing a form value from a compact list. Use RadioGroup when a small
-set of choices should stay visible for comparison.
-
-\`\`\`tsx
-<Dropdown
-  label='Actions'
-  trigger='Actions'
-  items={[
-    { label: 'Edit', value: 'edit' },
-    { label: 'Delete', value: 'delete', danger: true },
-  ]}
-  onSelect={handleAction}
-/>
-\`\`\`
-`,
+        component:
+          'Action menu built with compound parts. Use Select for stored values and Dropdown for commands.',
       },
+    },
+  },
+  argTypes: {
+    children: { control: false },
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+    },
+    size: {
+      control: 'radio',
+      options: ['sm', 'md', 'lg'],
+    },
+    placement: {
+      control: 'select',
+      options: [
+        'top-start',
+        'top',
+        'top-end',
+        'right-start',
+        'right',
+        'right-end',
+        'bottom-start',
+        'bottom',
+        'bottom-end',
+        'left-start',
+        'left',
+        'left-end',
+      ],
     },
   },
   args: {
-    label: 'Actions',
-    trigger: 'Actions',
-    items: actionItems,
-    disabled: false,
-    showArrow: true,
-    onSelect: noop,
-    onOpenChange: noop,
-  },
-  argTypes: {
-    label: {
-      description:
-        'Trigger label. Use ariaLabel when the rendered label is not plain text.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-    ariaLabel: {
-      description:
-        'Accessible trigger label used when label is not plain text or the trigger is icon-only.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    trigger: {
-      description:
-        'Custom trigger content displayed inside the dropdown button.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
-    items: {
-      description: 'List of dropdown items, groups, and separators.',
-      control: 'object',
-      table: {
-        type: {
-          summary: 'Array<DropdownItem | DropdownGroup | DropdownSeparator>',
-        },
-      },
-    },
-    placement: {
-      description: 'Preferred dropdown menu placement.',
-      control: 'select',
-      options: [
-        'top',
-        'top-start',
-        'top-end',
-        'right',
-        'right-start',
-        'right-end',
-        'bottom',
-        'bottom-start',
-        'bottom-end',
-        'left',
-        'left-start',
-        'left-end',
-      ],
-      table: {
-        type: { summary: 'Placement' },
-        defaultValue: { summary: 'bottom-start' },
-      },
-    },
-    matchTriggerWidth: {
-      description: 'Makes the menu match the trigger width.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    open: {
-      description: 'Controlled open state.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    defaultOpen: {
-      description: 'Initial open state for uncontrolled usage.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
-    disabled: {
-      description: 'Disables user interaction.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    showArrow: {
-      description: 'Controls whether the trigger arrow is rendered.',
-      control: 'boolean',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
-      },
-    },
-    rotateAngle: {
-      description: 'Rotation angle applied to the icon-only trigger on hover.',
-      control: 'number',
-      table: {
-        type: { summary: 'number' },
-      },
-    },
-    textWrap: {
-      description: 'Default text wrapping behavior for dropdown item labels.',
-      control: 'radio',
-      options: ['truncate', 'wrap', 'nowrap'],
-      table: {
-        type: { summary: `'truncate' | 'wrap' | 'nowrap'` },
-      },
-    },
-    onSelect: {
-      description: 'Called when a dropdown action item is selected.',
-      action: 'selected',
-      table: {
-        type: { summary: '(value: string) => void' },
-      },
-    },
-    onOpenChange: {
-      description: 'Called when the dropdown requests an open state change.',
-      action: 'open changed',
-      table: {
-        type: { summary: '(open: boolean) => void' },
-      },
-    },
-    className: {
-      description: 'Class name applied to the root container.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    triggerClassName: {
-      description: 'Class name applied to the trigger button.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    contentClassName: {
-      description: 'Class name applied to the menu content.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    itemClassName: {
-      description: 'Class name applied to every menu item.',
-      control: 'text',
-      table: {
-        type: { summary: 'string' },
-      },
-    },
-    icon: {
-      control: false,
-      table: { disable: true },
-    },
-    arrowIcon: {
-      control: false,
-      table: { disable: true },
-    },
+    color: 'primary',
+    size: 'md',
+    placement: 'bottom-start',
   },
 } satisfies Meta<typeof Dropdown>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-type DropdownStoryProps = ComponentProps<typeof Dropdown>;
 
-const sectionStyle = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 16,
-  minWidth: 0,
-  maxWidth: 760,
-  padding: 20,
-  border: '1px solid var(--border-muted)',
-  borderRadius: 'var(--radius-xl)',
-  background: 'var(--surface-subtle)',
-} satisfies CSSProperties;
+const noop = () => undefined;
 
-const subtitleStyle = {
-  margin: 0,
-  color: 'var(--text-secondary)',
-  fontSize: 13,
-  fontWeight: 600,
-} satisfies CSSProperties;
+export const Basic: Story = {
+  render: (args) => (
+    <Dropdown {...args}>
+      <Dropdown.Trigger>Actions</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item icon={<Edit />} shortcut='⌘E' onSelect={noop}>
+          Edit
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Copy />} onSelect={noop}>
+          Duplicate
+        </Dropdown.Item>
+        <Dropdown.Separator />
+        <Dropdown.Item color='danger' icon={<Trash />} onSelect={noop}>
+          Delete
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
+  ),
+};
 
-const statusStyle = {
-  margin: 0,
-  color: 'var(--text-secondary)',
-  fontSize: 13,
-} satisfies CSSProperties;
+export const AsChildTrigger: Story = {
+  render: (args) => (
+    <Dropdown {...args} placement='bottom-end'>
+      <Dropdown.Trigger asChild>
+        <Button appearance='outline' color='neutral' iconEnd={<ChevronDown />}>
+          Actions
+        </Button>
+      </Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item icon={<Settings />}>Settings</Dropdown.Item>
+        <Dropdown.Item icon={<Copy />}>Copy link</Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
+  ),
+};
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+export const CheckboxAndRadio: Story = {
+  render: (args) => <CheckboxAndRadioExample {...args} />,
+};
+
+function CheckboxAndRadioExample(args: ComponentProps<typeof Dropdown>) {
+  const [notifications, setNotifications] = useState(true);
+  const [theme, setTheme] = useState('system');
+
   return (
-    <section style={sectionStyle}>
-      <h3 style={subtitleStyle}>{title}</h3>
-      {children}
-    </section>
+    <Dropdown {...args} closeOnSelect={false}>
+      <Dropdown.Trigger>Preferences</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.CheckboxItem
+          checked={notifications}
+          onCheckedChange={setNotifications}
+        >
+          Notifications
+        </Dropdown.CheckboxItem>
+        <Dropdown.Separator />
+        <Dropdown.RadioGroup value={theme} onValueChange={setTheme}>
+          <Dropdown.RadioItem value='light'>Light</Dropdown.RadioItem>
+          <Dropdown.RadioItem value='dark'>Dark</Dropdown.RadioItem>
+          <Dropdown.RadioItem value='system'>System</Dropdown.RadioItem>
+        </Dropdown.RadioGroup>
+      </Dropdown.Content>
+    </Dropdown>
   );
 }
 
-function InteractiveDropdown(args: DropdownStoryProps) {
-  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? false);
-  const [selected, setSelected] = useState<string>();
-
-  useEffect(() => {
-    setOpen(args.open ?? args.defaultOpen ?? false);
-  }, [args.open, args.defaultOpen]);
-
-  return (
-    <>
-      <Dropdown
-        {...args}
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen);
-          args.onOpenChange?.(nextOpen);
-        }}
-        onSelect={(value) => {
-          setSelected(value);
-          args.onSelect?.(value);
-        }}
-      />
-      <p style={statusStyle}>Selected action: {selected ?? 'none'}</p>
-    </>
-  );
-}
-
-export const Playground: Story = {
+export const RichItems: Story = {
   render: (args) => (
-    <Section title='Playground'>
-      <InteractiveDropdown {...args} />
-    </Section>
+    <Dropdown {...args} minWidth={280}>
+      <Dropdown.Trigger>Account</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Group>
+          <Dropdown.Label>Workspace</Dropdown.Label>
+          <Dropdown.Item
+            icon={<Settings />}
+            description='Manage account and security'
+            badge='Pro'
+            shortcut='⌘P'
+          >
+            Profile
+          </Dropdown.Item>
+          <Dropdown.Item>
+            <Dropdown.ItemIcon>
+              <Settings />
+            </Dropdown.ItemIcon>
+            Workspace settings
+            <Dropdown.ItemDescription>
+              Members, billing, and access
+            </Dropdown.ItemDescription>
+            <Dropdown.ItemBadge>Owner</Dropdown.ItemBadge>
+          </Dropdown.Item>
+        </Dropdown.Group>
+      </Dropdown.Content>
+    </Dropdown>
   ),
 };
 
-export const Default: Story = {
+export const LinkItems: Story = {
   render: (args) => (
-    <Section title='Default'>
-      <Dropdown {...args} />
-    </Section>
+    <Dropdown {...args}>
+      <Dropdown.Trigger>Links</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item href='/settings' icon={<Settings />}>
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item href='https://example.com' target='_blank'>
+          External link
+        </Dropdown.Item>
+        <Dropdown.Item href='/disabled' disabled>
+          Disabled link
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
   ),
 };
 
-export const Controlled: Story = {
+export const Loading: Story = {
   args: {
-    open: false,
+    loading: true,
+    loadingText: 'Loading actions...',
   },
   render: (args) => (
-    <Section title='Controlled'>
-      <InteractiveDropdown {...args} />
-    </Section>
+    <Dropdown {...args} defaultOpen>
+      <Dropdown.Trigger>Actions</Dropdown.Trigger>
+      <Dropdown.Content />
+    </Dropdown>
   ),
 };
 
-export const Uncontrolled: Story = {
-  args: {
-    defaultOpen: true,
-  },
+export const Empty: Story = {
   render: (args) => (
-    <Section title='Uncontrolled'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const IconOnly: Story = {
-  args: {
-    label: 'More actions',
-    ariaLabel: 'More actions',
-    trigger: undefined,
-    icon: <More style={{ width: 20, height: 20 }} />,
-    showArrow: false,
-  },
-  render: (args) => (
-    <Section title='IconOnly'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const CustomTrigger: Story = {
-  args: {
-    label: 'Account actions',
-    trigger: (
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 8,
-          minWidth: 0,
-        }}
-      >
-        <Settings style={{ width: 16, height: 16 }} />
-        Account actions
-      </span>
-    ),
-  },
-  render: (args) => (
-    <Section title='CustomTrigger'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const WithGroups: Story = {
-  args: {
-    label: 'Document actions',
-    trigger: 'Document actions',
-    items: [
-      { type: 'group', label: 'File' },
-      { label: 'New document', value: 'new', icon: <Plus /> },
-      { label: 'Duplicate', value: 'duplicate', icon: <Copy /> },
-      { type: 'separator' },
-      { type: 'group', label: 'Settings' },
-      { label: 'Preferences', value: 'settings', icon: <Settings /> },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='WithGroups'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const WithDisabledItems: Story = {
-  args: {
-    label: 'Project actions',
-    trigger: 'Project actions',
-    items: [
-      { label: 'Edit', value: 'edit', icon: <Edit /> },
-      { label: 'Refresh', value: 'refresh', icon: <Refresh />, disabled: true },
-      { label: 'Delete', value: 'delete', icon: <Trash />, danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='WithDisabledItems'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const DangerActions: Story = {
-  args: {
-    label: 'Danger actions',
-    trigger: 'Danger actions',
-    items: [
-      { label: 'Archive project', value: 'archive' },
-      { label: 'Delete draft', value: 'delete-draft', danger: true },
-      { label: 'Delete project', value: 'delete-project', danger: true },
-    ],
-  },
-  render: (args) => (
-    <Section title='DangerActions'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const LongLabels: Story = {
-  args: {
-    label: 'Long labels',
-    trigger: 'Long labels',
-    textWrap: 'wrap',
-    matchTriggerWidth: true,
-    items: [
-      {
-        label:
-          'Rename this project using the full generated customer workspace title',
-        value: 'rename-long',
-      },
-      {
-        label:
-          'Archive all completed tasks and notify every workspace collaborator',
-        value: 'archive-long',
-      },
-    ],
-  },
-  render: (args) => (
-    <Section title='LongLabels'>
-      <Dropdown {...args} />
-    </Section>
-  ),
-};
-
-export const Placement: Story = {
-  args: {
-    placement: 'bottom-end',
-  },
-  render: (args) => (
-    <Section title='Placement'>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: 16,
-          width: '100%',
-        }}
-      >
-        <Dropdown {...args} placement='bottom-start' trigger='Bottom start' />
-        <Dropdown {...args} placement='bottom-end' trigger='Bottom end' />
-      </div>
-    </Section>
+    <Dropdown {...args} defaultOpen>
+      <Dropdown.Trigger>Actions</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Empty>No actions available</Dropdown.Empty>
+      </Dropdown.Content>
+    </Dropdown>
   ),
 };
 
 export const Disabled: Story = {
   args: {
-    label: 'Disabled actions',
-    trigger: 'Unavailable actions',
     disabled: true,
   },
   render: (args) => (
-    <Section title='Disabled'>
-      <Dropdown {...args} />
-    </Section>
+    <Dropdown {...args}>
+      <Dropdown.Trigger>Actions</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item>Edit</Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
   ),
 };

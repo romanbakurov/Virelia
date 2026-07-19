@@ -297,23 +297,23 @@ export function SelectionExample() {
 import { Dropdown } from '@vellira-ui/react';
 
 export function OverlayExample() {
-  const handleAction = (value: string) => {
-    // Handle selected action.
-  };
-
   return (
-    <Dropdown
-      label='Report actions'
-      trigger='Report actions'
-      items={[
-        { type: 'group', label: 'Report actions' },
-        { label: 'Open settings', value: 'settings' },
-        { label: 'Download report', value: 'download' },
-        { type: 'separator' },
-        { label: 'Delete report', value: 'delete', danger: true },
-      ]}
-      onSelect={handleAction}
-    />
+    <Dropdown>
+      <Dropdown.Trigger>Report actions</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Group>
+          <Dropdown.Label>Report actions</Dropdown.Label>
+          <Dropdown.Item onSelect={openSettings}>Open settings</Dropdown.Item>
+          <Dropdown.Item onSelect={downloadReport}>
+            Download report
+          </Dropdown.Item>
+        </Dropdown.Group>
+        <Dropdown.Separator />
+        <Dropdown.Item color='danger' onSelect={deleteReport}>
+          Delete report
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
   );
 }
 ```

@@ -69,7 +69,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled    |
-| `Dropdown`   | `items`, `trigger`, `placement`, `matchTriggerWidth`, `open`, `defaultOpen`, `onSelect`                                   | controlled or uncontrolled    |
+| `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled    |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                                                   | controlled                    |

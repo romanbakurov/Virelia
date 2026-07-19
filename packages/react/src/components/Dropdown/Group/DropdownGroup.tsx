@@ -1,11 +1,11 @@
-import type { DropdownGroupProps } from './types';
+import { createDropdownSlot } from '../internal/DropdownCollection';
+import type { DropdownGroupProps } from '../types';
 
-import styles from './DropdownGroup.module.scss';
+export const DropdownGroup = createDropdownSlot<DropdownGroupProps>(
+  'group',
+  'Dropdown.Group'
+);
 
-export const DropdownGroup = ({ label }: DropdownGroupProps) => {
-  return (
-    <li role='presentation' className={styles.group}>
-      {label}
-    </li>
-  );
-};
+export const DropdownGroupSurface = () => null;
+
+DropdownGroupSurface.displayName = 'DropdownGroupSurface';

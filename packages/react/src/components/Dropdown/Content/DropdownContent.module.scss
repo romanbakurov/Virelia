@@ -24,6 +24,14 @@
   animation: dropdown-in 0.15s ease;
 }
 
+.empty {
+  padding: var(--space-3);
+  color: var(--dropdown-separator-fg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
+  cursor: default;
+}
+
 @keyframes dropdown-in {
   from {
     opacity: 0;

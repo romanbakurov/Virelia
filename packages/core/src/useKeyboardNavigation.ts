@@ -21,6 +21,7 @@ export interface UseKeyboardNavigationParams<TItem extends NavigableItem> {
   onSelect?: () => void;
   onClose?: () => void;
   getItemText?: (item: TItem) => string;
+  loop?: boolean;
 }
 
 export const useKeyboardNavigation = <TItem extends NavigableItem>({
@@ -32,6 +33,7 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
   onSelect,
   onClose,
   getItemText,
+  loop = true,
 }: UseKeyboardNavigationParams<TItem>) => {
   const searchRef = useRef({
     value: '',
@@ -54,7 +56,13 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
       let index = current;
 
       for (let i = 0; i < items.length; i++) {
-        index = (index + direction + items.length) % items.length;
+        const nextIndex = index + direction;
+
+        if (!loop && (nextIndex < 0 || nextIndex >= items.length)) {
+          return current;
+        }
+
+        index = (nextIndex + items.length) % items.length;
 
         if (!items[index]?.disabled) {
           return index;
@@ -63,7 +71,7 @@ export const useKeyboardNavigation = <TItem extends NavigableItem>({
 
       return current;
     },
-    [items]
+    [items, loop]
   );
 
   const getFirstEnabledIndex = useCallback(

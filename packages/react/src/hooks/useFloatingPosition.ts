@@ -15,6 +15,7 @@ interface UseFloatingPositionProps {
   onOpenChange?: (open: boolean) => void;
   placement?: Placement;
   strategy?: Strategy;
+  offset?: number;
   matchTriggerWidth?: boolean;
   avoidCollisions?: boolean;
   mobileSheetBreakpoint?: number;
@@ -75,6 +76,7 @@ export const useFloatingPosition = ({
   onOpenChange,
   placement: initialPlacement = 'bottom-start',
   strategy = 'fixed',
+  offset: offsetValue = 2,
   matchTriggerWidth = false,
   avoidCollisions = true,
   mobileSheetBreakpoint,
@@ -84,7 +86,7 @@ export const useFloatingPosition = ({
 
   const middleware: Middleware[] = useMemo(
     () => [
-      offset(2),
+      offset(offsetValue),
       ...(avoidCollisions ? [flip()] : []),
       size({
         apply({ rects, elements }) {
@@ -98,7 +100,13 @@ export const useFloatingPosition = ({
       ...(avoidCollisions ? [shift({ padding: 8 })] : []),
       ...customMiddleware,
     ],
-    [avoidCollisions, customMiddleware, isMobileSheet, matchTriggerWidth]
+    [
+      avoidCollisions,
+      customMiddleware,
+      isMobileSheet,
+      matchTriggerWidth,
+      offsetValue,
+    ]
   );
 
   const {

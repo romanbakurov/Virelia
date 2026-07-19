@@ -1,11 +1,11 @@
 # Dropdown
 
 Dropdown is for contextual actions: commands that apply to the current object,
-row, account, or page. It is not a form field.
+row, account, or page. It is not a form field and does not own a selected value.
 
 <StorybookFrame
-  story="dropdown.groups"
-  title="Dropdown with groups"
+  story="dropdown.basic"
+  title="Dropdown actions"
   :height="420"
 />
 
@@ -15,119 +15,99 @@ Use Dropdown when several actions share the same trigger and do not need to be
 visible all the time. Use Select when the user is choosing a saved value.
 
 ```tsx
-<Dropdown
-  label='Report actions'
-  items={[
-    { type: 'group', label: 'Report' },
-    { type: 'item', value: 'rename', label: 'Rename' },
-    { type: 'item', value: 'duplicate', label: 'Duplicate' },
-    { type: 'separator' },
-    { type: 'item', value: 'delete', label: 'Delete', danger: true },
-  ]}
-  onSelect={handleReportAction}
-/>
+<Dropdown placement='bottom-end'>
+  <Dropdown.Trigger asChild>
+    <Button appearance='outline' color='neutral'>
+      Actions
+    </Button>
+  </Dropdown.Trigger>
+
+  <Dropdown.Content>
+    <Dropdown.Group>
+      <Dropdown.Label>Report</Dropdown.Label>
+      <Dropdown.Item onSelect={renameReport}>Rename</Dropdown.Item>
+      <Dropdown.Item onSelect={duplicateReport}>Duplicate</Dropdown.Item>
+    </Dropdown.Group>
+
+    <Dropdown.Separator />
+
+    <Dropdown.Item color='danger' onSelect={deleteReport}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>
 ```
 
-## Item Model
+## Contract
 
-Dropdown uses a flat model. Groups label following entries; they do not own
-nested child arrays.
+Dropdown executes actions. Do not add Select props such as `value`,
+`defaultValue`, `onValueChange`, `placeholder`, `required`, `invalid`, or
+`FormField` behavior.
 
-| Item        | Purpose                                        |
-| ----------- | ---------------------------------------------- |
-| `item`      | Selectable command with `value` and `label`.   |
-| `group`     | Non-interactive heading for following actions. |
-| `separator` | Visual divider between action clusters.        |
-| `danger`    | Destructive or high-risk item styling.         |
-| `shortcut`  | Keyboard command hint for advanced workflows.  |
+Use `Dropdown.Item onSelect` instead of `onClick`. `onSelect` runs for pointer,
+keyboard, and touch selection. Call `event.preventDefault()` to keep the menu
+open.
+
+```tsx
+<Dropdown.Item
+  onSelect={(event) => {
+    event.preventDefault();
+    openAdvancedDialog();
+  }}
+>
+  Advanced action
+</Dropdown.Item>
+```
 
 ## Trigger Guidance
 
-Prefer visible text for important actions. Icon-only triggers need a stable
-accessible label.
+Use `Dropdown.Trigger asChild` with Button for most triggers.
 
 ```tsx
 import { More } from '@vellira-ui/icons';
 import { Button, Dropdown } from '@vellira-ui/react';
 
-<Dropdown
-  ariaLabel='More invoice actions'
-  trigger={
+<Dropdown>
+  <Dropdown.Trigger asChild>
     <Button aria-label='More invoice actions' iconOnly iconStart={<More />} />
-  }
-  items={items}
-/>;
+  </Dropdown.Trigger>
+
+  <Dropdown.Content>
+    <Dropdown.Item>Duplicate</Dropdown.Item>
+    <Dropdown.Item color='danger'>Delete</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>;
 ```
 
-Native uses `accessibilityLabel` and can also use `accessibilityHint` when the
-surrounding screen needs more context.
+## Checkbox And Radio Items
 
-## Controlled Open State
-
-Control open state when another surface needs to close the menu, analytics need
-explicit open tracking, or business rules can block opening.
+Checkbox items are for toggleable menu settings and do not close by default.
+Radio items store their value inside `Dropdown.RadioGroup`, not on the root.
 
 ```tsx
-<Dropdown open={open} onOpenChange={setOpen} label='Actions' items={items} />
-```
+<Dropdown closeOnSelect={false}>
+  <Dropdown.Trigger>Preferences</Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.CheckboxItem checked={showGrid} onCheckedChange={setShowGrid}>
+      Show grid
+    </Dropdown.CheckboxItem>
 
-## Real Example: Table Row Actions
-
-```tsx
-import { Dropdown, Modal, Button } from '@vellira-ui/react';
-import { useState } from 'react';
-
-export function ProjectRowActions({ project }) {
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
-
-  return (
-    <>
-      <Dropdown
-        ariaLabel={`Actions for ${project.name}`}
-        label='Actions'
-        items={[
-          { value: 'open', label: 'Open project' },
-          { value: 'rename', label: 'Rename' },
-          { value: 'duplicate', label: 'Duplicate' },
-          { type: 'separator' },
-          { value: 'delete', label: 'Delete', danger: true },
-        ]}
-        onSelect={(value) => {
-          if (value === 'delete') {
-            setConfirmingDelete(true);
-            return;
-          }
-          runProjectAction(project.id, value);
-        }}
-      />
-
-      <Modal
-        isOpen={confirmingDelete}
-        onClose={() => setConfirmingDelete(false)}
-      >
-        <Modal.Content>
-          <Modal.Header>Delete {project.name}?</Modal.Header>
-          <Modal.Body>This removes the project for every member.</Modal.Body>
-          <Modal.Footer>
-            <Button appearance='ghost' color='neutral'>
-              Cancel
-            </Button>
-            <Button color='danger'>Delete project</Button>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    </>
-  );
-}
+    <Dropdown.RadioGroup value={theme} onValueChange={setTheme}>
+      <Dropdown.RadioItem value='light'>Light</Dropdown.RadioItem>
+      <Dropdown.RadioItem value='dark'>Dark</Dropdown.RadioItem>
+      <Dropdown.RadioItem value='system'>System</Dropdown.RadioItem>
+    </Dropdown.RadioGroup>
+  </Dropdown.Content>
+</Dropdown>
 ```
 
 ## Accessibility
 
-- Do not put saved values in Dropdown; use Select.
-- Use danger items sparingly and confirm irreversible actions.
-- Keep item labels verb-first: Rename, Duplicate, Archive, Delete.
-- Disabled actions should have an explanation nearby when the reason is not
-  obvious.
+- Trigger uses `aria-haspopup="menu"`, `aria-expanded`, and `aria-controls`.
+- Content uses `role="menu"`.
+- Items use `role="menuitem"`, `menuitemcheckbox`, or `menuitemradio`.
+- Do not use `role="listbox"` or `role="option"` for Dropdown.
+- Disabled link items remove `href` and expose `aria-disabled`.
 
 ## See Also
 

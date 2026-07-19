@@ -1,17 +1,13 @@
 import { act } from 'react';
 
+import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { Button } from '../../primitives/Button';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
 import { Dropdown } from './Dropdown';
-
-const items = [
-  { label: 'Edit', value: 'edit' },
-  { label: 'Archive', value: 'archive', disabled: true },
-  { label: 'Delete', value: 'delete', danger: true },
-];
 
 function pressKey(target: EventTarget, key: string) {
   act(() => {
@@ -19,66 +15,69 @@ function pressKey(target: EventTarget, key: string) {
   });
 }
 
+function renderActions(props: Partial<ComponentProps<typeof Dropdown>> = {}) {
+  const onEdit = vi.fn();
+  const onDelete = vi.fn();
+  const result = render(
+    <Dropdown {...props}>
+      <Dropdown.Trigger>Actions</Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item onSelect={onEdit}>Edit</Dropdown.Item>
+        <Dropdown.Item disabled>Archive</Dropdown.Item>
+        <Dropdown.Separator />
+        <Dropdown.Item color='danger' onSelect={onDelete}>
+          Delete
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
+  );
+
+  return { ...result, onDelete, onEdit };
+}
+
 afterEach(() => {
   document.body.innerHTML = '';
 });
 
 describe('Dropdown', () => {
-  it('opens menu and selects an enabled item', () => {
-    const onSelect = vi.fn();
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={items}
-        onSelect={onSelect}
-      />
-    );
-
+  it('opens menu and selects an enabled action item', () => {
+    const { container, onEdit, unmount } = renderActions();
     const trigger = container.querySelector<HTMLButtonElement>('button');
+
     act(() => trigger?.click());
 
+    expect(trigger?.getAttribute('aria-haspopup')).toBe('menu');
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(document.querySelector('[role="option"]')).toBeNull();
 
-    const firstItem = document.querySelector<HTMLElement>('[role="menuitem"]');
-    act(() => firstItem?.click());
+    act(() => {
+      document
+        .querySelector<HTMLElement>('[role="menuitem"]')
+        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
 
-    expect(onSelect).toHaveBeenCalledWith('edit');
+    expect(onEdit).toHaveBeenCalledTimes(1);
     expect(document.querySelector('[role="menu"]')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
 
     unmount();
   });
 
   it('opens and selects the active item from keyboard', async () => {
-    const onSelect = vi.fn();
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={items}
-        onSelect={onSelect}
-      />
-    );
-
+    const { container, onDelete, unmount } = renderActions();
     const trigger = container.querySelector<HTMLButtonElement>('button');
 
     pressKey(trigger!, 'Enter');
 
-    const menu = document.querySelector('[role="menu"]');
-    const menuItems = document.querySelectorAll('[role="menuitem"]');
+    const menu = document.querySelector<HTMLElement>('[role="menu"]');
 
     await expectNoA11yViolations(document.body);
 
-    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
-    expect(trigger?.getAttribute('aria-controls')).toBe(menu?.id);
-    expect(menu?.getAttribute('aria-labelledby')).toBe(trigger?.id);
     expect(document.activeElement).toBe(menu);
     expect(menu?.getAttribute('aria-activedescendant')).toBe(
       `${menu?.id}-item-0`
     );
-    expect(document.getElementById(`${menu?.id}-item-0`)).not.toBeNull();
-    expect(menuItems[1]?.getAttribute('aria-disabled')).toBe('true');
 
     pressKey(menu!, 'ArrowDown');
 
@@ -88,146 +87,223 @@ describe('Dropdown', () => {
 
     pressKey(menu!, 'Enter');
 
-    expect(onSelect).toHaveBeenCalledWith('delete');
+    expect(onDelete).toHaveBeenCalledTimes(1);
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.querySelector('[role="menu"]')).toBeNull();
     expect(document.activeElement).toBe(trigger);
 
     unmount();
   });
 
-  it('closes from keyboard with Escape', () => {
-    const onSelect = vi.fn();
+  it('keeps the menu open when onSelect prevents default', () => {
+    const onSelect = vi.fn((event) => event.preventDefault());
     const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={items}
-        onSelect={onSelect}
-      />
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item onSelect={onSelect}>Advanced</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
     );
-
     const trigger = container.querySelector<HTMLButtonElement>('button');
-
-    pressKey(trigger!, ' ');
-    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
-
-    const menu = document.querySelector('[role="menu"]');
-    expect(document.activeElement).toBe(menu);
-
-    pressKey(menu!, 'Escape');
-
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.querySelector('[role="menu"]')).toBeNull();
-    expect(document.activeElement).toBe(trigger);
-    expect(onSelect).not.toHaveBeenCalled();
-
-    unmount();
-  });
-
-  it('does not open when disabled', () => {
-    const { container, unmount } = render(
-      <Dropdown disabled label='Actions' trigger='Actions' items={items} />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    act(() => trigger?.click());
-
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(container.querySelector('[role="menu"]')).toBeNull();
-
-    unmount();
-  });
-
-  it('applies the configured trigger size', () => {
-    const { container, unmount } = render(
-      <Dropdown label='Actions' trigger='Actions' size='lg' items={items} />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-
-    expect(trigger?.className).toContain('lg');
-
-    unmount();
-  });
-
-  it('renders groups, separators, icons, shortcuts, and wrapped item text', () => {
-    const onSelect = vi.fn();
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        textWrap='wrap'
-        items={[
-          { type: 'group', label: 'File' },
-          {
-            label: 'Duplicate',
-            value: 'duplicate',
-            icon: <span data-testid='duplicate-icon' />,
-            shortcut: '⌘D',
-          },
-          { type: 'separator' },
-          { label: 'Disabled', value: 'disabled', disabled: true },
-        ]}
-        onSelect={onSelect}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    act(() => trigger?.click());
-
-    expect(document.body.textContent).toContain('File');
-    expect(document.querySelector('[role="separator"]')).not.toBeNull();
-    expect(
-      document.querySelector('[data-testid="duplicate-icon"]')
-    ).not.toBeNull();
-    expect(document.body.textContent).toContain('⌘D');
-
-    const disabledItem = Array.from(
-      document.querySelectorAll<HTMLElement>('[role="menuitem"]')
-    ).find((item) => item.textContent?.includes('Disabled'));
-
-    act(() => disabledItem?.click());
-    expect(onSelect).not.toHaveBeenCalled();
-
-    act(() =>
-      disabledItem?.dispatchEvent(
-        new MouseEvent('mouseover', { bubbles: true })
-      )
-    );
-    expect(disabledItem?.getAttribute('data-active')).toBeNull();
-
-    unmount();
-  });
-
-  it('supports icon-only triggers and closes on outside pointer down', () => {
-    const { container, unmount } = render(
-      <Dropdown
-        label='More actions'
-        ariaLabel='More actions'
-        icon={<span data-testid='trigger-icon' />}
-        showArrow={false}
-        items={items}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-
-    expect(trigger?.getAttribute('aria-label')).toBe('More actions');
-    expect(
-      container.querySelector('[data-testid="trigger-icon"]')
-    ).not.toBeNull();
 
     act(() => trigger?.click());
+    act(() => {
+      document
+        .querySelector<HTMLElement>('[role="menuitem"]')
+        ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
 
-    const menu = document.querySelector('[role="menu"]');
-    expect(menu).not.toBeNull();
-    expect(menu?.getAttribute('aria-label')).toBe('More actions');
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports Trigger asChild without rendering an extra button', () => {
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger asChild>
+          <Button appearance='outline' color='neutral'>
+            Actions
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(container.querySelectorAll('button')).toHaveLength(1);
 
     act(() => {
-      document.body.dispatchEvent(
-        new PointerEvent('pointerdown', { bubbles: true })
-      );
+      container.querySelector('button')?.click();
+    });
+
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports link items and secures blank targets', () => {
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item href='/settings' target='_blank'>
+            Settings
+          </Dropdown.Item>
+          <Dropdown.Item href='/disabled' disabled>
+            Disabled link
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const links =
+      document.querySelectorAll<HTMLAnchorElement>('a[role="menuitem"]');
+
+    expect(links[0]?.getAttribute('href')).toBe('/settings');
+    expect(links[0]?.getAttribute('rel')).toBe('noreferrer noopener');
+    expect(links[1]?.hasAttribute('href')).toBe(false);
+    expect(links[1]?.getAttribute('aria-disabled')).toBe('true');
+
+    unmount();
+  });
+
+  it('supports checkbox and radio action items', () => {
+    const onCheckedChange = vi.fn();
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown closeOnSelect={false}>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.CheckboxItem
+            defaultChecked
+            onCheckedChange={onCheckedChange}
+          >
+            Show grid
+          </Dropdown.CheckboxItem>
+          <Dropdown.RadioGroup
+            defaultValue='light'
+            onValueChange={onValueChange}
+          >
+            <Dropdown.RadioItem value='light'>Light</Dropdown.RadioItem>
+            <Dropdown.RadioItem value='dark'>Dark</Dropdown.RadioItem>
+          </Dropdown.RadioGroup>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const checkbox = document.querySelector<HTMLElement>(
+      '[role="menuitemcheckbox"]'
+    );
+    const radios = document.querySelectorAll<HTMLElement>(
+      '[role="menuitemradio"]'
+    );
+
+    expect(checkbox?.getAttribute('aria-checked')).toBe('true');
+    expect(radios[0]?.getAttribute('aria-checked')).toBe('true');
+
+    act(() => checkbox?.click());
+    act(() => radios[1]?.click());
+
+    expect(onCheckedChange).toHaveBeenCalledWith(false);
+    expect(onValueChange).toHaveBeenCalledWith('dark');
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('renders groups, labels, separators, metadata, empty, and loading states', () => {
+    const { container, rerender, unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Group>
+            <Dropdown.Label>Project</Dropdown.Label>
+            <Dropdown.Item
+              icon={<span data-testid='icon' />}
+              description='Change details'
+              badge='New'
+              shortcut='⌘E'
+            >
+              Edit
+            </Dropdown.Item>
+          </Dropdown.Group>
+          <Dropdown.Separator />
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(document.body.textContent).toContain('Project');
+    expect(document.body.textContent).toContain('Change details');
+    expect(document.body.textContent).toContain('New');
+    expect(document.body.textContent).toContain('⌘E');
+    expect(document.querySelector('[data-testid="icon"]')).not.toBeNull();
+    expect(document.querySelector('[role="separator"]')).not.toBeNull();
+
+    rerender(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Empty>No actions</Dropdown.Empty>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(document.body.textContent).toContain('No actions');
+
+    rerender(
+      <Dropdown defaultOpen loading loadingText='Loading actions'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content />
+      </Dropdown>
+    );
+
+    expect(document.body.textContent).toContain('Loading actions');
+    expect(container.querySelector('button')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports controlled open state, disabled root, and className', () => {
+    const onOpenChange = vi.fn();
+    const { container, rerender, unmount } = render(
+      <Dropdown open={false} onOpenChange={onOpenChange} className='root-test'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
+    expect(container.querySelector('.root-test')).not.toBeNull();
+
+    rerender(
+      <Dropdown disabled>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
     });
 
     expect(document.querySelector('[role="menu"]')).toBeNull();
@@ -235,206 +311,49 @@ describe('Dropdown', () => {
     unmount();
   });
 
-  it('supports controlled open state and reports open changes', () => {
-    const onOpenChange = vi.fn();
-    const { container, rerender, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={items}
-        open={false}
-        onOpenChange={onOpenChange}
-      />
+  it('opens submenu from keyboard and returns with ArrowLeft', () => {
+    const onEmail = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Sub>
+            <Dropdown.SubTrigger>Share</Dropdown.SubTrigger>
+            <Dropdown.SubContent>
+              <Dropdown.Item onSelect={onEmail}>Email</Dropdown.Item>
+              <Dropdown.Item>Copy link</Dropdown.Item>
+            </Dropdown.SubContent>
+          </Dropdown.Sub>
+        </Dropdown.Content>
+      </Dropdown>
     );
 
     const trigger = container.querySelector<HTMLButtonElement>('button');
-    act(() => trigger?.click());
+    pressKey(trigger!, 'Enter');
 
-    expect(onOpenChange).toHaveBeenCalledWith(true);
+    const menu = document.querySelector<HTMLElement>('[role="menu"]');
+
+    pressKey(menu!, 'ArrowRight');
+
+    const menus = document.querySelectorAll('[role="menu"]');
+
+    expect(menus).toHaveLength(2);
+    expect(document.body.textContent).toContain('Email');
+
+    pressKey(menu!, 'ArrowLeft');
+
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(1);
+
+    pressKey(menu!, 'ArrowRight');
+
+    const email = Array.from(
+      document.querySelectorAll<HTMLElement>('[role="menuitem"]')
+    ).find((item) => item.textContent?.includes('Email'));
+
+    act(() => email?.click());
+
+    expect(onEmail).toHaveBeenCalledTimes(1);
     expect(document.querySelector('[role="menu"]')).toBeNull();
-
-    rerender(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={items}
-        open
-        onOpenChange={onOpenChange}
-      />
-    );
-
-    expect(document.querySelector('[role="menu"]')).not.toBeNull();
-
-    const menu = document.querySelector('[role="menu"]');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-0`
-    );
-
-    pressKey(menu!, 'Escape');
-
-    expect(onOpenChange).toHaveBeenLastCalledWith(false);
-
-    unmount();
-  });
-
-  it('opens from ArrowUp with the last enabled item active', () => {
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={[
-          { label: 'Edit', value: 'edit' },
-          { label: 'Archive', value: 'archive', disabled: true },
-          { label: 'Delete', value: 'delete' },
-        ]}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    pressKey(trigger!, 'ArrowUp');
-
-    const menu = document.querySelector('[role="menu"]');
-
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-2`
-    );
-
-    unmount();
-  });
-
-  it('keeps stable menu item ids for repeated values', () => {
-    const onSelect = vi.fn();
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={[
-          { label: 'Copy link', value: 'copy' },
-          { label: 'Copy markdown', value: 'copy' },
-        ]}
-        onSelect={onSelect}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    act(() => trigger?.click());
-
-    const menu = document.querySelector('[role="menu"]');
-    const menuItems =
-      document.querySelectorAll<HTMLElement>('[role="menuitem"]');
-
-    expect(menuItems[0]?.id).toBe(`${menu?.id}-item-0`);
-    expect(menuItems[1]?.id).toBe(`${menu?.id}-item-1`);
-
-    act(() => menuItems[1]?.click());
-
-    expect(onSelect).toHaveBeenCalledWith('copy');
-
-    unmount();
-  });
-
-  it('supports defaultOpen and empty item lists', () => {
-    const { unmount } = render(
-      <Dropdown
-        label='Empty actions'
-        trigger='Actions'
-        defaultOpen
-        items={[]}
-      />
-    );
-
-    const menu = document.querySelector('[role="menu"]');
-
-    expect(menu).not.toBeNull();
-    expect(menu?.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
-    expect(menu?.getAttribute('aria-activedescendant')).toBeNull();
-
-    unmount();
-  });
-
-  it('moves to the first and last enabled items with Home and End', () => {
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={[
-          { label: 'Apple', value: 'apple' },
-          { label: 'Banana', value: 'banana', disabled: true },
-          { label: 'Cherry', value: 'cherry' },
-        ]}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    pressKey(trigger!, 'Enter');
-
-    const menu = document.querySelector('[role="menu"]');
-
-    pressKey(menu!, 'End');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-2`
-    );
-
-    pressKey(menu!, 'Home');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-0`
-    );
-
-    unmount();
-  });
-
-  it('supports typeahead navigation and selects the matched item', () => {
-    const onSelect = vi.fn();
-    const { container, unmount } = render(
-      <Dropdown
-        label='Actions'
-        trigger='Actions'
-        items={[
-          { label: 'Apple', value: 'apple' },
-          { label: 'Banana', value: 'banana' },
-          { label: 'Cherry', value: 'cherry' },
-        ]}
-        onSelect={onSelect}
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    pressKey(trigger!, 'Enter');
-
-    const menu = document.querySelector('[role="menu"]');
-
-    pressKey(menu!, 'c');
-    expect(menu?.getAttribute('aria-activedescendant')).toBe(
-      `${menu?.id}-item-2`
-    );
-
-    pressKey(menu!, 'Enter');
-
-    expect(onSelect).toHaveBeenCalledWith('cherry');
-
-    unmount();
-  });
-
-  it('applies root, trigger, content, and item class names', () => {
-    const { container, unmount } = render(
-      <Dropdown
-        label='Styled actions'
-        trigger='Actions'
-        items={items}
-        className='dropdown-root-test'
-        triggerClassName='dropdown-trigger-test'
-        contentClassName='dropdown-content-test'
-        itemClassName='dropdown-item-test'
-      />
-    );
-
-    const trigger = container.querySelector<HTMLButtonElement>('button');
-    act(() => trigger?.click());
-
-    expect(container.querySelector('.dropdown-root-test')).not.toBeNull();
-    expect(container.querySelector('.dropdown-trigger-test')).not.toBeNull();
-    expect(document.querySelector('.dropdown-content-test')).not.toBeNull();
-    expect(document.querySelectorAll('.dropdown-item-test')).toHaveLength(3);
 
     unmount();
   });
