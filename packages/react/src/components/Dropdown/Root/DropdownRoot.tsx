@@ -58,6 +58,10 @@ export const DropdownRoot = ({
   >({});
 
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
+  const allItems = useMemo(
+    () => collectDropdownItems(parsed.items),
+    [parsed.items]
+  );
   const navigableItems = useMemo(
     () =>
       parsed.items.map((item) => ({
@@ -71,7 +75,7 @@ export const DropdownRoot = ({
     setRadioValues((current) => {
       const next = { ...current };
 
-      parsed.items.forEach((item) => {
+      allItems.forEach((item) => {
         if (item.type !== 'radio') return;
         if (next[item.groupId] !== undefined) return;
 
@@ -81,7 +85,7 @@ export const DropdownRoot = ({
 
       return next;
     });
-  }, [parsed.items]);
+  }, [allItems]);
 
   const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
     open,
@@ -296,4 +300,18 @@ function createDropdownSelectEvent(
       return defaultPrevented;
     },
   };
+}
+
+function collectDropdownItems(items: DropdownCollectionItem[]) {
+  const result: DropdownCollectionItem[] = [];
+
+  items.forEach((item) => {
+    result.push(item);
+
+    if (item.type === 'subTrigger') {
+      result.push(...collectDropdownItems(item.subItems));
+    }
+  });
+
+  return result;
 }
