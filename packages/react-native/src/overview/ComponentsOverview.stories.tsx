@@ -46,18 +46,10 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
-function SelectItems() {
-  return (
-    <>
-      {selectOptions.map((option) => (
-        <Select.Item
-          key={option.value}
-          value={option.value}
-          label={option.label}
-        />
-      ))}
-    </>
-  );
+function renderSelectItems() {
+  return selectOptions.map((option) => (
+    <Select.Item key={option.value} value={option.value} label={option.label} />
+  ));
 }
 
 const dropdownItems = [
@@ -777,7 +769,7 @@ function NativeComponentsOverview() {
             onValueChange={(nextValue) => setTeam(nextValue ?? '')}
             clearable
           >
-            <SelectItems />
+            {renderSelectItems()}
           </Select>
           <Select
             label='Required team'
@@ -785,7 +777,7 @@ function NativeComponentsOverview() {
             required
             error='Team is required'
           >
-            <SelectItems />
+            {renderSelectItems()}
           </Select>
           <Select
             label='Searchable team'
@@ -795,7 +787,7 @@ function NativeComponentsOverview() {
             defaultValue='product'
             accessibilityHint='Choose the team used for invoices.'
           >
-            <SelectItems />
+            {renderSelectItems()}
           </Select>
           <Select
             label='Multiple teams'

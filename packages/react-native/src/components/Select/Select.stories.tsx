@@ -146,30 +146,22 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function CountryItems() {
-  return (
-    <>
-      {countryItems.map((item) => (
-        <Select.Item
-          key={item.value}
-          value={item.value}
-          label={item.label}
-          description={item.description}
-          badge={item.badge}
-        />
-      ))}
-    </>
-  );
+function renderCountryItems() {
+  return countryItems.map((item) => (
+    <Select.Item
+      key={item.value}
+      value={item.value}
+      label={item.label}
+      description={item.description}
+      badge={item.badge}
+    />
+  ));
 }
 
-function TeamItems() {
-  return (
-    <>
-      {teamItems.map((item) => (
-        <Select.Item key={item.value} value={item.value} label={item.label} />
-      ))}
-    </>
-  );
+function renderTeamItems() {
+  return teamItems.map((item) => (
+    <Select.Item key={item.value} value={item.value} label={item.label} />
+  ));
 }
 
 function InteractiveSelect(args: SelectStoryProps) {
@@ -196,7 +188,7 @@ function InteractiveSelect(args: SelectStoryProps) {
         args.onValueChange?.(nextValue);
       }}
     >
-      <CountryItems />
+      {renderCountryItems()}
     </Select>
   );
 }
@@ -240,7 +232,42 @@ function ControlledOpenSelect() {
       onOpenChange={setOpen}
       placeholder='Controlled open'
     >
-      <CountryItems />
+      {renderCountryItems()}
+    </Select>
+  );
+}
+
+function CustomRenderSelect() {
+  const { theme } = useTheme();
+
+  return (
+    <Select
+      label='Assignee'
+      defaultValue='alex'
+      startIcon={<User />}
+      renderValue={(option) =>
+        option && !Array.isArray(option) ? (
+          <Text style={{ color: theme.semantic.text.primary }}>
+            Assigned to {option.label}
+          </Text>
+        ) : null
+      }
+      renderOption={(option, state) => (
+        <Text
+          style={{
+            color: state.selected
+              ? theme.components.select.primary.outline.option.selected.fg
+              : theme.components.select.option.default.fg,
+          }}
+        >
+          {state.selected ? 'Selected ' : ''}
+          {option.label}
+        </Text>
+      )}
+    >
+      <Select.Item value='alex' label='Alex Taylor' />
+      <Select.Item value='jordan' label='Jordan Lee' />
+      <Select.Item value='casey' label='Casey Morgan' />
     </Select>
   );
 }
@@ -257,7 +284,7 @@ export const BasicChildrenOnly: Story = {
   render: () => (
     <Section title='Basic children-only'>
       <Select label='Country' placeholder='Choose country'>
-        <CountryItems />
+        {renderCountryItems()}
       </Select>
     </Section>
   ),
@@ -290,19 +317,19 @@ export const ColorsAndVariants: Story = {
     <Section title='Colors and variants'>
       <View style={storyStyles.column}>
         <Select label='Primary outline' color='primary' variant='outline'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Neutral filled' color='neutral' variant='filled'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Success soft' color='success' variant='soft'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Warning outline' color='warning' variant='outline'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Danger soft' color='danger' variant='soft'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
       </View>
     </Section>
@@ -314,13 +341,13 @@ export const Sizes: Story = {
     <Section title='Sizes'>
       <View style={storyStyles.column}>
         <Select label='Small' size='sm'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Medium' size='md'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Large' size='lg'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
       </View>
     </Section>
@@ -336,9 +363,7 @@ export const FormFieldIntegration: Story = {
         error='Country is required'
         required
       >
-        <Select placeholder='Choose country'>
-          <CountryItems />
-        </Select>
+        <Select placeholder='Choose country'>{renderCountryItems()}</Select>
       </FormField>
     </Section>
   ),
@@ -353,7 +378,7 @@ export const ShorthandField: Story = {
         error='Country is required'
         required
       >
-        <CountryItems />
+        {renderCountryItems()}
       </Select>
     </Section>
   ),
@@ -369,7 +394,7 @@ export const SearchableAndClearable: Story = {
         searchPlaceholder='Search country...'
         defaultValue='fr'
       >
-        <CountryItems />
+        {renderCountryItems()}
       </Select>
     </Section>
   ),
@@ -394,7 +419,7 @@ export const Multiple: Story = {
         clearable
         defaultValue={['product']}
       >
-        <TeamItems />
+        {renderTeamItems()}
       </Select>
     </Section>
   ),
@@ -436,26 +461,7 @@ export const GroupsAndRichItems: Story = {
 export const CustomRender: Story = {
   render: () => (
     <Section title='Custom render'>
-      <Select
-        label='Assignee'
-        defaultValue='alex'
-        startIcon={<User />}
-        renderValue={(option) =>
-          option && !Array.isArray(option) ? (
-            <Text>Assigned to {option.label}</Text>
-          ) : null
-        }
-        renderOption={(option, state) => (
-          <Text>
-            {state.selected ? 'Selected ' : ''}
-            {option.label}
-          </Text>
-        )}
-      >
-        <Select.Item value='alex' label='Alex Taylor' />
-        <Select.Item value='jordan' label='Jordan Lee' />
-        <Select.Item value='casey' label='Casey Morgan' />
-      </Select>
+      <CustomRenderSelect />
     </Section>
   ),
 };
@@ -490,16 +496,16 @@ export const Presentations: Story = {
     <Section title='Sheet, modal and popover'>
       <View style={storyStyles.column}>
         <Select label='Auto' presentation='auto'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Sheet' presentation='sheet'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Modal' presentation='modal'>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
         <Select label='Popover' presentation='popover' matchTriggerWidth>
-          <TeamItems />
+          {renderTeamItems()}
         </Select>
       </View>
     </Section>
@@ -530,7 +536,7 @@ export const Accessibility: Story = {
         accessibilityHint='Opens a list of countries'
         required
       >
-        <CountryItems />
+        {renderCountryItems()}
       </Select>
     </Section>
   ),
