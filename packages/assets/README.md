@@ -29,15 +29,19 @@ import '@vellira-ui/assets/styles/fonts.scss';
 Font files are available through the package exports:
 
 ```scss
-src: url('@vellira-ui/assets/fonts/KantumruyPro-Regular.ttf') format('truetype');
+src: url('@vellira-ui/assets/fonts/VelliraSans-Regular.woff2') format('woff2');
 ```
 
 Available font files:
 
-- `KantumruyPro-ExtraLight.ttf`
-- `KantumruyPro-Regular.ttf`
-- `KantumruyPro-Medium.ttf`
-- `KantumruyPro-SemiBold.ttf`
+- `VelliraSans-ExtraLight.woff2`
+- `VelliraSans-Regular.woff2`
+- `VelliraSans-Medium.woff2`
+- `VelliraSans-SemiBold.woff2`
+- `VelliraSans-ExtraLight.ttf`
+- `VelliraSans-Regular.ttf`
+- `VelliraSans-Medium.ttf`
+- `VelliraSans-SemiBold.ttf`
 
 ## Package Structure
 

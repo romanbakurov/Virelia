@@ -1,10 +1,10 @@
 export const typography = {
   family: {
-    base: "KantumruyPro, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    extraLight: 'KantumruyPro-ExtraLight',
-    regular: 'KantumruyPro-Regular',
-    medium: 'KantumruyPro-Medium',
-    semibold: 'KantumruyPro-SemiBold',
+    base: "VelliraSans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    extraLight: 'VelliraSans-ExtraLight',
+    regular: 'VelliraSans-Regular',
+    medium: 'VelliraSans-Medium',
+    semibold: 'VelliraSans-SemiBold',
   },
 
   size: {
@@ -19,8 +19,8 @@ export const typography = {
   weight: {
     light: '200',
     regular: '400',
-    medium: '600',
-    semibold: '700',
+    medium: '500',
+    semibold: '600',
   },
 
   lineHeight: {
