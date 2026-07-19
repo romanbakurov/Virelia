@@ -95,7 +95,7 @@ $select-variants: outline, filled, soft;
   border-radius: var(--radius-md);
   box-shadow: var(--select-dropdown-shadow, var(--shadow-lg));
   transform-origin: top center;
-  animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dropdownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 300px;
   box-sizing: border-box;
   overflow-y: auto;
@@ -210,7 +210,7 @@ $select-variants: outline, filled, soft;
   margin-bottom: 2px;
   padding: var(--space-2) var(--space-3);
   color: var(--select-dropdown-current-fg);
-  font: inherit;
+  font-family: inherit;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-xs);
@@ -218,12 +218,22 @@ $select-variants: outline, filled, soft;
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   gap: var(--space-3);
 
   &:hover:not(:disabled) {
     background-color: var(--select-option-current-hover-bg);
     border-color: var(--select-option-current-hover-border);
+    transform: translateX(2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateX(1px) scale(0.995);
   }
 
   &:focus-visible {
@@ -277,6 +287,10 @@ $select-variants: outline, filled, soft;
   border: 1px solid var(--select-dropdown-search-border);
   border-radius: var(--radius-sm);
   outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 
   &::placeholder {
     color: var(--select-dropdown-search-placeholder);
@@ -285,6 +299,7 @@ $select-variants: outline, filled, soft;
   &:focus {
     border-color: var(--select-dropdown-current-ring);
     box-shadow: 0 0 0 2px var(--select-dropdown-current-ring);
+    transform: translateY(-1px);
   }
 }
 
@@ -401,6 +416,12 @@ $select-variants: outline, filled, soft;
   .dropdown ul,
   .searchWrap {
     animation: none;
+  }
+
+  .groupAction,
+  .search {
+    transform: none;
+    transition: none;
   }
 }
 

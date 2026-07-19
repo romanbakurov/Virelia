@@ -40,6 +40,7 @@
   color: var(--select-option-current-selected-fg);
   background-color: var(--select-option-current-selected-bg);
   border-color: var(--select-option-current-selected-border);
+  animation: optionPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .selected .description {
@@ -247,7 +248,7 @@
   width: 16px;
   height: 16px;
   color: currentcolor;
-  animation: checkPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: checkPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 
   svg {
     width: 100%;
@@ -256,19 +257,38 @@
 }
 
 @keyframes checkPop {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.72);
+    transform: scale(0.45) rotate(-10deg);
   }
 
-  to {
+  65% {
+    transform: scale(1.14) rotate(3deg);
+  }
+
+  100% {
     opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes optionPop {
+  0% {
+    transform: scale(0.985);
+  }
+
+  62% {
+    transform: scale(1.015);
+  }
+
+  100% {
     transform: scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .option,
+  .selected,
   .check {
     transition: none;
     animation: none;

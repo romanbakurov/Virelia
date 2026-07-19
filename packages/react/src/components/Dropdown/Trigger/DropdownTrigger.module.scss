@@ -33,6 +33,7 @@ $dropdown-colors: primary, neutral, success, warning, danger;
   );
   --dropdown-trigger-current-ring: var(--dropdown-primary-ring);
 
+  position: relative;
   box-sizing: border-box;
   display: inline-flex;
   justify-content: space-between;
@@ -50,6 +51,24 @@ $dropdown-colors: primary, neutral, success, warning, danger;
   cursor: pointer;
   overflow: hidden;
 
+  &::after {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      color-mix(in srgb, currentcolor 14%, transparent) 0%,
+      transparent 68%
+    );
+    border-radius: inherit;
+    opacity: 0;
+    transform: scale(0.82);
+    transition:
+      opacity 0.18s ease,
+      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    content: '';
+    pointer-events: none;
+  }
+
   @include smooth-transition(
     (color, background-color, border-color, box-shadow, transform)
   );
@@ -57,6 +76,7 @@ $dropdown-colors: primary, neutral, success, warning, danger;
   &:focus-visible:not(.disabled) {
     color: var(--dropdown-trigger-current-focus-fg);
     background: var(--dropdown-trigger-current-focus-bg);
+    transform: translateY(-1px);
 
     @include focus-border(transparent, var(--dropdown-trigger-current-ring));
     @include focus-ring(var(--dropdown-trigger-current-ring));
@@ -70,6 +90,12 @@ $dropdown-colors: primary, neutral, success, warning, danger;
     color: var(--dropdown-trigger-current-hover-fg);
     background: var(--dropdown-trigger-current-hover-bg);
     border-color: transparent;
+    transform: translateY(-1px);
+
+    &::after {
+      opacity: 0.55;
+      transform: scale(1);
+    }
 
     .arrow {
       color: var(--dropdown-trigger-current-hover-icon);
@@ -81,12 +107,26 @@ $dropdown-colors: primary, neutral, success, warning, danger;
     }
   }
 
+  &:active:not(.disabled) {
+    transform: scale(0.985);
+
+    &::after {
+      opacity: 0.82;
+      transform: scale(1.08);
+      transition-duration: 0.08s;
+    }
+  }
+
   &.disabled {
     color: var(--dropdown-trigger-disabled-fg);
     background-color: var(--dropdown-trigger-disabled-bg);
     border: 2px dashed var(--dropdown-trigger-disabled-border);
     cursor: not-allowed;
     pointer-events: none;
+
+    &::after {
+      opacity: 0;
+    }
 
     .iconLeft,
     .arrow {
@@ -232,8 +272,16 @@ $dropdown-colors: primary, neutral, success, warning, danger;
 // Accessibility
 @media (prefers-reduced-motion: reduce) {
   .button,
+  .button::after,
   .iconLeft,
   .arrow {
     transition: none;
+  }
+
+  .button,
+  .button:focus-visible:not(.disabled),
+  .button:hover:not(.disabled),
+  .button:active:not(.disabled) {
+    transform: none;
   }
 }
