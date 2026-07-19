@@ -419,6 +419,65 @@ describe('Select', () => {
     });
   });
 
+  it('respects maxSelected when selecting a group', () => {
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='team'
+          name='team'
+          label='Team'
+          multiple
+          defaultOpen
+          defaultValue={['platform']}
+          maxSelected={3}
+          closeOnSelect={false}
+          onValueChange={onValueChange}
+        >
+          <Select.Group label='Core' selectable selectLabel='All core'>
+            <Select.Item value='design'>Design</Select.Item>
+            <Select.Item value='platform'>Platform</Select.Item>
+            <Select.Item value='docs'>Docs</Select.Item>
+            <Select.Item value='accessibility'>Accessibility</Select.Item>
+          </Select.Group>
+        </Select>
+      );
+    });
+
+    const groupAction = document.querySelector<HTMLButtonElement>(
+      'button[aria-label="All core"]'
+    );
+
+    expect(groupAction?.textContent).toContain('1/4');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([
+      'platform',
+      'design',
+      'docs',
+    ]);
+    expect(new FormData(form).getAll('team')).toEqual([
+      'platform',
+      'design',
+      'docs',
+    ]);
+    expect(groupAction?.textContent).toContain('3/4');
+    expect(groupAction?.getAttribute('aria-pressed')).toBe('mixed');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('closes with Escape without selecting a new value', () => {
     const onValueChange = vi.fn();
     const form = document.createElement('form');
@@ -1217,6 +1276,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-50'
+    );
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
     expect(
       document.getElementById('country-listbox-option-50')
@@ -1230,6 +1292,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-50'
+    );
     expect(scrollIntoView).toHaveBeenCalledTimes(2);
 
     act(() => {

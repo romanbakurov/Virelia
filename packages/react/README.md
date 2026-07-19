@@ -161,9 +161,9 @@ import { FormField } from '@vellira-ui/react';
 
 ### Select Notes
 
-Use `Select` for one form value from a compact list, `RadioGroup` for a few
-visible choices, and `Dropdown` for action menus. Prefer a visible `label`; if
-the design has no visible label, provide `aria-label`.
+Use `Select` for one or more saved form values from a compact list,
+`RadioGroup` for a few visible choices, and `Dropdown` for action menus. Prefer
+a visible `label`; if the design has no visible label, provide `aria-label`.
 
 ```tsx
 import { Select } from '@vellira-ui/react';
@@ -189,29 +189,72 @@ export function TeamSelect() {
   return (
     <Select
       label='Teams'
-      description='Choose up to two teams.'
+      description='Choose teams by item or group.'
       value={teams}
       onValueChange={setTeams}
       multiple
-      maxSelected={2}
+      maxSelected={12}
       closeOnSelect={false}
       searchable
       clearable
       color='primary'
       variant='outline'
     >
-      <Select.Group label='Core teams'>
+      <Select.Group label='Core teams' selectable selectLabel='All core teams'>
         <Select.Item value='product'>Product</Select.Item>
         <Select.Item value='engineering'>Engineering</Select.Item>
+        <Select.Item value='design'>Design</Select.Item>
+        <Select.Item value='research'>Research</Select.Item>
+        <Select.Item value='data'>Data</Select.Item>
       </Select.Group>
       <Select.Separator />
-      <Select.Item value='support' badge='NEW'>
-        Support
-      </Select.Item>
+      <Select.Group label='Operations' selectable>
+        <Select.Item value='support'>Support</Select.Item>
+        <Select.Item value='success'>Success</Select.Item>
+        <Select.Item value='sales'>Sales</Select.Item>
+        <Select.Item value='marketing'>Marketing</Select.Item>
+        <Select.Item value='finance'>Finance</Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group label='Platform' selectable>
+        <Select.Item value='infrastructure'>Infrastructure</Select.Item>
+        <Select.Item value='security'>Security</Select.Item>
+        <Select.Item value='devex'>Developer Experience</Select.Item>
+        <Select.Item value='qa'>QA</Select.Item>
+      </Select.Group>
     </Select>
   );
 }
 ```
+
+For custom composition, use the compound parts directly:
+
+```tsx
+<Select label='Country' value={country} onValueChange={setCountry}>
+  <Select.Trigger>
+    <Select.Value />
+    <Select.Icon />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Search placeholder='Search country' />
+    <Select.Label>Europe</Select.Label>
+    <Select.Item value='fr'>
+      <Select.ItemIcon>FR</Select.ItemIcon>
+      France
+      <Select.ItemDescription>Paris workspace</Select.ItemDescription>
+      <Select.ItemBadge>EU</Select.ItemBadge>
+    </Select.Item>
+    <Select.Separator />
+    <Select.Empty>No countries found</Select.Empty>
+    <Select.Loading>Loading countries...</Select.Loading>
+  </Select.Content>
+</Select>
+```
+
+In multiple mode, `Select.Group selectable` adds a group-level action. It
+selects enabled items until `maxSelected` is reached and clears the group when
+all selectable group items are already selected. For long lists, reopening the
+dropdown keeps the selected item active and visible.
 
 ### Dropdown Notes
 

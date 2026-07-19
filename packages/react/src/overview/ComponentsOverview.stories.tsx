@@ -43,6 +43,29 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+const groupedSelectOptions = {
+  core: [
+    { label: 'Product', value: 'product' },
+    { label: 'Engineering', value: 'engineering' },
+    { label: 'Design', value: 'design' },
+    { label: 'Research', value: 'research' },
+    { label: 'Data', value: 'data' },
+  ],
+  operations: [
+    { label: 'Support', value: 'support' },
+    { label: 'Success', value: 'success' },
+    { label: 'Sales', value: 'sales' },
+    { label: 'Marketing', value: 'marketing' },
+    { label: 'Finance', value: 'finance' },
+  ],
+  platform: [
+    { label: 'Infrastructure', value: 'infrastructure' },
+    { label: 'Security', value: 'security' },
+    { label: 'Developer Experience', value: 'devex' },
+    { label: 'QA', value: 'qa' },
+  ],
+};
+
 function renderSelectItems() {
   return (
     <>
@@ -58,7 +81,7 @@ function renderSelectItems() {
 function renderGroupedSelectItems() {
   return (
     <>
-      <Select.Group label='Core teams'>
+      <Select.Group label='Core teams' selectable selectLabel='All core teams'>
         <Select.Item value='product'>
           <Select.ItemIcon>
             <Check size={14} />
@@ -72,11 +95,41 @@ function renderGroupedSelectItems() {
         </Select.Item>
       </Select.Group>
       <Select.Separator />
-      <Select.Group label='Support'>
+      <Select.Group label='Support' selectable selectLabel='All support'>
         <Select.Item value='support' badge='NEW'>
           Support
           <Select.ItemDescription>Customer operations</Select.ItemDescription>
         </Select.Item>
+      </Select.Group>
+    </>
+  );
+}
+
+function renderLargeGroupedSelectItems() {
+  return (
+    <>
+      <Select.Group label='Core teams' selectable selectLabel='All core teams'>
+        {groupedSelectOptions.core.map((option) => (
+          <Select.Item key={option.value} value={option.value}>
+            {option.label}
+          </Select.Item>
+        ))}
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group label='Operations' selectable>
+        {groupedSelectOptions.operations.map((option) => (
+          <Select.Item key={option.value} value={option.value}>
+            {option.label}
+          </Select.Item>
+        ))}
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group label='Platform' selectable>
+        {groupedSelectOptions.platform.map((option) => (
+          <Select.Item key={option.value} value={option.value}>
+            {option.label}
+          </Select.Item>
+        ))}
       </Select.Group>
     </>
   );
@@ -250,6 +303,19 @@ function WebComponentsOverview() {
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
   const [teams, setTeams] = useState<string[]>(['product']);
+  const [manyTeams, setManyTeams] = useState<string[]>([
+    'product',
+    'engineering',
+    'design',
+    'research',
+    'data',
+    'support',
+    'success',
+    'sales',
+    'marketing',
+    'finance',
+    'infrastructure',
+  ]);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -1003,6 +1069,20 @@ function WebComponentsOverview() {
                 color='primary'
               >
                 {renderGroupedSelectItems()}
+              </Select>
+              <Select
+                label='Large team access'
+                description='More than 10 selected values with selectable groups.'
+                value={manyTeams}
+                onValueChange={setManyTeams}
+                multiple
+                maxSelected={12}
+                closeOnSelect={false}
+                searchable
+                clearable
+                placeholder='Select teams'
+              >
+                {renderLargeGroupedSelectItems()}
               </Select>
               <Select
                 label='Grouped teams'

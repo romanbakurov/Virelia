@@ -203,7 +203,7 @@ const meta = {
         component: `
 ### Select Component
 
-Single-value select control for choosing from a predefined list.
+Single-value or multiple-value select control for choosing from a predefined list.
 
 **Features**
 - Label, description, and ReactNode error support
@@ -213,6 +213,11 @@ Single-value select control for choosing from a predefined list.
 - Sizes, disabled state, required state, and disabled options
 - Keyboard navigation, Escape close behavior, and selected option indicator
 - Floating dropdown placement with trigger-width matching
+- Compound API with Trigger, Value, Icon, Content, Search, Group, Label, Item,
+  ItemIcon, ItemDescription, ItemBadge, Separator, Empty, and Loading parts
+- Multiple selection with maxSelected, 10+ selected value overflow, and
+  selectable group actions
+- Long list support that reopens with the selected option active and visible
 
 ### Usage
 
@@ -226,17 +231,45 @@ Single-value select control for choosing from a predefined list.
 \`\`\`
 
 \`\`\`tsx
-<FormField label='Country' description='Shipping destination'>
+<Select label='Country' value={country} onValueChange={setCountry}>
+  <Select.Trigger>
+    <Select.Value />
+    <Select.Icon />
+  </Select.Trigger>
+  <Select.Content>
+    <Select.Search placeholder='Search country' />
+    <Select.Label>Europe</Select.Label>
+    <Select.Item value='fr'>
+      <Select.ItemIcon>FR</Select.ItemIcon>
+      France
+      <Select.ItemDescription>Paris workspace</Select.ItemDescription>
+      <Select.ItemBadge>EU</Select.ItemBadge>
+    </Select.Item>
+    <Select.Separator />
+    <Select.Empty>No countries found</Select.Empty>
+    <Select.Loading>Loading countries...</Select.Loading>
+  </Select.Content>
+</Select>
+\`\`\`
+
+\`\`\`tsx
+<FormField label='Teams' description='Choose teams by item or group'>
   <Select
     searchable
     clearable
+    multiple
+    closeOnSelect={false}
+    maxSelected={12}
     color='primary'
     variant='outline'
-    renderOption={(option) => ...}
-    renderValue={(option) => ...}
   >
-    <Select.Item value='fr'>France</Select.Item>
-    <Select.Item value='de'>Germany</Select.Item>
+    <Select.Group label='Core teams' selectable selectLabel='All core teams'>
+      <Select.Item value='product'>Product</Select.Item>
+      <Select.Item value='engineering'>Engineering</Select.Item>
+      <Select.Item value='design'>Design</Select.Item>
+      <Select.Item value='research'>Research</Select.Item>
+      <Select.Item value='data'>Data</Select.Item>
+    </Select.Group>
   </Select>
 </FormField>
 \`\`\`
@@ -425,6 +458,31 @@ Single-value select control for choosing from a predefined list.
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
+      },
+    },
+    multiple: {
+      description: 'Allows selecting more than one value.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    maxSelected: {
+      description:
+        'Maximum selected values for multiple Select, including group actions.',
+      control: 'number',
+      table: {
+        type: { summary: 'number' },
+      },
+    },
+    closeOnSelect: {
+      description:
+        'Controls whether the dropdown closes after option or group selection.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true for single, false for multiple' },
       },
     },
     searchable: {
