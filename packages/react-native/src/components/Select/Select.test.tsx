@@ -173,6 +173,18 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('renders compact spacing between option rows', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={options} />
+    );
+
+    openSelect(container);
+
+    expect(getButtonByText('France')?.style.marginBottom).toBe('2px');
+
+    unmount();
+  });
+
   it('keeps the legacy options fallback working', () => {
     const onValueChange = vi.fn();
 

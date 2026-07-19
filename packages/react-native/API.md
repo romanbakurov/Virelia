@@ -402,6 +402,41 @@ default list hint.
 </Select>
 ```
 
+Selectable groups are available in multiple mode. A selectable group renders a
+group action row that selects or clears all enabled items in that group. The
+action respects disabled options and `maxSelected`; when the limit is reached,
+only the values that still fit are added.
+
+```tsx
+<Select
+  label='Teams'
+  multiple
+  maxSelected={10}
+  closeOnSelect={false}
+  defaultValue={['product', 'engineering']}
+>
+  <Select.Group label='Core teams' selectable selectLabel='All core'>
+    <Select.Item value='product' label='Product' />
+    <Select.Item value='engineering' label='Engineering' />
+    <Select.Item value='design' label='Design' />
+  </Select.Group>
+  <Select.Group label='Operations' selectable selectLabel='All operations'>
+    <Select.Item value='support' label='Support' />
+    <Select.Item value='success' label='Success' />
+    <Select.Item value='sales' label='Sales' />
+  </Select.Group>
+</Select>
+```
+
+### Select Group Props
+
+| Prop          | Type        | Required | Description                                                     |
+| ------------- | ----------- | -------- | --------------------------------------------------------------- |
+| `label`       | `string`    | No       | Group heading. Also used as the group action label by default.  |
+| `selectable`  | `boolean`   | No       | Renders a group select/clear action in `multiple` Select usage. |
+| `selectLabel` | `string`    | No       | Accessible and visible label for the selectable group action.   |
+| `children`    | `ReactNode` | No       | Grouped `Select.Item` children.                                 |
+
 ### Select Props
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
