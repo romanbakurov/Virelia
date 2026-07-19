@@ -63,7 +63,7 @@ $select-variants: outline, filled, soft;
   background-color: var(--select-dropdown-current-bg);
   border: 1px solid var(--select-dropdown-current-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--select-dropdown-shadow);
+  box-shadow: var(--dropdown-content-shadow, var(--shadow-lg));
   transform-origin: top center;
   animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 300px;
