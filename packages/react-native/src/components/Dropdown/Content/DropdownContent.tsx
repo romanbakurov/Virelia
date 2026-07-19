@@ -1,4 +1,13 @@
-import { Modal, Pressable, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+import {
+  AccessibilityInfo,
+  Animated,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
 
@@ -15,29 +24,101 @@ export function DropdownContent({
 }: DropdownContentProps) {
   const styles = useThemeStyles(createStyles);
   const isSheet = presentation === 'sheet';
+  const animation = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled?.().then(setReduceMotion);
+
+    const subscription = AccessibilityInfo.addEventListener?.(
+      'reduceMotionChanged',
+      setReduceMotion
+    );
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      animation.setValue(0);
+      return;
+    }
+
+    if (reduceMotion) {
+      animation.setValue(1);
+      return;
+    }
+
+    animation.setValue(0);
+
+    Animated.timing(animation, {
+      toValue: 1,
+      duration: isSheet ? 220 : 160,
+      useNativeDriver: true,
+    }).start();
+  }, [animation, isOpen, isSheet, reduceMotion]);
+
+  const backdropAnimatedStyle = useMemo(
+    () => ({
+      opacity: animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      }),
+    }),
+    [animation]
+  );
+
+  const menuAnimatedStyle = useMemo(() => {
+    const translateY = animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: isSheet ? [24, 0] : [-6, 0],
+    });
+
+    const scale = animation.interpolate({
+      inputRange: [0, 1],
+      outputRange: isSheet ? [1, 1] : [0.98, 1],
+    });
+
+    return {
+      opacity: animation,
+      transform: [{ translateY }, { scale }],
+    };
+  }, [animation, isSheet]);
 
   return (
     <Modal
       transparent
       visible={isOpen}
-      animationType={isSheet ? 'slide' : 'fade'}
+      animationType='none'
       onRequestClose={onClose}
     >
       <View style={[styles.modalRoot, styles[presentation]]}>
-        <Pressable
-          accessibilityRole='button'
-          accessibilityLabel='Close menu'
-          style={styles.backdrop}
-          onPress={onClose}
-        />
+        <Animated.View
+          pointerEvents='box-none'
+          style={[styles.backdrop, backdropAnimatedStyle]}
+        >
+          <Pressable
+            accessibilityRole='button'
+            accessibilityLabel='Close menu'
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+          />
+        </Animated.View>
 
-        <View
+        <Animated.View
           accessibilityRole='menu'
           accessibilityLabel={accessibilityLabel}
-          style={[styles.menu, styles[`${presentation}Menu`], contentStyle]}
+          style={[
+            styles.menu,
+            styles[`${presentation}Menu`],
+            contentStyle,
+            menuAnimatedStyle,
+          ]}
         >
           {children}
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
