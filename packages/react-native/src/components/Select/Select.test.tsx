@@ -4,7 +4,9 @@ import type { ComponentProps } from 'react';
 import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { FormField } from '../../patterns/FormField';
 import { render } from '../../test-utils/render';
+import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Select } from './Select';
 
@@ -14,7 +16,13 @@ const options = [
   { label: 'Spain', value: 'es' },
 ];
 
-const longOptions = Array.from({ length: 24 }, (_, index) => ({
+const multipleOptions = [
+  { label: 'France', value: 'fr' },
+  { label: 'Spain', value: 'es' },
+  { label: 'Italy', value: 'it' },
+];
+
+const longOptions = Array.from({ length: 80 }, (_, index) => ({
   label: `Country ${index + 1}`,
   value: `country-${index + 1}`,
 }));
@@ -24,48 +32,67 @@ const getButtonByText = (text: string) =>
     (button) => button.textContent === text
   );
 
-const getPickerBackdrop = () =>
+const getButtonByLabel = (label: string) =>
   document.body.querySelector<HTMLButtonElement>(
-    '[data-testid="native-modal"] button'
+    `button[aria-label="${label}"]`
   );
+
+const hexToRgb = (hex: string) => {
+  const value = hex.replace('#', '');
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+};
+
+const openSelect = (container: HTMLElement) => {
+  const trigger = container.querySelector<HTMLButtonElement>('[role="button"]');
+
+  act(() => {
+    trigger?.click();
+  });
+
+  return trigger;
+};
+
+const changeInputValue = (input: HTMLInputElement | null, value: string) => {
+  if (!input) return;
+
+  Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'value'
+  )?.set?.call(input, value);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+};
+
+const waitForSelectScroll = () =>
+  new Promise((resolve) => setTimeout(resolve, 340));
 
 afterEach(() => {
   document.body.innerHTML = '';
 });
 
 describe('Native Select', () => {
-  it('opens options and selects a value after confirmation', () => {
+  it('opens a native list and selects a children option immediately', () => {
     const onValueChange = vi.fn();
 
     const { container, unmount } = render(
-      <Select label='Country' options={options} onValueChange={onValueChange} />
+      <Select label='Country' onValueChange={onValueChange}>
+        <Select.Item value='fr' label='France' />
+        <Select.Item value='de' label='Germany' />
+      </Select>
     );
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
+    const trigger = openSelect(container);
 
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
-
-    const option = getButtonByText('France');
-
-    expect(option).toBeTruthy();
-
-    act(() => {
-      option?.click();
-    });
-
-    expect(onValueChange).not.toHaveBeenCalled();
-
-    const doneButton = getButtonByText('Done');
-
-    expect(doneButton).toBeTruthy();
+    expect(
+      document.body.querySelector('[data-testid="native-flat-list"]')
+    ).toBeTruthy();
 
     act(() => {
-      doneButton?.click();
+      getButtonByText('France')?.click();
     });
 
     expect(onValueChange).toHaveBeenCalledWith('fr');
@@ -75,360 +102,676 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('ignores disabled options and closes without change on cancel', () => {
-    const onValueChange = vi.fn();
-
+  it('keeps the previously selected single option visible after reopening', () => {
     const { container, unmount } = render(
-      <Select
-        label='Country'
-        options={options}
-        defaultValue='es'
-        onValueChange={onValueChange}
-      />
+      <Select label='Country'>
+        <Select.Item value='fr' label='France' />
+        <Select.Item value='de' label='Germany' />
+        <Select.Item value='es' label='Spain' />
+      </Select>
     );
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    const disabledOption = getButtonByText('Germany - unavailable');
-    const cancelButton = getButtonByText('Cancel');
-
-    expect(disabledOption?.disabled).toBe(true);
-
-    act(() => {
-      disabledOption?.click();
-      cancelButton?.click();
-    });
-
-    expect(onValueChange).not.toHaveBeenCalled();
-    expect(container.textContent).toContain('Spain');
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-
-    unmount();
-  });
-
-  it('closes from the backdrop without committing a draft value', () => {
-    const onValueChange = vi.fn();
-
-    const { container, unmount } = render(
-      <Select
-        label='Country'
-        options={options}
-        defaultValue='es'
-        onValueChange={onValueChange}
-      />
-    );
-
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
+    openSelect(container);
 
     act(() => {
       getButtonByText('France')?.click();
     });
 
-    expect(onValueChange).not.toHaveBeenCalled();
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
 
     act(() => {
-      getPickerBackdrop()?.click();
+      getButtonByText('Spain')?.click();
+    });
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
+
+    act(() => {
+      getButtonByText('Germany')?.click();
+    });
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
+    expect(
+      document.body
+        .querySelector('[data-testid="native-flat-list"]')
+        ?.getAttribute('data-scroll-to-index')
+    ).toBeNull();
+
+    unmount();
+  });
+
+  it('uses readable selected option colors on dark themes', () => {
+    const { container, unmount } = render(
+      <ThemeProvider theme='dark'>
+        <Select label='Country' defaultValue='fr'>
+          <Select.Item value='fr' label='France' />
+          <Select.Item value='de' label='Germany' />
+        </Select>
+      </ThemeProvider>
+    );
+
+    openSelect(container);
+
+    const selectedOption = getButtonByLabel('France');
+    const selectedLabel = selectedOption?.querySelector('span');
+
+    expect(selectedOption?.style.backgroundColor).toBe(
+      hexToRgb(nativeThemes.dark.components.select.option.selected.bg)
+    );
+    expect(selectedLabel?.style.color).toBe(
+      hexToRgb(nativeThemes.dark.components.select.option.selected.fg)
+    );
+
+    unmount();
+  });
+
+  it('renders compact spacing between option rows', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={options} />
+    );
+
+    openSelect(container);
+
+    expect(getButtonByText('France')?.style.marginBottom).toBe('2px');
+
+    unmount();
+  });
+
+  it('keeps the legacy options fallback working', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select label='Country' options={options} onValueChange={onValueChange} />
+    );
+
+    openSelect(container);
+
+    act(() => {
+      getButtonByText('Spain')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('es');
+    expect(container.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('ignores disabled options', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        defaultValue='es'
+        onValueChange={onValueChange}
+      />
+    );
+
+    openSelect(container);
+
+    const disabledOption = getButtonByText('Germany');
+
+    expect(disabledOption?.disabled).toBe(true);
+
+    act(() => {
+      disabledOption?.click();
+    });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(container.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('closes from the backdrop without changing value', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={options}
+        defaultValue='es'
+        onValueChange={onValueChange}
+      />
+    );
+
+    const trigger = openSelect(container);
+
+    act(() => {
+      document.body
+        .querySelector<HTMLButtonElement>('button[aria-label="Dismiss select"]')
+        ?.click();
     });
 
     expect(onValueChange).not.toHaveBeenCalled();
     expect(container.textContent).toContain('Spain');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.body.textContent).not.toContain('Done');
 
     unmount();
   });
 
-  it('resets the picker draft to the latest controlled value when reopened', () => {
+  it('supports controlled value and controlled open state', () => {
     const onValueChange = vi.fn();
+    const onOpenChange = vi.fn();
 
     const { container, rerender, unmount } = render(
       <Select
         label='Country'
         options={options}
         value='fr'
+        open={false}
+        onOpenChange={onOpenChange}
         onValueChange={onValueChange}
       />
     );
 
     expect(container.textContent).toContain('France');
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
+    openSelect(container);
 
-    act(() => {
-      trigger?.click();
-    });
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    expect(document.body.textContent).not.toContain('Spain');
 
     rerender(
-      <Select
-        label='Country'
-        options={options}
-        value='es'
-        onValueChange={onValueChange}
-      />
-    );
-
-    expect(container.textContent).toContain('Spain');
-
-    act(() => {
-      getButtonByText('Cancel')?.click();
-    });
-
-    expect(onValueChange).not.toHaveBeenCalled();
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    act(() => {
-      getButtonByText('Done')?.click();
-    });
-
-    expect(onValueChange).toHaveBeenCalledWith('es');
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-
-    unmount();
-  });
-
-  it('confirms the latest controlled value after rerender while open', () => {
-    const onValueChange = vi.fn();
-
-    const { container, rerender, unmount } = render(
       <Select
         label='Country'
         options={options}
         value='fr'
-        onValueChange={onValueChange}
-      />
-    );
-
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    act(() => {
-      getButtonByText('France')?.click();
-    });
-
-    rerender(
-      <Select
-        label='Country'
-        options={options}
-        value='es'
+        open
+        onOpenChange={onOpenChange}
         onValueChange={onValueChange}
       />
     );
 
     act(() => {
-      getButtonByText('Done')?.click();
+      getButtonByText('Spain')?.click();
     });
 
     expect(onValueChange).toHaveBeenCalledWith('es');
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(onOpenChange).toHaveBeenCalledWith(false);
 
     unmount();
   });
 
-  it('renders an empty picker with only the disabled placeholder option', () => {
-    const onValueChange = vi.fn();
-
+  it('renders empty content when no options are available', () => {
     const { container, unmount } = render(
-      <Select label='Country' options={[]} onValueChange={onValueChange} />
+      <Select label='Country' empty='No countries found' />
     );
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    const picker = document.body.querySelector('[data-testid="native-picker"]');
-    const pickerOptions = picker?.querySelectorAll('button');
+    const trigger = openSelect(container);
 
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
-    expect(pickerOptions).toHaveLength(1);
-    expect(pickerOptions?.[0]?.textContent).toBe('Select...');
-    expect(pickerOptions?.[0]?.hasAttribute('disabled')).toBe(true);
-
-    act(() => {
-      getButtonByText('Done')?.click();
-    });
-
-    expect(onValueChange).not.toHaveBeenCalled();
-    expect(container.textContent).toContain('Select...');
+    expect(document.body.textContent).toContain('No countries found');
 
     unmount();
   });
 
-  it('treats missing runtime options as an empty list', () => {
-    const props = {
-      label: 'Country',
-      onValueChange: vi.fn(),
-    } as unknown as ComponentProps<typeof Select>;
-
-    const { container, unmount } = render(<Select {...props} />);
-
-    expect(container.textContent).toContain('Select...');
-
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    const picker = document.body.querySelector('[data-testid="native-picker"]');
-
-    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
-    expect(picker?.querySelectorAll('button')).toHaveLength(1);
-
-    unmount();
-  });
-
-  it('renders long option lists in the picker', () => {
+  it('renders long option lists with FlatList seeded at the selected option', () => {
     const { container, unmount } = render(
-      <Select label='Country' options={longOptions} defaultValue='country-12' />
+      <Select
+        label='Country'
+        options={longOptions}
+        defaultValue='country-12'
+        virtual
+      />
     );
 
     expect(container.textContent).toContain('Country 12');
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
+    openSelect(container);
 
-    act(() => {
-      trigger?.click();
-    });
-
-    const picker = document.body.querySelector('[data-testid="native-picker"]');
-
-    expect(picker?.querySelectorAll('button')).toHaveLength(
-      longOptions.length + 1
+    const list = document.body.querySelector(
+      '[data-testid="native-flat-list"]'
     );
+
+    expect(list?.querySelectorAll('button')).toHaveLength(longOptions.length);
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('11');
+    expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
+    expect(list?.getAttribute('data-scroll-to-offset')).toBeNull();
+    expect(list?.getAttribute('data-scroll-view-position')).toBeNull();
     expect(getButtonByText('Country 24')).toBeTruthy();
 
     unmount();
   });
 
-  it('does not open when disabled', () => {
-    const { container, unmount } = render(
-      <Select label='Country' options={options} disabled error='Required' />
-    );
-
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    act(() => {
-      trigger?.click();
-    });
-
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.body.textContent).not.toContain('Cancel');
-    expect(container.textContent).toContain('Required');
-
-    unmount();
-  });
-
-  it('keeps disabled select closed and exposes custom accessibility hint', () => {
+  it('seeds virtual list position when reopening after middle selection', () => {
     const { container, unmount } = render(
       <Select
         label='Country'
-        options={options}
-        disabled
-        accessibilityLabel='Billing country'
-        accessibilityHint='Selection is locked by billing settings'
+        options={longOptions}
+        defaultValue='country-12'
+        virtual
       />
     );
 
-    const trigger =
-      container.querySelector<HTMLButtonElement>('[role="button"]');
-
-    expect(trigger?.getAttribute('aria-disabled')).toBe('true');
-    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
-    expect(trigger?.getAttribute('aria-description')).toBe(
-      'Selection is locked by billing settings'
-    );
+    openSelect(container);
 
     act(() => {
-      trigger?.click();
+      getButtonByText('Country 16')?.click();
     });
 
-    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.body.textContent).not.toContain('Done');
+    expect(container.textContent).toContain('Country 16');
+
+    openSelect(container);
+
+    const reopenedList = document.body.querySelector(
+      '[data-testid="native-flat-list"]'
+    );
+
+    expect(reopenedList?.getAttribute('data-initial-scroll-index')).toBe('15');
+    expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
+    expect(reopenedList?.getAttribute('data-scroll-to-offset')).toBeNull();
+    expect(reopenedList?.getAttribute('data-scroll-view-position')).toBeNull();
 
     unmount();
   });
 
-  it('supports accessibility label and required/error hints', () => {
+  it('uses the real compact option height for deep virtual selected items', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        options={longOptions}
+        defaultValue='country-70'
+        virtual
+      />
+    );
+
+    openSelect(container);
+
+    const list = document.body.querySelector(
+      '[data-testid="native-flat-list"]'
+    );
+
+    expect(list?.getAttribute('data-initial-scroll-index')).toBe('69');
+    expect(list?.getAttribute('data-initial-scroll-length')).toBe('46');
+    expect(list?.getAttribute('data-initial-scroll-offset')).toBe('3174');
+
+    unmount();
+  });
+
+  it('searches locally and clears the search query', () => {
+    const { container, unmount } = render(
+      <Select label='Country' searchable options={options} />
+    );
+
+    openSelect(container);
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    expect(searchInput?.getAttribute('data-auto-focus')).toBe('true');
+    expect(searchInput?.getAttribute('data-return-key-type')).toBe('search');
+
+    act(() => {
+      searchInput?.focus();
+      searchInput?.dispatchEvent(
+        new Event('input', { bubbles: true, cancelable: true })
+      );
+    });
+
+    act(() => {
+      changeInputValue(searchInput, 'spa');
+    });
+
+    expect(document.body.textContent).toContain('Spain');
+    expect(document.body.textContent).not.toContain('France');
+
+    act(() => {
+      document.body
+        .querySelector<HTMLButtonElement>('button[aria-label="Clear search"]')
+        ?.click();
+    });
+
+    expect(document.body.textContent).toContain('France');
+
+    unmount();
+  });
+
+  it('does not auto focus search while opening a virtual list at a selected item', async () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        searchable
+        options={longOptions}
+        defaultValue='country-40'
+        virtual
+      />
+    );
+
+    openSelect(container);
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    expect(searchInput?.getAttribute('data-auto-focus')).toBeNull();
+    expect(document.activeElement).not.toBe(searchInput);
+
+    await act(async () => {
+      await waitForSelectScroll();
+    });
+
+    expect(document.activeElement).not.toBe(searchInput);
+
+    unmount();
+  });
+
+  it('calls onSearch for async search without local filtering by default', () => {
+    const onSearch = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        searchable
+        options={options}
+        onSearch={onSearch}
+      />
+    );
+
+    openSelect(container);
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    act(() => {
+      changeInputValue(searchInput, 'spa');
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('spa');
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('supports clearable single value and returns null', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        clearable
+        defaultValue='fr'
+        options={options}
+        onValueChange={onValueChange}
+      />
+    );
+
+    const clearButton = container.querySelector<HTMLButtonElement>(
+      'button[aria-label="Clear selection"]'
+    );
+
+    expect(clearButton).toBeTruthy();
+
+    act(() => {
+      clearButton?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith(null);
+    expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('supports multiple values, closeOnSelect, and maxSelected', () => {
+    const onValueChange = vi.fn();
+
     const { container, rerender, unmount } = render(
       <Select
-        label='Country'
-        accessibilityLabel='Billing country'
-        options={options}
-        required
+        label='Teams'
+        multiple
+        maxSelected={2}
+        closeOnSelect={false}
+        defaultValue={['fr']}
+        options={multipleOptions}
+        onValueChange={onValueChange}
       />
+    );
+
+    const trigger = openSelect(container);
+
+    act(() => {
+      getButtonByText('Spain')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith(['fr', 'es']);
+    expect(trigger?.getAttribute('aria-expanded')).toBe('true');
+
+    rerender(
+      <Select
+        label='Teams'
+        multiple
+        maxSelected={2}
+        closeOnSelect={false}
+        value={['fr', 'es']}
+        options={multipleOptions}
+        onValueChange={onValueChange}
+      />
+    );
+
+    expect(getButtonByLabel('France')?.disabled).toBe(false);
+    expect(getButtonByLabel('Italy')?.disabled).toBe(true);
+
+    act(() => {
+      getButtonByLabel('Italy')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  it('keeps previously selected multiple options visible after another selection', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Teams'
+        multiple
+        closeOnSelect={false}
+        defaultValue={['fr']}
+      >
+        <Select.Item value='fr' label='France' />
+        <Select.Item value='es' label='Spain' />
+        <Select.Item value='it' label='Italy' />
+      </Select>
+    );
+
+    openSelect(container);
+
+    act(() => {
+      getButtonByText('Spain')?.click();
+    });
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Spain');
+    expect(document.body.textContent).toContain('Italy');
+    expect(container.textContent).toContain('France, Spain');
+
+    unmount();
+  });
+
+  it('toggles all enabled options in a selectable group for multiple select', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select
+        label='Teams'
+        multiple
+        maxSelected={2}
+        closeOnSelect={false}
+        onValueChange={onValueChange}
+      >
+        <Select.Group label='Core teams' selectable selectLabel='All core'>
+          <Select.Item value='product' label='Product' />
+          <Select.Item value='engineering' label='Engineering' />
+          <Select.Item value='support' label='Support' disabled />
+          <Select.Item value='qa' label='QA' />
+        </Select.Group>
+      </Select>
+    );
+
+    openSelect(container);
+
+    const groupAction = getButtonByLabel('All core');
+
+    expect(groupAction?.textContent).toContain('0/3');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith(['product', 'engineering']);
+    expect(container.textContent).toContain('Product, Engineering');
+    expect(groupAction?.textContent).toContain('2/3');
+    expect(groupAction?.getAttribute('aria-checked')).toBe('mixed');
+
+    act(() => {
+      groupAction?.click();
+    });
+
+    expect(onValueChange).toHaveBeenLastCalledWith([]);
+    expect(container.textContent).toContain('Select...');
+
+    unmount();
+  });
+
+  it('renders groups, separators, descriptions, icons and badges', () => {
+    const { container, unmount } = render(
+      <Select label='Country' defaultValue='fr'>
+        <Select.Content>
+          <Select.Group label='Europe'>
+            <Select.Item
+              value='fr'
+              label='France'
+              description='Paris'
+              icon={<Text>FR</Text>}
+              badge='EU'
+            />
+          </Select.Group>
+          <Select.Separator />
+          <Select.Item value='es' label='Spain' color='success' />
+        </Select.Content>
+      </Select>
+    );
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('Europe');
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Paris');
+    expect(document.body.textContent).toContain('FR');
+    expect(document.body.textContent).toContain('EU');
+    expect(document.body.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('supports custom renderValue and renderOption', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Country'
+        defaultValue='fr'
+        options={options}
+        renderValue={(option) =>
+          option && !Array.isArray(option) ? (
+            <Text>Selected: {option.label}</Text>
+          ) : null
+        }
+        renderOption={(option, state) => (
+          <Text>
+            {state.selected ? 'Selected ' : ''}
+            {option.label}
+          </Text>
+        )}
+      />
+    );
+
+    expect(container.textContent).toContain('Selected: France');
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('Selected France');
+
+    unmount();
+  });
+
+  it('inherits FormField context without rendering a nested field wrapper', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Country'
+        description='Shipping destination'
+        error='Country is required'
+        required
+        size='lg'
+      >
+        <Select placeholder='Choose country' options={options} />
+      </FormField>
     );
 
     const trigger =
       container.querySelector<HTMLButtonElement>('[role="button"]');
 
-    expect(trigger?.getAttribute('aria-label')).toBe('Billing country');
-    expect(trigger?.getAttribute('aria-description')).toBe(
-      'Required. Opens a picker'
+    expect(trigger?.id).toBeTruthy();
+    expect(trigger?.style.minHeight).toBe('52px');
+    expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger?.getAttribute('aria-disabled')).toBe('false');
+    expect(trigger?.getAttribute('aria-label')).toBe('Choose country');
+    expect(container.textContent).toContain('Country is required');
+    expect(container.querySelectorAll('[role="button"]')).toHaveLength(1);
+
+    unmount();
+  });
+
+  it('supports loading and presentation props', () => {
+    const { container, rerender, unmount } = render(
+      <Select label='Country' loading presentation='sheet' options={[]} />
     );
+
+    openSelect(container);
+
+    expect(
+      container.querySelector('[data-testid="select-loading-indicator"]')
+    ).toBeTruthy();
+    expect(
+      document.body.querySelector('[data-testid="select-sheet"]')
+    ).toBeTruthy();
+    expect(document.body.textContent).toContain('Loading...');
 
     rerender(
       <Select
         label='Country'
-        accessibilityLabel='Billing country'
-        accessibilityHint='Choose the country used for billing'
+        presentation='modal'
+        defaultOpen
         options={options}
-        error='Country is required'
       />
     );
 
-    expect(trigger?.getAttribute('aria-description')).toBe(
-      'Choose the country used for billing'
-    );
+    expect(
+      document.body.querySelector('[data-testid="select-modal"]')
+    ).toBeTruthy();
 
-    act(() => {
-      trigger?.click();
-    });
+    rerender(
+      <Select
+        label='Country'
+        presentation='popover'
+        placement='top'
+        defaultOpen
+        options={options}
+      />
+    );
 
     expect(
-      document.body
-        .querySelector('[role="toolbar"]')
-        ?.getAttribute('aria-label')
-    ).toBe('Billing country picker actions');
-    expect(getButtonByText('Cancel')?.getAttribute('aria-label')).toBe(
-      'Cancel selection'
-    );
-    expect(getButtonByText('Cancel')?.getAttribute('aria-description')).toBe(
-      'Closes the picker without changing the selected value'
-    );
-    expect(getButtonByText('Done')?.getAttribute('aria-label')).toBe(
-      'Confirm selection'
-    );
-    expect(getButtonByText('Done')?.getAttribute('aria-description')).toBe(
-      'Applies the highlighted picker value'
-    );
-    expect(document.body.querySelector('[role="heading"]')?.textContent).toBe(
-      'Billing country'
-    );
+      document.body.querySelector<HTMLElement>(
+        '[data-testid="select-content-root"]'
+      )?.style.justifyContent
+    ).toBe('flex-start');
 
     unmount();
   });
@@ -443,7 +786,7 @@ describe('Native Select', () => {
         style={{ maxWidth: 360 }}
         triggerStyle={{ maxWidth: 300 }}
         textStyle={{ fontWeight: '700' }}
-        pickerStyle={{ minHeight: 160 }}
+        contentStyle={{ minHeight: 160 }}
       />
     );
 
@@ -463,15 +806,29 @@ describe('Native Select', () => {
       container.querySelector('[data-testid="custom-error"]')
     ).toBeTruthy();
 
-    act(() => {
-      trigger?.click();
-    });
+    openSelect(container);
 
-    const picker = document.body.querySelector<HTMLElement>(
-      '[data-testid="native-picker"]'
-    );
+    expect(
+      document.body.querySelector<HTMLElement>('[data-testid="select-popover"]')
+        ?.style.minHeight
+    ).toBe('160px');
 
-    expect(picker?.style.minHeight).toBe('160px');
+    unmount();
+  });
+
+  it('treats missing runtime options as an empty list', () => {
+    const props = {
+      label: 'Country',
+      onValueChange: vi.fn(),
+    } as unknown as ComponentProps<typeof Select>;
+
+    const { container, unmount } = render(<Select {...props} />);
+
+    expect(container.textContent).toContain('Select...');
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('Nothing found');
 
     unmount();
   });

@@ -342,7 +342,8 @@ indicator.
 
 ## Select
 
-Single-selection native dropdown field.
+Native selection field with children-first options and sheet/modal/popover
+presentation.
 
 ```tsx
 import { Select } from '@vellira-ui/react-native';
@@ -350,27 +351,30 @@ import { Select } from '@vellira-ui/react-native';
 <Select
   label='Country'
   value={country}
-  onValueChange={setCountry}
+  onValueChange={(nextCountry) => setCountry(nextCountry)}
   placeholder='Choose country'
-  options={[
-    { value: 'fr', label: 'France' },
-    { value: 'us', label: 'United States' },
-  ]}
-/>;
+  searchable
+  clearable
+>
+  <Select.Item value='fr' label='France' />
+  <Select.Item value='us' label='United States' />
+</Select>;
 ```
 
 ### Select Usage Guidelines
 
 Use `Select` when the user chooses one value from a compact list and the
-choices can live in a picker sheet. Use `RadioGroup` when there are only a few
-choices and keeping them visible helps comparison. Use `Dropdown` for action
-menus, not for form values.
+choices can live in a native sheet, modal, or popover. Use `RadioGroup` when
+there are only a few choices and keeping them visible helps comparison. Use
+`Dropdown` for action menus, not for form values.
 
 ### Select Native Behavior
 
-Native `Select` opens a picker sheet. Changing the picker updates a draft value
-only. The selected value is committed through `Done`; `Cancel` and the backdrop
-close the sheet without changing the current value.
+Native `Select` opens a native content surface. `presentation='auto'` uses a
+bottom sheet on small screens and an anchored popover on wider screens.
+`presentation='sheet'`, `presentation='modal'`, and `presentation='popover'`
+are available for explicit control. Options render through `FlatList`; the
+`virtual` prop customizes list rendering.
 
 ### Select Accessibility Notes
 
@@ -378,40 +382,117 @@ Provide a visible `label` whenever possible. If the UI cannot show a label, pass
 `accessibilityLabel`. Required and invalid states are reflected on the trigger,
 and error text is announced through the field error region. Use
 `accessibilityHint` when the surrounding screen needs more guidance than the
-default picker hint.
+default list hint.
+
+### Select Compound API
+
+```tsx
+<Select label='Country' placeholder='Choose country'>
+  <Select.Trigger />
+  <Select.Content>
+    <Select.Search placeholder='Search country...' />
+    <Select.Group label='Europe'>
+      <Select.Item value='fr' label='France' description='Paris' badge='EU' />
+      <Select.Item value='de' label='Germany' description='Berlin' badge='EU' />
+    </Select.Group>
+    <Select.Separator />
+    <Select.Empty>No countries found</Select.Empty>
+    <Select.Loading>Searching...</Select.Loading>
+  </Select.Content>
+</Select>
+```
+
+Selectable groups are available in multiple mode. A selectable group renders a
+group action row that selects or clears all enabled items in that group. The
+action respects disabled options and `maxSelected`; when the limit is reached,
+only the values that still fit are added.
+
+```tsx
+<Select
+  label='Teams'
+  multiple
+  maxSelected={10}
+  closeOnSelect={false}
+  defaultValue={['product', 'engineering']}
+>
+  <Select.Group label='Core teams' selectable selectLabel='All core'>
+    <Select.Item value='product' label='Product' />
+    <Select.Item value='engineering' label='Engineering' />
+    <Select.Item value='design' label='Design' />
+  </Select.Group>
+  <Select.Group label='Operations' selectable selectLabel='All operations'>
+    <Select.Item value='support' label='Support' />
+    <Select.Item value='success' label='Success' />
+    <Select.Item value='sales' label='Sales' />
+  </Select.Group>
+</Select>
+```
+
+### Select Group Props
+
+| Prop          | Type        | Required | Description                                                     |
+| ------------- | ----------- | -------- | --------------------------------------------------------------- |
+| `label`       | `string`    | No       | Group heading. Also used as the group action label by default.  |
+| `selectable`  | `boolean`   | No       | Renders a group select/clear action in `multiple` Select usage. |
+| `selectLabel` | `string`    | No       | Accessible and visible label for the selectable group action.   |
+| `children`    | `ReactNode` | No       | Grouped `Select.Item` children.                                 |
 
 ### Select Props
 
 <!-- api-docgen:start native.SelectProps.SelectProps -->
 
-| Prop                 | Type                                                                     | Required | Description                                       |
-| -------------------- | ------------------------------------------------------------------------ | -------- | ------------------------------------------------- |
-| `label`              | `string`                                                                 | No       | Visible field label.                              |
-| `options`            | `SelectOption[]`                                                         | Yes      | Options rendered in the dropdown.                 |
-| `placeholder`        | `string`                                                                 | No       | Text shown when no value is selected.             |
-| `error`              | `ReactNode`                                                              | No       | Error message.                                    |
-| `style`              | `StyleProp<ViewStyle>`                                                   | No       | Extra container style.                            |
-| `triggerStyle`       | `StyleProp<ViewStyle>`                                                   | No       | Extra trigger style.                              |
-| `textStyle`          | `StyleProp<TextStyle>`                                                   | No       | Extra text style.                                 |
-| `value`              | `string \| SelectMultipleValue`                                          | No       | Controlled selected value.                        |
-| `defaultValue`       | `string \| SelectMultipleValue`                                          | No       | Initial selected value for uncontrolled usage.    |
-| `onValueChange`      | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                 |
-| `required`           | `boolean`                                                                | No       | Marks the field as required.                      |
-| `disabled`           | `boolean`                                                                | No       | Disables interaction.                             |
-| `description`        | `string`                                                                 | No       | Additional descriptive text.                      |
-| `pickerStyle`        | `StyleProp<ViewStyle>`                                                   | No       | Extra picker style.                               |
-| `accessibilityLabel` | `string`                                                                 | No       | Accessible label for screen readers.              |
-| `size`               | `SelectSize`                                                             | No       | Select size.                                      |
-| `accessibilityHint`  | `string`                                                                 | No       | Additional accessibility hint for screen readers. |
-| `color`              | `SelectColor`                                                            | No       | —                                                 |
-| `invalid`            | `boolean`                                                                | No       | —                                                 |
-| `variant`            | `SelectVariant`                                                          | No       | —                                                 |
-| `loading`            | `boolean`                                                                | No       | —                                                 |
-| `clearable`          | `boolean`                                                                | No       | Shows a clear action when the input has a value.  |
-| `searchable`         | `boolean`                                                                | No       | —                                                 |
-| `multiple`           | `boolean`                                                                | No       | —                                                 |
-| `maxSelected`        | `number`                                                                 | No       | —                                                 |
-| `closeOnSelect`      | `boolean`                                                                | No       | —                                                 |
+| Prop                     | Type                                                             | Required | Description                                                           |
+| ------------------------ | ---------------------------------------------------------------- | -------- | --------------------------------------------------------------------- |
+| `label`                  | `string`                                                         | No       | Visible field label.                                                  |
+| `description`            | `string`                                                         | No       | Additional descriptive text.                                          |
+| `error`                  | `ReactNode`                                                      | No       | Error message or custom error content.                                |
+| `children`               | `ReactNode`                                                      | No       | `Select.Item`, `Select.Group`, and related compound slots.            |
+| `options`                | `SelectItemProps[]`                                              | No       | Compatibility fallback for simple option arrays.                      |
+| `value`                  | `string \| string[] \| null`                                     | No       | Controlled selected value.                                            |
+| `defaultValue`           | `string \| string[] \| null`                                     | No       | Initial selected value for uncontrolled usage.                        |
+| `onValueChange`          | `(value: string \| null) => void) \| ((value: string[]) => void` | No       | Called when the selected value changes.                               |
+| `color`                  | `SelectColor`                                                    | No       | Trigger and option color palette.                                     |
+| `variant`                | `SelectVariant`                                                  | No       | Trigger and option variant.                                           |
+| `size`                   | `SelectSize`                                                     | No       | Select size.                                                          |
+| `placeholder`            | `string`                                                         | No       | Text shown when no value is selected.                                 |
+| `required`               | `boolean`                                                        | No       | Marks the field as required.                                          |
+| `disabled`               | `boolean`                                                        | No       | Disables interaction.                                                 |
+| `invalid`                | `boolean`                                                        | No       | Shows invalid styling without error text.                             |
+| `open`                   | `boolean`                                                        | No       | Controlled open state.                                                |
+| `defaultOpen`            | `boolean`                                                        | No       | Initial uncontrolled open state.                                      |
+| `onOpenChange`           | `(open: boolean) => void`                                        | No       | Called when open state changes.                                       |
+| `clearable`              | `boolean`                                                        | No       | Shows a clear action when the select has a value.                     |
+| `searchable`             | `boolean`                                                        | No       | Renders a TextInput search field in content.                          |
+| `searchPlaceholder`      | `string`                                                         | No       | Search input placeholder.                                             |
+| `onSearch`               | `(value: string) => void`                                        | No       | Called when search text changes for async flows.                      |
+| `filterOptions`          | `boolean`                                                        | No       | Controls built-in local filtering. Defaults to false with `onSearch`. |
+| `empty`                  | `ReactNode`                                                      | No       | Empty state content.                                                  |
+| `loading`                | `boolean`                                                        | No       | Shows trigger spinner and content loading state when empty.           |
+| `loadingText`            | `string`                                                         | No       | Loading state text.                                                   |
+| `multiple`               | `boolean`                                                        | No       | Enables string array selection mode.                                  |
+| `maxSelected`            | `number`                                                         | No       | Maximum selected values in multiple mode.                             |
+| `closeOnSelect`          | `boolean`                                                        | No       | Controls whether content closes after item selection.                 |
+| `presentation`           | `SelectPresentation`                                             | No       | Native content presentation.                                          |
+| `placement`              | `'top' \| 'bottom'`                                              | No       | Reserved for popover placement.                                       |
+| `matchTriggerWidth`      | `boolean`                                                        | No       | Matches popover width to trigger width.                               |
+| `dismissOnBackdropPress` | `boolean`                                                        | No       | Enables backdrop dismissal.                                           |
+| `virtual`                | `boolean \| SelectVirtualConfig`                                 | No       | FlatList virtualization settings.                                     |
+| `renderValue`            | `SelectRenderValue`                                              | No       | Custom trigger value renderer.                                        |
+| `renderOption`           | `SelectRenderOption`                                             | No       | Custom option renderer.                                               |
+| `accessibilityLabel`     | `string`                                                         | No       | Accessible label for screen readers.                                  |
+| `accessibilityHint`      | `string`                                                         | No       | Additional accessibility hint for screen readers.                     |
+| `filter`                 | `(option: SelectOption, query: string) => boolean`               | No       | —                                                                     |
+| `startIcon`              | `SelectIconElement`                                              | No       | —                                                                     |
+| `endIcon`                | `SelectIconElement`                                              | No       | —                                                                     |
+| `prefix`                 | `ReactNode`                                                      | No       | —                                                                     |
+| `suffix`                 | `ReactNode`                                                      | No       | —                                                                     |
+| `style`                  | `StyleProp<ViewStyle>`                                           | No       | Extra root style.                                                     |
+| `triggerStyle`           | `StyleProp<ViewStyle>`                                           | No       | Extra trigger style.                                                  |
+| `textStyle`              | `StyleProp<TextStyle>`                                           | No       | Extra text style.                                                     |
+| `contentStyle`           | `StyleProp<ViewStyle>`                                           | No       | Extra content style.                                                  |
+| `optionStyle`            | `StyleProp<ViewStyle>`                                           | No       | Extra option style.                                                   |
+| `searchStyle`            | `StyleProp<TextStyle>`                                           | No       | —                                                                     |
+| `testID`                 | `string`                                                         | No       | —                                                                     |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 
@@ -419,16 +500,17 @@ default picker hint.
 
 <!-- api-docgen:start native.SelectOption.SelectOption -->
 
-| Prop          | Type          | Required | Description                         |
-| ------------- | ------------- | -------- | ----------------------------------- |
-| `label`       | `string`      | Yes      | Visible option label.               |
-| `value`       | `string`      | Yes      | Option value.                       |
-| `disabled`    | `boolean`     | No       | Disables this option.               |
-| `description` | `string`      | No       | Additional descriptive text.        |
-| `icon`        | `unknown`     | No       | Icon rendered inside the component. |
-| `badge`       | `string`      | No       | —                                   |
-| `shortcut`    | `string`      | No       | —                                   |
-| `color`       | `SelectColor` | No       | —                                   |
+| Prop                 | Type          | Required | Description                                  |
+| -------------------- | ------------- | -------- | -------------------------------------------- |
+| `label`              | `string`      | Yes      | Visible option label and accessibility text. |
+| `value`              | `string`      | Yes      | Option value.                                |
+| `disabled`           | `boolean`     | No       | Disables this option.                        |
+| `description`        | `string`      | No       | Additional descriptive text.                 |
+| `icon`               | `ReactNode`   | No       | Icon rendered before the label.              |
+| `badge`              | `ReactNode`   | No       | Badge rendered after the label.              |
+| `color`              | `SelectColor` | No       | Option-specific selected color.              |
+| `accessibilityLabel` | `string`      | No       | Accessible option label override.            |
+| `accessibilityHint`  | `string`      | No       | Accessible option hint override.             |
 
 <!-- api-docgen:end native.SelectOption.SelectOption -->
 

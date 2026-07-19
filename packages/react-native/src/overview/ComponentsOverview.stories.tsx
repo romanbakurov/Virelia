@@ -46,6 +46,48 @@ const selectOptions = [
   { label: 'Support', value: 'support' },
 ];
 
+const groupedSelectOptions = {
+  core: [
+    { label: 'Product', value: 'team-product' },
+    { label: 'Engineering', value: 'team-engineering' },
+    { label: 'Design', value: 'team-design' },
+    { label: 'Research', value: 'team-research' },
+    { label: 'Data', value: 'team-data' },
+  ],
+  operations: [
+    { label: 'Support', value: 'team-support' },
+    { label: 'Success', value: 'team-success' },
+    { label: 'Sales', value: 'team-sales' },
+    { label: 'Marketing', value: 'team-marketing' },
+    { label: 'Finance', value: 'team-finance' },
+  ],
+  platform: [
+    { label: 'Infrastructure', value: 'team-infrastructure' },
+    { label: 'Security', value: 'team-security' },
+    { label: 'Developer Experience', value: 'team-devex' },
+    { label: 'QA', value: 'team-qa' },
+  ],
+};
+
+const longSelectOptions = Array.from({ length: 80 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
+}));
+
+function renderSelectItems() {
+  return selectOptions.map((option) => (
+    <Select.Item key={option.value} value={option.value} label={option.label} />
+  ));
+}
+
+function renderGroupedSelectItems(
+  items: Array<{ label: string; value: string }>
+) {
+  return items.map((option) => (
+    <Select.Item key={option.value} value={option.value} label={option.label} />
+  ));
+}
+
 const dropdownItems = [
   { type: 'group' as const, label: 'Report actions' },
   { label: 'Open settings', value: 'settings', icon: <Settings /> },
@@ -83,6 +125,7 @@ function NativeComponentsOverview() {
   const [accepted, setAccepted] = useState(true);
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
+  const [teams, setTeams] = useState<string[]>(['product']);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -758,29 +801,82 @@ function NativeComponentsOverview() {
           <Select
             label='Team'
             description='Choose the owning team.'
-            options={selectOptions}
             value={team}
-            onValueChange={setTeam}
-          />
+            onValueChange={(nextValue) => setTeam(nextValue ?? '')}
+            clearable
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
             label='Required team'
-            options={selectOptions}
             placeholder='Select a team'
             required
             error='Team is required'
-          />
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
-            label='Billing team'
-            description='Picker changes are committed with Done.'
-            options={selectOptions}
+            label='Searchable team'
+            description='Native Select opens as a sheet, modal or popover.'
+            searchable
+            clearable
             defaultValue='product'
             accessibilityHint='Choose the team used for invoices.'
-          />
+          >
+            {renderSelectItems()}
+          </Select>
           <Select
-            label='Archived team'
-            options={[]}
-            placeholder='No archived teams'
-            accessibilityHint='There are no archived teams to choose from.'
+            label='Multiple teams'
+            multiple
+            maxSelected={2}
+            closeOnSelect={false}
+            value={teams}
+            onValueChange={setTeams}
+            placeholder='Select teams'
+          >
+            <Select.Group label='Teams'>
+              <Select.Item value='product' label='Product' badge='Core' />
+              <Select.Item
+                value='engineering'
+                label='Engineering'
+                description='Platform and quality'
+              />
+              <Select.Item value='support' label='Support' disabled />
+            </Select.Group>
+          </Select>
+          <Select
+            label='Grouped teams'
+            multiple
+            closeOnSelect={false}
+            searchable
+            clearable
+            defaultValue={['team-product', 'team-engineering', 'team-support']}
+            placeholder='Select teams'
+          >
+            <Select.Group label='Core teams' selectable selectLabel='All core'>
+              {renderGroupedSelectItems(groupedSelectOptions.core)}
+            </Select.Group>
+            <Select.Group
+              label='Operations'
+              selectable
+              selectLabel='All operations'
+            >
+              {renderGroupedSelectItems(groupedSelectOptions.operations)}
+            </Select.Group>
+            <Select.Group
+              label='Platform'
+              selectable
+              selectLabel='All platform'
+            >
+              {renderGroupedSelectItems(groupedSelectOptions.platform)}
+            </Select.Group>
+          </Select>
+          <Select
+            label='Long virtualized countries'
+            searchable
+            virtual={{ estimatedItemSize: 46, initialNumToRender: 16 }}
+            defaultValue='country-70'
+            options={longSelectOptions}
           />
         </Section>
 

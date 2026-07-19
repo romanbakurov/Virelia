@@ -85,9 +85,9 @@ wrapped in `FormField`. For checkbox rows without a visible label, provide
 ### Select Notes
 
 Use `Select` for one form value from a compact list, `RadioGroup` for a few
-visible choices, and `Dropdown` for action menus. Native `Select` commits the
-picker draft only when the user presses `Done`; `Cancel` and the backdrop close
-without changing the selected value.
+visible choices, and `Dropdown` for action menus. Native `Select` opens a
+sheet, modal, or popover and renders options with a FlatList-backed native
+content surface.
 
 ```tsx
 import { Select } from '@vellira-ui/react-native';
@@ -100,13 +100,14 @@ export function RoleSelect() {
     <Select
       label='Role'
       value={role}
-      onValueChange={setRole}
-      options={[
-        { label: 'Admin', value: 'admin' },
-        { label: 'Editor', value: 'editor' },
-        { label: 'Viewer', value: 'viewer' },
-      ]}
-    />
+      onValueChange={(nextRole) => setRole(nextRole ?? '')}
+      searchable
+      clearable
+    >
+      <Select.Item value='admin' label='Admin' />
+      <Select.Item value='editor' label='Editor' />
+      <Select.Item value='viewer' label='Viewer' />
+    </Select>
   );
 }
 ```

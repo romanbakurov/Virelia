@@ -71,21 +71,71 @@ generated reference lives in
 | `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `children`                                                       | Labels and validation |
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
-| `Select`     | `label`, `description`, `options`, `value`, `defaultValue`, `onChange`, `size`, `pickerStyle`, `error`                    | Selection control     |
+| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
 | `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                                                 | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
 | `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                                                 | Dialog and overlay    |
 
-Native `Select` opens a picker sheet. Changing the picker wheel updates a draft
-value only; the selection is committed through `Done`, while `Cancel` and the
-backdrop close the sheet without changing the selected value.
+Native `Select` opens a sheet, modal, or popover depending on `presentation`.
+Options render through native list content; `Select.Item` is the primary API,
+with `options` still available as a simple fallback. Option rows keep a small
+2px gap between items so selected and hovered states remain visually separated
+in dense native lists.
 
 ## Select Usage Guidelines
 
 Use `Select` for a single form value from a compact list. Use `RadioGroup` when
 there are only a few options and users should compare them without opening a
-picker. Use `Dropdown` for contextual actions, not saved form values.
+picker. Use `Dropdown` for contextual actions, not saved form values. For
+longer multiple lists, split options into `Select.Group` sections and use
+`selectable` group actions when users commonly select an entire section.
+
+```tsx
+import { Select } from '@vellira-ui/react-native';
+
+export function TeamSelect() {
+  return (
+    <Select
+      label='Teams'
+      multiple
+      closeOnSelect={false}
+      clearable
+      searchable
+      defaultValue={['team-product', 'team-engineering', 'team-support']}
+      placeholder='Select teams'
+    >
+      <Select.Group label='Core teams' selectable selectLabel='All core'>
+        <Select.Item value='team-product' label='Product' />
+        <Select.Item value='team-engineering' label='Engineering' />
+        <Select.Item value='team-design' label='Design' />
+        <Select.Item value='team-research' label='Research' />
+        <Select.Item value='team-data' label='Data' />
+      </Select.Group>
+
+      <Select.Group label='Operations' selectable selectLabel='All operations'>
+        <Select.Item value='team-support' label='Support' />
+        <Select.Item value='team-success' label='Success' />
+        <Select.Item value='team-sales' label='Sales' />
+        <Select.Item value='team-marketing' label='Marketing' />
+        <Select.Item value='team-finance' label='Finance' />
+      </Select.Group>
+
+      <Select.Group label='Platform' selectable selectLabel='All platform'>
+        <Select.Item value='team-infrastructure' label='Infrastructure' />
+        <Select.Item value='team-security' label='Security' />
+        <Select.Item value='team-devex' label='Developer Experience' />
+        <Select.Item value='team-qa' label='QA' />
+      </Select.Group>
+    </Select>
+  );
+}
+```
+
+In multiple mode the trigger displays the first two selected labels and then a
+`+N` count for additional selections. `maxSelected` limits both individual item
+presses and selectable group actions; disabled items are skipped by group
+selection.
 
 For accessibility, prefer a visible `label`; if no label can be rendered, pass
 `accessibilityLabel`. Error text is announced by the field error region, and

@@ -1,39 +1,55 @@
 import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
+import { Check, Search, User } from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
+import { FormField } from '../../patterns/FormField';
 import { useTheme } from '../../theme';
 
 import { Select } from './Select';
 
-const defaultOptions = [
-  { label: 'France', value: 'fr' },
-  { label: 'Spain', value: 'es' },
-  { label: 'Germany', value: 'de' },
+const countryItems = [
+  { label: 'France', value: 'fr', description: 'Paris', badge: 'EU' },
+  { label: 'Germany', value: 'de', description: 'Berlin', badge: 'EU' },
+  { label: 'Spain', value: 'es', description: 'Madrid', badge: 'EU' },
 ];
 
-const optionsWithDisabled = [
-  { label: 'France', value: 'fr' },
-  { label: 'Spain', value: 'es', disabled: true },
-  { label: 'Germany', value: 'de' },
+const teamItems = [
+  { label: 'Product', value: 'product' },
+  { label: 'Engineering', value: 'engineering' },
+  { label: 'Support', value: 'support' },
 ];
 
-const longOptions = [
-  {
-    label: 'France - European workspace with a deliberately long label',
-    value: 'fr',
-  },
-  { label: 'Spain - Customer success and regional operations', value: 'es' },
-  { label: 'Germany - Engineering platform team', value: 'de' },
-  { label: 'Italy - Product launch operations', value: 'it' },
-  { label: 'Portugal - Partner success team', value: 'pt' },
-  { label: 'Belgium - Finance operations', value: 'be' },
-  { label: 'Netherlands - Platform reliability', value: 'nl' },
-  { label: 'Switzerland - Enterprise accounts', value: 'ch' },
-];
+const groupedTeamItems = {
+  core: [
+    { label: 'Product', value: 'team-product' },
+    { label: 'Engineering', value: 'team-engineering' },
+    { label: 'Design', value: 'team-design' },
+    { label: 'Research', value: 'team-research' },
+    { label: 'Data', value: 'team-data' },
+  ],
+  operations: [
+    { label: 'Support', value: 'team-support' },
+    { label: 'Success', value: 'team-success' },
+    { label: 'Sales', value: 'team-sales' },
+    { label: 'Marketing', value: 'team-marketing' },
+    { label: 'Finance', value: 'team-finance' },
+  ],
+  platform: [
+    { label: 'Infrastructure', value: 'team-infrastructure' },
+    { label: 'Security', value: 'team-security' },
+    { label: 'Developer Experience', value: 'team-devex' },
+    { label: 'QA', value: 'team-qa' },
+  ],
+};
+
+const longItems = Array.from({ length: 80 }, (_, index) => ({
+  label: `Country ${index + 1}`,
+  value: `country-${index + 1}`,
+}));
 
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
@@ -46,29 +62,25 @@ const meta: Meta<typeof Select> = {
         component: `
 ### Select Component
 
-Native single-value select control for choosing from a predefined list.
+Native select control with the same public philosophy as Web Select, but with native interaction: trigger opens a sheet, modal, or popover and options render through FlatList.
 
 **Features**
 
-- Native platform picker behavior
-- Label, description, placeholder, and ReactNode error support
-- Controlled and uncontrolled value support
-- Required, disabled, and validation states
-- Disabled options
-- Sizes: sm, md, and lg
-- Style slots for container, trigger, text, and picker
-- Accessibility label and hint overrides
+- Children-first API with \`Select.Item\`, \`Select.Group\`, \`Select.Separator\`
+- Optional legacy \`options\` fallback for simple lists
+- \`value/defaultValue/onValueChange\`, \`color/variant/size\`
+- FormField context inheritance and shorthand field props
+- Searchable, clearable, loading, multiple, maxSelected and controlled open
+- Rich item metadata: description, icon, badge, disabled and color
+- Native presentations: \`auto\`, \`sheet\`, \`modal\`, \`popover\`
 
 ### Usage
 
 \`\`\`tsx
-<Select
-  label='Country'
-  value={country}
-  onValueChange={setCountry}
-  placeholder='Select country...'
-  options={countries}
-/>
+<Select label='Country' placeholder='Choose country'>
+  <Select.Item value='fr' label='France' />
+  <Select.Item value='de' label='Germany' />
+</Select>
 \`\`\`
 `,
       },
@@ -76,95 +88,43 @@ Native single-value select control for choosing from a predefined list.
   },
   args: {
     label: 'Country',
-    placeholder: 'Select country...',
+    placeholder: 'Choose country',
     size: 'md',
+    color: 'primary',
+    variant: 'outline',
     required: false,
     disabled: false,
-    options: defaultOptions,
     onValueChange: fn(),
   },
   argTypes: {
-    label: {
-      control: 'text',
-      description: 'Text label displayed above the Select.',
+    color: {
+      control: 'radio',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
     },
-
-    description: {
-      control: 'text',
-      description: 'Helper text displayed below the label.',
+    variant: {
+      control: 'radio',
+      options: ['outline', 'filled', 'soft'],
     },
-
-    placeholder: {
-      control: 'text',
-      description: 'Placeholder text shown when no value is selected.',
-    },
-
-    value: {
-      control: 'text',
-      description: 'Current selected value for controlled usage.',
-    },
-
-    defaultValue: {
-      control: 'text',
-      description: 'Initial selected value for uncontrolled usage.',
-    },
-
-    options: {
-      control: 'object',
-      description: 'List of select options.',
-    },
-
     size: {
       control: 'radio',
       options: ['sm', 'md', 'lg'],
-      description: 'Visual size of the Select trigger.',
     },
-
-    required: {
-      control: 'boolean',
-      description: 'Marks the select as required.',
+    presentation: {
+      control: 'radio',
+      options: ['auto', 'sheet', 'modal', 'popover'],
     },
-
-    disabled: {
-      control: 'boolean',
-      description: 'Disables the select.',
-    },
-
-    error: {
-      control: 'text',
-      description: 'Validation content displayed below the Select.',
-    },
-
-    accessibilityLabel: {
-      control: 'text',
-      description: 'Accessible label for the picker trigger.',
-    },
-
-    accessibilityHint: {
-      control: 'text',
-      description: 'Accessible hint for the picker trigger.',
-    },
-
-    onValueChange: {
-      action: 'changed',
-      description: 'Called when the selected value changes.',
-    },
-
-    style: {
-      control: false,
-    },
-
-    triggerStyle: {
-      control: false,
-    },
-
-    textStyle: {
-      control: false,
-    },
-
-    pickerStyle: {
-      control: false,
-    },
+    options: { control: false },
+    children: { control: false },
+    renderValue: { control: false },
+    renderOption: { control: false },
+    startIcon: { control: false },
+    endIcon: { control: false },
+    style: { control: false },
+    triggerStyle: { control: false },
+    textStyle: { control: false },
+    contentStyle: { control: false },
+    optionStyle: { control: false },
+    searchStyle: { control: false },
   },
 };
 
@@ -176,13 +136,6 @@ type SelectStoryProps = ComponentProps<typeof Select>;
 const storyStyles = StyleSheet.create({
   column: {
     width: '100%',
-    gap: 12,
-  },
-
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
     gap: 12,
   },
 });
@@ -216,11 +169,45 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+function renderCountryItems() {
+  return countryItems.map((item) => (
+    <Select.Item
+      key={item.value}
+      value={item.value}
+      label={item.label}
+      description={item.description}
+      badge={item.badge}
+    />
+  ));
+}
+
+function renderTeamItems() {
+  return teamItems.map((item) => (
+    <Select.Item key={item.value} value={item.value} label={item.label} />
+  ));
+}
+
+function renderGroupedTeamItems(
+  items: Array<{ label: string; value: string }>
+) {
+  return items.map((item) => (
+    <Select.Item key={item.value} value={item.value} label={item.label} />
+  ));
+}
+
 function InteractiveSelect(args: SelectStoryProps) {
-  const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
+  const [value, setValue] = useState<string | null>(
+    Array.isArray(args.value)
+      ? (args.value[0] ?? null)
+      : (args.value ?? args.defaultValue ?? null)
+  );
 
   useEffect(() => {
-    setValue(args.value ?? args.defaultValue ?? '');
+    setValue(
+      Array.isArray(args.value)
+        ? (args.value[0] ?? null)
+        : (args.value ?? args.defaultValue ?? null)
+    );
   }, [args.value, args.defaultValue]);
 
   return (
@@ -231,7 +218,78 @@ function InteractiveSelect(args: SelectStoryProps) {
         setValue(nextValue);
         args.onValueChange?.(nextValue);
       }}
+    >
+      {renderCountryItems()}
+    </Select>
+  );
+}
+
+function AsyncSearchSelect() {
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const options = query
+    ? countryItems.filter((item) =>
+        item.label.toLowerCase().includes(query.toLowerCase())
+      )
+    : countryItems;
+
+  const handleSearch = (nextQuery: string) => {
+    setQuery(nextQuery);
+    setIsLoading(Boolean(nextQuery));
+    setTimeout(() => setIsLoading(false), 300);
+  };
+
+  return (
+    <Select
+      label='Async country'
+      searchable
+      clearable
+      loading={isLoading}
+      onSearch={handleSearch}
+      options={options}
+      empty='No countries found'
+      loadingText='Searching...'
     />
+  );
+}
+
+function ControlledOpenSelect() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Select
+      label='Country'
+      open={open}
+      onOpenChange={setOpen}
+      placeholder='Controlled open'
+    >
+      {renderCountryItems()}
+    </Select>
+  );
+}
+
+function CustomRenderSelect() {
+  return (
+    <Select
+      label='Assignee'
+      defaultValue='alex'
+      startIcon={<User />}
+      renderValue={(option) =>
+        option && !Array.isArray(option) ? (
+          <Text>Assigned to {option.label}</Text>
+        ) : null
+      }
+      renderOption={(option, state) => (
+        <Text>
+          {state.selected ? 'Selected ' : ''}
+          {option.label}
+        </Text>
+      )}
+    >
+      <Select.Item value='alex' label='Alex Taylor' />
+      <Select.Item value='jordan' label='Jordan Lee' />
+      <Select.Item value='casey' label='Casey Morgan' />
+    </Select>
   );
 }
 
@@ -243,89 +301,58 @@ export const Playground: Story = {
   ),
 };
 
-export const Default: Story = {
-  render: (args) => (
-    <Section title='Default'>
-      <Select {...args} />
+export const BasicChildrenOnly: Story = {
+  render: () => (
+    <Section title='Basic children-only'>
+      <Select label='Country' placeholder='Choose country'>
+        {renderCountryItems()}
+      </Select>
     </Section>
   ),
 };
 
-export const Controlled: Story = {
-  args: {
-    value: 'fr',
-  },
-  render: (args) => (
-    <Section title='Controlled'>
-      <InteractiveSelect {...args} />
+export const ExplicitCompound: Story = {
+  render: () => (
+    <Section title='Explicit compound'>
+      <Select label='Country' placeholder='Choose country'>
+        <Select.Trigger />
+        <Select.Content>
+          <Select.Search placeholder='Search country...' />
+          <Select.Group>
+            <Select.Label>Europe</Select.Label>
+            <Select.Item value='fr' label='France' description='Paris' />
+            <Select.Item value='de' label='Germany' description='Berlin' />
+          </Select.Group>
+          <Select.Separator />
+          <Select.Item value='es' label='Spain' description='Madrid' />
+          <Select.Empty>No countries found</Select.Empty>
+          <Select.Loading>Searching...</Select.Loading>
+        </Select.Content>
+      </Select>
     </Section>
   ),
 };
 
-export const Uncontrolled: Story = {
-  args: {
-    defaultValue: 'fr',
-  },
-  render: (args) => (
-    <Section title='Uncontrolled'>
-      <Select {...args} />
-    </Section>
-  ),
-};
-
-export const WithDescription: Story = {
-  args: {
-    description: 'Choose your country of residence.',
-  },
-  render: (args) => (
-    <Section title='With description'>
-      <InteractiveSelect {...args} />
-    </Section>
-  ),
-};
-
-export const Required: Story = {
-  args: {
-    required: true,
-  },
-  render: (args) => (
-    <Section title='Required'>
-      <InteractiveSelect {...args} />
-    </Section>
-  ),
-};
-
-export const WithError: Story = {
-  args: {
-    required: true,
-    error: 'Country is required.',
-  },
-  render: (args) => (
-    <Section title='With error'>
-      <InteractiveSelect {...args} />
-    </Section>
-  ),
-};
-
-export const Disabled: Story = {
-  args: {
-    defaultValue: 'de',
-    disabled: true,
-  },
-  render: (args) => (
-    <Section title='Disabled'>
-      <InteractiveSelect {...args} />
-    </Section>
-  ),
-};
-
-export const DisabledOption: Story = {
-  args: {
-    options: optionsWithDisabled,
-  },
-  render: (args) => (
-    <Section title='Disabled option'>
-      <InteractiveSelect {...args} />
+export const ColorsAndVariants: Story = {
+  render: () => (
+    <Section title='Colors and variants'>
+      <View style={storyStyles.column}>
+        <Select label='Primary outline' color='primary' variant='outline'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Neutral filled' color='neutral' variant='filled'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Success soft' color='success' variant='soft'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Warning outline' color='warning' variant='outline'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Danger soft' color='danger' variant='soft'>
+          {renderTeamItems()}
+        </Select>
+      </View>
     </Section>
   ),
 };
@@ -334,113 +361,236 @@ export const Sizes: Story = {
   render: () => (
     <Section title='Sizes'>
       <View style={storyStyles.column}>
-        <Select
-          label='Small'
-          placeholder='Small select'
-          size='sm'
-          options={defaultOptions}
-        />
-        <Select
-          label='Medium'
-          placeholder='Medium select'
-          size='md'
-          options={defaultOptions}
-        />
-        <Select
-          label='Large'
-          placeholder='Large select'
-          size='lg'
-          options={defaultOptions}
-        />
+        <Select label='Small' size='sm'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Medium' size='md'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Large' size='lg'>
+          {renderTeamItems()}
+        </Select>
       </View>
     </Section>
   ),
 };
 
-export const LongList: Story = {
-  args: {
-    options: longOptions,
-    placeholder: 'Select a regional workspace',
-  },
-  render: (args) => (
-    <Section title='Long list'>
-      <InteractiveSelect {...args} />
+export const FormFieldIntegration: Story = {
+  render: () => (
+    <Section title='FormField integration'>
+      <FormField
+        label='Country'
+        description='Shipping destination'
+        error='Country is required'
+        required
+      >
+        <Select placeholder='Choose country'>{renderCountryItems()}</Select>
+      </FormField>
     </Section>
   ),
 };
 
-export const CustomErrorContent: Story = {
+export const ShorthandField: Story = {
   render: () => (
-    <Section title='Custom error content'>
+    <Section title='Shorthand field'>
       <Select
         label='Country'
-        description='This example renders custom validation content.'
-        error={
-          <Text style={{ fontWeight: '700' }}>
-            Select an available country.
-          </Text>
-        }
-        options={optionsWithDisabled}
+        description='Shipping destination'
+        error='Country is required'
         required
+      >
+        {renderCountryItems()}
+      </Select>
+    </Section>
+  ),
+};
+
+export const SearchableAndClearable: Story = {
+  render: () => (
+    <Section title='Searchable and clearable'>
+      <Select
+        label='Country'
+        searchable
+        clearable
+        searchPlaceholder='Search country...'
+        defaultValue='fr'
+      >
+        {renderCountryItems()}
+      </Select>
+    </Section>
+  ),
+};
+
+export const LoadingAndAsync: Story = {
+  render: () => (
+    <Section title='Loading and async'>
+      <AsyncSearchSelect />
+    </Section>
+  ),
+};
+
+export const Multiple: Story = {
+  render: () => (
+    <Section title='Multiple'>
+      <Select
+        label='Teams'
+        multiple
+        maxSelected={2}
+        closeOnSelect={false}
+        clearable
+        defaultValue={['product']}
+      >
+        <Select.Group label='Teams' selectable selectLabel='All teams'>
+          {renderTeamItems()}
+        </Select.Group>
+      </Select>
+    </Section>
+  ),
+};
+
+export const MultipleGroupedLarge: Story = {
+  render: () => (
+    <Section title='Multiple grouped large'>
+      <Select
+        label='Teams'
+        multiple
+        closeOnSelect={false}
+        clearable
+        searchable
+        defaultValue={['team-product', 'team-engineering', 'team-support']}
+        placeholder='Select teams'
+      >
+        <Select.Group label='Core teams' selectable selectLabel='All core'>
+          {renderGroupedTeamItems(groupedTeamItems.core)}
+        </Select.Group>
+        <Select.Group
+          label='Operations'
+          selectable
+          selectLabel='All operations'
+        >
+          {renderGroupedTeamItems(groupedTeamItems.operations)}
+        </Select.Group>
+        <Select.Group label='Platform' selectable selectLabel='All platform'>
+          {renderGroupedTeamItems(groupedTeamItems.platform)}
+        </Select.Group>
+      </Select>
+    </Section>
+  ),
+};
+
+export const GroupsAndRichItems: Story = {
+  render: () => (
+    <Section title='Groups and rich items'>
+      <Select label='Country' searchable clearable>
+        <Select.Group label='Europe'>
+          <Select.Item
+            value='fr'
+            label='France'
+            description='Paris'
+            icon={<Check />}
+            badge='EU'
+          />
+          <Select.Item
+            value='de'
+            label='Germany'
+            description='Berlin'
+            badge='EU'
+          />
+        </Select.Group>
+        <Select.Separator />
+        <Select.Group label='Unavailable'>
+          <Select.Item
+            value='uk'
+            label='United Kingdom'
+            description='Temporarily disabled'
+            disabled
+          />
+        </Select.Group>
+      </Select>
+    </Section>
+  ),
+};
+
+export const CustomRender: Story = {
+  render: () => (
+    <Section title='Custom render'>
+      <CustomRenderSelect />
+    </Section>
+  ),
+};
+
+export const PrefixSuffixIcons: Story = {
+  render: () => (
+    <Section title='Prefix, suffix and icons'>
+      <Select
+        label='Domain'
+        prefix='https://'
+        suffix='.com'
+        startIcon={<Search />}
+        placeholder='workspace'
+      >
+        <Select.Item value='vellira' label='vellira' />
+        <Select.Item value='design-system' label='design-system' />
+      </Select>
+    </Section>
+  ),
+};
+
+export const ControlledOpen: Story = {
+  render: () => (
+    <Section title='Controlled open'>
+      <ControlledOpenSelect />
+    </Section>
+  ),
+};
+
+export const Presentations: Story = {
+  render: () => (
+    <Section title='Sheet, modal and popover'>
+      <View style={storyStyles.column}>
+        <Select label='Auto' presentation='auto'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Sheet' presentation='sheet'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Modal' presentation='modal'>
+          {renderTeamItems()}
+        </Select>
+        <Select label='Popover' presentation='popover' matchTriggerWidth>
+          {renderTeamItems()}
+        </Select>
+      </View>
+    </Section>
+  ),
+};
+
+export const LongVirtualizedList: Story = {
+  render: () => (
+    <Section title='Long virtualized list'>
+      <Select
+        label='Country'
+        searchable
+        virtual={{ estimatedItemSize: 46, initialNumToRender: 16 }}
+        defaultValue='country-24'
+        options={longItems}
       />
     </Section>
   ),
 };
 
 export const Accessibility: Story = {
-  args: {
-    label: 'Country',
-    accessibilityLabel: 'Billing country',
-    accessibilityHint: 'Choose the country used for invoices.',
-    required: true,
-  },
-  render: (args) => (
+  render: () => (
     <Section title='Accessibility'>
-      <InteractiveSelect {...args} />
-    </Section>
-  ),
-};
-
-export const StyleProps: Story = {
-  render: () => (
-    <Section title='Style props'>
       <Select
-        label='Country'
-        options={defaultOptions}
-        size='lg'
-        style={{ maxWidth: 360 }}
-        triggerStyle={{ borderRadius: 16 }}
-        textStyle={{ fontWeight: '700' }}
-        pickerStyle={{ minHeight: 180 }}
-      />
-    </Section>
-  ),
-};
-
-export const States: Story = {
-  render: () => (
-    <Section title='States'>
-      <View style={storyStyles.column}>
-        <Select label='Default' options={defaultOptions} />
-        <Select label='With value' defaultValue='fr' options={defaultOptions} />
-        <Select
-          label='Required'
-          required
-          placeholder='Required select'
-          options={defaultOptions}
-        />
-        <Select
-          label='Disabled'
-          defaultValue='fr'
-          disabled
-          options={defaultOptions}
-        />
-        <Select
-          label='Error'
-          error='This field is required.'
-          options={defaultOptions}
-        />
-      </View>
+        label='Billing country'
+        description='Used for invoices and tax documents.'
+        accessibilityLabel='Billing country'
+        accessibilityHint='Opens a list of countries'
+        required
+      >
+        {renderCountryItems()}
+      </Select>
     </Section>
   ),
 };
