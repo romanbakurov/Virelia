@@ -563,6 +563,35 @@ export const Playground: Story = {
   ),
 };
 
+export const Default: Story = {
+  render: (args) => (
+    <Section title='Default'>
+      <ActionDropdown {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const Uncontrolled: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Uncontrolled'>
+      <ActionDropdown {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const IconOnly: Story = {
+  render: (args) => (
+    <Section title='Icon only'>
+      <ActionDropdown {...args} trigger='More actions' minWidth={220}>
+        {renderActionItems()}
+      </ActionDropdown>
+    </Section>
+  ),
+};
+
 export const SimpleUsage: Story = {
   render: () => (
     <Section title='Simple usage'>
@@ -621,7 +650,7 @@ export const AdvancedUsage: Story = {
 export const AsChildTrigger: Story = {
   render: () => (
     <Section title='asChild trigger'>
-      <Dropdown placement='bottom-end' minWidth={220}>
+      <Dropdown placement='bottom-start' minWidth={220}>
         <Dropdown.Trigger asChild>
           <Button appearance='soft' color='neutral' iconStart={<More />}>
             More actions

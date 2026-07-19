@@ -45,6 +45,15 @@ $dropdown-item-colors: primary, success, warning, danger;
   box-shadow: inset 0 0 0 1px var(--dropdown-item-current-active-ring);
 }
 
+.item:hover:not(.disabled),
+.item:active:not(.disabled),
+.item.active:not(:focus-visible) {
+  .itemShortcut,
+  .itemDescription {
+    opacity: 1;
+  }
+}
+
 @each $color in $dropdown-item-colors {
   .item.#{$color} {
     --dropdown-item-current-fg: var(--dropdown-#{$color}-item-fg);
