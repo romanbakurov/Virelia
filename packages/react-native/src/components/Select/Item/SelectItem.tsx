@@ -21,6 +21,12 @@ const renderNodeOrText = (
     return <Text style={textStyle}>{node}</Text>;
   }
 
+  if (isValidElement<{ style?: object }>(node) && node.type === Text) {
+    return cloneElement(node, {
+      style: [textStyle, node.props.style],
+    });
+  }
+
   return node ?? (fallback ? <Text style={textStyle}>{fallback}</Text> : null);
 };
 

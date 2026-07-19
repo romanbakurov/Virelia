@@ -238,8 +238,6 @@ function ControlledOpenSelect() {
 }
 
 function CustomRenderSelect() {
-  const { theme } = useTheme();
-
   return (
     <Select
       label='Assignee'
@@ -247,19 +245,11 @@ function CustomRenderSelect() {
       startIcon={<User />}
       renderValue={(option) =>
         option && !Array.isArray(option) ? (
-          <Text style={{ color: theme.semantic.text.primary }}>
-            Assigned to {option.label}
-          </Text>
+          <Text>Assigned to {option.label}</Text>
         ) : null
       }
       renderOption={(option, state) => (
-        <Text
-          style={{
-            color: state.selected
-              ? theme.components.select.primary.outline.option.selected.fg
-              : theme.components.select.option.default.fg,
-          }}
-        >
+        <Text>
           {state.selected ? 'Selected ' : ''}
           {option.label}
         </Text>

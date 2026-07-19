@@ -89,6 +89,40 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('keeps the previously selected single option visible after reopening', () => {
+    const { container, unmount } = render(
+      <Select label='Country'>
+        <Select.Item value='fr' label='France' />
+        <Select.Item value='de' label='Germany' />
+        <Select.Item value='es' label='Spain' />
+      </Select>
+    );
+
+    openSelect(container);
+
+    act(() => {
+      getButtonByText('France')?.click();
+    });
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
+
+    act(() => {
+      getButtonByText('Spain')?.click();
+    });
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Germany');
+    expect(document.body.textContent).toContain('Spain');
+
+    unmount();
+  });
+
   it('keeps the legacy options fallback working', () => {
     const onValueChange = vi.fn();
 
@@ -372,6 +406,34 @@ describe('Native Select', () => {
     });
 
     expect(onValueChange).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  it('keeps previously selected multiple options visible after another selection', () => {
+    const { container, unmount } = render(
+      <Select
+        label='Teams'
+        multiple
+        closeOnSelect={false}
+        defaultValue={['fr']}
+      >
+        <Select.Item value='fr' label='France' />
+        <Select.Item value='es' label='Spain' />
+        <Select.Item value='it' label='Italy' />
+      </Select>
+    );
+
+    openSelect(container);
+
+    act(() => {
+      getButtonByText('Spain')?.click();
+    });
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Spain');
+    expect(document.body.textContent).toContain('Italy');
+    expect(container.textContent).toContain('France, Spain');
 
     unmount();
   });

@@ -71,6 +71,39 @@ export function SelectTrigger({
       ? cloneElement(icon, { color: iconColor, size: resolvedIconSize })
       : null;
 
+  const renderValue = () => {
+    const valueStyle = [
+      styles.text,
+      textSizeStyle[size],
+      { color: triggerState.fg },
+      isPlaceholder && { color: triggerState.placeholder },
+      disabled && {
+        color: theme.components.select.trigger.disabled.fg,
+      },
+      textStyle,
+    ];
+
+    if (typeof displayText === 'string' || typeof displayText === 'number') {
+      return (
+        <Text numberOfLines={1} style={valueStyle}>
+          {displayText}
+        </Text>
+      );
+    }
+
+    if (
+      isValidElement<{ style?: object; numberOfLines?: number }>(displayText) &&
+      displayText.type === Text
+    ) {
+      return cloneElement(displayText, {
+        numberOfLines: displayText.props.numberOfLines ?? 1,
+        style: [valueStyle, displayText.props.style],
+      });
+    }
+
+    return displayText;
+  };
+
   return (
     <Pressable
       nativeID={nativeID}
@@ -124,27 +157,7 @@ export function SelectTrigger({
 
       {prefix && <Text style={styles.affix}>{prefix}</Text>}
 
-      <View style={styles.value}>
-        {typeof displayText === 'string' || typeof displayText === 'number' ? (
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.text,
-              textSizeStyle[size],
-              { color: triggerState.fg },
-              isPlaceholder && { color: triggerState.placeholder },
-              disabled && {
-                color: theme.components.select.trigger.disabled.fg,
-              },
-              textStyle,
-            ]}
-          >
-            {displayText}
-          </Text>
-        ) : (
-          displayText
-        )}
-      </View>
+      <View style={styles.value}>{renderValue()}</View>
 
       {suffix && <Text style={styles.affix}>{suffix}</Text>}
 
