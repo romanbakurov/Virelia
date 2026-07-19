@@ -245,9 +245,9 @@ describe('Select', () => {
       trigger?.click();
     });
 
-    expect(document.querySelector('[role="listbox"]')?.className).toContain(
-      'compound-content'
-    );
+    expect(
+      document.querySelector('[role="listbox"]')?.parentElement?.className
+    ).toContain('compound-content');
 
     act(() => {
       document.getElementById('country-listbox-option-1')?.click();
@@ -792,11 +792,13 @@ describe('Select', () => {
 
     const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
     const listbox = document.querySelector('[role="listbox"]');
+    const dropdown = listbox?.parentElement;
 
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(trigger?.className).toContain('custom-trigger');
     expect(trigger?.className).toContain('lg');
-    expect(listbox?.className).toContain('custom-dropdown');
+    expect(dropdown?.className).toContain('custom-dropdown');
+    expect(listbox?.className).not.toContain('custom-dropdown');
 
     act(() => {
       trigger?.click();
@@ -1116,7 +1118,7 @@ describe('Select', () => {
     });
   });
 
-  it('supports clearable, searchable, loading, and rich option content', () => {
+  it('supports clearable, searchable, loading, and rich option content', async () => {
     const onValueChange = vi.fn();
     const onSearch = vi.fn();
     const onClear = vi.fn();
@@ -1169,12 +1171,22 @@ describe('Select', () => {
       '[aria-label="Search options"]'
     );
 
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    });
+
+    expect(document.activeElement).toBe(search);
+
     act(() => {
       search!.value = 'fra';
       search?.dispatchEvent(new Event('input', { bubbles: true }));
     });
 
     expect(onSearch).toHaveBeenCalledWith('fra');
+    expect(trigger?.textContent).toContain('Germany');
+    expect(trigger?.getAttribute('aria-activedescendant')).toBe(
+      'country-listbox-option-0'
+    );
     expect(document.querySelector('[role="listbox"]')?.textContent).toContain(
       'France'
     );
@@ -1532,7 +1544,7 @@ describe('Select', () => {
     });
   });
 
-  it('lets searchable input handle text keys without trigger typeahead', () => {
+  it('lets searchable input handle text keys without trigger typeahead', async () => {
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -1555,7 +1567,10 @@ describe('Select', () => {
     const search = document.querySelector<HTMLInputElement>(
       '[aria-label="Search options"]'
     );
-    const activeBeforeSearch = trigger?.getAttribute('aria-activedescendant');
+
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+    });
 
     act(() => {
       search?.focus();
@@ -1568,8 +1583,11 @@ describe('Select', () => {
 
     expect(search?.value).toBe('s');
     expect(trigger?.getAttribute('aria-activedescendant')).toBe(
-      activeBeforeSearch
+      'country-listbox-option-0'
     );
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('Spain');
 
     act(() => {
       root.unmount();

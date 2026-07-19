@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { cn } from '@utils/cn';
 import { Close } from '@vellira-ui/icons';
@@ -20,6 +20,16 @@ export const SelectSearch: SelectSlotComponent<SelectSearchProps> = ({
   const { contentProps } = useSelectContext();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchValue = contentProps.searchValue ?? '';
+
+  useEffect(() => {
+    if (!contentProps.isOpen) return;
+
+    const focusTimerId = window.setTimeout(() => {
+      searchInputRef.current?.focus({ preventScroll: true });
+    }, 0);
+
+    return () => window.clearTimeout(focusTimerId);
+  }, [contentProps.isOpen]);
 
   return (
     <div className={styles.searchWrap}>

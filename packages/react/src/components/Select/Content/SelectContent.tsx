@@ -114,6 +114,16 @@ export const SelectContentSurface = ({
   }, [isOpen, searchValue]);
 
   useEffect(() => {
+    if (!isOpen || !searchable) return;
+
+    const focusTimerId = window.setTimeout(() => {
+      searchInputRef.current?.focus({ preventScroll: true });
+    }, 0);
+
+    return () => window.clearTimeout(focusTimerId);
+  }, [isOpen, searchable]);
+
+  useEffect(() => {
     if (!isOpen || loading || !dropdownNode || didPositionOnOpenRef.current) {
       return;
     }
@@ -229,7 +239,6 @@ export const SelectContentSurface = ({
         role='listbox'
         aria-multiselectable={multiple || undefined}
         aria-labelledby={labelledById}
-        className={className}
       >
         {loading ? (
           <li

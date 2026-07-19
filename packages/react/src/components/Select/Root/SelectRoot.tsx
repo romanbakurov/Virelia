@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -115,8 +116,6 @@ export const SelectRoot = ({
   const {
     selectedValue,
     selectedValues,
-    selectedOption,
-    selectedOptions,
     isOpen,
     setIsOpen,
     setSelectedValue,
@@ -141,6 +140,16 @@ export const SelectRoot = ({
     onOpenChange,
   });
 
+  const selectedOption = useMemo(
+    () =>
+      resolvedOptions.find((option) => selectedValues.includes(option.value)),
+    [resolvedOptions, selectedValues]
+  );
+  const selectedOptions = useMemo(
+    () =>
+      resolvedOptions.filter((option) => selectedValues.includes(option.value)),
+    [resolvedOptions, selectedValues]
+  );
   const hasSelectedOption = !!selectedOption;
   const singleSelectedValue = Array.isArray(selectedValue)
     ? (selectedValue[0] ?? '')
@@ -243,13 +252,13 @@ export const SelectRoot = ({
 
   const handleTriggerKeyDown = useCallback(
     (event: KeyboardEvent<HTMLButtonElement>) => {
-      if (shouldShowActiveOption(event)) {
+      if (shouldShowActiveOption(event, isOpen)) {
         setIsActiveOptionVisible(true);
       }
 
       onKeyDown(event);
     },
-    [onKeyDown]
+    [isOpen, onKeyDown]
   );
 
   const handleOptionMouseEnter = useCallback(
@@ -275,6 +284,12 @@ export const SelectRoot = ({
       setIsActiveOptionVisible(false);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen && searchValue) {
+      setSearchValue('');
+    }
+  }, [isOpen, searchValue]);
 
   useEffect(() => {
     if (!modal || !isOpen) return;
@@ -459,8 +474,20 @@ export const SelectRoot = ({
 
 SelectRoot.displayName = 'SelectRoot';
 
-function shouldShowActiveOption(event: KeyboardEvent<HTMLButtonElement>) {
+function shouldShowActiveOption(
+  event: KeyboardEvent<HTMLButtonElement>,
+  isOpen: boolean
+) {
   if (event.altKey || event.ctrlKey || event.metaKey) return false;
+
+  if (!isOpen) {
+    return (
+      event.key === 'ArrowDown' ||
+      event.key === 'ArrowUp' ||
+      event.key === 'Enter' ||
+      event.key === ' '
+    );
+  }
 
   return (
     event.key === 'ArrowDown' ||
