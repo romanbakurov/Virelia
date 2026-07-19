@@ -137,15 +137,54 @@
   border: 1px solid var(--select-option-shortcut-border);
 }
 
+@mixin option-color-state($color) {
+  --select-option-current-active-bg: var(
+    --select-#{$color}-outline-option-active-bg
+  );
+  --select-option-current-active-fg: var(
+    --select-#{$color}-outline-option-active-fg
+  );
+  --select-option-current-active-border: var(
+    --select-#{$color}-outline-option-active-border
+  );
+  --select-option-current-active-ring: var(
+    --select-#{$color}-outline-option-active-ring
+  );
+  --select-option-current-hover-bg: var(
+    --select-#{$color}-outline-option-hover-bg
+  );
+  --select-option-current-hover-fg: var(
+    --select-#{$color}-outline-option-hover-fg
+  );
+  --select-option-current-hover-border: var(
+    --select-#{$color}-outline-option-hover-border
+  );
+  --select-option-current-pressed-bg: var(
+    --select-#{$color}-outline-option-pressed-bg
+  );
+  --select-option-current-pressed-fg: var(
+    --select-#{$color}-outline-option-pressed-fg
+  );
+  --select-option-current-pressed-border: var(
+    --select-#{$color}-outline-option-pressed-border
+  );
+}
+
 .success {
+  @include option-color-state(success);
+
   color: var(--select-option-success-fg);
 }
 
 .warning {
+  @include option-color-state(warning);
+
   color: var(--select-option-warning-fg);
 }
 
 .danger {
+  @include option-color-state(danger);
+
   color: var(--select-option-danger-fg);
 }
 
