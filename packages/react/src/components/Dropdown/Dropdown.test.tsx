@@ -480,13 +480,63 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('opens submenu from click and cancels delayed hover opening on leave', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Sub>
+            <Dropdown.SubTrigger>Export</Dropdown.SubTrigger>
+            <Dropdown.SubContent>
+              <Dropdown.Item>Export as PDF</Dropdown.Item>
+            </Dropdown.SubContent>
+          </Dropdown.Sub>
+          <Dropdown.Item>Rename</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const subTrigger = document.querySelector<HTMLElement>('[role="menuitem"]');
+
+    act(() => {
+      subTrigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+          relatedTarget: document.body,
+        })
+      );
+      subTrigger?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+          relatedTarget: document.body,
+        })
+      );
+      vi.advanceTimersByTime(120);
+    });
+
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(1);
+
+    act(() => subTrigger?.click());
+
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(2);
+
+    unmount();
+    vi.useRealTimers();
+  });
+
   it('opens rich submenu from hover and renders submenu structure', () => {
     vi.useFakeTimers();
 
     const onCheckedChange = vi.fn();
     const onValueChange = vi.fn();
     const { container, unmount } = render(
-      <Dropdown>
+      <Dropdown closeOnSelect={false}>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
         <Dropdown.Content>
           <Dropdown.Sub>
@@ -570,6 +620,70 @@ describe('Dropdown', () => {
 
     expect(onCheckedChange).toHaveBeenCalledWith(false);
     expect(onValueChange).toHaveBeenCalledWith('private');
+
+    const subMenu = document.querySelectorAll<HTMLElement>('[role="menu"]')[1];
+
+    act(() => {
+      subMenu?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    });
+
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(2);
+
+    unmount();
+    vi.useRealTimers();
+  });
+
+  it('prevents disabled submenu item selection', () => {
+    vi.useFakeTimers();
+
+    const onSelect = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Sub>
+            <Dropdown.SubTrigger>Export</Dropdown.SubTrigger>
+            <Dropdown.SubContent>
+              <Dropdown.Item disabled onSelect={onSelect}>
+                Export disabled
+              </Dropdown.Item>
+            </Dropdown.SubContent>
+          </Dropdown.Sub>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const subTrigger = document.querySelector<HTMLElement>('[role="menuitem"]');
+
+    act(() => {
+      subTrigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+          relatedTarget: document.body,
+        })
+      );
+      vi.advanceTimersByTime(120);
+    });
+
+    const disabledItem = Array.from(
+      document.querySelectorAll<HTMLElement>('[role="menuitem"]')
+    ).find((item) => item.textContent?.includes('Export disabled'));
+    const clickEvent = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    act(() => {
+      disabledItem?.dispatchEvent(clickEvent);
+    });
+
+    expect(clickEvent.defaultPrevented).toBe(true);
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(document.querySelectorAll('[role="menu"]')).toHaveLength(2);
 
     unmount();
     vi.useRealTimers();
