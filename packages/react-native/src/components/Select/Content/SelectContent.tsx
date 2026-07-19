@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { FlatList as NativeFlatList } from 'react-native';
 import { FlatList, Pressable, Text, View } from 'react-native';
@@ -30,6 +30,7 @@ export const SelectContentSurface = () => {
   const styles = useThemeStyles(createContentStyles);
   const listRef = useRef<NativeFlatList<SelectCollectionRow> | null>(null);
   const didScrollToSelectedRef = useRef(false);
+  const [listHeight, setListHeight] = useState(0);
   const context = useSelectContext();
   const {
     isOpen,
@@ -65,17 +66,42 @@ export const SelectContentSurface = () => {
 
     if (!shouldScrollToSelected || didScrollToSelectedRef.current) return;
 
-    const scrollTimer = setTimeout(() => {
+    const scrollToSelected = () => {
+      didScrollToSelectedRef.current = true;
+      const effectiveListHeight = listHeight || 420;
+      const centeredOffset = Math.max(
+        0,
+        selectedRowIndex * itemHeight -
+          Math.max(0, effectiveListHeight - itemHeight) / 2
+      );
+
+      listRef.current?.scrollToOffset({
+        offset: centeredOffset,
+        animated: false,
+      });
       listRef.current?.scrollToIndex({
         index: selectedRowIndex,
         animated: false,
         viewPosition: 0.5,
       });
-      didScrollToSelectedRef.current = true;
-    }, 0);
+    };
 
-    return () => clearTimeout(scrollTimer);
-  }, [isOpen, selectedRowIndex, shouldScrollToSelected]);
+    const scrollTimers = [0, 50, 120].map((delay) =>
+      setTimeout(() => {
+        scrollToSelected();
+      }, delay)
+    );
+
+    return () => {
+      scrollTimers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [
+    isOpen,
+    itemHeight,
+    listHeight,
+    selectedRowIndex,
+    shouldScrollToSelected,
+  ]);
 
   const renderRow = ({ item }: { item: SelectCollectionRow }) => {
     if (item.type === 'group') {
@@ -168,6 +194,9 @@ export const SelectContentSurface = () => {
           keyExtractor={(item) => item.key}
           renderItem={renderRow}
           style={styles.list}
+          onLayout={(event) => {
+            setListHeight(event.nativeEvent.layout.height);
+          }}
           contentContainerStyle={styles.listContent}
           keyboardShouldPersistTaps='handled'
           initialNumToRender={

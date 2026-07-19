@@ -571,7 +571,7 @@ export const LongVirtualizedList: Story = {
       <Select
         label='Country'
         searchable
-        virtual={{ estimatedItemSize: 52, initialNumToRender: 16 }}
+        virtual={{ estimatedItemSize: 54, initialNumToRender: 16 }}
         defaultValue='country-24'
         options={longItems}
       />

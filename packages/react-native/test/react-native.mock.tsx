@@ -374,6 +374,7 @@ type FlatListHandle = {
     animated?: boolean;
     viewPosition?: number;
   }) => void;
+  scrollToOffset: (params: { offset: number; animated?: boolean }) => void;
 };
 
 type FlatListProps<T> = NativeProps & {
@@ -391,18 +392,45 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
       style,
       contentContainerStyle,
       testID,
+      onLayout,
     }: FlatListProps<unknown>,
     ref
   ) {
     const [scrolledIndex, setScrolledIndex] = useState<number | undefined>();
+    const [scrolledOffset, setScrolledOffset] = useState<number | undefined>();
     const [scrollViewPosition, setScrollViewPosition] = useState<
       number | undefined
     >();
+
+    const resolvedStyle = flattenStyle(style);
+
+    useEffect(() => {
+      onLayout?.({
+        nativeEvent: {
+          layout: {
+            width: Number(resolvedStyle?.width ?? 0),
+            height: Number(
+              resolvedStyle?.height ?? resolvedStyle?.maxHeight ?? 0
+            ),
+            x: 0,
+            y: 0,
+          },
+        },
+      });
+    }, [
+      onLayout,
+      resolvedStyle?.height,
+      resolvedStyle?.maxHeight,
+      resolvedStyle?.width,
+    ]);
 
     useImperativeHandle(ref, () => ({
       scrollToIndex: ({ index, viewPosition }) => {
         setScrolledIndex(index);
         setScrollViewPosition(viewPosition);
+      },
+      scrollToOffset: ({ offset }) => {
+        setScrolledOffset(offset);
       },
     }));
 
@@ -410,9 +438,10 @@ const FlatListComponent = forwardRef<FlatListHandle, FlatListProps<unknown>>(
       <div
         data-testid={testID ?? 'native-flat-list'}
         data-scroll-to-index={scrolledIndex}
+        data-scroll-to-offset={scrolledOffset}
         data-scroll-view-position={scrollViewPosition}
         data-keyboard-should-persist-taps={undefined}
-        style={flattenStyle(style)}
+        style={resolvedStyle}
       >
         <div style={flattenStyle(contentContainerStyle)}>
           {(data ?? []).map((item, index) => (

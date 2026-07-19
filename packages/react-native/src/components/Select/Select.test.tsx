@@ -66,6 +66,9 @@ const changeInputValue = (input: HTMLInputElement | null, value: string) => {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
+const waitForSelectScroll = () =>
+  new Promise((resolve) => setTimeout(resolve, 130));
+
 afterEach(() => {
   document.body.innerHTML = '';
 });
@@ -337,7 +340,7 @@ describe('Native Select', () => {
     expect(list?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForSelectScroll();
     });
 
     expect(list?.getAttribute('data-scroll-to-index')).toBe('11');
@@ -360,7 +363,7 @@ describe('Native Select', () => {
     openSelect(container);
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForSelectScroll();
     });
 
     act(() => {
@@ -378,7 +381,7 @@ describe('Native Select', () => {
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBeNull();
 
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForSelectScroll();
     });
 
     expect(reopenedList?.getAttribute('data-scroll-to-index')).toBe('15');
