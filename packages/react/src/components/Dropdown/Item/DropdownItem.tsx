@@ -67,6 +67,7 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
         ? item.props.rel
         : undefined;
   const Component = href ? 'a' : 'li';
+  const hasIndicator = isCheckbox || isRadio;
 
   const handleSelect = (event: MouseEvent<HTMLElement>) => {
     if (disabled) {
@@ -105,9 +106,9 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
           {
             [styles.active]: isActive,
             [styles.disabled]: disabled,
-            [styles.danger]: itemColor === 'danger',
             [styles.checked]: isChecked,
           },
+          itemColor && itemColor !== 'default' ? styles[itemColor] : undefined,
           props.className
         )}
         onClick={handleSelect}
@@ -121,9 +122,11 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
           }
         }}
       >
-        <span className={styles.indicator} aria-hidden='true'>
-          {(isCheckbox || isRadio) && isChecked ? <Check /> : null}
-        </span>
+        {hasIndicator && (
+          <span className={styles.indicator} aria-hidden='true'>
+            {isChecked ? <Check /> : null}
+          </span>
+        )}
 
         {icon && <span className={styles.itemIcon}>{icon}</span>}
 
@@ -215,6 +218,7 @@ function SubMenuItemRow({
   const slots = getItemCompoundSlots(props.children);
   const icon = slots.icon ?? props.icon;
   const content = slots.content.length ? slots.content : props.children;
+  const itemColor = 'color' in props ? props.color : undefined;
   const disabled = context.loading || item.disabled;
 
   return (
@@ -223,17 +227,20 @@ function SubMenuItemRow({
       role='menuitem'
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled || undefined}
-      className={cn(styles.item, styles[context.size], {
-        [styles.disabled]: disabled,
-        [styles.danger]: 'color' in props && props.color === 'danger',
-      })}
+      className={cn(
+        styles.item,
+        styles[context.size],
+        {
+          [styles.disabled]: disabled,
+        },
+        itemColor && itemColor !== 'default' ? styles[itemColor] : undefined
+      )}
       onClick={(event) => {
         if (disabled) return;
 
         context.selectItem(item, createDropdownSelectEvent(event));
       }}
     >
-      <span className={styles.indicator} aria-hidden='true' />
       {icon && <span className={styles.itemIcon}>{icon}</span>}
       <span className={styles.itemText}>
         <span className={styles.itemLabel}>{content}</span>

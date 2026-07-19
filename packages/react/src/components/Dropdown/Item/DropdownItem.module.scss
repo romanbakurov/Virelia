@@ -1,5 +1,7 @@
 @use '@styles/mixins' as *;
 
+$dropdown-item-colors: primary, success, warning, danger;
+
 .item {
   position: relative;
   box-sizing: border-box;
@@ -7,8 +9,8 @@
   align-items: center;
   width: 100%;
   min-width: 0;
-  min-height: 36px;
-  padding: var(--space-2) var(--space-3);
+  min-height: 42px;
+  padding: 9px calc(var(--space-3) + var(--space-2) - 4px);
   gap: var(--space-3);
   color: var(--dropdown-item-default-fg);
   font-size: var(--font-size-md);
@@ -23,43 +25,44 @@
   @include smooth-transition((color, background-color, box-shadow));
 
   &:hover:not(.disabled) {
-    color: var(--dropdown-item-hover-fg);
-    background-color: var(--dropdown-item-hover-bg);
+    color: var(--dropdown-item-current-hover-fg);
+    background-color: var(--dropdown-item-current-hover-bg);
   }
 
   &:active:not(.disabled) {
-    color: var(--dropdown-item-pressed-fg);
-    background-color: var(--dropdown-item-pressed-bg);
+    color: var(--dropdown-item-current-pressed-fg);
+    background-color: var(--dropdown-item-current-pressed-bg);
   }
 
   &:focus-visible:not(.disabled) {
-    @include focus-ring(var(--dropdown-item-focus-ring-color));
+    @include focus-ring(var(--dropdown-content-current-ring));
   }
 }
 
 .item.active:not(:focus-visible) {
-  color: var(--dropdown-item-active-fg);
-  background-color: var(--dropdown-item-active-bg);
-  box-shadow: inset 0 0 0 1px var(--dropdown-item-active-ring);
+  color: var(--dropdown-item-current-active-fg);
+  background-color: var(--dropdown-item-current-active-bg);
+  box-shadow: inset 0 0 0 1px var(--dropdown-item-current-active-ring);
 }
 
-.item.danger {
-  color: var(--dropdown-item-danger-default-fg);
+@each $color in $dropdown-item-colors {
+  .item.#{$color} {
+    --dropdown-item-current-fg: var(--dropdown-#{$color}-item-fg);
+    --dropdown-item-current-active-bg: var(--dropdown-#{$color}-item-active-bg);
+    --dropdown-item-current-active-fg: var(--dropdown-#{$color}-item-active-fg);
+    --dropdown-item-current-active-ring: var(
+      --dropdown-#{$color}-item-active-ring
+    );
+    --dropdown-item-current-hover-bg: var(--dropdown-#{$color}-item-hover-bg);
+    --dropdown-item-current-hover-fg: var(--dropdown-#{$color}-item-hover-fg);
+    --dropdown-item-current-pressed-bg: var(
+      --dropdown-#{$color}-item-pressed-bg
+    );
+    --dropdown-item-current-pressed-fg: var(
+      --dropdown-#{$color}-item-pressed-fg
+    );
 
-  &:hover:not(.disabled) {
-    color: var(--dropdown-item-danger-hover-fg);
-    background-color: var(--dropdown-item-danger-hover-bg);
-  }
-
-  &:active:not(.disabled) {
-    color: var(--dropdown-item-danger-active-fg);
-    background-color: var(--dropdown-item-danger-active-bg);
-  }
-
-  &.active:not(:focus-visible) {
-    color: var(--dropdown-item-danger-active-fg);
-    background-color: var(--dropdown-item-danger-active-bg);
-    box-shadow: inset 0 0 0 1px var(--dropdown-item-danger-active-ring);
+    color: var(--dropdown-item-current-fg);
   }
 }
 
@@ -96,12 +99,13 @@
 }
 
 .item.md {
-  min-height: 36px;
+  min-height: 42px;
 }
 
 .item.lg {
   min-height: 44px;
-  padding: var(--space-3) var(--space-4);
+  padding: calc(var(--space-3) + var(--space-2) - 4px)
+    calc(var(--space-4) + var(--space-2) - 4px);
   font-size: var(--font-size-lg);
   line-height: var(--line-height-lg);
 }
@@ -144,12 +148,12 @@
 .itemBadge {
   flex: 0 0 auto;
   padding: 1px var(--space-2);
-  color: inherit;
+  color: var(--dropdown-item-current-badge-fg);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
-  border: 1px solid currentcolor;
+  background: var(--dropdown-item-current-badge-bg);
+  border: 1px solid var(--dropdown-item-current-badge-border);
   border-radius: var(--radius-sm);
-  opacity: 0.82;
 }
 
 .itemIcon {
@@ -196,22 +200,27 @@
   left: calc(100% + var(--space-1));
   z-index: calc(var(--z-index-dropdown) + 1);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 180px;
   max-width: min(320px, calc(100vw - var(--space-4)));
   max-height: min(300px, calc(100vh - var(--space-4)));
   margin: 0;
-  padding: var(--space-1);
+  padding: 4px;
   overflow: hidden auto;
   color: var(--dropdown-content-fg);
   background-color: var(--dropdown-content-bg);
-  border: 1px solid var(--dropdown-content-border);
+  border: 1px solid var(--dropdown-content-current-border);
   border-radius: var(--radius-md);
   box-shadow: var(--dropdown-content-shadow);
   list-style: none;
 }
 
 .subLabel {
-  padding: var(--space-2) var(--space-3) var(--space-1);
+  padding: calc(var(--space-2) + var(--space-2) - 4px)
+    calc(var(--space-3) + var(--space-2) - 4px)
+    calc(var(--space-1) + var(--space-2) - 4px);
   color: var(--dropdown-group-label-fg);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);

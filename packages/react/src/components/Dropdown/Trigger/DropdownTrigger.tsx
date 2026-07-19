@@ -1,6 +1,7 @@
 import { cloneElement, isValidElement } from 'react';
 
 import { cn } from '@utils/cn';
+import { ChevronDown } from '@vellira-ui/icons';
 import type {
   HTMLAttributes,
   KeyboardEventHandler,
@@ -59,6 +60,7 @@ export const DropdownTriggerSurface = ({
     className: cn(
       !child && styles.button,
       !child && styles[root.size],
+      !child && styles[root.color],
       className
     ),
     'data-state': trigger.isOpen ? 'open' : 'closed',
@@ -82,7 +84,15 @@ export const DropdownTriggerSurface = ({
 
   return (
     <button type='button' {...triggerProps}>
-      {children}
+      <span className={styles.label}>{children}</span>
+      <span
+        className={cn(styles.arrow, {
+          [styles.open]: trigger.isOpen,
+        })}
+        aria-hidden='true'
+      >
+        <ChevronDown />
+      </span>
     </button>
   );
 };

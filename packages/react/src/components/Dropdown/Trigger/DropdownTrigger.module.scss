@@ -1,6 +1,38 @@
 @use '@styles/mixins' as *;
 
+$dropdown-colors: primary, neutral, success, warning, danger;
+
 .button {
+  --dropdown-trigger-current-default-bg: var(
+    --dropdown-primary-trigger-default-bg
+  );
+  --dropdown-trigger-current-default-fg: var(
+    --dropdown-primary-trigger-default-fg
+  );
+  --dropdown-trigger-current-default-border: var(
+    --dropdown-primary-trigger-default-border
+  );
+  --dropdown-trigger-current-default-icon: var(
+    --dropdown-primary-trigger-default-icon
+  );
+  --dropdown-trigger-current-hover-bg: var(--dropdown-primary-trigger-hover-bg);
+  --dropdown-trigger-current-hover-fg: var(--dropdown-primary-trigger-hover-fg);
+  --dropdown-trigger-current-hover-border: var(
+    --dropdown-primary-trigger-hover-border
+  );
+  --dropdown-trigger-current-hover-icon: var(
+    --dropdown-primary-trigger-hover-icon
+  );
+  --dropdown-trigger-current-focus-bg: var(--dropdown-primary-trigger-focus-bg);
+  --dropdown-trigger-current-focus-fg: var(--dropdown-primary-trigger-focus-fg);
+  --dropdown-trigger-current-focus-border: var(
+    --dropdown-primary-trigger-focus-border
+  );
+  --dropdown-trigger-current-focus-icon: var(
+    --dropdown-primary-trigger-focus-icon
+  );
+  --dropdown-trigger-current-ring: var(--dropdown-primary-ring);
+
   box-sizing: border-box;
   display: inline-flex;
   justify-content: space-between;
@@ -10,11 +42,11 @@
   min-height: 32px;
   max-width: 100%;
   padding: var(--space-2);
-  color: var(--dropdown-trigger-default-fg);
+  color: var(--dropdown-trigger-current-default-fg);
   line-height: var(--line-height-md);
-  background: var(--dropdown-trigger-default-bg);
-  border: 2px solid var(--dropdown-trigger-default-border);
-  border-radius: var(--radius-lg);
+  background: var(--dropdown-trigger-current-default-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
   cursor: pointer;
   overflow: hidden;
 
@@ -23,20 +55,25 @@
   );
 
   &:focus-visible:not(.disabled) {
-    color: var(--dropdown-trigger-focus-fg);
-    background: var(--dropdown-trigger-focus-bg);
+    color: var(--dropdown-trigger-current-focus-fg);
+    background: var(--dropdown-trigger-current-focus-bg);
 
-    @include focus-border(
-      var(--dropdown-trigger-focus-border),
-      var(--dropdown-trigger-focus-ring-color)
-    );
-    @include focus-ring(var(--dropdown-trigger-focus-ring-color));
+    @include focus-border(transparent, var(--dropdown-trigger-current-ring));
+    @include focus-ring(var(--dropdown-trigger-current-ring));
+
+    .arrow {
+      color: var(--dropdown-trigger-current-focus-icon);
+    }
   }
 
   &:hover:not(.disabled) {
-    color: var(--dropdown-trigger-hover-fg);
-    background: var(--dropdown-trigger-hover-bg);
-    border-color: var(--dropdown-trigger-hover-border);
+    color: var(--dropdown-trigger-current-hover-fg);
+    background: var(--dropdown-trigger-current-hover-bg);
+    border-color: transparent;
+
+    .arrow {
+      color: var(--dropdown-trigger-current-hover-icon);
+    }
 
     .iconLeft svg {
       color: currentcolor;
@@ -71,6 +108,48 @@
         transform: rotate(var(--dropdown-rotate-angle, 90deg));
       }
     }
+  }
+}
+
+@each $color in $dropdown-colors {
+  .#{$color} {
+    --dropdown-trigger-current-default-bg: var(
+      --dropdown-#{$color}-trigger-default-bg
+    );
+    --dropdown-trigger-current-default-fg: var(
+      --dropdown-#{$color}-trigger-default-fg
+    );
+    --dropdown-trigger-current-default-border: var(
+      --dropdown-#{$color}-trigger-default-border
+    );
+    --dropdown-trigger-current-default-icon: var(
+      --dropdown-#{$color}-trigger-default-icon
+    );
+    --dropdown-trigger-current-hover-bg: var(
+      --dropdown-#{$color}-trigger-hover-bg
+    );
+    --dropdown-trigger-current-hover-fg: var(
+      --dropdown-#{$color}-trigger-hover-fg
+    );
+    --dropdown-trigger-current-hover-border: var(
+      --dropdown-#{$color}-trigger-hover-border
+    );
+    --dropdown-trigger-current-hover-icon: var(
+      --dropdown-#{$color}-trigger-hover-icon
+    );
+    --dropdown-trigger-current-focus-bg: var(
+      --dropdown-#{$color}-trigger-focus-bg
+    );
+    --dropdown-trigger-current-focus-fg: var(
+      --dropdown-#{$color}-trigger-focus-fg
+    );
+    --dropdown-trigger-current-focus-border: var(
+      --dropdown-#{$color}-trigger-focus-border
+    );
+    --dropdown-trigger-current-focus-icon: var(
+      --dropdown-#{$color}-trigger-focus-icon
+    );
+    --dropdown-trigger-current-ring: var(--dropdown-#{$color}-ring);
   }
 }
 
@@ -113,7 +192,7 @@
   }
 }
 
-.button > :not(.iconLeft, .arrow) {
+.label {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,6 +218,7 @@
 
 .arrow {
   margin-left: auto;
+  color: var(--dropdown-trigger-current-default-icon);
 }
 
 .open {

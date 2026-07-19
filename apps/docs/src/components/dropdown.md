@@ -15,7 +15,7 @@ Use Dropdown when several actions share the same trigger and do not need to be
 visible all the time. Use Select when the user is choosing a saved value.
 
 ```tsx
-<Dropdown placement='bottom-end'>
+<Dropdown color='primary' placement='bottom-end'>
   <Dropdown.Trigger asChild>
     <Button appearance='outline' color='neutral'>
       Actions
