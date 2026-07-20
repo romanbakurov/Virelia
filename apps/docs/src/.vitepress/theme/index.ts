@@ -1,5 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
 import StorybookFrame from './StorybookFrame.vue';
+import '@vellira-ui/assets/styles';
 import './styles.css';
 
 export default {
