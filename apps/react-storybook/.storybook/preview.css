@@ -1,0 +1,23 @@
+:root,
+body,
+#storybook-root,
+#storybook-docs {
+  font-family: var(--font-family-base);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-family-base);
+}
+
+:where(.sbdocs, .sbdocs *, .docs-story, .docs-story *):not(
+  pre,
+  pre *,
+  code,
+  kbd,
+  samp
+) {
+  font-family: var(--font-family-base);
+}
