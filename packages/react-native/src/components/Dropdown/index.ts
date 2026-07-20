@@ -10,7 +10,6 @@ export type {
   DropdownGroupProps,
   DropdownItemProps,
   DropdownLabelProps,
-  DropdownPortalProps,
   DropdownPresentation,
   DropdownProps,
   DropdownSearchProps,

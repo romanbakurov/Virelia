@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { useTheme } from '../../theme';
 
 import { Dropdown } from './Dropdown';
@@ -401,6 +402,31 @@ export const CompoundApi: Story = {
             Delete
           </Dropdown.Item>
         </Dropdown.Content>
+      </Dropdown>
+    </Section>
+  ),
+};
+
+export const ExplicitPortal: Story = {
+  render: (args) => (
+    <Section title='Explicit Portal'>
+      <Dropdown
+        presentation={args.presentation}
+        defaultOpen
+        disabled={args.disabled}
+      >
+        <Dropdown.Trigger>
+          <Button>Actions</Button>
+        </Dropdown.Trigger>
+        <Portal>
+          <Dropdown.Content>
+            <Dropdown.Label>Project</Dropdown.Label>
+            <Dropdown.Item value='archive'>Move to archive</Dropdown.Item>
+            <Dropdown.Item value='copy' icon={<Copy />}>
+              Copy link
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Portal>
       </Dropdown>
     </Section>
   ),

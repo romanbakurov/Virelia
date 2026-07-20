@@ -34,6 +34,8 @@ export type { CheckboxProps } from './primitives/Checkbox';
 export { Checkbox } from './primitives/Checkbox';
 export type { InputProps } from './primitives/Input';
 export { Input } from './primitives/Input';
+export type { PortalProps, PortalProviderProps } from './primitives/Portal';
+export { Portal, PortalProvider } from './primitives/Portal';
 export type { RadioProps } from './primitives/Radio';
 export { Radio } from './primitives/Radio';
 export type { NativeThemeName, ThemeProviderProps } from './theme';

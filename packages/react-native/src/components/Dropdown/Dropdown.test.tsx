@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
@@ -248,11 +249,11 @@ describe('Native Dropdown', () => {
     const { container, unmount } = render(
       <Dropdown label='Actions' defaultOpen>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
-        <Dropdown.Portal>
+        <Portal>
           <Dropdown.Content presentation='modal'>
             <Dropdown.Item value='archive'>Move to archive</Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Portal>
+        </Portal>
       </Dropdown>
     );
 

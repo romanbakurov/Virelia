@@ -61,11 +61,6 @@ export interface DropdownSearchProps {
   accessibilityLabel?: string;
 }
 
-export interface DropdownPortalProps {
-  children?: ReactNode;
-  forceMount?: boolean;
-}
-
 export interface DropdownItemProps {
   children: ReactNode;
   value?: string;

@@ -11,8 +11,6 @@ export { ModalHeader } from './Header';
 export { Modal } from './Modal';
 export type { ModalOverlayProps } from './Overlay';
 export { ModalOverlay } from './Overlay';
-export type { ModalPortalProps } from './Portal';
-export { ModalPortal } from './Portal';
 export { ModalRoot } from './Root';
 export type { ModalTriggerProps } from './Trigger';
 export { ModalTrigger } from './Trigger';

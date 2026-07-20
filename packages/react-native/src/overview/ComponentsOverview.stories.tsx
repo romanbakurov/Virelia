@@ -25,6 +25,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Portal } from '../primitives/Portal';
 import { Radio } from '../primitives/Radio';
 import { useTheme } from '../theme';
 
@@ -1113,7 +1114,7 @@ function NativeComponentsOverview() {
               <Modal.Trigger asChild>
                 <Button>Review changes</Button>
               </Modal.Trigger>
-              <Modal.Portal>
+              <Portal>
                 <Modal.Overlay>
                   <Modal.Content>
                     <Modal.Header>Review changes</Modal.Header>
@@ -1142,7 +1143,7 @@ function NativeComponentsOverview() {
                     </Modal.Footer>
                   </Modal.Content>
                 </Modal.Overlay>
-              </Modal.Portal>
+              </Portal>
             </Modal>
           </View>
 
@@ -1162,7 +1163,7 @@ function NativeComponentsOverview() {
                     Explicit close
                   </Button>
                 </Modal.Trigger>
-                <Modal.Portal>
+                <Portal>
                   <Modal.Overlay>
                     <Modal.Content>
                       <Modal.Header>Explicit close</Modal.Header>
@@ -1178,13 +1179,13 @@ function NativeComponentsOverview() {
                       </Modal.Body>
                     </Modal.Content>
                   </Modal.Overlay>
-                </Modal.Portal>
+                </Portal>
               </Modal>
               <Modal closeOnOutsidePress={false}>
                 <Modal.Trigger asChild>
                   <Button color='danger'>Confirm delete</Button>
                 </Modal.Trigger>
-                <Modal.Portal>
+                <Portal>
                   <Modal.Overlay>
                     <Modal.Content>
                       <Modal.Header>Delete report?</Modal.Header>
@@ -1210,7 +1211,7 @@ function NativeComponentsOverview() {
                       </Modal.Footer>
                     </Modal.Content>
                   </Modal.Overlay>
-                </Modal.Portal>
+                </Portal>
               </Modal>
             </View>
           </View>

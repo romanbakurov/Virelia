@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
@@ -37,7 +38,7 @@ function NativeModal({
       closeOnOutsidePress={closeOnOutsidePress}
       onOpenChange={onOpenChange}
     >
-      <Modal.Portal>
+      <Portal>
         <Modal.Overlay>
           <Modal.Content>
             <Modal.Header>Native modal</Modal.Header>
@@ -51,7 +52,7 @@ function NativeModal({
             </Modal.Footer>
           </Modal.Content>
         </Modal.Overlay>
-      </Modal.Portal>
+      </Portal>
     </Modal>
   );
 }
@@ -103,13 +104,13 @@ describe('Native Modal', () => {
         <Modal.Trigger asChild>
           <Button>Open modal</Button>
         </Modal.Trigger>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay>
             <Modal.Content>
               <Modal.Header>Native modal</Modal.Header>
             </Modal.Content>
           </Modal.Overlay>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 

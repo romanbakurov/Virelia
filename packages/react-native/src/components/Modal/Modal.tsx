@@ -4,13 +4,11 @@ import { ModalContent } from './Content';
 import { ModalFooter } from './Footer';
 import { ModalHeader } from './Header';
 import { ModalOverlay } from './Overlay';
-import { ModalPortal } from './Portal';
 import { ModalRoot } from './Root';
 import { ModalTrigger } from './Trigger';
 
 export const Modal = Object.assign(ModalRoot, {
   Trigger: ModalTrigger,
-  Portal: ModalPortal,
   Overlay: ModalOverlay,
   Content: ModalContent,
   Header: ModalHeader,

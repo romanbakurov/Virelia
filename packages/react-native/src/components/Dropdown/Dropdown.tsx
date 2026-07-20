@@ -39,7 +39,6 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
-  DropdownPortalProps,
   DropdownProps,
   DropdownSearchProps,
   DropdownSelectEvent,
@@ -341,10 +340,6 @@ const DropdownContentSlot = createDropdownSlot<DropdownContentProps>(
   'content',
   'Dropdown.Content'
 );
-const DropdownPortalSlot = createDropdownSlot<DropdownPortalProps>(
-  'portal',
-  'Dropdown.Portal'
-);
 const DropdownItemSlot = createDropdownSlot<DropdownItemProps>(
   'item',
   'Dropdown.Item'
@@ -376,7 +371,6 @@ const DropdownSearchSlot = createDropdownSlot<DropdownSearchProps>(
 
 export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTriggerSlot,
-  Portal: DropdownPortalSlot,
   Content: DropdownContentSlot,
   Search: DropdownSearchSlot,
   Item: DropdownItemSlot,

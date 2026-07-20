@@ -10,6 +10,7 @@ import {
   Checkbox,
   Input,
   Modal,
+  Portal,
   Select,
   ThemeProvider,
   useTheme,
@@ -29,6 +30,7 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 - Dropdown
 - Tabs
 - Tooltip
+- Portal
 - Modal
 - ThemeProvider
 - useTheme
@@ -691,18 +693,40 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->
 
+## Portal
+
+Shared native primitive for explicit overlay composition. The current native
+adapter renders children in place and keeps API parity with web overlays.
+
+```tsx
+import { Portal } from '@vellira-ui/react-native';
+
+<Portal>
+  <Modal.Content>Content</Modal.Content>
+</Portal>;
+```
+
+| Prop        | Type        | Required | Description                              |
+| ----------- | ----------- | -------- | ---------------------------------------- |
+| `children`  | `ReactNode` | Yes      | Content rendered through the primitive.  |
+| `container` | `unknown`   | No       | Reserved native portal host integration. |
+
+### PortalProvider
+
+Provides a default container/host value for nested native `Portal` instances.
+
 ## Modal
 
 Native compound dialog with backdrop close behavior and content sections.
 
 ```tsx
-import { Button, Modal } from '@vellira-ui/react-native';
+import { Button, Modal, Portal } from '@vellira-ui/react-native';
 
 <Modal open={open} onOpenChange={setOpen}>
   <Modal.Trigger asChild>
     <Button>Open modal</Button>
   </Modal.Trigger>
-  <Modal.Portal>
+  <Portal>
     <Modal.Overlay>
       <Modal.Content>
         <Modal.Header>Delete file</Modal.Header>
@@ -716,7 +740,7 @@ import { Button, Modal } from '@vellira-ui/react-native';
         </Modal.Footer>
       </Modal.Content>
     </Modal.Overlay>
-  </Modal.Portal>
+  </Portal>
 </Modal>;
 ```
 
@@ -740,7 +764,6 @@ import { Button, Modal } from '@vellira-ui/react-native';
 | Component       | Description            |
 | --------------- | ---------------------- |
 | `Modal.Trigger` | Opens the modal.       |
-| `Modal.Portal`  | Native passthrough.    |
 | `Modal.Overlay` | Native modal backdrop. |
 | `Modal.Content` | Main dialog surface.   |
 | `Modal.Header`  | Header/title section.  |

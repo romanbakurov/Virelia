@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 
 import { Modal } from '.';
 
@@ -24,8 +25,9 @@ const meta = {
         component: `
 ### Modal Component
 
-Compound-first native dialog with Root, Trigger, Portal, Overlay, Content,
-Header, Body, Footer, and Close parts.
+Compound-first native dialog with Root, Trigger, Overlay, Content, Header,
+Body, Footer, and Close parts. Use the shared Portal primitive for explicit
+layer composition.
 
 ### Usage
 
@@ -35,7 +37,7 @@ Header, Body, Footer, and Close parts.
     <Button>Open modal</Button>
   </Modal.Trigger>
 
-  <Modal.Portal>
+  <Portal>
     <Modal.Overlay>
       <Modal.Content>
         <Modal.Header>Delete file</Modal.Header>
@@ -44,7 +46,7 @@ Header, Body, Footer, and Close parts.
         </Modal.Body>
       </Modal.Content>
     </Modal.Overlay>
-  </Modal.Portal>
+  </Portal>
 </Modal>
 \`\`\`
 `,
@@ -102,7 +104,7 @@ function NativeModalDemo({
       <Modal.Trigger asChild>
         <Button>Open Modal</Button>
       </Modal.Trigger>
-      <Modal.Portal>
+      <Portal>
         <Modal.Overlay>
           <Modal.Content>
             <Modal.Header>{title}</Modal.Header>
@@ -123,7 +125,7 @@ function NativeModalDemo({
             </Modal.Footer>
           </Modal.Content>
         </Modal.Overlay>
-      </Modal.Portal>
+      </Portal>
     </Modal>
   );
 }
@@ -136,7 +138,7 @@ function NativeFormModal() {
       <Modal.Trigger asChild>
         <Button>Edit preferences</Button>
       </Modal.Trigger>
-      <Modal.Portal>
+      <Portal>
         <Modal.Overlay>
           <Modal.Content>
             <Modal.Header>Workspace preferences</Modal.Header>
@@ -166,7 +168,7 @@ function NativeFormModal() {
             </Modal.Body>
           </Modal.Content>
         </Modal.Overlay>
-      </Modal.Portal>
+      </Portal>
     </Modal>
   );
 }
@@ -184,7 +186,7 @@ export const Uncontrolled: Story = {
       <Modal.Trigger asChild>
         <Button>Open Modal</Button>
       </Modal.Trigger>
-      <Modal.Portal>
+      <Portal>
         <Modal.Overlay>
           <Modal.Content>
             <Modal.Header>Uncontrolled modal</Modal.Header>
@@ -193,7 +195,7 @@ export const Uncontrolled: Story = {
             </Modal.Body>
           </Modal.Content>
         </Modal.Overlay>
-      </Modal.Portal>
+      </Portal>
     </Modal>
   ),
 };
