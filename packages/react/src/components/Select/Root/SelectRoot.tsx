@@ -9,7 +9,12 @@ import {
 } from 'react';
 
 import { FormField, useFormFieldContext } from '@patterns/FormField';
-import { overlayManager, useDismissManager, useSelect } from '@vellira-ui/core';
+import {
+  useDismiss,
+  useOverlayStack,
+  useScrollLock,
+  useSelect,
+} from '@vellira-ui/core';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
@@ -273,13 +278,18 @@ export const SelectRoot = ({
     [onSearch]
   );
 
-  useDismissManager({
+  const { isTopOverlay } = useOverlayStack({
+    active: isOpen,
+    id: listboxId,
+  });
+
+  useDismiss({
     active: isOpen,
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef: listRef,
     ignoreRefs: [buttonRef],
-    isTopOverlay: () => overlayManager.isTop(listboxId),
+    isTopOverlay,
     requestClose: closeDropdown,
   });
 
@@ -295,25 +305,10 @@ export const SelectRoot = ({
     }
   }, [isOpen, searchValue]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    overlayManager.add(listboxId);
-
-    return () => {
-      overlayManager.remove(listboxId);
-    };
-  }, [isOpen, listboxId]);
-
-  useEffect(() => {
-    if (!modal || !isOpen) return;
-
-    overlayManager.lockScroll();
-
-    return () => {
-      overlayManager.unlockScroll();
-    };
-  }, [isOpen, modal]);
+  useScrollLock({
+    active: isOpen,
+    enabled: modal,
+  });
 
   const setTriggerRef = useCallback(
     (node: HTMLButtonElement | null) => {

@@ -9,9 +9,10 @@ import {
 
 import { cn } from '@utils/cn';
 import {
-  overlayManager,
-  useDismissManager,
+  useDismiss,
   useDropdown,
+  useOverlayStack,
+  useScrollLock,
 } from '@vellira-ui/core';
 import type { KeyboardEvent, MouseEvent } from 'react';
 
@@ -164,25 +165,15 @@ export const DropdownRoot = ({
     [onSearch, searchValue, setActiveIndex]
   );
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const { isTopOverlay } = useOverlayStack({
+    active: isOpen,
+    id: contentId,
+  });
 
-    overlayManager.add(contentId);
-
-    return () => {
-      overlayManager.remove(contentId);
-    };
-  }, [contentId, isOpen]);
-
-  useEffect(() => {
-    if (!modal || !isOpen) return;
-
-    overlayManager.lockScroll();
-
-    return () => {
-      overlayManager.unlockScroll();
-    };
-  }, [isOpen, modal]);
+  useScrollLock({
+    active: isOpen,
+    enabled: modal,
+  });
 
   const closeAndFocusTrigger = useCallback(() => {
     closeDropdown();
@@ -278,13 +269,13 @@ export const DropdownRoot = ({
     [setFloatingRef]
   );
 
-  useDismissManager({
+  useDismiss({
     active: isOpen,
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef,
     ignoreRefs: [triggerRef],
-    isTopOverlay: () => overlayManager.isTop(contentId),
+    isTopOverlay,
     requestClose: closeDropdown,
   });
 

@@ -1,18 +1,22 @@
-export { useAriaHidden } from './AriaHiddenManager.js';
-export { useDismissManager } from './DismissManager.js';
+export { useAriaIsolation } from './AriaIsolation.js';
+export { useDismiss } from './Dismiss.js';
 export { createAutoFocusEvent, createOutsideEvent } from './events.js';
 export {
   focusableSelector,
   focusFirstElement,
   getFocusableElements,
 } from './focus.js';
-export { useFocusManager } from './FocusManager.js';
-export { overlayManager } from './OverlayManager.js';
-export { defaultPortalTarget } from './PortalManager.js';
+export { useFocusScope } from './FocusScope.js';
+export type { OverlayStackOptions } from './OverlayStack.js';
+export { useOverlayStack } from './OverlayStack.js';
+export type { PortalOptions } from './Portal.js';
+export { defaultPortalTarget, usePortal } from './Portal.js';
+export type { ScrollLockOptions } from './ScrollLock.js';
+export { useScrollLock } from './ScrollLock.js';
 export type {
-  AriaHiddenOptions,
-  DismissManagerOptions,
-  FocusManagerOptions,
+  AriaIsolationOptions,
+  DismissOptions,
+  FocusScopeOptions,
   OverlayAutoFocusEvent,
   OverlayOutsideEvent,
 } from './types.js';

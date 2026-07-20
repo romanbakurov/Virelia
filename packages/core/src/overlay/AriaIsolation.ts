@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
-import type { AriaHiddenOptions } from './types.js';
+import type { AriaIsolationOptions } from './types.js';
 
-export const useAriaHidden = ({
+export const useAriaIsolation = ({
   active,
   enabled,
   content,
-}: AriaHiddenOptions) => {
+}: AriaIsolationOptions) => {
   useEffect(() => {
     if (!active || !enabled || !content) return;
 

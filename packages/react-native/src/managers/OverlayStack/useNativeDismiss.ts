@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useNativeOverlay } from './useNativeOverlay';
+import { useNativeOverlayStack } from './useNativeOverlayStack';
 
 type UseNativeDismissParams = {
   id: string;
@@ -15,7 +15,7 @@ export const useNativeDismiss = ({
   closeOnOutsidePress = true,
   onClose,
 }: UseNativeDismissParams) => {
-  const { isTopOverlay } = useNativeOverlay({ id, visible });
+  const { isTopOverlay } = useNativeOverlayStack({ id, visible });
 
   const requestClose = useCallback(() => {
     if (!isTopOverlay()) return;

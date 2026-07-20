@@ -1,6 +1,6 @@
 let stack: string[] = [];
 
-export const nativeOverlayManager = {
+export const nativeOverlayStackStore = {
   add(id: string) {
     stack = stack.filter((item) => item !== id);
     stack.push(id);

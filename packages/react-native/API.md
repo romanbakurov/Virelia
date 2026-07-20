@@ -580,6 +580,14 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `closeOnSelect`      | `boolean`                 | No       | —                                                 |
 | `loading`            | `boolean`                 | No       | —                                                 |
 | `loadingText`        | `ReactNode`               | No       | —                                                 |
+| `searchable`         | `boolean`                 | No       | —                                                 |
+| `command`            | `boolean`                 | No       | —                                                 |
+| `searchValue`        | `string`                  | No       | —                                                 |
+| `defaultSearchValue` | `string`                  | No       | —                                                 |
+| `searchPlaceholder`  | `string`                  | No       | —                                                 |
+| `onSearch`           | `(value: string) => void` | No       | —                                                 |
+| `empty`              | `ReactNode`               | No       | —                                                 |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.      |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 

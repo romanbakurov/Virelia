@@ -636,28 +636,38 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 
 <!-- api-docgen:start web.DropdownProps.DropdownProps -->
 
-| Prop                | Type                      | Required | Description                             |
-| ------------------- | ------------------------- | -------- | --------------------------------------- |
-| `placement`         | `Placement`               | No       | Floating UI menu placement.             |
-| `className`         | `string`                  | No       | Extra CSS class for the root element.   |
-| `matchTriggerWidth` | `boolean`                 | No       | Makes the menu match the trigger width. |
-| `disabled`          | `boolean`                 | No       | Disables the trigger.                   |
-| `size`              | `DropdownSize`            | No       | Dropdown size.                          |
-| `open`              | `boolean`                 | No       | Controlled open state.                  |
-| `defaultOpen`       | `boolean`                 | No       | Initial uncontrolled open state.        |
-| `onOpenChange`      | `(open: boolean) => void` | No       | Called when the open state changes.     |
-| `children`          | `ReactNode`               | Yes      | Content rendered inside the component.  |
-| `color`             | `DropdownColor`           | No       | —                                       |
-| `offset`            | `number`                  | No       | —                                       |
-| `minWidth`          | `string \| number`        | No       | —                                       |
-| `maxWidth`          | `string \| number`        | No       | —                                       |
-| `portal`            | `boolean`                 | No       | —                                       |
-| `avoidCollisions`   | `boolean`                 | No       | —                                       |
-| `modal`             | `boolean`                 | No       | —                                       |
-| `closeOnSelect`     | `boolean`                 | No       | —                                       |
-| `loop`              | `boolean`                 | No       | —                                       |
-| `loading`           | `boolean`                 | No       | —                                       |
-| `loadingText`       | `ReactNode`               | No       | —                                       |
+| Prop                 | Type                      | Required | Description                                  |
+| -------------------- | ------------------------- | -------- | -------------------------------------------- |
+| `placement`          | `Placement`               | No       | Floating UI menu placement.                  |
+| `className`          | `string`                  | No       | Extra CSS class for the root element.        |
+| `matchTriggerWidth`  | `boolean`                 | No       | Makes the menu match the trigger width.      |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                        |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                               |
+| `open`               | `boolean`                 | No       | Controlled open state.                       |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.             |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.          |
+| `children`           | `ReactNode`               | Yes      | Content rendered inside the component.       |
+| `color`              | `DropdownColor`           | No       | —                                            |
+| `offset`             | `number`                  | No       | —                                            |
+| `minWidth`           | `string \| number`        | No       | —                                            |
+| `maxWidth`           | `string \| number`        | No       | —                                            |
+| `portal`             | `boolean`                 | No       | —                                            |
+| `avoidCollisions`    | `boolean`                 | No       | —                                            |
+| `modal`              | `boolean`                 | No       | —                                            |
+| `closeOnSelect`      | `boolean`                 | No       | —                                            |
+| `loop`               | `boolean`                 | No       | —                                            |
+| `loading`            | `boolean`                 | No       | —                                            |
+| `loadingText`        | `ReactNode`               | No       | —                                            |
+| `searchable`         | `boolean`                 | No       | —                                            |
+| `command`            | `boolean`                 | No       | —                                            |
+| `searchValue`        | `string`                  | No       | —                                            |
+| `defaultSearchValue` | `string`                  | No       | —                                            |
+| `searchPlaceholder`  | `string`                  | No       | —                                            |
+| `onSearch`           | `(value: string) => void` | No       | —                                            |
+| `empty`              | `ReactNode`               | No       | —                                            |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available. |
+| `triggerClassName`   | `string`                  | No       | Extra CSS class for the trigger element.     |
+| `dropdownClassName`  | `string`                  | No       | Extra CSS class for the dropdown element.    |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 
@@ -804,18 +814,27 @@ import { Button, Modal } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.ModalProps.ModalProps -->
 
-| Prop                  | Type                        | Required | Description                           |
-| --------------------- | --------------------------- | -------- | ------------------------------------- |
-| `children`            | `ReactNode`                 | Yes      | Modal content.                        |
-| `open`                | `boolean`                   | No       | Controls dialog visibility.           |
-| `defaultOpen`         | `boolean`                   | No       | Initial uncontrolled open state.      |
-| `onOpenChange`        | `(open: boolean) => void`   | No       | Called when the open state changes.   |
-| `closeOnEscape`       | `boolean`                   | No       | Allows closing with Escape.           |
-| `closeOnOutsidePress` | `boolean`                   | No       | Allows closing by pressing outside.   |
-| `preventScroll`       | `boolean`                   | No       | Locks background scroll while open.   |
-| `restoreFocus`        | `boolean`                   | No       | Restores focus when the modal closes. |
-| `trapFocus`           | `boolean`                   | No       | Keeps focus inside the dialog.        |
-| `role`                | `'dialog' \| 'alertdialog'` | No       | Dialog semantic role.                 |
+| Prop                   | Type                                   | Required | Description                           |
+| ---------------------- | -------------------------------------- | -------- | ------------------------------------- |
+| `children`             | `ReactNode`                            | Yes      | Modal content.                        |
+| `open`                 | `boolean`                              | No       | Controls dialog visibility.           |
+| `defaultOpen`          | `boolean`                              | No       | Initial uncontrolled open state.      |
+| `onOpenChange`         | `(open: boolean) => void`              | No       | Called when the open state changes.   |
+| `closeOnEscape`        | `boolean`                              | No       | Allows closing with Escape.           |
+| `closeOnOutsidePress`  | `boolean`                              | No       | Allows closing by pressing outside.   |
+| `preventScroll`        | `boolean`                              | No       | Locks background scroll while open.   |
+| `restoreFocus`         | `boolean`                              | No       | Restores focus when the modal closes. |
+| `trapFocus`            | `boolean`                              | No       | Keeps focus inside the dialog.        |
+| `role`                 | `'dialog' \| 'alertdialog'`            | No       | Dialog semantic role.                 |
+| `modal`                | `boolean`                              | No       | —                                     |
+| `initialFocus`         | `RefObject<HTMLElement>`               | No       | —                                     |
+| `finalFocus`           | `RefObject<HTMLElement>`               | No       | —                                     |
+| `onOpenAutoFocus`      | `(event: ModalAutoFocusEvent) => void` | No       | —                                     |
+| `onCloseAutoFocus`     | `(event: ModalAutoFocusEvent) => void` | No       | —                                     |
+| `onEscapeKeyDown`      | `(event: KeyboardEvent) => void`       | No       | —                                     |
+| `onPointerDownOutside` | `(event: ModalOutsideEvent) => void`   | No       | —                                     |
+| `onInteractOutside`    | `(event: ModalOutsideEvent) => void`   | No       | —                                     |
+| `className`            | `string`                               | No       | Extra CSS class for the root element. |
 
 <!-- api-docgen:end web.ModalProps.ModalProps -->
 

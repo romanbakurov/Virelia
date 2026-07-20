@@ -1,19 +1,10 @@
-let stack: string[] = [];
+import { useEffect } from 'react';
+
 let scrollLockCount = 0;
 let originalBodyOverflow = '';
 
-export const overlayManager = {
-  add(id: string) {
-    stack = stack.filter((item) => item !== id);
-    stack.push(id);
-  },
-  remove(id: string) {
-    stack = stack.filter((item) => item !== id);
-  },
-  isTop(id: string) {
-    return stack[stack.length - 1] === id;
-  },
-  lockScroll() {
+const scrollLockStore = {
+  lock() {
     if (typeof document === 'undefined') return;
 
     if (scrollLockCount === 0) {
@@ -23,7 +14,7 @@ export const overlayManager = {
 
     scrollLockCount += 1;
   },
-  unlockScroll() {
+  unlock() {
     if (typeof document === 'undefined') return;
 
     scrollLockCount = Math.max(0, scrollLockCount - 1);
@@ -32,4 +23,24 @@ export const overlayManager = {
       document.body.style.overflow = originalBodyOverflow;
     }
   },
+};
+
+export type ScrollLockOptions = {
+  active: boolean;
+  enabled?: boolean;
+};
+
+export const useScrollLock = ({
+  active,
+  enabled = true,
+}: ScrollLockOptions) => {
+  useEffect(() => {
+    if (!active || !enabled) return;
+
+    scrollLockStore.lock();
+
+    return () => {
+      scrollLockStore.unlock();
+    };
+  }, [active, enabled]);
 };

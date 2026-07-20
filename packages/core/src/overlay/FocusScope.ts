@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 
 import { createAutoFocusEvent } from './events.js';
 import { focusFirstElement, getFocusableElements } from './focus.js';
-import type { FocusManagerOptions } from './types.js';
+import type { FocusScopeOptions } from './types.js';
 
-export const useFocusManager = ({
+export const useFocusScope = ({
   active,
   contentRef,
   enabled,
@@ -13,7 +13,7 @@ export const useFocusManager = ({
   restoreFocus,
   onOpenAutoFocus,
   onCloseAutoFocus,
-}: FocusManagerOptions) => {
+}: FocusScopeOptions) => {
   useEffect(() => {
     if (!active) return;
 

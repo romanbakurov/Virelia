@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '@utils/cn';
-import { useModal } from '@vellira-ui/core';
+import { useModal, useOverlayStack, useScrollLock } from '@vellira-ui/core';
 
 import { ModalProvider } from '../internal/ModalContext';
-import { modalStack } from '../internal/ModalStack';
 import type { ModalProps } from '../types';
 
 export const ModalRoot = ({
@@ -56,25 +55,15 @@ export const ModalRoot = ({
     contentRef.current = node;
   }, []);
 
-  useEffect(() => {
-    if (!isOpen) return;
+  const { isTopOverlay } = useOverlayStack({
+    active: isOpen,
+    id: contentId,
+  });
 
-    modalStack.add(contentId);
-
-    return () => {
-      modalStack.remove(contentId);
-    };
-  }, [contentId, isOpen]);
-
-  useEffect(() => {
-    if (!isOpen || !preventScroll) return;
-
-    modalStack.lockScroll();
-
-    return () => {
-      modalStack.unlockScroll();
-    };
-  }, [isOpen, preventScroll]);
+  useScrollLock({
+    active: isOpen,
+    enabled: preventScroll,
+  });
 
   useEffect(() => {
     if (
@@ -111,7 +100,7 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
-      isTopModal: () => modalStack.isTop(contentId),
+      isTopModal: isTopOverlay,
       modal,
       onCloseAutoFocus,
       onEscapeKeyDown,
@@ -138,6 +127,7 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
+      isTopOverlay,
       isOpen,
       modal,
       onCloseAutoFocus,

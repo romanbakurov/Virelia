@@ -11,7 +11,7 @@ export type OverlayOutsideEvent<TOriginalEvent = PointerEvent> = {
   readonly defaultPrevented: boolean;
 };
 
-export type FocusManagerOptions = {
+export type FocusScopeOptions = {
   active: boolean;
   contentRef: RefObject<HTMLElement | null>;
   enabled: boolean;
@@ -22,7 +22,7 @@ export type FocusManagerOptions = {
   onCloseAutoFocus?: (event: OverlayAutoFocusEvent) => void;
 };
 
-export type DismissManagerOptions = {
+export type DismissOptions = {
   active: boolean;
   contentRef: RefObject<HTMLElement | null>;
   ignoreRefs?: Array<RefObject<HTMLElement | null>>;
@@ -35,7 +35,7 @@ export type DismissManagerOptions = {
   requestClose: () => void;
 };
 
-export type AriaHiddenOptions = {
+export type AriaIsolationOptions = {
   active: boolean;
   enabled: boolean;
   content: HTMLElement | null;
