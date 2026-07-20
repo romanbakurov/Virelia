@@ -1,5 +1,10 @@
+export {
+  focusableSelector,
+  focusFirstElement,
+  getFocusableElements,
+} from './focusUtils.js';
 export type {
   AriaIsolationOptions,
   FocusScopeOptions,
-  OverlayAutoFocusEvent,
-} from '../types.js';
+  RefObjectLike,
+} from './types.js';

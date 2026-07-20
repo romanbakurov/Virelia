@@ -1,1 +1,1 @@
-export type { PortalOptions } from '../types.js';
+export type { PortalOptions } from './types.js';

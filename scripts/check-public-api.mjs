@@ -26,6 +26,7 @@ const publicSymbolContracts = {
     'OverlayOutsideEvent',
     'OverlayStackOptions',
     'PortalOptions',
+    'RefObjectLike',
     'ScrollLockOptions',
     'createAutoFocusEvent',
     'createOutsideEvent',
