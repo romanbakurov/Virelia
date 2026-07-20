@@ -3,6 +3,7 @@ import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
@@ -33,7 +34,7 @@ describe('Modal', () => {
     const onOpenChange = vi.fn();
     const { unmount } = render(
       <Modal open onOpenChange={onOpenChange}>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content>
             <Modal.Header>
@@ -44,7 +45,7 @@ describe('Modal', () => {
               <Modal.Close />
             </Modal.Header>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 
@@ -65,7 +66,7 @@ describe('Modal', () => {
   it('connects title and description for accessibility', async () => {
     const { unmount } = render(
       <Modal open>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content>
             <Modal.Header>
@@ -74,7 +75,7 @@ describe('Modal', () => {
             </Modal.Header>
             <Modal.Body>Body content</Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 
@@ -98,12 +99,12 @@ describe('Modal', () => {
         <Modal.Trigger asChild>
           <Button>Open modal</Button>
         </Modal.Trigger>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Settings'>
             <Modal.Body>Settings body</Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 
@@ -124,7 +125,7 @@ describe('Modal', () => {
         <>
           <button type='button'>Open modal</button>
           <Modal open={open}>
-            <Modal.Portal>
+            <Portal>
               <Modal.Overlay />
               <Modal.Content>
                 <Modal.Header>
@@ -132,7 +133,7 @@ describe('Modal', () => {
                   <Modal.Close />
                 </Modal.Header>
               </Modal.Content>
-            </Modal.Portal>
+            </Portal>
           </Modal>
         </>
       );
@@ -167,12 +168,12 @@ describe('Modal', () => {
     const onOpenChange = vi.fn();
     const { unmount } = render(
       <Modal open onOpenChange={onOpenChange}>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Confirm'>
             <Modal.Body>Confirm body</Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 
@@ -193,12 +194,12 @@ describe('Modal', () => {
         closeOnOutsidePress={false}
         onOpenChange={onOpenChange}
       >
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Confirm'>
             <Modal.Body>Confirm body</Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 
@@ -213,12 +214,12 @@ describe('Modal', () => {
   it('renders nothing in the portal when closed', () => {
     const { unmount } = render(
       <Modal open={false}>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Closed'>
             <Modal.Body>Closed body</Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     );
 

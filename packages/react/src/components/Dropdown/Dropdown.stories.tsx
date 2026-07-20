@@ -22,6 +22,7 @@ import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 
 import { Dropdown } from './Dropdown';
 
@@ -116,7 +117,8 @@ Action menu for commands, toggles, radio choices, links, and submenus.
 - Search can be declared with Dropdown.Search inside Content. Root searchable
   props are a shorthand, but command discovery belongs to the compound menu
   surface
-- Portal and Arrow are available as explicit compound parts
+- Use the shared Portal primitive for explicit portal composition; Arrow
+  remains a Dropdown content part
 - Dropdown.Content accepts className and style for content-level customization
 
 ### Usage
@@ -1073,7 +1075,7 @@ export const ExplicitPortal: Story = {
             Portal menu
           </Button>
         </Dropdown.Trigger>
-        <Dropdown.Portal>
+        <Portal>
           <Dropdown.Content>
             <Dropdown.Search placeholder='Find command' />
             <Dropdown.Item>
@@ -1095,7 +1097,7 @@ export const ExplicitPortal: Story = {
               <Dropdown.Shortcut>⌘E</Dropdown.Shortcut>
             </Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Portal>
+        </Portal>
       </Dropdown>
     </Section>
   ),

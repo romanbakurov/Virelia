@@ -776,18 +776,47 @@ import { Tooltip, Button } from '@vellira-ui/react';
 
 <!-- api-docgen:end web.TooltipProps.Tooltip -->
 
+## Portal
+
+Shared primitive for rendering overlay layers into `#overlay-root`, `document.body`, a provider container, or an explicit container.
+
+```tsx
+import { Portal } from '@vellira-ui/react';
+
+<Portal>
+  <div role='dialog'>Content</div>
+</Portal>;
+```
+
+| Prop        | Type                                  | Required | Description                              |
+| ----------- | ------------------------------------- | -------- | ---------------------------------------- |
+| `children`  | `ReactNode`                           | Yes      | Content rendered into the portal target. |
+| `container` | `Element \| DocumentFragment \| null` | No       | Overrides the default portal target.     |
+
+### PortalProvider
+
+Sets a default portal container for nested `Portal` instances.
+
+```tsx
+import { PortalProvider } from '@vellira-ui/react';
+
+<PortalProvider container={overlayRoot}>
+  <App />
+</PortalProvider>;
+```
+
 ## Modal
 
 Accessible compound dialog with backdrop, keyboard close behavior, focus management, and content sections.
 
 ```tsx
-import { Button, Modal } from '@vellira-ui/react';
+import { Button, Modal, Portal } from '@vellira-ui/react';
 
 <Modal open={open} onOpenChange={setOpen}>
   <Modal.Trigger asChild>
     <Button>Open modal</Button>
   </Modal.Trigger>
-  <Modal.Portal>
+  <Portal>
     <Modal.Overlay />
     <Modal.Content size='md' scrollBehavior='inside'>
       <Modal.Header>
@@ -806,7 +835,7 @@ import { Button, Modal } from '@vellira-ui/react';
         </Modal.Close>
       </Modal.Footer>
     </Modal.Content>
-  </Modal.Portal>
+  </Portal>
 </Modal>;
 ```
 
@@ -843,7 +872,6 @@ import { Button, Modal } from '@vellira-ui/react';
 | Component           | Description              |
 | ------------------- | ------------------------ |
 | `Modal.Trigger`     | Opens the modal.         |
-| `Modal.Portal`      | Portals modal layers.    |
 | `Modal.Overlay`     | Backdrop layer.          |
 | `Modal.Content`     | Main dialog surface.     |
 | `Modal.Header`      | Header/title section.    |

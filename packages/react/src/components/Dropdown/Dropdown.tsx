@@ -10,7 +10,6 @@ import { DropdownItemIcon } from './ItemIcon';
 import { DropdownItemShortcut } from './ItemShortcut';
 import { DropdownLabel } from './Label';
 import { DropdownLoading } from './Loading';
-import { DropdownPortal } from './Portal';
 import { DropdownRadioGroup } from './RadioGroup';
 import { DropdownRadioItem } from './RadioItem';
 import { DropdownRoot } from './Root';
@@ -21,7 +20,6 @@ import { DropdownTrigger } from './Trigger';
 
 export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTrigger,
-  Portal: DropdownPortal,
   Content: DropdownContent,
   Search: DropdownSearch,
   Item: DropdownItem,

@@ -72,12 +72,6 @@ export type DropdownSearchProps = {
   className?: string;
 };
 
-export type DropdownPortalProps = {
-  children?: ReactNode;
-  forceMount?: boolean;
-  container?: Element | DocumentFragment | null;
-};
-
 export type DropdownArrowProps = {
   className?: string;
 };

@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { Radio } from '../../primitives/Radio';
 import { RadioGroup } from '../RadioGroup';
 
@@ -24,8 +25,9 @@ const meta = {
 Compound-first dialog for focused tasks and confirmations.
 
 **Features**
-- Root, Trigger, Portal, Overlay, Content, Header, Title, Description, Body,
+- Root, Trigger, Overlay, Content, Header, Title, Description, Body,
   Footer, and Close parts
+- Uses the shared Portal primitive for explicit portal composition
 - Controlled and uncontrolled open state
 - Trigger and Close composition through asChild
 - Dialog and alertdialog roles
@@ -42,7 +44,7 @@ Compound-first dialog for focused tasks and confirmations.
     <Button>Open settings</Button>
   </Modal.Trigger>
 
-  <Modal.Portal>
+  <Portal>
     <Modal.Overlay />
     <Modal.Content size='md' scrollBehavior='inside'>
       <Modal.Header>
@@ -64,7 +66,7 @@ Compound-first dialog for focused tasks and confirmations.
         <Button>Save changes</Button>
       </Modal.Footer>
     </Modal.Content>
-  </Modal.Portal>
+  </Portal>
 </Modal>
 \`\`\`
 `,
@@ -200,7 +202,7 @@ function ProductModal({
       <Modal.Trigger asChild>
         <Button>{trigger}</Button>
       </Modal.Trigger>
-      <Modal.Portal>
+      <Portal>
         <Modal.Overlay />
         <Modal.Content size={size} scrollBehavior={scrollBehavior}>
           <Modal.Header>
@@ -231,7 +233,7 @@ function ProductModal({
             )}
           </Modal.Footer>
         </Modal.Content>
-      </Modal.Portal>
+      </Portal>
     </Modal>
   );
 }
@@ -402,7 +404,7 @@ function InitialFocusDemo() {
         <Modal.Trigger asChild>
           <Button>Edit profile</Button>
         </Modal.Trigger>
-        <Modal.Portal>
+        <Portal>
           <Modal.Overlay />
           <Modal.Content>
             <Modal.Header title='Edit profile' showClose />
@@ -414,7 +416,7 @@ function InitialFocusDemo() {
               />
             </Modal.Body>
           </Modal.Content>
-        </Modal.Portal>
+        </Portal>
       </Modal>
     </Section>
   );
@@ -442,13 +444,13 @@ export const NestedModal: Story = {
               Open nested modal
             </Button>
           </Modal.Trigger>
-          <Modal.Portal>
+          <Portal>
             <Modal.Overlay />
             <Modal.Content size='sm'>
               <Modal.Header title='Nested modal' showClose />
               <Modal.Body>This dialog sits above the parent modal.</Modal.Body>
             </Modal.Content>
-          </Modal.Portal>
+          </Portal>
         </Modal>
       </ProductModal>
     </Section>

@@ -1,3 +1,4 @@
+import type { PortalProps } from '@primitives/Portal';
 import type { ReactElement, ReactNode } from 'react';
 
 import type {
@@ -9,7 +10,6 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
-  DropdownPortalProps,
   DropdownRadioGroupProps,
   DropdownRadioItemProps,
   DropdownSearchProps,
@@ -31,7 +31,6 @@ export type DropdownSlot =
   | 'itemShortcut'
   | 'label'
   | 'loading'
-  | 'portal'
   | 'radioGroup'
   | 'radioItem'
   | 'search'
@@ -125,7 +124,7 @@ export type DropdownRenderEntry =
 export type ParsedDropdownChildren = {
   trigger?: ReactElement<DropdownTriggerProps>;
   content?: ReactElement<DropdownContentProps>;
-  portal?: ReactElement<DropdownPortalProps>;
+  portal?: ReactElement<PortalProps>;
   search?: ReactElement<DropdownSearchProps>;
   entries: DropdownRenderEntry[];
   items: DropdownCollectionItem[];

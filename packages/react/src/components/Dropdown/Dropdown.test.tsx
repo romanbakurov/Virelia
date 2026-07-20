@@ -5,6 +5,7 @@ import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
@@ -774,7 +775,7 @@ describe('Dropdown', () => {
     const { container, unmount } = render(
       <Dropdown defaultOpen>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
-        <Dropdown.Portal>
+        <Portal>
           <Dropdown.Content>
             <Dropdown.Arrow className='dropdown-arrow' />
             <Dropdown.Item>
@@ -789,7 +790,7 @@ describe('Dropdown', () => {
               <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
             </Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Portal>
+        </Portal>
       </Dropdown>
     );
 
@@ -811,11 +812,11 @@ describe('Dropdown', () => {
     const { unmount } = render(
       <Dropdown defaultOpen>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
-        <Dropdown.Portal container={portalContainer}>
+        <Portal container={portalContainer}>
           <Dropdown.Content>
             <Dropdown.Item>Move to archive</Dropdown.Item>
           </Dropdown.Content>
-        </Dropdown.Portal>
+        </Portal>
       </Dropdown>
     );
 

@@ -1,7 +1,7 @@
 import { useId, useRef, useState } from 'react';
 
 import { arrow, useFocus, useHover, useInteractions } from '@floating-ui/react';
-import { Portal } from '@utils/Portal';
+import { Portal } from '@primitives/Portal';
 
 import { useFloatingPosition } from '@/managers/FloatingManager';
 

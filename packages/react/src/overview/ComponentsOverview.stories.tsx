@@ -25,6 +25,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Portal } from '../primitives/Portal';
 import { Radio } from '../primitives/Radio';
 
 const meta = {
@@ -1297,7 +1298,7 @@ function WebComponentsOverview() {
                 <Modal.Trigger asChild>
                   <Button>Review changes</Button>
                 </Modal.Trigger>
-                <Modal.Portal>
+                <Portal>
                   <Modal.Overlay />
                   <Modal.Content>
                     <Modal.Header>
@@ -1326,7 +1327,7 @@ function WebComponentsOverview() {
                       </Modal.Close>
                     </Modal.Footer>
                   </Modal.Content>
-                </Modal.Portal>
+                </Portal>
               </Modal>
             </div>
 
@@ -1340,7 +1341,7 @@ function WebComponentsOverview() {
                         {size}
                       </Button>
                     </Modal.Trigger>
-                    <Modal.Portal>
+                    <Portal>
                       <Modal.Overlay />
                       <Modal.Content size={size}>
                         <Modal.Header title={`Size ${size}`} showClose />
@@ -1348,7 +1349,7 @@ function WebComponentsOverview() {
                           Modal content uses token-based width for each size.
                         </Modal.Body>
                       </Modal.Content>
-                    </Modal.Portal>
+                    </Portal>
                   </Modal>
                 ))}
               </div>
@@ -1363,7 +1364,7 @@ function WebComponentsOverview() {
                       Explicit close
                     </Button>
                   </Modal.Trigger>
-                  <Modal.Portal>
+                  <Portal>
                     <Modal.Overlay />
                     <Modal.Content>
                       <Modal.Header title='Explicit close' showClose />
@@ -1371,13 +1372,13 @@ function WebComponentsOverview() {
                         Outside press is disabled for this modal.
                       </Modal.Body>
                     </Modal.Content>
-                  </Modal.Portal>
+                  </Portal>
                 </Modal>
                 <Modal role='alertdialog' closeOnOutsidePress={false}>
                   <Modal.Trigger asChild>
                     <Button color='danger'>Alert dialog</Button>
                   </Modal.Trigger>
-                  <Modal.Portal>
+                  <Portal>
                     <Modal.Overlay />
                     <Modal.Content>
                       <Modal.Header
@@ -1399,7 +1400,7 @@ function WebComponentsOverview() {
                         </Modal.Close>
                       </Modal.Footer>
                     </Modal.Content>
-                  </Modal.Portal>
+                  </Portal>
                 </Modal>
               </div>
             </div>

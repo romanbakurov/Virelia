@@ -15,7 +15,6 @@ import type {
   DropdownItemShortcutProps,
   DropdownLabelProps,
   DropdownLoadingProps,
-  DropdownPortalProps,
   DropdownRadioGroupProps,
   DropdownRadioItemProps,
   DropdownSeparatorProps,
@@ -31,6 +30,10 @@ import type {
   DropdownSlotComponent,
   ParsedDropdownChildren,
 } from './types';
+
+type PortalElementType = {
+  __velliraPortal?: true;
+};
 
 export function createDropdownSlot<TProps extends object>(
   name: NonNullable<DropdownSlotComponent<TProps>['__velliraDropdownPart']>,
@@ -66,6 +69,12 @@ export function parseDropdownChildren(
 
       const type = child.type as DropdownSlotComponent<unknown>;
 
+      if ((type as PortalElementType).__velliraPortal) {
+        portal = child as ParsedDropdownChildren['portal'];
+        visit((child.props as { children?: ReactNode }).children, context);
+        return;
+      }
+
       switch (type.__velliraDropdownPart) {
         case 'trigger':
           trigger = child as ParsedDropdownChildren['trigger'];
@@ -74,11 +83,6 @@ export function parseDropdownChildren(
         case 'content':
           content = child as ParsedDropdownChildren['content'];
           visit((child.props as DropdownContentProps).children, context);
-          return;
-
-        case 'portal':
-          portal = child as ParsedDropdownChildren['portal'];
-          visit((child.props as DropdownPortalProps).children, context);
           return;
 
         case 'search':

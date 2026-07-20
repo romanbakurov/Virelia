@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 
+import { Portal } from '@primitives/Portal';
 import { cn } from '@utils/cn';
-import { Portal } from '@utils/Portal';
 import { Search } from '@vellira-ui/icons';
 
 import { DropdownArrow } from '../Arrow';
