@@ -148,12 +148,12 @@ test.describe('web overlays', () => {
   test('Modal renders in a portal, traps focus, and closes with Escape', async ({
     page,
   }) => {
-    await openStory(page, 'components-modal--basic');
+    await openStory(page, 'components-modal--default');
 
-    const opener = page.getByRole('button', { name: 'Open Modal' });
+    const opener = page.getByRole('button', { name: 'Open modal' });
     await opener.click();
 
-    const dialog = page.getByRole('dialog', { name: 'Delete file' });
+    const dialog = page.getByRole('dialog', { name: 'Workspace settings' });
     await expect(dialog).toBeVisible();
     await expectPortaled(page, '[role="dialog"]');
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
