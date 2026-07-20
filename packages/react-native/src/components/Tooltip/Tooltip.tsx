@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { Modal, Pressable, Text, View } from 'react-native';
 
-import { useNativeFloatingPosition } from '../../hooks/useNativeFloatingPosition';
+import { useNativeDismiss, useNativeFloatingPosition } from '../../managers';
 import { useThemeStyles } from '../../theme';
 
 import { createStyles } from './Tooltip.styles';
@@ -20,6 +20,7 @@ export function Tooltip({
   textStyle,
 }: TooltipProps) {
   const styles = useThemeStyles(createStyles);
+  const overlayId = useId();
   const [visible, setVisible] = useState(false);
 
   const triggerRef = useRef<View | null>(null);
@@ -29,13 +30,20 @@ export function Tooltip({
     useNativeFloatingPosition(placement, 8);
 
   const hideDelay = delay?.close ?? 2500;
-
   const clearCloseTimer = () => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
   };
+  const dismiss = useNativeDismiss({
+    id: overlayId,
+    visible: visible && !disabled,
+    onClose: () => {
+      clearCloseTimer();
+      setVisible(false);
+    },
+  });
 
   const showTooltip = () => {
     if (disabled) return;
@@ -60,14 +68,13 @@ export function Tooltip({
         {children}
       </Pressable>
 
-      <Modal visible={visible && !disabled} transparent animationType='fade'>
-        <Pressable
-          style={styles.overlay}
-          onPress={() => {
-            clearCloseTimer();
-            setVisible(false);
-          }}
-        >
+      <Modal
+        visible={visible && !disabled}
+        transparent
+        animationType='fade'
+        onRequestClose={dismiss.requestClose}
+      >
+        <Pressable style={styles.overlay} onPress={dismiss.requestOutsideClose}>
           <View
             pointerEvents='none'
             style={[

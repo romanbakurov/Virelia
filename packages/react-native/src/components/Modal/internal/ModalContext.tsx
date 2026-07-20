@@ -3,6 +3,7 @@ import { createContext, useContext } from 'react';
 interface ModalContextType {
   closeOnOutsidePress: boolean;
   onClose?: () => void;
+  onOutsideClose?: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
 }

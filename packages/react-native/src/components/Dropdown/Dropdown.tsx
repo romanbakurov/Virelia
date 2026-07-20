@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 
 import { useDropdown } from '@vellira-ui/core';
 import type { Component } from 'react';
@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { useNativeDismiss } from '../../managers';
 import { useThemeStyles } from '../../theme';
 
 import { DropdownContent } from './Content/DropdownContent';
@@ -62,6 +63,7 @@ function DropdownRoot({
   accessibilityHint,
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
+  const overlayId = useId();
   const { width } = useWindowDimensions();
   const triggerRef = useRef<Component | number | null>(null);
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
@@ -120,6 +122,11 @@ function DropdownRoot({
     closeDropdown();
     requestAnimationFrame(focusTrigger);
   }, [closeDropdown, focusTrigger]);
+  const dismiss = useNativeDismiss({
+    id: overlayId,
+    visible: isOpen,
+    onClose: closeAndFocusTrigger,
+  });
 
   const handleSelect = useCallback(
     (entry: Extract<NativeDropdownEntry, { type: 'item' }>) => {
@@ -215,7 +222,7 @@ function DropdownRoot({
 
       <DropdownContent
         isOpen={isOpen}
-        onClose={closeAndFocusTrigger}
+        onClose={dismiss.requestClose}
         contentStyle={[contentStyle, contentStyleFromSlot]}
         accessibilityLabel={menuAccessibilityLabel}
         presentation={presentationFromSlot ?? resolvedPresentation}

@@ -1,5 +1,6 @@
 import { useModal } from '@vellira-ui/core';
 
+import { useNativeDismiss } from '../../../managers';
 import ModalContext from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
@@ -16,12 +17,19 @@ export const ModalRoot = ({
     onOpenChange,
     closeOnOutsidePress,
   });
+  const dismiss = useNativeDismiss({
+    id: modal.contentId,
+    visible: modal.open,
+    closeOnOutsidePress: modal.closeOnOutsidePress,
+    onClose: modal.requestClose,
+  });
 
   return (
     <ModalContext.Provider
       value={{
         closeOnOutsidePress: modal.closeOnOutsidePress,
-        onClose: modal.requestClose,
+        onClose: dismiss.requestClose,
+        onOutsideClose: dismiss.requestOutsideClose,
         open: modal.open,
         setOpen: modal.setOpen,
       }}

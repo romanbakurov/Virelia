@@ -7,14 +7,15 @@ import type { ModalOverlayProps } from '../types';
 
 export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
   const styles = useThemeStyles(createStyles);
-  const { closeOnOutsidePress, open, setOpen } = useModalContext();
+  const { closeOnOutsidePress, onClose, onOutsideClose, open } =
+    useModalContext();
 
   return (
     <RNModal
       visible={open}
       transparent
       animationType='fade'
-      onRequestClose={() => setOpen(false)}
+      onRequestClose={onClose}
     >
       <View style={[styles.overlay, overlayStyle]}>
         <Pressable
@@ -22,7 +23,7 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
           accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
           accessibilityLabel={closeOnOutsidePress ? 'Close modal' : undefined}
           style={styles.backdrop}
-          onPress={closeOnOutsidePress ? () => setOpen(false) : undefined}
+          onPress={closeOnOutsidePress ? onOutsideClose : undefined}
         />
 
         {children}
