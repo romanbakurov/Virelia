@@ -1,28 +1,7 @@
-import { useEffect } from 'react';
-
-import type {
-  KeyboardEvent,
-  PointerEvent as ReactPointerEvent,
-  RefObject,
-} from 'react';
+import { useDismissManager } from '@vellira-ui/core';
+import type { KeyboardEvent, RefObject } from 'react';
 
 import type { ModalOutsideEvent } from '../types';
-
-const createOutsideEvent = (
-  originalEvent: PointerEvent | ReactPointerEvent<HTMLElement>
-): ModalOutsideEvent => {
-  let defaultPrevented = false;
-
-  return {
-    originalEvent,
-    preventDefault: () => {
-      defaultPrevented = true;
-    },
-    get defaultPrevented() {
-      return defaultPrevented;
-    },
-  };
-};
 
 export const useModalDismiss = ({
   active,
@@ -45,59 +24,21 @@ export const useModalDismiss = ({
   onInteractOutside?: (event: ModalOutsideEvent) => void;
   requestClose: () => void;
 }) => {
-  useEffect(() => {
-    if (!active) return;
-
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== 'Escape' || !isTopModal()) return;
-
-      onEscapeKeyDown?.(event as unknown as KeyboardEvent);
-
-      if (event.defaultPrevented || !closeOnEscape) return;
-
-      requestClose();
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [active, closeOnEscape, isTopModal, onEscapeKeyDown, requestClose]);
-
-  useEffect(() => {
-    if (!active) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!isTopModal()) return;
-      if (
-        event.target instanceof Node &&
-        contentRef.current?.contains(event.target)
-      ) {
-        return;
-      }
-
-      const outsideEvent = createOutsideEvent(event);
-      onPointerDownOutside?.(outsideEvent);
-      onInteractOutside?.(outsideEvent);
-
-      if (outsideEvent.defaultPrevented || !closeOnOutsidePress) return;
-
-      requestClose();
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-    };
-  }, [
+  useDismissManager({
     active,
     closeOnOutsidePress,
+    closeOnEscape,
     contentRef,
-    isTopModal,
-    onInteractOutside,
-    onPointerDownOutside,
+    isTopOverlay: isTopModal,
+    onEscapeKeyDown: onEscapeKeyDown
+      ? (event) => onEscapeKeyDown(event as unknown as KeyboardEvent)
+      : undefined,
+    onInteractOutside: onInteractOutside
+      ? (event) => onInteractOutside(event as ModalOutsideEvent)
+      : undefined,
+    onPointerDownOutside: onPointerDownOutside
+      ? (event) => onPointerDownOutside(event as ModalOutsideEvent)
+      : undefined,
     requestClose,
-  ]);
+  });
 };
