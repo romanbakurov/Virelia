@@ -7,6 +7,6 @@ export {
   focusableSelector,
   focusFirstElement,
   getFocusableElements,
-} from './focus.js';
+} from './focusUtils.js';
 export { useAriaIsolation } from './useAriaIsolation.js';
 export { useFocusScope } from './useFocusScope.js';
