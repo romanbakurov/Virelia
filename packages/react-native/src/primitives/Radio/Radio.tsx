@@ -10,7 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { useRadioGroupContext } from '../../components/RadioGroup/RadioGroupContext';
+import { useRadioGroupContext } from '../../components/RadioGroup/internal/RadioGroupContext';
 import { useControllableState } from '../../hooks';
 import { useTheme } from '../../theme';
 

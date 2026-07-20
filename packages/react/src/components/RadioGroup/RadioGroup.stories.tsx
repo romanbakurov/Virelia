@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-const noop = () => undefined;
 
 import { Radio } from '../../primitives/Radio';
 
 import { RadioGroup } from './index';
+
+const noop = () => undefined;
 
 const meta = {
   title: 'Components/RadioGroup',
@@ -23,6 +24,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
 **Features**
 - Controlled and uncontrolled usage
 - Composition with standalone Radio controls
+- Optional compound \`RadioGroup.Item\` alias
 - Group label and description
 - Vertical and horizontal orientation
 - Shared selected color inherited by child Radio controls
@@ -45,6 +47,13 @@ Groups multiple Radio controls and manages selection of exactly one value.
   <Radio value='fr' label='France' />
   <Radio value='es' label='Spain' />
   <Radio value='de' label='Germany' />
+</RadioGroup>
+\`\`\`
+
+\`\`\`tsx
+<RadioGroup defaultValue='email'>
+  <RadioGroup.Item value='email' label='Email' />
+  <RadioGroup.Item value='sms' label='SMS' />
 </RadioGroup>
 \`\`\`
 `,
@@ -216,27 +225,6 @@ function CountryRadios({ disableSpain = false }: { disableSpain?: boolean }) {
   );
 }
 
-const ControlledRadioGroup = (args: RadioGroupStoryProps) => {
-  const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
-
-  useEffect(() => {
-    setValue(args.value ?? args.defaultValue ?? '');
-  }, [args.value, args.defaultValue]);
-
-  return (
-    <RadioGroup
-      {...args}
-      value={value}
-      onValueChange={(nextValue) => {
-        setValue(nextValue);
-        args.onValueChange?.(nextValue);
-      }}
-    >
-      {args.children}
-    </RadioGroup>
-  );
-};
-
 const ControlledCountryGroup = (
   args: Omit<RadioGroupStoryProps, 'children'>
 ) => {
@@ -256,18 +244,6 @@ const ControlledCountryGroup = (
   );
 };
 
-export const Playground: Story = {
-  args: {
-    defaultValue: 'fr',
-    children: <CountryRadios />,
-  },
-  render: (args) => (
-    <Section title='Playground'>
-      <ControlledRadioGroup {...args} />
-    </Section>
-  ),
-};
-
 export const Default: Story = {
   args: {
     defaultValue: 'fr',
@@ -276,6 +252,35 @@ export const Default: Story = {
     <Section title='Default'>
       <RadioGroup {...args}>
         <CountryRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const CompoundItem: Story = {
+  args: {
+    defaultValue: 'email',
+    label: 'Notification channel',
+    description: 'Choose where product updates should be sent.',
+  },
+  render: (args) => (
+    <Section title='Compound Item'>
+      <RadioGroup {...args}>
+        <RadioGroup.Item
+          value='email'
+          label='Email'
+          description='Send updates to the account email address.'
+        />
+        <RadioGroup.Item
+          value='sms'
+          label='SMS'
+          description='Send critical updates by text message.'
+        />
+        <RadioGroup.Item
+          value='push'
+          label='Push'
+          description='Send updates through the mobile app.'
+        />
       </RadioGroup>
     </Section>
   ),

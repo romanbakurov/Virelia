@@ -4,7 +4,7 @@ import type { ChangeEvent } from 'react';
 
 import { useControllableState } from '@/hooks';
 
-import { useRadioGroupContext } from '../../components/RadioGroup/RadioGroupContext';
+import { useRadioGroupContext } from '../../components/RadioGroup/internal/RadioGroupContext';
 import { cn } from '../../utils/cn';
 
 import type { RadioProps } from './types';

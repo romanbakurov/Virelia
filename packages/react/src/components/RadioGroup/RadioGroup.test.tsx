@@ -184,4 +184,27 @@ describe('RadioGroup', () => {
 
     unmount();
   });
+
+  it('supports RadioGroup.Item as a compound alias for Radio', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <RadioGroup defaultValue='starter' onValueChange={onValueChange}>
+        <RadioGroup.Item value='starter' label='Starter' />
+        <RadioGroup.Item value='pro' label='Pro' />
+      </RadioGroup>
+    );
+
+    const radios = container.querySelectorAll<HTMLInputElement>(
+      'input[type="radio"]'
+    );
+
+    expect(radios[0].checked).toBe(true);
+
+    act(() => radios[1].click());
+
+    expect(radios[1].checked).toBe(true);
+    expect(onValueChange).toHaveBeenCalledWith('pro');
+
+    unmount();
+  });
 });
