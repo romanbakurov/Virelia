@@ -1,7 +1,12 @@
-export type { FocusScopeOptions, OverlayAutoFocusEvent } from '../types.js';
+export type {
+  AriaIsolationOptions,
+  FocusScopeOptions,
+  OverlayAutoFocusEvent,
+} from '../types.js';
 export {
   focusableSelector,
   focusFirstElement,
   getFocusableElements,
 } from './focus.js';
-export { useFocusScope } from './FocusScope.js';
+export { useAriaIsolation } from './useAriaIsolation.js';
+export { useFocusScope } from './useFocusScope.js';

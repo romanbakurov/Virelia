@@ -18,6 +18,19 @@ This package contains hooks that can be reused by web and native packages when t
 
 Behavior hooks live under `src/behavior` internally and are exported from the package root when they are platform-neutral.
 
+```text
+behavior/
+  overlay/
+    useOverlayStack
+    useOverlayDismiss
+    useScrollLock
+  focus/
+    useFocusScope
+    useAriaIsolation
+  portal/
+    usePortal
+```
+
 ## Usage
 
 ```ts

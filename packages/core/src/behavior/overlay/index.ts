@@ -1,11 +1,6 @@
-export type {
-  AriaIsolationOptions,
-  OverlayDismissOptions,
-  OverlayOutsideEvent,
-} from '../types.js';
-export { useAriaIsolation } from './AriaIsolation.js';
-export { useOverlayDismiss } from './OverlayDismiss.js';
-export type { OverlayStackOptions } from './OverlayStack.js';
-export { useOverlayStack } from './OverlayStack.js';
-export type { ScrollLockOptions } from './ScrollLock.js';
-export { useScrollLock } from './ScrollLock.js';
+export type { OverlayDismissOptions, OverlayOutsideEvent } from '../types.js';
+export { useOverlayDismiss } from './useOverlayDismiss.js';
+export type { OverlayStackOptions } from './useOverlayStack.js';
+export { useOverlayStack } from './useOverlayStack.js';
+export type { ScrollLockOptions } from './useScrollLock.js';
+export { useScrollLock } from './useScrollLock.js';

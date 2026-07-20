@@ -1,2 +1,2 @@
-export type { PortalOptions } from './Portal.js';
-export { defaultPortalTarget, usePortal } from './Portal.js';
+export type { PortalOptions } from './usePortal.js';
+export { defaultPortalTarget, usePortal } from './usePortal.js';
