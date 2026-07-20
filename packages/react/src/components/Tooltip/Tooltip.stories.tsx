@@ -59,6 +59,12 @@ const fieldGridStyle = {
   justifyItems: 'start',
 } satisfies CSSProperties;
 
+const placementSectionStyle = {
+  ...sectionStyle,
+  width: '100%',
+  maxWidth: 960,
+} satisfies CSSProperties;
+
 const meta = {
   title: 'Components/Tooltip',
   component: Tooltip,
@@ -195,9 +201,17 @@ Short helper overlay attached to a trigger element.
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({
+  title,
+  children,
+  style,
+}: {
+  title: string;
+  children: ReactNode;
+  style?: CSSProperties;
+}) {
   return (
-    <section style={sectionStyle}>
+    <section style={{ ...sectionStyle, ...style }}>
       <h3 style={subtitleStyle}>{title}</h3>
       {children}
     </section>
@@ -261,77 +275,11 @@ function ControlledTooltip({
 
 export const Default: Story = {
   render: (args) => (
-    <div style={fieldGridStyle}>
-      <Section title='Default'>
-        <TooltipDemo {...args} tooltipContent='This is a tooltip'>
-          <Button>Hover me</Button>
-        </TooltipDemo>
-      </Section>
-
-      <Section title='Placement'>
-        <div style={matrixStyle}>
-          {(['top', 'right', 'bottom', 'left'] as const).map((placement) => (
-            <TooltipDemo
-              key={placement}
-              {...args}
-              tooltipContent={`${placement} tooltip`}
-              placement={placement}
-              delay={0}
-            >
-              <Button>{placement}</Button>
-            </TooltipDemo>
-          ))}
-        </div>
-      </Section>
-
-      <Section title='Behavior'>
-        <div style={matrixStyle}>
-          <TooltipDemo {...args} tooltipContent='Appears instantly' delay={0}>
-            <Button>Instant</Button>
-          </TooltipDemo>
-
-          <TooltipDemo
-            {...args}
-            tooltipContent='Composed with Button via asChild'
-          >
-            <Button color='neutral' appearance='outline'>
-              asChild trigger
-            </Button>
-          </TooltipDemo>
-
-          <TooltipDemo
-            {...args}
-            tooltipContent='Tooltip without arrow'
-            withArrow={false}
-          >
-            <Button>No arrow</Button>
-          </TooltipDemo>
-        </div>
-      </Section>
-
-      <Section title='Content'>
-        <div style={matrixStyle}>
-          <TooltipDemo
-            {...args}
-            tooltipContent='This is a very very very long tooltip content that will wrap to multiple lines automatically'
-          >
-            <Button>Long text</Button>
-          </TooltipDemo>
-
-          <TooltipDemo
-            {...args}
-            tooltipContent={
-              <div>
-                <strong>Rich content</strong>
-                <p style={{ margin: 0 }}>Can contain any React node</p>
-              </div>
-            }
-          >
-            <Button>Rich content</Button>
-          </TooltipDemo>
-        </div>
-      </Section>
-    </div>
+    <Section title='Default'>
+      <TooltipDemo {...args} tooltipContent='This is a tooltip'>
+        <Button>Hover me</Button>
+      </TooltipDemo>
+    </Section>
   ),
 };
 
@@ -360,8 +308,17 @@ export const TriggerAsChild: Story = {
 
 export const Placement: Story = {
   render: () => (
-    <Section title='Placement'>
-      <div style={matrixStyle}>
+    <Section title='Placement' style={placementSectionStyle}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, minmax(120px, 1fr))',
+          gap: '48px',
+          padding: '80px',
+          placeItems: 'center',
+          width: '100%',
+        }}
+      >
         {placements.map((placement) => (
           <TooltipDemo
             key={placement}
