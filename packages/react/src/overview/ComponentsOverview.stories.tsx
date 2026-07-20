@@ -1274,18 +1274,34 @@ function WebComponentsOverview() {
 
         <Section title='Tooltip'>
           <div style={rowStyle}>
-            <Tooltip content='Tooltip text is shown on hover or focus.'>
-              <Button color='neutral' appearance='solid'>
-                Hover me
-              </Button>
+            <Tooltip>
+              <Tooltip.Trigger asChild>
+                <Button color='neutral' appearance='solid'>
+                  Hover me
+                </Button>
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Content>
+                  Tooltip text is shown on hover or focus.
+                  <Tooltip.Arrow />
+                </Tooltip.Content>
+              </Portal>
             </Tooltip>
-            <Tooltip content='Icon buttons also expose tooltip content.'>
-              <Button
-                color='neutral'
-                appearance='solid'
-                aria-label='Open filters'
-                iconStart={<Filter />}
-              />
+            <Tooltip>
+              <Tooltip.Trigger asChild>
+                <Button
+                  color='neutral'
+                  appearance='solid'
+                  aria-label='Open filters'
+                  iconStart={<Filter />}
+                />
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Content>
+                  Icon buttons also expose tooltip content.
+                  <Tooltip.Arrow />
+                </Tooltip.Content>
+              </Portal>
             </Tooltip>
           </div>
         </Section>

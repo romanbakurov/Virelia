@@ -1,9 +1,15 @@
+import { useEffect, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Search } from '@vellira-ui/icons';
-const noop = () => undefined;
+import type { ComponentProps, ReactNode } from 'react';
 
 import { Button } from '../../primitives/Button';
-import { Tooltip } from '../Tooltip';
+import { Portal } from '../../primitives/Portal';
+
+import { Tooltip } from './Tooltip';
+
+const noop = () => undefined;
 
 const placements = [
   'top',
@@ -33,22 +39,28 @@ const meta = {
 Short helper overlay attached to a trigger element.
 
 **Features**
-- Placement: top, bottom, left, and right
+- Compound-first API
+- Trigger composition through asChild
+- Placement: top, bottom, left and right
 - Opens on hover or focus
-- Disabled state
-- Custom open and close delay
-- Maximum width control
-- Rich content support
+- Controlled and uncontrolled usage
+- Optional arrow
+- Provider-level default delay
 
 ### Usage
 
-Use Tooltip for brief explanations. Keep content short and avoid putting required information only inside a tooltip.
-
-Correct usage:
-
 \`\`\`tsx
-<Tooltip content='Search all projects' placement='top'>
-  <Button aria-label='Search' iconStart={<Search />} />
+<Tooltip delay={500} placement='top'>
+  <Tooltip.Trigger asChild>
+    <Button aria-label='Search' iconStart={<Search />} />
+  </Tooltip.Trigger>
+
+  <Portal>
+    <Tooltip.Content>
+      Search all projects
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Portal>
 </Tooltip>
 \`\`\`
 `,
@@ -56,17 +68,19 @@ Correct usage:
     },
   },
   args: {
+    placement: 'top',
+    delay: 300,
+    disabled: false,
+    interactive: false,
+    avoidCollisions: true,
+    matchTriggerWidth: false,
+    defaultOpen: false,
     onOpenChange: noop,
   },
   argTypes: {
     children: {
-      description: 'Trigger element that the tooltip is attached to.',
       control: false,
-      table: { type: { summary: 'ReactNode' } },
-    },
-    content: {
-      description: 'Tooltip content.',
-      control: 'text',
+      description: 'Compound tooltip children.',
       table: { type: { summary: 'ReactNode' } },
     },
     placement: {
@@ -81,6 +95,28 @@ Correct usage:
         defaultValue: { summary: 'top' },
       },
     },
+    delay: {
+      description: 'Open delay in milliseconds, or open/close delay object.',
+      control: 'number',
+      table: {
+        type: { summary: 'number | { open?: number; close?: number }' },
+      },
+    },
+    defaultOpen: {
+      description: 'Initial uncontrolled open state.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    open: {
+      description: 'Controlled open state.',
+      control: false,
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
     disabled: {
       description: 'Disables tooltip behavior.',
       control: 'boolean',
@@ -89,18 +125,28 @@ Correct usage:
         defaultValue: { summary: 'false' },
       },
     },
-    delay: {
-      description: 'Open and close delay in milliseconds.',
-      control: 'object',
+    interactive: {
+      description: 'Keeps pointer events available for interactive content.',
+      control: 'boolean',
       table: {
-        type: { summary: '{ open?: number; close?: number }' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
-    maxWidth: {
-      description: 'Maximum tooltip width in pixels.',
-      control: 'number',
+    avoidCollisions: {
+      description: 'Allows the tooltip to flip or shift to stay in viewport.',
+      control: 'boolean',
       table: {
-        type: { summary: 'number | string' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    matchTriggerWidth: {
+      description: 'Matches tooltip content width to the trigger width.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
     onOpenChange: {
@@ -116,18 +162,84 @@ Correct usage:
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Basic: Story = {
+function TooltipDemo({
+  children,
+  tooltipContent,
+  withArrow = true,
+  ...args
+}: ComponentProps<typeof Tooltip> & {
+  tooltipContent: ReactNode;
+  withArrow?: boolean;
+}) {
+  return (
+    <Tooltip {...args}>
+      <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content>
+          {tooltipContent}
+          {withArrow && <Tooltip.Arrow />}
+        </Tooltip.Content>
+      </Portal>
+    </Tooltip>
+  );
+}
+
+function ControlledTooltip({
+  defaultOpen,
+  open,
+  ...args
+}: ComponentProps<typeof Tooltip>) {
+  const [isOpen, setIsOpen] = useState(open ?? defaultOpen ?? false);
+
+  useEffect(() => {
+    setIsOpen(open ?? defaultOpen ?? false);
+  }, [open, defaultOpen]);
+
+  return (
+    <Tooltip
+      {...args}
+      open={isOpen}
+      onOpenChange={(nextOpen) => {
+        setIsOpen(nextOpen);
+        args.onOpenChange?.(nextOpen);
+      }}
+    >
+      <Tooltip.Trigger asChild>
+        <Button>{isOpen ? 'Tooltip open' : 'Tooltip closed'}</Button>
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content>
+          Controlled tooltip
+          <Tooltip.Arrow />
+        </Tooltip.Content>
+      </Portal>
+    </Tooltip>
+  );
+}
+
+export const Default: Story = {
+  render: (args) => (
+    <TooltipDemo {...args} tooltipContent='This is a tooltip'>
+      <Button>Hover me</Button>
+    </TooltipDemo>
+  ),
+};
+
+export const Controlled: Story = {
   args: {
-    content: 'This is a tooltip',
-    placement: 'top',
+    defaultOpen: true,
   },
-  render: (args) => {
-    return (
-      <Tooltip {...args}>
-        <Button>Hover me</Button>
-      </Tooltip>
-    );
-  },
+  render: (args) => <ControlledTooltip {...args} />,
+};
+
+export const TriggerAsChild: Story = {
+  render: (args) => (
+    <TooltipDemo {...args} tooltipContent='Composed with Button via asChild'>
+      <Button color='neutral' appearance='outline'>
+        asChild trigger
+      </Button>
+    </TooltipDemo>
+  ),
 };
 
 export const Placement: Story = {
@@ -142,116 +254,168 @@ export const Placement: Story = {
       }}
     >
       {placements.map((placement) => (
-        <Tooltip
+        <TooltipDemo
           key={placement}
-          content={`${placement} tooltip`}
+          tooltipContent={`${placement} tooltip`}
           placement={placement}
-          delay={{ open: 0, close: 0 }}
+          delay={0}
         >
           <Button>{placement}</Button>
-        </Tooltip>
+        </TooltipDemo>
       ))}
     </div>
   ),
 };
 
 export const LongContent: Story = {
-  args: {
-    content:
-      'This is a very very very long tooltip content that will wrap to multiple lines automatically',
-    placement: 'top',
-  },
-  render: (args) => {
-    return (
-      <div
-        style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}
+  render: (args) => (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: 50 }}>
+      <TooltipDemo
+        {...args}
+        tooltipContent='This is a very very very long tooltip content that will wrap to multiple lines automatically'
       >
-        <Tooltip {...args}>
-          <Button>Hover for long text</Button>
-        </Tooltip>
-      </div>
-    );
-  },
+        <Button>Hover for long text</Button>
+      </TooltipDemo>
+    </div>
+  ),
 };
 
 export const Disabled: Story = {
   args: {
-    content: 'This tooltip is disabled',
     disabled: true,
   },
   render: (args) => (
-    <Tooltip {...args}>
+    <TooltipDemo {...args} tooltipContent='This tooltip is disabled'>
       <Button disabled>Disabled Button</Button>
-    </Tooltip>
+    </TooltipDemo>
   ),
 };
 
 export const CustomDelay: Story = {
   args: {
-    content: 'Appears after 500ms',
-    delay: { open: 500, close: 200 },
+    delay: 500,
   },
   render: (args) => (
-    <Tooltip {...args}>
+    <TooltipDemo {...args} tooltipContent='Appears after 500ms'>
       <Button>Slow Tooltip</Button>
-    </Tooltip>
+    </TooltipDemo>
   ),
 };
 
 export const NoDelay: Story = {
   args: {
-    content: 'Appears instantly',
-    delay: { open: 0, close: 0 },
+    delay: 0,
+  },
+  render: (args) => (
+    <TooltipDemo {...args} tooltipContent='Appears instantly'>
+      <Button>Instant Tooltip</Button>
+    </TooltipDemo>
+  ),
+};
+
+export const WithoutArrow: Story = {
+  render: (args) => (
+    <TooltipDemo
+      {...args}
+      tooltipContent='Tooltip without arrow'
+      withArrow={false}
+    >
+      <Button>No arrow</Button>
+    </TooltipDemo>
+  ),
+};
+
+export const MatchTriggerWidth: Story = {
+  args: {
+    matchTriggerWidth: true,
+    placement: 'bottom',
   },
   render: (args) => (
     <Tooltip {...args}>
-      <Button>Instant Tooltip</Button>
+      <Tooltip.Trigger asChild>
+        <Button style={{ width: 240 }}>Matched width trigger</Button>
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content>
+          Matches trigger width
+          <Tooltip.Arrow />
+        </Tooltip.Content>
+      </Portal>
     </Tooltip>
   ),
 };
 
 export const RichContent: Story = {
-  args: {
-    content: (
-      <div>
-        <strong>Rich content</strong>
-        <p style={{ margin: 0 }}>Can contain any React node</p>
-        <code>Even code blocks</code>
-      </div>
-    ),
-  },
   render: (args) => (
-    <Tooltip {...args}>
+    <TooltipDemo
+      {...args}
+      tooltipContent={
+        <div>
+          <strong>Rich content</strong>
+          <p style={{ margin: 0 }}>Can contain any React node</p>
+          <code>Even code blocks</code>
+        </div>
+      }
+    >
       <Button>Rich Tooltip</Button>
-    </Tooltip>
+    </TooltipDemo>
   ),
 };
 
-export const DifferentTriggers: Story = {
+export const Triggers: Story = {
   render: () => (
     <div
       style={{
         display: 'flex',
-        gap: '20px',
+        gap: 20,
         alignItems: 'center',
         flexWrap: 'wrap',
       }}
     >
-      <Tooltip content='Small button'>
+      <TooltipDemo tooltipContent='Small button'>
         <Button size='sm'>Small</Button>
-      </Tooltip>
+      </TooltipDemo>
 
-      <Tooltip content='Medium button'>
+      <TooltipDemo tooltipContent='Medium button'>
         <Button size='md'>Medium</Button>
-      </Tooltip>
+      </TooltipDemo>
 
-      <Tooltip content='Large button'>
+      <TooltipDemo tooltipContent='Large button'>
         <Button size='lg'>Large</Button>
-      </Tooltip>
+      </TooltipDemo>
 
-      <Tooltip content='Icon only'>
+      <TooltipDemo tooltipContent='Icon only'>
         <Button aria-label='Search' iconStart={<Search />} />
-      </Tooltip>
+      </TooltipDemo>
     </div>
+  ),
+};
+
+export const ProviderDelay: Story = {
+  render: () => (
+    <Tooltip.Provider delay={700} skipDelay={300}>
+      <TooltipDemo tooltipContent='Uses provider delay'>
+        <Button>Provider delay</Button>
+      </TooltipDemo>
+    </Tooltip.Provider>
+  ),
+};
+
+export const ForceMount: Story = {
+  args: {
+    open: false,
+  },
+  render: (args) => (
+    <Tooltip {...args}>
+      <Tooltip.Trigger asChild>
+        <Button>Force mounted</Button>
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content forceMount>
+          Mounted with closed state
+          <Tooltip.Arrow />
+        </Tooltip.Content>
+      </Portal>
+    </Tooltip>
   ),
 };

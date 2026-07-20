@@ -1,9 +1,8 @@
-import type { BaseTooltipProps } from '@vellira-ui/types';
-import type { ReactNode } from 'react';
+import type { TooltipRootProps } from './Root';
 
-export interface TooltipProps extends BaseTooltipProps {
-  content: ReactNode;
-  children: ReactNode;
-  maxWidth?: number | string;
-  className?: string;
-}
+export type { TooltipArrowProps } from './Arrow';
+export type { TooltipContentProps } from './Content';
+export type { TooltipRootProps } from './Root';
+export type { TooltipTriggerProps } from './Trigger';
+
+export type TooltipProps = TooltipRootProps;

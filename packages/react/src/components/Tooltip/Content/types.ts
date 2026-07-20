@@ -1,15 +1,10 @@
-import type { BaseTooltipContentProps } from '@vellira-ui/types';
-import type React from 'react';
-import type { ReactNode, RefObject } from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
 
-export interface TooltipContentProps extends BaseTooltipContentProps {
-  content: ReactNode;
-  placement: string;
-  arrowX?: number | null;
-  arrowY?: number | null;
+export interface TooltipContentProps extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  color?: 'neutral';
+  size?: 'sm';
+  forceMount?: boolean;
   className?: string;
-  id?: string;
-  role?: string;
-  arrowRef: RefObject<HTMLDivElement | null>;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }

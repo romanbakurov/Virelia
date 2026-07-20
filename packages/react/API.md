@@ -754,25 +754,39 @@ import { Tabs } from '@vellira-ui/react';
 Floating helper text that appears around a target element.
 
 ```tsx
-import { Tooltip, Button } from '@vellira-ui/react';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
-<Tooltip content='More actions' placement='top' className=''>
-  <Button aria-label='More actions'>...</Button>
+<Tooltip placement='top'>
+  <Tooltip.Trigger asChild>
+    <Button aria-label='More actions'>...</Button>
+  </Tooltip.Trigger>
+  <Portal>
+    <Tooltip.Content>
+      More actions
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Portal>
 </Tooltip>;
 ```
 
 <!-- api-docgen:start web.TooltipProps.Tooltip -->
 
-| Prop           | Type                      | Required | Description                            |
-| -------------- | ------------------------- | -------- | -------------------------------------- |
-| `content`      | `ReactNode`               | Yes      | —                                      |
-| `children`     | `ReactNode`               | Yes      | Content rendered inside the component. |
-| `maxWidth`     | `string \| number`        | No       | —                                      |
-| `className`    | `string`                  | No       | Extra CSS class for the root element.  |
-| `placement`    | `FloatingPlacement`       | No       | Preferred dropdown placement.          |
-| `disabled`     | `boolean`                 | No       | Disables interaction.                  |
-| `delay`        | `TooltipDelay`            | No       | —                                      |
-| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.    |
+| Prop                | Type                                                 | Required | Description                                      |
+| ------------------- | ---------------------------------------------------- | -------- | ------------------------------------------------ |
+| `children`          | `ReactNode`                                          | Yes      | Content rendered inside the component.           |
+| `open`              | `boolean`                                            | No       | Controlled open state.                           |
+| `defaultOpen`       | `boolean`                                            | No       | Initial uncontrolled open state.                 |
+| `onOpenChange`      | `(open: boolean) => void`                            | No       | Called when the open state changes.              |
+| `delay`             | `number \| import("@vellira-ui/types").TooltipDelay` | No       | —                                                |
+| `skipDelay`         | `number`                                             | No       | —                                                |
+| `offset`            | `number`                                             | No       | —                                                |
+| `interactive`       | `boolean`                                            | No       | —                                                |
+| `portal`            | `boolean`                                            | No       | —                                                |
+| `avoidCollisions`   | `boolean`                                            | No       | —                                                |
+| `matchTriggerWidth` | `boolean`                                            | No       | Matches the dropdown width to the trigger width. |
+| `modal`             | `boolean`                                            | No       | —                                                |
+| `disabled`          | `boolean`                                            | No       | Disables interaction.                            |
+| `placement`         | `FloatingPlacement`                                  | No       | Preferred dropdown placement.                    |
 
 <!-- api-docgen:end web.TooltipProps.Tooltip -->
 
