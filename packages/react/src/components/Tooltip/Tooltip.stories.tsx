@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Search } from '@vellira-ui/icons';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
 import { Button } from '../../primitives/Button';
 import { Portal } from '../../primitives/Portal';
@@ -25,6 +25,37 @@ const placements = [
   'left-start',
   'left-end',
 ] as const;
+
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
+
+const sectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+  minWidth: 0,
+  maxWidth: 760,
+  padding: 20,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-xl)',
+  background: 'var(--surface-subtle)',
+} satisfies CSSProperties;
+
+const matrixStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, max-content))',
+  gap: 12,
+  alignItems: 'start',
+} satisfies CSSProperties;
+
+const fieldGridStyle = {
+  display: 'grid',
+  gap: 12,
+} satisfies CSSProperties;
 
 const meta = {
   title: 'Components/Tooltip',
@@ -162,6 +193,15 @@ Short helper overlay attached to a trigger element.
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section style={sectionStyle}>
+      <h3 style={subtitleStyle}>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
 function TooltipDemo({
   children,
   tooltipContent,
@@ -244,39 +284,35 @@ export const TriggerAsChild: Story = {
 
 export const Placement: Story = {
   render: () => (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(120px, 1fr))',
-        gap: '48px',
-        padding: '80px',
-        placeItems: 'center',
-      }}
-    >
-      {placements.map((placement) => (
-        <TooltipDemo
-          key={placement}
-          tooltipContent={`${placement} tooltip`}
-          placement={placement}
-          delay={0}
-        >
-          <Button>{placement}</Button>
-        </TooltipDemo>
-      ))}
-    </div>
+    <Section title='Placement'>
+      <div style={matrixStyle}>
+        {placements.map((placement) => (
+          <TooltipDemo
+            key={placement}
+            tooltipContent={`${placement} tooltip`}
+            placement={placement}
+            delay={0}
+          >
+            <Button>{placement}</Button>
+          </TooltipDemo>
+        ))}
+      </div>
+    </Section>
   ),
 };
 
 export const LongContent: Story = {
   render: (args) => (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: 50 }}>
-      <TooltipDemo
-        {...args}
-        tooltipContent='This is a very very very long tooltip content that will wrap to multiple lines automatically'
-      >
-        <Button>Hover for long text</Button>
-      </TooltipDemo>
-    </div>
+    <Section title='Long content'>
+      <div style={fieldGridStyle}>
+        <TooltipDemo
+          {...args}
+          tooltipContent='This is a very very very long tooltip content that will wrap to multiple lines automatically'
+        >
+          <Button>Hover for long text</Button>
+        </TooltipDemo>
+      </div>
+    </Section>
   ),
 };
 
@@ -347,47 +383,46 @@ export const MatchTriggerWidth: Story = {
 
 export const RichContent: Story = {
   render: (args) => (
-    <TooltipDemo
-      {...args}
-      tooltipContent={
-        <div>
-          <strong>Rich content</strong>
-          <p style={{ margin: 0 }}>Can contain any React node</p>
-          <code>Even code blocks</code>
-        </div>
-      }
-    >
-      <Button>Rich Tooltip</Button>
-    </TooltipDemo>
+    <Section title='Rich content'>
+      <div style={fieldGridStyle}>
+        <TooltipDemo
+          {...args}
+          tooltipContent={
+            <div>
+              <strong>Rich content</strong>
+              <p style={{ margin: 0 }}>Can contain any React node</p>
+              <code>Even code blocks</code>
+            </div>
+          }
+        >
+          <Button>Rich Tooltip</Button>
+        </TooltipDemo>
+      </div>
+    </Section>
   ),
 };
 
 export const Triggers: Story = {
   render: () => (
-    <div
-      style={{
-        display: 'flex',
-        gap: 20,
-        alignItems: 'center',
-        flexWrap: 'wrap',
-      }}
-    >
-      <TooltipDemo tooltipContent='Small button'>
-        <Button size='sm'>Small</Button>
-      </TooltipDemo>
+    <Section title='Triggers'>
+      <div style={matrixStyle}>
+        <TooltipDemo tooltipContent='Small button'>
+          <Button size='sm'>Small</Button>
+        </TooltipDemo>
 
-      <TooltipDemo tooltipContent='Medium button'>
-        <Button size='md'>Medium</Button>
-      </TooltipDemo>
+        <TooltipDemo tooltipContent='Medium button'>
+          <Button size='md'>Medium</Button>
+        </TooltipDemo>
 
-      <TooltipDemo tooltipContent='Large button'>
-        <Button size='lg'>Large</Button>
-      </TooltipDemo>
+        <TooltipDemo tooltipContent='Large button'>
+          <Button size='lg'>Large</Button>
+        </TooltipDemo>
 
-      <TooltipDemo tooltipContent='Icon only'>
-        <Button aria-label='Search' iconStart={<Search />} />
-      </TooltipDemo>
-    </div>
+        <TooltipDemo tooltipContent='Icon only'>
+          <Button aria-label='Search' iconStart={<Search />} />
+        </TooltipDemo>
+      </div>
+    </Section>
   ),
 };
 
