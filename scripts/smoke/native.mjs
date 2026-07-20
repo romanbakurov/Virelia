@@ -211,6 +211,8 @@ const expectedNativeApi = [
   'FormField',
   'Input',
   'Modal',
+  'Portal',
+  'PortalProvider',
   'Radio',
   'RadioGroup',
   'Select',
@@ -243,6 +245,14 @@ if (!isComponentExport(native.Tabs)) {
 
 if (!isComponentExport(native.ThemeProvider)) {
   throw new Error('react-native ThemeProvider export invalid');
+}
+
+if (!isComponentExport(native.Portal)) {
+  throw new Error('react-native Portal export invalid');
+}
+
+if (!isComponentExport(native.PortalProvider)) {
+  throw new Error('react-native PortalProvider export invalid');
 }
 
 if (typeof native.useTheme !== 'function') {

@@ -17,6 +17,8 @@ storybook-static
 # Android
 **/android/.gradle
 **/android/.cxx
+**/android/.cxx/**
+**/.cxx/**
 **/android/build
 **/android/app/build
 
