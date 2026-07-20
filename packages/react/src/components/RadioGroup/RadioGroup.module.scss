@@ -1,25 +1,25 @@
 .root {
-  --radio-group-current-gap: var(--form-field-size-md-gap);
+  --radio-group-current-field-gap: var(--form-field-size-md-gap);
   --radio-group-current-item-gap: var(--radio-group-size-md-item-gap);
   --radio-group-current-horizontal-gap: var(
     --radio-group-size-md-horizontal-gap
   );
-  --radio-group-current-label-font-size: var(
+  --radio-group-current-field-label-font-size: var(
     --form-field-size-md-label-font-size
   );
-  --radio-group-current-label-line-height: var(
+  --radio-group-current-field-label-line-height: var(
     --form-field-size-md-label-line-height
   );
-  --radio-group-current-description-font-size: var(
+  --radio-group-current-field-description-font-size: var(
     --form-field-size-md-description-font-size
   );
-  --radio-group-current-description-line-height: var(
+  --radio-group-current-field-description-line-height: var(
     --form-field-size-md-description-line-height
   );
-  --radio-group-current-helper-text-font-size: var(
+  --radio-group-current-field-helper-text-font-size: var(
     --form-field-size-md-helper-text-font-size
   );
-  --radio-group-current-helper-text-line-height: var(
+  --radio-group-current-field-helper-text-line-height: var(
     --form-field-size-md-helper-text-line-height
   );
 
@@ -27,32 +27,32 @@
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: var(--radio-group-current-gap);
+  gap: var(--radio-group-current-field-gap);
 }
 
 @each $size in sm, md, lg {
   .#{$size} {
-    --radio-group-current-gap: var(--form-field-size-#{$size}-gap);
+    --radio-group-current-field-gap: var(--form-field-size-#{$size}-gap);
     --radio-group-current-item-gap: var(--radio-group-size-#{$size}-item-gap);
     --radio-group-current-horizontal-gap: var(
       --radio-group-size-#{$size}-horizontal-gap
     );
-    --radio-group-current-label-font-size: var(
+    --radio-group-current-field-label-font-size: var(
       --form-field-size-#{$size}-label-font-size
     );
-    --radio-group-current-label-line-height: var(
+    --radio-group-current-field-label-line-height: var(
       --form-field-size-#{$size}-label-line-height
     );
-    --radio-group-current-description-font-size: var(
+    --radio-group-current-field-description-font-size: var(
       --form-field-size-#{$size}-description-font-size
     );
-    --radio-group-current-description-line-height: var(
+    --radio-group-current-field-description-line-height: var(
       --form-field-size-#{$size}-description-line-height
     );
-    --radio-group-current-helper-text-font-size: var(
+    --radio-group-current-field-helper-text-font-size: var(
       --form-field-size-#{$size}-helper-text-font-size
     );
-    --radio-group-current-helper-text-line-height: var(
+    --radio-group-current-field-helper-text-line-height: var(
       --form-field-size-#{$size}-helper-text-line-height
     );
   }
@@ -63,9 +63,9 @@
   align-items: center;
   width: fit-content;
   color: var(--form-field-label-fg);
-  font-size: var(--radio-group-current-label-font-size);
+  font-size: var(--radio-group-current-field-label-font-size);
   font-weight: var(--font-weight-medium);
-  line-height: var(--radio-group-current-label-line-height);
+  line-height: var(--radio-group-current-field-label-line-height);
   gap: var(--space-1);
   transition: color 0.2s ease;
 }
@@ -77,9 +77,9 @@
 
 .description {
   color: var(--form-field-description-fg);
-  font-size: var(--radio-group-current-description-font-size);
+  font-size: var(--radio-group-current-field-description-font-size);
   font-weight: var(--font-weight-regular);
-  line-height: var(--radio-group-current-description-line-height);
+  line-height: var(--radio-group-current-field-description-line-height);
   transition: color 0.2s ease;
 }
 
@@ -103,9 +103,9 @@
 
 .error {
   color: var(--form-field-helper-text-error-fg);
-  font-size: var(--radio-group-current-helper-text-font-size);
+  font-size: var(--radio-group-current-field-helper-text-font-size);
   font-weight: var(--font-weight-regular);
-  line-height: var(--radio-group-current-helper-text-line-height);
+  line-height: var(--radio-group-current-field-helper-text-line-height);
   transition: color 0.2s ease;
 }
 
