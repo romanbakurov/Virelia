@@ -157,18 +157,23 @@ required instructions in `description`.
 
 ```tsx
 import { Settings } from '@vellira-ui/icons';
-import { Button, FormField, Input, Tooltip } from '@vellira-ui/react';
+import { Button, FormField, Input, Portal, Tooltip } from '@vellira-ui/react';
 
 <FormField
   label='API key'
   description='Never share this value in public channels.'
   labelInfo={
-    <Tooltip content='Create keys in workspace settings.'>
-      <Button
-        aria-label='Where to create API keys'
-        iconOnly
-        iconStart={<Settings />}
-      />
+    <Tooltip>
+      <Tooltip.Trigger asChild>
+        <Button
+          aria-label='Where to create API keys'
+          iconOnly
+          iconStart={<Settings />}
+        />
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content>Create keys in workspace settings.</Tooltip.Content>
+      </Portal>
     </Tooltip>
   }
 >

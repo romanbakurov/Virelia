@@ -129,7 +129,7 @@ test.describe('web overlays', () => {
 
     const tooltip = page.getByRole('tooltip');
     await expect(tooltip).toBeVisible();
-    await expect(trigger.locator('xpath=..')).toHaveAttribute(
+    await expect(trigger).toHaveAttribute(
       'aria-describedby',
       await tooltip.getAttribute('id')
     );

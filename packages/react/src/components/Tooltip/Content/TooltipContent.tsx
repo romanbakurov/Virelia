@@ -2,6 +2,9 @@ import { forwardRef } from 'react';
 
 import { cn } from '@utils/cn';
 
+import { composeRefs } from '../internal/composeEventHandlers';
+import { useTooltipContext } from '../internal/TooltipContext';
+
 import type { TooltipContentProps } from './types';
 
 import styles from './TooltipContent.module.scss';
@@ -9,48 +12,44 @@ import styles from './TooltipContent.module.scss';
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
   (
     {
-      content,
-      placement = 'top',
-      arrowRef,
-      arrowX,
-      arrowY,
+      children,
+      color = 'neutral',
+      size = 'sm',
+      forceMount = false,
       className,
       style,
       ...props
     },
     ref
   ) => {
-    const side = placement.split('-')[0] as 'top' | 'right' | 'bottom' | 'left';
+    const tooltip = useTooltipContext();
 
-    const staticSide = {
-      top: 'bottom',
-      right: 'left',
-      bottom: 'top',
-      left: 'right',
-    }[side];
+    if (!forceMount && !tooltip.open) {
+      return null;
+    }
 
-    const arrowStyles = {
-      position: 'absolute' as const,
-      pointerEvents: 'none' as const,
-      left: arrowX != null ? `${arrowX}px` : '',
-      top: arrowY != null ? `${arrowY}px` : '',
-      [staticSide]: '-5px',
-    };
+    const contentProps = tooltip.getContentProps({
+      id: tooltip.contentId,
+      role: 'tooltip',
+      ...props,
+    });
 
     return (
       <div
-        ref={ref}
-        className={cn(styles.tooltip, className)}
-        data-placement={placement}
-        data-state='open'
-        style={style}
-        {...props}
+        {...contentProps}
+        ref={composeRefs(ref, tooltip.setContentRef)}
+        className={cn(styles.tooltip, styles[color], styles[size], className)}
+        data-placement={tooltip.placement}
+        data-state={tooltip.open ? 'open' : 'closed'}
+        style={{
+          ...tooltip.floatingStyles,
+          ...style,
+        }}
       >
-        {content}
-        <div ref={arrowRef} className={styles.arrow} style={arrowStyles} />
+        {children}
       </div>
     );
   }
 );
 
-TooltipContent.displayName = 'TooltipContent';
+TooltipContent.displayName = 'Tooltip.Content';

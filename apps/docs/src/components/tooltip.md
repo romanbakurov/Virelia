@@ -17,10 +17,18 @@ the content to complete the task.
 
 ```tsx
 import { Copy } from '@vellira-ui/icons';
-import { Button, Tooltip } from '@vellira-ui/react';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
-<Tooltip content='Copy project ID'>
-  <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
+<Tooltip>
+  <Tooltip.Trigger asChild>
+    <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
+  </Tooltip.Trigger>
+  <Portal>
+    <Tooltip.Content>
+      Copy project ID
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Portal>
 </Tooltip>;
 ```
 
@@ -39,14 +47,18 @@ tooltip should feel forgiving during pointer movement.
 
 ```tsx
 import { Filter } from '@vellira-ui/icons';
-import { Button, Tooltip } from '@vellira-ui/react';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
-<Tooltip
-  content='Filter invoices'
-  placement='top'
-  delay={{ open: 250, close: 100 }}
->
-  <Button iconOnly aria-label='Filter invoices' iconStart={<Filter />} />
+<Tooltip placement='top' delay={{ open: 250, close: 100 }}>
+  <Tooltip.Trigger asChild>
+    <Button iconOnly aria-label='Filter invoices' iconStart={<Filter />} />
+  </Tooltip.Trigger>
+  <Portal>
+    <Tooltip.Content>
+      Filter invoices
+      <Tooltip.Arrow />
+    </Tooltip.Content>
+  </Portal>
 </Tooltip>;
 ```
 
@@ -54,19 +66,42 @@ import { Button, Tooltip } from '@vellira-ui/react';
 
 ```tsx
 import { Download, Filter, Search } from '@vellira-ui/icons';
-import { Button, Tooltip } from '@vellira-ui/react';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
 export function InvoiceToolbar() {
   return (
     <div role='toolbar' aria-label='Invoice actions'>
-      <Tooltip content='Search invoices'>
-        <Button aria-label='Search invoices' iconOnly iconStart={<Search />} />
+      <Tooltip>
+        <Tooltip.Trigger asChild>
+          <Button
+            aria-label='Search invoices'
+            iconOnly
+            iconStart={<Search />}
+          />
+        </Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content>Search invoices</Tooltip.Content>
+        </Portal>
       </Tooltip>
-      <Tooltip content='Filter invoices'>
-        <Button aria-label='Filter invoices' iconOnly iconStart={<Filter />} />
+      <Tooltip>
+        <Tooltip.Trigger asChild>
+          <Button
+            aria-label='Filter invoices'
+            iconOnly
+            iconStart={<Filter />}
+          />
+        </Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content>Filter invoices</Tooltip.Content>
+        </Portal>
       </Tooltip>
-      <Tooltip content='Export CSV'>
-        <Button aria-label='Export CSV' iconOnly iconStart={<Download />} />
+      <Tooltip>
+        <Tooltip.Trigger asChild>
+          <Button aria-label='Export CSV' iconOnly iconStart={<Download />} />
+        </Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content>Export CSV</Tooltip.Content>
+        </Portal>
       </Tooltip>
     </div>
   );

@@ -2,10 +2,7 @@
   position: absolute;
   z-index: var(--z-index-tooltip);
   max-width: 240px;
-  padding: var(--space-2) var(--space-3);
   color: var(--tooltip-content-fg);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
   text-align: center;
   background-color: var(--tooltip-content-bg);
   border: 1px solid var(--tooltip-content-border);
@@ -23,6 +20,18 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.neutral {
+  color: var(--tooltip-content-fg);
+  background-color: var(--tooltip-content-bg);
+  border-color: var(--tooltip-content-border);
+}
+
+.sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-sm);
 }
 
 .arrow {
