@@ -124,16 +124,6 @@ export const DropdownRoot = ({
     });
   }, [allItems]);
 
-  const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
-    open,
-    onOpenChange,
-    placement,
-    matchTriggerWidth,
-    avoidCollisions,
-    offset,
-    mobileSheetBreakpoint: 640,
-  });
-
   const {
     activeIndex,
     setActiveIndex,
@@ -151,6 +141,15 @@ export const DropdownRoot = ({
       (isSearchable ? filteredParsed.items : parsed.items)[index]?.id ?? '',
     getItemText: (item) => item.label,
     loop,
+  });
+
+  const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
+    open: isOpen,
+    placement,
+    matchTriggerWidth,
+    avoidCollisions,
+    offset,
+    mobileSheetBreakpoint: 640,
   });
 
   const setDropdownSearchValue = useCallback(

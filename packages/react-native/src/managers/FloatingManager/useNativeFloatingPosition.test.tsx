@@ -4,8 +4,9 @@ import type { FloatingPlacement } from '@vellira-ui/types';
 import type { LayoutChangeEvent, View } from 'react-native';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { useNativeFloatingPosition } from '../managers/FloatingManager';
-import { render } from '../test-utils/render';
+import { render } from '../../test-utils/render';
+
+import { useNativeFloatingPosition } from './useNativeFloatingPosition';
 
 const layoutEvent = (width: number, height: number) =>
   ({

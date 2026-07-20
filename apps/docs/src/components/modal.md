@@ -16,18 +16,37 @@ interrupt the current workflow. Do not use it for large multi-page flows or
 content users need to compare with the page behind it.
 
 ```tsx
-<Modal isOpen={open} onClose={() => setOpen(false)}>
-  <Modal.Content>
-    <Modal.Header>Invite teammate</Modal.Header>
-    <Modal.Body>Send an invitation to join this workspace.</Modal.Body>
-    <Modal.Footer>
-      <Button appearance='ghost' color='neutral' onClick={() => setOpen(false)}>
-        Cancel
-      </Button>
-      <Button>Send invite</Button>
-    </Modal.Footer>
-  </Modal.Content>
-</Modal>
+import { Button, Modal, Portal } from '@vellira-ui/react';
+
+<Modal open={open} onOpenChange={setOpen}>
+  <Modal.Trigger asChild>
+    <Button>Invite teammate</Button>
+  </Modal.Trigger>
+
+  <Portal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Invite teammate</Modal.Title>
+          <Modal.Description>
+            Send an invitation to join this workspace.
+          </Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Choose a role and send the invite.</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <Button appearance='ghost' color='neutral'>
+            Cancel
+          </Button>
+        </Modal.Close>
+        <Button>Send invite</Button>
+      </Modal.Footer>
+    </Modal.Content>
+  </Portal>
+</Modal>;
 ```
 
 ## Destructive Confirmation
@@ -36,38 +55,48 @@ Irreversible actions should use plain language, a danger action, and a safe
 secondary path.
 
 ```tsx
-<Modal isOpen={confirmingDelete} onClose={close}>
-  <Modal.Content>
-    <Modal.Header>Delete workspace?</Modal.Header>
-    <Modal.Body>
-      This permanently deletes projects, members, and billing history.
-    </Modal.Body>
-    <Modal.Footer>
-      <Button
-        appearance='ghost'
-        color='neutral'
-        disabled={deleting}
-        onClick={close}
-      >
-        Cancel
-      </Button>
-      <Button
-        color='danger'
-        loading={deleting}
-        loadingText='Deleting...'
-        onClick={deleteWorkspace}
-      >
-        Delete workspace
-      </Button>
-    </Modal.Footer>
-  </Modal.Content>
+<Modal
+  open={confirmingDelete}
+  onOpenChange={setConfirmingDelete}
+  role='alertdialog'
+>
+  <Portal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete workspace?</Modal.Title>
+          <Modal.Description>
+            This permanently deletes projects, members, and billing history.
+          </Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>This action cannot be undone.</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <Button appearance='ghost' color='neutral' disabled={deleting}>
+            Cancel
+          </Button>
+        </Modal.Close>
+        <Button
+          color='danger'
+          loading={deleting}
+          loadingText='Deleting...'
+          onClick={deleteWorkspace}
+        >
+          Delete workspace
+        </Button>
+      </Modal.Footer>
+    </Modal.Content>
+  </Portal>
 </Modal>
 ```
 
 ## Real Example: Invite Teammate
 
 ```tsx
-import { Button, Input, Modal, Select } from '@vellira-ui/react';
+import { Button, Input, Modal, Portal, Select } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function InviteTeammateDialog() {
@@ -77,17 +106,29 @@ export function InviteTeammateDialog() {
   const [sending, setSending] = useState(false);
 
   return (
-    <>
-      <Button onClick={() => setOpen(true)}>Invite teammate</Button>
-      <Modal isOpen={open} onClose={() => setOpen(false)}>
+    <Modal open={open} onOpenChange={setOpen}>
+      <Modal.Trigger asChild>
+        <Button>Invite teammate</Button>
+      </Modal.Trigger>
+
+      <Portal>
+        <Modal.Overlay />
         <Modal.Content>
-          <Modal.Header>Invite teammate</Modal.Header>
+          <Modal.Header>
+            <div>
+              <Modal.Title>Invite teammate</Modal.Title>
+              <Modal.Description>
+                Send an invitation to join this workspace.
+              </Modal.Description>
+            </div>
+            <Modal.Close />
+          </Modal.Header>
           <Modal.Body>
             <Input
               label='Email'
               type='email'
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onValueChange={setEmail}
             />
             <Select label='Role' value={role} onValueChange={setRole}>
               <Select.Item value='admin'>Admin</Select.Item>
@@ -96,13 +137,11 @@ export function InviteTeammateDialog() {
             </Select>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              appearance='ghost'
-              color='neutral'
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
+            <Modal.Close asChild>
+              <Button appearance='ghost' color='neutral'>
+                Cancel
+              </Button>
+            </Modal.Close>
             <Button
               loading={sending}
               loadingText='Sending invite...'
@@ -112,26 +151,29 @@ export function InviteTeammateDialog() {
             </Button>
           </Modal.Footer>
         </Modal.Content>
-      </Modal>
-    </>
+      </Portal>
+    </Modal>
   );
 }
 ```
 
 ## Anatomy
 
-| Part     | Guidance                                                       |
-| -------- | -------------------------------------------------------------- |
-| Header   | State the decision or task.                                    |
-| Body     | Explain consequence, scope, or required input.                 |
-| Footer   | Put the safe action and primary action in a predictable order. |
-| Backdrop | Close only when losing work is not risky.                      |
+| Part    | Guidance                                                         |
+| ------- | ---------------------------------------------------------------- |
+| Trigger | Opens the dialog through `Modal.Trigger`.                        |
+| Portal  | Renders overlay layers through the shared `Portal` primitive.    |
+| Overlay | Dims the page and can close when outside press is enabled.       |
+| Header  | Groups `Modal.Title`, `Modal.Description`, and close affordance. |
+| Body    | Explain consequence, scope, or required input.                   |
+| Footer  | Put the safe action and primary action in a predictable order.   |
+| Close   | Use `Modal.Close` for cancel and icon close controls.            |
 
 ## Accessibility
 
-- Provide a visible title with `Modal.Header`.
-- Use `Modal.Body` for descriptive content.
-- Keep at least one obvious close/cancel path.
+- Provide a visible `Modal.Title` or pass `ariaLabel` to `Modal.Content`.
+- Use `Modal.Description` for descriptive content, especially `alertdialog`.
+- Keep at least one obvious close/cancel path with `Modal.Close`.
 - Disable or show loading on the final action while async work is pending.
 - For destructive flows, do not rely only on color. Use explicit wording.
 

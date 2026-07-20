@@ -39,7 +39,6 @@ export default defineConfig({
         replacement: require.resolve('storybook/test'),
       },
       { find: '@components', replacement: path.resolve(webSrc, 'components') },
-      { find: '@hooks', replacement: path.resolve(webSrc, 'hooks') },
       { find: '@patterns', replacement: path.resolve(webSrc, 'patterns') },
       { find: '@primitives', replacement: path.resolve(webSrc, 'primitives') },
       { find: '@styles', replacement: path.resolve(webSrc, 'styles') },

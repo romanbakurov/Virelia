@@ -26,10 +26,6 @@ export default defineConfig({
         ),
       },
       {
-        find: '@hooks',
-        replacement: path.resolve(__dirname, '../../packages/react/src/hooks'),
-      },
-      {
         find: '@patterns',
         replacement: path.resolve(
           __dirname,
