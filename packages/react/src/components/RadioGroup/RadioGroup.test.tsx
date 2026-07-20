@@ -207,4 +207,34 @@ describe('RadioGroup', () => {
 
     unmount();
   });
+
+  it('allows Radio and RadioGroup.Item to share one group state', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <RadioGroup
+        name='plan'
+        defaultValue='starter'
+        onValueChange={onValueChange}
+      >
+        <Radio value='starter' label='Starter' />
+        <RadioGroup.Item value='pro' label='Pro' />
+      </RadioGroup>
+    );
+
+    const radios = container.querySelectorAll<HTMLInputElement>(
+      'input[type="radio"]'
+    );
+
+    expect(radios[0].name).toBe('plan');
+    expect(radios[1].name).toBe('plan');
+    expect(radios[0].checked).toBe(true);
+
+    act(() => radios[1].click());
+
+    expect(radios[0].checked).toBe(false);
+    expect(radios[1].checked).toBe(true);
+    expect(onValueChange).toHaveBeenCalledWith('pro');
+
+    unmount();
+  });
 });
