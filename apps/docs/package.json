@@ -12,6 +12,7 @@
     "preview": "vitepress preview src"
   },
   "devDependencies": {
+    "@vellira-ui/assets": "workspace:*",
     "vitepress": "^1.6.4"
   }
 }
