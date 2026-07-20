@@ -25,6 +25,7 @@ export default mergeConfig(
           '**/*.module.scss',
           '**/*.stories.*',
           '**/*.test.*',
+          '**/hooks/**',
           '**/index.ts',
           '**/types.ts',
           '**/test-utils/**',
