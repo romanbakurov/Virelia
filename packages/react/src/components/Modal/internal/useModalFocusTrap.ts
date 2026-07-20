@@ -1,1 +1,1 @@
-export { useFocusScope as useModalFocusTrap } from '@vellira-ui/core';
+export { useFocusScope as useModalFocusTrap } from '@/hooks';

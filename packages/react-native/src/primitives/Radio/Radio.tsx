@@ -1,6 +1,5 @@
 import { forwardRef, useEffect } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
 import type { RadioSize } from '@vellira-ui/types';
 import {
   Pressable,
@@ -12,6 +11,7 @@ import {
 } from 'react-native';
 
 import { useRadioGroupContext } from '../../components/RadioGroup/RadioGroupContext';
+import { useControllableState } from '../../hooks';
 import { useTheme } from '../../theme';
 
 import { createStyles } from './Radio.styles';

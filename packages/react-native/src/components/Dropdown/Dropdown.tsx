@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 
-import { useDropdown } from '@vellira-ui/core';
 import type { Component } from 'react';
 import {
   AccessibilityInfo,
@@ -18,6 +17,7 @@ import {
   View,
 } from 'react-native';
 
+import { useDropdown } from '../../hooks';
 import { useNativeDismiss } from '../../managers';
 import { useThemeStyles } from '../../theme';
 

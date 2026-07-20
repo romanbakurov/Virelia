@@ -1,6 +1,6 @@
 import { forwardRef, useId } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
+import { useControllableState } from '@/hooks';
 
 import { cn } from '../../utils/cn';
 

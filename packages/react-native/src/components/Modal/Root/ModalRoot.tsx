@@ -1,5 +1,4 @@
-import { useModal } from '@vellira-ui/core';
-
+import { useModal } from '../../../hooks';
 import { useNativeDismiss } from '../../../managers';
 import ModalContext from '../internal/ModalContext';
 import type { ModalProps } from '../types';

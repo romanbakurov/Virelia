@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '@utils/cn';
-import { useModal, useOverlayStack, useScrollLock } from '@vellira-ui/core';
+
+import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
 
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';

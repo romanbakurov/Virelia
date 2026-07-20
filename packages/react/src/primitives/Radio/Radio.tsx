@@ -1,7 +1,8 @@
 import { forwardRef, useId } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
 import type { ChangeEvent } from 'react';
+
+import { useControllableState } from '@/hooks';
 
 import { useRadioGroupContext } from '../../components/RadioGroup/RadioGroupContext';
 import { cn } from '../../utils/cn';

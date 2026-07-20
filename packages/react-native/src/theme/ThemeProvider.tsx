@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
+import { useControllableState } from '../hooks';
 
 import { ThemeContext } from './ThemeContext';
 import { nativeThemes } from './themes';

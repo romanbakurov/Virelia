@@ -268,8 +268,12 @@ if (JSON.stringify(actualThemeNames) !== JSON.stringify(expectedThemeNames)) {
   );
 }
 
-if (typeof core.useControllableState !== 'function') {
-  throw new Error('core useControllableState export invalid');
+if (typeof core.createAutoFocusEvent !== 'function') {
+  throw new Error('core createAutoFocusEvent export invalid');
+}
+
+if (typeof core.getFocusableElements !== 'function') {
+  throw new Error('core getFocusableElements export invalid');
 }
 
 if (typeof icons.Check !== 'function') {

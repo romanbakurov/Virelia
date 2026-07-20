@@ -1,5 +1,6 @@
-import { useOverlayDismiss } from '@vellira-ui/core';
 import type { KeyboardEvent, RefObject } from 'react';
+
+import { useOverlayDismiss } from '@/hooks';
 
 import type { ModalOutsideEvent } from '../types';
 

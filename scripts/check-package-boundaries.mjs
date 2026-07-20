@@ -52,6 +52,19 @@ const allowedDependencies = {
   ],
 };
 
+const forbiddenExternalDependencies = {
+  '@vellira-ui/core': [
+    'react',
+    'react-dom',
+    'react-native',
+    'react/jsx-runtime',
+    'react/jsx-dev-runtime',
+  ],
+  '@vellira-ui/icons': ['@vellira-ui/react', '@vellira-ui/react-native'],
+  '@vellira-ui/tokens': ['@vellira-ui/react', '@vellira-ui/react-native'],
+  '@vellira-ui/types': ['@vellira-ui/react', '@vellira-ui/react-native'],
+};
+
 const dependencyFields = [
   'dependencies',
   'devDependencies',
@@ -97,6 +110,16 @@ function isAllowed(sourcePackageName, targetPackageName) {
   );
 }
 
+function isForbiddenExternal(sourcePackageName, specifier) {
+  return (
+    forbiddenExternalDependencies[sourcePackageName]?.some(
+      (dependencyName) =>
+        specifier === dependencyName ||
+        specifier.startsWith(`${dependencyName}/`)
+    ) ?? false
+  );
+}
+
 function addViolation({
   sourcePackageName,
   targetPackageName,
@@ -128,6 +151,16 @@ function checkPackageJson(sourcePackageName, packageInfo) {
         addViolation({
           sourcePackageName,
           targetPackageName,
+          filePath: packageInfo.packageJsonPath,
+          specifier: dependencyName,
+          field,
+        });
+      }
+
+      if (isForbiddenExternal(sourcePackageName, dependencyName)) {
+        addViolation({
+          sourcePackageName,
+          targetPackageName: dependencyName,
           filePath: packageInfo.packageJsonPath,
           specifier: dependencyName,
           field,
@@ -170,6 +203,15 @@ function checkSourceImports(sourcePackageName, packageInfo) {
         addViolation({
           sourcePackageName,
           targetPackageName,
+          filePath,
+          specifier,
+        });
+      }
+
+      if (isForbiddenExternal(sourcePackageName, specifier)) {
+        addViolation({
+          sourcePackageName,
+          targetPackageName: specifier,
           filePath,
           specifier,
         });

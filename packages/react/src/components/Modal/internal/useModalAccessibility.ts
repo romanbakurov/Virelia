@@ -1,1 +1,1 @@
-export { useAriaIsolation as useModalAccessibility } from '@vellira-ui/core';
+export { useAriaIsolation as useModalAccessibility } from '@/hooks';

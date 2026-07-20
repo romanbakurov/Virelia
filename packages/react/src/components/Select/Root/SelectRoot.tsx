@@ -9,12 +9,13 @@ import {
 } from 'react';
 
 import { FormField, useFormFieldContext } from '@patterns/FormField';
+
 import {
   useOverlayDismiss,
   useOverlayStack,
   useScrollLock,
   useSelect,
-} from '@vellira-ui/core';
+} from '@/hooks';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';

@@ -1,8 +1,9 @@
 import { createContext, useContext } from 'react';
 import { createPortal } from 'react-dom';
 
-import { usePortal } from '@vellira-ui/core';
 import type React from 'react';
+
+import { usePortal } from '@/hooks';
 
 import type { PortalProps, PortalProviderProps } from './types';
 

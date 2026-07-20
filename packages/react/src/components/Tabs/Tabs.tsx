@@ -1,7 +1,8 @@
 import { useCallback, useRef } from 'react';
 
 import { cn } from '@utils/cn';
-import { useTabs, useTabsKeyboard } from '@vellira-ui/core';
+
+import { useTabs, useTabsKeyboard } from '@/hooks';
 
 import type { TabsContextValue } from './TabsContext';
 import { TabsContext } from './TabsContext';

@@ -1,9 +1,9 @@
 import { useId, useMemo, useRef, useState } from 'react';
 
-import { useSelect } from '@vellira-ui/core';
 import type { TextInput } from 'react-native';
 import { View } from 'react-native';
 
+import { useSelect } from '../../../hooks';
 import { useNativeDismiss } from '../../../managers';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';

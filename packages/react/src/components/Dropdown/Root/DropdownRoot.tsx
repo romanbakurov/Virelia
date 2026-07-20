@@ -8,14 +8,14 @@ import {
 } from 'react';
 
 import { cn } from '@utils/cn';
+import type { KeyboardEvent, MouseEvent } from 'react';
+
 import {
   useDropdown,
   useOverlayDismiss,
   useOverlayStack,
   useScrollLock,
-} from '@vellira-ui/core';
-import type { KeyboardEvent, MouseEvent } from 'react';
-
+} from '@/hooks';
 import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { DropdownContent } from '../Content';

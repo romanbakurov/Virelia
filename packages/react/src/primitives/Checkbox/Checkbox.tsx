@@ -2,9 +2,10 @@ import { forwardRef, useCallback, useEffect, useId, useRef } from 'react';
 
 import { cn } from '@utils/cn';
 import { devWarning } from '@utils/devWarning';
-import { useControllableState } from '@vellira-ui/core';
 import { Check } from '@vellira-ui/icons';
 import type { ChangeEvent } from 'react';
+
+import { useControllableState } from '@/hooks';
 
 import type { CheckboxProps } from './types';
 
