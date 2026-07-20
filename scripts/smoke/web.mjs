@@ -102,6 +102,8 @@ const expectedWebApi = [
   'FormField',
   'Input',
   'Modal',
+  'Portal',
+  'PortalProvider',
   'Radio',
   'RadioGroup',
   'Select',
@@ -133,6 +135,14 @@ if (!isComponentExport(web.Tabs)) {
 
 if (!isComponentExport(web.ThemeProvider)) {
   throw new Error('react ThemeProvider export invalid');
+}
+
+if (!isComponentExport(web.Portal)) {
+  throw new Error('react Portal export invalid');
+}
+
+if (!isComponentExport(web.PortalProvider)) {
+  throw new Error('react PortalProvider export invalid');
 }
 
 if (typeof web.useTheme !== 'function') {
