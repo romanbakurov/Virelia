@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 
-import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { cn } from '@utils/cn';
 import {
   overlayManager,
@@ -15,6 +14,8 @@ import {
   useDropdown,
 } from '@vellira-ui/core';
 import type { KeyboardEvent, MouseEvent } from 'react';
+
+import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { DropdownContent } from '../Content';
 import { toCssSize } from '../internal/composeEventHandlers';

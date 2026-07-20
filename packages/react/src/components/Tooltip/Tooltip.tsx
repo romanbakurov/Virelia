@@ -1,8 +1,9 @@
 import { useId, useRef, useState } from 'react';
 
 import { arrow, useFocus, useHover, useInteractions } from '@floating-ui/react';
-import { useFloatingPosition } from '@hooks/useFloatingPosition';
 import { Portal } from '@utils/Portal';
+
+import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { TooltipContent } from './Content/TooltipContent';
 import type { TooltipProps } from './types';

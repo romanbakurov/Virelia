@@ -1,4 +1,4 @@
-import { useFloatingPosition } from '@hooks/useFloatingPosition';
+import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import type { SelectProps } from '../types';
 
