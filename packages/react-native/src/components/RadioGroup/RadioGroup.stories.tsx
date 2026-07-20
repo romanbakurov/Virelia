@@ -27,6 +27,7 @@ Accessible group for selecting exactly one option in React Native.
 
 - Controlled and uncontrolled usage
 - Composition with Radio controls
+- Optional compound \`RadioGroup.Item\` alias
 - Group label and description
 - Required indicator
 - Error message
@@ -50,6 +51,13 @@ Use RadioGroup when users must choose one option from a set.
   <Radio value='starter' label='Starter' />
   <Radio value='pro' label='Pro' />
   <Radio value='enterprise' label='Enterprise' />
+</RadioGroup>
+\`\`\`
+
+\`\`\`tsx
+<RadioGroup defaultValue='email'>
+  <RadioGroup.Item value='email' label='Email' />
+  <RadioGroup.Item value='sms' label='SMS' />
 </RadioGroup>
 \`\`\`
 
@@ -274,6 +282,35 @@ export const Uncontrolled: Story = {
     <Section title='Uncontrolled'>
       <RadioGroup {...args}>
         <PlanRadios />
+      </RadioGroup>
+    </Section>
+  ),
+};
+
+export const CompoundItem: Story = {
+  args: {
+    label: 'Notification channel',
+    description: 'Choose where product updates should be sent.',
+    defaultValue: 'email',
+  },
+  render: (args) => (
+    <Section title='CompoundItem'>
+      <RadioGroup {...args}>
+        <RadioGroup.Item
+          value='email'
+          label='Email'
+          description='Send updates to the account email address.'
+        />
+        <RadioGroup.Item
+          value='sms'
+          label='SMS'
+          description='Send critical updates by text message.'
+        />
+        <RadioGroup.Item
+          value='push'
+          label='Push'
+          description='Send updates through the mobile app.'
+        />
       </RadioGroup>
     </Section>
   ),

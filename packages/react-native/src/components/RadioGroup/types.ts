@@ -1,24 +1,6 @@
-import type { BaseRadioGroupProps, RadioColor } from '@vellira-ui/types';
-import type { ReactNode } from 'react';
-import type { StyleProp, TextStyle, ViewProps, ViewStyle } from 'react-native';
+import type { RadioGroupProps as RadioGroupRootProps } from './Root';
 
-export interface RadioGroupProps
-  extends
-    BaseRadioGroupProps,
-    Omit<
-      ViewProps,
-      'children' | 'style' | 'accessibilityRole' | 'accessibilityState'
-    > {
-  label?: ReactNode;
-  description?: ReactNode;
-  error?: string;
-  children?: ReactNode;
-  /** Selected color inherited by child radios. */
-  color?: RadioColor;
+export type { RadioGroupItemProps } from './Item';
+export type { RadioGroupProps as RadioGroupRootProps } from './Root';
 
-  style?: StyleProp<ViewStyle>;
-  itemsStyle?: StyleProp<ViewStyle>;
-  labelStyle?: StyleProp<TextStyle>;
-  descriptionStyle?: StyleProp<TextStyle>;
-  errorStyle?: StyleProp<TextStyle>;
-}
+export type RadioGroupProps = RadioGroupRootProps;

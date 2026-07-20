@@ -177,4 +177,49 @@ describe('Native RadioGroup', () => {
 
     unmount();
   });
+
+  it('supports RadioGroup.Item as a compound alias for Radio', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <RadioGroup defaultValue='starter' onValueChange={onValueChange}>
+        <RadioGroup.Item value='starter' label='Starter' />
+        <RadioGroup.Item value='pro' label='Pro' />
+      </RadioGroup>
+    );
+
+    const radios =
+      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+
+    expect(radios[0].getAttribute('aria-checked')).toBe('true');
+
+    act(() => radios[1].click());
+
+    expect(radios[1].getAttribute('aria-checked')).toBe('true');
+    expect(onValueChange).toHaveBeenCalledWith('pro');
+
+    unmount();
+  });
+
+  it('allows Radio and RadioGroup.Item to share one group state', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <RadioGroup defaultValue='starter' onValueChange={onValueChange}>
+        <Radio value='starter' label='Starter' />
+        <RadioGroup.Item value='pro' label='Pro' />
+      </RadioGroup>
+    );
+
+    const radios =
+      container.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+
+    expect(radios[0].getAttribute('aria-checked')).toBe('true');
+
+    act(() => radios[1].click());
+
+    expect(radios[0].getAttribute('aria-checked')).toBe('false');
+    expect(radios[1].getAttribute('aria-checked')).toBe('true');
+    expect(onValueChange).toHaveBeenCalledWith('pro');
+
+    unmount();
+  });
 });
