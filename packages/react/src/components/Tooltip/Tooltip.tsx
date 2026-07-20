@@ -1,13 +1,8 @@
 import { useId, useRef, useState } from 'react';
 
-import {
-  arrow,
-  FloatingPortal,
-  useFocus,
-  useHover,
-  useInteractions,
-} from '@floating-ui/react';
+import { arrow, useFocus, useHover, useInteractions } from '@floating-ui/react';
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
+import { Portal } from '@utils/Portal';
 
 import { TooltipContent } from './Content/TooltipContent';
 import type { TooltipProps } from './types';
@@ -78,7 +73,7 @@ export const Tooltip = ({
         {children}
       </div>
 
-      <FloatingPortal>
+      <Portal>
         {open && content && (
           <TooltipContent
             id={tooltipId}
@@ -98,7 +93,7 @@ export const Tooltip = ({
             {...getFloatingProps()}
           />
         )}
-      </FloatingPortal>
+      </Portal>
     </>
   );
 };

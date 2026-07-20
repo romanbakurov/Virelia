@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { createOutsideEvent } from './events.js';
 import type { DismissManagerOptions } from './types.js';
@@ -6,6 +6,7 @@ import type { DismissManagerOptions } from './types.js';
 export const useDismissManager = ({
   active,
   contentRef,
+  ignoreRefs = [],
   closeOnEscape,
   closeOnOutsidePress,
   isTopOverlay,
@@ -14,6 +15,9 @@ export const useDismissManager = ({
   onInteractOutside,
   requestClose,
 }: DismissManagerOptions) => {
+  const ignoreRefsRef = useRef(ignoreRefs);
+  ignoreRefsRef.current = ignoreRefs;
+
   useEffect(() => {
     if (!active) return;
 
@@ -41,7 +45,9 @@ export const useDismissManager = ({
       if (!isTopOverlay()) return;
       if (
         event.target instanceof Node &&
-        contentRef.current?.contains(event.target)
+        [contentRef, ...ignoreRefsRef.current].some((ref) =>
+          ref.current?.contains(event.target as Node)
+        )
       ) {
         return;
       }

@@ -25,6 +25,7 @@ export type FocusManagerOptions = {
 export type DismissManagerOptions = {
   active: boolean;
   contentRef: RefObject<HTMLElement | null>;
+  ignoreRefs?: Array<RefObject<HTMLElement | null>>;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
   isTopOverlay: () => boolean;

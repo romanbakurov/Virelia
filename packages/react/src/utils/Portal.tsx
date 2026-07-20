@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { defaultPortalTarget } from '@vellira-ui/core';
 import type React from 'react';
 
 interface PortalProps {
@@ -16,7 +17,7 @@ export const Portal = ({ children }: PortalProps) => {
 
   if (!isMounted) return null;
 
-  const root = document.getElementById('overlay-root') ?? document.body;
+  const root = document.getElementById('overlay-root') ?? defaultPortalTarget();
 
   if (!root) return null;
 

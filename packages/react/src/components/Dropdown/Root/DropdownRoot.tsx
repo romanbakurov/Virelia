@@ -8,9 +8,12 @@ import {
 } from 'react';
 
 import { useFloatingPosition } from '@hooks/useFloatingPosition';
-import { useOutsideClick } from '@hooks/useOutsideClick';
 import { cn } from '@utils/cn';
-import { useDropdown } from '@vellira-ui/core';
+import {
+  overlayManager,
+  useDismissManager,
+  useDropdown,
+} from '@vellira-ui/core';
 import type { KeyboardEvent, MouseEvent } from 'react';
 
 import { DropdownContent } from '../Content';
@@ -116,13 +119,22 @@ export const DropdownRoot = ({
   });
 
   useEffect(() => {
-    if (!modal || !isOpen) return;
+    if (!isOpen) return;
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    overlayManager.add(contentId);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      overlayManager.remove(contentId);
+    };
+  }, [contentId, isOpen]);
+
+  useEffect(() => {
+    if (!modal || !isOpen) return;
+
+    overlayManager.lockScroll();
+
+    return () => {
+      overlayManager.unlockScroll();
     };
   }, [isOpen, modal]);
 
@@ -220,7 +232,15 @@ export const DropdownRoot = ({
     [setFloatingRef]
   );
 
-  useOutsideClick([triggerRef, contentRef], closeDropdown, isOpen);
+  useDismissManager({
+    active: isOpen,
+    closeOnEscape: true,
+    closeOnOutsidePress: true,
+    contentRef,
+    ignoreRefs: [triggerRef],
+    isTopOverlay: () => overlayManager.isTop(contentId),
+    requestClose: closeDropdown,
+  });
 
   const surfaceStyle = {
     ...floatingStyles,

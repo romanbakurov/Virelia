@@ -8,9 +8,8 @@ import {
   useState,
 } from 'react';
 
-import { useOutsideClick } from '@hooks/useOutsideClick';
 import { FormField, useFormFieldContext } from '@patterns/FormField';
-import { useSelect } from '@vellira-ui/core';
+import { overlayManager, useDismissManager, useSelect } from '@vellira-ui/core';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
@@ -20,9 +19,6 @@ import { useSelectPosition } from '../internal/useSelectPosition';
 import { useSelectSearch } from '../internal/useSelectSearch';
 import { SelectTrigger, SelectTriggerSurface } from '../Trigger/SelectTrigger';
 import type { SelectProps } from '../types';
-
-let lockedSelectCount = 0;
-let originalBodyOverflow = '';
 
 export const SelectRoot = ({
   children,
@@ -277,7 +273,15 @@ export const SelectRoot = ({
     [onSearch]
   );
 
-  useOutsideClick([buttonRef, listRef], closeDropdown, isOpen);
+  useDismissManager({
+    active: isOpen,
+    closeOnEscape: true,
+    closeOnOutsidePress: true,
+    contentRef: listRef,
+    ignoreRefs: [buttonRef],
+    isTopOverlay: () => overlayManager.isTop(listboxId),
+    requestClose: closeDropdown,
+  });
 
   useEffect(() => {
     if (!isOpen) {
@@ -292,21 +296,22 @@ export const SelectRoot = ({
   }, [isOpen, searchValue]);
 
   useEffect(() => {
-    if (!modal || !isOpen) return;
+    if (!isOpen) return;
 
-    if (lockedSelectCount === 0) {
-      originalBodyOverflow = document.body.style.overflow;
-    }
-
-    lockedSelectCount += 1;
-    document.body.style.overflow = 'hidden';
+    overlayManager.add(listboxId);
 
     return () => {
-      lockedSelectCount = Math.max(0, lockedSelectCount - 1);
+      overlayManager.remove(listboxId);
+    };
+  }, [isOpen, listboxId]);
 
-      if (lockedSelectCount === 0) {
-        document.body.style.overflow = originalBodyOverflow;
-      }
+  useEffect(() => {
+    if (!modal || !isOpen) return;
+
+    overlayManager.lockScroll();
+
+    return () => {
+      overlayManager.unlockScroll();
     };
   }, [isOpen, modal]);
 
