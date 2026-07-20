@@ -5,5 +5,7 @@
 
 .inside {
   min-height: 0;
+  margin-inline: calc(var(--focus-ring-width) * -1);
+  padding-inline: var(--focus-ring-width);
   overflow: hidden auto;
 }
