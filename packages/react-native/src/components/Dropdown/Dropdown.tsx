@@ -39,7 +39,9 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
+  DropdownPortalProps,
   DropdownProps,
+  DropdownSearchProps,
   DropdownSelectEvent,
   DropdownSeparatorProps,
   DropdownTriggerProps,
@@ -82,10 +84,12 @@ function DropdownRoot({
   const [uncontrolledSearchValue, setUncontrolledSearchValue] =
     useState(defaultSearchValue);
   const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
-  const isSearchable = searchable || command;
   const { width } = useWindowDimensions();
   const triggerRef = useRef<Component | number | null>(null);
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
+  const contentCommand = parsed.contentProps?.command ?? false;
+  const isSearchable =
+    searchable || command || contentCommand || !!parsed.searchProps;
   const resolvedPresentation =
     presentation === 'auto'
       ? width < 768
@@ -271,9 +275,13 @@ function DropdownRoot({
         searchable={isSearchable}
         searchValue={resolvedSearchValue}
         searchPlaceholder={
+          parsed.searchProps?.placeholder ??
           searchPlaceholder ??
-          (command ? 'Type a command...' : 'Search actions...')
+          (command || contentCommand
+            ? 'Type a command...'
+            : 'Search actions...')
         }
+        searchAccessibilityLabel={parsed.searchProps?.accessibilityLabel}
         onSearchChange={handleSearchChange}
       >
         <FlatList
@@ -333,6 +341,10 @@ const DropdownContentSlot = createDropdownSlot<DropdownContentProps>(
   'content',
   'Dropdown.Content'
 );
+const DropdownPortalSlot = createDropdownSlot<DropdownPortalProps>(
+  'portal',
+  'Dropdown.Portal'
+);
 const DropdownItemSlot = createDropdownSlot<DropdownItemProps>(
   'item',
   'Dropdown.Item'
@@ -357,10 +369,16 @@ const DropdownLoadingSlot = createDropdownSlot<DropdownLoadingProps>(
   'loading',
   'Dropdown.Loading'
 );
+const DropdownSearchSlot = createDropdownSlot<DropdownSearchProps>(
+  'search',
+  'Dropdown.Search'
+);
 
 export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTriggerSlot,
+  Portal: DropdownPortalSlot,
   Content: DropdownContentSlot,
+  Search: DropdownSearchSlot,
   Item: DropdownItemSlot,
   Group: DropdownGroupSlot,
   Label: DropdownLabelSlot,

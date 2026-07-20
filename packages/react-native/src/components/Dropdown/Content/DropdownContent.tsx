@@ -26,6 +26,7 @@ export function DropdownContent({
   searchable = false,
   searchValue = '',
   searchPlaceholder = 'Search actions...',
+  searchAccessibilityLabel,
   onSearchChange,
 }: DropdownContentProps) {
   const { theme } = useTheme();
@@ -143,7 +144,9 @@ export function DropdownContent({
                 placeholder={searchPlaceholder}
                 returnKeyType='search'
                 placeholderTextColor={theme.components.dropdown.separator.fg}
-                accessibilityLabel={searchPlaceholder}
+                accessibilityLabel={
+                  searchAccessibilityLabel ?? searchPlaceholder
+                }
                 style={styles.searchInput}
               />
             </View>

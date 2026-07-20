@@ -61,8 +61,25 @@ export type DropdownTriggerProps = {
 
 export type DropdownContentProps = {
   children?: ReactNode;
+  command?: boolean;
   className?: string;
   style?: CSSProperties;
+};
+
+export type DropdownSearchProps = {
+  placeholder?: string;
+  'aria-label'?: string;
+  className?: string;
+};
+
+export type DropdownPortalProps = {
+  children?: ReactNode;
+  forceMount?: boolean;
+  container?: Element | DocumentFragment | null;
+};
+
+export type DropdownArrowProps = {
+  className?: string;
 };
 
 export type DropdownItemProps = {

@@ -1170,12 +1170,7 @@ function WebComponentsOverview() {
 
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>Searchable</h3>
-              <Dropdown
-                searchable
-                searchPlaceholder='Search report actions'
-                empty='No matching actions'
-                minWidth={280}
-              >
+              <Dropdown empty='No matching actions' minWidth={280}>
                 <Dropdown.Trigger asChild>
                   <Button
                     appearance='outline'
@@ -1186,6 +1181,7 @@ function WebComponentsOverview() {
                   </Button>
                 </Dropdown.Trigger>
                 <Dropdown.Content>
+                  <Dropdown.Search placeholder='Search report actions' />
                   <Dropdown.Item icon={<Settings />} onSelect={noop}>
                     Open settings
                   </Dropdown.Item>

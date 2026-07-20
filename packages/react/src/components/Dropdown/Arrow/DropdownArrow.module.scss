@@ -1,0 +1,9 @@
+.arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--dropdown-content-bg);
+  border-top: 1px solid var(--dropdown-content-current-border);
+  border-left: 1px solid var(--dropdown-content-current-border);
+  transform: translateY(-50%) rotate(45deg);
+}

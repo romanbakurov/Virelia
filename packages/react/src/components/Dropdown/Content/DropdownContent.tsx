@@ -4,6 +4,7 @@ import { cn } from '@utils/cn';
 import { Portal } from '@utils/Portal';
 import { Search } from '@vellira-ui/icons';
 
+import { DropdownArrow } from '../Arrow';
 import { DropdownEmptySurface } from '../Empty';
 import { DropdownGroupSurface } from '../Group';
 import { useDropdownContext } from '../internal/DropdownContext';
@@ -48,13 +49,18 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
       data-color={context.color}
     >
       {context.searchable && (
-        <li role='presentation' className={styles.searchWrap}>
+        <li
+          role='presentation'
+          className={cn(styles.searchWrap, context.searchProps?.className)}
+        >
           <Search aria-hidden='true' />
           <input
             className={styles.search}
             value={context.searchValue}
             placeholder={context.searchPlaceholder}
-            aria-label={context.searchPlaceholder}
+            aria-label={
+              context.searchProps?.['aria-label'] ?? context.searchPlaceholder
+            }
             onInput={(event) =>
               context.setSearchValue(event.currentTarget.value)
             }
@@ -111,6 +117,10 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
                 {entry.props.children}
               </DropdownLoadingSurface>
             );
+          }
+
+          if (entry.type === 'arrow') {
+            return <DropdownArrow key={entry.id} {...entry.props} />;
           }
 
           return (

@@ -550,14 +550,13 @@ export const Searchable: Story = {
   args: {
     label: 'Search actions',
     defaultOpen: true,
-    searchable: true,
-    searchPlaceholder: 'Search actions',
     empty: 'No matching actions',
   },
   render: (args) => (
     <Section title='Searchable'>
       <Dropdown {...args}>
         <Dropdown.Content presentation='modal'>
+          <Dropdown.Search placeholder='Search actions' />
           <Dropdown.Item value='edit' icon={<Edit />}>
             Edit profile
           </Dropdown.Item>
@@ -580,13 +579,13 @@ export const Command: Story = {
   args: {
     label: 'Command menu',
     defaultOpen: true,
-    command: true,
     empty: 'No command found',
   },
   render: (args) => (
     <Section title='Command'>
       <Dropdown {...args}>
-        <Dropdown.Content presentation='popover'>
+        <Dropdown.Content presentation='popover' command>
+          <Dropdown.Search />
           <Dropdown.Item value='settings' icon={<Settings />}>
             Open settings
           </Dropdown.Item>

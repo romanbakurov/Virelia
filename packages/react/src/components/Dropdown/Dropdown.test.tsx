@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { waitFor } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -732,6 +733,117 @@ describe('Dropdown', () => {
 
     expect(document.body.textContent).toContain('Nothing matches');
     expect(document.querySelector('[aria-activedescendant]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports compound Search inside Content', () => {
+    const { unmount } = render(
+      <Dropdown defaultOpen empty='No command found'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Search
+            placeholder='Find command'
+            aria-label='Find project command'
+          />
+          <Dropdown.Item>Open settings</Dropdown.Item>
+          <Dropdown.Item>Copy link</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const search = document.querySelector<HTMLInputElement>(
+      'input[aria-label="Find project command"]'
+    );
+
+    expect(search?.getAttribute('placeholder')).toBe('Find command');
+    expect(document.body.textContent).toContain('Open settings');
+
+    act(() => {
+      search!.value = 'copy';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(document.body.textContent).not.toContain('Open settings');
+    expect(document.body.textContent).toContain('Copy link');
+
+    unmount();
+  });
+
+  it('supports explicit Portal and item slot aliases', () => {
+    const { container, unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Portal>
+          <Dropdown.Content>
+            <Dropdown.Arrow className='dropdown-arrow' />
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <span data-testid='copy-icon' />
+              </Dropdown.Icon>
+              Copy
+              <Dropdown.Description>
+                Copy current selection
+              </Dropdown.Description>
+              <Dropdown.Badge>New</Dropdown.Badge>
+              <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Portal>
+      </Dropdown>
+    );
+
+    expect(container.querySelector('[role="menu"]')).toBeNull();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(document.body.textContent).toContain('Copy current selection');
+    expect(document.body.textContent).toContain('New');
+    expect(document.body.textContent).toContain('⌘C');
+    expect(document.querySelector('.dropdown-arrow')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports explicit Portal container', async () => {
+    const portalContainer = document.createElement('div');
+
+    document.body.appendChild(portalContainer);
+
+    const { unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Portal container={portalContainer}>
+          <Dropdown.Content>
+            <Dropdown.Item>Move to archive</Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Portal>
+      </Dropdown>
+    );
+
+    await waitFor(() => {
+      expect(portalContainer.querySelector('[role="menu"]')).not.toBeNull();
+    });
+
+    expect(portalContainer.textContent).toContain('Move to archive');
+
+    unmount();
+    portalContainer.remove();
+  });
+
+  it('supports command mode on Content', () => {
+    const { unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content command>
+          <Dropdown.Item>Rename project</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(
+      document.querySelector<HTMLInputElement>(
+        'input[aria-label="Type a command..."]'
+      )
+    ).not.toBeNull();
 
     unmount();
   });

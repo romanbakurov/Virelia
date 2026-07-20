@@ -113,6 +113,10 @@ Action menu for commands, toggles, radio choices, links, and submenus.
 - Public API is compound-first; items are declared with Dropdown.Item,
   Dropdown.CheckboxItem, Dropdown.RadioItem, and Dropdown.Sub instead of an
   items array
+- Search can be declared with Dropdown.Search inside Content. Root searchable
+  props are a shorthand, but command discovery belongs to the compound menu
+  surface
+- Portal and Arrow are available as explicit compound parts
 - Dropdown.Content accepts className and style for content-level customization
 
 ### Usage
@@ -125,7 +129,8 @@ Action menu for commands, toggles, radio choices, links, and submenus.
     </Button>
   </Dropdown.Trigger>
 
-  <Dropdown.Content>
+    <Dropdown.Content>
+    <Dropdown.Search placeholder='Search actions' />
     <Dropdown.Item icon={<Edit />} shortcut='⌘E' onSelect={handleEdit}>
       Edit
     </Dropdown.Item>
@@ -998,13 +1003,12 @@ export const Loading: Story = {
 export const Searchable: Story = {
   args: {
     defaultOpen: true,
-    searchable: true,
-    searchPlaceholder: 'Search actions',
     empty: 'No matching actions',
   },
   render: (args) => (
     <Section title='Searchable'>
       <DropdownWithOpenState {...args} minWidth={280}>
+        <Dropdown.Search placeholder='Search actions' />
         {renderActionItems([
           ...groupedActions.project,
           ...groupedActions.sharing,
@@ -1017,27 +1021,82 @@ export const Searchable: Story = {
 
 export const Command: Story = {
   args: {
-    command: true,
     defaultOpen: true,
     empty: 'No command found',
   },
   render: (args) => (
     <Section title='Command'>
-      <DropdownWithOpenState {...args} trigger='Command menu' minWidth={300}>
-        <Dropdown.Item icon={<Edit />} shortcut='⌘R'>
-          Rename project
-        </Dropdown.Item>
-        <Dropdown.Item icon={<Users />} shortcut='⌘I'>
-          Invite members
-        </Dropdown.Item>
-        <Dropdown.Item icon={<Download />} shortcut='⌘E'>
-          Export report
-        </Dropdown.Item>
-        <Dropdown.Separator />
-        <Dropdown.Item color='danger' icon={<Trash />}>
-          Delete project
-        </Dropdown.Item>
-      </DropdownWithOpenState>
+      <Dropdown {...args} minWidth={300}>
+        <Dropdown.Trigger asChild>
+          <Button
+            appearance='outline'
+            color='neutral'
+            iconEnd={<ChevronDown />}
+          >
+            Command menu
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content command>
+          <Dropdown.Search />
+          <Dropdown.Item icon={<Edit />} shortcut='⌘R'>
+            Rename project
+          </Dropdown.Item>
+          <Dropdown.Item icon={<Users />} shortcut='⌘I'>
+            Invite members
+          </Dropdown.Item>
+          <Dropdown.Item icon={<Download />} shortcut='⌘E'>
+            Export report
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item color='danger' icon={<Trash />}>
+            Delete project
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    </Section>
+  ),
+};
+
+export const ExplicitPortal: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Explicit portal'>
+      <Dropdown {...args} minWidth={260}>
+        <Dropdown.Trigger asChild>
+          <Button
+            appearance='outline'
+            color='neutral'
+            iconEnd={<ChevronDown />}
+          >
+            Portal menu
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Portal>
+          <Dropdown.Content>
+            <Dropdown.Search placeholder='Find command' />
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <Copy />
+              </Dropdown.Icon>
+              Copy link
+              <Dropdown.Description>
+                Copy current selection
+              </Dropdown.Description>
+              <Dropdown.Badge>New</Dropdown.Badge>
+              <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <Download />
+              </Dropdown.Icon>
+              Export report
+              <Dropdown.Shortcut>⌘E</Dropdown.Shortcut>
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Portal>
+      </Dropdown>
     </Section>
   ),
 };

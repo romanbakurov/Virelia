@@ -13,5 +13,6 @@ export interface DropdownContentProps {
   searchable?: boolean;
   searchValue?: string;
   searchPlaceholder?: string;
+  searchAccessibilityLabel?: string;
   onSearchChange?: (value: string) => void;
 }

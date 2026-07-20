@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 
 import type {
+  DropdownArrowProps,
   DropdownCheckboxItemProps,
   DropdownContentProps,
   DropdownEmptyProps,
@@ -8,14 +9,17 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
+  DropdownPortalProps,
   DropdownRadioGroupProps,
   DropdownRadioItemProps,
+  DropdownSearchProps,
   DropdownSeparatorProps,
   DropdownSubTriggerProps,
   DropdownTriggerProps,
 } from '../types';
 
 export type DropdownSlot =
+  | 'arrow'
   | 'checkboxItem'
   | 'content'
   | 'empty'
@@ -27,8 +31,10 @@ export type DropdownSlot =
   | 'itemShortcut'
   | 'label'
   | 'loading'
+  | 'portal'
   | 'radioGroup'
   | 'radioItem'
+  | 'search'
   | 'separator'
   | 'sub'
   | 'subContent'
@@ -106,6 +112,11 @@ export type DropdownRenderEntry =
       props: DropdownLoadingProps;
     }
   | {
+      type: 'arrow';
+      id: string;
+      props: DropdownArrowProps;
+    }
+  | {
       type: 'item';
       item: DropdownCollectionItem;
       itemIndex: number;
@@ -114,6 +125,8 @@ export type DropdownRenderEntry =
 export type ParsedDropdownChildren = {
   trigger?: ReactElement<DropdownTriggerProps>;
   content?: ReactElement<DropdownContentProps>;
+  portal?: ReactElement<DropdownPortalProps>;
+  search?: ReactElement<DropdownSearchProps>;
   entries: DropdownRenderEntry[];
   items: DropdownCollectionItem[];
 };

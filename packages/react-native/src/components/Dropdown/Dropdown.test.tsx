@@ -193,6 +193,75 @@ describe('Native Dropdown', () => {
     unmount();
   });
 
+  it('supports compound Search inside Content', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' defaultOpen empty='No command found'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content presentation='modal'>
+          <Dropdown.Search
+            placeholder='Find command'
+            accessibilityLabel='Find project command'
+          />
+          <Dropdown.Item value='settings'>Open settings</Dropdown.Item>
+          <Dropdown.Item value='copy'>Copy link</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    expect(searchInput?.getAttribute('aria-label')).toBe(
+      'Find project command'
+    );
+    expect(searchInput?.getAttribute('placeholder')).toBe('Find command');
+
+    act(() => {
+      changeInputValue(searchInput, 'copy');
+    });
+
+    expect(container.textContent).not.toContain('Open settings');
+    expect(container.textContent).toContain('Copy link');
+
+    unmount();
+  });
+
+  it('supports command mode on Content', () => {
+    const { unmount } = render(
+      <Dropdown label='Actions' defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content command>
+          <Dropdown.Item value='rename'>Rename project</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(
+      document.body.querySelector<HTMLInputElement>(
+        'input[aria-label="Type a command..."]'
+      )
+    ).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports explicit Portal structure', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Portal>
+          <Dropdown.Content presentation='modal'>
+            <Dropdown.Item value='archive'>Move to archive</Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Portal>
+      </Dropdown>
+    );
+
+    expect(container.textContent).toContain('Move to archive');
+    expect(container.querySelector('[role="menu"]')).not.toBeNull();
+
+    unmount();
+  });
+
   it('opens and selects an item', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

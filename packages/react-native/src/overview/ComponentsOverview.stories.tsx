@@ -940,11 +940,7 @@ function NativeComponentsOverview() {
             >
               Searchable
             </Text>
-            <Dropdown
-              searchable
-              searchPlaceholder='Search report actions'
-              empty='No matching actions'
-            >
+            <Dropdown empty='No matching actions'>
               <Dropdown.Trigger>
                 <Button
                   appearance='outline'
@@ -955,6 +951,7 @@ function NativeComponentsOverview() {
                 </Button>
               </Dropdown.Trigger>
               <Dropdown.Content presentation='modal'>
+                <Dropdown.Search placeholder='Search report actions' />
                 <Dropdown.Item value='settings' icon={<Settings />}>
                   Open settings
                 </Dropdown.Item>

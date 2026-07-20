@@ -6,9 +6,10 @@ import type React from 'react';
 
 interface PortalProps {
   children: React.ReactNode;
+  container?: Element | DocumentFragment | null;
 }
 
-export const Portal = ({ children }: PortalProps) => {
+export const Portal = ({ children, container }: PortalProps) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,10 @@ export const Portal = ({ children }: PortalProps) => {
 
   if (!isMounted) return null;
 
-  const root = document.getElementById('overlay-root') ?? defaultPortalTarget();
+  const root =
+    container ??
+    document.getElementById('overlay-root') ??
+    defaultPortalTarget();
 
   if (!root) return null;
 

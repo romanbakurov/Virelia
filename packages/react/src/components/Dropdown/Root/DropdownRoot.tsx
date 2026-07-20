@@ -76,9 +76,11 @@ export const DropdownRoot = ({
   const [uncontrolledSearchValue, setUncontrolledSearchValue] =
     useState(defaultSearchValue);
   const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
-  const isSearchable = searchable || command;
 
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
+  const contentCommand = parsed.content?.props.command ?? false;
+  const isSearchable =
+    searchable || command || contentCommand || !!parsed.search;
   const allItems = useMemo(
     () => collectDropdownItems(parsed.items),
     [parsed.items]
@@ -322,11 +324,13 @@ export const DropdownRoot = ({
     minWidth,
     openSubId,
     onKeyDown: handleKeyDown,
-    portal,
+    portal: parsed.portal ? false : portal,
     radioValues,
     searchPlaceholder:
+      parsed.search?.props.placeholder ??
       searchPlaceholder ??
-      (command ? 'Type a command...' : 'Search actions...'),
+      (command || contentCommand ? 'Type a command...' : 'Search actions...'),
+    searchProps: parsed.search?.props,
     searchValue: resolvedSearchValue,
     searchable: isSearchable,
     selectItem,
@@ -350,7 +354,9 @@ export const DropdownRoot = ({
           data-disabled={disabled || undefined}
         >
           {parsed.trigger ?? null}
-          {parsed.content ?? <DropdownContent className={dropdownClassName} />}
+          {parsed.portal ?? parsed.content ?? (
+            <DropdownContent className={dropdownClassName} />
+          )}
         </div>
       </DropdownProvider>
     </DropdownTriggerProvider>

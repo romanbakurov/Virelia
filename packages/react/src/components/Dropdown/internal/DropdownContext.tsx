@@ -11,6 +11,7 @@ import type {
 import type {
   DropdownColor,
   DropdownContentProps,
+  DropdownSearchProps,
   DropdownSelectEvent,
   DropdownSize,
 } from '../types';
@@ -36,6 +37,7 @@ export type DropdownContextValue = {
   minWidth?: number | string;
   openSubId?: string;
   searchPlaceholder: string;
+  searchProps?: DropdownSearchProps;
   searchValue: string;
   searchable: boolean;
   portal?: boolean;

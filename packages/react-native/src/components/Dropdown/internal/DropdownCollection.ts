@@ -9,6 +9,8 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
+  DropdownPortalProps,
+  DropdownSearchProps,
   DropdownSeparatorProps,
   DropdownTriggerProps,
 } from '../types';
@@ -23,7 +25,9 @@ type DropdownSlotComponent<TProps extends object> = {
     | 'separator'
     | 'item'
     | 'empty'
-    | 'loading';
+    | 'loading'
+    | 'portal'
+    | 'search';
   displayName?: string;
 };
 
@@ -44,6 +48,7 @@ export type ParsedNativeDropdownChildren = {
   trigger?: ReactNode;
   triggerProps?: DropdownTriggerProps;
   contentProps?: DropdownContentProps;
+  searchProps?: DropdownSearchProps;
   entries: NativeDropdownEntry[];
   items: Array<Extract<NativeDropdownEntry, { type: 'item' }>>;
 };
@@ -65,6 +70,7 @@ export function parseDropdownChildren(
   let trigger: ReactNode;
   let triggerProps: DropdownTriggerProps | undefined;
   let contentProps: DropdownContentProps | undefined;
+  let searchProps: DropdownSearchProps | undefined;
   const entries: NativeDropdownEntry[] = [];
   const items: ParsedNativeDropdownChildren['items'] = [];
 
@@ -98,6 +104,14 @@ export function parseDropdownChildren(
         case 'content':
           contentProps = child.props as DropdownContentProps;
           visit(contentProps.children);
+          return;
+
+        case 'portal':
+          visit((child.props as DropdownPortalProps).children);
+          return;
+
+        case 'search':
+          searchProps = child.props as DropdownSearchProps;
           return;
 
         case 'group':
@@ -148,7 +162,7 @@ export function parseDropdownChildren(
 
   visit(children);
 
-  return { contentProps, entries, items, trigger, triggerProps };
+  return { contentProps, entries, items, searchProps, trigger, triggerProps };
 }
 
 function getItemLabel(children: ReactNode) {

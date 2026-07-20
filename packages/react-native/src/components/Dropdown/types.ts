@@ -51,8 +51,19 @@ export interface DropdownTriggerProps {
 
 export interface DropdownContentProps {
   children?: ReactNode;
+  command?: boolean;
   style?: StyleProp<ViewStyle>;
   presentation?: DropdownPresentation;
+}
+
+export interface DropdownSearchProps {
+  placeholder?: string;
+  accessibilityLabel?: string;
+}
+
+export interface DropdownPortalProps {
+  children?: ReactNode;
+  forceMount?: boolean;
 }
 
 export interface DropdownItemProps {
