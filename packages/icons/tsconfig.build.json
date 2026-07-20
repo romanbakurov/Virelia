@@ -21,6 +21,7 @@
     "node_modules",
     "dist",
     "scripts",
+    "src/storybook",
     "**/*.test.ts",
     "**/*.test.tsx"
   ]

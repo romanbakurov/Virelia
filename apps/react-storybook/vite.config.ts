@@ -6,23 +6,60 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [react(), svgr()],
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, '../../packages/react/src'),
-      '@components': path.resolve(
-        __dirname,
-        '../../packages/react/src/components'
-      ),
-      '@hooks': path.resolve(__dirname, '../../packages/react/src/hooks'),
-      '@overlay': path.resolve(__dirname, '../../packages/react/src/overlay'),
-      '@patterns': path.resolve(__dirname, '../../packages/react/src/patterns'),
-      '@primitives': path.resolve(
-        __dirname,
-        '../../packages/react/src/primitives'
-      ),
-      '@styles': path.resolve(__dirname, '../../packages/react/src/styles'),
-      '@utils': path.resolve(__dirname, '../../packages/react/src/utils'),
-      '@assets': path.resolve(__dirname, '../../packages/react/src/assets'),
-    },
+    alias: [
+      {
+        find: '@vellira-ui/icons/lottie',
+        replacement: path.resolve(
+          __dirname,
+          '../../packages/icons/src/lottie.ts'
+        ),
+      },
+      {
+        find: '@vellira-ui/icons',
+        replacement: path.resolve(__dirname, '../../packages/icons/src/web.ts'),
+      },
+      {
+        find: '@components',
+        replacement: path.resolve(
+          __dirname,
+          '../../packages/react/src/components'
+        ),
+      },
+      {
+        find: '@hooks',
+        replacement: path.resolve(__dirname, '../../packages/react/src/hooks'),
+      },
+      {
+        find: '@patterns',
+        replacement: path.resolve(
+          __dirname,
+          '../../packages/react/src/patterns'
+        ),
+      },
+      {
+        find: '@primitives',
+        replacement: path.resolve(
+          __dirname,
+          '../../packages/react/src/primitives'
+        ),
+      },
+      {
+        find: '@styles',
+        replacement: path.resolve(__dirname, '../../packages/react/src/styles'),
+      },
+      {
+        find: '@utils',
+        replacement: path.resolve(__dirname, '../../packages/react/src/utils'),
+      },
+      {
+        find: '@assets',
+        replacement: path.resolve(__dirname, '../../packages/react/src/assets'),
+      },
+      {
+        find: '@',
+        replacement: path.resolve(__dirname, '../../packages/react/src'),
+      },
+    ],
   },
   css: {
     preprocessorOptions: {

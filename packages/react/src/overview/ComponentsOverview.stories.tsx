@@ -14,6 +14,7 @@ import { animatedIcons } from '@vellira-ui/icons/lottie';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
+import { AnimatedIconPreview } from '../../../icons/src/storybook/AnimatedIconPreview';
 import { Dropdown } from '../components/Dropdown';
 import { Modal } from '../components/Modal';
 import { RadioGroup } from '../components/RadioGroup';
@@ -25,7 +26,6 @@ import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
 import { Radio } from '../primitives/Radio';
-import { AnimatedIconPreview } from '../storybook/AnimatedIconPreview';
 
 const meta = {
   title: 'Overview/Web',

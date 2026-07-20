@@ -16,7 +16,6 @@
       "@vellira-ui/react": ["index.ts"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
-      "@overlay/*": ["overlay/*"],
       "@patterns/*": ["patterns/*"],
       "@primitives/*": ["primitives/*"],
       "@styles/*": ["styles/*"],
