@@ -34,6 +34,16 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
+const changeInputValue = (input: HTMLInputElement | null, value: string) => {
+  if (!input) return;
+
+  Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'value'
+  )?.set?.call(input, value);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+};
+
 describe('Native Dropdown', () => {
   it('supports compound trigger, content, and item selection', () => {
     const onSelect = vi.fn();
@@ -131,6 +141,53 @@ describe('Native Dropdown', () => {
     );
 
     expect(container.textContent).toContain('No actions');
+    expect(container.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
+
+    unmount();
+  });
+
+  it('filters searchable menu content and renders empty text', () => {
+    const onSearch = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown
+        label='Actions'
+        searchable
+        empty='Nothing matches'
+        onSearch={onSearch}
+      >
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content presentation='modal'>
+          <Dropdown.Item value='edit'>Edit profile</Dropdown.Item>
+          <Dropdown.Item value='invite'>Invite member</Dropdown.Item>
+          <Dropdown.Item value='delete'>Delete workspace</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    act(() => trigger?.click());
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('input');
+
+    expect(searchInput?.getAttribute('aria-label')).toBe('Search actions...');
+    expect(container.textContent).toContain('Edit profile');
+    expect(container.textContent).toContain('Invite member');
+
+    act(() => {
+      changeInputValue(searchInput, 'delete');
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('delete');
+    expect(container.textContent).not.toContain('Edit profile');
+    expect(container.textContent).toContain('Delete workspace');
+
+    act(() => {
+      changeInputValue(searchInput, 'missing');
+    });
+
+    expect(container.textContent).toContain('Nothing matches');
     expect(container.querySelectorAll('[role="menuitem"]')).toHaveLength(0);
 
     unmount();

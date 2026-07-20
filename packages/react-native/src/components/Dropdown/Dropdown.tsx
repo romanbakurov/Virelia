@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useDropdown } from '@vellira-ui/core';
 import type { Component } from 'react';
@@ -53,6 +60,14 @@ function DropdownRoot({
   disabled = false,
   loading = false,
   loadingText = 'Loading actions...',
+  searchable = false,
+  command = false,
+  searchValue,
+  defaultSearchValue = '',
+  searchPlaceholder,
+  onSearch,
+  empty,
+  noOptionsText,
   size = 'md',
   style,
   triggerStyle,
@@ -64,6 +79,10 @@ function DropdownRoot({
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
   const overlayId = useId();
+  const [uncontrolledSearchValue, setUncontrolledSearchValue] =
+    useState(defaultSearchValue);
+  const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
+  const isSearchable = searchable || command;
   const { width } = useWindowDimensions();
   const triggerRef = useRef<Component | number | null>(null);
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
@@ -88,6 +107,11 @@ function DropdownRoot({
       })),
     [parsed.items]
   );
+  const filteredParsed = useMemo(() => {
+    if (!isSearchable || !resolvedSearchValue.trim()) return parsed;
+
+    return filterDropdownEntries(parsed, resolvedSearchValue);
+  }, [isSearchable, parsed, resolvedSearchValue]);
 
   const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
     items: navigableItems,
@@ -148,6 +172,16 @@ function DropdownRoot({
   const handleTriggerPress = useCallback(() => {
     toggleDropdown();
   }, [toggleDropdown]);
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      if (searchValue === undefined) {
+        setUncontrolledSearchValue(value);
+      }
+
+      onSearch?.(value);
+    },
+    [onSearch, searchValue]
+  );
 
   const renderEntry = useCallback(
     ({ item }: { item: NativeDropdownEntry }) => {
@@ -192,7 +226,15 @@ function DropdownRoot({
           props: { children: loadingText },
         },
       ]
-    : parsed.entries;
+    : isSearchable && filteredParsed.items.length === 0
+      ? [
+          {
+            type: 'empty',
+            id: 'empty',
+            props: { children: empty ?? noOptionsText ?? 'No actions found' },
+          },
+        ]
+      : filteredParsed.entries;
 
   const contentStyleFromSlot = parsed.contentProps?.style;
   const presentationFromSlot =
@@ -226,6 +268,13 @@ function DropdownRoot({
         contentStyle={[contentStyle, contentStyleFromSlot]}
         accessibilityLabel={menuAccessibilityLabel}
         presentation={presentationFromSlot ?? resolvedPresentation}
+        searchable={isSearchable}
+        searchValue={resolvedSearchValue}
+        searchPlaceholder={
+          searchPlaceholder ??
+          (command ? 'Type a command...' : 'Search actions...')
+        }
+        onSearchChange={handleSearchChange}
       >
         <FlatList
           data={data}
@@ -251,6 +300,28 @@ function createDropdownSelectEvent(): DropdownSelectEvent {
     get defaultPrevented() {
       return defaultPrevented;
     },
+  };
+}
+
+function filterDropdownEntries(
+  parsed: ReturnType<typeof parseDropdownChildren>,
+  searchValue: string
+) {
+  const normalizedSearch = searchValue.trim().toLocaleLowerCase();
+  const matchedItems = new Set(
+    parsed.items
+      .filter((item) =>
+        item.label.toLocaleLowerCase().includes(normalizedSearch)
+      )
+      .map((item) => item.id)
+  );
+
+  return {
+    ...parsed,
+    items: parsed.items.filter((item) => matchedItems.has(item.id)),
+    entries: parsed.entries.filter(
+      (entry) => entry.type !== 'item' || matchedItems.has(entry.id)
+    ),
   };
 }
 

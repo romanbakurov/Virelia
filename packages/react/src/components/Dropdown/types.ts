@@ -40,6 +40,16 @@ export type DropdownProps = {
   className?: string;
   loading?: boolean;
   loadingText?: ReactNode;
+  searchable?: boolean;
+  command?: boolean;
+  searchValue?: string;
+  defaultSearchValue?: string;
+  searchPlaceholder?: string;
+  onSearch?: (value: string) => void;
+  empty?: ReactNode;
+  noOptionsText?: ReactNode;
+  triggerClassName?: string;
+  dropdownClassName?: string;
 };
 
 export type DropdownTriggerProps = {

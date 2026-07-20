@@ -24,7 +24,10 @@ import {
   DropdownProvider,
   DropdownTriggerProvider,
 } from '../internal/DropdownContext';
-import type { DropdownCollectionItem } from '../internal/types';
+import type {
+  DropdownCollectionItem,
+  ParsedDropdownChildren,
+} from '../internal/types';
 import type { DropdownProps, DropdownSelectEvent } from '../types';
 
 import styles from '../Dropdown.module.scss';
@@ -49,6 +52,16 @@ export const DropdownRoot = ({
   disabled = false,
   loading = false,
   loadingText = 'Loading actions...',
+  searchable = false,
+  command = false,
+  searchValue,
+  defaultSearchValue = '',
+  searchPlaceholder,
+  onSearch,
+  empty,
+  noOptionsText,
+  triggerClassName,
+  dropdownClassName,
   className,
 }: DropdownProps) => {
   const generatedId = useId();
@@ -60,6 +73,10 @@ export const DropdownRoot = ({
   const [radioValues, setRadioValues] = useState<
     Record<string, string | undefined>
   >({});
+  const [uncontrolledSearchValue, setUncontrolledSearchValue] =
+    useState(defaultSearchValue);
+  const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
+  const isSearchable = searchable || command;
 
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
   const allItems = useMemo(
@@ -73,6 +90,19 @@ export const DropdownRoot = ({
         label: item.label,
       })),
     [parsed.items]
+  );
+  const filteredParsed = useMemo(() => {
+    if (!isSearchable || !resolvedSearchValue.trim()) return parsed;
+
+    return filterDropdownEntries(parsed, resolvedSearchValue);
+  }, [isSearchable, parsed, resolvedSearchValue]);
+  const filteredNavigableItems = useMemo(
+    () =>
+      filteredParsed.items.map((item) => ({
+        disabled: item.disabled,
+        label: item.label,
+      })),
+    [filteredParsed.items]
   );
 
   useEffect(() => {
@@ -109,15 +139,28 @@ export const DropdownRoot = ({
     toggleDropdown,
     onKeyDown,
   } = useDropdown({
-    items: navigableItems,
+    items: isSearchable ? filteredNavigableItems : navigableItems,
     open,
     defaultOpen,
     disabled,
     onOpenChange,
-    getItemValue: (_item, index) => parsed.items[index]?.id ?? '',
+    getItemValue: (_item, index) =>
+      (isSearchable ? filteredParsed.items : parsed.items)[index]?.id ?? '',
     getItemText: (item) => item.label,
     loop,
   });
+
+  const setDropdownSearchValue = useCallback(
+    (value: string) => {
+      if (searchValue === undefined) {
+        setUncontrolledSearchValue(value);
+      }
+
+      onSearch?.(value);
+      setActiveIndex(0);
+    },
+    [onSearch, searchValue, setActiveIndex]
+  );
 
   useEffect(() => {
     if (!isOpen) return;
@@ -178,7 +221,7 @@ export const DropdownRoot = ({
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>) => {
-      const activeItem = parsed.items[activeIndex];
+      const activeItem = filteredParsed.items[activeIndex];
 
       if (event.key === 'ArrowRight' && activeItem?.type === 'subTrigger') {
         event.preventDefault();
@@ -205,7 +248,7 @@ export const DropdownRoot = ({
         triggerRef.current?.focus();
       }
     },
-    [activeIndex, onKeyDown, openSubId, parsed.items, selectItem]
+    [activeIndex, filteredParsed.items, onKeyDown, openSubId, selectItem]
   );
 
   const handleClick = useCallback(
@@ -254,6 +297,7 @@ export const DropdownRoot = ({
     isOpen,
     contentId,
     triggerId,
+    triggerClassName,
     setTriggerRef,
     onClick: handleClick,
     onKeyDown: handleKeyDown,
@@ -266,18 +310,25 @@ export const DropdownRoot = ({
     contentId,
     contentProps: parsed.content?.props,
     disabled,
-    entries: parsed.entries,
+    dropdownClassName,
+    entries: filteredParsed.entries,
     getItemId: (index: number) => `${contentId}-item-${index}`,
     isOpen,
-    items: parsed.items,
+    items: filteredParsed.items,
     loading,
     loadingText,
+    noOptionsText: empty ?? noOptionsText,
     maxWidth,
     minWidth,
     openSubId,
     onKeyDown: handleKeyDown,
     portal,
     radioValues,
+    searchPlaceholder:
+      searchPlaceholder ??
+      (command ? 'Type a command...' : 'Search actions...'),
+    searchValue: resolvedSearchValue,
+    searchable: isSearchable,
     selectItem,
     setActiveIndex,
     setContentRef,
@@ -285,6 +336,7 @@ export const DropdownRoot = ({
     setRadioValue: (groupId: string, value: string) => {
       setRadioValues((current) => ({ ...current, [groupId]: value }));
     },
+    setSearchValue: setDropdownSearchValue,
     size,
     surfaceStyle,
     triggerId,
@@ -298,7 +350,7 @@ export const DropdownRoot = ({
           data-disabled={disabled || undefined}
         >
           {parsed.trigger ?? null}
-          {parsed.content ?? <DropdownContent />}
+          {parsed.content ?? <DropdownContent className={dropdownClassName} />}
         </div>
       </DropdownProvider>
     </DropdownTriggerProvider>
@@ -335,4 +387,27 @@ function collectDropdownItems(items: DropdownCollectionItem[]) {
   });
 
   return result;
+}
+
+function filterDropdownEntries(
+  parsed: ParsedDropdownChildren,
+  searchValue: string
+): ParsedDropdownChildren {
+  const normalizedSearch = searchValue.trim().toLocaleLowerCase();
+  const matchedItems = new Set(
+    parsed.items
+      .filter((item) =>
+        item.label.toLocaleLowerCase().includes(normalizedSearch)
+      )
+      .map((item) => item.id)
+  );
+  const items = parsed.items.filter((item) => matchedItems.has(item.id));
+
+  return {
+    ...parsed,
+    items,
+    entries: parsed.entries.filter(
+      (entry) => entry.type !== 'item' || matchedItems.has(entry.item.id)
+    ),
+  };
 }

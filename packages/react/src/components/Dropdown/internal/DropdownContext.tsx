@@ -24,15 +24,20 @@ export type DropdownContextValue = {
   contentId: string;
   contentProps?: DropdownContentProps;
   disabled?: boolean;
+  dropdownClassName?: string;
   entries: DropdownRenderEntry[];
   getItemId: (index: number) => string;
   isOpen: boolean;
   items: DropdownCollectionItem[];
   loading?: boolean;
   loadingText?: ReactNode;
+  noOptionsText?: ReactNode;
   maxWidth?: number | string;
   minWidth?: number | string;
   openSubId?: string;
+  searchPlaceholder: string;
+  searchValue: string;
+  searchable: boolean;
   portal?: boolean;
   radioValues: Record<string, string | undefined>;
   onKeyDown: KeyboardEventHandler<HTMLElement>;
@@ -44,6 +49,7 @@ export type DropdownContextValue = {
   setContentRef: RefCallback<HTMLElement>;
   setOpenSubId: (id: string | undefined) => void;
   setRadioValue: (groupId: string, value: string) => void;
+  setSearchValue: (value: string) => void;
   size: DropdownSize;
   surfaceStyle: CSSProperties;
   triggerId: string;
@@ -55,6 +61,7 @@ export type DropdownTriggerContextValue = {
   contentId: string;
   triggerId: string;
   setTriggerRef: RefCallback<HTMLElement>;
+  triggerClassName?: string;
   onClick: MouseEventHandler<HTMLElement>;
   onKeyDown: KeyboardEventHandler<HTMLElement>;
 };

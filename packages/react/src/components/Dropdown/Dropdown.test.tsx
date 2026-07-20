@@ -688,4 +688,75 @@ describe('Dropdown', () => {
     unmount();
     vi.useRealTimers();
   });
+
+  it('filters searchable menu items and renders empty text', () => {
+    const onSearch = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown searchable empty='Nothing matches' onSearch={onSearch}>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit profile</Dropdown.Item>
+          <Dropdown.Item>Invite member</Dropdown.Item>
+          <Dropdown.Item>Delete workspace</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const search = document.querySelector<HTMLInputElement>(
+      'input[aria-label="Search actions..."]'
+    );
+
+    expect(search).not.toBeNull();
+    expect(document.body.textContent).toContain('Edit profile');
+    expect(document.body.textContent).toContain('Invite member');
+
+    act(() => {
+      search!.value = 'delete';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+      search!.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('delete');
+    expect(document.body.textContent).not.toContain('Edit profile');
+    expect(document.body.textContent).toContain('Delete workspace');
+
+    act(() => {
+      search!.value = 'missing';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+      search!.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(document.body.textContent).toContain('Nothing matches');
+    expect(document.querySelector('[aria-activedescendant]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports Select-style className aliases', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        defaultOpen
+        triggerClassName='trigger-alias'
+        dropdownClassName='dropdown-alias'
+      >
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(container.querySelector('button')?.className).toContain(
+      'trigger-alias'
+    );
+    expect(document.querySelector('[role="menu"]')?.className).toContain(
+      'dropdown-alias'
+    );
+
+    unmount();
+  });
 });

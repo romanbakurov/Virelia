@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 
 import { cn } from '@utils/cn';
 import { Portal } from '@utils/Portal';
+import { Search } from '@vellira-ui/icons';
 
 import { DropdownEmptySurface } from '../Empty';
 import { DropdownGroupSurface } from '../Group';
@@ -26,6 +27,7 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
     styles.dropdown,
     styles[context.color],
     context.contentProps?.className,
+    context.dropdownClassName,
     className
   );
   const content = (
@@ -36,7 +38,7 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
       tabIndex={-1}
       aria-labelledby={context.triggerId}
       aria-activedescendant={
-        context.activeIndex >= 0
+        context.activeIndex >= 0 && context.activeIndex < context.items.length
           ? context.getItemId(context.activeIndex)
           : undefined
       }
@@ -45,8 +47,38 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
       className={contentClassName}
       data-color={context.color}
     >
+      {context.searchable && (
+        <li role='presentation' className={styles.searchWrap}>
+          <Search aria-hidden='true' />
+          <input
+            className={styles.search}
+            value={context.searchValue}
+            placeholder={context.searchPlaceholder}
+            aria-label={context.searchPlaceholder}
+            onInput={(event) =>
+              context.setSearchValue(event.currentTarget.value)
+            }
+            onChange={(event) => context.setSearchValue(event.target.value)}
+            onKeyDown={(event) => {
+              if (
+                event.key === 'ArrowDown' ||
+                event.key === 'ArrowUp' ||
+                event.key === 'Enter' ||
+                event.key === 'Escape'
+              ) {
+                return;
+              }
+
+              event.stopPropagation();
+            }}
+          />
+        </li>
+      )}
+
       {context.loading ? (
         <DropdownLoadingSurface>{context.loadingText}</DropdownLoadingSurface>
+      ) : context.searchable && context.items.length === 0 ? (
+        <DropdownEmptySurface>{context.noOptionsText}</DropdownEmptySurface>
       ) : context.entries.length ? (
         context.entries.map((entry) => {
           if (entry.type === 'groupStart') {
