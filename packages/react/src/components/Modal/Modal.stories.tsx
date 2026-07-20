@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
 import { Button } from '../../primitives/Button';
+import { Input } from '../../primitives/Input';
 import { Portal } from '../../primitives/Portal';
 import { Radio } from '../../primitives/Radio';
 import { RadioGroup } from '../RadioGroup';
@@ -156,16 +157,6 @@ const fieldGridStyle = {
   gap: 12,
 } satisfies CSSProperties;
 
-const inputStyle = {
-  width: '100%',
-  boxSizing: 'border-box',
-  padding: 'var(--space-3)',
-  color: 'var(--text-primary)',
-  background: 'var(--surface-default)',
-  border: '1px solid var(--border-muted)',
-  borderRadius: 'var(--radius-md)',
-} satisfies CSSProperties;
-
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section style={sectionStyle}>
@@ -269,15 +260,12 @@ function PreferencesFormModal(args: ModalStoryProps) {
       description='Choose default settings for this workspace.'
     >
       <div style={fieldGridStyle}>
-        <label>
-          Workspace email
-          <input
-            aria-label='Workspace email'
-            value={email}
-            onChange={(event) => setEmail(event.currentTarget.value)}
-            style={inputStyle}
-          />
-        </label>
+        <Input
+          label='Workspace email'
+          type='email'
+          value={email}
+          onValueChange={setEmail}
+        />
 
         <RadioGroup
           label='Density'
@@ -409,10 +397,10 @@ function InitialFocusDemo() {
           <Modal.Content>
             <Modal.Header title='Edit profile' showClose />
             <Modal.Body>
-              <input
+              <Input
                 ref={inputRef}
-                aria-label='Display name'
-                style={inputStyle}
+                label='Display name'
+                placeholder='Ada Lovelace'
               />
             </Modal.Body>
           </Modal.Content>
