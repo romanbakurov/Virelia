@@ -4,12 +4,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: var(--space-4);
-  gap: var(--space-4);
+  padding-bottom: var(--modal-header-padding-bottom);
+  gap: var(--modal-header-gap);
 
   &Text {
     display: grid;
-    gap: var(--space-1);
+    gap: var(--modal-header-text-gap);
     min-width: 0;
   }
 
@@ -32,13 +32,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 32px;
-    height: 32px;
+    width: var(--modal-close-button-size);
+    height: var(--modal-close-button-size);
     padding: 0;
     color: var(--modal-close-button-default-fg);
     background: var(--modal-close-button-default-bg);
     border: none;
-    border-radius: var(--radius-full);
+    border-radius: var(--modal-close-button-radius);
     transition:
       color 0.2s ease,
       background-color 0.2s ease,
@@ -47,8 +47,8 @@
     cursor: pointer;
 
     svg {
-      width: 16px;
-      height: 16px;
+      width: var(--modal-close-button-icon-size);
+      height: var(--modal-close-button-icon-size);
       fill: currentcolor;
     }
 

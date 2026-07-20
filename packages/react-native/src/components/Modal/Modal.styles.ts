@@ -8,7 +8,7 @@ export const createStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       flex: 1,
       justifyContent: 'center',
-      padding: theme.tokens.spacing[5],
+      padding: theme.components.modal.content.viewportMargin,
     },
 
     backdrop: {

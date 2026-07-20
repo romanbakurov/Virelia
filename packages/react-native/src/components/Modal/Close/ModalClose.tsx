@@ -40,7 +40,12 @@ export const ModalClose = ({
         const closeIconColor = pressed
           ? theme.components.modal.closeButton.hover.fg
           : theme.components.modal.closeButton.default.fg;
-        return <Close size={16} color={closeIconColor} />;
+        return (
+          <Close
+            size={theme.components.modal.closeButton.iconSize}
+            color={closeIconColor}
+          />
+        );
       }}
     </Pressable>
   );

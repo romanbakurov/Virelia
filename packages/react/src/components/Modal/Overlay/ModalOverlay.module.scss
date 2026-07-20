@@ -4,11 +4,11 @@
   background-color: var(--modal-overlay-bg);
   opacity: 0;
   inset: 0;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(var(--modal-overlay-blur));
   visibility: hidden;
   transition:
-    opacity 200ms ease,
-    visibility 0s linear 200ms;
+    opacity var(--modal-overlay-animation-duration) ease,
+    visibility 0s linear var(--modal-overlay-animation-duration);
 
   &--open {
     opacity: 1;

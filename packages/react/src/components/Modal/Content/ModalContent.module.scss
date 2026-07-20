@@ -1,16 +1,25 @@
 .content {
   position: fixed;
-  z-index: calc(var(--z-index-modal, 1000) + 1);
+  z-index: calc(
+    var(--z-index-modal, 1000) + var(--modal-content-z-index-offset)
+  );
   display: flex;
   flex-direction: column;
-  width: min(var(--modal-content-width, 560px), calc(100vw - var(--space-8)));
-  min-width: min(320px, calc(100vw - var(--space-8)));
-  max-height: 90vh;
-  padding: var(--space-4);
+  width: min(
+    var(--modal-content-width, var(--modal-content-size-md)),
+    calc(100vw - var(--modal-content-viewport-margin))
+  );
+  min-width: min(
+    var(--modal-content-min-width),
+    calc(100vw - var(--modal-content-viewport-margin))
+  );
+  max-height: var(--modal-content-max-height);
+  padding: var(--modal-content-padding);
+  gap: var(--modal-content-gap);
   color: var(--modal-content-fg);
   background-color: var(--modal-content-bg);
-  border: 1px solid var(--modal-content-border);
-  border-radius: var(--radius-lg);
+  border: var(--modal-content-border-width) solid var(--modal-content-border);
+  border-radius: var(--modal-content-radius);
   box-shadow: var(--modal-content-shadow);
   outline: none;
 
@@ -24,7 +33,7 @@
   transition:
     opacity 160ms ease,
     transform 160ms ease,
-    visibility 0s linear 160ms;
+    visibility 0s linear var(--modal-content-animation-duration);
 
   &[data-state='open'] {
     transition-delay: 0s;
@@ -42,7 +51,7 @@
 }
 
 .top {
-  top: var(--space-10);
+  top: var(--modal-content-top-offset);
   left: 50%;
   transform: translateX(-50%) translateY(-8px);
 
@@ -52,25 +61,25 @@
 }
 
 .sm {
-  --modal-content-width: 400px;
+  --modal-content-width: var(--modal-content-size-sm);
 }
 
 .md {
-  --modal-content-width: 560px;
+  --modal-content-width: var(--modal-content-size-md);
 }
 
 .lg {
-  --modal-content-width: 720px;
+  --modal-content-width: var(--modal-content-size-lg);
 }
 
 .xl {
-  --modal-content-width: 960px;
+  --modal-content-width: var(--modal-content-size-xl);
 }
 
 .full {
-  width: calc(100vw - var(--space-8));
-  height: calc(100vh - var(--space-8));
-  max-height: calc(100vh - var(--space-8));
+  width: calc(100vw - var(--modal-content-viewport-margin));
+  height: calc(100vh - var(--modal-content-viewport-margin));
+  max-height: calc(100vh - var(--modal-content-viewport-margin));
 }
 
 .inside {
