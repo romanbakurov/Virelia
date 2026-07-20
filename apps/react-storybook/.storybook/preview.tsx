@@ -5,6 +5,7 @@ import { ThemeProvider } from '@vellira-ui/react';
 import '@vellira-ui/tokens/css';
 import '@vellira-ui/react/styles';
 import '@vellira-ui/assets/styles';
+import './preview.css';
 
 const nativeHTMLElementFocus =
   typeof HTMLElement === 'undefined' ? undefined : HTMLElement.prototype.focus;
