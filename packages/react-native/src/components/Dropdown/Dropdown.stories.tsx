@@ -108,6 +108,7 @@ and secondary actions, not for selecting a saved form value.
 - Controlled and uncontrolled open state
 - Text, icon and custom triggers
 - Groups and separators
+- Searchable and command-style action lists
 - Disabled and danger action items
 - Long text support
 - Compound Trigger, Content and Item API matching web usage
@@ -147,6 +148,8 @@ RadioGroup when a small set of choices should stay visible for comparison.
     showArrow: true,
     disabled: false,
     presentation: 'auto',
+    searchable: false,
+    command: false,
     onOpenChange: fn(),
   },
   argTypes: {
@@ -197,6 +200,47 @@ RadioGroup when a small set of choices should stay visible for comparison.
     showArrow: {
       control: 'boolean',
       description: 'Controls arrow visibility.',
+    },
+
+    searchable: {
+      control: 'boolean',
+      description: 'Adds a search field and filters action items by label.',
+    },
+
+    command: {
+      control: 'boolean',
+      description:
+        'Uses command-menu search copy while preserving menu behavior.',
+    },
+
+    searchValue: {
+      control: 'text',
+      description: 'Controlled search query.',
+    },
+
+    defaultSearchValue: {
+      control: 'text',
+      description: 'Initial uncontrolled search query.',
+    },
+
+    searchPlaceholder: {
+      control: 'text',
+      description: 'Placeholder and accessible label for the search field.',
+    },
+
+    onSearch: {
+      action: 'searched',
+      description: 'Called when the search query changes.',
+    },
+
+    empty: {
+      control: 'text',
+      description: 'Content shown when a searchable menu has no matches.',
+    },
+
+    noOptionsText: {
+      control: 'text',
+      description: 'Fallback empty text for searchable menus.',
     },
 
     onOpenChange: {
@@ -495,6 +539,65 @@ export const LongLabels: Story = {
           </Dropdown.Item>
           <Dropdown.Item value='archive-long' textWrap='wrap'>
             Archive completed tasks and notify every collaborator
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    </Section>
+  ),
+};
+
+export const Searchable: Story = {
+  args: {
+    label: 'Search actions',
+    defaultOpen: true,
+    searchable: true,
+    searchPlaceholder: 'Search actions',
+    empty: 'No matching actions',
+  },
+  render: (args) => (
+    <Section title='Searchable'>
+      <Dropdown {...args}>
+        <Dropdown.Content presentation='modal'>
+          <Dropdown.Item value='edit' icon={<Edit />}>
+            Edit profile
+          </Dropdown.Item>
+          <Dropdown.Item value='duplicate' icon={<Copy />}>
+            Duplicate workspace
+          </Dropdown.Item>
+          <Dropdown.Item value='refresh' icon={<Refresh />}>
+            Refresh report
+          </Dropdown.Item>
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete workspace
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    </Section>
+  ),
+};
+
+export const Command: Story = {
+  args: {
+    label: 'Command menu',
+    defaultOpen: true,
+    command: true,
+    empty: 'No command found',
+  },
+  render: (args) => (
+    <Section title='Command'>
+      <Dropdown {...args}>
+        <Dropdown.Content presentation='popover'>
+          <Dropdown.Item value='settings' icon={<Settings />}>
+            Open settings
+          </Dropdown.Item>
+          <Dropdown.Item value='duplicate' icon={<Copy />}>
+            Duplicate workspace
+          </Dropdown.Item>
+          <Dropdown.Item value='refresh' icon={<Refresh />}>
+            Refresh report
+          </Dropdown.Item>
+          <Dropdown.Item value='delete' icon={<Trash />} danger>
+            Delete workspace
           </Dropdown.Item>
         </Dropdown.Content>
       </Dropdown>

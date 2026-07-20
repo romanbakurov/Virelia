@@ -938,6 +938,46 @@ function NativeComponentsOverview() {
                 { color: theme.semantic.text.secondary },
               ]}
             >
+              Searchable
+            </Text>
+            <Dropdown
+              searchable
+              searchPlaceholder='Search report actions'
+              empty='No matching actions'
+            >
+              <Dropdown.Trigger>
+                <Button
+                  appearance='outline'
+                  color='neutral'
+                  iconStart={<Search />}
+                >
+                  Search actions
+                </Button>
+              </Dropdown.Trigger>
+              <Dropdown.Content presentation='modal'>
+                <Dropdown.Item value='settings' icon={<Settings />}>
+                  Open settings
+                </Dropdown.Item>
+                <Dropdown.Item value='download' icon={<Download />}>
+                  Download report
+                </Dropdown.Item>
+                <Dropdown.Item value='filter' icon={<Filter />}>
+                  Filter view
+                </Dropdown.Item>
+                <Dropdown.Item value='save' icon={<Save />}>
+                  Save layout
+                </Dropdown.Item>
+              </Dropdown.Content>
+            </Dropdown>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
               Presentation
             </Text>
             <View style={styles.row}>

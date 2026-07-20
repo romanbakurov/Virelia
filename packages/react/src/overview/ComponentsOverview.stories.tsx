@@ -1169,6 +1169,40 @@ function WebComponentsOverview() {
             </div>
 
             <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Searchable</h3>
+              <Dropdown
+                searchable
+                searchPlaceholder='Search report actions'
+                empty='No matching actions'
+                minWidth={280}
+              >
+                <Dropdown.Trigger asChild>
+                  <Button
+                    appearance='outline'
+                    color='neutral'
+                    iconStart={<Search />}
+                  >
+                    Search actions
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content>
+                  <Dropdown.Item icon={<Settings />} onSelect={noop}>
+                    Open settings
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={<Download />} onSelect={noop}>
+                    Download report
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={<Filter />} onSelect={noop}>
+                    Filter view
+                  </Dropdown.Item>
+                  <Dropdown.Item icon={<Save />} onSelect={noop}>
+                    Save layout
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+            </div>
+
+            <div style={groupStyle}>
               <h3 style={subtitleStyle}>Groups and choices</h3>
               <Dropdown closeOnSelect={false} minWidth={260}>
                 <Dropdown.Trigger asChild>

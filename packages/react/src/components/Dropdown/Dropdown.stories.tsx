@@ -99,6 +99,7 @@ Action menu for commands, toggles, radio choices, links, and submenus.
   Loading parts
 - Trigger composition through asChild, usually with Button
 - Controlled and uncontrolled open state
+- Searchable and command-style menus with controlled search value
 - Sizes, semantic focus color, disabled state, placement, collision avoidance,
   custom width, trigger-width matching, modal scroll lock, and keyboard loop
 - Item metadata through icon, description, badge, shortcut props or compound
@@ -339,6 +340,79 @@ Action menu for commands, toggles, radio choices, links, and submenus.
       table: {
         type: { summary: 'ReactNode' },
         defaultValue: { summary: 'Loading actions...' },
+      },
+    },
+    searchable: {
+      description: 'Adds a search field and filters menu items by label.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    command: {
+      description:
+        'Uses command-menu search copy while preserving menu semantics.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    searchValue: {
+      description: 'Controlled search query.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    defaultSearchValue: {
+      description: 'Initial uncontrolled search query.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    searchPlaceholder: {
+      description: 'Placeholder and accessible label for the search field.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    onSearch: {
+      description: 'Called when the search query changes.',
+      action: 'searched',
+      table: {
+        type: { summary: '(value: string) => void' },
+      },
+    },
+    empty: {
+      description: 'Content shown when a searchable menu has no matches.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+    noOptionsText: {
+      description: 'Fallback empty content shown when search has no matches.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+    triggerClassName: {
+      description: 'Additional class name for the trigger surface.',
+      control: false,
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    dropdownClassName: {
+      description: 'Additional class name for the dropdown content surface.',
+      control: false,
+      table: {
+        type: { summary: 'string' },
       },
     },
     className: {
@@ -917,6 +991,53 @@ export const Loading: Story = {
   render: (args) => (
     <Section title='Loading'>
       <DropdownWithOpenState {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const Searchable: Story = {
+  args: {
+    defaultOpen: true,
+    searchable: true,
+    searchPlaceholder: 'Search actions',
+    empty: 'No matching actions',
+  },
+  render: (args) => (
+    <Section title='Searchable'>
+      <DropdownWithOpenState {...args} minWidth={280}>
+        {renderActionItems([
+          ...groupedActions.project,
+          ...groupedActions.sharing,
+          ...groupedActions.system,
+        ])}
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const Command: Story = {
+  args: {
+    command: true,
+    defaultOpen: true,
+    empty: 'No command found',
+  },
+  render: (args) => (
+    <Section title='Command'>
+      <DropdownWithOpenState {...args} trigger='Command menu' minWidth={300}>
+        <Dropdown.Item icon={<Edit />} shortcut='⌘R'>
+          Rename project
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Users />} shortcut='⌘I'>
+          Invite members
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Download />} shortcut='⌘E'>
+          Export report
+        </Dropdown.Item>
+        <Dropdown.Separator />
+        <Dropdown.Item color='danger' icon={<Trash />}>
+          Delete project
+        </Dropdown.Item>
+      </DropdownWithOpenState>
     </Section>
   ),
 };
