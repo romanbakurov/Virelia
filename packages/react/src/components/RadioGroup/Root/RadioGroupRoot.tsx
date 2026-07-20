@@ -91,6 +91,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
         }}
         className={cn(
           styles.root,
+          styles[size],
           invalid && styles.invalid,
           disabled && styles.disabled,
           className

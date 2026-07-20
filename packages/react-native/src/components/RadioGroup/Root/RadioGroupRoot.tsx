@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { useControllableState } from '../../../hooks';
 import { FormField } from '../../../patterns/FormField';
-import { useThemeStyles } from '../../../theme';
+import { useTheme, useThemeStyles } from '../../../theme';
 import { RadioGroupProvider } from '../internal/RadioGroupContext';
 import { createStyles } from '../RadioGroup.styles';
 
@@ -36,7 +36,9 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
     },
     ref
   ) => {
+    const { theme } = useTheme();
     const styles = useThemeStyles(createStyles);
+    const radioGroupSizeTokens = theme.components.radioGroup.size[size];
 
     const [selectedValue, setSelectedValue] = useControllableState({
       value,
@@ -67,6 +69,7 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
         error={error}
         required={required}
         disabled={disabled}
+        size={size}
         labelStyle={labelStyle}
         descriptionStyle={descriptionStyle}
         errorStyle={errorStyle}
@@ -94,7 +97,15 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
             }}
             style={[
               styles.items,
-              orientation === 'horizontal' && styles.horizontal,
+              orientation === 'horizontal'
+                ? [
+                    styles.horizontal,
+                    {
+                      columnGap: radioGroupSizeTokens.horizontalGap,
+                      rowGap: radioGroupSizeTokens.itemGap,
+                    },
+                  ]
+                : { gap: radioGroupSizeTokens.itemGap },
               itemsStyle,
             ]}
           >
