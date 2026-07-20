@@ -1,6 +1,9 @@
-import type { BaseModalHeaderProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
-export interface ModalHeaderProps extends BaseModalHeaderProps {
-  children: ReactNode;
+export interface ModalHeaderProps {
+  children?: ReactNode;
+  title?: ReactNode;
+  description?: ReactNode;
+  showClose?: boolean;
+  className?: string;
 }

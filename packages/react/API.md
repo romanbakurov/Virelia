@@ -768,21 +768,35 @@ import { Tooltip, Button } from '@vellira-ui/react';
 
 ## Modal
 
-Accessible dialog with backdrop, keyboard close behavior, and compound content sections.
+Accessible compound dialog with backdrop, keyboard close behavior, focus management, and content sections.
 
 ```tsx
 import { Button, Modal } from '@vellira-ui/react';
 
-<Modal isOpen={isOpen} onClose={closeModal}>
-  <Modal.Content>
-    <Modal.Header>Delete file</Modal.Header>
-    <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
-    <Modal.Footer>
-      <Button color='neutral' appearance='solid' onClick={closeModal}>
-        Cancel
-      </Button>
-    </Modal.Footer>
-  </Modal.Content>
+<Modal open={open} onOpenChange={setOpen}>
+  <Modal.Trigger asChild>
+    <Button>Open modal</Button>
+  </Modal.Trigger>
+  <Modal.Portal>
+    <Modal.Overlay />
+    <Modal.Content size='md' scrollBehavior='inside'>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <Button color='neutral' appearance='ghost'>
+            Cancel
+          </Button>
+        </Modal.Close>
+      </Modal.Footer>
+    </Modal.Content>
+  </Modal.Portal>
 </Modal>;
 ```
 
@@ -790,29 +804,39 @@ import { Button, Modal } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.ModalProps.ModalProps -->
 
-| Prop              | Type         | Required | Description                              |
-| ----------------- | ------------ | -------- | ---------------------------------------- |
-| `children`        | `ReactNode`  | Yes      | Modal content.                           |
-| `isOpen`          | `boolean`    | Yes      | Controls dialog visibility.              |
-| `onClose`         | `() => void` | Yes      | Called when the modal requests to close. |
-| `closeOnBackdrop` | `boolean`    | No       | Allows closing by clicking the backdrop. |
-| `closeOnEsc`      | `boolean`    | No       | Allows closing with the Escape key.      |
-| `closeOnClick`    | `boolean`    | No       | Deprecated alias kept for compatibility. |
+| Prop                  | Type                        | Required | Description                           |
+| --------------------- | --------------------------- | -------- | ------------------------------------- |
+| `children`            | `ReactNode`                 | Yes      | Modal content.                        |
+| `open`                | `boolean`                   | No       | Controls dialog visibility.           |
+| `defaultOpen`         | `boolean`                   | No       | Initial uncontrolled open state.      |
+| `onOpenChange`        | `(open: boolean) => void`   | No       | Called when the open state changes.   |
+| `closeOnEscape`       | `boolean`                   | No       | Allows closing with Escape.           |
+| `closeOnOutsidePress` | `boolean`                   | No       | Allows closing by pressing outside.   |
+| `preventScroll`       | `boolean`                   | No       | Locks background scroll while open.   |
+| `restoreFocus`        | `boolean`                   | No       | Restores focus when the modal closes. |
+| `trapFocus`           | `boolean`                   | No       | Keeps focus inside the dialog.        |
+| `role`                | `'dialog' \| 'alertdialog'` | No       | Dialog semantic role.                 |
 
 <!-- api-docgen:end web.ModalProps.ModalProps -->
 
 ### Modal Compound Components
 
-| Component       | Props                  | Description            |
-| --------------- | ---------------------- | ---------------------- |
-| `Modal.Content` | `children?: ReactNode` | Main dialog surface.   |
-| `Modal.Header`  | `children?: ReactNode` | Header/title section.  |
-| `Modal.Body`    | `children?: ReactNode` | Body section.          |
-| `Modal.Footer`  | `children?: ReactNode` | Action/footer section. |
+| Component           | Description              |
+| ------------------- | ------------------------ |
+| `Modal.Trigger`     | Opens the modal.         |
+| `Modal.Portal`      | Portals modal layers.    |
+| `Modal.Overlay`     | Backdrop layer.          |
+| `Modal.Content`     | Main dialog surface.     |
+| `Modal.Header`      | Header/title section.    |
+| `Modal.Title`       | Accessible dialog title. |
+| `Modal.Description` | Accessible description.  |
+| `Modal.Body`        | Body section.            |
+| `Modal.Footer`      | Action/footer section.   |
+| `Modal.Close`       | Closes the modal.        |
 
 ### Modal Accessibility
 
-Use `Modal.Header` for a visible title and `Modal.Body` for descriptive content. The web implementation wires dialog semantics and keyboard behavior inside the component, while the consuming app remains responsible for meaningful text and focusable actions.
+Use `Modal.Title` for a visible title or pass `ariaLabel` to `Modal.Content`. Use `Modal.Description` when the dialog needs descriptive text, especially for `alertdialog`.
 
 ## ThemeProvider
 

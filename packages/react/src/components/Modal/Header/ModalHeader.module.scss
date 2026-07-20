@@ -5,6 +5,13 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: var(--space-4);
+  gap: var(--space-4);
+
+  &Text {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+  }
 
   &Title {
     margin: 0;
@@ -12,6 +19,13 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
     text-transform: none;
+  }
+
+  &Description {
+    margin: 0;
+    color: var(--modal-description-fg);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
   }
 
   &CloseButton {

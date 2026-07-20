@@ -1,36 +1,22 @@
-import { useModal } from '@vellira-ui/core';
+import { ModalBody } from './Body';
+import { ModalClose } from './Close';
+import { ModalContent } from './Content';
+import { ModalFooter } from './Footer';
+import { ModalHeader } from './Header';
+import { ModalOverlay } from './Overlay';
+import { ModalPortal } from './Portal';
+import { ModalRoot } from './Root';
+import { ModalTrigger } from './Trigger';
 
-import { ModalContent } from './Content/ModalContent';
-import ModalContext from './ModalContext';
-import { ModalOverlay } from './ModalOverlay';
-import type { ModalProps } from './types';
+export const Modal = Object.assign(ModalRoot, {
+  Trigger: ModalTrigger,
+  Portal: ModalPortal,
+  Overlay: ModalOverlay,
+  Content: ModalContent,
+  Header: ModalHeader,
+  Body: ModalBody,
+  Footer: ModalFooter,
+  Close: ModalClose,
+});
 
-export const ModalRoot = ({
-  isOpen,
-  onClose,
-  closeOnBackdrop = true,
-  children,
-  overlayStyle,
-  contentStyle,
-}: ModalProps) => {
-  const modal = useModal({
-    isOpen,
-    onClose,
-    closeOnBackdrop,
-  });
-
-  return (
-    <ModalContext.Provider value={{ onClose: modal.onClose }}>
-      <ModalOverlay
-        isOpen={modal.isOpen}
-        onClose={modal.onClose}
-        closeOnBackdrop={modal.closeOnBackdrop}
-        overlayStyle={overlayStyle}
-      >
-        <ModalContent style={contentStyle}>{children}</ModalContent>
-      </ModalOverlay>
-    </ModalContext.Provider>
-  );
-};
-
-ModalRoot.displayName = 'Modal';
+Modal.displayName = 'Modal';

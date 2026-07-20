@@ -559,14 +559,6 @@ function ControlledOpenMenu(args: DropdownStoryProps) {
   );
 }
 
-export const Playground: Story = {
-  render: (args) => (
-    <Section title='Playground'>
-      <ActionDropdown {...args} minWidth={220} />
-    </Section>
-  ),
-};
-
 export const Default: Story = {
   render: (args) => (
     <Section title='Default'>

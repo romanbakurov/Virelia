@@ -1,17 +1,16 @@
-import type { BaseModalProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface ModalProps extends BaseModalProps {
+export interface ModalProps {
   children: ReactNode;
-  overlayStyle?: StyleProp<ViewStyle>;
-  contentStyle?: StyleProp<ViewStyle>;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnOutsidePress?: boolean;
+  closeOnEscape?: boolean;
 }
 
 export interface ModalOverlayProps {
-  isOpen: boolean;
-  onClose?: () => void;
-  closeOnBackdrop?: boolean;
   children: ReactNode;
   overlayStyle?: StyleProp<ViewStyle>;
 }

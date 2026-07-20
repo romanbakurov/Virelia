@@ -9,7 +9,6 @@ import {
   Save,
   Search,
   Settings,
-  Trash,
 } from '@vellira-ui/icons';
 import { animatedIcons } from '@vellira-ui/icons/lottie';
 import type { CSSProperties, ReactNode } from 'react';
@@ -309,8 +308,6 @@ function WebComponentsOverview() {
     'finance',
     'infrastructure',
   ]);
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
     <div
       style={{
@@ -1127,21 +1124,17 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Dropdown'>
-          <div style={groupStyle}>
-            <p style={subtitleStyle}>
-              Contextual actions for commands. Use Select or RadioGroup for
-              saved form values.
-            </p>
-            <div style={rowStyle}>
-              <Dropdown>
-                <Dropdown.Trigger asChild>
-                  <Button appearance='outline' color='neutral'>
-                    Report actions
-                  </Button>
-                </Dropdown.Trigger>
-                <Dropdown.Content>
-                  <Dropdown.Group>
-                    <Dropdown.Label>Report actions</Dropdown.Label>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <div style={rowStyle}>
+                <Dropdown>
+                  <Dropdown.Trigger asChild>
+                    <Button appearance='outline' color='neutral'>
+                      Report actions
+                    </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content>
                     <Dropdown.Item icon={<Settings />} onSelect={noop}>
                       Open settings
                     </Dropdown.Item>
@@ -1151,46 +1144,84 @@ function WebComponentsOverview() {
                     <Dropdown.Item icon={<Filter />} onSelect={noop}>
                       Filter view
                     </Dropdown.Item>
-                  </Dropdown.Group>
-                  <Dropdown.Separator />
-                  <Dropdown.Item
-                    color='danger'
-                    icon={<Trash />}
-                    onSelect={noop}
-                  >
-                    Delete report
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown>
-              <Dropdown>
-                <Dropdown.Trigger asChild>
-                  <Button
-                    appearance='ghost'
-                    color='neutral'
-                    iconOnly
-                    iconStart={<Menu />}
-                    aria-label='More report actions'
-                  />
-                </Dropdown.Trigger>
-                <Dropdown.Content>
-                  <Dropdown.Item icon={<Settings />} onSelect={noop}>
-                    Settings
-                  </Dropdown.Item>
-                  <Dropdown.Item icon={<Download />} onSelect={noop}>
-                    Export
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown>
-              <Dropdown disabled>
+                  </Dropdown.Content>
+                </Dropdown>
+                <Dropdown placement='bottom-end'>
+                  <Dropdown.Trigger asChild>
+                    <Button
+                      appearance='ghost'
+                      color='neutral'
+                      iconOnly
+                      iconStart={<Menu />}
+                      aria-label='More report actions'
+                    />
+                  </Dropdown.Trigger>
+                  <Dropdown.Content>
+                    <Dropdown.Item icon={<Settings />} onSelect={noop}>
+                      Settings
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={<Download />} onSelect={noop}>
+                      Export
+                    </Dropdown.Item>
+                  </Dropdown.Content>
+                </Dropdown>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Groups and choices</h3>
+              <Dropdown closeOnSelect={false} minWidth={260}>
                 <Dropdown.Trigger asChild>
                   <Button appearance='outline' color='neutral'>
-                    Disabled actions
+                    View options
                   </Button>
                 </Dropdown.Trigger>
                 <Dropdown.Content>
-                  <Dropdown.Item>Edit</Dropdown.Item>
+                  <Dropdown.Group>
+                    <Dropdown.Label>Visibility</Dropdown.Label>
+                    <Dropdown.CheckboxItem defaultChecked>
+                      Show archived
+                    </Dropdown.CheckboxItem>
+                    <Dropdown.CheckboxItem>Compact rows</Dropdown.CheckboxItem>
+                  </Dropdown.Group>
+                  <Dropdown.Separator />
+                  <Dropdown.Group>
+                    <Dropdown.Label>Density</Dropdown.Label>
+                    <Dropdown.RadioGroup defaultValue='comfortable'>
+                      <Dropdown.RadioItem value='comfortable'>
+                        Comfortable
+                      </Dropdown.RadioItem>
+                      <Dropdown.RadioItem value='compact'>
+                        Compact
+                      </Dropdown.RadioItem>
+                    </Dropdown.RadioGroup>
+                  </Dropdown.Group>
                 </Dropdown.Content>
               </Dropdown>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>States</h3>
+              <div style={rowStyle}>
+                <Dropdown disabled>
+                  <Dropdown.Trigger asChild>
+                    <Button appearance='outline' color='neutral'>
+                      Disabled actions
+                    </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content>
+                    <Dropdown.Item>Edit</Dropdown.Item>
+                  </Dropdown.Content>
+                </Dropdown>
+                <Dropdown loading loadingText='Loading actions...'>
+                  <Dropdown.Trigger asChild>
+                    <Button appearance='outline' color='neutral'>
+                      Loading actions
+                    </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content />
+                </Dropdown>
+              </div>
             </div>
           </div>
         </Section>
@@ -1229,29 +1260,120 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Modal'>
-          <Button onClick={() => setModalOpen(true)}>Open modal</Button>
-          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-            <Modal.Header>Review changes</Modal.Header>
-            <Modal.Body>
-              Confirm the changes before applying them to the workspace.
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                color='neutral'
-                appearance='solid'
-                onClick={() => setModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                color='primary'
-                appearance='solid'
-                onClick={() => setModalOpen(false)}
-              >
-                Apply
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Basic</h3>
+              <Modal>
+                <Modal.Trigger asChild>
+                  <Button>Review changes</Button>
+                </Modal.Trigger>
+                <Modal.Portal>
+                  <Modal.Overlay />
+                  <Modal.Content>
+                    <Modal.Header>
+                      <div>
+                        <Modal.Title>Review changes</Modal.Title>
+                        <Modal.Description>
+                          Confirm the changes before applying them to the
+                          workspace.
+                        </Modal.Description>
+                      </div>
+                      <Modal.Close />
+                    </Modal.Header>
+                    <Modal.Body>
+                      Confirm the changes before applying them to the workspace.
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Modal.Close asChild>
+                        <Button color='neutral' appearance='solid'>
+                          Cancel
+                        </Button>
+                      </Modal.Close>
+                      <Modal.Close asChild>
+                        <Button color='primary' appearance='solid'>
+                          Apply
+                        </Button>
+                      </Modal.Close>
+                    </Modal.Footer>
+                  </Modal.Content>
+                </Modal.Portal>
+              </Modal>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Sizes</h3>
+              <div style={rowStyle}>
+                {(['sm', 'md', 'lg'] as const).map((size) => (
+                  <Modal key={size}>
+                    <Modal.Trigger asChild>
+                      <Button appearance='outline' color='neutral'>
+                        {size}
+                      </Button>
+                    </Modal.Trigger>
+                    <Modal.Portal>
+                      <Modal.Overlay />
+                      <Modal.Content size={size}>
+                        <Modal.Header title={`Size ${size}`} showClose />
+                        <Modal.Body>
+                          Modal content uses token-based width for each size.
+                        </Modal.Body>
+                      </Modal.Content>
+                    </Modal.Portal>
+                  </Modal>
+                ))}
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Behavior</h3>
+              <div style={rowStyle}>
+                <Modal closeOnOutsidePress={false}>
+                  <Modal.Trigger asChild>
+                    <Button appearance='outline' color='neutral'>
+                      Explicit close
+                    </Button>
+                  </Modal.Trigger>
+                  <Modal.Portal>
+                    <Modal.Overlay />
+                    <Modal.Content>
+                      <Modal.Header title='Explicit close' showClose />
+                      <Modal.Body>
+                        Outside press is disabled for this modal.
+                      </Modal.Body>
+                    </Modal.Content>
+                  </Modal.Portal>
+                </Modal>
+                <Modal role='alertdialog' closeOnOutsidePress={false}>
+                  <Modal.Trigger asChild>
+                    <Button color='danger'>Alert dialog</Button>
+                  </Modal.Trigger>
+                  <Modal.Portal>
+                    <Modal.Overlay />
+                    <Modal.Content>
+                      <Modal.Header
+                        title='Delete report?'
+                        description='This action cannot be undone.'
+                        showClose
+                      />
+                      <Modal.Body>
+                        Report data will be permanently removed.
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Modal.Close asChild>
+                          <Button color='neutral' appearance='ghost'>
+                            Cancel
+                          </Button>
+                        </Modal.Close>
+                        <Modal.Close asChild>
+                          <Button color='danger'>Delete</Button>
+                        </Modal.Close>
+                      </Modal.Footer>
+                    </Modal.Content>
+                  </Modal.Portal>
+                </Modal>
+              </div>
+            </div>
+          </div>
         </Section>
 
         <Section title='FormField'>

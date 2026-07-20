@@ -1,65 +1,22 @@
 import { useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { Text } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '../../primitives/Button';
 
 import { Modal } from '.';
 
-type ModalDemoProps = {
-  defaultOpen?: boolean;
-  closeOnBackdrop?: boolean;
-  title?: string;
-};
-
-function ModalDemo({
-  defaultOpen = false,
-  closeOnBackdrop = true,
-  title = 'Delete file',
-}: ModalDemoProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  return (
-    <>
-      <Button onPress={() => setIsOpen(true)}>Open Modal</Button>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        closeOnBackdrop={closeOnBackdrop}
-      >
-        <Modal.Header>{title}</Modal.Header>
-        <Modal.Body>
-          <Text>Are you sure you want to continue?</Text>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            color='neutral'
-            appearance='solid'
-            onPress={() => setIsOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            color='danger'
-            appearance='solid'
-            onPress={() => setIsOpen(false)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
-}
+const noop = () => undefined;
 
 const meta = {
   title: 'Components/Modal',
   component: Modal,
   tags: ['autodocs'],
   args: {
-    isOpen: false,
-    closeOnBackdrop: true,
+    defaultOpen: false,
+    closeOnOutsidePress: true,
+    onOpenChange: noop,
   },
   parameters: {
     docs: {
@@ -67,25 +24,27 @@ const meta = {
         component: `
 ### Modal Component
 
-Accessible modal dialog for React Native.
-
-**Features**
-- Backdrop close support
-- Compound API
-- Header, Body and Footer sections
-- Native modal overlay
+Compound-first native dialog with Root, Trigger, Portal, Overlay, Content,
+Header, Body, Footer, and Close parts.
 
 ### Usage
 
 \`\`\`tsx
-<Modal isOpen={isOpen} onClose={handleClose}>
-  <Modal.Header>Delete file</Modal.Header>
-  <Modal.Body>
-    <Text>Are you sure?</Text>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button onPress={handleClose}>Cancel</Button>
-  </Modal.Footer>
+<Modal>
+  <Modal.Trigger asChild>
+    <Button>Open modal</Button>
+  </Modal.Trigger>
+
+  <Modal.Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <Modal.Header>Delete file</Modal.Header>
+        <Modal.Body>
+          <Text>Are you sure?</Text>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Modal.Portal>
 </Modal>
 \`\`\`
 `,
@@ -93,50 +52,37 @@ Accessible modal dialog for React Native.
     },
   },
   argTypes: {
-    isOpen: {
+    open: {
       control: 'boolean',
-      description: 'Controls whether the modal is open.',
+      table: {
+        type: { summary: 'boolean' },
+      },
+    },
+    defaultOpen: {
+      control: 'boolean',
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'false' },
       },
     },
-    onClose: {
-      action: 'closed',
-      description: 'Called when the modal requests to close.',
+    onOpenChange: {
+      action: 'open changed',
       table: {
-        type: { summary: '() => void' },
+        type: { summary: '(open: boolean) => void' },
       },
     },
-    closeOnBackdrop: {
+    closeOnOutsidePress: {
       control: 'boolean',
-      description: 'Allows closing the modal by tapping the backdrop.',
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' },
       },
     },
-    closeOnEsc: {
-      control: false,
-      description: 'Web-only. Not used by the native Modal.',
-      table: {
-        type: { summary: 'boolean' },
-      },
-    },
     children: {
       control: false,
-      description: 'Modal content.',
       table: {
         type: { summary: 'ReactNode' },
       },
-    },
-    overlayStyle: {
-      control: false,
-      description: 'Custom style for the modal overlay.',
-    },
-    contentStyle: {
-      control: false,
-      description: 'Custom style for the modal content container.',
     },
   },
 } satisfies Meta<typeof Modal>;
@@ -144,18 +90,126 @@ Accessible modal dialog for React Native.
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function NativeModalDemo({
+  title = 'Delete file',
+  closeOnOutsidePress = true,
+}: {
+  title?: string;
+  closeOnOutsidePress?: boolean;
+}) {
+  return (
+    <Modal closeOnOutsidePress={closeOnOutsidePress}>
+      <Modal.Trigger asChild>
+        <Button>Open Modal</Button>
+      </Modal.Trigger>
+      <Modal.Portal>
+        <Modal.Overlay>
+          <Modal.Content>
+            <Modal.Header>{title}</Modal.Header>
+            <Modal.Body>
+              <Text>Are you sure you want to continue?</Text>
+            </Modal.Body>
+            <Modal.Footer>
+              <Modal.Close>
+                <Button color='neutral' appearance='solid'>
+                  Cancel
+                </Button>
+              </Modal.Close>
+              <Modal.Close>
+                <Button color='danger' appearance='solid'>
+                  Delete
+                </Button>
+              </Modal.Close>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal.Overlay>
+      </Modal.Portal>
+    </Modal>
+  );
+}
+
+function NativeFormModal() {
+  const [density, setDensity] = useState('comfortable');
+
+  return (
+    <Modal>
+      <Modal.Trigger asChild>
+        <Button>Edit preferences</Button>
+      </Modal.Trigger>
+      <Modal.Portal>
+        <Modal.Overlay>
+          <Modal.Content>
+            <Modal.Header>Workspace preferences</Modal.Header>
+            <Modal.Body>
+              <View style={{ gap: 12 }}>
+                <TextInput
+                  accessibilityLabel='Workspace email'
+                  defaultValue='team@vellira.dev'
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#CBD5E1',
+                    borderRadius: 8,
+                    padding: 12,
+                  }}
+                />
+                {(['comfortable', 'compact', 'dense'] as const).map((value) => (
+                  <Button
+                    key={value}
+                    appearance={density === value ? 'solid' : 'outline'}
+                    color='neutral'
+                    onPress={() => setDensity(value)}
+                  >
+                    {value}
+                  </Button>
+                ))}
+              </View>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal.Overlay>
+      </Modal.Portal>
+    </Modal>
+  );
+}
+
 export const Default: Story = {
-  render: (args) => <ModalDemo closeOnBackdrop={args.closeOnBackdrop} />,
+  render: () => <NativeModalDemo />,
 };
 
-export const WithoutBackdropClose: Story = {
+export const Uncontrolled: Story = {
   args: {
-    closeOnBackdrop: false,
+    defaultOpen: false,
   },
   render: (args) => (
-    <ModalDemo
-      closeOnBackdrop={args.closeOnBackdrop}
+    <Modal defaultOpen={args.defaultOpen}>
+      <Modal.Trigger asChild>
+        <Button>Open Modal</Button>
+      </Modal.Trigger>
+      <Modal.Portal>
+        <Modal.Overlay>
+          <Modal.Content>
+            <Modal.Header>Uncontrolled modal</Modal.Header>
+            <Modal.Body>
+              <Text>This modal starts open from defaultOpen.</Text>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal.Overlay>
+      </Modal.Portal>
+    </Modal>
+  ),
+};
+
+export const WithoutOutsideClose: Story = {
+  args: {
+    closeOnOutsidePress: false,
+  },
+  render: (args) => (
+    <NativeModalDemo
+      closeOnOutsidePress={args.closeOnOutsidePress}
       title='Important notice'
     />
   ),
+};
+
+export const FormControls: Story = {
+  render: () => <NativeFormModal />,
 };

@@ -1,7 +1,10 @@
 import { createContext, useContext } from 'react';
 
 interface ModalContextType {
+  closeOnOutsidePress: boolean;
   onClose?: () => void;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);

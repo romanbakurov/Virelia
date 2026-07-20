@@ -2,3 +2,8 @@
   flex: 1;
   padding-bottom: var(--space-4);
 }
+
+.inside {
+  min-height: 0;
+  overflow: hidden auto;
+}

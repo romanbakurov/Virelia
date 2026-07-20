@@ -1,31 +1,42 @@
-import { useId } from 'react';
+import { useCallback, useId } from 'react';
+
+import { useControllableState } from './useControllableState.js';
 
 export interface UseModalParams {
-  isOpen: boolean;
-  onClose: () => void;
-  closeOnBackdrop?: boolean;
-  closeOnClick?: boolean;
-  closeOnEsc?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnEscape?: boolean;
+  closeOnOutsidePress?: boolean;
 }
 
 export const useModal = ({
-  isOpen,
-  onClose,
-  closeOnBackdrop,
-  closeOnClick,
-  closeOnEsc = true,
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  closeOnEscape,
+  closeOnOutsidePress,
 }: UseModalParams) => {
+  const contentId = useId();
   const titleId = useId();
   const descriptionId = useId();
-  const resolvedCloseOnBackdrop = closeOnBackdrop ?? closeOnClick;
+  const [resolvedOpen, setResolvedOpen] = useControllableState({
+    value: open,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  });
+  const requestClose = useCallback(() => {
+    setResolvedOpen(false);
+  }, [setResolvedOpen]);
 
   return {
-    isOpen,
-    open: isOpen,
-    shouldRender: isOpen,
-    onClose,
-    closeOnBackdrop: resolvedCloseOnBackdrop,
-    closeOnEsc,
+    open: resolvedOpen,
+    shouldRender: resolvedOpen,
+    setOpen: setResolvedOpen,
+    requestClose,
+    closeOnOutsidePress: closeOnOutsidePress ?? true,
+    closeOnEscape: closeOnEscape ?? true,
+    contentId,
     titleId,
     descriptionId,
   };
