@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 
-import { createOutsideEvent } from './events.js';
-import type { DismissOptions } from './types.js';
+import { createOutsideEvent } from '../events.js';
+import type { OverlayDismissOptions } from '../types.js';
 
-export const useDismiss = ({
+export const useOverlayDismiss = ({
   active,
   contentRef,
   ignoreRefs = [],
@@ -14,7 +14,7 @@ export const useDismiss = ({
   onPointerDownOutside,
   onInteractOutside,
   requestClose,
-}: DismissOptions) => {
+}: OverlayDismissOptions) => {
   const ignoreRefsRef = useRef(ignoreRefs);
   ignoreRefsRef.current = ignoreRefs;
 

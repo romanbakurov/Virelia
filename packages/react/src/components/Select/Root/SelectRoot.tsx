@@ -10,7 +10,7 @@ import {
 
 import { FormField, useFormFieldContext } from '@patterns/FormField';
 import {
-  useDismiss,
+  useOverlayDismiss,
   useOverlayStack,
   useScrollLock,
   useSelect,
@@ -283,7 +283,7 @@ export const SelectRoot = ({
     id: listboxId,
   });
 
-  useDismiss({
+  useOverlayDismiss({
     active: isOpen,
     closeOnEscape: true,
     closeOnOutsidePress: true,

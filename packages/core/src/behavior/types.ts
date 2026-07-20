@@ -22,7 +22,7 @@ export type FocusScopeOptions = {
   onCloseAutoFocus?: (event: OverlayAutoFocusEvent) => void;
 };
 
-export type DismissOptions = {
+export type OverlayDismissOptions = {
   active: boolean;
   contentRef: RefObject<HTMLElement | null>;
   ignoreRefs?: Array<RefObject<HTMLElement | null>>;

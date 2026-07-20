@@ -9,8 +9,14 @@ This package contains hooks that can be reused by web and native packages when t
 - `useControllableState`
 - `useKeyboardNavigation`
 - `useTabsKeyboard`
+- `useOverlayStack`
+- `useOverlayDismiss`
+- `useScrollLock`
+- `useAriaIsolation`
+- `useFocusScope`
+- `usePortal`
 
-Internal or experimental hooks are not exported from the package root until they are part of the supported public API.
+Behavior hooks live under `src/behavior` internally and are exported from the package root when they are platform-neutral.
 
 ## Usage
 

@@ -9,8 +9,8 @@ import {
 
 import { cn } from '@utils/cn';
 import {
-  useDismiss,
   useDropdown,
+  useOverlayDismiss,
   useOverlayStack,
   useScrollLock,
 } from '@vellira-ui/core';
@@ -269,7 +269,7 @@ export const DropdownRoot = ({
     [setFloatingRef]
   );
 
-  useDismiss({
+  useOverlayDismiss({
     active: isOpen,
     closeOnEscape: true,
     closeOnOutsidePress: true,

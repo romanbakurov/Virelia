@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import type { AriaIsolationOptions } from './types.js';
+import type { AriaIsolationOptions } from '../types.js';
 
 export const useAriaIsolation = ({
   active,

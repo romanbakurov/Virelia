@@ -1,4 +1,4 @@
-import { useDismiss } from '@vellira-ui/core';
+import { useOverlayDismiss } from '@vellira-ui/core';
 import type { KeyboardEvent, RefObject } from 'react';
 
 import type { ModalOutsideEvent } from '../types';
@@ -24,7 +24,7 @@ export const useModalDismiss = ({
   onInteractOutside?: (event: ModalOutsideEvent) => void;
   requestClose: () => void;
 }) => {
-  useDismiss({
+  useOverlayDismiss({
     active,
     closeOnOutsidePress,
     closeOnEscape,
