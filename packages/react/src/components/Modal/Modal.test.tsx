@@ -44,6 +44,11 @@ describe('Modal', () => {
               </div>
               <Modal.Close />
             </Modal.Header>
+            <Modal.Footer>
+              <Modal.Close asChild>
+                <button type='button'>Cancel</button>
+              </Modal.Close>
+            </Modal.Footer>
           </Modal.Content>
         </Portal>
       </Modal>
@@ -56,6 +61,7 @@ describe('Modal', () => {
 
     expect(dialog).not.toBeNull();
     expect(dialog?.getAttribute('aria-modal')).toBe('true');
+    expect(dialog?.textContent).toContain('Cancel');
 
     act(() => closeButton?.click());
     expect(onOpenChange).toHaveBeenCalledWith(false);
