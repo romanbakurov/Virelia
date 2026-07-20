@@ -72,10 +72,10 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
-| `Dropdown`   | `items`, `trigger`, `icon`, `open`, `defaultOpen`, `onSelect`, `disabled`                                                 | Context menu          |
+| `Dropdown`   | `children`, `label`, `open`, `defaultOpen`, `onOpenChange`, `presentation`, `closeOnSelect`, `disabled`                   | Context menu          |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, compound sections                                                                 | Dialog and overlay    |
+| `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, compound sections                                           | Dialog and overlay    |
 
 Native `Select` opens a sheet, modal, or popover depending on `presentation`.
 Options render through native list content; `Select.Item` is the primary API,
@@ -144,11 +144,11 @@ hint.
 
 ## Dropdown Usage Guidelines
 
-Use `Dropdown` for contextual actions, not saved form values. The native model
-is a flat `items` array with action entries, `{ type: 'group', label }`
-headings and `{ type: 'separator' }` dividers. Use `accessibilityLabel` for
-icon-only or custom triggers and `accessibilityHint` when the screen needs
-extra guidance.
+Use `Dropdown` for contextual actions, not saved form values. Compose native
+menus with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`,
+`Dropdown.Group`, `Dropdown.Label`, and `Dropdown.Separator`. Use
+`accessibilityLabel` for icon-only or custom triggers and `accessibilityHint`
+when the screen needs extra guidance.
 
 ## Button
 

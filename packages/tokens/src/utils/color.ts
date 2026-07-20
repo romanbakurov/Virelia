@@ -1,5 +1,3 @@
-// packages/tokens/src/utils/color.ts
-
 export const withAlpha = (hex: string, alpha: number): string => {
   const normalized = hex.replace('#', '');
 

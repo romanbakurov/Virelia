@@ -1,9 +1,9 @@
 import { forwardRef, useEffect } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
 import { Check } from '@vellira-ui/icons';
 import { Pressable, Text, View } from 'react-native';
 
+import { useControllableState } from '../../hooks';
 import { useTheme, useThemeStyles } from '../../theme';
 import { devWarning } from '../../utils/devWarning';
 

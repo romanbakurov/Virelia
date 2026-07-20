@@ -6,8 +6,8 @@ export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     footer: {
       flexDirection: 'row',
-      gap: theme.tokens.spacing[3],
+      gap: theme.components.modal.footer.gap,
       justifyContent: 'flex-end',
-      paddingTop: theme.tokens.spacing[4],
+      paddingTop: theme.components.modal.footer.paddingTop,
     },
   });

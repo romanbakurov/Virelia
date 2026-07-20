@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { Search } from '@vellira-ui/icons';
 import {
   AccessibilityInfo,
   Animated,
   Modal,
   Pressable,
   StyleSheet,
+  TextInput,
   View,
 } from 'react-native';
 
-import { useThemeStyles } from '../../../theme';
+import { useTheme, useThemeStyles } from '../../../theme';
 
 import { createStyles } from './DropdownContent.styles';
 import type { DropdownContentProps } from './types';
@@ -21,7 +23,13 @@ export function DropdownContent({
   contentStyle,
   accessibilityLabel,
   presentation,
+  searchable = false,
+  searchValue = '',
+  searchPlaceholder = 'Search actions...',
+  searchAccessibilityLabel,
+  onSearchChange,
 }: DropdownContentProps) {
+  const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const isSheet = presentation === 'sheet';
   const animation = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
@@ -117,6 +125,32 @@ export function DropdownContent({
             menuAnimatedStyle,
           ]}
         >
+          {searchable && (
+            <View style={styles.searchWrap}>
+              <View
+                style={styles.searchIcon}
+                accessibilityElementsHidden
+                importantForAccessibility='no'
+              >
+                <Search
+                  width={16}
+                  height={16}
+                  color={theme.components.dropdown.separator.fg}
+                />
+              </View>
+              <TextInput
+                value={searchValue}
+                onChangeText={onSearchChange}
+                placeholder={searchPlaceholder}
+                returnKeyType='search'
+                placeholderTextColor={theme.components.dropdown.separator.fg}
+                accessibilityLabel={
+                  searchAccessibilityLabel ?? searchPlaceholder
+                }
+                style={styles.searchInput}
+              />
+            </View>
+          )}
           {children}
         </Animated.View>
       </View>

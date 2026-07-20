@@ -6,5 +6,11 @@
     "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/storybook",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }

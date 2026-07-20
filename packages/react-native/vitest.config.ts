@@ -23,6 +23,7 @@ export default defineConfig({
         '**/*.styles.ts',
         '**/*.stories.*',
         '**/*.test.*',
+        '**/hooks/**',
         '**/index.ts',
         '**/types.ts',
         '**/test-utils/**',

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { type DimensionValue, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
@@ -6,15 +6,16 @@ export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     content: {
       width: '100%',
-      maxWidth: 600,
-      maxHeight: '90%',
-      padding: theme.tokens.spacing[4],
-      gap: theme.tokens.spacing[4],
+      maxWidth: theme.components.modal.content.size.md,
+      maxHeight: theme.components.modal.content
+        .nativeMaxHeight as DimensionValue,
+      padding: theme.components.modal.content.padding,
+      gap: theme.components.modal.content.gap,
 
       backgroundColor: theme.components.modal.content.bg,
       borderColor: theme.components.modal.content.border,
-      borderRadius: theme.tokens.radius.lg,
-      borderWidth: 1,
+      borderRadius: theme.components.modal.content.radius,
+      borderWidth: theme.components.modal.content.borderWidth,
 
       shadowColor: theme.tokens.shadows.lg.color,
       shadowOffset: {

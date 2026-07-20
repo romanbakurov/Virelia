@@ -1,30 +1,35 @@
-import { Close } from '@vellira-ui/icons';
+import { cn } from '@utils/cn';
 
-import { useModalContext } from '../ModalContext';
+import { ModalClose } from '../Close';
 
+import { ModalDescription } from './ModalDescription';
+import { ModalTitle } from './ModalTitle';
 import type { ModalHeaderProps } from './types';
 
 import styles from './ModalHeader.module.scss';
 
-export const ModalHeader = ({ children }: ModalHeaderProps) => {
-  const { onClose, titleId } = useModalContext();
+export const ModalHeader = ({
+  children,
+  title,
+  description,
+  showClose = false,
+  className,
+}: ModalHeaderProps) => {
+  const hasShorthand = title !== undefined || description !== undefined;
 
   return (
-    <div className={styles.modalHeader}>
-      <h2 id={titleId} className={styles.modalHeaderTitle}>
-        {children}
-      </h2>
-
-      {onClose && (
-        <button
-          type='button'
-          className={styles.modalHeaderCloseButton}
-          onClick={onClose}
-          aria-label='Close modal'
-        >
-          <Close size={16} />
-        </button>
+    <div className={cn(styles.modalHeader, className)}>
+      {hasShorthand ? (
+        <div className={styles.modalHeaderText}>
+          {title !== undefined && <ModalTitle>{title}</ModalTitle>}
+          {description !== undefined && (
+            <ModalDescription>{description}</ModalDescription>
+          )}
+        </div>
+      ) : (
+        children
       )}
+      {showClose && <ModalClose />}
     </div>
   );
 };

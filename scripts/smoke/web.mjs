@@ -102,6 +102,8 @@ const expectedWebApi = [
   'FormField',
   'Input',
   'Modal',
+  'Portal',
+  'PortalProvider',
   'Radio',
   'RadioGroup',
   'Select',
@@ -135,12 +137,24 @@ if (!isComponentExport(web.ThemeProvider)) {
   throw new Error('react ThemeProvider export invalid');
 }
 
+if (!isComponentExport(web.Portal)) {
+  throw new Error('react Portal export invalid');
+}
+
+if (!isComponentExport(web.PortalProvider)) {
+  throw new Error('react PortalProvider export invalid');
+}
+
 if (typeof web.useTheme !== 'function') {
   throw new Error('react useTheme export invalid');
 }
 
-if (typeof core.useControllableState !== 'function') {
-  throw new Error('core useControllableState export invalid');
+if (typeof core.createAutoFocusEvent !== 'function') {
+  throw new Error('core createAutoFocusEvent export invalid');
+}
+
+if (typeof core.getFocusableElements !== 'function') {
+  throw new Error('core getFocusableElements export invalid');
 }
 
 if (typeof icons.Check !== 'function') {

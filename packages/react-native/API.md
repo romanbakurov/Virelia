@@ -10,6 +10,7 @@ import {
   Checkbox,
   Input,
   Modal,
+  Portal,
   Select,
   ThemeProvider,
   useTheme,
@@ -29,6 +30,7 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 - Dropdown
 - Tabs
 - Tooltip
+- Portal
 - Modal
 - ThemeProvider
 - useTheme
@@ -580,6 +582,14 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `closeOnSelect`      | `boolean`                 | No       | —                                                 |
 | `loading`            | `boolean`                 | No       | —                                                 |
 | `loadingText`        | `ReactNode`               | No       | —                                                 |
+| `searchable`         | `boolean`                 | No       | —                                                 |
+| `command`            | `boolean`                 | No       | —                                                 |
+| `searchValue`        | `string`                  | No       | —                                                 |
+| `defaultSearchValue` | `string`                  | No       | —                                                 |
+| `searchPlaceholder`  | `string`                  | No       | —                                                 |
+| `onSearch`           | `(value: string) => void` | No       | —                                                 |
+| `empty`              | `ReactNode`               | No       | —                                                 |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.      |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 
@@ -683,23 +693,54 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->
 
-## Modal
+## Portal
 
-Native dialog with backdrop close behavior and compound content sections.
+Shared native primitive for explicit overlay composition. The current native
+adapter renders children in place and keeps API parity with web overlays.
 
 ```tsx
-import { Button, Modal } from '@vellira-ui/react-native';
+import { Portal } from '@vellira-ui/react-native';
 
-<Modal isOpen={isOpen} onClose={closeModal}>
-  <Modal.Content>
-    <Modal.Header title='Delete file' />
-    <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
-    <Modal.Footer>
-      <Button color='neutral' appearance='solid' onPress={closeModal}>
-        Cancel
-      </Button>
-    </Modal.Footer>
-  </Modal.Content>
+<Portal>
+  <Modal.Content>Content</Modal.Content>
+</Portal>;
+```
+
+| Prop        | Type        | Required | Description                              |
+| ----------- | ----------- | -------- | ---------------------------------------- |
+| `children`  | `ReactNode` | Yes      | Content rendered through the primitive.  |
+| `container` | `unknown`   | No       | Reserved native portal host integration. |
+
+### PortalProvider
+
+Provides a default container/host value for nested native `Portal` instances.
+
+## Modal
+
+Native compound dialog with backdrop close behavior and content sections.
+
+```tsx
+import { Button, Modal, Portal } from '@vellira-ui/react-native';
+
+<Modal open={open} onOpenChange={setOpen}>
+  <Modal.Trigger asChild>
+    <Button>Open modal</Button>
+  </Modal.Trigger>
+  <Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <Modal.Header>Delete file</Modal.Header>
+        <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
+        <Modal.Footer>
+          <Modal.Close>
+            <Button color='neutral' appearance='solid'>
+              Cancel
+            </Button>
+          </Modal.Close>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Portal>
 </Modal>;
 ```
 
@@ -707,27 +748,28 @@ import { Button, Modal } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.ModalProps.ModalProps -->
 
-| Prop              | Type                   | Required | Description                                       |
-| ----------------- | ---------------------- | -------- | ------------------------------------------------- |
-| `children`        | `ReactNode`            | Yes      | Modal content.                                    |
-| `overlayStyle`    | `StyleProp<ViewStyle>` | No       | Extra overlay style.                              |
-| `contentStyle`    | `StyleProp<ViewStyle>` | No       | Extra content style.                              |
-| `isOpen`          | `boolean`              | Yes      | Controls dialog visibility.                       |
-| `onClose`         | `() => void`           | Yes      | Called when the modal requests to close.          |
-| `closeOnBackdrop` | `boolean`              | No       | Allows closing by pressing the backdrop.          |
-| `closeOnEsc`      | `boolean`              | No       | Shared contract prop. Useful for parity with web. |
-| `closeOnClick`    | `boolean`              | No       | Deprecated alias kept for compatibility.          |
+| Prop                  | Type                      | Required | Description                          |
+| --------------------- | ------------------------- | -------- | ------------------------------------ |
+| `children`            | `ReactNode`               | Yes      | Modal content.                       |
+| `open`                | `boolean`                 | No       | Controls dialog visibility.          |
+| `defaultOpen`         | `boolean`                 | No       | Initial uncontrolled open state.     |
+| `onOpenChange`        | `(open: boolean) => void` | No       | Called when the open state changes.  |
+| `closeOnOutsidePress` | `boolean`                 | No       | Allows closing by pressing backdrop. |
+| `closeOnEscape`       | `boolean`                 | No       | Reserved for API parity with web.    |
 
 <!-- api-docgen:end native.ModalProps.ModalProps -->
 
 ### Modal Compound Components
 
-| Component       | Props                                                                                  | Description            |
-| --------------- | -------------------------------------------------------------------------------------- | ---------------------- |
-| `Modal.Content` | `children?: ReactNode`, `style?: ViewStyle`                                            | Main dialog surface.   |
-| `Modal.Header`  | `children?: ReactNode`, `title?: string`, `style?: ViewStyle`, `textStyle?: TextStyle` | Header/title section.  |
-| `Modal.Body`    | `children?: ReactNode`, `style?: ViewStyle`                                            | Body section.          |
-| `Modal.Footer`  | `children?: ReactNode`, `style?: ViewStyle`                                            | Action/footer section. |
+| Component       | Description            |
+| --------------- | ---------------------- |
+| `Modal.Trigger` | Opens the modal.       |
+| `Modal.Overlay` | Native modal backdrop. |
+| `Modal.Content` | Main dialog surface.   |
+| `Modal.Header`  | Header/title section.  |
+| `Modal.Body`    | Body section.          |
+| `Modal.Footer`  | Action/footer section. |
+| `Modal.Close`   | Closes the modal.      |
 
 ### Modal Accessibility
 

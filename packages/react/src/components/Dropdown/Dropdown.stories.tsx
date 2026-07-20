@@ -22,6 +22,7 @@ import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 
 import { Dropdown } from './Dropdown';
 
@@ -99,6 +100,7 @@ Action menu for commands, toggles, radio choices, links, and submenus.
   Loading parts
 - Trigger composition through asChild, usually with Button
 - Controlled and uncontrolled open state
+- Searchable and command-style menus with controlled search value
 - Sizes, semantic focus color, disabled state, placement, collision avoidance,
   custom width, trigger-width matching, modal scroll lock, and keyboard loop
 - Item metadata through icon, description, badge, shortcut props or compound
@@ -112,6 +114,11 @@ Action menu for commands, toggles, radio choices, links, and submenus.
 - Public API is compound-first; items are declared with Dropdown.Item,
   Dropdown.CheckboxItem, Dropdown.RadioItem, and Dropdown.Sub instead of an
   items array
+- Search can be declared with Dropdown.Search inside Content. Root searchable
+  props are a shorthand, but command discovery belongs to the compound menu
+  surface
+- Use the shared Portal primitive for explicit portal composition; Arrow
+  remains a Dropdown content part
 - Dropdown.Content accepts className and style for content-level customization
 
 ### Usage
@@ -124,7 +131,8 @@ Action menu for commands, toggles, radio choices, links, and submenus.
     </Button>
   </Dropdown.Trigger>
 
-  <Dropdown.Content>
+    <Dropdown.Content>
+    <Dropdown.Search placeholder='Search actions' />
     <Dropdown.Item icon={<Edit />} shortcut='⌘E' onSelect={handleEdit}>
       Edit
     </Dropdown.Item>
@@ -339,6 +347,79 @@ Action menu for commands, toggles, radio choices, links, and submenus.
       table: {
         type: { summary: 'ReactNode' },
         defaultValue: { summary: 'Loading actions...' },
+      },
+    },
+    searchable: {
+      description: 'Adds a search field and filters menu items by label.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    command: {
+      description:
+        'Uses command-menu search copy while preserving menu semantics.',
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    searchValue: {
+      description: 'Controlled search query.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    defaultSearchValue: {
+      description: 'Initial uncontrolled search query.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    searchPlaceholder: {
+      description: 'Placeholder and accessible label for the search field.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    onSearch: {
+      description: 'Called when the search query changes.',
+      action: 'searched',
+      table: {
+        type: { summary: '(value: string) => void' },
+      },
+    },
+    empty: {
+      description: 'Content shown when a searchable menu has no matches.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+    noOptionsText: {
+      description: 'Fallback empty content shown when search has no matches.',
+      control: 'text',
+      table: {
+        type: { summary: 'ReactNode' },
+      },
+    },
+    triggerClassName: {
+      description: 'Additional class name for the trigger surface.',
+      control: false,
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+    dropdownClassName: {
+      description: 'Additional class name for the dropdown content surface.',
+      control: false,
+      table: {
+        type: { summary: 'string' },
       },
     },
     className: {
@@ -558,14 +639,6 @@ function ControlledOpenMenu(args: DropdownStoryProps) {
     </div>
   );
 }
-
-export const Playground: Story = {
-  render: (args) => (
-    <Section title='Playground'>
-      <ActionDropdown {...args} minWidth={220} />
-    </Section>
-  ),
-};
 
 export const Default: Story = {
   render: (args) => (
@@ -925,6 +998,107 @@ export const Loading: Story = {
   render: (args) => (
     <Section title='Loading'>
       <DropdownWithOpenState {...args} minWidth={220} />
+    </Section>
+  ),
+};
+
+export const Searchable: Story = {
+  args: {
+    defaultOpen: true,
+    empty: 'No matching actions',
+  },
+  render: (args) => (
+    <Section title='Searchable'>
+      <DropdownWithOpenState {...args} minWidth={280}>
+        <Dropdown.Search placeholder='Search actions' />
+        {renderActionItems([
+          ...groupedActions.project,
+          ...groupedActions.sharing,
+          ...groupedActions.system,
+        ])}
+      </DropdownWithOpenState>
+    </Section>
+  ),
+};
+
+export const Command: Story = {
+  args: {
+    defaultOpen: true,
+    empty: 'No command found',
+  },
+  render: (args) => (
+    <Section title='Command'>
+      <Dropdown {...args} minWidth={300}>
+        <Dropdown.Trigger asChild>
+          <Button
+            appearance='outline'
+            color='neutral'
+            iconEnd={<ChevronDown />}
+          >
+            Command menu
+          </Button>
+        </Dropdown.Trigger>
+        <Dropdown.Content command>
+          <Dropdown.Search />
+          <Dropdown.Item icon={<Edit />} shortcut='⌘R'>
+            Rename project
+          </Dropdown.Item>
+          <Dropdown.Item icon={<Users />} shortcut='⌘I'>
+            Invite members
+          </Dropdown.Item>
+          <Dropdown.Item icon={<Download />} shortcut='⌘E'>
+            Export report
+          </Dropdown.Item>
+          <Dropdown.Separator />
+          <Dropdown.Item color='danger' icon={<Trash />}>
+            Delete project
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    </Section>
+  ),
+};
+
+export const ExplicitPortal: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <Section title='Explicit portal'>
+      <Dropdown {...args} minWidth={260}>
+        <Dropdown.Trigger asChild>
+          <Button
+            appearance='outline'
+            color='neutral'
+            iconEnd={<ChevronDown />}
+          >
+            Portal menu
+          </Button>
+        </Dropdown.Trigger>
+        <Portal>
+          <Dropdown.Content>
+            <Dropdown.Search placeholder='Find command' />
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <Copy />
+              </Dropdown.Icon>
+              Copy link
+              <Dropdown.Description>
+                Copy current selection
+              </Dropdown.Description>
+              <Dropdown.Badge>New</Dropdown.Badge>
+              <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
+            </Dropdown.Item>
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <Download />
+              </Dropdown.Icon>
+              Export report
+              <Dropdown.Shortcut>⌘E</Dropdown.Shortcut>
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Portal>
+      </Dropdown>
     </Section>
   ),
 };

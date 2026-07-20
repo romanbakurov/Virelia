@@ -1,3 +1,4 @@
+import { DropdownArrow } from './Arrow';
 import { DropdownCheckboxItem } from './CheckboxItem';
 import { DropdownContent } from './Content';
 import { DropdownEmpty } from './Empty';
@@ -12,6 +13,7 @@ import { DropdownLoading } from './Loading';
 import { DropdownRadioGroup } from './RadioGroup';
 import { DropdownRadioItem } from './RadioItem';
 import { DropdownRoot } from './Root';
+import { DropdownSearch } from './Search';
 import { DropdownSeparator } from './Separator';
 import { DropdownSub, DropdownSubContent, DropdownSubTrigger } from './Sub';
 import { DropdownTrigger } from './Trigger';
@@ -19,6 +21,7 @@ import { DropdownTrigger } from './Trigger';
 export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTrigger,
   Content: DropdownContent,
+  Search: DropdownSearch,
   Item: DropdownItem,
   CheckboxItem: DropdownCheckboxItem,
   RadioGroup: DropdownRadioGroup,
@@ -33,6 +36,11 @@ export const Dropdown = Object.assign(DropdownRoot, {
   ItemDescription: DropdownItemDescription,
   ItemBadge: DropdownItemBadge,
   ItemShortcut: DropdownItemShortcut,
+  Icon: DropdownItemIcon,
+  Description: DropdownItemDescription,
+  Badge: DropdownItemBadge,
+  Shortcut: DropdownItemShortcut,
+  Arrow: DropdownArrow,
   Empty: DropdownEmpty,
   Loading: DropdownLoading,
 });

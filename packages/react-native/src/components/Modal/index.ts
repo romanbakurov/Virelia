@@ -1,22 +1,17 @@
-import { ModalBody } from './Body/ModalBody';
-import { ModalContent } from './Content/ModalContent';
-import { ModalFooter } from './Footer/ModalFooter';
-import { ModalHeader } from './Header/ModalHeader';
-import { ModalRoot } from './Modal';
-
-export { ModalBody } from './Body/ModalBody';
-export type { ModalBodyProps } from './Body/types';
-export { ModalContent } from './Content/ModalContent';
-export type { ModalContentProps } from './Content/types';
-export { ModalFooter } from './Footer/ModalFooter';
-export type { ModalFooterProps } from './Footer/types';
-export { ModalHeader } from './Header/ModalHeader';
-export type { ModalHeaderProps } from './Header/types';
+export type { ModalBodyProps } from './Body';
+export { ModalBody } from './Body';
+export type { ModalCloseProps } from './Close';
+export { ModalClose } from './Close';
+export type { ModalContentProps } from './Content';
+export { ModalContent } from './Content';
+export type { ModalFooterProps } from './Footer';
+export { ModalFooter } from './Footer';
+export type { ModalHeaderProps } from './Header';
+export { ModalHeader } from './Header';
+export { Modal } from './Modal';
+export type { ModalOverlayProps } from './Overlay';
+export { ModalOverlay } from './Overlay';
+export { ModalRoot } from './Root';
+export type { ModalTriggerProps } from './Trigger';
+export { ModalTrigger } from './Trigger';
 export type { ModalProps } from './types';
-
-export const Modal = Object.assign(ModalRoot, {
-  Header: ModalHeader,
-  Body: ModalBody,
-  Footer: ModalFooter,
-  Content: ModalContent,
-});

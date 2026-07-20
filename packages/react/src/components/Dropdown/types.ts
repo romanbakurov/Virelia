@@ -40,6 +40,16 @@ export type DropdownProps = {
   className?: string;
   loading?: boolean;
   loadingText?: ReactNode;
+  searchable?: boolean;
+  command?: boolean;
+  searchValue?: string;
+  defaultSearchValue?: string;
+  searchPlaceholder?: string;
+  onSearch?: (value: string) => void;
+  empty?: ReactNode;
+  noOptionsText?: ReactNode;
+  triggerClassName?: string;
+  dropdownClassName?: string;
 };
 
 export type DropdownTriggerProps = {
@@ -51,8 +61,19 @@ export type DropdownTriggerProps = {
 
 export type DropdownContentProps = {
   children?: ReactNode;
+  command?: boolean;
   className?: string;
   style?: CSSProperties;
+};
+
+export type DropdownSearchProps = {
+  placeholder?: string;
+  'aria-label'?: string;
+  className?: string;
+};
+
+export type DropdownArrowProps = {
+  className?: string;
 };
 
 export type DropdownItemProps = {

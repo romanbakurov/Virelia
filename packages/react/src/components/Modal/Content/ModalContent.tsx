@@ -1,9 +1,102 @@
+import { useCallback, useState } from 'react';
+
+import { cn } from '@utils/cn';
+
+import { composeRefs } from '../internal/composeEventHandlers';
+import {
+  ModalContentProvider,
+  useModalContext,
+} from '../internal/ModalContext';
+import { useModalAccessibility } from '../internal/useModalAccessibility';
+import { useModalDismiss } from '../internal/useModalDismiss';
+import { useModalFocusTrap } from '../internal/useModalFocusTrap';
+
 import type { ModalContentProps } from './types';
 
 import styles from './ModalContent.module.scss';
 
-export const ModalContent = ({ children }: ModalContentProps) => {
-  return <div className={styles.content}>{children}</div>;
+export const ModalContent = ({
+  children,
+  size = 'md',
+  placement = 'center',
+  scrollBehavior = 'inside',
+  animated = true,
+  forceMount = false,
+  ariaLabel,
+  ariaLabelledBy,
+  ariaDescribedBy,
+  className,
+  style,
+}: ModalContentProps) => {
+  const root = useModalContext();
+  const active = root.open;
+  const [contentNode, setContentNode] = useState<HTMLElement | null>(null);
+  const setContentRef = useCallback(
+    (node: HTMLElement | null) => {
+      root.setContentRef(node);
+      setContentNode(node);
+    },
+    [root]
+  );
+
+  useModalDismiss({
+    active,
+    contentRef: root.contentRef,
+    closeOnEscape: root.closeOnEscape,
+    closeOnOutsidePress: root.closeOnOutsidePress,
+    isTopModal: root.isTopModal,
+    onEscapeKeyDown: root.onEscapeKeyDown,
+    onInteractOutside: root.onInteractOutside,
+    onPointerDownOutside: root.onPointerDownOutside,
+    requestClose: root.requestClose,
+  });
+  useModalFocusTrap({
+    active,
+    contentRef: root.contentRef,
+    enabled: root.trapFocus,
+    finalFocus: root.finalFocus,
+    initialFocus: root.initialFocus,
+    onCloseAutoFocus: root.onCloseAutoFocus,
+    onOpenAutoFocus: root.onOpenAutoFocus,
+    restoreFocus: root.restoreFocus,
+  });
+  useModalAccessibility({
+    active,
+    content: contentNode,
+    enabled: root.modal,
+  });
+
+  if (!active && !forceMount) return null;
+
+  const labelledBy = ariaLabelledBy ?? (ariaLabel ? undefined : root.titleId);
+  const describedBy = ariaDescribedBy ?? root.descriptionId;
+
+  return (
+    <ModalContentProvider value={{ scrollBehavior }}>
+      <div
+        id={root.contentId}
+        ref={composeRefs(setContentRef)}
+        tabIndex={-1}
+        className={cn(
+          styles.content,
+          styles[size],
+          styles[placement],
+          styles[scrollBehavior],
+          animated && styles.animated,
+          className
+        )}
+        style={style}
+        role={root.role}
+        aria-modal={root.modal ? 'true' : undefined}
+        aria-label={ariaLabel}
+        aria-labelledby={labelledBy}
+        aria-describedby={describedBy}
+        data-state={active ? 'open' : 'closed'}
+      >
+        {children}
+      </div>
+    </ModalContentProvider>
+  );
 };
 
 ModalContent.displayName = 'ModalContent';

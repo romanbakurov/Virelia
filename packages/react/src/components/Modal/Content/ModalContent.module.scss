@@ -1,12 +1,97 @@
 .content {
-  width: min(600px, calc(100vw - var(--space-8)));
-  min-width: min(320px, calc(100vw - var(--space-8)));
-  max-height: 90vh;
-  overflow: hidden auto;
-  padding: var(--space-4);
+  position: fixed;
+  z-index: calc(
+    var(--z-index-modal, 1000) + var(--modal-content-z-index-offset)
+  );
+  display: flex;
+  flex-direction: column;
+  width: min(
+    var(--modal-content-width, var(--modal-content-size-md)),
+    calc(100vw - var(--modal-content-viewport-margin))
+  );
+  min-width: min(
+    var(--modal-content-min-width),
+    calc(100vw - var(--modal-content-viewport-margin))
+  );
+  max-height: var(--modal-content-max-height);
+  padding: var(--modal-content-padding);
+  gap: var(--modal-content-gap);
   color: var(--modal-content-fg);
   background-color: var(--modal-content-bg);
-  border: 1px solid var(--modal-content-border);
-  border-radius: var(--radius-lg);
+  border: var(--modal-content-border-width) solid var(--modal-content-border);
+  border-radius: var(--modal-content-radius);
   box-shadow: var(--modal-content-shadow);
+  outline: none;
+
+  &[data-state='closed'] {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.animated {
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    visibility 0s linear var(--modal-content-animation-duration);
+
+  &[data-state='open'] {
+    transition-delay: 0s;
+  }
+}
+
+.center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.98);
+
+  &[data-state='open'] {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.top {
+  top: var(--modal-content-top-offset);
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+
+  &[data-state='open'] {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.sm {
+  --modal-content-width: var(--modal-content-size-sm);
+}
+
+.md {
+  --modal-content-width: var(--modal-content-size-md);
+}
+
+.lg {
+  --modal-content-width: var(--modal-content-size-lg);
+}
+
+.xl {
+  --modal-content-width: var(--modal-content-size-xl);
+}
+
+.full {
+  width: calc(100vw - var(--modal-content-viewport-margin));
+  height: calc(100vh - var(--modal-content-viewport-margin));
+  max-height: calc(100vh - var(--modal-content-viewport-margin));
+}
+
+.inside {
+  overflow: hidden;
+}
+
+.outside {
+  overflow: hidden auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated {
+    transition: none;
+  }
 }

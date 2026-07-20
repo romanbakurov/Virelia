@@ -25,6 +25,7 @@ import { FormField } from '../patterns/FormField';
 import { Button } from '../primitives/Button';
 import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
+import { Portal } from '../primitives/Portal';
 import { Radio } from '../primitives/Radio';
 import { useTheme } from '../theme';
 
@@ -137,8 +138,6 @@ function NativeComponentsOverview() {
   const [plan, setPlan] = useState('pro');
   const [team, setTeam] = useState('engineering');
   const [teams, setTeams] = useState<string[]>(['product']);
-  const [modalOpen, setModalOpen] = useState(false);
-
   return (
     <ScrollView
       nestedScrollEnabled
@@ -903,20 +902,141 @@ function NativeComponentsOverview() {
               saved form values.
             </Text>
             <View style={styles.row}>
-              <Dropdown label='Report actions' trigger='Report actions'>
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <Button appearance='outline' color='neutral'>
+                    Report actions
+                  </Button>
+                </Dropdown.Trigger>
                 {renderDropdownContent()}
               </Dropdown>
-              <Dropdown
-                label='More report actions'
-                accessibilityLabel='More report actions'
-                accessibilityHint='Opens report action menu'
-                icon={<Menu />}
-                showArrow={false}
-              >
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <Button
+                    accessibilityLabel='More report actions'
+                    appearance='ghost'
+                    color='neutral'
+                    iconOnly
+                    iconStart={<Menu />}
+                  />
+                </Dropdown.Trigger>
+                <Dropdown.Content presentation='popover'>
+                  <Dropdown.Item value='settings' icon={<Settings />}>
+                    Settings
+                  </Dropdown.Item>
+                  <Dropdown.Item value='download' icon={<Download />}>
+                    Export
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Searchable
+            </Text>
+            <Dropdown empty='No matching actions'>
+              <Dropdown.Trigger>
+                <Button
+                  appearance='outline'
+                  color='neutral'
+                  iconStart={<Search />}
+                >
+                  Search actions
+                </Button>
+              </Dropdown.Trigger>
+              <Dropdown.Content presentation='modal'>
+                <Dropdown.Search placeholder='Search report actions' />
+                <Dropdown.Item value='settings' icon={<Settings />}>
+                  Open settings
+                </Dropdown.Item>
+                <Dropdown.Item value='download' icon={<Download />}>
+                  Download report
+                </Dropdown.Item>
+                <Dropdown.Item value='filter' icon={<Filter />}>
+                  Filter view
+                </Dropdown.Item>
+                <Dropdown.Item value='save' icon={<Save />}>
+                  Save layout
+                </Dropdown.Item>
+              </Dropdown.Content>
+            </Dropdown>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Presentation
+            </Text>
+            <View style={styles.row}>
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <Button appearance='outline' color='neutral'>
+                    Sheet
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content presentation='sheet'>
+                  <Dropdown.Item value='settings' icon={<Settings />}>
+                    Open settings
+                  </Dropdown.Item>
+                  <Dropdown.Item value='filter' icon={<Filter />}>
+                    Filter view
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+              <Dropdown>
+                <Dropdown.Trigger>
+                  <Button appearance='outline' color='neutral'>
+                    Modal
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content presentation='modal'>
+                  <Dropdown.Item value='download' icon={<Download />}>
+                    Download report
+                  </Dropdown.Item>
+                  <Dropdown.Item value='delete' icon={<Trash />} danger>
+                    Delete report
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown>
+            </View>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <View style={styles.row}>
+              <Dropdown disabled>
+                <Dropdown.Trigger>
+                  <Button appearance='outline' color='neutral'>
+                    Disabled actions
+                  </Button>
+                </Dropdown.Trigger>
                 {renderDropdownContent()}
               </Dropdown>
-              <Dropdown label='Disabled actions' disabled>
-                {renderDropdownContent()}
+              <Dropdown loading loadingText='Loading actions...'>
+                <Dropdown.Trigger>
+                  <Button appearance='outline' color='neutral'>
+                    Loading actions
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content />
               </Dropdown>
             </View>
           </View>
@@ -981,36 +1101,120 @@ function NativeComponentsOverview() {
         </Section>
 
         <Section title='Modal'>
-          <Button onPress={() => setModalOpen(true)}>Open modal</Button>
-          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-            <Modal.Header>Review changes</Modal.Header>
-            <Modal.Body>
-              <Text
-                style={[
-                  styles.panelText,
-                  { color: theme.semantic.text.primary },
-                ]}
-              >
-                Confirm the changes before applying them to the workspace.
-              </Text>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                color='neutral'
-                appearance='solid'
-                onPress={() => setModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                color='primary'
-                appearance='solid'
-                onPress={() => setModalOpen(false)}
-              >
-                Apply
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              Basic
+            </Text>
+            <Modal>
+              <Modal.Trigger asChild>
+                <Button>Review changes</Button>
+              </Modal.Trigger>
+              <Portal>
+                <Modal.Overlay>
+                  <Modal.Content>
+                    <Modal.Header>Review changes</Modal.Header>
+                    <Modal.Body>
+                      <Text
+                        style={[
+                          styles.panelText,
+                          { color: theme.semantic.text.primary },
+                        ]}
+                      >
+                        Confirm the changes before applying them to the
+                        workspace.
+                      </Text>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Modal.Close>
+                        <Button color='neutral' appearance='solid'>
+                          Cancel
+                        </Button>
+                      </Modal.Close>
+                      <Modal.Close>
+                        <Button color='primary' appearance='solid'>
+                          Apply
+                        </Button>
+                      </Modal.Close>
+                    </Modal.Footer>
+                  </Modal.Content>
+                </Modal.Overlay>
+              </Portal>
+            </Modal>
+          </View>
+
+          <View style={styles.group}>
+            <Text
+              style={[
+                styles.subtitle,
+                { color: theme.semantic.text.secondary },
+              ]}
+            >
+              States
+            </Text>
+            <View style={styles.row}>
+              <Modal closeOnOutsidePress={false}>
+                <Modal.Trigger asChild>
+                  <Button appearance='outline' color='neutral'>
+                    Explicit close
+                  </Button>
+                </Modal.Trigger>
+                <Portal>
+                  <Modal.Overlay>
+                    <Modal.Content>
+                      <Modal.Header>Explicit close</Modal.Header>
+                      <Modal.Body>
+                        <Text
+                          style={[
+                            styles.panelText,
+                            { color: theme.semantic.text.primary },
+                          ]}
+                        >
+                          Backdrop press is disabled for this modal.
+                        </Text>
+                      </Modal.Body>
+                    </Modal.Content>
+                  </Modal.Overlay>
+                </Portal>
+              </Modal>
+              <Modal closeOnOutsidePress={false}>
+                <Modal.Trigger asChild>
+                  <Button color='danger'>Confirm delete</Button>
+                </Modal.Trigger>
+                <Portal>
+                  <Modal.Overlay>
+                    <Modal.Content>
+                      <Modal.Header>Delete report?</Modal.Header>
+                      <Modal.Body>
+                        <Text
+                          style={[
+                            styles.panelText,
+                            { color: theme.semantic.text.primary },
+                          ]}
+                        >
+                          Report data will be permanently removed.
+                        </Text>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Modal.Close>
+                          <Button color='neutral' appearance='solid'>
+                            Cancel
+                          </Button>
+                        </Modal.Close>
+                        <Modal.Close>
+                          <Button color='danger'>Delete</Button>
+                        </Modal.Close>
+                      </Modal.Footer>
+                    </Modal.Content>
+                  </Modal.Overlay>
+                </Portal>
+              </Modal>
+            </View>
+          </View>
         </Section>
 
         <Section title='FormField'>

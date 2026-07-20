@@ -7,9 +7,9 @@ export const createStyles = (theme: NativeTheme) =>
     header: {
       alignItems: 'center',
       flexDirection: 'row',
-      gap: theme.tokens.spacing[3],
+      gap: theme.components.modal.header.gap,
       justifyContent: 'space-between',
-      paddingBottom: theme.tokens.spacing[4],
+      paddingBottom: theme.components.modal.header.paddingBottom,
     },
 
     title: {
@@ -21,12 +21,12 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     closeButton: {
-      width: 32,
-      height: 32,
+      width: theme.components.modal.closeButton.size,
+      height: theme.components.modal.closeButton.size,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.components.modal.closeButton.default.bg,
-      borderRadius: theme.tokens.radius.full,
+      borderRadius: theme.components.modal.closeButton.radius,
     },
 
     closeButtonPressed: {

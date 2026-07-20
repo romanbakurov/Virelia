@@ -1,5 +1,8 @@
+export { DropdownArrow } from './Arrow';
 export { Dropdown } from './Dropdown';
+export { DropdownSearch } from './Search';
 export type {
+  DropdownArrowProps,
   DropdownCheckboxItemProps,
   DropdownContentProps,
   DropdownEmptyProps,
@@ -14,6 +17,7 @@ export type {
   DropdownProps,
   DropdownRadioGroupProps,
   DropdownRadioItemProps,
+  DropdownSearchProps,
   DropdownSelectEvent,
   DropdownSeparatorProps,
   DropdownSubContentProps,

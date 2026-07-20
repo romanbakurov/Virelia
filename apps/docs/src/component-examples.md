@@ -202,7 +202,7 @@ export function FormExample() {
 
 ```tsx
 import { Filter, Save, Search } from '@vellira-ui/icons';
-import { Button, Modal } from '@vellira-ui/react';
+import { Button, Modal, Portal } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function ButtonActions() {
@@ -238,27 +238,36 @@ export function ButtonActions() {
         Delete workspace
       </Button>
 
-      <Modal isOpen={confirming} onClose={() => setConfirming(false)}>
-        <Modal.Header>Delete workspace?</Modal.Header>
-        <Modal.Body>This action cannot be undone.</Modal.Body>
-        <Modal.Footer>
-          <Button
-            color='neutral'
-            appearance='ghost'
-            disabled={deleting}
-            onClick={() => setConfirming(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            color='danger'
-            loading={deleting}
-            loadingText='Deleting...'
-            onClick={() => setDeleting(true)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
+      <Modal open={confirming} onOpenChange={setConfirming} role='alertdialog'>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content>
+            <Modal.Header>
+              <div>
+                <Modal.Title>Delete workspace?</Modal.Title>
+                <Modal.Description>
+                  This action cannot be undone.
+                </Modal.Description>
+              </div>
+              <Modal.Close />
+            </Modal.Header>
+            <Modal.Footer>
+              <Modal.Close asChild>
+                <Button color='neutral' appearance='ghost' disabled={deleting}>
+                  Cancel
+                </Button>
+              </Modal.Close>
+              <Button
+                color='danger'
+                loading={deleting}
+                loadingText='Deleting...'
+                onClick={() => setDeleting(true)}
+              >
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal.Content>
+        </Portal>
       </Modal>
     </>
   );

@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
@@ -22,14 +23,43 @@ const toCssRgb = (hex: string) => {
   return `rgb(${red}, ${green}, ${blue})`;
 };
 
+function NativeModal({
+  open = true,
+  onOpenChange = () => undefined,
+  closeOnOutsidePress,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnOutsidePress?: boolean;
+}) {
+  return (
+    <Modal
+      open={open}
+      closeOnOutsidePress={closeOnOutsidePress}
+      onOpenChange={onOpenChange}
+    >
+      <Portal>
+        <Modal.Overlay>
+          <Modal.Content>
+            <Modal.Header>Native modal</Modal.Header>
+            <Modal.Body>
+              <Text>Body content</Text>
+            </Modal.Body>
+            <Modal.Footer>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal.Overlay>
+      </Portal>
+    </Modal>
+  );
+}
+
 describe('Native Modal', () => {
   it('renders modal content when open', () => {
-    const { container, unmount } = render(
-      <Modal isOpen onClose={() => undefined}>
-        <Modal.Header>Native modal</Modal.Header>
-        <Modal.Body>Body content</Modal.Body>
-      </Modal>
-    );
+    const { container, unmount } = render(<NativeModal />);
 
     expect(container.textContent).toContain('Native modal');
     expect(container.textContent).toContain('Body content');
@@ -45,12 +75,7 @@ describe('Native Modal', () => {
     (themeName, expectedColor) => {
       const { container, unmount } = render(
         <ThemeProvider defaultTheme={themeName}>
-          <Modal isOpen onClose={() => undefined}>
-            <Modal.Header>Native modal</Modal.Header>
-            <Modal.Body>
-              <Text>Body content</Text>
-            </Modal.Body>
-          </Modal>
+          <NativeModal />
         </ThemeProvider>
       );
 
@@ -65,12 +90,7 @@ describe('Native Modal', () => {
   );
 
   it('does not render modal content when closed', () => {
-    const { container, unmount } = render(
-      <Modal isOpen={false} onClose={() => undefined}>
-        <Modal.Header>Native modal</Modal.Header>
-        <Modal.Body>Body content</Modal.Body>
-      </Modal>
-    );
+    const { container, unmount } = render(<NativeModal open={false} />);
 
     expect(container.textContent).not.toContain('Native modal');
     expect(container.querySelector('[data-testid="native-modal"]')).toBeNull();
@@ -78,16 +98,39 @@ describe('Native Modal', () => {
     unmount();
   });
 
-  it('calls onClose when backdrop is pressed', () => {
-    const onClose = vi.fn();
+  it('opens from Trigger asChild', () => {
     const { container, unmount } = render(
-      <Modal isOpen onClose={onClose}>
-        <Modal.Header>Native modal</Modal.Header>
-        <Modal.Body>Body content</Modal.Body>
-        <Modal.Footer>
-          <Button>Done</Button>
-        </Modal.Footer>
+      <Modal>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Header>Native modal</Modal.Header>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
       </Modal>
+    );
+
+    expect(container.textContent).not.toContain('Native modal');
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    act(() => trigger?.click());
+
+    expect(container.textContent).toContain('Native modal');
+
+    unmount();
+  });
+
+  it('calls onOpenChange when backdrop is pressed', () => {
+    const onOpenChange = vi.fn();
+    const { container, unmount } = render(
+      <NativeModal onOpenChange={onOpenChange} />
     );
 
     const backdrop = container.querySelector<HTMLButtonElement>(
@@ -96,21 +139,15 @@ describe('Native Modal', () => {
 
     act(() => backdrop?.click());
 
-    expect(onClose).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
 
     unmount();
   });
 
-  it('calls onClose from the header close button and keeps controls focusable', () => {
-    const onClose = vi.fn();
+  it('calls onOpenChange from Modal.Close and keeps controls focusable', () => {
+    const onOpenChange = vi.fn();
     const { container, unmount } = render(
-      <Modal isOpen onClose={onClose}>
-        <Modal.Header>Native modal</Modal.Header>
-        <Modal.Body>Body content</Modal.Body>
-        <Modal.Footer>
-          <Button>Done</Button>
-        </Modal.Footer>
-      </Modal>
+      <NativeModal onOpenChange={onOpenChange} />
     );
 
     const closeButton = container.querySelector<HTMLButtonElement>(
@@ -128,19 +165,15 @@ describe('Native Modal', () => {
 
     act(() => closeButton?.click());
 
-    expect(onClose).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
 
     unmount();
   });
 
-  it('does not expose backdrop as close button when backdrop close is disabled', () => {
-    const onClose = vi.fn();
-
+  it('does not expose backdrop as close button when outside close is disabled', () => {
+    const onOpenChange = vi.fn();
     const { container, unmount } = render(
-      <Modal isOpen closeOnBackdrop={false} onClose={onClose}>
-        <Modal.Header>Native modal</Modal.Header>
-        <Modal.Body>Body content</Modal.Body>
-      </Modal>
+      <NativeModal closeOnOutsidePress={false} onOpenChange={onOpenChange} />
     );
 
     const backdrop = container.querySelector<HTMLButtonElement>(
@@ -155,7 +188,7 @@ describe('Native Modal', () => {
       backdrop?.click();
     });
 
-    expect(onClose).not.toHaveBeenCalled();
+    expect(onOpenChange).not.toHaveBeenCalled();
 
     unmount();
   });

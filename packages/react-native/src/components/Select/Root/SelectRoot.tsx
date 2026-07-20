@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 
-import { useSelect } from '@vellira-ui/core';
 import type { TextInput } from 'react-native';
 import { View } from 'react-native';
 
+import { useSelect } from '../../../hooks';
+import { useNativeDismiss } from '../../../managers';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';
 import { SelectContext } from '../internal/SelectContext';
@@ -70,6 +71,7 @@ export function SelectRoot(props: SelectProps) {
   } = props;
 
   const field = useFormFieldContext();
+  const overlayId = useId();
   const hasOwnField = Boolean(label || description || error);
   const [triggerWidth, setTriggerWidth] = useState<number | undefined>();
   const searchInputRef = useRef<TextInput>(null);
@@ -227,6 +229,12 @@ export function SelectRoot(props: SelectProps) {
   });
 
   const hasValue = selectedValues.length > 0;
+  const dismiss = useNativeDismiss({
+    id: overlayId,
+    visible: isOpen,
+    closeOnOutsidePress: dismissOnBackdropPress,
+    onClose: closeDropdown,
+  });
 
   const clearValue = () => {
     selectedFocusValueRef.current = undefined;
@@ -337,7 +345,7 @@ export function SelectRoot(props: SelectProps) {
     searchInputRef,
     empty: empty ?? emptyFromChildren ?? 'Nothing found',
     loadingContent: loadingFromChildren ?? loadingText,
-    closeContent: closeDropdown,
+    closeContent: dismiss.requestClose,
     openContent: openDropdown,
     clearValue,
     selectOption,

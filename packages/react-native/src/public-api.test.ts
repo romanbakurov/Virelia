@@ -50,6 +50,8 @@ describe('public API', () => {
       'FormField',
       'Input',
       'Modal',
+      'Portal',
+      'PortalProvider',
       'Radio',
       'RadioGroup',
       'Select',

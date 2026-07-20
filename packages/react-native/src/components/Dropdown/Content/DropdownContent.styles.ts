@@ -69,4 +69,31 @@ export const createStyles = (theme: NativeTheme) =>
       maxHeight: '60%',
       borderRadius: theme.tokens.radius.md,
     },
+
+    searchWrap: {
+      minHeight: 40,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.tokens.spacing[2],
+      paddingHorizontal: theme.tokens.spacing[3],
+      borderBottomWidth: 1,
+      borderBottomColor: theme.components.dropdown.separator.bg,
+    },
+
+    searchIcon: {
+      width: 16,
+      height: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    searchInput: {
+      flex: 1,
+      minWidth: 0,
+      paddingVertical: theme.tokens.spacing[2],
+      color: theme.components.dropdown.content.fg,
+      fontFamily: theme.tokens.typography.family.regular,
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
   });
