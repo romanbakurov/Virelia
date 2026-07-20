@@ -1,6 +1,6 @@
-import type { BaseModalFooterProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
-export interface ModalFooterProps extends BaseModalFooterProps {
+export interface ModalFooterProps {
   children: ReactNode;
+  className?: string;
 }

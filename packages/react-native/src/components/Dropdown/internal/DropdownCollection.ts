@@ -9,6 +9,7 @@ import type {
   DropdownItemProps,
   DropdownLabelProps,
   DropdownLoadingProps,
+  DropdownSearchProps,
   DropdownSeparatorProps,
   DropdownTriggerProps,
 } from '../types';
@@ -23,8 +24,13 @@ type DropdownSlotComponent<TProps extends object> = {
     | 'separator'
     | 'item'
     | 'empty'
-    | 'loading';
+    | 'loading'
+    | 'search';
   displayName?: string;
+};
+
+type PortalElementType = {
+  __velliraPortal?: true;
 };
 
 export type NativeDropdownEntry =
@@ -44,6 +50,7 @@ export type ParsedNativeDropdownChildren = {
   trigger?: ReactNode;
   triggerProps?: DropdownTriggerProps;
   contentProps?: DropdownContentProps;
+  searchProps?: DropdownSearchProps;
   entries: NativeDropdownEntry[];
   items: Array<Extract<NativeDropdownEntry, { type: 'item' }>>;
 };
@@ -65,6 +72,7 @@ export function parseDropdownChildren(
   let trigger: ReactNode;
   let triggerProps: DropdownTriggerProps | undefined;
   let contentProps: DropdownContentProps | undefined;
+  let searchProps: DropdownSearchProps | undefined;
   const entries: NativeDropdownEntry[] = [];
   const items: ParsedNativeDropdownChildren['items'] = [];
 
@@ -89,6 +97,11 @@ export function parseDropdownChildren(
 
       const type = child.type as DropdownSlotComponent<object>;
 
+      if ((type as PortalElementType).__velliraPortal) {
+        visit((child.props as { children?: ReactNode }).children);
+        return;
+      }
+
       switch (type.__velliraDropdownPart) {
         case 'trigger':
           triggerProps = child.props as DropdownTriggerProps;
@@ -98,6 +111,10 @@ export function parseDropdownChildren(
         case 'content':
           contentProps = child.props as DropdownContentProps;
           visit(contentProps.children);
+          return;
+
+        case 'search':
+          searchProps = child.props as DropdownSearchProps;
           return;
 
         case 'group':
@@ -148,7 +165,7 @@ export function parseDropdownChildren(
 
   visit(children);
 
-  return { contentProps, entries, items, trigger, triggerProps };
+  return { contentProps, entries, items, searchProps, trigger, triggerProps };
 }
 
 function getItemLabel(children: ReactNode) {

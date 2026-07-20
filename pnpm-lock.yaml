@@ -417,14 +417,7 @@ importers:
 
   packages/assets: {}
 
-  packages/core:
-    devDependencies:
-      '@types/react':
-        specifier: ^19.2.3
-        version: 19.2.17
-      react:
-        specifier: 19.2.7
-        version: 19.2.7
+  packages/core: {}
 
   packages/icons:
     dependencies:
@@ -450,6 +443,9 @@ importers:
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
+      lottie-web:
+        specifier: ^5.13.0
+        version: 5.13.0
 
   packages/react:
     dependencies:

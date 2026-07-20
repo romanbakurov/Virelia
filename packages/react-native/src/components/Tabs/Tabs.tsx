@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { useTabs } from '@vellira-ui/core';
 import { View } from 'react-native';
 
+import { useTabs } from '../../hooks';
 import { useThemeStyles } from '../../theme';
 
 import { createStyles } from './Tabs.styles';

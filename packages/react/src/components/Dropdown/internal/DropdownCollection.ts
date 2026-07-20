@@ -3,6 +3,7 @@ import { Children, isValidElement } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
 import type {
+  DropdownArrowProps,
   DropdownCheckboxItemProps,
   DropdownContentProps,
   DropdownEmptyProps,
@@ -30,6 +31,10 @@ import type {
   ParsedDropdownChildren,
 } from './types';
 
+type PortalElementType = {
+  __velliraPortal?: true;
+};
+
 export function createDropdownSlot<TProps extends object>(
   name: NonNullable<DropdownSlotComponent<TProps>['__velliraDropdownPart']>,
   displayName: string
@@ -46,6 +51,8 @@ export function parseDropdownChildren(
   let generatedId = 0;
   let trigger: ParsedDropdownChildren['trigger'];
   let content: ParsedDropdownChildren['content'];
+  let portal: ParsedDropdownChildren['portal'];
+  let search: ParsedDropdownChildren['search'];
   const entries: DropdownRenderEntry[] = [];
   const items: DropdownCollectionItem[] = [];
 
@@ -62,6 +69,12 @@ export function parseDropdownChildren(
 
       const type = child.type as DropdownSlotComponent<unknown>;
 
+      if ((type as PortalElementType).__velliraPortal) {
+        portal = child as ParsedDropdownChildren['portal'];
+        visit((child.props as { children?: ReactNode }).children, context);
+        return;
+      }
+
       switch (type.__velliraDropdownPart) {
         case 'trigger':
           trigger = child as ParsedDropdownChildren['trigger'];
@@ -70,6 +83,18 @@ export function parseDropdownChildren(
         case 'content':
           content = child as ParsedDropdownChildren['content'];
           visit((child.props as DropdownContentProps).children, context);
+          return;
+
+        case 'search':
+          search = child as ParsedDropdownChildren['search'];
+          return;
+
+        case 'arrow':
+          entries.push({
+            type: 'arrow',
+            id: nextId('arrow'),
+            props: child.props as DropdownArrowProps,
+          });
           return;
 
         case 'group': {
@@ -202,7 +227,7 @@ export function parseDropdownChildren(
 
   visit(children);
 
-  return { content, entries, items, trigger };
+  return { content, entries, items, portal, search, trigger };
 }
 
 export function getItemCompoundSlots(children: ReactNode) {

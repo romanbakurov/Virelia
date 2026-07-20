@@ -25,6 +25,14 @@ export interface DropdownProps extends Omit<
   closeOnSelect?: boolean;
   loading?: boolean;
   loadingText?: ReactNode;
+  searchable?: boolean;
+  command?: boolean;
+  searchValue?: string;
+  defaultSearchValue?: string;
+  searchPlaceholder?: string;
+  onSearch?: (value: string) => void;
+  empty?: ReactNode;
+  noOptionsText?: ReactNode;
 
   style?: StyleProp<ViewStyle>;
   triggerStyle?: StyleProp<ViewStyle>;
@@ -43,8 +51,14 @@ export interface DropdownTriggerProps {
 
 export interface DropdownContentProps {
   children?: ReactNode;
+  command?: boolean;
   style?: StyleProp<ViewStyle>;
   presentation?: DropdownPresentation;
+}
+
+export interface DropdownSearchProps {
+  placeholder?: string;
+  accessibilityLabel?: string;
 }
 
 export interface DropdownItemProps {

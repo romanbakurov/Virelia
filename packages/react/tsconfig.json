@@ -11,8 +11,6 @@
     "paths": {
       "@/*": ["*"],
       "@components/*": ["components/*"],
-      "@hooks/*": ["hooks/*"],
-      "@overlay/*": ["overlay/*"],
       "@patterns/*": ["patterns/*"],
       "@primitives/*": ["primitives/*"],
       "@styles/*": ["styles/*"],

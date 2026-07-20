@@ -1,9 +1,11 @@
 import { act } from 'react';
 
+import { waitFor } from '@testing-library/react';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
+import { Portal } from '../../primitives/Portal';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
@@ -687,5 +689,187 @@ describe('Dropdown', () => {
 
     unmount();
     vi.useRealTimers();
+  });
+
+  it('filters searchable menu items and renders empty text', () => {
+    const onSearch = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown searchable empty='Nothing matches' onSearch={onSearch}>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit profile</Dropdown.Item>
+          <Dropdown.Item>Invite member</Dropdown.Item>
+          <Dropdown.Item>Delete workspace</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => {
+      container.querySelector('button')?.click();
+    });
+
+    const search = document.querySelector<HTMLInputElement>(
+      'input[aria-label="Search actions..."]'
+    );
+
+    expect(search).not.toBeNull();
+    expect(document.body.textContent).toContain('Edit profile');
+    expect(document.body.textContent).toContain('Invite member');
+
+    act(() => {
+      search!.value = 'delete';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+      search!.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(onSearch).toHaveBeenCalledWith('delete');
+    expect(document.body.textContent).not.toContain('Edit profile');
+    expect(document.body.textContent).toContain('Delete workspace');
+
+    act(() => {
+      search!.value = 'missing';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+      search!.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    expect(document.body.textContent).toContain('Nothing matches');
+    expect(document.querySelector('[aria-activedescendant]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports compound Search inside Content', () => {
+    const { unmount } = render(
+      <Dropdown defaultOpen empty='No command found'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Search
+            placeholder='Find command'
+            aria-label='Find project command'
+          />
+          <Dropdown.Item>Open settings</Dropdown.Item>
+          <Dropdown.Item>Copy link</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const search = document.querySelector<HTMLInputElement>(
+      'input[aria-label="Find project command"]'
+    );
+
+    expect(search?.getAttribute('placeholder')).toBe('Find command');
+    expect(document.body.textContent).toContain('Open settings');
+
+    act(() => {
+      search!.value = 'copy';
+      search!.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    expect(document.body.textContent).not.toContain('Open settings');
+    expect(document.body.textContent).toContain('Copy link');
+
+    unmount();
+  });
+
+  it('supports explicit Portal and item slot aliases', () => {
+    const { container, unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Portal>
+          <Dropdown.Content>
+            <Dropdown.Arrow className='dropdown-arrow' />
+            <Dropdown.Item>
+              <Dropdown.Icon>
+                <span data-testid='copy-icon' />
+              </Dropdown.Icon>
+              Copy
+              <Dropdown.Description>
+                Copy current selection
+              </Dropdown.Description>
+              <Dropdown.Badge>New</Dropdown.Badge>
+              <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Portal>
+      </Dropdown>
+    );
+
+    expect(container.querySelector('[role="menu"]')).toBeNull();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(document.body.textContent).toContain('Copy current selection');
+    expect(document.body.textContent).toContain('New');
+    expect(document.body.textContent).toContain('⌘C');
+    expect(document.querySelector('.dropdown-arrow')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports explicit Portal container', async () => {
+    const portalContainer = document.createElement('div');
+
+    document.body.appendChild(portalContainer);
+
+    const { unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Portal container={portalContainer}>
+          <Dropdown.Content>
+            <Dropdown.Item>Move to archive</Dropdown.Item>
+          </Dropdown.Content>
+        </Portal>
+      </Dropdown>
+    );
+
+    await waitFor(() => {
+      expect(portalContainer.querySelector('[role="menu"]')).not.toBeNull();
+    });
+
+    expect(portalContainer.textContent).toContain('Move to archive');
+
+    unmount();
+    portalContainer.remove();
+  });
+
+  it('supports command mode on Content', () => {
+    const { unmount } = render(
+      <Dropdown defaultOpen>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content command>
+          <Dropdown.Item>Rename project</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(
+      document.querySelector<HTMLInputElement>(
+        'input[aria-label="Type a command..."]'
+      )
+    ).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports Select-style className aliases', () => {
+    const { container, unmount } = render(
+      <Dropdown
+        defaultOpen
+        triggerClassName='trigger-alias'
+        dropdownClassName='dropdown-alias'
+      >
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(container.querySelector('button')?.className).toContain(
+      'trigger-alias'
+    );
+    expect(document.querySelector('[role="menu"]')?.className).toContain(
+      'dropdown-alias'
+    );
+
+    unmount();
   });
 });

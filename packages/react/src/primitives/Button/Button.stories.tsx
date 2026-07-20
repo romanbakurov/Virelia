@@ -6,7 +6,7 @@ import { animatedIcons } from '@vellira-ui/icons/lottie';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
-import { AnimatedIconPreview } from '../../storybook/AnimatedIconPreview';
+import { AnimatedIconPreview } from '../../../../icons/src/storybook/AnimatedIconPreview';
 import { Button } from '../Button';
 
 const meta = {

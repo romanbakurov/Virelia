@@ -11,6 +11,8 @@ describe('public API', () => {
       'FormField',
       'Input',
       'Modal',
+      'Portal',
+      'PortalProvider',
       'Radio',
       'RadioGroup',
       'Select',
@@ -23,8 +25,12 @@ describe('public API', () => {
 
   it('exports runtime components and hooks', () => {
     expect(api.ThemeProvider).toBeDefined();
+    expect(api.Portal).toBeDefined();
+    expect(api.PortalProvider).toBeDefined();
     expect(api.useTheme).toBeDefined();
 
+    expect(typeof api.Portal).toBe('function');
+    expect(typeof api.PortalProvider).toBe('function');
     expect(typeof api.useTheme).toBe('function');
     expect(typeof api.ThemeProvider).toBe('function');
   });

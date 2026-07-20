@@ -61,6 +61,7 @@ export const DropdownTriggerSurface = ({
       !child && styles.button,
       !child && styles[root.size],
       !child && styles[root.color],
+      trigger.triggerClassName,
       className
     ),
     'data-state': trigger.isOpen ? 'open' : 'closed',

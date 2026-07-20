@@ -10,4 +10,9 @@ export interface DropdownContentProps {
   contentStyle?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
   presentation: Exclude<DropdownPresentation, 'auto'>;
+  searchable?: boolean;
+  searchValue?: string;
+  searchPlaceholder?: string;
+  searchAccessibilityLabel?: string;
+  onSearchChange?: (value: string) => void;
 }

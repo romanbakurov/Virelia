@@ -305,6 +305,33 @@ describe('Select', () => {
     });
   });
 
+  it('keeps collection-only compound slots out of the DOM when rendered standalone', () => {
+    const host = document.createElement('div');
+    document.body.append(host);
+
+    const root = createRoot(host);
+
+    act(() => {
+      root.render(
+        <>
+          <Select.Group label='Europe'>
+            <Select.Item value='fr'>France</Select.Item>
+          </Select.Group>
+          <Select.Separator />
+          <Select.ItemBadge>New</Select.ItemBadge>
+          <Select.ItemIcon>FR</Select.ItemIcon>
+          <Select.ItemDescription>Paris</Select.ItemDescription>
+        </>
+      );
+    });
+
+    expect(host).toBeEmptyDOMElement();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('supports compound empty and loading content slots', () => {
     const form = document.createElement('form');
     document.body.append(form);

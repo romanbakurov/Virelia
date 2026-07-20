@@ -107,6 +107,8 @@ Use a soft or ghost danger action to open confirmation, then a solid danger
 button inside the modal for the final destructive step.
 
 ```tsx
+import { Button, Modal, Portal } from '@vellira-ui/react';
+
 <Button
   appearance='soft'
   color='danger'
@@ -115,17 +117,33 @@ button inside the modal for the final destructive step.
   Delete workspace
 </Button>
 
-<Modal isOpen={confirmingDelete} onClose={() => setConfirmingDelete(false)}>
-  <Modal.Content>
-    <Modal.Header>Delete workspace?</Modal.Header>
-    <Modal.Body>This cannot be undone.</Modal.Body>
-    <Modal.Footer>
-      <Button appearance='ghost' color='neutral'>Cancel</Button>
-      <Button color='danger' loading={isDeleting} loadingText='Deleting...'>
-        Delete
-      </Button>
-    </Modal.Footer>
-  </Modal.Content>
+<Modal
+  open={confirmingDelete}
+  onOpenChange={setConfirmingDelete}
+  role='alertdialog'
+>
+  <Portal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete workspace?</Modal.Title>
+          <Modal.Description>This cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <Button appearance='ghost' color='neutral'>
+            Cancel
+          </Button>
+        </Modal.Close>
+        <Button color='danger' loading={isDeleting} loadingText='Deleting...'>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal.Content>
+  </Portal>
 </Modal>
 ```
 

@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { Portal } from '@utils/Portal';
+import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 

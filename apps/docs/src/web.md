@@ -72,7 +72,7 @@ generated reference lives in
 | `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled    |
 | `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
-| `Modal`      | `isOpen`, `onClose`, `closeOnBackdrop`, `closeOnEsc`, compound sections                                                   | controlled                    |
+| `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, `closeOnEscape`, compound sections                          | controlled or uncontrolled    |
 
 ## Select Usage Guidelines
 
@@ -88,10 +88,11 @@ Escape and Tab.
 
 ## Dropdown Usage Guidelines
 
-Use `Dropdown` for contextual actions, not saved form values. The web model is
-a flat `items` array with action entries, `{ type: 'group', label }` headings
-and `{ type: 'separator' }` dividers. Use `ariaLabel` when the trigger is
-icon-only or custom content without a clear text label.
+Use `Dropdown` for contextual actions, not saved form values. Compose actions
+with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`,
+`Dropdown.Group`, `Dropdown.Label`, and `Dropdown.Separator`. Use
+`Dropdown.Item onSelect` for commands and keep Select-style value props on
+`Select`.
 
 ## Button
 
@@ -101,7 +102,7 @@ accepts standard DOM attributes such as `className`, `onClick`, and
 
 ```tsx
 import { Filter, Save, Search } from '@vellira-ui/icons';
-import { Button, Modal } from '@vellira-ui/react';
+import { Button, Modal, Portal } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function ButtonExamples() {
@@ -141,29 +142,39 @@ export function ButtonExamples() {
       </Button>
 
       <Modal
-        isOpen={confirmingDelete}
-        onClose={() => setConfirmingDelete(false)}
+        open={confirmingDelete}
+        onOpenChange={setConfirmingDelete}
+        role='alertdialog'
       >
-        <Modal.Header>Delete workspace?</Modal.Header>
-        <Modal.Body>This action cannot be undone.</Modal.Body>
-        <Modal.Footer>
-          <Button
-            color='neutral'
-            appearance='ghost'
-            disabled={deleting}
-            onClick={() => setConfirmingDelete(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            color='danger'
-            loading={deleting}
-            loadingText='Deleting...'
-            onClick={() => setDeleting(true)}
-          >
-            Delete
-          </Button>
-        </Modal.Footer>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content>
+            <Modal.Header>
+              <div>
+                <Modal.Title>Delete workspace?</Modal.Title>
+                <Modal.Description>
+                  This action cannot be undone.
+                </Modal.Description>
+              </div>
+              <Modal.Close />
+            </Modal.Header>
+            <Modal.Footer>
+              <Modal.Close asChild>
+                <Button color='neutral' appearance='ghost' disabled={deleting}>
+                  Cancel
+                </Button>
+              </Modal.Close>
+              <Button
+                color='danger'
+                loading={deleting}
+                loadingText='Deleting...'
+                onClick={() => setDeleting(true)}
+              >
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal.Content>
+        </Portal>
       </Modal>
     </>
   );

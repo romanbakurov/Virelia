@@ -1,4 +1,13 @@
 .modalBody {
   flex: 1;
-  padding-bottom: var(--space-4);
+  padding-bottom: var(--modal-body-padding-bottom);
+}
+
+.inside {
+  --modal-body-focus-gutter: calc(var(--focus-ring-width) * 2);
+
+  min-height: 0;
+  margin-inline: calc(var(--modal-body-focus-gutter) * -1);
+  padding-inline: var(--modal-body-focus-gutter);
+  overflow: hidden auto;
 }

@@ -1,6 +1,6 @@
 .modalFooter {
   display: flex;
   justify-content: flex-end;
-  gap: var(--space-3);
-  padding-top: var(--space-4);
+  gap: var(--modal-footer-gap);
+  padding-top: var(--modal-footer-padding-top);
 }

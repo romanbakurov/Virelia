@@ -18,22 +18,34 @@ const webSrc = path.resolve(dirname, '../../packages/react/src');
 
 export default defineConfig({
   resolve: {
-    alias: {
-      '@': webSrc,
-      '@components': path.resolve(webSrc, 'components'),
-      '@hooks': path.resolve(webSrc, 'hooks'),
-      '@overlay': path.resolve(webSrc, 'overlay'),
-      '@patterns': path.resolve(webSrc, 'patterns'),
-      '@primitives': path.resolve(webSrc, 'primitives'),
-      '@styles': path.resolve(webSrc, 'styles'),
-      '@utils': path.resolve(webSrc, 'utils'),
-      '@assets': path.resolve(webSrc, 'assets'),
-      '@vellira-ui/core': path.resolve(
-        dirname,
-        '../../packages/core/src/index.ts'
-      ),
-      'storybook/test': require.resolve('storybook/test'),
-    },
+    alias: [
+      {
+        find: '@vellira-ui/icons/lottie',
+        replacement: path.resolve(
+          dirname,
+          '../../packages/icons/src/lottie.ts'
+        ),
+      },
+      {
+        find: '@vellira-ui/icons',
+        replacement: path.resolve(dirname, '../../packages/icons/src/web.ts'),
+      },
+      {
+        find: '@vellira-ui/core',
+        replacement: path.resolve(dirname, '../../packages/core/src/index.ts'),
+      },
+      {
+        find: 'storybook/test',
+        replacement: require.resolve('storybook/test'),
+      },
+      { find: '@components', replacement: path.resolve(webSrc, 'components') },
+      { find: '@patterns', replacement: path.resolve(webSrc, 'patterns') },
+      { find: '@primitives', replacement: path.resolve(webSrc, 'primitives') },
+      { find: '@styles', replacement: path.resolve(webSrc, 'styles') },
+      { find: '@utils', replacement: path.resolve(webSrc, 'utils') },
+      { find: '@assets', replacement: path.resolve(webSrc, 'assets') },
+      { find: '@', replacement: webSrc },
+    ],
   },
   css: {
     preprocessorOptions: {

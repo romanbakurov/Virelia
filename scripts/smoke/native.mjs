@@ -211,6 +211,8 @@ const expectedNativeApi = [
   'FormField',
   'Input',
   'Modal',
+  'Portal',
+  'PortalProvider',
   'Radio',
   'RadioGroup',
   'Select',
@@ -245,6 +247,14 @@ if (!isComponentExport(native.ThemeProvider)) {
   throw new Error('react-native ThemeProvider export invalid');
 }
 
+if (!isComponentExport(native.Portal)) {
+  throw new Error('react-native Portal export invalid');
+}
+
+if (!isComponentExport(native.PortalProvider)) {
+  throw new Error('react-native PortalProvider export invalid');
+}
+
 if (typeof native.useTheme !== 'function') {
   throw new Error('react-native useTheme export invalid');
 }
@@ -258,8 +268,12 @@ if (JSON.stringify(actualThemeNames) !== JSON.stringify(expectedThemeNames)) {
   );
 }
 
-if (typeof core.useControllableState !== 'function') {
-  throw new Error('core useControllableState export invalid');
+if (typeof core.createAutoFocusEvent !== 'function') {
+  throw new Error('core createAutoFocusEvent export invalid');
+}
+
+if (typeof core.getFocusableElements !== 'function') {
+  throw new Error('core getFocusableElements export invalid');
 }
 
 if (typeof icons.Check !== 'function') {

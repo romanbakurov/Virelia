@@ -16,7 +16,10 @@ const config: StorybookConfig = {
     options: {},
   },
 
-  stories: ['../../../packages/react/src/**/*.stories.@(ts|tsx|mdx)'],
+  stories: [
+    '../../../packages/react/src/**/*.stories.@(ts|tsx|mdx)',
+    '../../../packages/icons/src/**/*.stories.@(ts|tsx|mdx)',
+  ],
 
   addons: [
     '@storybook/addon-docs',
@@ -28,20 +31,43 @@ const config: StorybookConfig = {
     return mergeConfig(config, {
       root: storybookRoot,
       resolve: {
-        alias: {
-          '@vellira-ui/react/styles': path.resolve(
-            dirname,
-            '../../../packages/react/src/styles.ts'
-          ),
-          '@vellira-ui/react': path.resolve(
-            dirname,
-            '../../../packages/react/src/index.ts'
-          ),
-          '@vellira-ui/core': path.resolve(
-            dirname,
-            '../../../packages/core/src/index.ts'
-          ),
-        },
+        alias: [
+          {
+            find: '@vellira-ui/icons/lottie',
+            replacement: path.resolve(
+              dirname,
+              '../../../packages/icons/src/lottie.ts'
+            ),
+          },
+          {
+            find: '@vellira-ui/icons',
+            replacement: path.resolve(
+              dirname,
+              '../../../packages/icons/src/web.ts'
+            ),
+          },
+          {
+            find: '@vellira-ui/react/styles',
+            replacement: path.resolve(
+              dirname,
+              '../../../packages/react/src/styles.ts'
+            ),
+          },
+          {
+            find: '@vellira-ui/react',
+            replacement: path.resolve(
+              dirname,
+              '../../../packages/react/src/index.ts'
+            ),
+          },
+          {
+            find: '@vellira-ui/core',
+            replacement: path.resolve(
+              dirname,
+              '../../../packages/core/src/index.ts'
+            ),
+          },
+        ],
       },
       build: {
         chunkSizeWarningLimit: 1200,

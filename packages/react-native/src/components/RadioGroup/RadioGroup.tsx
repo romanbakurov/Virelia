@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 
-import { useControllableState } from '@vellira-ui/core';
 import { View } from 'react-native';
 
+import { useControllableState } from '../../hooks';
 import { FormField } from '../../patterns/FormField';
 import { useThemeStyles } from '../../theme';
 

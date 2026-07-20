@@ -1,19 +1,15 @@
 export interface BaseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  closeOnBackdrop?: boolean;
-  closeOnEsc?: boolean;
-  /** @deprecated Use closeOnBackdrop instead. */
-  closeOnClick?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnOutsidePress?: boolean;
+  closeOnEscape?: boolean;
 }
 
 export interface BaseModalOverlayProps {
-  isOpen: boolean;
-  onClose?: () => void;
-  closeOnBackdrop?: boolean;
-  closeOnEsc?: boolean;
-  /** @deprecated Use closeOnBackdrop instead. */
-  closeOnClick?: boolean;
+  open: boolean;
+  onOpenChange?: (open: boolean) => void;
+  closeOnOutsidePress?: boolean;
 }
 
 export type BaseModalBodyProps = Record<never, never>;
