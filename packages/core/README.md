@@ -29,6 +29,9 @@ behavior/
     useAriaIsolation
   portal/
     usePortal
+  utils/
+    events
+    focusUtils
 ```
 
 ## Usage

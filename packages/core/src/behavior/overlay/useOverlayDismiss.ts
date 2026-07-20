@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { createOutsideEvent } from '../events.js';
 import type { OverlayDismissOptions } from '../types.js';
+import { createOutsideEvent } from '../utils/events.js';
 
 export const useOverlayDismiss = ({
   active,

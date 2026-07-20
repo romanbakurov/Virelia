@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 
-import { createAutoFocusEvent } from '../events.js';
 import type { FocusScopeOptions } from '../types.js';
-
-import { focusFirstElement, getFocusableElements } from './focusUtils.js';
+import { createAutoFocusEvent } from '../utils/events.js';
+import {
+  focusFirstElement,
+  getFocusableElements,
+} from '../utils/focusUtils.js';
 
 export const useFocusScope = ({
   active,

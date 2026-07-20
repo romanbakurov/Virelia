@@ -1,4 +1,4 @@
-import type { OverlayAutoFocusEvent, OverlayOutsideEvent } from './types.js';
+import type { OverlayAutoFocusEvent, OverlayOutsideEvent } from '../types.js';
 
 export const createAutoFocusEvent = (): OverlayAutoFocusEvent => {
   let defaultPrevented = false;
