@@ -306,6 +306,10 @@ live examples.
 
 [Open Storybook](https://storybook.vellira.dev)
 
+Storybook loads the shared Vellira font assets and applies
+`var(--font-family-base)` across the manager UI, story canvas, and docs mode so
+examples match the production typography contract.
+
 ## Development
 
 ```bash
