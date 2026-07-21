@@ -4,7 +4,7 @@ import {
   type KeyboardNavigationEvent,
   type NavigableItem,
   useKeyboardNavigation,
-} from './useKeyboardNavigation.js';
+} from './useKeyboardNavigation';
 
 export interface UseDropdownParams<TItem extends NavigableItem> {
   items: TItem[];

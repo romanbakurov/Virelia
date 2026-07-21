@@ -1,6 +1,6 @@
 import { useCallback, useId } from 'react';
 
-import { useControllableState } from './useControllableState.js';
+import { useControllableState } from './useControllableState';
 
 export interface UseModalParams {
   open?: boolean;
