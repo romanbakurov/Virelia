@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useControllableState } from './useControllableState.js';
+import { useControllableState } from './useControllableState';
 import {
   type NavigableItem,
   useKeyboardNavigation,
-} from './useKeyboardNavigation.js';
+} from './useKeyboardNavigation';
 
 export interface SelectOptionLike extends NavigableItem {
   label: string;

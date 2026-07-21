@@ -1,4 +1,4 @@
-import { useControllableState } from './useControllableState.js';
+import { useControllableState } from './useControllableState';
 
 export interface UseTabsParams {
   activeIndex?: number;
