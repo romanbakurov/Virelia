@@ -171,6 +171,7 @@ export const SelectContentSurface = ({
     options,
     selectedValue,
     selectedValues,
+    viewportHeight,
   ]);
 
   if (!isOpen) return null;

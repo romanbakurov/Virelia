@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 
 export function shouldBuild() {
@@ -17,17 +18,57 @@ export function runPnpmInstall(tempDir) {
   run('pnpm', ['install', '--offline'], { cwd: tempDir });
 }
 
+function findPackageRoot(entryPath, packageName) {
+  let currentDir = path.dirname(entryPath);
+
+  while (currentDir !== path.dirname(currentDir)) {
+    const packageJsonPath = path.join(currentDir, 'package.json');
+
+    if (existsSync(packageJsonPath)) {
+      try {
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+
+        if (packageJson.name === packageName) {
+          return currentDir;
+        }
+      } catch {
+        // Continue upwards if this package.json cannot be parsed.
+      }
+    }
+
+    currentDir = path.dirname(currentDir);
+  }
+
+  throw new Error(
+    `Could not locate the package root for ${packageName} from ${entryPath}.`
+  );
+}
+
+function resolveWorkspaceDependency(root, packageDir, packageName) {
+  const workspacePackageJson = path.join(root, packageDir, 'package.json');
+  const requireFromWorkspace = createRequire(workspacePackageJson);
+
+  try {
+    const entryPath = requireFromWorkspace.resolve(packageName);
+
+    return findPackageRoot(entryPath, packageName);
+  } catch (error) {
+    throw new Error(
+      `Missing ${packageName} for ${packageDir}. Run pnpm install before smoke tests.`,
+      { cause: error }
+    );
+  }
+}
+
 export function linkWorkspaceDependencies(root, tempDir, packageDir, packages) {
   const dependencies = {};
 
   for (const packageName of packages) {
-    const sourcePath = path.join(root, packageDir, 'node_modules', packageName);
-
-    if (!existsSync(sourcePath)) {
-      throw new Error(
-        `Missing ${packageName} in ${packageDir}/node_modules. Run pnpm install before smoke tests.`
-      );
-    }
+    const sourcePath = resolveWorkspaceDependency(
+      root,
+      packageDir,
+      packageName
+    );
 
     dependencies[packageName] = `link:${path.relative(tempDir, sourcePath)}`;
   }

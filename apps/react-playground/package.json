@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@vellira-ui/react": "workspace:^",
-    "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
