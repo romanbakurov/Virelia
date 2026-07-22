@@ -86,10 +86,9 @@ test.describe('web overlays', () => {
     const triggerBox = await trigger.boundingBox();
     const listboxBox = await listbox.boundingBox();
     const dropdown = listbox.locator('xpath=..');
-    const dropdownBox = await dropdown.boundingBox();
+
     expect(triggerBox).not.toBeNull();
     expect(listboxBox).not.toBeNull();
-    expect(dropdownBox).not.toBeNull();
 
     const viewportSize = page.viewportSize();
     expect(viewportSize).not.toBeNull();
@@ -97,12 +96,29 @@ test.describe('web overlays', () => {
     const isMobileSheet = viewportSize!.width < 640;
 
     if (!isMobileSheet) {
-      expect(
-        Math.abs(dropdownBox!.width - triggerBox!.width)
-      ).toBeLessThanOrEqual(1);
+      await expect
+        .poll(
+          async () => {
+            const currentTriggerBox = await trigger.boundingBox();
+            const currentDropdownBox = await dropdown.boundingBox();
+
+            if (!currentTriggerBox || !currentDropdownBox) {
+              return Number.POSITIVE_INFINITY;
+            }
+
+            return Math.abs(currentDropdownBox.width - currentTriggerBox.width);
+          },
+          {
+            message: 'Select dropdown should match the trigger width',
+          }
+        )
+        .toBeLessThanOrEqual(1);
 
       await expectFloatingNearReference(trigger, dropdown);
     } else {
+      const dropdownBox = await dropdown.boundingBox();
+
+      expect(dropdownBox).not.toBeNull();
       expect(dropdownBox!.x).toBeGreaterThanOrEqual(0);
       expect(dropdownBox!.x + dropdownBox!.width).toBeLessThanOrEqual(
         viewportSize!.width
