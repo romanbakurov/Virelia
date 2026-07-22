@@ -7,22 +7,26 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
     "ios": {
       "bundleIdentifier": "com.romanbakurov.vellira.storybook"
     },
     "android": {
-      "package": "com.romanbakurov.vellira.storybook"
+      "package": "com.romanbakurov.vellira.storybook",
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "edgeToEdgeEnabled": true,
-    "predictiveBackGestureEnabled": false
+    }
   }
 }

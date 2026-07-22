@@ -38,8 +38,8 @@
   },
   "peerDependencies": {
     "@react-native-picker/picker": ">=2",
-    "react": ">=18",
-    "react-native": ">=0.81"
+    "react": ">=19",
+    "react-native": ">=0.86"
   },
   "dependencies": {
     "@vellira-ui/core": "workspace:*",
@@ -51,7 +51,7 @@
     "@types/react": "^19.2.3",
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^28.1.0",
-    "react": "19.2.7",
+    "react": "19.2.3",
     "tsup": "^8.5.1",
     "typescript": "6.0.3",
     "vitest": "^4.1.10"
