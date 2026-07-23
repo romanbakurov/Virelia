@@ -4,6 +4,12 @@ import type { NativeTheme } from '../../../theme';
 
 export const createTriggerStyles = (theme: NativeTheme) =>
   StyleSheet.create({
+    container: {
+      width: '100%',
+      minWidth: 0,
+      position: 'relative',
+    },
+
     trigger: {
       width: '100%',
       minWidth: 0,
@@ -30,6 +36,38 @@ export const createTriggerStyles = (theme: NativeTheme) =>
       minHeight: 52,
       paddingHorizontal: theme.tokens.spacing[5],
       paddingVertical: theme.tokens.spacing[4],
+    },
+
+    triggerWithClearSm: {
+      paddingRight: theme.tokens.spacing[3] + 28 + theme.tokens.spacing[2],
+    },
+
+    triggerWithClearMd: {
+      paddingRight: theme.tokens.spacing[4] + 28 + theme.tokens.spacing[2],
+    },
+
+    triggerWithClearLg: {
+      paddingRight: theme.tokens.spacing[5] + 28 + theme.tokens.spacing[2],
+    },
+
+    clearButtonContainer: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    clearButtonContainerSm: {
+      right: theme.tokens.spacing[3],
+    },
+
+    clearButtonContainerMd: {
+      right: theme.tokens.spacing[4],
+    },
+
+    clearButtonContainerLg: {
+      right: theme.tokens.spacing[5],
     },
 
     value: {
@@ -87,7 +125,6 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     clearButton: {
       width: 28,
       height: 28,
-      marginLeft: theme.tokens.spacing[2],
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 999,

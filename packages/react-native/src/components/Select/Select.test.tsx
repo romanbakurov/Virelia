@@ -514,6 +514,7 @@ describe('Native Select', () => {
     );
 
     expect(clearButton).toBeTruthy();
+    expect(clearButton?.parentElement?.closest('button')).toBeNull();
 
     act(() => {
       clearButton?.click();
