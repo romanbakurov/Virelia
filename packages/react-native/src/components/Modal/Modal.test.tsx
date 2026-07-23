@@ -157,13 +157,21 @@ describe('Native Modal', () => {
       container.querySelectorAll<HTMLButtonElement>('button')
     ).find((button) => button.textContent === 'Done');
 
-    closeButton?.focus();
+    act(() => {
+      closeButton?.focus();
+    });
+
     expect(document.activeElement).toBe(closeButton);
 
-    doneButton?.focus();
+    act(() => {
+      doneButton?.focus();
+    });
+
     expect(document.activeElement).toBe(doneButton);
 
-    act(() => closeButton?.click());
+    act(() => {
+      closeButton?.click();
+    });
 
     expect(onOpenChange).toHaveBeenCalledWith(false);
 
