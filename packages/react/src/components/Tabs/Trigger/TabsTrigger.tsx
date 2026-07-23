@@ -2,13 +2,13 @@ import { forwardRef, useCallback } from 'react';
 
 import { cn } from '@utils/cn';
 
-import { useTabs } from '../TabsContext';
+import { useTabsContext } from '../internal/TabsContext';
 
-import type { TabProps } from './types';
+import type { TabsTriggerProps } from './types';
 
-import styles from './Tab.module.scss';
+import styles from './TabsTrigger.module.scss';
 
-export const Tab = forwardRef<HTMLButtonElement, TabProps>(
+export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
   (
     {
       index,
@@ -26,37 +26,41 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
       activeIndex,
       setActiveIndex,
       orientation,
-      appearance = 'default',
+      appearance,
       registerTab,
       onTabKeyDown,
-    } = useTabs();
+    } = useTabsContext();
+
     const isActive = activeIndex === index;
     const hasIcon = Boolean(icon);
     const isOnlyIcon = hasIcon && children == null;
 
     const tabRef = useCallback(
-      (el: HTMLButtonElement | null) => {
-        registerTab(index, el);
+      (element: HTMLButtonElement | null) => {
+        registerTab(index, element);
 
         if (typeof ref === 'function') {
-          ref(el);
+          ref(element);
         } else if (ref) {
-          ref.current = el;
+          ref.current = element;
         }
       },
-      [registerTab, index, ref]
+      [index, ref, registerTab]
     );
 
     return (
       <button
-        type='button'
+        {...props}
         ref={tabRef}
+        type='button'
         role='tab'
+        id={`tab-${index}`}
         aria-selected={isActive}
         aria-controls={`tab-panel-${index}`}
-        id={`tab-${index}`}
         disabled={disabled}
         tabIndex={isActive ? 0 : -1}
+        data-state={isActive ? 'active' : 'inactive'}
+        data-orientation={orientation}
         className={cn(
           styles.tab,
           styles[appearance],
@@ -65,29 +69,31 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
           isOnlyIcon && styles.iconOnly,
           className
         )}
-        onClick={(e) => {
-          if (disabled) return;
+        onClick={(event) => {
+          onClick?.(event);
+
+          if (event.defaultPrevented || disabled) return;
 
           setActiveIndex(index);
-          onClick?.(e);
         }}
-        onKeyDown={(e) => {
-          onTabKeyDown(e);
-          onKeyDown?.(e);
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
+
+          if (event.defaultPrevented) return;
+
+          onTabKeyDown(event, index);
         }}
-        {...props}
       >
         {hasIcon && (
           <span className={styles.tabIcon} aria-hidden='true'>
             {icon}
           </span>
         )}
+
         {children != null && <span className={styles.label}>{children}</span>}
       </button>
     );
   }
 );
 
-Tab.displayName = 'Tab';
-
-export default Tab;
+TabsTrigger.displayName = 'Tabs.Trigger';

@@ -1,7 +1,11 @@
-import type { BaseTabsProps } from '@vellira-ui/types';
-import type { ReactNode } from 'react';
+import type { TabsRootProps } from './Root';
 
-export interface TabsProps extends BaseTabsProps {
-  children: ReactNode;
-  className?: string;
-}
+export type TabsProps = TabsRootProps;
+
+export type { TabsContentProps } from './Content';
+export type { TabsListProps } from './List';
+export type { TabsTriggerProps } from './Trigger';
+
+// Временные legacy aliases
+export type { TabsContentProps as TabsPanelProps } from './Content';
+export type { TabsTriggerProps as TabProps } from './Trigger';

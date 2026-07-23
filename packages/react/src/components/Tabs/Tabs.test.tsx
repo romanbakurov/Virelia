@@ -5,9 +5,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
-import { TabsList } from './List/TabsList';
-import { TabsPanel } from './Panel/TabsPanel';
-import { Tab } from './Tab/Tab';
 import { Tabs } from './Tabs';
 
 function pressKey(target: EventTarget, key: string) {
@@ -19,16 +16,19 @@ function pressKey(target: EventTarget, key: string) {
 function TabsExample({ onChange }: { onChange?: (index: number) => void }) {
   return (
     <Tabs onChange={onChange}>
-      <TabsList aria-label='Documentation sections'>
-        <Tab index={0}>Overview</Tab>
-        <Tab index={1} disabled>
+      <Tabs.List aria-label='Documentation sections'>
+        <Tabs.Trigger index={0}>Overview</Tabs.Trigger>
+
+        <Tabs.Trigger index={1} disabled>
           Disabled
-        </Tab>
-        <Tab index={2}>Usage</Tab>
-      </TabsList>
-      <TabsPanel index={0}>Overview panel</TabsPanel>
-      <TabsPanel index={1}>Disabled panel</TabsPanel>
-      <TabsPanel index={2}>Usage panel</TabsPanel>
+        </Tabs.Trigger>
+
+        <Tabs.Trigger index={2}>Usage</Tabs.Trigger>
+      </Tabs.List>
+
+      <Tabs.Content index={0}>Overview panel</Tabs.Content>
+      <Tabs.Content index={1}>Disabled panel</Tabs.Content>
+      <Tabs.Content index={2}>Usage panel</Tabs.Content>
     </Tabs>
   );
 }
@@ -36,12 +36,13 @@ function TabsExample({ onChange }: { onChange?: (index: number) => void }) {
 function VerticalTabsExample() {
   return (
     <Tabs orientation='vertical'>
-      <TabsList>
-        <Tab index={0}>Overview</Tab>
-        <Tab index={1}>Usage</Tab>
-      </TabsList>
-      <TabsPanel index={0}>Overview panel</TabsPanel>
-      <TabsPanel index={1}>Usage panel</TabsPanel>
+      <Tabs.List aria-label='Vertical documentation sections'>
+        <Tabs.Trigger index={0}>Overview</Tabs.Trigger>
+        <Tabs.Trigger index={1}>Usage</Tabs.Trigger>
+      </Tabs.List>
+
+      <Tabs.Content index={0}>Overview panel</Tabs.Content>
+      <Tabs.Content index={1}>Usage panel</Tabs.Content>
     </Tabs>
   );
 }

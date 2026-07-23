@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react';
 
 import { cn } from '@utils/cn';
 
-import { useTabs } from '../TabsContext';
+import { useTabsContext } from '../internal/TabsContext';
 
-import type { TabsPanelProps } from './types';
+import type { TabsContentProps } from './types';
 
-import styles from './TabsPanel.module.scss';
+import styles from './TabsContent.module.scss';
 
-export const TabsPanel = ({ index, children, className }: TabsPanelProps) => {
-  const { activeIndex, orientation } = useTabs();
+export const TabsContent = ({
+  index,
+  children,
+  className,
+  ...props
+}: TabsContentProps) => {
+  const { activeIndex, orientation } = useTabsContext();
   const [isVisible, setIsVisible] = useState(false);
   const isActive = activeIndex === index;
 
@@ -26,6 +31,7 @@ export const TabsPanel = ({ index, children, className }: TabsPanelProps) => {
 
   return (
     <div
+      {...props}
       role='tabpanel'
       id={`tab-panel-${index}`}
       aria-labelledby={`tab-${index}`}
@@ -43,4 +49,4 @@ export const TabsPanel = ({ index, children, className }: TabsPanelProps) => {
   );
 };
 
-TabsPanel.displayName = 'TabsPanel';
+TabsContent.displayName = 'Tabs.Content';

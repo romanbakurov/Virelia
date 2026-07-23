@@ -699,15 +699,15 @@ import { Tabs } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.TabsProps.TabsProps -->
 
-| Prop                 | Type                      | Required | Description                                        |
-| -------------------- | ------------------------- | -------- | -------------------------------------------------- |
-| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
-| `className`          | `string`                  | No       | Extra CSS class for the root element.              |
-| `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
-| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
-| `orientation`        | `Orientation`             | No       | Keyboard and layout orientation.                   |
-| `appearance`         | `TabsAppearance`          | No       | Visual style.                                      |
+| Prop                 | Type                      | Required | Description                                              |
+| -------------------- | ------------------------- | -------- | -------------------------------------------------------- |
+| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Trigger`, and `Tabs.Content` content. |
+| `className`          | `string`                  | No       | Extra CSS class for the root element.                    |
+| `activeIndex`        | `number`                  | No       | Currently active tab index.                              |
+| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                              |
+| `onChange`           | `(index: number) => void` | No       | Called when the active tab changes.                      |
+| `orientation`        | `Orientation`             | No       | Keyboard and layout orientation.                         |
+| `appearance`         | `TabsAppearance`          | No       | Visual style.                                            |
 
 <!-- api-docgen:end web.TabsProps.TabsProps -->
 
@@ -715,39 +715,35 @@ import { Tabs } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.TabsListProps.TabsListProps -->
 
-| Prop       | Type        | Required | Description  |
-| ---------- | ----------- | -------- | ------------ |
-| `children` | `ReactNode` | Yes      | Tab buttons. |
+| Prop       | Type        | Required | Description   |
+| ---------- | ----------- | -------- | ------------- |
+| `children` | `ReactNode` | Yes      | Tab triggers. |
 
 <!-- api-docgen:end web.TabsListProps.TabsListProps -->
 
-### Tabs.Tab Props
+### Tabs.Trigger Props
 
-<!-- api-docgen:start web.TabProps.TabsTabProps -->
+<!-- api-docgen:start web.TabsTriggerProps.TabsTriggerProps -->
 
-| Prop        | Type                                                    | Required | Description                                  |
-| ----------- | ------------------------------------------------------- | -------- | -------------------------------------------- |
-| `children`  | `ReactNode`                                             | Yes      | Tab label.                                   |
-| `icon`      | `ReactNode`                                             | No       | Icon rendered inside the component.          |
-| `className` | `string`                                                | No       | Extra CSS class.                             |
-| `onClick`   | `(e: MouseEvent<HTMLButtonElement> \| null) => void`    | No       | Click handler.                               |
-| `onKeyDown` | `(e: KeyboardEvent<HTMLButtonElement> \| null) => void` | No       | Keyboard handler.                            |
-| `index`     | `number`                                                | Yes      | Tab index used to connect the tab and panel. |
-| `disabled`  | `boolean`                                               | No       | Disables this tab.                           |
+| Prop       | Type        | Required | Description                                    |
+| ---------- | ----------- | -------- | ---------------------------------------------- |
+| `children` | `ReactNode` | Yes      | Tab label content.                             |
+| `icon`     | `ReactNode` | No       | Icon rendered inside the trigger.              |
+| `index`    | `number`    | Yes      | Tab index used to connect trigger and content. |
+| `disabled` | `boolean`   | No       | Disables this trigger.                         |
 
-<!-- api-docgen:end web.TabProps.TabsTabProps -->
+<!-- api-docgen:end web.TabsTriggerProps.TabsTriggerProps -->
 
-### Tabs.Panel Props
+### Tabs.Content Props
 
-<!-- api-docgen:start web.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:start web.TabsContentProps.TabsContentProps -->
 
-| Prop        | Type        | Required | Description                      |
-| ----------- | ----------- | -------- | -------------------------------- |
-| `children`  | `ReactNode` | Yes      | Panel content.                   |
-| `className` | `string`    | No       | Extra CSS class.                 |
-| `index`     | `number`    | Yes      | Panel index matching `Tabs.Tab`. |
+| Prop       | Type        | Required | Description                    |
+| ---------- | ----------- | -------- | ------------------------------ |
+| `children` | `ReactNode` | Yes      | Tab content.                   |
+| `index`    | `number`    | Yes      | Index matching `Tabs.Trigger`. |
 
-<!-- api-docgen:end web.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:end web.TabsContentProps.TabsContentProps -->
 
 ## Tooltip
 

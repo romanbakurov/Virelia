@@ -170,6 +170,7 @@ const sections: ApiSection[] = [
     'src/components/Dropdown/types.ts'
   ),
   section('web', '### Tabs Props', 'TabsProps', 'src/components/Tabs/types.ts'),
+  section('web', '### Tabs Props', 'TabsProps', 'src/components/Tabs/types.ts'),
   section(
     'web',
     '### Tabs.List Props',
@@ -178,15 +179,15 @@ const sections: ApiSection[] = [
   ),
   section(
     'web',
-    '### Tabs.Tab Props',
-    'TabProps',
-    'src/components/Tabs/Tab/types.tsx'
+    '### Tabs.Trigger Props',
+    'TabsTriggerProps',
+    'src/components/Tabs/Trigger/types.ts'
   ),
   section(
     'web',
-    '### Tabs.Panel Props',
-    'TabsPanelProps',
-    'src/components/Tabs/Panel/types.ts'
+    '### Tabs.Content Props',
+    'TabsContentProps',
+    'src/components/Tabs/Content/types.ts'
   ),
   section(
     'web',

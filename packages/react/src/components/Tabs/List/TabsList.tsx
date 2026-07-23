@@ -1,13 +1,13 @@
 import { cn } from '@utils/cn';
 
-import { useTabs } from '../TabsContext';
+import { useTabsContext } from '../internal/TabsContext';
 
 import type { TabsListProps } from './types';
 
 import styles from './TabsList.module.scss';
 
 export const TabsList = ({ children, className, ...props }: TabsListProps) => {
-  const { orientation, appearance } = useTabs();
+  const { orientation, appearance } = useTabsContext();
 
   return (
     <div
