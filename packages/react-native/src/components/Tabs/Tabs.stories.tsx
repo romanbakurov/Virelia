@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Home, Settings, User } from '@vellira-ui/icons';
-import { Text } from 'react-native';
+import type { ReactNode } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { useThemeStyles } from '../../theme';
+import { useTheme, useThemeStyles } from '../../theme';
 
-import { createStyles } from './Panel/TabsPanel.styles';
+import { createStyles } from './Content/TabsContent.styles';
 import { Tabs } from '.';
 
 const meta = {
@@ -20,54 +21,67 @@ const meta = {
 Navigation component used to organize related content into multiple views.
 
 **Features**
-- Compound API with Tabs.List, Tabs.Tab, and Tabs.Panel
-- Controlled and uncontrolled state
+- Value-based compound API with List, Trigger, Content, Indicator, Icon, and
+  Badge parts
+- Controlled and uncontrolled value state
 - Horizontal and vertical orientation
-- Default, pills, and underline appearances
-- Disabled tabs
-- Icon-only and text tabs
-- Accessibility support
+- Automatic and manual activation modes
+- Line, pills, and segmented variants
+- Primary, neutral, success, warning, and danger colors
+- Sizes: sm, md, and lg
+- Disabled triggers, rich trigger content, icons, badges, and descriptions
+- List-level scrollable tabs
+- keepMounted, lazyMount, and forceMount mounting policies
+- Native accessibilityRole and accessibilityState support
 
 ### Usage
 
-Use Tabs to switch between related content without leaving the current screen.
-
-Correct usage:
+Use Tabs when related panels share the same screen context and only one panel
+should be active at a time.
 
 \`\`\`tsx
-<Tabs defaultActiveIndex={0}>
-  <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Usage</Tabs.Tab>
-    <Tabs.Tab index={2}>API</Tabs.Tab>
+<Tabs defaultValue='overview' variant='line' color='primary'>
+  <Tabs.List scrollable>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+    <Tabs.Trigger value='api'>API</Tabs.Trigger>
   </Tabs.List>
 
-  <Tabs.Panel index={0}>
+  <Tabs.Content value='overview'>
     <Text>Overview content</Text>
-  </Tabs.Panel>
+  </Tabs.Content>
 
-  <Tabs.Panel index={1}>
+  <Tabs.Content value='usage'>
     <Text>Usage content</Text>
-  </Tabs.Panel>
+  </Tabs.Content>
 
-  <Tabs.Panel index={2}>
+  <Tabs.Content value='api'>
     <Text>API content</Text>
-  </Tabs.Panel>
+  </Tabs.Content>
 </Tabs>
 \`\`\`
+
+### Accessibility
+
+Tabs use native tab semantics where available:
+
+- \`Tabs.List\` exposes a tab list
+- \`Tabs.Trigger\` exposes selected and disabled state
+- disabled triggers do not activate
+- active content is mounted according to the root mounting policy
 `,
       },
     },
   },
   args: {
-    defaultActiveIndex: 0,
-    appearance: 'default',
+    defaultValue: 'overview',
+    variant: 'line',
     orientation: 'horizontal',
   },
   argTypes: {
-    appearance: {
+    variant: {
       control: 'select',
-      options: ['default', 'pills', 'underline'],
+      options: ['line', 'pills', 'segmented'],
     },
     orientation: {
       control: 'select',
@@ -79,6 +93,40 @@ Correct usage:
   },
 } satisfies Meta<typeof Tabs>;
 
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { theme } = useTheme();
+
+  const styles = StyleSheet.create({
+    section: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 16,
+      width: '100%',
+      maxWidth: 760,
+      minWidth: 0,
+      padding: 20,
+      borderWidth: 1,
+      borderColor: theme.semantic.border.muted,
+      borderRadius: theme.tokens.radius.xl,
+      backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    subtitle: {
+      margin: 0,
+      color: theme.semantic.text.secondary,
+      fontSize: 13,
+      fontWeight: '600',
+    },
+  });
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.subtitle}>{title}</Text>
+      {children}
+    </View>
+  );
+}
+
 const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
   const styles = useThemeStyles(createStyles);
   const panelStyle = {
@@ -88,26 +136,26 @@ const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
   return (
     <Tabs {...args}>
       <Tabs.List>
-        <Tabs.Tab index={0}>Overview</Tabs.Tab>
-        <Tabs.Tab index={1}>Usage</Tabs.Tab>
-        <Tabs.Tab index={2}>API</Tabs.Tab>
+        <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+        <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+        <Tabs.Trigger value='api'>API</Tabs.Trigger>
       </Tabs.List>
 
-      <Tabs.Panel index={0} style={panelStyle}>
+      <Tabs.Content value='overview' style={panelStyle}>
         <Text style={styles.text}>
           Overview content for the native tabs component.
         </Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={1} style={panelStyle}>
+      <Tabs.Content value='usage' style={panelStyle}>
         <Text style={styles.text}>
           Usage examples and implementation notes.
         </Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={2} style={panelStyle}>
+      <Tabs.Content value='api' style={panelStyle}>
         <Text style={styles.text}>API details are shown in this panel.</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
     </Tabs>
   );
 };
@@ -118,26 +166,26 @@ const DisabledTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
   return (
     <Tabs {...args}>
       <Tabs.List>
-        <Tabs.Tab index={0}>Active</Tabs.Tab>
-        <Tabs.Tab index={1} disabled>
+        <Tabs.Trigger value='active'>Active</Tabs.Trigger>
+        <Tabs.Trigger value='disabled' disabled>
           Disabled
-        </Tabs.Tab>
-        <Tabs.Tab index={2}>Settings</Tabs.Tab>
+        </Tabs.Trigger>
+        <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
       </Tabs.List>
 
-      <Tabs.Panel index={0}>
+      <Tabs.Content value='active'>
         <Text style={styles.text}>Active panel.</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={1}>
+      <Tabs.Content value='disabled'>
         <Text style={styles.text}>
           This panel is not reachable while the tab is disabled.
         </Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={2}>
+      <Tabs.Content value='settings'>
         <Text style={styles.text}>Settings panel.</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
     </Tabs>
   );
 };
@@ -146,24 +194,24 @@ const IconOnlyTabsStory = () => {
   const styles = useThemeStyles(createStyles);
 
   return (
-    <Tabs appearance='pills'>
+    <Tabs defaultValue='home' variant='pills'>
       <Tabs.List>
-        <Tabs.Tab index={0} icon={<Home />} />
-        <Tabs.Tab index={1} icon={<User />} />
-        <Tabs.Tab index={2} icon={<Settings />} />
+        <Tabs.Trigger value='home' icon={<Home />} />
+        <Tabs.Trigger value='profile' icon={<User />} />
+        <Tabs.Trigger value='settings' icon={<Settings />} />
       </Tabs.List>
 
-      <Tabs.Panel index={0}>
+      <Tabs.Content value='home'>
         <Text style={styles.text}>Home content</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={1}>
+      <Tabs.Content value='profile'>
         <Text style={styles.text}>Profile content</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
 
-      <Tabs.Panel index={2}>
+      <Tabs.Content value='settings'>
         <Text style={styles.text}>Settings content</Text>
-      </Tabs.Panel>
+      </Tabs.Content>
     </Tabs>
   );
 };
@@ -173,44 +221,83 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    appearance: 'default',
+    variant: 'line',
   },
-  render: (args) => <DefaultTabsStory {...args} />,
+  render: (args) => (
+    <Section title='Default'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
 };
 
-export const Underline: Story = {
+export const Line: Story = {
   args: {
-    appearance: 'underline',
+    variant: 'line',
   },
-  render: (args) => <DefaultTabsStory {...args} />,
+  render: (args) => (
+    <Section title='Line'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
 };
 
 export const Vertical: Story = {
   args: {
     orientation: 'vertical',
   },
-  render: (args) => <DefaultTabsStory {...args} />,
+  render: (args) => (
+    <Section title='Vertical'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
 };
 
 export const Pills: Story = {
   args: {
-    appearance: 'pills',
+    variant: 'pills',
   },
-  render: (args) => <DefaultTabsStory {...args} />,
+  render: (args) => (
+    <Section title='Pills'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
 };
 
-export const VerticalUnderline: Story = {
+export const Segmented: Story = {
+  args: {
+    variant: 'segmented',
+  },
+  render: (args) => (
+    <Section title='Segmented'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
+};
+
+export const VerticalLine: Story = {
   args: {
     orientation: 'vertical',
-    appearance: 'underline',
+    variant: 'line',
   },
-  render: (args) => <DefaultTabsStory {...args} />,
+  render: (args) => (
+    <Section title='Vertical line'>
+      <DefaultTabsStory {...args} />
+    </Section>
+  ),
 };
 
 export const WithDisabledTab: Story = {
-  render: (args) => <DisabledTabsStory {...args} />,
+  render: (args) => (
+    <Section title='With disabled tab'>
+      <DisabledTabsStory {...args} />
+    </Section>
+  ),
 };
 
 export const IconOnly: Story = {
-  render: () => <IconOnlyTabsStory />,
+  render: () => (
+    <Section title='Icon only'>
+      <IconOnlyTabsStory />
+    </Section>
+  ),
 };

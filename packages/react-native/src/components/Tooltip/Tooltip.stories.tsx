@@ -61,30 +61,31 @@ const meta = {
 Contextual helper displayed on long press in React Native.
 
 **Features**
-- Long press interaction
-- Automatic show and hide
-- Custom content
+- Long press interaction for touch interfaces
+- Controlled automatic show and hide timing
+- Text or custom ReactNode content
+- Top, bottom, left, and right placement
 - Disabled state
 - Configurable maximum width
+- Native accessibility support
 
 ### Usage
 
-Use Tooltip to provide additional context or guidance without permanently occupying screen space.
-
-Correct usage:
+Use Tooltip for short contextual help attached to a specific control. Keep the
+content concise and avoid hiding required workflow information inside a long
+press-only surface.
 
 \`\`\`tsx
-<Tooltip content="Additional information">
+<Tooltip content='Additional information' placement='top'>
   <Button>Long press me</Button>
 </Tooltip>
 \`\`\`
 
 ### Accessibility
 
-- Long press activation
-- Accessible trigger
-- Disabled state support
-- Custom tooltip content
+- Trigger content keeps its accessible label
+- Disabled tooltips do not create inactive interactive surfaces
+- Custom tooltip content should remain short and readable
 
 ### Common use cases
 

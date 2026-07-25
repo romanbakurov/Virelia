@@ -1,24 +1,35 @@
 import { cn } from '@utils/cn';
 
-import { useTabs } from '../TabsContext';
+import { useTabsContext } from '../internal/TabsContext';
 
 import type { TabsListProps } from './types';
 
 import styles from './TabsList.module.scss';
 
-export const TabsList = ({ children, className, ...props }: TabsListProps) => {
-  const { orientation, appearance } = useTabs();
+export const TabsList = ({
+  children,
+  className,
+  scrollable: scrollableProp,
+  ...props
+}: TabsListProps) => {
+  const { orientation, variant } = useTabsContext();
+  const scrollable = scrollableProp ?? false;
 
   return (
     <div
       {...props}
       role='tablist'
       aria-orientation={orientation}
+      data-orientation={orientation}
+      data-variant={variant}
+      data-scrollable={scrollable ? '' : undefined}
       className={cn(
         styles.list,
         orientation === 'vertical' && styles.vertical,
-        appearance === 'underline' && styles.underline,
-        appearance === 'pills' && styles.pills,
+        variant === 'line' && styles.line,
+        variant === 'pills' && styles.pills,
+        variant === 'segmented' && styles.segmented,
+        scrollable && styles.scrollable,
         className
       )}
     >

@@ -22,10 +22,12 @@ export { RadioGroup } from './components/RadioGroup';
 export type { SelectOption, SelectProps } from './components/Select';
 export { Select } from './components/Select';
 export type {
-  TabProps,
+  TabsContentProps,
+  TabsIndicatorProps,
   TabsListProps,
-  TabsPanelProps,
   TabsProps,
+  TabsSlotProps,
+  TabsTriggerProps,
 } from './components/Tabs';
 export { Tabs } from './components/Tabs';
 export type { TooltipProps } from './components/Tooltip';

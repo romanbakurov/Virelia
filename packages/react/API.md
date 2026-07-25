@@ -63,7 +63,7 @@ import {
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
 | `Orientation`       | `'horizontal'`, `'vertical'`                                                |
 | `TextWrap`          | `'nowrap'`, `'wrap'`, `'truncate'`                                          |
-| `TabsAppearance`    | `'default'`, `'underline'`, `'pills'`                                       |
+| `TabsVariant`       | `'line'`, `'pills'`, `'segmented'`                                          |
 | `FloatingPlacement` | `'top'`, `'bottom'`, `'left'`, `'right'`                                    |
 | `ThemeName`         | `'light'`, `'dark'`, `'high-contrast'`, `'highContrast'`                    |
 
@@ -236,7 +236,7 @@ and addon props for built-in input affordances.
 | `onClear`          | `() => void`                            | No       | Called when the clear action is pressed.         |
 | `error`            | `string`                                | No       | Error message rendered for invalid state.        |
 | `clearIconTone`    | `InputAdornmentTone`                    | No       | Color tone for the clear icon.                   |
-| `onValueChange`    | `(value: string) => void`               | No       | —                                                |
+| `onValueChange`    | `(value: string) => void`               | No       | Called when the value changes.                   |
 | `startIcon`        | `ReactNode`                             | No       | —                                                |
 | `endIcon`          | `ReactNode`                             | No       | —                                                |
 | `startAddon`       | `ReactNode`                             | No       | —                                                |
@@ -565,7 +565,7 @@ shows the first 10 labels and a `+N` overflow count.
 | `renderOption`      | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
 | `color`             | `SelectColor`                                                            | No       | —                                                |
 | `invalid`           | `boolean`                                                                | No       | —                                                |
-| `onValueChange`     | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | —                                                |
+| `onValueChange`     | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | Called when the selected value changes.          |
 | `variant`           | `SelectVariant`                                                          | No       | —                                                |
 | `loading`           | `boolean`                                                                | No       | —                                                |
 | `clearable`         | `boolean`                                                                | No       | Shows a clear action when the input has a value. |
@@ -636,38 +636,38 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 
 <!-- api-docgen:start web.DropdownProps.DropdownProps -->
 
-| Prop                 | Type                      | Required | Description                                  |
-| -------------------- | ------------------------- | -------- | -------------------------------------------- |
-| `placement`          | `Placement`               | No       | Floating UI menu placement.                  |
-| `className`          | `string`                  | No       | Extra CSS class for the root element.        |
-| `matchTriggerWidth`  | `boolean`                 | No       | Makes the menu match the trigger width.      |
-| `disabled`           | `boolean`                 | No       | Disables the trigger.                        |
-| `size`               | `DropdownSize`            | No       | Dropdown size.                               |
-| `open`               | `boolean`                 | No       | Controlled open state.                       |
-| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.             |
-| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.          |
-| `children`           | `ReactNode`               | Yes      | Content rendered inside the component.       |
-| `color`              | `DropdownColor`           | No       | —                                            |
-| `offset`             | `number`                  | No       | —                                            |
-| `minWidth`           | `string \| number`        | No       | —                                            |
-| `maxWidth`           | `string \| number`        | No       | —                                            |
-| `portal`             | `boolean`                 | No       | —                                            |
-| `avoidCollisions`    | `boolean`                 | No       | —                                            |
-| `modal`              | `boolean`                 | No       | —                                            |
-| `closeOnSelect`      | `boolean`                 | No       | —                                            |
-| `loop`               | `boolean`                 | No       | —                                            |
-| `loading`            | `boolean`                 | No       | —                                            |
-| `loadingText`        | `ReactNode`               | No       | —                                            |
-| `searchable`         | `boolean`                 | No       | —                                            |
-| `command`            | `boolean`                 | No       | —                                            |
-| `searchValue`        | `string`                  | No       | —                                            |
-| `defaultSearchValue` | `string`                  | No       | —                                            |
-| `searchPlaceholder`  | `string`                  | No       | —                                            |
-| `onSearch`           | `(value: string) => void` | No       | —                                            |
-| `empty`              | `ReactNode`               | No       | —                                            |
-| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available. |
-| `triggerClassName`   | `string`                  | No       | Extra CSS class for the trigger element.     |
-| `dropdownClassName`  | `string`                  | No       | Extra CSS class for the dropdown element.    |
+| Prop                 | Type                      | Required | Description                                                     |
+| -------------------- | ------------------------- | -------- | --------------------------------------------------------------- |
+| `placement`          | `Placement`               | No       | Floating UI menu placement.                                     |
+| `className`          | `string`                  | No       | Extra CSS class for the root element.                           |
+| `matchTriggerWidth`  | `boolean`                 | No       | Makes the menu match the trigger width.                         |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                                           |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                                  |
+| `open`               | `boolean`                 | No       | Controlled open state.                                          |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                                |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.                             |
+| `children`           | `ReactNode`               | Yes      | Content rendered inside the component.                          |
+| `color`              | `DropdownColor`           | No       | —                                                               |
+| `offset`             | `number`                  | No       | —                                                               |
+| `minWidth`           | `string \| number`        | No       | —                                                               |
+| `maxWidth`           | `string \| number`        | No       | —                                                               |
+| `portal`             | `boolean`                 | No       | —                                                               |
+| `avoidCollisions`    | `boolean`                 | No       | —                                                               |
+| `modal`              | `boolean`                 | No       | —                                                               |
+| `closeOnSelect`      | `boolean`                 | No       | —                                                               |
+| `loop`               | `boolean`                 | No       | Loops keyboard navigation from last to first and first to last. |
+| `loading`            | `boolean`                 | No       | —                                                               |
+| `loadingText`        | `ReactNode`               | No       | —                                                               |
+| `searchable`         | `boolean`                 | No       | —                                                               |
+| `command`            | `boolean`                 | No       | —                                                               |
+| `searchValue`        | `string`                  | No       | —                                                               |
+| `defaultSearchValue` | `string`                  | No       | —                                                               |
+| `searchPlaceholder`  | `string`                  | No       | —                                                               |
+| `onSearch`           | `(value: string) => void` | No       | —                                                               |
+| `empty`              | `ReactNode`               | No       | —                                                               |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                    |
+| `triggerClassName`   | `string`                  | No       | Extra CSS class for the trigger element.                        |
+| `dropdownClassName`  | `string`                  | No       | Extra CSS class for the dropdown element.                       |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 
@@ -685,29 +685,52 @@ Compound tab navigation with keyboard support.
 ```tsx
 import { Tabs } from '@vellira-ui/react';
 
-<Tabs defaultActiveIndex={0} orientation='horizontal' appearance='underline'>
-  <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
+<Tabs defaultValue='overview' orientation='horizontal' variant='line'>
+  <Tabs.List aria-label='Settings sections'>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+    <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Panel index={0}>Overview content</Tabs.Panel>
-  <Tabs.Panel index={1}>Settings content</Tabs.Panel>
+
+  <Tabs.Content value='overview'>Overview content</Tabs.Content>
+  <Tabs.Content value='settings'>Settings content</Tabs.Content>
 </Tabs>;
 ```
+
+Tabs use stable string values. `Tabs.Trigger value` must match
+`Tabs.Content value`; the selected panel does not depend on render order. Use
+`Tabs.List scrollable` for horizontally scrollable tab rows. Root-level
+`scrollable`, `Tabs.Tab`, `Tabs.Panel`, `activeIndex`, and `onChange` are not
+part of the public API.
+
+Keyboard navigation supports Arrow keys, `Home`, and `End`. In automatic mode,
+focus selects the next tab; in manual mode, `Enter` or `Space` selects the
+focused tab. `PageUp` and `PageDown` are intentionally not handled by Tabs.
+
+Mounting defaults to only the active panel. `keepMounted`, `lazyMount`, and
+`Tabs.Content forceMount` control panel lifetime when local state or expensive
+content needs to be preserved.
 
 ### Tabs Props
 
 <!-- api-docgen:start web.TabsProps.TabsProps -->
 
-| Prop                 | Type                      | Required | Description                                        |
-| -------------------- | ------------------------- | -------- | -------------------------------------------------- |
-| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
-| `className`          | `string`                  | No       | Extra CSS class for the root element.              |
-| `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
-| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
-| `orientation`        | `Orientation`             | No       | Keyboard and layout orientation.                   |
-| `appearance`         | `TabsAppearance`          | No       | Visual style.                                      |
+| Prop             | Type                         | Required | Description                                                                               |
+| ---------------- | ---------------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `children`       | `ReactNode`                  | Yes      | `Tabs.List`, `Tabs.Trigger`, and `Tabs.Content` content.                                  |
+| `orientation`    | `Orientation`                | No       | Keyboard and layout orientation.                                                          |
+| `value`          | `string`                     | No       | Controlled selected value.                                                                |
+| `defaultValue`   | `string`                     | No       | Initial selected value for uncontrolled usage.                                            |
+| `onValueChange`  | `(value: TabsValue) => void` | No       | Called when the selected value changes.                                                   |
+| `activationMode` | `TabsActivationMode`         | No       | Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space. |
+| `loop`           | `boolean`                    | No       | Loops keyboard navigation from last to first and first to last.                           |
+| `keepMounted`    | `boolean`                    | No       | Keeps all content mounted and hides inactive panels.                                      |
+| `lazyMount`      | `boolean`                    | No       | Mounts content only after its value has been activated.                                   |
+| `variant`        | `TabsVariant`                | No       | Visual style: line, pills, or segmented.                                                  |
+| `color`          | `TabsColor`                  | No       | Visual tone: primary, neutral, success, warning, or danger.                               |
+| `size`           | `TabsSize`                   | No       | Tabs size.                                                                                |
+| `dir`            | `'ltr' \| 'rtl'`             | No       | Text direction used for horizontal keyboard navigation and indicator positioning.         |
+| `disabled`       | `boolean`                    | No       | Disables interaction.                                                                     |
 
 <!-- api-docgen:end web.TabsProps.TabsProps -->
 
@@ -715,39 +738,56 @@ import { Tabs } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.TabsListProps.TabsListProps -->
 
-| Prop       | Type        | Required | Description  |
-| ---------- | ----------- | -------- | ------------ |
-| `children` | `ReactNode` | Yes      | Tab buttons. |
+| Prop         | Type        | Required | Description                                 |
+| ------------ | ----------- | -------- | ------------------------------------------- |
+| `children`   | `ReactNode` | Yes      | Tab triggers.                               |
+| `scrollable` | `boolean`   | No       | Makes the tab list horizontally scrollable. |
 
 <!-- api-docgen:end web.TabsListProps.TabsListProps -->
 
-### Tabs.Tab Props
+### Tabs.Indicator Props
 
-<!-- api-docgen:start web.TabProps.TabsTabProps -->
+<!-- api-docgen:start web.TabsIndicatorProps.TabsIndicatorProps -->
 
-| Prop        | Type                                                    | Required | Description                                  |
-| ----------- | ------------------------------------------------------- | -------- | -------------------------------------------- |
-| `children`  | `ReactNode`                                             | Yes      | Tab label.                                   |
-| `icon`      | `ReactNode`                                             | No       | Icon rendered inside the component.          |
-| `className` | `string`                                                | No       | Extra CSS class.                             |
-| `onClick`   | `(e: MouseEvent<HTMLButtonElement> \| null) => void`    | No       | Click handler.                               |
-| `onKeyDown` | `(e: KeyboardEvent<HTMLButtonElement> \| null) => void` | No       | Keyboard handler.                            |
-| `index`     | `number`                                                | Yes      | Tab index used to connect the tab and panel. |
-| `disabled`  | `boolean`                                               | No       | Disables this tab.                           |
+| Prop        | Type     | Required | Description                      |
+| ----------- | -------- | -------- | -------------------------------- |
+| `className` | `string` | No       | Extra CSS class for the element. |
 
-<!-- api-docgen:end web.TabProps.TabsTabProps -->
+<!-- api-docgen:end web.TabsIndicatorProps.TabsIndicatorProps -->
 
-### Tabs.Panel Props
+### Tabs.Trigger Props
 
-<!-- api-docgen:start web.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:start web.TabsTriggerProps.TabsTriggerProps -->
 
-| Prop        | Type        | Required | Description                      |
-| ----------- | ----------- | -------- | -------------------------------- |
-| `children`  | `ReactNode` | Yes      | Panel content.                   |
-| `className` | `string`    | No       | Extra CSS class.                 |
-| `index`     | `number`    | Yes      | Panel index matching `Tabs.Tab`. |
+| Prop          | Type        | Required | Description                                                                  |
+| ------------- | ----------- | -------- | ---------------------------------------------------------------------------- |
+| `children`    | `ReactNode` | No       | Tab label content.                                                           |
+| `icon`        | `ReactNode` | No       | Icon rendered before the label. Explicit Tabs.Icon children take precedence. |
+| `disabled`    | `boolean`   | No       | Disables this trigger.                                                       |
+| `value`       | `string`    | Yes      | Stable trigger value matched with Tabs.Content.                              |
+| `badge`       | `ReactNode` | No       | Badge rendered after the label.                                              |
+| `description` | `ReactNode` | No       | Secondary text rendered below the trigger label.                             |
 
-<!-- api-docgen:end web.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:end web.TabsTriggerProps.TabsTriggerProps -->
+
+### Tabs.Icon and Tabs.Badge Props
+
+`Tabs.Icon` and `Tabs.Badge` accept `children` and optional `className`. Use
+these compound slots when trigger content needs custom ordering or richer
+markup. If `Tabs.Trigger` receives both the `icon` prop and an explicit
+`Tabs.Icon` child, the explicit compound slot takes precedence in development.
+
+### Tabs.Content Props
+
+<!-- api-docgen:start web.TabsContentProps.TabsContentProps -->
+
+| Prop         | Type        | Required | Description                                                        |
+| ------------ | ----------- | -------- | ------------------------------------------------------------------ |
+| `children`   | `ReactNode` | Yes      | Tab content.                                                       |
+| `value`      | `string`    | Yes      | Stable content value matched with Tabs.Trigger.                    |
+| `forceMount` | `boolean`   | No       | Keeps this content mounted regardless of the root mounting policy. |
+
+<!-- api-docgen:end web.TabsContentProps.TabsContentProps -->
 
 ## Tooltip
 

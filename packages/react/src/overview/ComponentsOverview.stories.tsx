@@ -201,7 +201,7 @@ function WorkspaceFormFieldDemo() {
           required
           bindControl
         >
-          <input placeholder='vellira-design' />
+          <Input placeholder='vellira-design' />
         </FormField>
 
         <FormField
@@ -210,20 +210,20 @@ function WorkspaceFormFieldDemo() {
           description='Optional text is handled by FormField.'
           bindControl
         >
-          <input placeholder='Alex Taylor' />
+          <Input placeholder='Alex Taylor' />
         </FormField>
       </div>
 
       <div style={groupStyle}>
         <h3 style={subtitleStyle}>Sizes</h3>
         <FormField label='Small' size='sm' bindControl>
-          <input placeholder='Small field' />
+          <Input placeholder='Small field' />
         </FormField>
         <FormField label='Medium' size='md' bindControl>
-          <input placeholder='Medium field' />
+          <Input placeholder='Medium field' />
         </FormField>
         <FormField label='Large' size='lg' bindControl>
-          <input placeholder='Large field' />
+          <Input placeholder='Large field' />
         </FormField>
       </div>
 
@@ -235,7 +235,7 @@ function WorkspaceFormFieldDemo() {
           orientation='horizontal'
           bindControl
         >
-          <input placeholder='horizontal-field' />
+          <Input placeholder='horizontal-field' />
         </FormField>
 
         <FormField
@@ -244,7 +244,7 @@ function WorkspaceFormFieldDemo() {
           labelPosition='start'
           bindControl
         >
-          <input placeholder='start-label' />
+          <Input placeholder='start-label' />
         </FormField>
       </div>
 
@@ -256,7 +256,7 @@ function WorkspaceFormFieldDemo() {
           error='Only lowercase letters, numbers, and hyphens are allowed.'
           bindControl
         >
-          <input placeholder='Launch Plan' />
+          <Input placeholder='Launch Plan' />
         </FormField>
 
         <FormField
@@ -265,7 +265,7 @@ function WorkspaceFormFieldDemo() {
           disabled
           bindControl
         >
-          <input placeholder='Vellira' />
+          <Input placeholder='Vellira' />
         </FormField>
       </div>
 
@@ -284,7 +284,7 @@ function WorkspaceFormFieldDemo() {
           }
           bindControl
         >
-          <input placeholder='billing@company.com' />
+          <Input placeholder='billing@company.com' />
         </FormField>
       </div>
     </div>
@@ -1258,51 +1258,115 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Tabs'>
-          <Tabs defaultActiveIndex={0} appearance='underline'>
-            <Tabs.List>
-              <Tabs.Tab index={0}>Overview</Tabs.Tab>
-              <Tabs.Tab index={1}>Usage</Tabs.Tab>
-              <Tabs.Tab index={2}>Settings</Tabs.Tab>
-            </Tabs.List>
-            <Tabs.Panel index={0}>
-              Overview content for the web component.
-            </Tabs.Panel>
-            <Tabs.Panel index={1}>Usage notes and examples.</Tabs.Panel>
-            <Tabs.Panel index={2}>Settings panel content.</Tabs.Panel>
-          </Tabs>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Line with indicator</h3>
+              <Tabs defaultValue='overview' variant='line'>
+                <Tabs.List aria-label='Project sections'>
+                  <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+                  <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+                  <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+                  <Tabs.Indicator />
+                </Tabs.List>
+                <Tabs.Content value='overview'>
+                  Project summary, activity, and recent changes.
+                </Tabs.Content>
+                <Tabs.Content value='usage'>
+                  Usage metrics, limits, and operational notes.
+                </Tabs.Content>
+                <Tabs.Content value='settings'>
+                  Settings panel content.
+                </Tabs.Content>
+              </Tabs>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Rich scrollable triggers</h3>
+              <Tabs defaultValue='general' variant='segmented'>
+                <Tabs.List aria-label='Account settings' scrollable>
+                  <Tabs.Trigger value='general' icon={<Settings />}>
+                    General
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value='members' badge='4'>
+                    Members
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value='billing' disabled>
+                    Billing
+                  </Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value='general'>
+                  General account preferences.
+                </Tabs.Content>
+                <Tabs.Content value='members'>
+                  Member invitations and access levels.
+                </Tabs.Content>
+                <Tabs.Content value='billing'>
+                  Billing settings are disabled in this demo.
+                </Tabs.Content>
+              </Tabs>
+            </div>
+          </div>
         </Section>
 
         <Section title='Tooltip'>
-          <div style={rowStyle}>
-            <Tooltip>
-              <Tooltip.Trigger asChild>
-                <Button color='neutral' appearance='solid'>
-                  Hover me
-                </Button>
-              </Tooltip.Trigger>
-              <Portal>
-                <Tooltip.Content>
-                  Tooltip text is shown on hover or focus.
-                  <Tooltip.Arrow />
-                </Tooltip.Content>
-              </Portal>
-            </Tooltip>
-            <Tooltip>
-              <Tooltip.Trigger asChild>
-                <Button
-                  color='neutral'
-                  appearance='solid'
-                  aria-label='Open filters'
-                  iconStart={<Filter />}
-                />
-              </Tooltip.Trigger>
-              <Portal>
-                <Tooltip.Content>
-                  Icon buttons also expose tooltip content.
-                  <Tooltip.Arrow />
-                </Tooltip.Content>
-              </Portal>
-            </Tooltip>
+          <div style={stackStyle}>
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Triggers</h3>
+              <div style={rowStyle}>
+                <Tooltip placement='top' delay={250}>
+                  <Tooltip.Trigger asChild>
+                    <Button color='neutral' appearance='solid'>
+                      Hover me
+                    </Button>
+                  </Tooltip.Trigger>
+                  <Portal>
+                    <Tooltip.Content>
+                      Tooltip text is shown on hover or focus.
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Portal>
+                </Tooltip>
+                <Tooltip placement='bottom'>
+                  <Tooltip.Trigger asChild>
+                    <Button
+                      color='neutral'
+                      appearance='solid'
+                      aria-label='Open filters'
+                      iconStart={<Filter />}
+                    />
+                  </Tooltip.Trigger>
+                  <Portal>
+                    <Tooltip.Content>
+                      Icon buttons keep their own accessible label.
+                      <Tooltip.Arrow />
+                    </Tooltip.Content>
+                  </Portal>
+                </Tooltip>
+              </div>
+            </div>
+
+            <div style={groupStyle}>
+              <h3 style={subtitleStyle}>Placement</h3>
+              <div style={rowStyle}>
+                {(['top', 'right', 'bottom', 'left'] as const).map(
+                  (placement) => (
+                    <Tooltip key={placement} placement={placement}>
+                      <Tooltip.Trigger asChild>
+                        <Button appearance='outline' color='neutral'>
+                          {placement}
+                        </Button>
+                      </Tooltip.Trigger>
+                      <Portal>
+                        <Tooltip.Content>
+                          {placement} placement
+                          <Tooltip.Arrow />
+                        </Tooltip.Content>
+                      </Portal>
+                    </Tooltip>
+                  )
+                )}
+              </div>
+            </div>
           </div>
         </Section>
 

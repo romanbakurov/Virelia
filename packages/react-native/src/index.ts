@@ -18,10 +18,10 @@ export { RadioGroup } from './components/RadioGroup';
 export type { SelectOption, SelectProps } from './components/Select';
 export { Select } from './components/Select';
 export type {
-  TabProps,
+  TabsContentProps,
   TabsListProps,
-  TabsPanelProps,
   TabsProps,
+  TabsTriggerProps,
 } from './components/Tabs';
 export { Tabs } from './components/Tabs';
 export type { TooltipProps } from './components/Tooltip';

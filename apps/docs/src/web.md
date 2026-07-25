@@ -26,13 +26,13 @@ export function AccountPanel() {
   const [displayName, setDisplayName] = useState('');
 
   return (
-    <Tabs defaultActiveIndex={0}>
+    <Tabs defaultValue='profile'>
       <Tabs.List>
-        <Tabs.Tab index={0}>Profile</Tabs.Tab>
-        <Tabs.Tab index={1}>Security</Tabs.Tab>
+        <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+        <Tabs.Trigger value='security'>Security</Tabs.Trigger>
       </Tabs.List>
 
-      <Tabs.Panel index={0}>
+      <Tabs.Content value='profile'>
         <Input
           label='Display name'
           value={displayName}
@@ -47,8 +47,8 @@ export function AccountPanel() {
         <Button color='primary' appearance='solid'>
           Save changes
         </Button>
-      </Tabs.Panel>
-      <Tabs.Panel index={1}>Security settings</Tabs.Panel>
+      </Tabs.Content>
+      <Tabs.Content value='security'>Security settings</Tabs.Content>
     </Tabs>
   );
 }
@@ -70,7 +70,7 @@ generated reference lives in
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled    |
 | `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled    |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | controlled or uncontrolled    |
+| `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | controlled or uncontrolled    |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
 | `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, `closeOnEscape`, compound sections                          | controlled or uncontrolled    |
 
@@ -235,13 +235,13 @@ export function UncontrolledPreferences() {
         <Radio value='light' label='Light' />
         <Radio value='dark' label='Dark' />
       </RadioGroup>
-      <Tabs defaultActiveIndex={0}>
+      <Tabs defaultValue='profile'>
         <Tabs.List>
-          <Tabs.Tab index={0}>Profile</Tabs.Tab>
-          <Tabs.Tab index={1}>Security</Tabs.Tab>
+          <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+          <Tabs.Trigger value='security'>Security</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Profile settings</Tabs.Panel>
-        <Tabs.Panel index={1}>Security settings</Tabs.Panel>
+        <Tabs.Content value='profile'>Profile settings</Tabs.Content>
+        <Tabs.Content value='security'>Security settings</Tabs.Content>
       </Tabs>
     </>
   );

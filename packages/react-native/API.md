@@ -56,7 +56,7 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 | `InputType`         | `'text'`, `'email'`, `'password'`, `'number'`, `'search'`, `'tel'`, `'url'` |
 | `Orientation`       | `'horizontal'`, `'vertical'`                                                |
 | `TextWrap`          | `'nowrap'`, `'wrap'`, `'truncate'`                                          |
-| `TabsAppearance`    | `'default'`, `'underline'`, `'pills'`                                       |
+| `TabsVariant`       | `'line'`, `'pills'`, `'segmented'`                                          |
 | `FloatingPlacement` | `'top'`, `'bottom'`, `'left'`, `'right'`                                    |
 
 `TooltipDelay` uses this shape:
@@ -214,7 +214,7 @@ description/error announcement behavior.
 | `error`           | `string`                  | No       | Error message rendered for invalid state.        |
 | `description`     | `string`                  | No       | Additional descriptive text.                     |
 | `clearIconTone`   | `InputAdornmentTone`      | No       | Color tone for the clear icon.                   |
-| `onValueChange`   | `(value: string) => void` | No       | —                                                |
+| `onValueChange`   | `(value: string) => void` | No       | Called when the value changes.                   |
 | `startIcon`       | `InputIconElement`        | No       | —                                                |
 | `endIcon`         | `InputIconElement`        | No       | —                                                |
 | `startIconTone`   | `InputAdornmentTone`      | No       | Color tone for the start icon.                   |
@@ -600,29 +600,48 @@ Compound tab navigation for native screens.
 ```tsx
 import { Tabs } from '@vellira-ui/react-native';
 
-<Tabs defaultActiveIndex={0} orientation='horizontal' appearance='underline'>
-  <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
+<Tabs defaultValue='overview' orientation='horizontal' variant='line'>
+  <Tabs.List scrollable>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
   </Tabs.List>
-  <Tabs.Panel index={0}>Overview content</Tabs.Panel>
-  <Tabs.Panel index={1}>Settings content</Tabs.Panel>
+
+  <Tabs.Content value='overview'>Overview content</Tabs.Content>
+  <Tabs.Content value='settings'>Settings content</Tabs.Content>
 </Tabs>;
 ```
+
+Tabs use stable string values. `Tabs.Trigger value` must match
+`Tabs.Content value`; the selected panel does not depend on render order. Use
+`Tabs.List scrollable` for horizontally scrollable native tab rows. Root-level
+`scrollable`, `Tabs.Tab`, `Tabs.Panel`, `activeIndex`, and `onChange` are not
+part of the public API.
+
+Mounting defaults to only the active panel. `keepMounted`, `lazyMount`, and
+`Tabs.Content forceMount` control panel lifetime when local state or expensive
+content needs to be preserved.
 
 ### Tabs Props
 
 <!-- api-docgen:start native.TabsProps.TabsProps -->
 
-| Prop                 | Type                      | Required | Description                                        |
-| -------------------- | ------------------------- | -------- | -------------------------------------------------- |
-| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
-| `appearance`         | `TabsAppearance`          | No       | Visual style.                                      |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
-| `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
-| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `orientation`        | `Orientation`             | No       | Layout orientation.                                |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
+| Prop             | Type                         | Required | Description                                                                               |
+| ---------------- | ---------------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `children`       | `ReactNode`                  | Yes      | `Tabs.List`, `Tabs.Trigger`, and `Tabs.Content` content.                                  |
+| `style`          | `StyleProp<ViewStyle>`       | No       | Extra root style.                                                                         |
+| `orientation`    | `Orientation`                | No       | Layout orientation.                                                                       |
+| `value`          | `string`                     | No       | Controlled selected value.                                                                |
+| `defaultValue`   | `string`                     | No       | Initial selected value for uncontrolled usage.                                            |
+| `onValueChange`  | `(value: TabsValue) => void` | No       | Called when the selected value changes.                                                   |
+| `activationMode` | `TabsActivationMode`         | No       | Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space. |
+| `loop`           | `boolean`                    | No       | Loops keyboard navigation from last to first and first to last.                           |
+| `keepMounted`    | `boolean`                    | No       | Keeps all content mounted and hides inactive panels.                                      |
+| `lazyMount`      | `boolean`                    | No       | Mounts content only after its value has been activated.                                   |
+| `variant`        | `TabsVariant`                | No       | Visual style: line, pills, or segmented.                                                  |
+| `color`          | `TabsColor`                  | No       | Visual tone: primary, neutral, success, warning, or danger.                               |
+| `size`           | `TabsSize`                   | No       | Tabs size.                                                                                |
+| `dir`            | `'ltr' \| 'rtl'`             | No       | Text direction reserved for API parity.                                                   |
+| `disabled`       | `boolean`                    | No       | Disables interaction.                                                                     |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
@@ -630,39 +649,61 @@ import { Tabs } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.TabsListProps.TabsListProps -->
 
-| Prop       | Type                   | Required | Description       |
-| ---------- | ---------------------- | -------- | ----------------- |
-| `children` | `ReactNode`            | Yes      | Tab buttons.      |
-| `style`    | `StyleProp<ViewStyle>` | No       | Extra list style. |
+| Prop         | Type                   | Required | Description                                 |
+| ------------ | ---------------------- | -------- | ------------------------------------------- |
+| `children`   | `ReactNode`            | Yes      | Tab triggers.                               |
+| `style`      | `StyleProp<ViewStyle>` | No       | Extra list style.                           |
+| `scrollable` | `boolean`              | No       | Makes the tab list horizontally scrollable. |
 
 <!-- api-docgen:end native.TabsListProps.TabsListProps -->
 
-### Tabs.Tab Props
+### Tabs.Indicator Props
 
-<!-- api-docgen:start native.TabProps.TabsTabProps -->
+<!-- api-docgen:start native.TabsIndicatorProps.TabsIndicatorProps -->
 
-| Prop        | Type                   | Required | Description                                  |
-| ----------- | ---------------------- | -------- | -------------------------------------------- |
-| `children`  | `ReactNode`            | No       | Tab label.                                   |
-| `icon`      | `ReactNode`            | No       | Icon rendered inside the tab.                |
-| `style`     | `StyleProp<ViewStyle>` | No       | Extra tab style.                             |
-| `textStyle` | `StyleProp<TextStyle>` | No       | Extra label text style.                      |
-| `index`     | `number`               | Yes      | Tab index used to connect the tab and panel. |
-| `disabled`  | `boolean`              | No       | Disables this tab.                           |
+| Prop       | Type                   | Required | Description            |
+| ---------- | ---------------------- | -------- | ---------------------- |
+| `children` | `ReactNode`            | No       | Visual indicator node. |
+| `style`    | `StyleProp<ViewStyle>` | No       | Extra indicator style. |
 
-<!-- api-docgen:end native.TabProps.TabsTabProps -->
+<!-- api-docgen:end native.TabsIndicatorProps.TabsIndicatorProps -->
 
-### Tabs.Panel Props
+### Tabs.Trigger Props
 
-<!-- api-docgen:start native.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:start native.TabsTriggerProps.TabsTriggerProps -->
 
-| Prop       | Type                   | Required | Description                      |
-| ---------- | ---------------------- | -------- | -------------------------------- |
-| `children` | `ReactNode`            | No       | Panel content.                   |
-| `style`    | `StyleProp<ViewStyle>` | No       | Extra panel style.               |
-| `index`    | `number`               | Yes      | Panel index matching `Tabs.Tab`. |
+| Prop          | Type                   | Required | Description                                                                  |
+| ------------- | ---------------------- | -------- | ---------------------------------------------------------------------------- |
+| `children`    | `ReactNode`            | No       | Tab label.                                                                   |
+| `icon`        | `ReactNode`            | No       | Icon rendered before the label. Explicit Tabs.Icon children take precedence. |
+| `style`       | `StyleProp<ViewStyle>` | No       | Extra tab style.                                                             |
+| `textStyle`   | `StyleProp<TextStyle>` | No       | Extra label text style.                                                      |
+| `badge`       | `ReactNode`            | No       | Badge rendered after the label.                                              |
+| `description` | `ReactNode`            | No       | Secondary text rendered below the trigger label.                             |
+| `value`       | `string`               | Yes      | Stable trigger value matched with Tabs.Content.                              |
+| `disabled`    | `boolean`              | No       | Disables interaction.                                                        |
 
-<!-- api-docgen:end native.TabsPanelProps.TabsPanelProps -->
+<!-- api-docgen:end native.TabsTriggerProps.TabsTriggerProps -->
+
+### Tabs.Icon and Tabs.Badge Props
+
+`Tabs.Icon` and `Tabs.Badge` accept `children` and optional `style`. Use these
+compound slots when trigger content needs custom ordering or richer markup. If
+`Tabs.Trigger` receives both the `icon` prop and an explicit `Tabs.Icon` child,
+the explicit compound slot takes precedence.
+
+### Tabs.Content Props
+
+<!-- api-docgen:start native.TabsContentProps.TabsContentProps -->
+
+| Prop         | Type                   | Required | Description                                                        |
+| ------------ | ---------------------- | -------- | ------------------------------------------------------------------ |
+| `children`   | `ReactNode`            | No       | Tab content.                                                       |
+| `style`      | `StyleProp<ViewStyle>` | No       | Extra panel style.                                                 |
+| `value`      | `string`               | Yes      | Stable content value matched with Tabs.Trigger.                    |
+| `forceMount` | `boolean`              | No       | Keeps this content mounted regardless of the root mounting policy. |
+
+<!-- api-docgen:end native.TabsContentProps.TabsContentProps -->
 
 ## Tooltip
 

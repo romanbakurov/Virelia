@@ -9,20 +9,23 @@ export const createStyles = (theme: NativeTheme) =>
       alignSelf: 'stretch',
       width: '100%',
       gap: theme.tokens.spacing[5],
-      marginBottom: theme.tokens.spacing[4],
+      marginBottom: theme.tokens.spacing[6],
     },
 
-    listPills: {
-      backgroundColor: theme.components.tabs.pills.default.bg,
-      borderRadius: theme.tokens.radius.lg,
+    listSegmented: {
+      padding: 2,
+      backgroundColor: theme.components.tabs.list.segmentedBg,
+      borderColor: theme.components.tabs.list.border,
+      borderRadius: theme.tokens.radius.xl,
+      borderWidth: 1,
     },
 
     listVertical: {
       flexDirection: 'column',
       alignSelf: 'flex-start',
-      width: 140,
-      minWidth: 140,
-      maxWidth: 140,
+      width: 156,
+      minWidth: 156,
+      maxWidth: 156,
       flexGrow: 0,
       flexShrink: 0,
       gap: theme.tokens.spacing[1],

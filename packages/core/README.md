@@ -8,7 +8,6 @@ This package contains hooks that can be reused by web and native packages when t
 
 - `useControllableState`
 - `useKeyboardNavigation`
-- `useTabsKeyboard`
 - `useOverlayStack`
 - `useOverlayDismiss`
 - `useScrollLock`

@@ -43,6 +43,9 @@ describe.each([
     );
     expect(theme.components.select.trigger.default.bg).toBeDefined();
     expect(theme.components.select.clearButton.hoverBg).toBeDefined();
+    expect(theme.components.tabs.primary.trigger.default.bg).toBeDefined();
+    expect(theme.components.tabs.success.indicator.bg).toBeDefined();
+    expect(theme.components.tabs.disabled.fg).toBeDefined();
     expect(theme.components.tooltip.content.bg).toBeDefined();
   });
 });
@@ -52,5 +55,59 @@ describe('dark theme select', () => {
     expect(
       darkTheme.components.select.primary.outline.option.hover.bg
     ).not.toBe(darkTheme.components.select.dropdown.bg);
+  });
+});
+
+describe('high contrast theme', () => {
+  it('keeps primary component accents on the brand primary scale', () => {
+    expect(highContrastTheme.components.button.primary.solid.default.bg).toBe(
+      highContrastTheme.colors.primary[600]
+    );
+    expect(highContrastTheme.components.checkbox.primary.default.bg).toBe(
+      highContrastTheme.colors.primary[600]
+    );
+    expect(highContrastTheme.components.radio.primary.default.bg).toBe(
+      highContrastTheme.colors.primary[600]
+    );
+    expect(
+      highContrastTheme.components.input.primary.outline.default.border
+    ).toBe(highContrastTheme.colors.primary[300]);
+    expect(
+      highContrastTheme.components.select.primary.outline.default.border
+    ).toBe(highContrastTheme.colors.primary[300]);
+    expect(highContrastTheme.components.dropdown.primary.ring).toBe(
+      highContrastTheme.colors.primary[300]
+    );
+    expect(highContrastTheme.components.tabs.primary.indicator.bg).toBe(
+      highContrastTheme.colors.primary[300]
+    );
+  });
+
+  it('keeps primary and warning component accents distinct', () => {
+    expect(
+      highContrastTheme.components.button.primary.solid.default.bg
+    ).not.toBe(highContrastTheme.components.button.warning.solid.default.bg);
+    expect(highContrastTheme.components.checkbox.primary.default.bg).not.toBe(
+      highContrastTheme.components.checkbox.warning.default.bg
+    );
+    expect(highContrastTheme.components.radio.primary.default.bg).not.toBe(
+      highContrastTheme.components.radio.warning.default.bg
+    );
+    expect(
+      highContrastTheme.components.input.primary.outline.default.border
+    ).not.toBe(
+      highContrastTheme.components.input.warning.outline.default.border
+    );
+    expect(
+      highContrastTheme.components.select.primary.outline.default.border
+    ).not.toBe(
+      highContrastTheme.components.select.warning.outline.default.border
+    );
+    expect(highContrastTheme.components.dropdown.primary.ring).not.toBe(
+      highContrastTheme.components.dropdown.warning.ring
+    );
+    expect(highContrastTheme.components.tabs.primary.indicator.bg).not.toBe(
+      highContrastTheme.components.tabs.warning.indicator.bg
+    );
   });
 });

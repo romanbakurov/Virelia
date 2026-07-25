@@ -1043,60 +1043,164 @@ function NativeComponentsOverview() {
         </Section>
 
         <Section title='Tabs'>
-          <Tabs defaultActiveIndex={0} appearance='underline'>
-            <Tabs.List>
-              <Tabs.Tab index={0}>Overview</Tabs.Tab>
-              <Tabs.Tab index={1}>Usage</Tabs.Tab>
-              <Tabs.Tab index={2}>Settings</Tabs.Tab>
-            </Tabs.List>
-            <Tabs.Panel index={0}>
+          <View style={styles.stack}>
+            <View style={styles.group}>
               <Text
                 style={[
-                  styles.panelText,
-                  { color: theme.semantic.text.primary },
+                  styles.subtitle,
+                  { color: theme.semantic.text.secondary },
                 ]}
               >
-                Overview content for the native component.
+                Line tabs
               </Text>
-            </Tabs.Panel>
-            <Tabs.Panel index={1}>
+              <Tabs defaultValue='overview' variant='line'>
+                <Tabs.List>
+                  <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+                  <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+                  <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value='overview'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    Project summary, activity, and recent changes.
+                  </Text>
+                </Tabs.Content>
+                <Tabs.Content value='usage'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    Usage metrics, limits, and operational notes.
+                  </Text>
+                </Tabs.Content>
+                <Tabs.Content value='settings'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    Settings panel content.
+                  </Text>
+                </Tabs.Content>
+              </Tabs>
+            </View>
+
+            <View style={styles.group}>
               <Text
                 style={[
-                  styles.panelText,
-                  { color: theme.semantic.text.primary },
+                  styles.subtitle,
+                  { color: theme.semantic.text.secondary },
                 ]}
               >
-                Usage notes and examples.
+                Rich scrollable triggers
               </Text>
-            </Tabs.Panel>
-            <Tabs.Panel index={2}>
-              <Text
-                style={[
-                  styles.panelText,
-                  { color: theme.semantic.text.primary },
-                ]}
-              >
-                Settings panel content.
-              </Text>
-            </Tabs.Panel>
-          </Tabs>
+              <Tabs defaultValue='general' variant='segmented'>
+                <Tabs.List scrollable>
+                  <Tabs.Trigger value='general' icon={<Settings />}>
+                    General
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value='members' badge='4'>
+                    Members
+                  </Tabs.Trigger>
+                  <Tabs.Trigger value='billing' disabled>
+                    Billing
+                  </Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value='general'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    General account preferences.
+                  </Text>
+                </Tabs.Content>
+                <Tabs.Content value='members'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    Member invitations and access levels.
+                  </Text>
+                </Tabs.Content>
+                <Tabs.Content value='billing'>
+                  <Text
+                    style={[
+                      styles.panelText,
+                      { color: theme.semantic.text.primary },
+                    ]}
+                  >
+                    Billing settings are disabled in this demo.
+                  </Text>
+                </Tabs.Content>
+              </Tabs>
+            </View>
+          </View>
         </Section>
 
         <Section title='Tooltip'>
-          <View style={styles.row}>
-            <Tooltip content='Long press to show tooltip content.'>
-              <Button color='neutral' appearance='solid'>
-                Long press
-              </Button>
-            </Tooltip>
-            <Tooltip content='Icon buttons also expose tooltip content.'>
-              <Button
-                color='neutral'
-                appearance='solid'
-                accessibilityLabel='Open filters'
-                iconStart={<Filter />}
-              />
-            </Tooltip>
+          <View style={styles.stack}>
+            <View style={styles.group}>
+              <Text
+                style={[
+                  styles.subtitle,
+                  { color: theme.semantic.text.secondary },
+                ]}
+              >
+                Triggers
+              </Text>
+              <View style={styles.row}>
+                <Tooltip content='Long press to show tooltip content.'>
+                  <Button color='neutral' appearance='solid'>
+                    Long press
+                  </Button>
+                </Tooltip>
+                <Tooltip content='Icon buttons keep their accessible label.'>
+                  <Button
+                    color='neutral'
+                    appearance='solid'
+                    accessibilityLabel='Open filters'
+                    iconStart={<Filter />}
+                  />
+                </Tooltip>
+              </View>
+            </View>
+
+            <View style={styles.group}>
+              <Text
+                style={[
+                  styles.subtitle,
+                  { color: theme.semantic.text.secondary },
+                ]}
+              >
+                Placement
+              </Text>
+              <View style={styles.row}>
+                {(['top', 'right', 'bottom', 'left'] as const).map(
+                  (placement) => (
+                    <Tooltip
+                      key={placement}
+                      placement={placement}
+                      content={`${placement} placement`}
+                    >
+                      <Button appearance='outline' color='neutral'>
+                        {placement}
+                      </Button>
+                    </Tooltip>
+                  )
+                )}
+              </View>
+            </View>
           </View>
         </Section>
 
@@ -1223,7 +1327,7 @@ function NativeComponentsOverview() {
             description='Used in URLs and notifications.'
             required
           >
-            <Input label='Workspace' placeholder='vellira-design' />
+            <Input placeholder='vellira-design' />
           </FormField>
         </Section>
       </View>

@@ -15,25 +15,47 @@ Use Tabs for sections that are siblings: Overview, Usage, Billing, Security.
 Do not use Tabs for a stepper, a wizard, or unrelated navigation destinations.
 
 ```tsx
-<Tabs defaultActiveIndex={0} appearance='underline'>
-  <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Usage</Tabs.Tab>
-    <Tabs.Tab index={2}>Billing</Tabs.Tab>
+<Tabs defaultValue='overview' variant='line'>
+  <Tabs.List aria-label='Account sections'>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Panel index={0}>Overview content</Tabs.Panel>
-  <Tabs.Panel index={1}>Usage content</Tabs.Panel>
-  <Tabs.Panel index={2}>Billing content</Tabs.Panel>
+
+  <Tabs.Content value='overview'>Overview content</Tabs.Content>
+  <Tabs.Content value='usage'>Usage content</Tabs.Content>
+  <Tabs.Content value='billing'>Billing content</Tabs.Content>
 </Tabs>
 ```
 
+Tabs are value-based. Use stable string values instead of relying on trigger
+order, so triggers can be reordered, inserted, removed, or conditionally
+rendered without breaking the content relationship.
+
+## Parts
+
+| Part             | Purpose                                      |
+| ---------------- | -------------------------------------------- |
+| `Tabs`           | Root state, orientation, variant, and color. |
+| `Tabs.List`      | `tablist` layout and optional scrolling.     |
+| `Tabs.Trigger`   | Selects one value.                           |
+| `Tabs.Content`   | Panel for a matching value.                  |
+| `Tabs.Indicator` | Visual indicator.                            |
+| `Tabs.Icon`      | Compound trigger icon slot.                  |
+| `Tabs.Badge`     | Compound trigger badge slot.                 |
+
 ## Appearance
 
-| Appearance  | Use For                                             |
+| Variant     | Use For                                             |
 | ----------- | --------------------------------------------------- |
-| `default`   | General app surfaces.                               |
-| `underline` | Dense pages, headers, settings, and dashboards.     |
+| `line`      | Dense pages, headers, settings, and dashboards.     |
 | `pills`     | Compact filters or highly visible section switches. |
+| `segmented` | Related modes inside compact app surfaces.          |
+
+Use `Tabs.Indicator` with `line` and `segmented` when you want the moving
+indicator. `pills` can use the same indicator, but the active trigger styling is
+usually enough for compact filters.
 
 ## Controlled State
 
@@ -41,10 +63,59 @@ Control active tab when it syncs with the URL, analytics, persistence, or
 another panel.
 
 ```tsx
-<Tabs activeIndex={activeTab} onChange={setActiveTab}>
+<Tabs value={activeTab} onValueChange={setActiveTab}>
   ...
 </Tabs>
 ```
+
+If no `defaultValue` is provided in uncontrolled mode, Tabs selects the first
+enabled trigger. A controlled `value` that does not match any trigger does not
+self-correct; development builds warn and render no active panel.
+
+## Mounting
+
+| Props                                 | Behavior                                                   |
+| ------------------------------------- | ---------------------------------------------------------- |
+| neither `keepMounted` nor `lazyMount` | Only the active content is mounted.                        |
+| `keepMounted`                         | All content is mounted and inactive panels are hidden.     |
+| `lazyMount`                           | Content mounts only after its value has been activated.    |
+| `keepMounted lazyMount`               | Content mounts on first activation and then stays mounted. |
+
+Use `forceMount` on a single `Tabs.Content` when one panel should stay mounted
+regardless of the root policy.
+
+```tsx
+<Tabs.Content value='editor' forceMount>
+  <HeavyEditor />
+</Tabs.Content>
+```
+
+## Scrollable Lists
+
+Scrolling belongs to `Tabs.List`, not the root.
+
+```tsx
+<Tabs defaultValue='activity'>
+  <Tabs.List aria-label='Workspace sections' scrollable>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='activity'>Activity</Tabs.Trigger>
+    <Tabs.Trigger value='members'>Members</Tabs.Trigger>
+    <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+</Tabs>
+```
+
+## Keyboard
+
+Horizontal LTR tabs use `ArrowRight` and `ArrowLeft` for next and previous.
+Horizontal RTL reverses those directions. Vertical tabs use `ArrowDown` and
+`ArrowUp`. `Home` moves to the first enabled trigger, and `End` moves to the
+last enabled trigger. Disabled triggers are skipped.
+
+With `activationMode='automatic'`, focus and selection move together. With
+`activationMode='manual'`, arrow keys move focus and `Enter` or `Space` selects.
+`PageUp` and `PageDown` are not part of the Tabs keyboard contract.
 
 ## Real Example: Account Settings
 
@@ -53,35 +124,32 @@ import { Button, Input, Select, Tabs } from '@vellira-ui/react';
 import { useState } from 'react';
 
 export function AccountSettings() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState('profile');
 
   return (
-    <Tabs
-      activeIndex={activeTab}
-      onChange={setActiveTab}
-      appearance='underline'
-    >
-      <Tabs.List>
-        <Tabs.Tab index={0}>Profile</Tabs.Tab>
-        <Tabs.Tab index={1}>Security</Tabs.Tab>
-        <Tabs.Tab index={2}>Billing</Tabs.Tab>
+    <Tabs value={activeTab} onValueChange={setActiveTab} variant='line'>
+      <Tabs.List aria-label='Account settings'>
+        <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+        <Tabs.Trigger value='security'>Security</Tabs.Trigger>
+        <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+        <Tabs.Indicator />
       </Tabs.List>
 
-      <Tabs.Panel index={0}>
+      <Tabs.Content value='profile'>
         <Input label='Display name' defaultValue='Roman Bakurov' />
         <Button>Save profile</Button>
-      </Tabs.Panel>
-      <Tabs.Panel index={1}>
+      </Tabs.Content>
+      <Tabs.Content value='security'>
         <Button appearance='outline' color='neutral'>
           Reset password
         </Button>
-      </Tabs.Panel>
-      <Tabs.Panel index={2}>
+      </Tabs.Content>
+      <Tabs.Content value='billing'>
         <Select label='Plan' defaultValue='pro'>
           <Select.Item value='starter'>Starter</Select.Item>
           <Select.Item value='pro'>Pro</Select.Item>
         </Select>
-      </Tabs.Panel>
+      </Tabs.Content>
     </Tabs>
   );
 }
@@ -97,11 +165,27 @@ export function AccountSettings() {
 
 ## Accessibility
 
-- Each `Tabs.Tab` index must match its `Tabs.Panel` index.
+- Each `Tabs.Trigger` value should match a `Tabs.Content` value.
 - Disabled tabs should be rare and explainable from surrounding UI.
 - Keyboard order should follow visual order.
 - Panels should not unmount critical unsaved user input unless the app handles
   persistence intentionally.
+
+## Migration From The Old API
+
+Use `value`, `defaultValue`, and `onValueChange` instead of
+`activeIndex`/`onChange`. Use `Tabs.Trigger` and `Tabs.Content` instead of
+`Tabs.Tab` and `Tabs.Panel`.
+
+```tsx
+<Tabs defaultValue='profile'>
+  <Tabs.List aria-label='Settings'>
+    <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+  </Tabs.List>
+
+  <Tabs.Content value='profile'>Profile settings</Tabs.Content>
+</Tabs>
+```
 
 ## See Also
 
