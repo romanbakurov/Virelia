@@ -406,6 +406,7 @@ export const Basic: Story = {
       <Tabs {...args}>
         <Tabs.List aria-label='Account sections'>
           <DemoTriggers />
+          {args.variant !== 'pills' && <Tabs.Indicator />}
         </Tabs.List>
 
         <DemoContent />

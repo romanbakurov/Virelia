@@ -12,7 +12,7 @@ import { text } from '../semantic/text.js';
 const defaults = {
   triggerDefaultFg: text.secondary,
   triggerHoverFg: text.primary,
-  triggerHoverBg: surface.hover,
+  triggerHoverBg: withAlpha(colors.vellira[900], 0.035),
   triggerActiveBg: 'transparent',
   segmentedBg: withAlpha(colors.vellira[900], 0.03),
   focusRing: focus.ring.color,
