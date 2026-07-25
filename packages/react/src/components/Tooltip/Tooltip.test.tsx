@@ -43,7 +43,7 @@ describe('Tooltip', () => {
     expect(tooltip?.getAttribute('data-state')).toBe('open');
     expect(tooltip?.textContent).toContain('Helpful text');
     expect(tooltip?.style.maxWidth).toBe('18rem');
-    expect(arrow?.style.bottom).toBe('-5px');
+    expect(arrow?.style.bottom).toBe('calc(var(--tooltip-arrow-size) / -2)');
 
     unmount();
   });
@@ -168,6 +168,27 @@ describe('Tooltip', () => {
 
     expect(tooltip?.textContent).toContain('Force mounted tooltip');
     expect(tooltip?.getAttribute('data-state')).toBe('closed');
+
+    unmount();
+  });
+
+  it('does not attach legacy color or size classes to content', () => {
+    const { unmount } = render(
+      <Tooltip open>
+        <Tooltip.Trigger>Trigger</Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content className='custom-tooltip'>
+            Token based tooltip
+          </Tooltip.Content>
+        </Portal>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector('[role="tooltip"]');
+
+    expect(tooltip?.className).toContain('custom-tooltip');
+    expect(tooltip?.className).not.toContain('neutral');
+    expect(tooltip?.className).not.toContain('sm');
 
     unmount();
   });

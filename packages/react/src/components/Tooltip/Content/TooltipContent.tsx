@@ -10,18 +10,7 @@ import type { TooltipContentProps } from './types';
 import styles from './TooltipContent.module.scss';
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
-  (
-    {
-      children,
-      color = 'neutral',
-      size = 'sm',
-      forceMount = false,
-      className,
-      style,
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, forceMount = false, className, style, ...props }, ref) => {
     const tooltip = useTooltipContext();
 
     if (!forceMount && !tooltip.open) {
@@ -38,7 +27,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
       <div
         {...contentProps}
         ref={composeRefs(ref, tooltip.setContentRef)}
-        className={cn(styles.tooltip, styles[color], styles[size], className)}
+        className={cn(styles.tooltip, className)}
         data-placement={tooltip.placement}
         data-state={tooltip.open ? 'open' : 'closed'}
         style={{

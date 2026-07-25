@@ -24,7 +24,13 @@ export type {
   TabsTriggerProps,
 } from './components/Tabs';
 export { Tabs } from './components/Tabs';
-export type { TooltipProps } from './components/Tooltip';
+export type {
+  TooltipArrowProps,
+  TooltipContentProps,
+  TooltipProps,
+  TooltipRootProps,
+  TooltipTriggerProps,
+} from './components/Tooltip';
 export { Tooltip } from './components/Tooltip';
 export type { FormFieldProps } from './patterns/FormField';
 export { FormField } from './patterns/FormField';

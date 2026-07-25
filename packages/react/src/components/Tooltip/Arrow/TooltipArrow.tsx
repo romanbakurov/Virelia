@@ -29,7 +29,7 @@ export const TooltipArrow = ({
       style={{
         left: tooltip.arrowX != null ? `${tooltip.arrowX}px` : undefined,
         top: tooltip.arrowY != null ? `${tooltip.arrowY}px` : undefined,
-        [staticSide]: '-5px',
+        [staticSide]: 'calc(var(--tooltip-arrow-size) / -2)',
         ...style,
       }}
     />

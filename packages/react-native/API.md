@@ -707,32 +707,76 @@ the explicit compound slot takes precedence.
 
 ## Tooltip
 
-Floating helper text around a native target.
+Floating helper text around a native target. Compose native Tooltip with
+`Tooltip.Trigger`, `Tooltip.Content`, and optional `Tooltip.Arrow`; the root
+manages placement, open state, delay, and dismissal.
 
 ```tsx
 import { Tooltip, Button } from '@vellira-ui/react-native';
 
-<Tooltip content='More actions' placement='top'>
-  <Button>More</Button>
+<Tooltip placement='top'>
+  <Tooltip.Trigger>
+    <Button>More</Button>
+  </Tooltip.Trigger>
+
+  <Tooltip.Content>
+    More actions
+    <Tooltip.Arrow />
+  </Tooltip.Content>
 </Tooltip>;
 ```
 
 <!-- api-docgen:start native.TooltipProps.Tooltip -->
 
-| Prop           | Type                      | Required | Description                           |
-| -------------- | ------------------------- | -------- | ------------------------------------- |
-| `content`      | `ReactNode`               | Yes      | Tooltip content.                      |
-| `children`     | `ReactNode`               | Yes      | Trigger element.                      |
-| `maxWidth`     | `number`                  | No       | Maximum tooltip width.                |
-| `style`        | `StyleProp<ViewStyle>`    | No       | Extra root style.                     |
-| `textStyle`    | `StyleProp<TextStyle>`    | No       | Extra tooltip text style.             |
-| `placement`    | `FloatingPlacement`       | No       | Preferred tooltip placement.          |
-| `disabled`     | `boolean`                 | No       | Prevents the tooltip from opening.    |
-| `delay`        | `TooltipDelay`            | No       | Open and close delay in milliseconds. |
-| `onOpenChange` | `(open: boolean) => void` | No       | Called when the open state changes.   |
-| `contentStyle` | `StyleProp<ViewStyle>`    | No       | Extra content style.                  |
+| Prop                  | Type                              | Required | Description                                                   |
+| --------------------- | --------------------------------- | -------- | ------------------------------------------------------------- |
+| `children`            | `ReactNode`                       | Yes      | Trigger element.                                              |
+| `style`               | `StyleProp<ViewStyle>`            | No       | Extra root style.                                             |
+| `placement`           | `FloatingPlacement`               | No       | Preferred tooltip placement.                                  |
+| `disabled`            | `boolean`                         | No       | Prevents the tooltip from opening.                            |
+| `delay`               | `number \| Partial<TooltipDelay>` | No       | Open delay in milliseconds, or explicit open/close delays.    |
+| `onOpenChange`        | `(open: boolean) => void`         | No       | Called when the open state changes.                           |
+| `open`                | `boolean`                         | No       | Controlled open state.                                        |
+| `defaultOpen`         | `boolean`                         | No       | Initial uncontrolled open state.                              |
+| `offset`              | `number`                          | No       | Distance between trigger and content in pixels.               |
+| `closeOnOutsidePress` | `boolean`                         | No       | Closes the tooltip when the user presses outside the content. |
 
 <!-- api-docgen:end native.TooltipProps.Tooltip -->
+
+### Tooltip.Trigger Props
+
+<!-- api-docgen:start native.TooltipTriggerProps.TooltipTriggerProps -->
+
+| Prop       | Type                   | Required | Description                 |
+| ---------- | ---------------------- | -------- | --------------------------- |
+| `children` | `ReactNode`            | Yes      | Trigger element or content. |
+| `disabled` | `boolean`              | No       | Disables this trigger.      |
+| `style`    | `StyleProp<ViewStyle>` | No       | Extra root style.           |
+
+<!-- api-docgen:end native.TooltipTriggerProps.TooltipTriggerProps -->
+
+### Tooltip.Content Props
+
+<!-- api-docgen:start native.TooltipContentProps.TooltipContentProps -->
+
+| Prop         | Type                   | Required | Description                                                        |
+| ------------ | ---------------------- | -------- | ------------------------------------------------------------------ |
+| `children`   | `ReactNode`            | Yes      | Content rendered inside the component.                             |
+| `forceMount` | `boolean`              | No       | Keeps the tooltip content mounted even when the tooltip is closed. |
+| `style`      | `StyleProp<ViewStyle>` | No       | Extra root style.                                                  |
+| `textStyle`  | `StyleProp<TextStyle>` | No       | Extra tooltip text style.                                          |
+
+<!-- api-docgen:end native.TooltipContentProps.TooltipContentProps -->
+
+### Tooltip.Arrow Props
+
+<!-- api-docgen:start native.TooltipArrowProps.TooltipArrowProps -->
+
+| Prop    | Type                   | Required | Description        |
+| ------- | ---------------------- | -------- | ------------------ |
+| `style` | `StyleProp<ViewStyle>` | No       | Extra arrow style. |
+
+<!-- api-docgen:end native.TooltipArrowProps.TooltipArrowProps -->
 
 ## Portal
 

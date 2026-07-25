@@ -1,18 +1,23 @@
 .tooltip {
   position: absolute;
   z-index: var(--z-index-tooltip);
-  max-width: 240px;
+  max-width: var(--tooltip-content-max-width);
+  padding: var(--tooltip-content-padding-y) var(--tooltip-content-padding-x);
   color: var(--tooltip-content-fg);
+  font-size: var(--tooltip-content-font-size);
+  line-height: var(--tooltip-content-line-height);
   text-align: center;
   background-color: var(--tooltip-content-bg);
-  border: 1px solid var(--tooltip-content-border);
-  border-radius: var(--radius-sm);
+  border: var(--tooltip-content-border-width) solid
+    var(--tooltip-content-border);
+  border-radius: var(--tooltip-content-radius);
   box-shadow: var(--tooltip-content-shadow);
   opacity: 0;
-  transform: translateY(2px) scale(0.98);
+  transform: translateY(var(--tooltip-content-translate-y))
+    scale(var(--tooltip-content-scale));
   transition:
-    opacity 0.15s ease-out,
-    transform 0.15s ease-out;
+    opacity var(--tooltip-content-animation-duration) ease-out,
+    transform var(--tooltip-content-animation-duration) ease-out;
   user-select: none;
   pointer-events: none;
 
@@ -22,22 +27,10 @@
   }
 }
 
-.neutral {
-  color: var(--tooltip-content-fg);
-  background-color: var(--tooltip-content-bg);
-  border-color: var(--tooltip-content-border);
-}
-
-.sm {
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-sm);
-}
-
 .arrow {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: var(--tooltip-arrow-size);
+  height: var(--tooltip-arrow-size);
   background-color: var(--tooltip-arrow-bg);
   transform: rotate(45deg);
   pointer-events: none;
@@ -45,15 +38,16 @@
 
 @media (width <= 480px) {
   .tooltip {
-    max-width: 200px;
-    padding: var(--space-1) var(--space-2);
-    font-size: var(--font-size-xs);
-    line-height: var(--line-height-xs);
+    max-width: var(--tooltip-content-compact-max-width);
+    padding: var(--tooltip-content-compact-padding-y)
+      var(--tooltip-content-compact-padding-x);
+    font-size: var(--tooltip-content-compact-font-size);
+    line-height: var(--tooltip-content-compact-line-height);
   }
 
   .arrow {
-    width: 6px;
-    height: 6px;
+    width: var(--tooltip-arrow-compact-size);
+    height: var(--tooltip-arrow-compact-size);
   }
 }
 

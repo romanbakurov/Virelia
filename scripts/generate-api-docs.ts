@@ -29,7 +29,6 @@ const fallbackDescriptions: Record<string, string> = {
   activeIndex: 'Currently active tab index.',
   ariaLabel: 'Accessible trigger label for icon-only or custom triggers.',
   arrowIcon: 'Custom arrow icon rendered in the trigger.',
-  bubbleStyle: 'Extra tooltip bubble style.',
   contentClassName: 'Extra CSS class for the menu content element.',
   contentStyle: 'Extra content style.',
   error: 'Error message rendered for invalid state.',
@@ -150,6 +149,50 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   'web.TabsContentProps.TabsContentProps': {
     value: 'Stable content value matched with Tabs.Trigger.',
   },
+  'web.TooltipProps.Tooltip': {
+    avoidCollisions: 'Allows the tooltip to flip or shift to stay in viewport.',
+    delay: 'Open delay in milliseconds, or explicit open/close delays.',
+    interactive: 'Allows pointer interaction inside tooltip content.',
+    matchTriggerWidth: 'Matches tooltip content width to the trigger width.',
+    modal:
+      'Reserved for modal overlay semantics. Tooltip defaults to non-modal.',
+    offset: 'Distance between trigger and content in pixels.',
+    placement: 'Preferred tooltip placement.',
+    portal: 'Reserved for automatic portal rendering in higher-level helpers.',
+    skipDelay: 'Delay window for future sibling tooltip delay skipping.',
+  },
+  'web.TooltipTriggerProps.TooltipTriggerProps': {
+    asChild: 'Composes trigger behavior onto a single child element.',
+    children: 'Trigger element or content.',
+    disabled: 'Disables this trigger.',
+  },
+  'web.TooltipContentProps.TooltipContentProps': {
+    forceMount:
+      'Keeps the tooltip content mounted even when the tooltip is closed.',
+  },
+  'web.TooltipArrowProps.TooltipArrowProps': {
+    className: 'Extra CSS class for the arrow element.',
+    style: 'Extra inline styles for the arrow element.',
+  },
+  'native.TooltipProps.Tooltip': {
+    closeOnOutsidePress:
+      'Closes the tooltip when the user presses outside the content.',
+    delay: 'Open delay in milliseconds, or explicit open/close delays.',
+    offset: 'Distance between trigger and content in pixels.',
+    placement: 'Preferred tooltip placement.',
+  },
+  'native.TooltipTriggerProps.TooltipTriggerProps': {
+    children: 'Trigger element or content.',
+    disabled: 'Disables this trigger.',
+  },
+  'native.TooltipContentProps.TooltipContentProps': {
+    forceMount:
+      'Keeps the tooltip content mounted even when the tooltip is closed.',
+    textStyle: 'Extra tooltip text style.',
+  },
+  'native.TooltipArrowProps.TooltipArrowProps': {
+    style: 'Extra arrow style.',
+  },
   'native.TabsProps.TabsProps': {
     activationMode:
       'Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space.',
@@ -256,6 +299,24 @@ const sections: ApiSection[] = [
   ),
   section(
     'web',
+    '### Tooltip.Trigger Props',
+    'TooltipTriggerProps',
+    'src/components/Tooltip/Trigger/types.ts'
+  ),
+  section(
+    'web',
+    '### Tooltip.Content Props',
+    'TooltipContentProps',
+    'src/components/Tooltip/Content/types.ts'
+  ),
+  section(
+    'web',
+    '### Tooltip.Arrow Props',
+    'TooltipArrowProps',
+    'src/components/Tooltip/Arrow/types.ts'
+  ),
+  section(
+    'web',
     '### Modal Props',
     'ModalProps',
     'src/components/Modal/types.ts'
@@ -350,6 +411,24 @@ const sections: ApiSection[] = [
     '## Tooltip',
     'TooltipProps',
     'src/components/Tooltip/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Trigger Props',
+    'TooltipTriggerProps',
+    'src/components/Tooltip/Trigger/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Content Props',
+    'TooltipContentProps',
+    'src/components/Tooltip/Content/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Arrow Props',
+    'TooltipArrowProps',
+    'src/components/Tooltip/Arrow/types.ts'
   ),
   section(
     'native',
