@@ -13,7 +13,7 @@ export function Tooltip({
   content,
   placement = 'top',
   disabled = false,
-  maxWidth = 240,
+  maxWidth,
   delay,
   style,
   contentStyle,
@@ -80,10 +80,10 @@ export function Tooltip({
             style={[
               styles.bubble,
               {
-                maxWidth,
                 top: position.top,
                 left: position.left,
               },
+              maxWidth === undefined ? null : { maxWidth },
               contentStyle,
             ]}
             onLayout={onFloatingLayout}

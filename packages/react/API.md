@@ -811,24 +811,59 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.TooltipProps.Tooltip -->
 
-| Prop                | Type                                                 | Required | Description                                      |
-| ------------------- | ---------------------------------------------------- | -------- | ------------------------------------------------ |
-| `children`          | `ReactNode`                                          | Yes      | Content rendered inside the component.           |
-| `open`              | `boolean`                                            | No       | Controlled open state.                           |
-| `defaultOpen`       | `boolean`                                            | No       | Initial uncontrolled open state.                 |
-| `onOpenChange`      | `(open: boolean) => void`                            | No       | Called when the open state changes.              |
-| `delay`             | `number \| import("@vellira-ui/types").TooltipDelay` | No       | —                                                |
-| `skipDelay`         | `number`                                             | No       | —                                                |
-| `offset`            | `number`                                             | No       | —                                                |
-| `interactive`       | `boolean`                                            | No       | —                                                |
-| `portal`            | `boolean`                                            | No       | —                                                |
-| `avoidCollisions`   | `boolean`                                            | No       | —                                                |
-| `matchTriggerWidth` | `boolean`                                            | No       | Matches the dropdown width to the trigger width. |
-| `modal`             | `boolean`                                            | No       | —                                                |
-| `disabled`          | `boolean`                                            | No       | Disables interaction.                            |
-| `placement`         | `FloatingPlacement`                                  | No       | Preferred dropdown placement.                    |
+| Prop                | Type                                                 | Required | Description                                                          |
+| ------------------- | ---------------------------------------------------- | -------- | -------------------------------------------------------------------- |
+| `children`          | `ReactNode`                                          | Yes      | Content rendered inside the component.                               |
+| `open`              | `boolean`                                            | No       | Controlled open state.                                               |
+| `defaultOpen`       | `boolean`                                            | No       | Initial uncontrolled open state.                                     |
+| `onOpenChange`      | `(open: boolean) => void`                            | No       | Called when the open state changes.                                  |
+| `delay`             | `number \| import("@vellira-ui/types").TooltipDelay` | No       | Open delay in milliseconds, or explicit open/close delays.           |
+| `skipDelay`         | `number`                                             | No       | Delay window for future sibling tooltip delay skipping.              |
+| `offset`            | `number`                                             | No       | Distance between trigger and content in pixels.                      |
+| `interactive`       | `boolean`                                            | No       | Allows pointer interaction inside tooltip content.                   |
+| `portal`            | `boolean`                                            | No       | Reserved for automatic portal rendering in higher-level helpers.     |
+| `avoidCollisions`   | `boolean`                                            | No       | Allows the tooltip to flip or shift to stay in viewport.             |
+| `matchTriggerWidth` | `boolean`                                            | No       | Matches tooltip content width to the trigger width.                  |
+| `modal`             | `boolean`                                            | No       | Reserved for modal overlay semantics. Tooltip defaults to non-modal. |
+| `disabled`          | `boolean`                                            | No       | Disables interaction.                                                |
+| `placement`         | `FloatingPlacement`                                  | No       | Preferred tooltip placement.                                         |
 
 <!-- api-docgen:end web.TooltipProps.Tooltip -->
+
+### Tooltip.Trigger Props
+
+<!-- api-docgen:start web.TooltipTriggerProps.TooltipTriggerProps -->
+
+| Prop       | Type        | Required | Description                                            |
+| ---------- | ----------- | -------- | ------------------------------------------------------ |
+| `asChild`  | `boolean`   | No       | Composes trigger behavior onto a single child element. |
+| `children` | `ReactNode` | Yes      | Trigger element or content.                            |
+| `disabled` | `boolean`   | No       | Disables this trigger.                                 |
+
+<!-- api-docgen:end web.TooltipTriggerProps.TooltipTriggerProps -->
+
+### Tooltip.Content Props
+
+<!-- api-docgen:start web.TooltipContentProps.TooltipContentProps -->
+
+| Prop         | Type            | Required | Description                                                        |
+| ------------ | --------------- | -------- | ------------------------------------------------------------------ |
+| `children`   | `ReactNode`     | Yes      | Content rendered inside the component.                             |
+| `forceMount` | `boolean`       | No       | Keeps the tooltip content mounted even when the tooltip is closed. |
+| `className`  | `string`        | No       | Extra CSS class for the root element.                              |
+| `style`      | `CSSProperties` | No       | Extra root style.                                                  |
+
+<!-- api-docgen:end web.TooltipContentProps.TooltipContentProps -->
+
+### Tooltip.Arrow Props
+
+<!-- api-docgen:start web.TooltipArrowProps.TooltipArrowProps -->
+
+| Prop        | Type     | Required | Description                            |
+| ----------- | -------- | -------- | -------------------------------------- |
+| `className` | `string` | No       | Extra CSS class for the arrow element. |
+
+<!-- api-docgen:end web.TooltipArrowProps.TooltipArrowProps -->
 
 ## Portal
 

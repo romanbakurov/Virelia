@@ -27,18 +27,6 @@
   }
 }
 
-.neutral {
-  color: var(--tooltip-content-fg);
-  background-color: var(--tooltip-content-bg);
-  border-color: var(--tooltip-content-border);
-}
-
-.sm {
-  padding: var(--tooltip-content-padding-y) var(--tooltip-content-padding-x);
-  font-size: var(--tooltip-content-font-size);
-  line-height: var(--tooltip-content-line-height);
-}
-
 .arrow {
   position: absolute;
   width: var(--tooltip-arrow-size);

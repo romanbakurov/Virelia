@@ -365,7 +365,6 @@ const publicSymbolContracts = {
     'TabsSize',
     'TabsValue',
     'TabsVariant',
-    'BaseTooltipContentProps',
     'BaseTooltipProps',
     'ButtonAppearance',
     'ButtonColor',

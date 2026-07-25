@@ -11,5 +11,3 @@ export interface BaseTooltipProps {
   delay?: TooltipDelay;
   onOpenChange?: (open: boolean) => void;
 }
-
-export type BaseTooltipContentProps = Record<never, never>;

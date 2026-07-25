@@ -60,19 +60,19 @@ Every component exports TypeScript props from the package root. The full
 generated reference lives in
 [`packages/react/API.md`](https://github.com/vellira-dev/Vellira/blob/main/packages/react/API.md).
 
-| Component    | Core props                                                                                                                | State model                   |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading             |
-| `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled    |
-| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                          | controlled or uncontrolled    |
-| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics               |
-| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled    |
-| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled    |
-| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled    |
-| `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled    |
-| `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | controlled or uncontrolled    |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`, `onOpenChange`, `maxWidth`                                                   | open state managed internally |
-| `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, `closeOnEscape`, compound sections                          | controlled or uncontrolled    |
+| Component    | Core props                                                                                                                | State model                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `Button`     | `appearance`, `color`, `shape`, `iconStart`, `iconEnd`, `fullWidth`, `aria-label`                                         | disabled, loading          |
+| `Checkbox`   | `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `label`, `description`, `error`, `indeterminate`, `icon` | controlled or uncontrolled |
+| `Input`      | `label`, `value`, `onValueChange`, `type`, `size`, `variant`, `color`, `error`, `mask`, `format`                          | controlled or uncontrolled |
+| `FormField`  | `label`, `description`, `error`, `required`, `disabled`, `invalid`, `children`                                            | field semantics            |
+| `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled |
+| `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled |
+| `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled |
+| `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled |
+| `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | controlled or uncontrolled |
+| `Tooltip`    | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `delay`, `Tooltip.Trigger`, `Tooltip.Content`             | controlled or uncontrolled |
+| `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, `closeOnEscape`, compound sections                          | controlled or uncontrolled |
 
 ## Select Usage Guidelines
 

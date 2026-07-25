@@ -43,7 +43,7 @@ describe('Tooltip', () => {
     expect(tooltip?.getAttribute('data-state')).toBe('open');
     expect(tooltip?.textContent).toContain('Helpful text');
     expect(tooltip?.style.maxWidth).toBe('18rem');
-    expect(arrow?.style.bottom).toBe('-5px');
+    expect(arrow?.style.bottom).toBe('calc(var(--tooltip-arrow-size) / -2)');
 
     unmount();
   });
