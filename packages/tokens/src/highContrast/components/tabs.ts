@@ -3,6 +3,7 @@ import {
   createTabsTokens,
 } from '../../factories/createTabsTokens.js';
 import { colors } from '../../primitives/colors.js';
+import { withAlpha } from '../../utils/color.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { surface } from '../semantic/surface.js';
@@ -11,7 +12,7 @@ import { text } from '../semantic/text.js';
 const defaults = {
   triggerDefaultFg: text.secondary,
   triggerHoverFg: text.primary,
-  triggerHoverBg: surface.hover,
+  triggerHoverBg: withAlpha(colors.mono[50], 0.08),
   triggerActiveBg: 'transparent',
   segmentedBg: surface.hover,
   focusRing: focus.ring.color,
