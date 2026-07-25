@@ -80,9 +80,9 @@ Compound navigation component for switching between related sections of content.
 - Primary, neutral, success, warning, and danger colors
 - Sizes: sm, md, and lg
 - Disabled triggers, rich trigger content, icons, badges, and descriptions
-- Root-level or list-level scrollable tabs
+- List-level scrollable tabs
 - keepMounted, lazyMount, and forceMount mounting policies
-- Arrow, Home, End, PageUp, PageDown, loop, and RTL keyboard navigation
+- Arrow, Home, End, loop, and RTL keyboard navigation
 
 ### Usage
 

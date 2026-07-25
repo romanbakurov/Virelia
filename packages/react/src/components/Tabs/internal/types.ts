@@ -36,7 +36,6 @@ export interface TabsContextValue {
 
   keepMounted: boolean;
   lazyMount: boolean;
-  scrollable: boolean;
   disabled: boolean;
 
   registerTrigger: (

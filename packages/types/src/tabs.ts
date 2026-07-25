@@ -23,7 +23,6 @@ export interface BaseTabsProps {
 
   keepMounted?: boolean;
   lazyMount?: boolean;
-  scrollable?: boolean;
 
   variant?: TabsVariant;
   color?: TabsColor;

@@ -12,8 +12,8 @@ export const TabsList = ({
   style,
 }: TabsListProps) => {
   const styles = useThemeStyles(createStyles);
-  const { orientation, variant, scrollable: rootScrollable } = useTabs();
-  const scrollable = scrollableProp ?? rootScrollable;
+  const { orientation, variant } = useTabs();
+  const scrollable = scrollableProp ?? false;
   const listStyle = [
     styles.list,
     variant === 'segmented' && styles.listSegmented,

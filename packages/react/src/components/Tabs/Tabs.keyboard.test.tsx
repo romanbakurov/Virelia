@@ -100,19 +100,17 @@ describe('Tabs keyboard', () => {
     unmount();
   });
 
-  it('uses PageUp and PageDown as first and last trigger shortcuts', () => {
+  it('does not treat PageUp and PageDown as Tabs navigation shortcuts', () => {
     const { container, unmount } = render(<TabsExample />);
     const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
 
     pressKey(tabs[0], 'PageDown');
 
-    expect(tabs[2].getAttribute('aria-selected')).toBe('true');
-    expect(document.activeElement).toBe(tabs[2]);
+    expect(tabs[0].getAttribute('aria-selected')).toBe('true');
 
-    pressKey(tabs[2], 'PageUp');
+    pressKey(tabs[0], 'PageUp');
 
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
-    expect(document.activeElement).toBe(tabs[0]);
 
     unmount();
   });

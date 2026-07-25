@@ -12,8 +12,8 @@ export const TabsList = ({
   scrollable: scrollableProp,
   ...props
 }: TabsListProps) => {
-  const { orientation, variant, scrollable: rootScrollable } = useTabsContext();
-  const scrollable = scrollableProp ?? rootScrollable;
+  const { orientation, variant } = useTabsContext();
+  const scrollable = scrollableProp ?? false;
 
   return (
     <div

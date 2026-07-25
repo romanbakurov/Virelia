@@ -216,8 +216,8 @@ describe('Tabs', () => {
 
   it('renders trigger slots, simple badge content, and scrollable list state', () => {
     const { container, unmount } = render(
-      <Tabs defaultValue='settings' scrollable>
-        <Tabs.List aria-label='Rich tabs'>
+      <Tabs defaultValue='settings'>
+        <Tabs.List aria-label='Rich tabs' scrollable>
           <Tabs.Trigger
             value='settings'
             icon={<span>prop icon</span>}

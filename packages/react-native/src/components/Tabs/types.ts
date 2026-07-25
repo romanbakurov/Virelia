@@ -30,7 +30,6 @@ export interface TabsContextValue {
   size: TabsSize;
   keepMounted: boolean;
   lazyMount: boolean;
-  scrollable: boolean;
   disabled: boolean;
   registerTrigger: (
     value: TabsValue,

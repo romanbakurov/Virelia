@@ -94,12 +94,10 @@ export const useTabsKeyboard = ({
         break;
 
       case 'Home':
-      case 'PageUp':
         focusTab(0);
         break;
 
       case 'End':
-      case 'PageDown':
         focusTab(tabs.length - 1);
         break;
 
