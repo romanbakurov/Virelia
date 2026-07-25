@@ -16,8 +16,11 @@ describe('Native Tooltip', () => {
     vi.useFakeTimers();
 
     const { container, unmount } = render(
-      <Tooltip content='Helpful text'>
-        <span>Show help</span>
+      <Tooltip>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Helpful text</Tooltip.Content>
       </Tooltip>
     );
 
@@ -44,8 +47,11 @@ describe('Native Tooltip', () => {
     vi.useFakeTimers();
 
     const { container, unmount } = render(
-      <Tooltip content='Disabled tooltip' disabled>
-        <span>Show help</span>
+      <Tooltip disabled>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Disabled tooltip</Tooltip.Content>
       </Tooltip>
     );
 
@@ -64,8 +70,11 @@ describe('Native Tooltip', () => {
     vi.useFakeTimers();
 
     const { container, unmount } = render(
-      <Tooltip content='Bottom tooltip' placement='bottom'>
-        <span>Show help</span>
+      <Tooltip placement='bottom'>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Bottom tooltip</Tooltip.Content>
       </Tooltip>
     );
 

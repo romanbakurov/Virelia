@@ -1160,18 +1160,30 @@ function NativeComponentsOverview() {
                 Triggers
               </Text>
               <View style={styles.row}>
-                <Tooltip content='Long press to show tooltip content.'>
-                  <Button color='neutral' appearance='solid'>
-                    Long press
-                  </Button>
+                <Tooltip>
+                  <Tooltip.Trigger>
+                    <Button color='neutral' appearance='solid'>
+                      Long press
+                    </Button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Content>
+                    Long press to show tooltip content.
+                    <Tooltip.Arrow />
+                  </Tooltip.Content>
                 </Tooltip>
-                <Tooltip content='Icon buttons keep their accessible label.'>
-                  <Button
-                    color='neutral'
-                    appearance='solid'
-                    accessibilityLabel='Open filters'
-                    iconStart={<Filter />}
-                  />
+                <Tooltip>
+                  <Tooltip.Trigger>
+                    <Button
+                      color='neutral'
+                      appearance='solid'
+                      accessibilityLabel='Open filters'
+                      iconStart={<Filter />}
+                    />
+                  </Tooltip.Trigger>
+                  <Tooltip.Content>
+                    Icon buttons keep their accessible label.
+                    <Tooltip.Arrow />
+                  </Tooltip.Content>
                 </Tooltip>
               </View>
             </View>
@@ -1188,14 +1200,16 @@ function NativeComponentsOverview() {
               <View style={styles.row}>
                 {(['top', 'right', 'bottom', 'left'] as const).map(
                   (placement) => (
-                    <Tooltip
-                      key={placement}
-                      placement={placement}
-                      content={`${placement} placement`}
-                    >
-                      <Button appearance='outline' color='neutral'>
-                        {placement}
-                      </Button>
+                    <Tooltip key={placement} placement={placement}>
+                      <Tooltip.Trigger>
+                        <Button appearance='outline' color='neutral'>
+                          {placement}
+                        </Button>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content>
+                        {placement} placement
+                        <Tooltip.Arrow />
+                      </Tooltip.Content>
                     </Tooltip>
                   )
                 )}

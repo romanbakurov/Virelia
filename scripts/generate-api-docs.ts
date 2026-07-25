@@ -175,6 +175,25 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
     className: 'Extra CSS class for the arrow element.',
     style: 'Extra inline styles for the arrow element.',
   },
+  'native.TooltipProps.Tooltip': {
+    closeOnOutsidePress:
+      'Closes the tooltip when the user presses outside the content.',
+    delay: 'Open delay in milliseconds, or explicit open/close delays.',
+    offset: 'Distance between trigger and content in pixels.',
+    placement: 'Preferred tooltip placement.',
+  },
+  'native.TooltipTriggerProps.TooltipTriggerProps': {
+    children: 'Trigger element or content.',
+    disabled: 'Disables this trigger.',
+  },
+  'native.TooltipContentProps.TooltipContentProps': {
+    forceMount:
+      'Keeps the tooltip content mounted even when the tooltip is closed.',
+    textStyle: 'Extra tooltip text style.',
+  },
+  'native.TooltipArrowProps.TooltipArrowProps': {
+    style: 'Extra arrow style.',
+  },
   'native.TabsProps.TabsProps': {
     activationMode:
       'Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space.',
@@ -393,6 +412,24 @@ const sections: ApiSection[] = [
     '## Tooltip',
     'TooltipProps',
     'src/components/Tooltip/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Trigger Props',
+    'TooltipTriggerProps',
+    'src/components/Tooltip/Trigger/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Content Props',
+    'TooltipContentProps',
+    'src/components/Tooltip/Content/types.ts'
+  ),
+  section(
+    'native',
+    '### Tooltip.Arrow Props',
+    'TooltipArrowProps',
+    'src/components/Tooltip/Arrow/types.ts'
   ),
   section(
     'native',

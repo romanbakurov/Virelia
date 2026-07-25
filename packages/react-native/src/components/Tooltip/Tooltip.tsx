@@ -1,103 +1,12 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { TooltipArrow } from './Arrow';
+import { TooltipContent } from './Content';
+import { TooltipRoot } from './Root';
+import { TooltipTrigger } from './Trigger';
 
-import { Modal, Pressable, Text, View } from 'react-native';
-
-import { useNativeDismiss, useNativeFloatingPosition } from '../../managers';
-import { useThemeStyles } from '../../theme';
-
-import { createStyles } from './Tooltip.styles';
-import type { TooltipProps } from './types';
-
-export function Tooltip({
-  children,
-  content,
-  placement = 'top',
-  disabled = false,
-  maxWidth,
-  delay,
-  style,
-  contentStyle,
-  textStyle,
-}: TooltipProps) {
-  const styles = useThemeStyles(createStyles);
-  const overlayId = useId();
-  const [visible, setVisible] = useState(false);
-
-  const triggerRef = useRef<View | null>(null);
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const { position, updatePosition, onFloatingLayout } =
-    useNativeFloatingPosition(placement, 8);
-
-  const hideDelay = delay?.close ?? 2500;
-  const clearCloseTimer = () => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-  };
-  const dismiss = useNativeDismiss({
-    id: overlayId,
-    visible: visible && !disabled,
-    onClose: () => {
-      clearCloseTimer();
-      setVisible(false);
-    },
-  });
-
-  const showTooltip = () => {
-    if (disabled) return;
-
-    clearCloseTimer();
-    updatePosition(triggerRef);
-    setVisible(true);
-
-    closeTimerRef.current = setTimeout(() => {
-      setVisible(false);
-      closeTimerRef.current = null;
-    }, hideDelay);
-  };
-
-  useEffect(() => {
-    return clearCloseTimer;
-  }, []);
-
-  return (
-    <View style={[styles.root, style]}>
-      <Pressable ref={triggerRef} onLongPress={showTooltip}>
-        {children}
-      </Pressable>
-
-      <Modal
-        visible={visible && !disabled}
-        transparent
-        animationType='fade'
-        onRequestClose={dismiss.requestClose}
-      >
-        <Pressable style={styles.overlay} onPress={dismiss.requestOutsideClose}>
-          <View
-            pointerEvents='none'
-            style={[
-              styles.bubble,
-              {
-                top: position.top,
-                left: position.left,
-              },
-              maxWidth === undefined ? null : { maxWidth },
-              contentStyle,
-            ]}
-            onLayout={onFloatingLayout}
-          >
-            {typeof content === 'string' ? (
-              <Text style={[styles.text, textStyle]}>{content}</Text>
-            ) : (
-              content
-            )}
-          </View>
-        </Pressable>
-      </Modal>
-    </View>
-  );
-}
+export const Tooltip = Object.assign(TooltipRoot, {
+  Trigger: TooltipTrigger,
+  Content: TooltipContent,
+  Arrow: TooltipArrow,
+});
 
 Tooltip.displayName = 'Tooltip';

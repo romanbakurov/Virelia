@@ -74,7 +74,7 @@ generated reference lives in
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
 | `Dropdown`   | `children`, `label`, `open`, `defaultOpen`, `onOpenChange`, `presentation`, `closeOnSelect`, `disabled`                   | Context menu          |
 | `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | Tab navigation        |
-| `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
+| `Tooltip`    | `children`, `placement`, `delay`, `disabled`, `Tooltip.Trigger`, `Tooltip.Content`                                        | Contextual helper     |
 | `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, compound sections                                           | Dialog and overlay    |
 
 Native `Select` opens a sheet, modal, or popover depending on `presentation`.
