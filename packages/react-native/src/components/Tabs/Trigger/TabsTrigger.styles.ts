@@ -19,6 +19,12 @@ export const createStyles = (theme: NativeTheme) =>
       borderWidth: 1,
     },
 
+    tabSegmented: {
+      minHeight: 32,
+      paddingVertical: 6,
+      borderRadius: theme.tokens.radius.lg,
+    },
+
     tabVertical: {
       position: 'relative',
       width: '100%',

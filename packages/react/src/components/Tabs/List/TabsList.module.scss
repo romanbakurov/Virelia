@@ -3,7 +3,7 @@
   display: flex;
   justify-content: flex-start;
   gap: var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   border-color: var(--tabs-list-border);
 }
 
@@ -29,10 +29,10 @@
 
 .segmented {
   gap: 0;
-  padding: var(--space-1);
+  padding: calc(var(--space-1) * 0.75);
   background: var(--tabs-segmented-bg);
   border: 1px solid var(--tabs-list-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
 }
 
 .scrollable {
@@ -68,11 +68,13 @@
 }
 
 .segmented .indicator {
-  top: var(--space-1);
-  bottom: var(--space-1);
+  top: calc(var(--space-1) * 0.75);
+  bottom: calc(var(--space-1) * 0.75);
   height: auto;
   background: var(--tabs-segmented-active-bg);
   border: 1px solid var(--tabs-segmented-active-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {

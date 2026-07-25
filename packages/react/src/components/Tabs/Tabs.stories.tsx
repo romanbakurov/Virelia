@@ -444,6 +444,7 @@ export const Variants: Story = {
           <Tabs defaultValue='home' variant={variant}>
             <Tabs.List aria-label={`${variant} variant`}>
               <DemoTriggers />
+              {variant !== 'pills' && <Tabs.Indicator />}
             </Tabs.List>
 
             <DemoContent />
@@ -633,6 +634,7 @@ export const RichTrigger: Story = {
             <span>Settings</span>
             <Tabs.Badge>New</Tabs.Badge>
           </Tabs.Trigger>
+          <Tabs.Indicator />
         </Tabs.List>
 
         <Tabs.Content value='home'>Home content</Tabs.Content>

@@ -94,14 +94,20 @@
 }
 
 .segmented {
+  min-height: 2rem;
+  padding: calc(var(--space-2) - 2px) var(--space-4);
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: var(--radius-lg);
+
   &:hover:not(:disabled) {
     color: var(--tabs-trigger-hover-fg);
-    background-color: var(--tabs-trigger-hover-bg);
+    background-color: transparent;
   }
 
   &[aria-selected='true'] {
     color: var(--tabs-segmented-active-fg);
-    background-color: var(--tabs-trigger-active-bg);
+    background-color: transparent;
   }
 }
 

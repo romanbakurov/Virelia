@@ -3,6 +3,7 @@ import {
   createTabsTokens,
 } from '../../factories/createTabsTokens.js';
 import { colors } from '../../primitives/colors.js';
+import { withAlpha } from '../../utils/color.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { surface } from '../semantic/surface.js';
@@ -13,7 +14,7 @@ const defaults = {
   triggerHoverFg: text.primary,
   triggerHoverBg: surface.hover,
   triggerActiveBg: 'transparent',
-  segmentedBg: surface.hover,
+  segmentedBg: withAlpha(colors.vellira[900], 0.04),
   focusRing: focus.ring.color,
 };
 
@@ -24,7 +25,7 @@ export const tabs = createTabsTokens({
     triggerActiveBorder: colors.primary[600],
     indicator: colors.primary[600],
     indicatorHover: colors.primary[700],
-    segmentedActiveBg: colors.primary[50],
+    segmentedActiveBg: surface.elevated,
     segmentedActiveBorder: colors.primary[200],
     segmentedActiveFg: colors.primary[800],
     pillHoverBg: colors.primary[50],
@@ -38,7 +39,7 @@ export const tabs = createTabsTokens({
     triggerActiveBorder: colors.vellira[500],
     indicator: colors.vellira[500],
     indicatorHover: colors.vellira[600],
-    segmentedActiveBg: colors.vellira[100],
+    segmentedActiveBg: surface.elevated,
     segmentedActiveBorder: colors.vellira[250],
     segmentedActiveFg: colors.vellira[800],
     pillHoverBg: colors.vellira[100],
@@ -52,7 +53,7 @@ export const tabs = createTabsTokens({
     triggerActiveBorder: colors.success[600],
     indicator: colors.success[600],
     indicatorHover: colors.success[700],
-    segmentedActiveBg: colors.success[50],
+    segmentedActiveBg: surface.elevated,
     segmentedActiveBorder: colors.success[200],
     segmentedActiveFg: colors.success[800],
     pillHoverBg: colors.success[50],
@@ -66,7 +67,7 @@ export const tabs = createTabsTokens({
     triggerActiveBorder: colors.warning[600],
     indicator: colors.warning[600],
     indicatorHover: colors.warning[700],
-    segmentedActiveBg: colors.warning[50],
+    segmentedActiveBg: surface.elevated,
     segmentedActiveBorder: colors.warning[200],
     segmentedActiveFg: colors.warning[800],
     pillHoverBg: colors.warning[50],
@@ -80,7 +81,7 @@ export const tabs = createTabsTokens({
     triggerActiveBorder: colors.error[600],
     indicator: colors.error[600],
     indicatorHover: colors.error[700],
-    segmentedActiveBg: colors.error[50],
+    segmentedActiveBg: surface.elevated,
     segmentedActiveBorder: colors.error[200],
     segmentedActiveFg: colors.error[800],
     pillHoverBg: colors.error[50],
@@ -95,7 +96,7 @@ export const tabs = createTabsTokens({
   },
   list: {
     border: border.muted,
-    segmentedBg: surface.hover,
+    segmentedBg: withAlpha(colors.vellira[900], 0.04),
   },
   panel: {
     fg: text.primary,

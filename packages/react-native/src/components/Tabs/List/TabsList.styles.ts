@@ -9,14 +9,14 @@ export const createStyles = (theme: NativeTheme) =>
       alignSelf: 'stretch',
       width: '100%',
       gap: theme.tokens.spacing[5],
-      marginBottom: theme.tokens.spacing[4],
+      marginBottom: theme.tokens.spacing[6],
     },
 
     listSegmented: {
-      padding: theme.tokens.spacing[1],
+      padding: 3,
       backgroundColor: theme.components.tabs.list.segmentedBg,
       borderColor: theme.components.tabs.list.border,
-      borderRadius: theme.tokens.radius.lg,
+      borderRadius: theme.tokens.radius.xl,
       borderWidth: 1,
     },
 

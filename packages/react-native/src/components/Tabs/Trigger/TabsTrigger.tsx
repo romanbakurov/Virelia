@@ -92,6 +92,7 @@ export const TabsTrigger = ({
         isVertical && styles.tabVertical,
 
         isPills && styles.tabPills,
+        isSegmented && styles.tabSegmented,
         isPills &&
           isActive && {
             borderColor: palette.pills.active.border,
