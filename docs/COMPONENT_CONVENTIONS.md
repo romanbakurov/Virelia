@@ -235,19 +235,29 @@ Icons must inherit component color automatically.
 
 # State Management
 
-Prefer reusable hooks from:
+Renderer-neutral core should contain only pure behavior contracts and
+algorithms that do not depend on React, native views, DOM refs, layout
+measurement, or event objects.
 
-```
-@vellira-ui/core
-```
+Good core candidates:
 
-Examples:
+- collection item types
+- enabled item navigation helpers
+- single and multiple selection reducers
+- sorting helpers for renderer-provided collection items
 
-- useControllableState
-- useKeyboardNavigation
-- useTabsKeyboard
+Component orchestration hooks should stay inside the owning renderer package
+until the same behavior is proven by multiple real components.
 
-Avoid duplicating logic between components.
+Examples that should remain local to Tabs:
+
+- `useTabsCollection`
+- `useTabsKeyboard`
+- `useTabsIndicator`
+
+These hooks are tied to Tabs-specific value semantics, trigger refs, disabled
+trigger skipping, activation mode, orientation, RTL, focus management, mounting
+policy, and indicator measurement. Do not move them to core preemptively.
 
 ---
 
