@@ -11,9 +11,8 @@ export type TabsIndicatorStyle = Pick<
 
 export const useTabsIndicator = () => {
   const indicatorRef = useRef<HTMLSpanElement | null>(null);
-  const previousValueRef = useRef<string | undefined>(undefined);
   const [style, setStyle] = useState<TabsIndicatorStyle>({});
-  const { value, orientation, variant, collectionVersion, getTriggerId } =
+  const { value, orientation, collectionVersion, getTriggerId } =
     useTabsContext();
 
   useEffect(() => {
@@ -36,59 +35,23 @@ export const useTabsIndicator = () => {
       return;
     }
 
-    let animationFrame = 0;
-
     const update = () => {
       const listRect = list.getBoundingClientRect();
       const triggerRect = trigger.getBoundingClientRect();
-      const revealLine =
-        variant === 'line' && previousValueRef.current !== value;
 
       if (orientation === 'vertical') {
-        const translate = `translateY(${triggerRect.top - listRect.top + list.scrollTop}px)`;
-        const nextStyle = {
+        setStyle({
           height: triggerRect.height,
-          transform: variant === 'line' ? `${translate} scaleY(1)` : translate,
-        } satisfies TabsIndicatorStyle;
-
-        if (revealLine) {
-          setStyle({
-            ...nextStyle,
-            transform: `${translate} scaleY(0.08)`,
-          });
-          animationFrame = window.requestAnimationFrame(() => {
-            setStyle(nextStyle);
-          });
-          previousValueRef.current = value;
-          return;
-        }
-
-        setStyle(nextStyle);
-        previousValueRef.current = value;
+          transform: `translateY(${triggerRect.top - listRect.top + list.scrollTop}px)`,
+        });
         return;
       }
 
       const offset = triggerRect.left - listRect.left + list.scrollLeft;
-      const translate = `translateX(${offset}px)`;
-      const nextStyle = {
+      setStyle({
         width: triggerRect.width,
-        transform: variant === 'line' ? `${translate} scaleX(1)` : translate,
-      } satisfies TabsIndicatorStyle;
-
-      if (revealLine) {
-        setStyle({
-          ...nextStyle,
-          transform: `${translate} scaleX(0.08)`,
-        });
-        animationFrame = window.requestAnimationFrame(() => {
-          setStyle(nextStyle);
-        });
-        previousValueRef.current = value;
-        return;
-      }
-
-      setStyle(nextStyle);
-      previousValueRef.current = value;
+        transform: `translateX(${offset}px)`,
+      });
     };
 
     update();
@@ -113,11 +76,10 @@ export const useTabsIndicator = () => {
         observer.disconnect();
       }
 
-      window.cancelAnimationFrame(animationFrame);
       list.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [collectionVersion, getTriggerId, orientation, value, variant]);
+  }, [collectionVersion, getTriggerId, orientation, value]);
 
   return useMemo(
     () => ({

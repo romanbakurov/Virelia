@@ -362,7 +362,7 @@ describe('Tabs', () => {
     );
 
     expect(indicator?.style.width).toBe('80px');
-    expect(indicator?.style.transform).toBe('translateX(72px) scaleX(1)');
+    expect(indicator?.style.transform).toBe('translateX(72px)');
 
     unmount();
   });
@@ -400,7 +400,7 @@ describe('Tabs', () => {
     );
 
     expect(indicator?.style.height).toBe('36px');
-    expect(indicator?.style.transform).toBe('translateY(32px) scaleY(1)');
+    expect(indicator?.style.transform).toBe('translateY(32px)');
 
     unmount();
   });
@@ -451,7 +451,7 @@ describe('Tabs', () => {
     ]);
     expect(tabs[1].getAttribute('aria-selected')).toBe('true');
     expect(indicator?.style.width).toBe('80px');
-    expect(indicator?.style.transform).toBe('translateX(64px) scaleX(1)');
+    expect(indicator?.style.transform).toBe('translateX(64px)');
 
     unmount();
   });
@@ -494,7 +494,7 @@ describe('Tabs', () => {
       '[data-testid="indicator"]'
     );
 
-    expect(indicator?.style.transform).toBe('translateX(144px) scaleX(1)');
+    expect(indicator?.style.transform).toBe('translateX(144px)');
 
     act(() => {
       container.querySelector<HTMLButtonElement>('button')?.click();
@@ -506,7 +506,7 @@ describe('Tabs', () => {
       container.querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
     ).not.toBeNull();
     expect(indicator?.style.width).toBe('88px');
-    expect(indicator?.style.transform).toBe('translateX(64px) scaleX(1)');
+    expect(indicator?.style.transform).toBe('translateX(64px)');
 
     unmount();
   });
