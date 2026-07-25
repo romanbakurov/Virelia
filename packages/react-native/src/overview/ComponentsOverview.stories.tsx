@@ -1101,8 +1101,8 @@ function NativeComponentsOverview() {
               >
                 Rich scrollable triggers
               </Text>
-              <Tabs defaultValue='general' variant='segmented' scrollable>
-                <Tabs.List>
+              <Tabs defaultValue='general' variant='segmented'>
+                <Tabs.List scrollable>
                   <Tabs.Trigger value='general' icon={<Settings />}>
                     General
                   </Tabs.Trigger>

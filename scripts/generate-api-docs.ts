@@ -82,6 +82,13 @@ const fallbackDescriptions: Record<string, string> = {
   placeholder: 'Placeholder text.',
   pickerStyle: 'Extra picker style.',
   clearable: 'Shows a clear action when the input has a value.',
+  forceMount:
+    'Keeps this content mounted regardless of the root mounting policy.',
+  keepMounted: 'Keeps all content mounted and hides inactive panels.',
+  lazyMount: 'Mounts content only after its value has been activated.',
+  loop: 'Loops keyboard navigation from last to first and first to last.',
+  onValueChange: 'Called when the value changes.',
+  scrollable: 'Makes the tab list horizontally scrollable.',
   triggerClassName: 'Extra CSS class for the trigger element.',
 };
 
@@ -121,6 +128,48 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   },
   'native.DropdownProps.DropdownProps': {
     size: 'Dropdown size.',
+  },
+  'web.TabsProps.TabsProps': {
+    activationMode:
+      'Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space.',
+    color: 'Visual tone: primary, neutral, success, warning, or danger.',
+    defaultValue: 'Initial selected value for uncontrolled usage.',
+    dir: 'Text direction used for horizontal keyboard navigation and indicator positioning.',
+    orientation: 'Keyboard and layout orientation.',
+    onValueChange: 'Called when the selected value changes.',
+    size: 'Tabs size.',
+    value: 'Controlled selected value.',
+    variant: 'Visual style: line, pills, or segmented.',
+  },
+  'web.TabsTriggerProps.TabsTriggerProps': {
+    badge: 'Badge rendered after the label.',
+    description: 'Secondary text rendered below the trigger label.',
+    icon: 'Icon rendered before the label. Explicit Tabs.Icon children take precedence.',
+    value: 'Stable trigger value matched with Tabs.Content.',
+  },
+  'web.TabsContentProps.TabsContentProps': {
+    value: 'Stable content value matched with Tabs.Trigger.',
+  },
+  'native.TabsProps.TabsProps': {
+    activationMode:
+      'Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space.',
+    color: 'Visual tone: primary, neutral, success, warning, or danger.',
+    defaultValue: 'Initial selected value for uncontrolled usage.',
+    dir: 'Text direction reserved for API parity.',
+    orientation: 'Layout orientation.',
+    onValueChange: 'Called when the selected value changes.',
+    size: 'Tabs size.',
+    value: 'Controlled selected value.',
+    variant: 'Visual style: line, pills, or segmented.',
+  },
+  'native.TabsTriggerProps.TabsTriggerProps': {
+    badge: 'Badge rendered after the label.',
+    description: 'Secondary text rendered below the trigger label.',
+    icon: 'Icon rendered before the label. Explicit Tabs.Icon children take precedence.',
+    value: 'Stable trigger value matched with Tabs.Content.',
+  },
+  'native.TabsContentProps.TabsContentProps': {
+    value: 'Stable content value matched with Tabs.Trigger.',
   },
 };
 
@@ -180,6 +229,12 @@ const sections: ApiSection[] = [
     '### Tabs.List Props',
     'TabsListProps',
     'src/components/Tabs/List/types.ts'
+  ),
+  section(
+    'web',
+    '### Tabs.Indicator Props',
+    'TabsIndicatorProps',
+    'src/components/Tabs/List/TabsIndicator.tsx'
   ),
   section(
     'web',
@@ -271,6 +326,12 @@ const sections: ApiSection[] = [
     '### Tabs.List Props',
     'TabsListProps',
     'src/components/Tabs/List/types.ts'
+  ),
+  section(
+    'native',
+    '### Tabs.Indicator Props',
+    'TabsIndicatorProps',
+    'src/components/Tabs/List/TabsIndicator.tsx'
   ),
   section(
     'native',

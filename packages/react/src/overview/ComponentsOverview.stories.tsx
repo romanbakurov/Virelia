@@ -1282,8 +1282,8 @@ function WebComponentsOverview() {
 
             <div style={groupStyle}>
               <h3 style={subtitleStyle}>Rich scrollable triggers</h3>
-              <Tabs defaultValue='general' variant='segmented' scrollable>
-                <Tabs.List aria-label='Account settings'>
+              <Tabs defaultValue='general' variant='segmented'>
+                <Tabs.List aria-label='Account settings' scrollable>
                   <Tabs.Trigger value='general' icon={<Settings />}>
                     General
                   </Tabs.Trigger>
