@@ -1,20 +1,39 @@
 import type {
   BaseTabsProps,
   Orientation,
-  TabsAppearance,
+  TabsActivationMode,
+  TabsColor,
+  TabsSize,
+  TabsValue,
+  TabsVariant,
 } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface TabsProps extends BaseTabsProps {
   children: ReactNode;
-  appearance?: TabsAppearance;
   style?: StyleProp<ViewStyle>;
 }
 
+export interface RegisteredTab {
+  value: TabsValue;
+  disabled: boolean;
+}
+
 export interface TabsContextValue {
-  activeIndex: number;
-  appearance: TabsAppearance;
+  value?: TabsValue;
+  setValue: (value: TabsValue) => void;
   orientation: Orientation;
-  setActiveIndex: (index: number) => void;
+  activationMode: TabsActivationMode;
+  variant: TabsVariant;
+  color: TabsColor;
+  size: TabsSize;
+  keepMounted: boolean;
+  lazyMount: boolean;
+  disabled: boolean;
+  registerTrigger: (
+    value: TabsValue,
+    disabled: boolean,
+    mounted: boolean
+  ) => void;
 }

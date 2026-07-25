@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement } from 'react';
+import { cloneElement, isValidElement, useEffect } from 'react';
 
 import type { ReactElement } from 'react';
 import { Pressable, Text, View } from 'react-native';
@@ -6,25 +6,43 @@ import { Pressable, Text, View } from 'react-native';
 import { useTheme, useThemeStyles } from '../../../theme';
 import { useTabs } from '../TabsContext';
 
-import { createStyles } from './Tab.styles';
-import type { TabProps } from './types';
+import { createStyles } from './TabsTrigger.styles';
+import type { TabsTriggerProps } from './types';
 
-export const Tab = ({
-  index,
+export const TabsTrigger = ({
+  value,
   children,
   icon,
+  badge,
+  description,
   disabled,
   style,
   textStyle,
-}: TabProps) => {
+}: TabsTriggerProps) => {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const { activeIndex, appearance, orientation, setActiveIndex } = useTabs();
-  const isActive = activeIndex === index;
-  const isPills = appearance === 'pills';
-  const isUnderline = appearance === 'underline';
-  const isDefault = appearance === 'default';
+  const {
+    value: selectedValue,
+    variant,
+    orientation,
+    disabled: rootDisabled,
+    setValue,
+    registerTrigger,
+  } = useTabs();
+  const isDisabled = rootDisabled || disabled;
+  const isActive = selectedValue === value;
+  const isPills = variant === 'pills';
+  const isLine = variant === 'line';
+  const isSegmented = variant === 'segmented';
   const isVertical = orientation === 'vertical';
+
+  useEffect(() => {
+    registerTrigger(value, Boolean(isDisabled), true);
+
+    return () => {
+      registerTrigger(value, Boolean(isDisabled), false);
+    };
+  }, [isDisabled, registerTrigger, value]);
 
   const iconColor =
     isPills && isActive
@@ -41,12 +59,12 @@ export const Tab = ({
 
   return (
     <Pressable
-      disabled={disabled}
+      disabled={isDisabled}
       accessibilityRole='tab'
-      accessibilityState={{ selected: isActive, disabled }}
+      accessibilityState={{ selected: isActive, disabled: isDisabled }}
       onPress={() => {
-        if (!disabled && !isActive) {
-          setActiveIndex(index);
+        if (!isDisabled && !isActive) {
+          setValue(value);
         }
       }}
       style={({ pressed }) => [
@@ -56,17 +74,17 @@ export const Tab = ({
         isPills && styles.tabPills,
         isPills && isActive && styles.tabPillsActive,
 
-        pressed && !disabled && styles.tabPressed,
+        pressed && !isDisabled && styles.tabPressed,
 
-        isDefault && isActive && styles.tabDefaultActive,
+        isSegmented && isActive && styles.tabDefaultActive,
 
-        disabled && styles.tabDisabled,
+        isDisabled && styles.tabDisabled,
         style,
       ]}
     >
       {({ pressed }) => (
         <>
-          {isUnderline && !isVertical && (
+          {isLine && !isVertical && (
             <View
               pointerEvents='none'
               style={[
@@ -76,7 +94,7 @@ export const Tab = ({
             />
           )}
 
-          {isUnderline && isVertical && (
+          {isLine && isVertical && (
             <View
               pointerEvents='none'
               style={[
@@ -84,7 +102,7 @@ export const Tab = ({
                 isActive && styles.verticalIndicatorActive,
                 pressed &&
                   !isActive &&
-                  !disabled &&
+                  !isDisabled &&
                   styles.verticalIndicatorPressed,
               ]}
             />
@@ -100,12 +118,28 @@ export const Tab = ({
                 styles.tabText,
                 isPills && isActive && styles.tabTextPillsActive,
                 !isPills && isActive && styles.tabTextActive,
-                disabled && styles.tabTextDisabled,
+                isDisabled && styles.tabTextDisabled,
                 textStyle,
               ]}
             >
               {children}
             </Text>
+          )}
+
+          {description != null && (
+            <Text
+              numberOfLines={2}
+              ellipsizeMode='tail'
+              style={[styles.tabText, styles.tabDescription]}
+            >
+              {description}
+            </Text>
+          )}
+
+          {badge != null && (
+            <View style={styles.tabBadge}>
+              <Text style={styles.tabBadgeText}>{badge}</Text>
+            </View>
           )}
         </>
       )}
@@ -113,4 +147,4 @@ export const Tab = ({
   );
 };
 
-Tab.displayName = 'Tab';
+TabsTrigger.displayName = 'Tabs.Trigger';

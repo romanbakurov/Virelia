@@ -1,8 +1,10 @@
 .list {
+  position: relative;
   display: flex;
   justify-content: flex-start;
   gap: var(--space-5);
   margin-bottom: var(--space-4);
+  border-color: var(--tabs-list-border);
 }
 
 .vertical {
@@ -10,4 +12,71 @@
   flex-direction: column;
   gap: var(--space-1);
   margin-bottom: 0;
+}
+
+.line {
+  border-bottom: 1px solid var(--tabs-list-border);
+
+  &.vertical {
+    border-right: 1px solid var(--tabs-list-border);
+    border-bottom: 0;
+  }
+}
+
+.pills {
+  gap: var(--space-2);
+}
+
+.segmented {
+  gap: 0;
+  padding: var(--space-1);
+  background: var(--tabs-pills-hover-bg);
+  border: 1px solid var(--tabs-list-border);
+  border-radius: var(--radius-lg);
+}
+
+.scrollable {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  z-index: 0;
+  width: 0;
+  height: 3px;
+  background: var(--tabs-indicator-active-bg);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+  transition:
+    transform 0.2s ease,
+    width 0.2s ease,
+    height 0.2s ease;
+}
+
+.vertical .indicator {
+  inset: 0 -1px auto auto;
+  width: 3px;
+  height: 0;
+}
+
+.segmented .indicator {
+  top: var(--space-1);
+  bottom: var(--space-1);
+  height: auto;
+  background: var(--tabs-pills-active-bg);
+  border: 1px solid var(--tabs-pills-active-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
 }

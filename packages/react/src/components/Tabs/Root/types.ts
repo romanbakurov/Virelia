@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactNode } from 'react';
 
 type DivProps = Omit<
   HTMLAttributes<HTMLDivElement>,
-  'children' | 'color' | 'defaultValue' | 'onChange'
+  'children' | 'color' | 'defaultValue' | 'dir' | 'onChange'
 >;
 
 export interface TabsProps extends BaseTabsProps, DivProps {

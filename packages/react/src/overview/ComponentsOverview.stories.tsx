@@ -1258,17 +1258,19 @@ function WebComponentsOverview() {
         </Section>
 
         <Section title='Tabs'>
-          <Tabs defaultActiveIndex={0} appearance='underline'>
+          <Tabs defaultValue='overview' variant='line'>
             <Tabs.List>
-              <Tabs.Tab index={0}>Overview</Tabs.Tab>
-              <Tabs.Tab index={1}>Usage</Tabs.Tab>
-              <Tabs.Tab index={2}>Settings</Tabs.Tab>
+              <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+              <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+              <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
             </Tabs.List>
-            <Tabs.Panel index={0}>
+            <Tabs.Content value='overview'>
               Overview content for the web component.
-            </Tabs.Panel>
-            <Tabs.Panel index={1}>Usage notes and examples.</Tabs.Panel>
-            <Tabs.Panel index={2}>Settings panel content.</Tabs.Panel>
+            </Tabs.Content>
+            <Tabs.Content value='usage'>Usage notes and examples.</Tabs.Content>
+            <Tabs.Content value='settings'>
+              Settings panel content.
+            </Tabs.Content>
           </Tabs>
         </Section>
 

@@ -4,20 +4,24 @@ import type { KeyboardEvent } from 'react';
 import type { RegisteredTab } from './types';
 
 export interface UseTabsKeyboardParams {
-  value: string;
+  focusedValue?: string;
   setValue: (value: string) => void;
+  setFocusedValue: (value: string) => void;
   getTabs: () => RegisteredTab[];
   orientation: Orientation;
   activationMode: TabsActivationMode;
+  dir: 'ltr' | 'rtl';
   loop: boolean;
 }
 
 export const useTabsKeyboard = ({
-  value,
+  focusedValue,
   setValue,
+  setFocusedValue,
   getTabs,
   orientation,
   activationMode,
+  dir,
   loop,
 }: UseTabsKeyboardParams) => {
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
@@ -25,7 +29,16 @@ export const useTabsKeyboard = ({
 
     if (tabs.length === 0) return;
 
-    const currentIndex = tabs.findIndex((tab) => tab.value === value);
+    const activeElementIndex = tabs.findIndex(
+      (tab) => tab.element === document.activeElement
+    );
+    const focusedIndex = tabs.findIndex((tab) => tab.value === focusedValue);
+    const currentIndex =
+      activeElementIndex >= 0
+        ? activeElementIndex
+        : focusedIndex >= 0
+          ? focusedIndex
+          : 0;
 
     const focusTab = (nextIndex: number) => {
       const nextTab = tabs[nextIndex];
@@ -33,7 +46,12 @@ export const useTabsKeyboard = ({
       if (!nextTab) return;
 
       event.preventDefault();
+      setFocusedValue(nextTab.value);
       nextTab.element.focus();
+      nextTab.element.scrollIntoView?.({
+        block: 'nearest',
+        inline: 'nearest',
+      });
 
       if (activationMode === 'automatic') {
         setValue(nextTab.value);
@@ -53,13 +71,13 @@ export const useTabsKeyboard = ({
     switch (event.key) {
       case 'ArrowRight':
         if (orientation === 'horizontal') {
-          focusTab(getNextIndex());
+          focusTab(dir === 'rtl' ? getPreviousIndex() : getNextIndex());
         }
         break;
 
       case 'ArrowLeft':
         if (orientation === 'horizontal') {
-          focusTab(getPreviousIndex());
+          focusTab(dir === 'rtl' ? getNextIndex() : getPreviousIndex());
         }
         break;
 
@@ -92,6 +110,7 @@ export const useTabsKeyboard = ({
 
           if (focusedTab) {
             event.preventDefault();
+            setFocusedValue(focusedTab.value);
             setValue(focusedTab.value);
           }
         }

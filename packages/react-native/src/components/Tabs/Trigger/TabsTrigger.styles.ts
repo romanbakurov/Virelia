@@ -8,7 +8,8 @@ const fontWeight = (value: string): TextStyle['fontWeight'] =>
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     tab: {
-      minHeight: 40,
+      minHeight: 44,
+      minWidth: 44,
       alignItems: 'center',
       flexDirection: 'row',
       gap: theme.tokens.spacing[2],
@@ -21,7 +22,7 @@ export const createStyles = (theme: NativeTheme) =>
     tabVertical: {
       position: 'relative',
       width: '100%',
-      minHeight: 40,
+      minHeight: 44,
       flexGrow: 0,
       flexShrink: 0,
       justifyContent: 'flex-start',
@@ -130,6 +131,27 @@ export const createStyles = (theme: NativeTheme) =>
     tabIcon: {
       alignItems: 'center',
       justifyContent: 'center',
+    },
+
+    tabDescription: {
+      fontSize: theme.tokens.typography.size.sm,
+      color: theme.components.tabs.trigger.default.fg,
+    },
+
+    tabBadge: {
+      minHeight: 20,
+      minWidth: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: theme.tokens.spacing[2],
+      backgroundColor: theme.components.tabs.pills.active.bg,
+      borderRadius: theme.tokens.radius.full,
+    },
+
+    tabBadgeText: {
+      color: theme.components.tabs.pills.active.fg,
+      fontSize: theme.tokens.typography.size.sm,
+      fontWeight: fontWeight(theme.tokens.typography.weight.medium),
     },
 
     tabIconHover: {

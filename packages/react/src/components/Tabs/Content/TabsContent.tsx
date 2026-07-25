@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import { cn } from '@utils/cn';
 
 import { useTabsContext } from '../internal/TabsContext';
@@ -16,13 +18,37 @@ export const TabsContent = ({
   const {
     value: selectedValue,
     orientation,
+    keepMounted,
+    lazyMount,
+    registerContent,
     getTriggerId,
     getContentId,
   } = useTabsContext();
 
   const isActive = selectedValue === value;
+  const [hasMounted, setHasMounted] = useState(isActive);
 
-  if (!forceMount && !isActive) {
+  useEffect(() => {
+    registerContent(value, true);
+
+    return () => {
+      registerContent(value, false);
+    };
+  }, [registerContent, value]);
+
+  useEffect(() => {
+    if (isActive) {
+      setHasMounted(true);
+    }
+  }, [isActive]);
+
+  const shouldMount =
+    forceMount ||
+    isActive ||
+    (keepMounted && !lazyMount) ||
+    (keepMounted && lazyMount && hasMounted);
+
+  if (!shouldMount) {
     return null;
   }
 
@@ -37,7 +63,8 @@ export const TabsContent = ({
       data-state={isActive ? 'active' : 'inactive'}
       data-orientation={orientation}
       className={cn(
-        styles.content,
+        styles.panel,
+        isActive && styles.visible,
         orientation === 'vertical' && styles.vertical,
         className
       )}

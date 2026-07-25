@@ -6,7 +6,12 @@ import type { TabsListProps } from './types';
 
 import styles from './TabsList.module.scss';
 
-export const TabsList = ({ children, className, ...props }: TabsListProps) => {
+export const TabsList = ({
+  children,
+  className,
+  scrollable = false,
+  ...props
+}: TabsListProps) => {
   const { orientation, variant } = useTabsContext();
 
   return (
@@ -14,12 +19,16 @@ export const TabsList = ({ children, className, ...props }: TabsListProps) => {
       {...props}
       role='tablist'
       aria-orientation={orientation}
+      data-orientation={orientation}
+      data-variant={variant}
+      data-scrollable={scrollable ? '' : undefined}
       className={cn(
         styles.list,
         orientation === 'vertical' && styles.vertical,
-        variant === 'line' && styles.underline,
+        variant === 'line' && styles.line,
         variant === 'pills' && styles.pills,
-        variant === 'segmented' && styles.default,
+        variant === 'segmented' && styles.segmented,
+        scrollable && styles.scrollable,
         className
       )}
     >

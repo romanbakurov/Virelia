@@ -3,22 +3,30 @@ import type {
   TabsActivationMode,
   TabsColor,
   TabsSize,
+  TabsValue,
   TabsVariant,
 } from '@vellira-ui/types';
 import type { KeyboardEvent } from 'react';
 
 export interface RegisteredTab {
-  value: string;
+  value: TabsValue;
   element: HTMLButtonElement;
   disabled: boolean;
 }
 
+export interface RegisteredContent {
+  value: TabsValue;
+}
+
 export interface TabsContextValue {
-  value?: string;
-  setValue: (value: string) => void;
+  value?: TabsValue;
+  focusedValue?: TabsValue;
+  setValue: (value: TabsValue) => void;
+  setFocusedValue: (value: TabsValue) => void;
 
   orientation: Orientation;
   activationMode: TabsActivationMode;
+  dir: 'ltr' | 'rtl';
   loop: boolean;
 
   variant: TabsVariant;
@@ -27,15 +35,17 @@ export interface TabsContextValue {
 
   keepMounted: boolean;
   lazyMount: boolean;
+  disabled: boolean;
 
   registerTrigger: (
-    value: string,
+    value: TabsValue,
     element: HTMLButtonElement | null,
     disabled?: boolean
   ) => void;
+  registerContent: (value: TabsValue, mounted: boolean) => void;
 
   onTriggerKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
 
-  getTriggerId: (value: string) => string;
-  getContentId: (value: string) => string;
+  getTriggerId: (value: TabsValue) => string;
+  getContentId: (value: TabsValue) => string;
 }

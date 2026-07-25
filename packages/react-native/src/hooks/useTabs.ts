@@ -1,25 +1,24 @@
 import { useControllableState } from './useControllableState';
 
 export interface UseTabsParams {
-  activeIndex?: number;
-  defaultActiveIndex?: number;
-  onChange?: (index: number) => void;
-  orientation?: 'horizontal' | 'vertical';
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
 }
 
 export const useTabs = ({
-  activeIndex: controlledActiveIndex,
-  defaultActiveIndex = 0,
-  onChange,
+  value: controlledValue,
+  defaultValue = '',
+  onValueChange,
 }: UseTabsParams) => {
-  const [activeIndex, setActiveIndex] = useControllableState({
-    value: controlledActiveIndex,
-    defaultValue: defaultActiveIndex,
-    onChange,
+  const [value, setValue] = useControllableState({
+    value: controlledValue,
+    defaultValue,
+    onChange: onValueChange,
   });
 
   return {
-    activeIndex,
-    setActiveIndex,
+    value,
+    setValue,
   };
 };

@@ -15,11 +15,11 @@ describe('Native Tabs', () => {
     const { container, unmount } = render(
       <Tabs>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1}>Usage</Tabs.Tab>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
@@ -38,15 +38,15 @@ describe('Native Tabs', () => {
     const { container, unmount } = render(
       <Tabs>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1} disabled>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='disabled' disabled>
             Disabled
-          </Tabs.Tab>
-          <Tabs.Tab index={2}>Usage</Tabs.Tab>
+          </Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Disabled panel</Tabs.Panel>
-        <Tabs.Panel index={2}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='disabled'>Disabled panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
@@ -77,13 +77,13 @@ describe('Native Tabs', () => {
 
   it('exposes tablist and tab selected states', () => {
     const { container, unmount } = render(
-      <Tabs defaultActiveIndex={1}>
+      <Tabs defaultValue='usage'>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1}>Usage</Tabs.Tab>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
@@ -97,34 +97,34 @@ describe('Native Tabs', () => {
     unmount();
   });
 
-  it('keeps controlled active tab until activeIndex changes', () => {
-    const onChange = vi.fn();
+  it('keeps controlled active tab until value changes', () => {
+    const onValueChange = vi.fn();
     const { container, rerender, unmount } = render(
-      <Tabs activeIndex={0} onChange={onChange}>
+      <Tabs value='overview' onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1}>Usage</Tabs.Tab>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
     const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
     act(() => tabs[1].click());
 
-    expect(onChange).toHaveBeenCalledWith(1);
+    expect(onValueChange).toHaveBeenCalledWith('usage');
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
     expect(container.textContent).toContain('Overview panel');
 
     rerender(
-      <Tabs activeIndex={1} onChange={onChange}>
+      <Tabs value='usage' onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1}>Usage</Tabs.Tab>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
@@ -137,17 +137,17 @@ describe('Native Tabs', () => {
   });
 
   it('marks disabled tabs and does not activate them', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     const { container, unmount } = render(
-      <Tabs onChange={onChange}>
+      <Tabs defaultValue='overview' onValueChange={onValueChange}>
         <Tabs.List>
-          <Tabs.Tab index={0}>Overview</Tabs.Tab>
-          <Tabs.Tab index={1} disabled>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage' disabled>
             Usage
-          </Tabs.Tab>
+          </Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Overview panel</Tabs.Panel>
-        <Tabs.Panel index={1}>Usage panel</Tabs.Panel>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
       </Tabs>
     );
 
@@ -156,7 +156,7 @@ describe('Native Tabs', () => {
 
     act(() => tabs[1].click());
 
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
     expect(container.textContent).toContain('Overview panel');
 

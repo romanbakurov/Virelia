@@ -18,6 +18,7 @@ export interface BaseTabsProps {
 
   orientation?: Orientation;
   activationMode?: TabsActivationMode;
+  dir?: 'ltr' | 'rtl';
   loop?: boolean;
 
   keepMounted?: boolean;
@@ -26,6 +27,8 @@ export interface BaseTabsProps {
   variant?: TabsVariant;
   color?: TabsColor;
   size?: TabsSize;
+
+  disabled?: boolean;
 }
 
 export interface BaseTabsListProps {
@@ -35,6 +38,8 @@ export interface BaseTabsListProps {
 export interface BaseTabsTriggerProps {
   value: TabsValue;
   disabled?: boolean;
+  description?: unknown;
+  badge?: unknown;
 }
 
 export interface BaseTabsContentProps {

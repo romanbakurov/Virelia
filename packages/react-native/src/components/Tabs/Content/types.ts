@@ -1,8 +1,8 @@
-import type { BaseTabsPanelProps } from '@vellira-ui/types';
+import type { BaseTabsContentProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface TabsPanelProps extends BaseTabsPanelProps {
+export interface TabsContentProps extends BaseTabsContentProps {
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
 }

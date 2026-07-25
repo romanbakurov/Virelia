@@ -10,68 +10,164 @@ import {
   Settings,
   User,
 } from '@vellira-ui/icons';
-const noop = () => undefined;
+import type { CSSProperties, ReactNode } from 'react';
 
 import { Tabs } from '../Tabs';
+
+const noop = () => undefined;
+
+const stackStyle = {
+  display: 'grid',
+  gap: 24,
+  minWidth: 0,
+} satisfies CSSProperties;
+
+const sectionStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+  minWidth: 0,
+  maxWidth: 760,
+  padding: 20,
+  border: '1px solid var(--border-muted)',
+  borderRadius: 'var(--radius-xl)',
+  background: 'var(--surface-subtle)',
+} satisfies CSSProperties;
+
+const subtitleStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 13,
+  fontWeight: 600,
+} satisfies CSSProperties;
+
+const currentValueStyle = {
+  margin: 0,
+  color: 'var(--text-secondary)',
+  fontSize: 14,
+} satisfies CSSProperties;
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section style={sectionStyle}>
+      <h3 style={subtitleStyle}>{title}</h3>
+      {children}
+    </section>
+  );
+}
 
 const meta = {
   title: 'Components/Tabs',
   component: Tabs,
   tags: ['autodocs'],
+
   parameters: {
     docs: {
       description: {
         component: `
-### Tabs Component
+### Tabs
 
-Navigation component for switching between related content panels.
+A compound navigation component for switching between related sections of content.
 
 **Features**
-- Text, icon, and text-with-icon tabs
-- Default, underline, and pills appearances
+
+- Controlled and uncontrolled value
 - Horizontal and vertical orientation
-- Disabled tabs
-- Keyboard navigation with arrow keys, Home, and End
-- Panel composition through \`Tabs.Panel\`
+- Automatic and manual activation
+- Line, pills, and segmented variants
+- Primary, neutral, success, warning, and danger colors
+- Small, medium, and large sizes
+- Text and icon triggers
+- Disabled triggers
+- Arrow, Home, and End keyboard navigation
+
+### Compound API
+
+\`\`\`tsx
+<Tabs defaultValue='overview'>
+  <Tabs.List aria-label='Account sections'>
+    <Tabs.Trigger value='overview'>
+      Overview
+    </Tabs.Trigger>
+
+    <Tabs.Trigger value='settings'>
+      Settings
+    </Tabs.Trigger>
+  </Tabs.List>
+
+  <Tabs.Content value='overview'>
+    Overview content
+  </Tabs.Content>
+
+  <Tabs.Content value='settings'>
+    Settings content
+  </Tabs.Content>
+</Tabs>
+\`\`\`
 
 ### Accessibility
 
-Tabs render tablist, tab, and panel semantics so keyboard and screen reader users can understand the relationship between controls and content.
+Tabs use the WAI-ARIA tabs pattern:
 
-Correct usage:
-
-\`\`\`tsx
-<Tabs defaultActiveIndex={0}>
-  <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
-  </Tabs.List>
-
-  <Tabs.Panel index={0}>Overview content</Tabs.Panel>
-  <Tabs.Panel index={1}>Settings content</Tabs.Panel>
-</Tabs>
-\`\`\`
+- \`Tabs.List\` renders a tab list
+- \`Tabs.Trigger\` renders a tab
+- \`Tabs.Content\` renders a tab panel
+- triggers and content are connected through accessible IDs
+- disabled triggers are skipped during keyboard navigation
+- automatic and manual keyboard activation are supported
 `,
       },
     },
   },
+
   args: {
-    defaultActiveIndex: 0,
+    defaultValue: 'home',
     orientation: 'horizontal',
-    appearance: 'default',
-    onChange: noop,
+    activationMode: 'automatic',
+    loop: true,
+    variant: 'line',
+    color: 'primary',
+    size: 'md',
+    onValueChange: noop,
   },
+
   argTypes: {
     children: {
       description:
-        'Tabs content composed from Tabs.List, Tabs.Tab, and Tabs.Panel.',
+        'Compound content composed from Tabs.List, Tabs.Trigger, and Tabs.Content.',
       control: false,
       table: {
         type: { summary: 'ReactNode' },
       },
     },
+
+    value: {
+      description: 'Controlled value of the active trigger.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+
+    defaultValue: {
+      description: 'Initially active value in uncontrolled mode.',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'home' },
+      },
+    },
+
+    onValueChange: {
+      description: 'Called when the active value changes.',
+      action: 'value changed',
+      table: {
+        type: { summary: '(value: string) => void' },
+      },
+    },
+
     orientation: {
-      description: 'Layout direction of the tab list.',
+      description: 'Layout and keyboard-navigation orientation.',
       control: 'select',
       options: ['horizontal', 'vertical'],
       table: {
@@ -79,35 +175,57 @@ Correct usage:
         defaultValue: { summary: 'horizontal' },
       },
     },
-    appearance: {
-      description: 'Visual style of the tabs.',
+
+    activationMode: {
+      description:
+        'Whether keyboard focus activates a trigger automatically or requires Enter or Space.',
       control: 'select',
-      options: ['default', 'underline', 'pills'],
+      options: ['automatic', 'manual'],
       table: {
-        type: { summary: `'default' | 'underline' | 'pills'` },
-        defaultValue: { summary: 'default' },
+        type: { summary: `'automatic' | 'manual'` },
+        defaultValue: { summary: 'automatic' },
       },
     },
-    defaultActiveIndex: {
-      description: 'Index of initially active tab.',
-      control: 'number',
+
+    loop: {
+      description:
+        'Whether keyboard navigation wraps between the first and last enabled triggers.',
+      control: 'boolean',
       table: {
-        type: { summary: 'number' },
-        defaultValue: { summary: '0' },
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
       },
     },
-    activeIndex: {
-      description: 'Controlled active tab index.',
-      control: 'number',
+
+    variant: {
+      description: 'Visual treatment of the tab list and triggers.',
+      control: 'select',
+      options: ['line', 'pills', 'segmented'],
       table: {
-        type: { summary: 'number' },
+        type: { summary: `'line' | 'pills' | 'segmented'` },
+        defaultValue: { summary: 'line' },
       },
     },
-    onChange: {
-      description: 'Called when the active tab changes.',
-      action: 'changed',
+
+    color: {
+      description: 'Semantic color of the active state.',
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
       table: {
-        type: { summary: '(index: number) => void' },
+        type: {
+          summary: `'primary' | 'neutral' | 'success' | 'warning' | 'danger'`,
+        },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+
+    size: {
+      description: 'Size of the tab triggers.',
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: `'sm' | 'md' | 'lg'` },
+        defaultValue: { summary: 'md' },
       },
     },
   },
@@ -117,208 +235,511 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const TextTabs = () => (
+interface DemoTriggersProps {
+  disabledSettings?: boolean;
+  iconOnly?: boolean;
+}
+
+const DemoTriggers = ({
+  disabledSettings = false,
+  iconOnly = false,
+}: DemoTriggersProps) => (
   <>
-    <Tabs.Tab index={0}>Home</Tabs.Tab>
-    <Tabs.Tab index={1}>Profile</Tabs.Tab>
-    <Tabs.Tab index={2}>Settings</Tabs.Tab>
-    <Tabs.Tab index={3}>Notifications</Tabs.Tab>
+    <Tabs.Trigger
+      value='home'
+      icon={<Home />}
+      aria-label={iconOnly ? 'Home' : undefined}
+    >
+      {iconOnly ? null : 'Home'}
+    </Tabs.Trigger>
+
+    <Tabs.Trigger
+      value='profile'
+      icon={<User />}
+      aria-label={iconOnly ? 'Profile' : undefined}
+    >
+      {iconOnly ? null : 'Profile'}
+    </Tabs.Trigger>
+
+    <Tabs.Trigger
+      value='settings'
+      icon={<Settings />}
+      disabled={disabledSettings}
+      aria-label={iconOnly ? 'Settings' : undefined}
+    >
+      {iconOnly ? null : 'Settings'}
+    </Tabs.Trigger>
+
+    <Tabs.Trigger
+      value='notifications'
+      icon={<Bell />}
+      aria-label={iconOnly ? 'Notifications' : undefined}
+    >
+      {iconOnly ? null : 'Notifications'}
+    </Tabs.Trigger>
   </>
 );
 
-const IconTabs = () => (
+const DemoContent = () => (
   <>
-    <Tabs.Tab index={0} icon={<Home />} aria-label='Home' />
-    <Tabs.Tab index={1} icon={<User />} aria-label='Profile' />
-    <Tabs.Tab index={2} icon={<Settings />} aria-label='Settings' />
-    <Tabs.Tab index={3} icon={<Bell />} aria-label='Notifications' />
+    <Tabs.Content value='home'>
+      <div>Home content — dashboard information and recent activity.</div>
+    </Tabs.Content>
+
+    <Tabs.Content value='profile'>
+      <div>Profile content — personal details and preferences.</div>
+    </Tabs.Content>
+
+    <Tabs.Content value='settings'>
+      <div>Settings content — application configuration options.</div>
+    </Tabs.Content>
+
+    <Tabs.Content value='notifications'>
+      <div>Notifications content — alerts and delivery settings.</div>
+    </Tabs.Content>
   </>
 );
 
-const DisabledTabs = () => (
+const FileTriggers = () => (
   <>
-    <Tabs.Tab index={0} icon={<Home />}>
-      Home
-    </Tabs.Tab>
-    <Tabs.Tab index={1} icon={<User />}>
-      Profile
-    </Tabs.Tab>
-    <Tabs.Tab index={2} disabled icon={<Settings />}>
-      Settings
-    </Tabs.Tab>
-    <Tabs.Tab index={3} icon={<Bell />}>
-      Notifications
-    </Tabs.Tab>
-  </>
-);
-
-const DefaultPanels = () => (
-  <>
-    <Tabs.Panel index={0}>
-      <div>Home content - Home information</div>
-    </Tabs.Panel>
-    <Tabs.Panel index={1}>
-      <div>Profile content - User information and preferences</div>
-    </Tabs.Panel>
-    <Tabs.Panel index={2}>
-      <div>Settings content - Configuration options</div>
-    </Tabs.Panel>
-    <Tabs.Panel index={3}>
-      <div>Notifications content - Alert and notification settings</div>
-    </Tabs.Panel>
-  </>
-);
-
-const FileTabs = () => (
-  <>
-    <Tabs.Tab index={0} icon={<Folder />}>
+    <Tabs.Trigger value='files' icon={<Folder />}>
       Files
-    </Tabs.Tab>
-    <Tabs.Tab index={1} icon={<Image />}>
+    </Tabs.Trigger>
+
+    <Tabs.Trigger value='images' icon={<Image />}>
       Images
-    </Tabs.Tab>
-    <Tabs.Tab index={2} icon={<Headphones />}>
+    </Tabs.Trigger>
+
+    <Tabs.Trigger value='music' icon={<Headphones />}>
       Music
-    </Tabs.Tab>
+    </Tabs.Trigger>
   </>
 );
 
-const FilePanels = () => (
+const FileContent = () => (
   <>
-    <Tabs.Panel index={0}>
+    <Tabs.Content value='files'>
       <ul>
         <li>document.pdf</li>
         <li>presentation.pptx</li>
         <li>spreadsheet.xlsx</li>
       </ul>
-    </Tabs.Panel>
-    <Tabs.Panel index={1}>
+    </Tabs.Content>
+
+    <Tabs.Content value='images'>
       <ul>
         <li>photo.jpg</li>
         <li>screenshot.png</li>
         <li>illustration.svg</li>
       </ul>
-    </Tabs.Panel>
-    <Tabs.Panel index={2}>
+    </Tabs.Content>
+
+    <Tabs.Content value='music'>
       <ul>
         <li>song.mp3</li>
         <li>podcast.wav</li>
         <li>playlist.m3u</li>
       </ul>
-    </Tabs.Panel>
+    </Tabs.Content>
   </>
 );
 
 const ControlledDemo = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [value, setValue] = useState('home');
 
   return (
-    <Tabs
-      activeIndex={activeIndex}
-      onChange={setActiveIndex}
-      appearance='underline'
-    >
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <div style={stackStyle}>
+      <p style={currentValueStyle}>
+        Current value: <strong>{value}</strong>
+      </p>
+
+      <Tabs value={value} onValueChange={setValue}>
+        <Tabs.List aria-label='Controlled account sections'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </div>
+  );
+};
+
+const DynamicTriggersDemo = () => {
+  const [showProfile, setShowProfile] = useState(true);
+
+  return (
+    <div style={stackStyle}>
+      <button
+        type='button'
+        onClick={() => setShowProfile((current) => !current)}
+      >
+        Toggle profile
+      </button>
+
+      <Tabs defaultValue='home'>
+        <Tabs.List aria-label='Dynamic account sections'>
+          <Tabs.Trigger value='home'>Home</Tabs.Trigger>
+          {showProfile && <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>}
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='home'>Home content</Tabs.Content>
+        {showProfile && (
+          <Tabs.Content value='profile'>Profile content</Tabs.Content>
+        )}
+        <Tabs.Content value='settings'>Settings content</Tabs.Content>
+      </Tabs>
+    </div>
   );
 };
 
 export const Basic: Story = {
-  args: {
-    defaultActiveIndex: 0,
-    orientation: 'horizontal',
-    appearance: 'default',
-  },
   render: (args) => (
-    <Tabs {...args}>
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <Section title='Basic'>
+      <Tabs {...args}>
+        <Tabs.List aria-label='Account sections'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
   ),
 };
 
-export const Underline: Story = {
+export const Controlled: Story = {
   render: () => (
-    <Tabs defaultActiveIndex={0} appearance='underline'>
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <Section title='Controlled'>
+      <ControlledDemo />
+    </Section>
   ),
 };
 
-export const Pills: Story = {
+export const DefaultValue: Story = {
   render: () => (
-    <Tabs defaultActiveIndex={0} appearance='pills'>
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <Section title='Default value'>
+      <Tabs defaultValue='settings'>
+        <Tabs.List aria-label='Default value example'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
   ),
 };
 
-export const IconOnly: Story = {
+export const Variants: Story = {
   render: () => (
-    <Tabs defaultActiveIndex={0} appearance='pills'>
-      <Tabs.List>
-        <IconTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <div style={stackStyle}>
+      {(['line', 'pills', 'segmented'] as const).map((variant) => (
+        <Section key={variant} title={variant}>
+          <Tabs defaultValue='home' variant={variant}>
+            <Tabs.List aria-label={`${variant} variant`}>
+              <DemoTriggers />
+            </Tabs.List>
+
+            <DemoContent />
+          </Tabs>
+        </Section>
+      ))}
+    </div>
   ),
 };
 
-export const DisabledState: Story = {
+export const Colors: Story = {
   render: () => (
-    <Tabs defaultActiveIndex={0}>
-      <Tabs.List>
-        <DisabledTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+    <div style={stackStyle}>
+      {(['primary', 'neutral', 'success', 'warning', 'danger'] as const).map(
+        (color) => (
+          <Section key={color} title={color}>
+            <Tabs defaultValue='home' color={color} variant='pills'>
+              <Tabs.List aria-label={`${color} tabs`}>
+                <DemoTriggers />
+              </Tabs.List>
+
+              <DemoContent />
+            </Tabs>
+          </Section>
+        )
+      )}
+    </div>
+  ),
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <div style={stackStyle}>
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Section key={size} title={size}>
+          <Tabs defaultValue='home' size={size}>
+            <Tabs.List aria-label={`${size} tabs`}>
+              <DemoTriggers />
+            </Tabs.List>
+
+            <DemoContent />
+          </Tabs>
+        </Section>
+      ))}
+    </div>
+  ),
+};
+
+export const Horizontal: Story = {
+  render: () => (
+    <Section title='Horizontal'>
+      <Tabs defaultValue='home' orientation='horizontal'>
+        <Tabs.List aria-label='Horizontal account sections'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const Vertical: Story = {
+  render: () => (
+    <Section title='Vertical'>
+      <Tabs defaultValue='home' orientation='vertical'>
+        <Tabs.List aria-label='Vertical account sections'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const AutomaticActivation: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Arrow-key navigation moves focus and immediately activates the focused trigger.',
+      },
+    },
+  },
+
+  render: () => (
+    <Section title='Automatic activation'>
+      <Tabs defaultValue='home' activationMode='automatic'>
+        <Tabs.List aria-label='Automatic activation example'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const ManualActivation: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Arrow-key navigation moves focus without changing content. Press Enter or Space to activate the focused trigger.',
+      },
+    },
+  },
+
+  render: () => (
+    <Section title='Manual activation'>
+      <Tabs defaultValue='home' activationMode='manual'>
+        <Tabs.List aria-label='Manual activation example'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const DisabledTrigger: Story = {
+  render: () => (
+    <Section title='Disabled trigger'>
+      <Tabs defaultValue='home'>
+        <Tabs.List aria-label='Disabled trigger example'>
+          <DemoTriggers disabledSettings />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const Icons: Story = {
+  render: () => (
+    <Section title='Icons'>
+      <Tabs defaultValue='home' variant='pills'>
+        <Tabs.List aria-label='Icon-only tabs'>
+          <DemoTriggers iconOnly />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const Badges: Story = {
+  render: () => (
+    <Section title='Badges'>
+      <Tabs defaultValue='notifications' variant='pills'>
+        <Tabs.List aria-label='Badge tabs'>
+          <Tabs.Trigger value='home'>Home</Tabs.Trigger>
+          <Tabs.Trigger value='notifications' badge={3}>
+            Notifications
+          </Tabs.Trigger>
+          <Tabs.Trigger value='settings' badge='New'>
+            Settings
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const RichTrigger: Story = {
+  render: () => (
+    <Section title='Rich trigger'>
+      <Tabs defaultValue='settings' variant='segmented'>
+        <Tabs.List aria-label='Rich trigger tabs'>
+          <Tabs.Trigger value='home'>
+            <Tabs.Icon>
+              <Home />
+            </Tabs.Icon>
+            <span>Home</span>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='settings'>
+            <Tabs.Icon>
+              <Settings />
+            </Tabs.Icon>
+            <span>Settings</span>
+            <Tabs.Badge>New</Tabs.Badge>
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='home'>Home content</Tabs.Content>
+        <Tabs.Content value='settings'>Settings content</Tabs.Content>
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const Indicator: Story = {
+  render: () => (
+    <Section title='Indicator'>
+      <Tabs defaultValue='home' variant='segmented'>
+        <Tabs.List aria-label='Indicator tabs'>
+          <DemoTriggers />
+          <Tabs.Indicator />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const Scrollable: Story = {
+  render: () => (
+    <Section title='Scrollable'>
+      <Tabs defaultValue='home'>
+        <Tabs.List aria-label='Scrollable tabs' scrollable>
+          <DemoTriggers />
+          <FileTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+        <FileContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const LazyMount: Story = {
+  render: () => (
+    <Section title='Lazy mount'>
+      <Tabs defaultValue='home' lazyMount>
+        <Tabs.List aria-label='Lazy mounted tabs'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const KeepMounted: Story = {
+  render: () => (
+    <Section title='Keep mounted'>
+      <Tabs defaultValue='home' keepMounted>
+        <Tabs.List aria-label='Keep mounted tabs'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const LazyKeepMounted: Story = {
+  render: () => (
+    <Section title='Lazy keep mounted'>
+      <Tabs defaultValue='home' lazyMount keepMounted>
+        <Tabs.List aria-label='Lazy keep mounted tabs'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
+  ),
+};
+
+export const DynamicTriggers: Story = {
+  render: () => (
+    <Section title='Dynamic triggers'>
+      <DynamicTriggersDemo />
+    </Section>
+  ),
+};
+
+export const RTL: Story = {
+  render: () => (
+    <Section title='RTL'>
+      <Tabs defaultValue='home' dir='rtl'>
+        <Tabs.List aria-label='RTL tabs'>
+          <DemoTriggers />
+        </Tabs.List>
+
+        <DemoContent />
+      </Tabs>
+    </Section>
   ),
 };
 
 export const CustomContent: Story = {
   render: () => (
-    <Tabs defaultActiveIndex={0}>
-      <Tabs.List>
-        <FileTabs />
-      </Tabs.List>
-      <FilePanels />
-    </Tabs>
-  ),
-};
+    <Section title='Custom content'>
+      <Tabs defaultValue='files'>
+        <Tabs.List aria-label='File categories'>
+          <FileTriggers />
+        </Tabs.List>
 
-export const VerticalBasic: Story = {
-  render: () => (
-    <Tabs defaultActiveIndex={0} orientation='vertical'>
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
+        <FileContent />
+      </Tabs>
+    </Section>
   ),
-};
-
-export const VerticalPills: Story = {
-  render: () => (
-    <Tabs defaultActiveIndex={0} orientation='vertical' appearance='pills'>
-      <Tabs.List>
-        <TextTabs />
-      </Tabs.List>
-      <DefaultPanels />
-    </Tabs>
-  ),
-};
-
-export const Controlled: Story = {
-  render: () => <ControlledDemo />,
 };

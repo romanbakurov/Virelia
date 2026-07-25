@@ -10,4 +10,11 @@ export interface TabsTriggerProps
     > {
   children?: ReactNode;
   icon?: ReactNode;
+  badge?: ReactNode;
+  description?: ReactNode;
+}
+
+export interface TabsSlotProps {
+  children: ReactNode;
+  className?: string;
 }
