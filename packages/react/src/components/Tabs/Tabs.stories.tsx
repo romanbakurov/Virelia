@@ -363,6 +363,7 @@ const ControlledDemo = () => {
       <Tabs value={value} onValueChange={setValue}>
         <Tabs.List aria-label='Controlled account sections'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -388,6 +389,7 @@ const DynamicTriggersDemo = () => {
           <Tabs.Trigger value='home'>Home</Tabs.Trigger>
           {showProfile && <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>}
           <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator />
         </Tabs.List>
 
         <Tabs.Content value='home'>Home content</Tabs.Content>
@@ -429,6 +431,7 @@ export const DefaultValue: Story = {
       <Tabs defaultValue='settings'>
         <Tabs.List aria-label='Default value example'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -484,6 +487,7 @@ export const Sizes: Story = {
           <Tabs defaultValue='home' size={size}>
             <Tabs.List aria-label={`${size} tabs`}>
               <DemoTriggers />
+              <Tabs.Indicator />
             </Tabs.List>
 
             <DemoContent />
@@ -500,6 +504,7 @@ export const Horizontal: Story = {
       <Tabs defaultValue='home' orientation='horizontal'>
         <Tabs.List aria-label='Horizontal account sections'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -514,6 +519,7 @@ export const Vertical: Story = {
       <Tabs defaultValue='home' orientation='vertical'>
         <Tabs.List aria-label='Vertical account sections'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -537,6 +543,7 @@ export const AutomaticActivation: Story = {
       <Tabs defaultValue='home' activationMode='automatic'>
         <Tabs.List aria-label='Automatic activation example'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -560,6 +567,7 @@ export const ManualActivation: Story = {
       <Tabs defaultValue='home' activationMode='manual'>
         <Tabs.List aria-label='Manual activation example'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -574,6 +582,7 @@ export const DisabledTrigger: Story = {
       <Tabs defaultValue='home'>
         <Tabs.List aria-label='Disabled trigger example'>
           <DemoTriggers disabledSettings />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -667,6 +676,7 @@ export const Scrollable: Story = {
         <Tabs.List aria-label='Scrollable tabs' scrollable>
           <DemoTriggers />
           <FileTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -682,6 +692,7 @@ export const LazyMount: Story = {
       <Tabs defaultValue='home' lazyMount>
         <Tabs.List aria-label='Lazy mounted tabs'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -696,6 +707,7 @@ export const KeepMounted: Story = {
       <Tabs defaultValue='home' keepMounted>
         <Tabs.List aria-label='Keep mounted tabs'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -710,6 +722,7 @@ export const LazyKeepMounted: Story = {
       <Tabs defaultValue='home' lazyMount keepMounted>
         <Tabs.List aria-label='Lazy keep mounted tabs'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -732,6 +745,7 @@ export const RTL: Story = {
       <Tabs defaultValue='home' dir='rtl'>
         <Tabs.List aria-label='RTL tabs'>
           <DemoTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -746,6 +760,7 @@ export const CustomContent: Story = {
       <Tabs defaultValue='files'>
         <Tabs.List aria-label='File categories'>
           <FileTriggers />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <FileContent />
