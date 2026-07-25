@@ -13,7 +13,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     listSegmented: {
-      padding: 3,
+      padding: 2,
       backgroundColor: theme.components.tabs.list.segmentedBg,
       borderColor: theme.components.tabs.list.border,
       borderRadius: theme.tokens.radius.xl,

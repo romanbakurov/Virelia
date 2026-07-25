@@ -21,7 +21,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     tabSegmented: {
       minHeight: 32,
-      paddingVertical: 6,
+      paddingVertical: 5,
       borderRadius: theme.tokens.radius.lg,
     },
 

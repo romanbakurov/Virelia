@@ -29,7 +29,7 @@
 
 .segmented {
   gap: 0;
-  padding: calc(var(--space-1) * 0.75);
+  padding: 2px;
   background: var(--tabs-segmented-bg);
   border: 1px solid var(--tabs-list-border);
   border-radius: var(--radius-xl);
@@ -68,13 +68,13 @@
 }
 
 .segmented .indicator {
-  top: calc(var(--space-1) * 0.75);
-  bottom: calc(var(--space-1) * 0.75);
+  top: 2px;
+  bottom: 2px;
   height: auto;
   background: var(--tabs-segmented-active-bg);
   border: 1px solid var(--tabs-segmented-active-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 2px rgb(24 21 33 / 6%);
 }
 
 @media (prefers-reduced-motion: reduce) {
