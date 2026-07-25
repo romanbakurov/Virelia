@@ -172,6 +172,27 @@ describe('Tooltip', () => {
     unmount();
   });
 
+  it('does not attach legacy color or size classes to content', () => {
+    const { unmount } = render(
+      <Tooltip open>
+        <Tooltip.Trigger>Trigger</Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content className='custom-tooltip'>
+            Token based tooltip
+          </Tooltip.Content>
+        </Portal>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector('[role="tooltip"]');
+
+    expect(tooltip?.className).toContain('custom-tooltip');
+    expect(tooltip?.className).not.toContain('neutral');
+    expect(tooltip?.className).not.toContain('sm');
+
+    unmount();
+  });
+
   it('uses provider delay when root delay is not provided', () => {
     vi.useFakeTimers();
 

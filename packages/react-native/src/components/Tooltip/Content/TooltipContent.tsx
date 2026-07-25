@@ -22,6 +22,35 @@ export const TooltipContent = ({
     return null;
   }
 
+  const bubble = (
+    <View
+      nativeID={tooltip.contentId}
+      pointerEvents='none'
+      style={[
+        styles.bubble,
+        {
+          top: tooltip.position.top,
+          left: tooltip.position.left,
+        },
+        !visible && { display: 'none' },
+        style,
+      ]}
+      onLayout={tooltip.onFloatingLayout}
+    >
+      {Children.map(children, (child) =>
+        typeof child === 'string' || typeof child === 'number' ? (
+          <Text style={[styles.text, textStyle]}>{child}</Text>
+        ) : (
+          child
+        )
+      )}
+    </View>
+  );
+
+  if (!visible) {
+    return bubble;
+  }
+
   return (
     <Modal
       visible={visible}
@@ -30,27 +59,7 @@ export const TooltipContent = ({
       onRequestClose={tooltip.requestClose}
     >
       <Pressable style={styles.overlay} onPress={tooltip.requestOutsideClose}>
-        <View
-          nativeID={tooltip.contentId}
-          pointerEvents='none'
-          style={[
-            styles.bubble,
-            {
-              top: tooltip.position.top,
-              left: tooltip.position.left,
-            },
-            style,
-          ]}
-          onLayout={tooltip.onFloatingLayout}
-        >
-          {Children.map(children, (child) =>
-            typeof child === 'string' || typeof child === 'number' ? (
-              <Text style={[styles.text, textStyle]}>{child}</Text>
-            ) : (
-              child
-            )
-          )}
-        </View>
+        {bubble}
       </Pressable>
     </Modal>
   );
