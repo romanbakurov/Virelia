@@ -329,6 +329,44 @@ describe('Tabs', () => {
     expect(disconnect).toHaveBeenCalled();
   });
 
+  it('positions the indicator under the active trigger in rtl', async () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+
+        if (element.id.includes('trigger-settings')) {
+          return rect({ left: 96, right: 176, top: 0, width: 80, height: 32 });
+        }
+
+        return rect({ left: 24, right: 224, top: 0, width: 200, height: 40 });
+      }
+    );
+
+    const { container, unmount } = render(
+      <Tabs defaultValue='settings' dir='rtl'>
+        <Tabs.List aria-label='RTL indicator tabs'>
+          <Tabs.Trigger value='general'>General</Tabs.Trigger>
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='general'>General panel</Tabs.Content>
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    );
+
+    await act(async () => undefined);
+
+    const indicator = container.querySelector<HTMLElement>(
+      '[data-testid="indicator"]'
+    );
+
+    expect(indicator?.style.width).toBe('80px');
+    expect(indicator?.style.transform).toBe('translateX(72px)');
+
+    unmount();
+  });
+
   it('renders a vertical indicator using trigger height', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
       function getBoundingClientRect() {

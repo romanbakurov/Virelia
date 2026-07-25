@@ -12,7 +12,7 @@ export type TabsIndicatorStyle = Pick<
 export const useTabsIndicator = () => {
   const indicatorRef = useRef<HTMLSpanElement | null>(null);
   const [style, setStyle] = useState<TabsIndicatorStyle>({});
-  const { value, orientation, dir, collectionVersion, getTriggerId } =
+  const { value, orientation, collectionVersion, getTriggerId } =
     useTabsContext();
 
   useEffect(() => {
@@ -47,10 +47,7 @@ export const useTabsIndicator = () => {
         return;
       }
 
-      const offset =
-        dir === 'rtl'
-          ? listRect.right - triggerRect.right + list.scrollLeft
-          : triggerRect.left - listRect.left + list.scrollLeft;
+      const offset = triggerRect.left - listRect.left + list.scrollLeft;
 
       setStyle({
         width: triggerRect.width,
@@ -83,7 +80,7 @@ export const useTabsIndicator = () => {
       list.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [collectionVersion, dir, getTriggerId, orientation, value]);
+  }, [collectionVersion, getTriggerId, orientation, value]);
 
   return useMemo(
     () => ({
