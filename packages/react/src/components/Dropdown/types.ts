@@ -25,6 +25,7 @@ export type DropdownProps = {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   size?: DropdownSize;
+  /** Semantic palette for trigger, content, focus, and item interaction states. */
   color?: DropdownColor;
   placement?: Placement;
   offset?: number;
@@ -48,8 +49,6 @@ export type DropdownProps = {
   onSearch?: (value: string) => void;
   empty?: ReactNode;
   noOptionsText?: ReactNode;
-  triggerClassName?: string;
-  dropdownClassName?: string;
 };
 
 export type DropdownTriggerProps = {
@@ -82,6 +81,7 @@ export type DropdownItemProps = {
   description?: ReactNode;
   badge?: ReactNode;
   shortcut?: ReactNode;
+  /** Semantic item color. Use `danger` for destructive actions. */
   color?: DropdownItemColor;
   disabled?: boolean;
   closeOnSelect?: boolean;

@@ -1,9 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Copy, Edit, Menu, Refresh, Settings, Trash } from '@vellira-ui/icons';
+import {
+  Copy,
+  Edit,
+  MoreHorizontal,
+  MoreVertical,
+  Refresh,
+  Settings,
+  Trash,
+} from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
 import { Button } from '../../primitives/Button';
@@ -50,23 +58,147 @@ function renderActionContent(onSelect?: (value: string) => void) {
   );
 }
 
-function DropdownIcon() {
-  const { theme } = useTheme();
+type MoreActionsIconButtonProps = Omit<
+  ComponentProps<typeof Button>,
+  'accessibilityLabel' | 'appearance' | 'children' | 'iconOnly' | 'iconStart'
+> & {
+  isOpen?: boolean;
+};
+
+function RotatingMoreIcon({
+  active,
+  color,
+  size,
+}: {
+  active: boolean;
+  color?: string;
+  size?: number;
+}) {
+  const rotation = useRef(new Animated.Value(active ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(rotation, {
+      toValue: active ? 1 : 0,
+      duration: 180,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [active, rotation]);
+
+  const resolvedSize = size ?? 20;
 
   return (
-    <Menu
+    <View
       style={{
-        transform: [{ rotate: '90deg' }],
+        width: resolvedSize,
+        height: resolvedSize,
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
-      size={20}
-      color={theme.components.dropdown.trigger.default.fg}
+    >
+      <Animated.View
+        style={{
+          position: 'absolute',
+          opacity: rotation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0],
+          }),
+          transform: [
+            {
+              rotate: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '90deg'],
+              }),
+            },
+            {
+              scale: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0.92],
+              }),
+            },
+          ],
+        }}
+      >
+        <MoreHorizontal color={color} size={resolvedSize} />
+      </Animated.View>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          opacity: rotation,
+          transform: [
+            {
+              rotate: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['-90deg', '0deg'],
+              }),
+            },
+            {
+              scale: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.92, 1],
+              }),
+            },
+          ],
+        }}
+      >
+        <MoreVertical color={color} size={resolvedSize} />
+      </Animated.View>
+    </View>
+  );
+}
+
+function MoreActionsIconButton({
+  color,
+  isOpen = false,
+  size,
+  onBlur,
+  onHoverIn,
+  onHoverOut,
+  onPressIn,
+  onPressOut,
+  ...props
+}: MoreActionsIconButtonProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const isActive = isOpen || isHovered || isPressed;
+
+  return (
+    <Button
+      {...props}
+      accessibilityLabel='More actions'
+      appearance='ghost'
+      color={color ?? 'primary'}
+      iconOnly
+      iconStart={<RotatingMoreIcon active={isActive} />}
+      size={size}
+      onBlur={(event) => {
+        setIsHovered(false);
+        setIsPressed(false);
+        onBlur?.(event);
+      }}
+      onHoverIn={(event) => {
+        setIsHovered(true);
+        onHoverIn?.(event);
+      }}
+      onHoverOut={(event) => {
+        setIsHovered(false);
+        onHoverOut?.(event);
+      }}
+      onPressIn={(event) => {
+        setIsPressed(true);
+        onPressIn?.(event);
+      }}
+      onPressOut={(event) => {
+        setIsPressed(false);
+        onPressOut?.(event);
+      }}
     />
   );
 }
 
 function CustomTriggerContent() {
   const { theme } = useTheme();
-  const color = theme.components.dropdown.trigger.default.fg;
+  const color = theme.components.dropdown.primary.trigger.default.fg;
 
   return (
     <View
@@ -149,6 +281,7 @@ RadioGroup when a small set of choices should stay visible for comparison.
     showArrow: true,
     disabled: false,
     presentation: 'auto',
+    color: 'primary',
     searchable: false,
     command: false,
     onOpenChange: fn(),
@@ -191,6 +324,13 @@ RadioGroup when a small set of choices should stay visible for comparison.
       options: ['auto', 'sheet', 'modal', 'popover'],
       description:
         'Native content presentation. Auto uses sheet on phones and popover on wider screens.',
+    },
+
+    color: {
+      control: 'select',
+      options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+      description:
+        'Semantic color used for trigger and menu interaction states.',
     },
 
     disabled: {
@@ -454,17 +594,40 @@ export const Uncontrolled: Story = {
   ),
 };
 
+function IconOnlyDropdown(args: DropdownStoryProps) {
+  const [open, setOpen] = useState(args.open ?? args.defaultOpen ?? false);
+
+  return (
+    <Dropdown
+      {...args}
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        args.onOpenChange?.(nextOpen);
+      }}
+    >
+      <Dropdown.Trigger asChild>
+        <MoreActionsIconButton
+          color={args.color}
+          isOpen={open}
+          size={args.size}
+        />
+      </Dropdown.Trigger>
+      {renderActionContent()}
+    </Dropdown>
+  );
+}
+
 export const IconOnly: Story = {
   args: {
     label: 'More actions',
     accessibilityLabel: 'More actions',
     accessibilityHint: 'Opens account action menu',
-    icon: <DropdownIcon />,
     showArrow: false,
   },
   render: (args) => (
-    <Section title='IconOnly'>
-      <Dropdown {...args}>{renderActionContent()}</Dropdown>
+    <Section title='Icon only'>
+      <IconOnlyDropdown {...args} />
     </Section>
   ),
 };

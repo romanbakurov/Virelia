@@ -636,38 +636,36 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 
 <!-- api-docgen:start web.DropdownProps.DropdownProps -->
 
-| Prop                 | Type                      | Required | Description                                                     |
-| -------------------- | ------------------------- | -------- | --------------------------------------------------------------- |
-| `placement`          | `Placement`               | No       | Floating UI menu placement.                                     |
-| `className`          | `string`                  | No       | Extra CSS class for the root element.                           |
-| `matchTriggerWidth`  | `boolean`                 | No       | Makes the menu match the trigger width.                         |
-| `disabled`           | `boolean`                 | No       | Disables the trigger.                                           |
-| `size`               | `DropdownSize`            | No       | Dropdown size.                                                  |
-| `open`               | `boolean`                 | No       | Controlled open state.                                          |
-| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                                |
-| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.                             |
-| `children`           | `ReactNode`               | Yes      | Content rendered inside the component.                          |
-| `color`              | `DropdownColor`           | No       | —                                                               |
-| `offset`             | `number`                  | No       | —                                                               |
-| `minWidth`           | `string \| number`        | No       | —                                                               |
-| `maxWidth`           | `string \| number`        | No       | —                                                               |
-| `portal`             | `boolean`                 | No       | —                                                               |
-| `avoidCollisions`    | `boolean`                 | No       | —                                                               |
-| `modal`              | `boolean`                 | No       | —                                                               |
-| `closeOnSelect`      | `boolean`                 | No       | —                                                               |
-| `loop`               | `boolean`                 | No       | Loops keyboard navigation from last to first and first to last. |
-| `loading`            | `boolean`                 | No       | —                                                               |
-| `loadingText`        | `ReactNode`               | No       | —                                                               |
-| `searchable`         | `boolean`                 | No       | —                                                               |
-| `command`            | `boolean`                 | No       | —                                                               |
-| `searchValue`        | `string`                  | No       | —                                                               |
-| `defaultSearchValue` | `string`                  | No       | —                                                               |
-| `searchPlaceholder`  | `string`                  | No       | —                                                               |
-| `onSearch`           | `(value: string) => void` | No       | —                                                               |
-| `empty`              | `ReactNode`               | No       | —                                                               |
-| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                    |
-| `triggerClassName`   | `string`                  | No       | Extra CSS class for the trigger element.                        |
-| `dropdownClassName`  | `string`                  | No       | Extra CSS class for the dropdown element.                       |
+| Prop                 | Type                      | Required | Description                                                                |
+| -------------------- | ------------------------- | -------- | -------------------------------------------------------------------------- |
+| `placement`          | `Placement`               | No       | Floating UI menu placement.                                                |
+| `className`          | `string`                  | No       | Extra CSS class for the root element.                                      |
+| `matchTriggerWidth`  | `boolean`                 | No       | Makes the menu match the trigger width.                                    |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                                                      |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                                             |
+| `open`               | `boolean`                 | No       | Controlled open state.                                                     |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                                           |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.                                        |
+| `children`           | `ReactNode`               | Yes      | Content rendered inside the component.                                     |
+| `color`              | `DropdownColor`           | No       | Semantic palette for trigger, content, focus, and item interaction states. |
+| `offset`             | `number`                  | No       | —                                                                          |
+| `minWidth`           | `string \| number`        | No       | —                                                                          |
+| `maxWidth`           | `string \| number`        | No       | —                                                                          |
+| `portal`             | `boolean`                 | No       | —                                                                          |
+| `avoidCollisions`    | `boolean`                 | No       | —                                                                          |
+| `modal`              | `boolean`                 | No       | —                                                                          |
+| `closeOnSelect`      | `boolean`                 | No       | —                                                                          |
+| `loop`               | `boolean`                 | No       | Loops keyboard navigation from last to first and first to last.            |
+| `loading`            | `boolean`                 | No       | —                                                                          |
+| `loadingText`        | `ReactNode`               | No       | —                                                                          |
+| `searchable`         | `boolean`                 | No       | —                                                                          |
+| `command`            | `boolean`                 | No       | —                                                                          |
+| `searchValue`        | `string`                  | No       | —                                                                          |
+| `defaultSearchValue` | `string`                  | No       | —                                                                          |
+| `searchPlaceholder`  | `string`                  | No       | —                                                                          |
+| `onSearch`           | `(value: string) => void` | No       | —                                                                          |
+| `empty`              | `ReactNode`               | No       | —                                                                          |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                               |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 

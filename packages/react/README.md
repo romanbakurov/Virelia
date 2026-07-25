@@ -261,16 +261,20 @@ dropdown keeps the selected item active and visible.
 Use `Dropdown` for contextual actions, not saved form values. Compose actions
 with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`, groups, labels,
 and separators. Use `open`, `defaultOpen`, and `onOpenChange` for menu state.
+Use root `color` for the semantic trigger and menu palette, and item
+`color='danger'` for destructive commands.
 
 ```tsx
 import { Dropdown } from '@vellira-ui/react';
 
-<Dropdown>
+<Dropdown color='primary'>
   <Dropdown.Trigger>Actions</Dropdown.Trigger>
   <Dropdown.Content>
     <Dropdown.Group>
       <Dropdown.Label>File</Dropdown.Label>
-      <Dropdown.Item onSelect={duplicate}>Duplicate</Dropdown.Item>
+      <Dropdown.Item description='Creates a copy' onSelect={duplicate}>
+        Duplicate
+      </Dropdown.Item>
     </Dropdown.Group>
     <Dropdown.Separator />
     <Dropdown.Item color='danger' onSelect={deleteFile}>

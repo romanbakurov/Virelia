@@ -72,7 +72,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | Radio option          |
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
-| `Dropdown`   | `children`, `label`, `open`, `defaultOpen`, `onOpenChange`, `presentation`, `closeOnSelect`, `disabled`                   | Context menu          |
+| `Dropdown`   | `children`, `label`, `trigger`, `icon`, `open`, `defaultOpen`, `onOpenChange`, `presentation`, `size`, `color`            | Context menu          |
 | `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | Tab navigation        |
 | `Tooltip`    | `children`, `placement`, `delay`, `disabled`, `Tooltip.Trigger`, `Tooltip.Content`                                        | Contextual helper     |
 | `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, compound sections                                           | Dialog and overlay    |
@@ -149,6 +149,13 @@ menus with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`,
 `Dropdown.Group`, `Dropdown.Label`, and `Dropdown.Separator`. Use
 `accessibilityLabel` for icon-only or custom triggers and `accessibilityHint`
 when the screen needs extra guidance.
+
+Native Dropdown mirrors the web compound API and token model. Use
+`color='primary' | 'neutral' | 'success' | 'warning' | 'danger'` on the root to
+choose the semantic palette for trigger, content, and pressed item states. Use
+`Dropdown.Item danger` for destructive actions. The root `trigger` prop is a
+convenience escape hatch for custom trigger content; it is still wrapped by the
+Dropdown trigger so press handling and open state stay owned by the component.
 
 ## Button
 

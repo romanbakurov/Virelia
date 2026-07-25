@@ -69,7 +69,7 @@ generated reference lives in
 | `Radio`      | `value`, `label`, `checked`, `defaultChecked`, `onCheckedChange`, `size`, `color`, `error`, `icon`                        | controlled or uncontrolled |
 | `RadioGroup` | `name`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`                              | controlled or uncontrolled |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `size`, `open`, `error`                     | controlled or uncontrolled |
-| `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `matchTriggerWidth`, `closeOnSelect`                      | controlled or uncontrolled |
+| `Dropdown`   | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `size`, `color`, `matchTriggerWidth`, `closeOnSelect`     | controlled or uncontrolled |
 | `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | controlled or uncontrolled |
 | `Tooltip`    | `children`, `open`, `defaultOpen`, `onOpenChange`, `placement`, `delay`, `Tooltip.Trigger`, `Tooltip.Content`             | controlled or uncontrolled |
 | `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, `closeOnEscape`, compound sections                          | controlled or uncontrolled |
@@ -93,6 +93,13 @@ with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`,
 `Dropdown.Group`, `Dropdown.Label`, and `Dropdown.Separator`. Use
 `Dropdown.Item onSelect` for commands and keep Select-style value props on
 `Select`.
+
+Dropdown uses semantic colors through `color='primary' | 'neutral' |
+'success' | 'warning' | 'danger'`. The color controls trigger, content, focus,
+and item interaction tokens; destructive actions should still use
+`Dropdown.Item color='danger'`. Rich rows can use props (`icon`, `description`,
+`badge`, `shortcut`) or explicit slots such as `Dropdown.ItemIcon`,
+`Dropdown.ItemDescription`, `Dropdown.ItemBadge`, and `Dropdown.ItemShortcut`.
 
 ## Button
 

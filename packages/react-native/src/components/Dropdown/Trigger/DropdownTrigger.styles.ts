@@ -64,11 +64,6 @@ export const createStyles = (theme: NativeTheme) =>
       padding: 0,
     },
 
-    triggerPressed: {
-      backgroundColor: theme.components.dropdown.trigger.hover.bg,
-      borderColor: theme.components.dropdown.trigger.hover.border,
-    },
-
     triggerDisabled: {
       backgroundColor: theme.components.dropdown.trigger.disabled.bg,
       borderColor: theme.components.dropdown.trigger.disabled.border,
@@ -78,10 +73,6 @@ export const createStyles = (theme: NativeTheme) =>
     triggerText: {
       color: theme.components.dropdown.trigger.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
-    },
-
-    triggerTextPressed: {
-      color: theme.components.dropdown.trigger.hover.fg,
     },
 
     triggerTextDisabled: {

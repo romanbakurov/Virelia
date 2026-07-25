@@ -11,6 +11,7 @@ import type { DropdownItemProps } from './types';
 export function DropdownItem({
   label,
   value,
+  color = 'primary',
   icon,
   danger = false,
   disabled = false,
@@ -21,6 +22,7 @@ export function DropdownItem({
 }: DropdownItemProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const colorPalette = theme.components.dropdown[color];
 
   const renderColoredNode = (node: ReactNode, color: string) => {
     if (!isValidElement(node)) return node;
@@ -40,7 +42,7 @@ export function DropdownItem({
     }
 
     return pressed
-      ? theme.components.dropdown.item.pressed.fg
+      ? colorPalette.item.pressed.fg
       : theme.components.dropdown.item.default.fg;
   };
 
@@ -56,7 +58,7 @@ export function DropdownItem({
     }
 
     return pressed
-      ? theme.components.dropdown.item.pressed.bg
+      ? colorPalette.item.pressed.bg
       : theme.components.dropdown.item.default.bg;
   };
 
