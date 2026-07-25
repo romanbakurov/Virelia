@@ -25,6 +25,7 @@ export const TabsTrigger = ({
     value: selectedValue,
     variant,
     color,
+    size,
     orientation,
     disabled: rootDisabled,
     setValue,
@@ -36,6 +37,8 @@ export const TabsTrigger = ({
   const isLine = variant === 'line';
   const isSegmented = variant === 'segmented';
   const isVertical = orientation === 'vertical';
+  const isSm = size === 'sm';
+  const isLg = size === 'lg';
   const palette = theme.components.tabs[color];
   const state = isDisabled
     ? theme.components.tabs.disabled
@@ -89,10 +92,14 @@ export const TabsTrigger = ({
       }}
       style={({ pressed }) => [
         styles.tab,
+        isSm && styles.tabSm,
+        isLg && styles.tabLg,
         isVertical && styles.tabVertical,
 
         isPills && styles.tabPills,
         isSegmented && styles.tabSegmented,
+        isSegmented && isSm && styles.tabSegmentedSm,
+        isSegmented && isLg && styles.tabSegmentedLg,
         isPills &&
           isActive && {
             borderColor: palette.pills.active.border,
@@ -153,6 +160,8 @@ export const TabsTrigger = ({
               ellipsizeMode='tail'
               style={[
                 styles.tabText,
+                isSm && styles.tabTextSm,
+                isLg && styles.tabTextLg,
                 {
                   color:
                     isSegmented && isActive
@@ -173,6 +182,8 @@ export const TabsTrigger = ({
               style={[
                 styles.tabText,
                 styles.tabDescription,
+                isSm && styles.tabTextSm,
+                isLg && styles.tabTextLg,
                 {
                   color: isDisabled
                     ? theme.components.tabs.disabled.fg
@@ -188,6 +199,7 @@ export const TabsTrigger = ({
             <View
               style={[
                 styles.tabBadge,
+                isLg && styles.tabBadgeLg,
                 {
                   backgroundColor: palette.pills.active.bg,
                 },

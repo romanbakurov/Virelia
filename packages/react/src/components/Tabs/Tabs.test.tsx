@@ -6,6 +6,8 @@ import { render } from '../../test-utils/render';
 
 import { Tabs } from './Tabs';
 
+import triggerStyles from './Trigger/TabsTrigger.module.scss';
+
 function TabsExample({
   onValueChange,
 }: {
@@ -185,6 +187,24 @@ describe('Tabs', () => {
     expect(container.textContent).toContain('4');
     expect(container.textContent).toContain('slot icon');
     expect(container.textContent).toContain('New');
+
+    unmount();
+  });
+
+  it('applies size modifiers to triggers', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' size='lg'>
+        <Tabs.List aria-label='Sized tabs'>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tab = container.querySelector<HTMLButtonElement>('[role="tab"]');
+
+    expect(tab?.className).toContain(triggerStyles.lg);
 
     unmount();
   });

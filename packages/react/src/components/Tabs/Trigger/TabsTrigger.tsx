@@ -31,6 +31,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
       setFocusedValue,
       orientation,
       variant,
+      size,
       disabled: rootDisabled,
       registerTrigger,
       onTriggerKeyDown,
@@ -89,6 +90,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         className={cn(
           styles.trigger,
           styles[variant],
+          styles[size],
           orientation === 'vertical' && styles.vertical,
           hasIcon && styles.withIcon,
           isOnlyIcon && styles.iconOnly,

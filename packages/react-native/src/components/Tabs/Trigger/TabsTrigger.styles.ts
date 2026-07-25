@@ -19,10 +19,32 @@ export const createStyles = (theme: NativeTheme) =>
       borderWidth: 1,
     },
 
+    tabSm: {
+      minHeight: 36,
+      paddingHorizontal: theme.tokens.spacing[3],
+      paddingVertical: 6,
+    },
+
+    tabLg: {
+      minHeight: 52,
+      paddingHorizontal: theme.tokens.spacing[5],
+      paddingVertical: theme.tokens.spacing[3],
+    },
+
     tabSegmented: {
       minHeight: 32,
       paddingVertical: 5,
       borderRadius: theme.tokens.radius.lg,
+    },
+
+    tabSegmentedSm: {
+      minHeight: 30,
+      paddingVertical: 4,
+    },
+
+    tabSegmentedLg: {
+      minHeight: 40,
+      paddingVertical: 8,
     },
 
     tabVertical: {
@@ -94,6 +116,16 @@ export const createStyles = (theme: NativeTheme) =>
       fontWeight: fontWeight(theme.tokens.typography.weight.regular),
     },
 
+    tabTextSm: {
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
+    },
+
+    tabTextLg: {
+      fontSize: theme.tokens.typography.size.lg,
+      lineHeight: theme.tokens.typography.lineHeight.lg,
+    },
+
     tabTextHover: {
       color: theme.components.tabs.primary.trigger.hover.fg,
     },
@@ -152,6 +184,11 @@ export const createStyles = (theme: NativeTheme) =>
       paddingHorizontal: theme.tokens.spacing[2],
       backgroundColor: theme.components.tabs.primary.pills.active.bg,
       borderRadius: theme.tokens.radius.full,
+    },
+
+    tabBadgeLg: {
+      minHeight: 24,
+      minWidth: 24,
     },
 
     tabBadgeText: {

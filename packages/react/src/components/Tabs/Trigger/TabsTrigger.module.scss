@@ -93,6 +93,45 @@
   min-width: 1.25rem;
 }
 
+.sm {
+  min-height: 2rem;
+  padding: calc(var(--space-2) - 2px) var(--space-3);
+  font-size: var(--font-size-sm);
+
+  .label {
+    font-size: var(--font-size-sm);
+  }
+
+  .description,
+  .badge {
+    font-size: var(--font-size-xs);
+  }
+}
+
+.md {
+  min-height: 2.25rem;
+}
+
+.lg {
+  min-height: 2.75rem;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-lg);
+
+  .label {
+    font-size: var(--font-size-lg);
+  }
+
+  .description {
+    font-size: var(--font-size-sm);
+  }
+
+  .badge {
+    height: 1.5rem;
+    min-width: 1.5rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
 .segmented {
   min-height: 2rem;
   padding: calc(var(--space-2) - 3px) var(--space-4);
@@ -109,6 +148,16 @@
     color: var(--tabs-segmented-active-fg);
     background-color: transparent;
   }
+}
+
+.segmented.sm {
+  min-height: 1.75rem;
+  padding: calc(var(--space-2) - 4px) var(--space-3);
+}
+
+.segmented.lg {
+  min-height: 2.5rem;
+  padding: calc(var(--space-3) - 3px) var(--space-5);
 }
 
 .line {
@@ -139,6 +188,14 @@
     color: var(--tabs-pills-active-fg);
     background-color: var(--tabs-pills-active-bg);
   }
+}
+
+.pills.sm {
+  border-radius: var(--radius-sm);
+}
+
+.pills.lg {
+  border-radius: var(--radius-lg);
 }
 
 .vertical {
