@@ -201,7 +201,7 @@ function WorkspaceFormFieldDemo() {
           required
           bindControl
         >
-          <input placeholder='vellira-design' />
+          <Input placeholder='vellira-design' />
         </FormField>
 
         <FormField
@@ -210,20 +210,20 @@ function WorkspaceFormFieldDemo() {
           description='Optional text is handled by FormField.'
           bindControl
         >
-          <input placeholder='Alex Taylor' />
+          <Input placeholder='Alex Taylor' />
         </FormField>
       </div>
 
       <div style={groupStyle}>
         <h3 style={subtitleStyle}>Sizes</h3>
         <FormField label='Small' size='sm' bindControl>
-          <input placeholder='Small field' />
+          <Input placeholder='Small field' />
         </FormField>
         <FormField label='Medium' size='md' bindControl>
-          <input placeholder='Medium field' />
+          <Input placeholder='Medium field' />
         </FormField>
         <FormField label='Large' size='lg' bindControl>
-          <input placeholder='Large field' />
+          <Input placeholder='Large field' />
         </FormField>
       </div>
 
@@ -235,7 +235,7 @@ function WorkspaceFormFieldDemo() {
           orientation='horizontal'
           bindControl
         >
-          <input placeholder='horizontal-field' />
+          <Input placeholder='horizontal-field' />
         </FormField>
 
         <FormField
@@ -244,7 +244,7 @@ function WorkspaceFormFieldDemo() {
           labelPosition='start'
           bindControl
         >
-          <input placeholder='start-label' />
+          <Input placeholder='start-label' />
         </FormField>
       </div>
 
@@ -256,7 +256,7 @@ function WorkspaceFormFieldDemo() {
           error='Only lowercase letters, numbers, and hyphens are allowed.'
           bindControl
         >
-          <input placeholder='Launch Plan' />
+          <Input placeholder='Launch Plan' />
         </FormField>
 
         <FormField
@@ -265,7 +265,7 @@ function WorkspaceFormFieldDemo() {
           disabled
           bindControl
         >
-          <input placeholder='Vellira' />
+          <Input placeholder='Vellira' />
         </FormField>
       </div>
 
@@ -284,7 +284,7 @@ function WorkspaceFormFieldDemo() {
           }
           bindControl
         >
-          <input placeholder='billing@company.com' />
+          <Input placeholder='billing@company.com' />
         </FormField>
       </div>
     </div>

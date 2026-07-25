@@ -1327,7 +1327,7 @@ function NativeComponentsOverview() {
             description='Used in URLs and notifications.'
             required
           >
-            <Input label='Workspace' placeholder='vellira-design' />
+            <Input placeholder='vellira-design' />
           </FormField>
         </Section>
       </View>
