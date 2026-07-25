@@ -7,7 +7,7 @@ import type { TabsListProps } from './types';
 import styles from './TabsList.module.scss';
 
 export const TabsList = ({ children, className, ...props }: TabsListProps) => {
-  const { orientation, appearance } = useTabsContext();
+  const { orientation, variant } = useTabsContext();
 
   return (
     <div
@@ -17,8 +17,9 @@ export const TabsList = ({ children, className, ...props }: TabsListProps) => {
       className={cn(
         styles.list,
         orientation === 'vertical' && styles.vertical,
-        appearance === 'underline' && styles.underline,
-        appearance === 'pills' && styles.pills,
+        variant === 'line' && styles.underline,
+        variant === 'pills' && styles.pills,
+        variant === 'segmented' && styles.default,
         className
       )}
     >

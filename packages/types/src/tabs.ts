@@ -1,22 +1,43 @@
 import type { Orientation } from './common';
 
-export type TabsAppearance = 'default' | 'underline' | 'pills';
+export type TabsValue = string;
+
+export type TabsActivationMode = 'automatic' | 'manual';
+
+export type TabsVariant = 'line' | 'pills' | 'segmented';
+
+export type TabsColor =
+  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+
+export type TabsSize = 'sm' | 'md' | 'lg';
 
 export interface BaseTabsProps {
-  activeIndex?: number;
-  defaultActiveIndex?: number;
-  onChange?: (index: number) => void;
+  value?: TabsValue;
+  defaultValue?: TabsValue;
+  onValueChange?: (value: TabsValue) => void;
+
   orientation?: Orientation;
-  appearance?: TabsAppearance;
+  activationMode?: TabsActivationMode;
+  loop?: boolean;
+
+  keepMounted?: boolean;
+  lazyMount?: boolean;
+
+  variant?: TabsVariant;
+  color?: TabsColor;
+  size?: TabsSize;
 }
 
-export type BaseTabsListProps = Record<never, never>;
-
-export interface BaseTabsPanelProps {
-  index: number;
+export interface BaseTabsListProps {
+  scrollable?: boolean;
 }
 
-export interface BaseTabProps {
-  index: number;
+export interface BaseTabsTriggerProps {
+  value: TabsValue;
   disabled?: boolean;
+}
+
+export interface BaseTabsContentProps {
+  value: TabsValue;
+  forceMount?: boolean;
 }

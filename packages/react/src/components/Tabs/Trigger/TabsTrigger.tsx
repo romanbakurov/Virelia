@@ -11,7 +11,7 @@ import styles from './TabsTrigger.module.scss';
 export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
   (
     {
-      index,
+      value,
       children,
       className,
       disabled = false,
@@ -23,21 +23,23 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     ref
   ) => {
     const {
-      activeIndex,
-      setActiveIndex,
+      value: selectedValue,
+      setValue,
       orientation,
-      appearance,
-      registerTab,
-      onTabKeyDown,
+      variant,
+      registerTrigger,
+      onTriggerKeyDown,
+      getTriggerId,
+      getContentId,
     } = useTabsContext();
 
-    const isActive = activeIndex === index;
+    const isActive = selectedValue === value;
     const hasIcon = Boolean(icon);
     const isOnlyIcon = hasIcon && children == null;
 
-    const tabRef = useCallback(
+    const triggerRef = useCallback(
       (element: HTMLButtonElement | null) => {
-        registerTab(index, element);
+        registerTrigger(value, element, disabled);
 
         if (typeof ref === 'function') {
           ref(element);
@@ -45,25 +47,25 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
           ref.current = element;
         }
       },
-      [index, ref, registerTab]
+      [disabled, ref, registerTrigger, value]
     );
 
     return (
       <button
         {...props}
-        ref={tabRef}
+        ref={triggerRef}
         type='button'
         role='tab'
-        id={`tab-${index}`}
+        id={getTriggerId(value)}
         aria-selected={isActive}
-        aria-controls={`tab-panel-${index}`}
+        aria-controls={getContentId(value)}
         disabled={disabled}
         tabIndex={isActive ? 0 : -1}
         data-state={isActive ? 'active' : 'inactive'}
         data-orientation={orientation}
         className={cn(
           styles.tab,
-          styles[appearance],
+          styles[variant],
           orientation === 'vertical' && styles.vertical,
           hasIcon && styles.withIcon,
           isOnlyIcon && styles.iconOnly,
@@ -74,14 +76,14 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
           if (event.defaultPrevented || disabled) return;
 
-          setActiveIndex(index);
+          setValue(value);
         }}
         onKeyDown={(event) => {
           onKeyDown?.(event);
 
           if (event.defaultPrevented) return;
 
-          onTabKeyDown(event, index);
+          onTriggerKeyDown(event);
         }}
       >
         {hasIcon && (

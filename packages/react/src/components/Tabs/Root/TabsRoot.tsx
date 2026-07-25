@@ -1,58 +1,121 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import { cn } from '@utils/cn';
 
-import { useTabs, useTabsKeyboard } from '@/hooks';
+import { useTabs } from '@/hooks';
 
 import { TabsContext } from '../internal/TabsContext';
-import type { TabsContextValue } from '../internal/types';
+import type { RegisteredTab, TabsContextValue } from '../internal/types';
+import { useTabsKeyboard } from '../internal/useTabsKeyboard';
 
-import type { TabsRootProps } from './types';
+import type { TabsProps } from './types';
 
 import styles from '../Tabs.module.scss';
 
 export const TabsRoot = ({
   children,
-  activeIndex: controlledActiveIndex,
-  defaultActiveIndex = 0,
-  onChange,
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
   orientation = 'horizontal',
-  appearance = 'default',
+  activationMode = 'automatic',
+  loop = true,
+  variant = 'line',
+  color = 'primary',
+  size = 'md',
+  keepMounted = false,
+  lazyMount = false,
   className,
-}: TabsRootProps) => {
-  const { activeIndex, setActiveIndex } = useTabs({
-    activeIndex: controlledActiveIndex,
-    defaultActiveIndex,
-    onChange,
+}: TabsProps) => {
+  const baseId = useId();
+
+  const { value, setValue } = useTabs({
+    value: controlledValue,
+    defaultValue,
+    onValueChange,
   });
 
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabsRef = useRef<RegisteredTab[]>([]);
 
-  const registerTab = useCallback(
-    (index: number, element: HTMLButtonElement | null) => {
-      tabRefs.current[index] = element;
+  const registerTrigger = useCallback(
+    (
+      triggerValue: string,
+      element: HTMLButtonElement | null,
+      disabled = false
+    ) => {
+      const existingIndex = tabsRef.current.findIndex(
+        (tab) => tab.value === triggerValue
+      );
+
+      if (!element) {
+        if (existingIndex >= 0) {
+          tabsRef.current.splice(existingIndex, 1);
+        }
+
+        return;
+      }
+
+      const nextTab: RegisteredTab = {
+        value: triggerValue,
+        element,
+        disabled,
+      };
+
+      if (existingIndex >= 0) {
+        tabsRef.current[existingIndex] = nextTab;
+      } else {
+        tabsRef.current.push(nextTab);
+      }
+
+      tabsRef.current.sort((a, b) => {
+        if (a.element === b.element) return 0;
+
+        const position = a.element.compareDocumentPosition(b.element);
+
+        return position & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+      });
     },
     []
   );
 
-  const { onKeyDown } = useTabsKeyboard<HTMLButtonElement>({
-    activeIndex,
-    setActiveIndex,
-    tabRefs,
+  const { onKeyDown } = useTabsKeyboard({
+    value,
+    setValue,
+    getTabs: () => tabsRef.current,
     orientation,
-    onNavigate: (index) => {
-      tabRefs.current[index]?.focus();
-    },
+    activationMode,
+    loop,
   });
 
-  const contextValue: TabsContextValue = {
-    activeIndex,
-    setActiveIndex,
-    orientation,
-    appearance,
+  const getTriggerId = useCallback(
+    (triggerValue: string) => `${baseId}-trigger-${triggerValue}`,
+    [baseId]
+  );
 
-    registerTab,
-    onTabKeyDown: onKeyDown,
+  const getContentId = useCallback(
+    (contentValue: string) => `${baseId}-content-${contentValue}`,
+    [baseId]
+  );
+
+  const contextValue: TabsContextValue = {
+    value,
+    setValue,
+
+    orientation,
+    activationMode,
+    loop,
+
+    variant,
+    color,
+    size,
+
+    keepMounted,
+    lazyMount,
+
+    registerTrigger,
+    onTriggerKeyDown: onKeyDown,
+    getTriggerId,
+    getContentId,
   };
 
   return (
@@ -63,6 +126,10 @@ export const TabsRoot = ({
           orientation === 'vertical' && styles.vertical,
           className
         )}
+        data-orientation={orientation}
+        data-variant={variant}
+        data-color={color}
+        data-size={size}
       >
         {children}
       </div>

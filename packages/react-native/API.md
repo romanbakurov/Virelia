@@ -614,15 +614,22 @@ import { Tabs } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.TabsProps.TabsProps -->
 
-| Prop                 | Type                      | Required | Description                                        |
-| -------------------- | ------------------------- | -------- | -------------------------------------------------- |
-| `children`           | `ReactNode`               | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
-| `appearance`         | `TabsAppearance`          | No       | Visual style.                                      |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                  |
-| `activeIndex`        | `number`                  | No       | Currently active tab index.                        |
-| `defaultActiveIndex` | `number`                  | No       | Initially active tab index.                        |
-| `orientation`        | `Orientation`             | No       | Layout orientation.                                |
-| `onChange`           | `(index: number) => void` | No       | Called when the value changes.                     |
+| Prop             | Type                         | Required | Description                                        |
+| ---------------- | ---------------------------- | -------- | -------------------------------------------------- |
+| `children`       | `ReactNode`                  | Yes      | `Tabs.List`, `Tabs.Tab`, and `Tabs.Panel` content. |
+| `appearance`     | `any`                        | No       | Visual style.                                      |
+| `style`          | `StyleProp<ViewStyle>`       | No       | Extra root style.                                  |
+| `orientation`    | `Orientation`                | No       | Layout orientation.                                |
+| `value`          | `string`                     | No       | Controlled value.                                  |
+| `defaultValue`   | `string`                     | No       | Initial uncontrolled value.                        |
+| `onValueChange`  | `(value: TabsValue) => void` | No       | —                                                  |
+| `activationMode` | `TabsActivationMode`         | No       | —                                                  |
+| `loop`           | `boolean`                    | No       | —                                                  |
+| `keepMounted`    | `boolean`                    | No       | —                                                  |
+| `lazyMount`      | `boolean`                    | No       | —                                                  |
+| `variant`        | `TabsVariant`                | No       | —                                                  |
+| `color`          | `TabsColor`                  | No       | —                                                  |
+| `size`           | `TabsSize`                   | No       | Input size.                                        |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
@@ -641,14 +648,12 @@ import { Tabs } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.TabProps.TabsTabProps -->
 
-| Prop        | Type                   | Required | Description                                  |
-| ----------- | ---------------------- | -------- | -------------------------------------------- |
-| `children`  | `ReactNode`            | No       | Tab label.                                   |
-| `icon`      | `ReactNode`            | No       | Icon rendered inside the tab.                |
-| `style`     | `StyleProp<ViewStyle>` | No       | Extra tab style.                             |
-| `textStyle` | `StyleProp<TextStyle>` | No       | Extra label text style.                      |
-| `index`     | `number`               | Yes      | Tab index used to connect the tab and panel. |
-| `disabled`  | `boolean`              | No       | Disables this tab.                           |
+| Prop        | Type                   | Required | Description                   |
+| ----------- | ---------------------- | -------- | ----------------------------- |
+| `children`  | `ReactNode`            | No       | Tab label.                    |
+| `icon`      | `ReactNode`            | No       | Icon rendered inside the tab. |
+| `style`     | `StyleProp<ViewStyle>` | No       | Extra tab style.              |
+| `textStyle` | `StyleProp<TextStyle>` | No       | Extra label text style.       |
 
 <!-- api-docgen:end native.TabProps.TabsTabProps -->
 
@@ -656,11 +661,10 @@ import { Tabs } from '@vellira-ui/react-native';
 
 <!-- api-docgen:start native.TabsPanelProps.TabsPanelProps -->
 
-| Prop       | Type                   | Required | Description                      |
-| ---------- | ---------------------- | -------- | -------------------------------- |
-| `children` | `ReactNode`            | No       | Panel content.                   |
-| `style`    | `StyleProp<ViewStyle>` | No       | Extra panel style.               |
-| `index`    | `number`               | Yes      | Panel index matching `Tabs.Tab`. |
+| Prop       | Type                   | Required | Description        |
+| ---------- | ---------------------- | -------- | ------------------ |
+| `children` | `ReactNode`            | No       | Panel content.     |
+| `style`    | `StyleProp<ViewStyle>` | No       | Extra panel style. |
 
 <!-- api-docgen:end native.TabsPanelProps.TabsPanelProps -->
 

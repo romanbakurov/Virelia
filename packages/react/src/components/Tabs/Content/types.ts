@@ -1,7 +1,9 @@
-import type { BaseTabsPanelProps } from '@vellira-ui/types';
+import type { BaseTabsContentProps } from '@vellira-ui/types';
 import type { HTMLAttributes, ReactNode } from 'react';
 
 export interface TabsContentProps
-  extends BaseTabsPanelProps, Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends
+    BaseTabsContentProps,
+    Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'value'> {
   children: ReactNode;
 }

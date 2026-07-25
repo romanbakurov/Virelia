@@ -1,14 +1,41 @@
-import type { Orientation, TabsAppearance } from '@vellira-ui/types';
+import type {
+  Orientation,
+  TabsActivationMode,
+  TabsColor,
+  TabsSize,
+  TabsVariant,
+} from '@vellira-ui/types';
 import type { KeyboardEvent } from 'react';
 
+export interface RegisteredTab {
+  value: string;
+  element: HTMLButtonElement;
+  disabled: boolean;
+}
+
 export interface TabsContextValue {
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
+  value?: string;
+  setValue: (value: string) => void;
 
   orientation: Orientation;
-  appearance: TabsAppearance;
+  activationMode: TabsActivationMode;
+  loop: boolean;
 
-  registerTab: (index: number, element: HTMLButtonElement | null) => void;
+  variant: TabsVariant;
+  color: TabsColor;
+  size: TabsSize;
 
-  onTabKeyDown: (event: KeyboardEvent<HTMLElement>, index: number) => void;
+  keepMounted: boolean;
+  lazyMount: boolean;
+
+  registerTrigger: (
+    value: string,
+    element: HTMLButtonElement | null,
+    disabled?: boolean
+  ) => void;
+
+  onTriggerKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
+
+  getTriggerId: (value: string) => string;
+  getContentId: (value: string) => string;
 }

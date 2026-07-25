@@ -1,10 +1,11 @@
 import type { BaseTabsProps } from '@vellira-ui/types';
 import type { HTMLAttributes, ReactNode } from 'react';
 
-export interface TabsRootProps
-  extends
-    BaseTabsProps,
-    Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'children'> {
+type DivProps = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'color' | 'defaultValue' | 'onChange'
+>;
+
+export interface TabsProps extends BaseTabsProps, DivProps {
   children: ReactNode;
-  className?: string;
 }

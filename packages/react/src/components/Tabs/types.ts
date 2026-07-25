@@ -1,9 +1,6 @@
-import type { TabsRootProps } from './Root';
-
-export type TabsProps = TabsRootProps;
-
 export type { TabsContentProps } from './Content';
 export type { TabsListProps } from './List';
+export type { TabsProps } from './Root';
 export type { TabsTriggerProps } from './Trigger';
 
 // Временные legacy aliases

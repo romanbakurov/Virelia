@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { cn } from '@utils/cn';
 
 import { useTabsContext } from '../internal/TabsContext';
@@ -9,37 +7,37 @@ import type { TabsContentProps } from './types';
 import styles from './TabsContent.module.scss';
 
 export const TabsContent = ({
-  index,
+  value,
   children,
   className,
+  forceMount = false,
   ...props
 }: TabsContentProps) => {
-  const { activeIndex, orientation } = useTabsContext();
-  const [isVisible, setIsVisible] = useState(false);
-  const isActive = activeIndex === index;
+  const {
+    value: selectedValue,
+    orientation,
+    getTriggerId,
+    getContentId,
+  } = useTabsContext();
 
-  useEffect(() => {
-    if (!isActive) {
-      setIsVisible(false);
-      return;
-    }
+  const isActive = selectedValue === value;
 
-    const timer = setTimeout(() => setIsVisible(true), 10);
-
-    return () => clearTimeout(timer);
-  }, [isActive]);
+  if (!forceMount && !isActive) {
+    return null;
+  }
 
   return (
     <div
       {...props}
       role='tabpanel'
-      id={`tab-panel-${index}`}
-      aria-labelledby={`tab-${index}`}
+      id={getContentId(value)}
+      aria-labelledby={getTriggerId(value)}
       hidden={!isActive}
       tabIndex={0}
+      data-state={isActive ? 'active' : 'inactive'}
+      data-orientation={orientation}
       className={cn(
-        styles.panel,
-        isVisible && styles.visible,
+        styles.content,
         orientation === 'vertical' && styles.vertical,
         className
       )}
