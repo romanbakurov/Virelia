@@ -17,6 +17,13 @@ export const createStyles = (theme: NativeTheme) =>
       paddingHorizontal: theme.tokens.spacing[4],
       paddingVertical: theme.tokens.spacing[2],
       borderWidth: 1,
+      zIndex: 1,
+    },
+
+    tabIconOnly: {
+      width: 44,
+      minWidth: 44,
+      paddingHorizontal: 0,
     },
 
     tabSm: {
@@ -25,10 +32,22 @@ export const createStyles = (theme: NativeTheme) =>
       paddingVertical: 6,
     },
 
+    tabIconOnlySm: {
+      width: 36,
+      minWidth: 36,
+      paddingHorizontal: 0,
+    },
+
     tabLg: {
       minHeight: 52,
       paddingHorizontal: theme.tokens.spacing[5],
       paddingVertical: theme.tokens.spacing[3],
+    },
+
+    tabIconOnlyLg: {
+      width: 52,
+      minWidth: 52,
+      paddingHorizontal: 0,
     },
 
     tabSegmented: {
@@ -37,14 +56,32 @@ export const createStyles = (theme: NativeTheme) =>
       borderRadius: theme.tokens.radius.lg,
     },
 
+    tabSegmentedIconOnly: {
+      width: 32,
+      minWidth: 32,
+      paddingHorizontal: 0,
+    },
+
     tabSegmentedSm: {
       minHeight: 30,
       paddingVertical: 4,
     },
 
+    tabSegmentedIconOnlySm: {
+      width: 30,
+      minWidth: 30,
+      paddingHorizontal: 0,
+    },
+
     tabSegmentedLg: {
       minHeight: 40,
       paddingVertical: 8,
+    },
+
+    tabSegmentedIconOnlyLg: {
+      width: 40,
+      minWidth: 40,
+      paddingHorizontal: 0,
     },
 
     tabVertical: {
@@ -54,36 +91,6 @@ export const createStyles = (theme: NativeTheme) =>
       flexGrow: 0,
       flexShrink: 0,
       justifyContent: 'flex-start',
-    },
-
-    horizontalIndicator: {
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-      left: 0,
-      height: 3,
-      backgroundColor: 'transparent',
-    },
-
-    horizontalIndicatorActive: {
-      backgroundColor: 'transparent',
-    },
-
-    verticalIndicator: {
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      width: 3,
-      backgroundColor: 'transparent',
-    },
-
-    verticalIndicatorActive: {
-      backgroundColor: 'transparent',
-    },
-
-    verticalIndicatorPressed: {
-      backgroundColor: 'transparent',
     },
 
     tabHovered: {
@@ -151,6 +158,12 @@ export const createStyles = (theme: NativeTheme) =>
       paddingHorizontal: theme.tokens.spacing[3],
       paddingVertical: theme.tokens.spacing[1],
       borderRadius: theme.tokens.radius.md,
+    },
+
+    tabPillsIconOnly: {
+      width: 36,
+      minWidth: 36,
+      paddingHorizontal: 0,
     },
 
     tabPillsActive: {

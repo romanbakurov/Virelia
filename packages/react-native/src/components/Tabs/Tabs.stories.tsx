@@ -139,6 +139,7 @@ const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
         <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
         <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
         <Tabs.Trigger value='api'>API</Tabs.Trigger>
+        <Tabs.Indicator />
       </Tabs.List>
 
       <Tabs.Content value='overview' style={panelStyle}>
@@ -171,6 +172,7 @@ const DisabledTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
           Disabled
         </Tabs.Trigger>
         <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+        <Tabs.Indicator />
       </Tabs.List>
 
       <Tabs.Content value='active'>
@@ -199,6 +201,7 @@ const IconOnlyTabsStory = () => {
         <Tabs.Trigger value='home' icon={<Home />} />
         <Tabs.Trigger value='profile' icon={<User />} />
         <Tabs.Trigger value='settings' icon={<Settings />} />
+        <Tabs.Indicator />
       </Tabs.List>
 
       <Tabs.Content value='home'>

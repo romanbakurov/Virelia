@@ -271,6 +271,25 @@ describe('Tabs', () => {
     unmount();
   });
 
+  it('applies icon-only sizing class when trigger has only an icon', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='home' variant='pills'>
+        <Tabs.List aria-label='Icon tabs'>
+          <Tabs.Trigger value='home' icon={<span data-testid='icon' />} />
+          <Tabs.Indicator />
+        </Tabs.List>
+
+        <Tabs.Content value='home'>Home panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tab = container.querySelector<HTMLButtonElement>('[role="tab"]');
+
+    expect(tab?.className).toContain(triggerStyles.iconOnly);
+
+    unmount();
+  });
+
   it('renders the visual indicator from active trigger geometry', async () => {
     const disconnect = vi.fn();
     const observe = vi.fn();

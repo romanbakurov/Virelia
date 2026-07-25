@@ -5,6 +5,7 @@ import type { NativeTheme } from '../../../theme';
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     list: {
+      position: 'relative',
       flexDirection: 'row',
       alignSelf: 'stretch',
       width: '100%',

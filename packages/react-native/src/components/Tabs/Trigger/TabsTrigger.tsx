@@ -1,6 +1,7 @@
 import { cloneElement, isValidElement, useEffect } from 'react';
 
 import type { ReactElement } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
 import { Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
@@ -30,6 +31,7 @@ export const TabsTrigger = ({
     disabled: rootDisabled,
     setValue,
     registerTrigger,
+    registerTriggerLayout,
   } = useTabs();
   const isDisabled = rootDisabled || disabled;
   const isActive = selectedValue === value;
@@ -39,6 +41,7 @@ export const TabsTrigger = ({
   const isVertical = orientation === 'vertical';
   const isSm = size === 'sm';
   const isLg = size === 'lg';
+  const isOnlyIcon = icon != null && children == null && badge == null;
   const palette = theme.components.tabs[color];
   const state = isDisabled
     ? theme.components.tabs.disabled
@@ -64,8 +67,13 @@ export const TabsTrigger = ({
 
     return () => {
       registerTrigger(value, Boolean(isDisabled), false);
+      registerTriggerLayout(value, undefined);
     };
-  }, [isDisabled, registerTrigger, value]);
+  }, [isDisabled, registerTrigger, registerTriggerLayout, value]);
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    registerTriggerLayout(value, event.nativeEvent.layout);
+  };
 
   const iconColor =
     isPills && isActive
@@ -90,68 +98,48 @@ export const TabsTrigger = ({
           setValue(value);
         }
       }}
+      onLayout={handleLayout}
       style={({ pressed }) => [
         styles.tab,
         isSm && styles.tabSm,
         isLg && styles.tabLg,
+        isOnlyIcon && styles.tabIconOnly,
+        isOnlyIcon && isSm && styles.tabIconOnlySm,
+        isOnlyIcon && isLg && styles.tabIconOnlyLg,
         isVertical && styles.tabVertical,
 
         isPills && styles.tabPills,
+        isPills && isOnlyIcon && styles.tabPillsIconOnly,
         isSegmented && styles.tabSegmented,
         isSegmented && isSm && styles.tabSegmentedSm,
         isSegmented && isLg && styles.tabSegmentedLg,
-        isPills &&
-          isActive && {
-            borderColor: palette.pills.active.border,
-            backgroundColor: palette.pills.active.bg,
-          },
+        isSegmented && isOnlyIcon && styles.tabSegmentedIconOnly,
+        isSegmented && isOnlyIcon && isSm && styles.tabSegmentedIconOnlySm,
+        isSegmented && isOnlyIcon && isLg && styles.tabSegmentedIconOnlyLg,
 
         {
-          borderColor: state.border,
+          borderColor: isLine ? 'transparent' : state.border,
           backgroundColor: pressed ? pressedState.bg : state.bg,
         },
 
         isSegmented &&
           isActive && {
             borderColor: palette.segmented.active.border,
-            backgroundColor: palette.segmented.active.bg,
+            backgroundColor: 'transparent',
+          },
+
+        isPills &&
+          isActive && {
+            borderColor: 'transparent',
+            backgroundColor: 'transparent',
           },
 
         isDisabled && styles.tabDisabled,
         style,
       ]}
     >
-      {({ pressed }) => (
+      {() => (
         <>
-          {isLine && !isVertical && (
-            <View
-              pointerEvents='none'
-              style={[
-                styles.horizontalIndicator,
-                isActive && {
-                  backgroundColor: palette.indicator.bg,
-                },
-              ]}
-            />
-          )}
-
-          {isLine && isVertical && (
-            <View
-              pointerEvents='none'
-              style={[
-                styles.verticalIndicator,
-                isActive && {
-                  backgroundColor: palette.indicator.bg,
-                },
-                pressed &&
-                  !isActive &&
-                  !isDisabled && {
-                    backgroundColor: palette.indicator.hoverBg,
-                  },
-              ]}
-            />
-          )}
-
           {icon != null && <View style={styles.tabIcon}>{renderedIcon}</View>}
 
           {children != null && (

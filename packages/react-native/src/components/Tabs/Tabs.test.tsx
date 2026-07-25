@@ -40,6 +40,52 @@ describe('Native Tabs', () => {
     unmount();
   });
 
+  it('does not render trigger borders for the line variant', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' variant='line'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+
+    expect(tabs[0].style.borderColor).toBe('transparent');
+    expect(tabs[1].style.borderColor).toBe('transparent');
+
+    unmount();
+  });
+
+  it('keeps icon-only pill triggers square', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='home' variant='pills'>
+        <Tabs.List>
+          <Tabs.Trigger value='home' icon={<span data-testid='home-icon' />} />
+          <Tabs.Trigger
+            value='settings'
+            icon={<span data-testid='settings-icon' />}
+          />
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Content value='home'>Home panel</Tabs.Content>
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+
+    expect(tabs[0].style.width).toBe('36px');
+    expect(tabs[0].style.minWidth).toBe('36px');
+    expect(tabs[1].style.width).toBe('36px');
+    expect(tabs[1].style.minWidth).toBe('36px');
+
+    unmount();
+  });
+
   it('exposes tablist, tab names, selected state, and disabled state', () => {
     const { container, unmount } = render(
       <Tabs>
