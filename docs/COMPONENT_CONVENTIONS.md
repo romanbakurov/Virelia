@@ -92,11 +92,11 @@ Example:
 
 ```tsx
 <Tabs
-  activeIndex={activeIndex}
-  onChange={setActiveIndex}
+  value={value}
+  onValueChange={setValue}
 />
 
-<Tabs defaultActiveIndex={0} />
+<Tabs defaultValue='profile' />
 ```
 
 ---
@@ -114,7 +114,7 @@ checked / defaultChecked;
 
 open / defaultOpen;
 
-activeIndex / defaultActiveIndex;
+value / defaultValue;
 ```
 
 Callbacks:
@@ -262,8 +262,8 @@ Example:
 ```
 Tabs
  ├── Tabs.List
- ├── Tabs.Tab
- └── Tabs.Panel
+ ├── Tabs.Trigger
+ └── Tabs.Content
 ```
 
 ---

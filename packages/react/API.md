@@ -685,13 +685,13 @@ Compound tab navigation with keyboard support.
 ```tsx
 import { Tabs } from '@vellira-ui/react';
 
-<Tabs defaultActiveIndex={0} orientation='horizontal' appearance='underline'>
+<Tabs defaultValue='overview' orientation='horizontal' variant='line'>
   <Tabs.List>
-    <Tabs.Tab index={0}>Overview</Tabs.Tab>
-    <Tabs.Tab index={1}>Settings</Tabs.Tab>
+    <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+    <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
   </Tabs.List>
-  <Tabs.Panel index={0}>Overview content</Tabs.Panel>
-  <Tabs.Panel index={1}>Settings content</Tabs.Panel>
+  <Tabs.Content value='overview'>Overview content</Tabs.Content>
+  <Tabs.Content value='settings'>Settings content</Tabs.Content>
 </Tabs>;
 ```
 
@@ -713,6 +713,8 @@ import { Tabs } from '@vellira-ui/react';
 | `variant`        | `TabsVariant`                | No       | —                                                        |
 | `color`          | `TabsColor`                  | No       | —                                                        |
 | `size`           | `TabsSize`                   | No       | Input size.                                              |
+| `dir`            | `'ltr' \| 'rtl'`             | No       | —                                                        |
+| `disabled`       | `boolean`                    | No       | Disables interaction.                                    |
 
 <!-- api-docgen:end web.TabsProps.TabsProps -->
 
@@ -731,12 +733,14 @@ import { Tabs } from '@vellira-ui/react';
 
 <!-- api-docgen:start web.TabsTriggerProps.TabsTriggerProps -->
 
-| Prop       | Type        | Required | Description                       |
-| ---------- | ----------- | -------- | --------------------------------- |
-| `children` | `ReactNode` | No       | Tab label content.                |
-| `icon`     | `ReactNode` | No       | Icon rendered inside the trigger. |
-| `disabled` | `boolean`   | No       | Disables this trigger.            |
-| `value`    | `string`    | Yes      | Controlled value.                 |
+| Prop          | Type        | Required | Description                       |
+| ------------- | ----------- | -------- | --------------------------------- |
+| `children`    | `ReactNode` | No       | Tab label content.                |
+| `icon`        | `ReactNode` | No       | Icon rendered inside the trigger. |
+| `disabled`    | `boolean`   | No       | Disables this trigger.            |
+| `value`       | `string`    | Yes      | Controlled value.                 |
+| `badge`       | `ReactNode` | No       | —                                 |
+| `description` | `ReactNode` | No       | Additional descriptive text.      |
 
 <!-- api-docgen:end web.TabsTriggerProps.TabsTriggerProps -->
 

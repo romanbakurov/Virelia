@@ -73,7 +73,7 @@ generated reference lives in
 | `RadioGroup` | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `orientation`, `size`, `color`              | Single selection      |
 | `Select`     | `label`, `description`, `children`, `value`, `defaultValue`, `onValueChange`, `color`, `variant`, `size`, `presentation`  | Selection control     |
 | `Dropdown`   | `children`, `label`, `open`, `defaultOpen`, `onOpenChange`, `presentation`, `closeOnSelect`, `disabled`                   | Context menu          |
-| `Tabs`       | `activeIndex`, `defaultActiveIndex`, `onChange`, `orientation`, `appearance`                                              | Tab navigation        |
+| `Tabs`       | `value`, `defaultValue`, `onValueChange`, `orientation`, `variant`                                                        | Tab navigation        |
 | `Tooltip`    | `content`, `placement`, `delay`, `disabled`                                                                               | Contextual helper     |
 | `Modal`      | `open`, `defaultOpen`, `onOpenChange`, `closeOnOutsidePress`, compound sections                                           | Dialog and overlay    |
 
@@ -296,13 +296,13 @@ export function UncontrolledPreferences() {
         label='Remember this device'
         description='Skip verification prompts on this device.'
       />
-      <Tabs defaultActiveIndex={0}>
+      <Tabs defaultValue='profile'>
         <Tabs.List>
-          <Tabs.Tab index={0}>Profile</Tabs.Tab>
-          <Tabs.Tab index={1}>Security</Tabs.Tab>
+          <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+          <Tabs.Trigger value='security'>Security</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Panel index={0}>Profile settings</Tabs.Panel>
-        <Tabs.Panel index={1}>Security settings</Tabs.Panel>
+        <Tabs.Content value='profile'>Profile settings</Tabs.Content>
+        <Tabs.Content value='security'>Security settings</Tabs.Content>
       </Tabs>
     </>
   );
