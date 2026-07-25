@@ -21,23 +21,27 @@ const meta = {
 Navigation component used to organize related content into multiple views.
 
 **Features**
-- Compound API with Tabs.List, Tabs.Trigger, and Tabs.Content
-- Controlled and uncontrolled state
+- Value-based compound API with List, Trigger, Content, Indicator, Icon, and
+  Badge parts
+- Controlled and uncontrolled value state
 - Horizontal and vertical orientation
+- Automatic and manual activation modes
 - Line, pills, and segmented variants
-- Disabled tabs
-- Icon-only and text tabs
-- Accessibility support
+- Primary, neutral, success, warning, and danger colors
+- Sizes: sm, md, and lg
+- Disabled triggers, rich trigger content, icons, badges, and descriptions
+- Root-level or list-level scrollable tabs
+- keepMounted, lazyMount, and forceMount mounting policies
+- Native accessibilityRole and accessibilityState support
 
 ### Usage
 
-Use Tabs to switch between related content without leaving the current screen.
-
-Correct usage:
+Use Tabs when related panels share the same screen context and only one panel
+should be active at a time.
 
 \`\`\`tsx
-<Tabs defaultValue='overview'>
-  <Tabs.List>
+<Tabs defaultValue='overview' variant='line' color='primary'>
+  <Tabs.List scrollable>
     <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
     <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
     <Tabs.Trigger value='api'>API</Tabs.Trigger>
@@ -56,6 +60,15 @@ Correct usage:
   </Tabs.Content>
 </Tabs>
 \`\`\`
+
+### Accessibility
+
+Tabs use native tab semantics where available:
+
+- \`Tabs.List\` exposes a tab list
+- \`Tabs.Trigger\` exposes selected and disabled state
+- disabled triggers do not activate
+- active content is mounted according to the root mounting policy
 `,
       },
     },

@@ -65,26 +65,31 @@ const meta = {
     docs: {
       description: {
         component: `
-### Tabs
+### Tabs Component
 
-A compound navigation component for switching between related sections of content.
+Compound navigation component for switching between related sections of content.
 
 **Features**
-
-- Controlled and uncontrolled value
+- Value-based compound API with List, Trigger, Content, Indicator, Icon, and
+  Badge parts
+- Controlled and uncontrolled value state
 - Horizontal and vertical orientation
-- Automatic and manual activation
+- Automatic and manual activation modes
 - Line, pills, and segmented variants
 - Primary, neutral, success, warning, and danger colors
-- Small, medium, and large sizes
-- Text and icon triggers
-- Disabled triggers
-- Arrow, Home, and End keyboard navigation
+- Sizes: sm, md, and lg
+- Disabled triggers, rich trigger content, icons, badges, and descriptions
+- Root-level or list-level scrollable tabs
+- keepMounted, lazyMount, and forceMount mounting policies
+- Arrow, Home, End, PageUp, PageDown, loop, and RTL keyboard navigation
 
-### Compound API
+### Usage
+
+Use Tabs when related panels share the same page or screen context and only one
+panel should be active at a time.
 
 \`\`\`tsx
-<Tabs defaultValue='overview'>
+<Tabs defaultValue='overview' variant='line' color='primary'>
   <Tabs.List aria-label='Account sections'>
     <Tabs.Trigger value='overview'>
       Overview
@@ -93,6 +98,8 @@ A compound navigation component for switching between related sections of conten
     <Tabs.Trigger value='settings'>
       Settings
     </Tabs.Trigger>
+
+    <Tabs.Indicator />
   </Tabs.List>
 
   <Tabs.Content value='overview'>

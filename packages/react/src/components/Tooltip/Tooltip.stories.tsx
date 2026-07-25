@@ -78,15 +78,21 @@ const meta = {
 Short helper overlay attached to a trigger element.
 
 **Features**
-- Compound-first API
+- Compound-first API with Trigger, Content, Arrow, and Provider parts
 - Trigger composition through asChild
-- Placement: top, bottom, left and right
-- Opens on hover or focus
-- Controlled and uncontrolled usage
-- Optional arrow
-- Provider-level default delay
+- Controlled and uncontrolled open state
+- Placement: top, bottom, left, and right
+- Hover, focus, pointer, and keyboard interactions
+- Configurable delay and provider-level default delay
+- Optional arrow, collision avoidance, trigger-width matching, and interactive
+  content
+- Disabled state and custom content styles
 
 ### Usage
+
+Use Tooltip for short contextual help attached to a specific control. Keep the
+content concise and do not place required workflow information only in a
+tooltip.
 
 \`\`\`tsx
 <Tooltip delay={500} placement='top'>
@@ -102,6 +108,13 @@ Short helper overlay attached to a trigger element.
   </Portal>
 </Tooltip>
 \`\`\`
+
+### Accessibility
+
+- Opens on focus for keyboard users
+- Trigger keeps its accessible name
+- Content is connected to the trigger while open
+- Disabled tooltips do not create inactive interactive surfaces
 `,
       },
     },
