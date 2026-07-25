@@ -38,7 +38,9 @@
   }
 
   &.iconOnly {
-    padding: var(--space-2);
+    width: 2.25rem;
+    min-width: 2.25rem;
+    padding: 0;
   }
 }
 
@@ -106,6 +108,12 @@
   .badge {
     font-size: var(--font-size-xs);
   }
+
+  &.iconOnly {
+    width: 2rem;
+    min-width: 2rem;
+    padding: 0;
+  }
 }
 
 .md {
@@ -130,6 +138,12 @@
     min-width: 1.5rem;
     font-size: var(--font-size-sm);
   }
+
+  &.iconOnly {
+    width: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0;
+  }
 }
 
 .segmented {
@@ -150,14 +164,32 @@
   }
 }
 
+.segmented.iconOnly {
+  width: 2rem;
+  min-width: 2rem;
+  padding: 0;
+}
+
 .segmented.sm {
   min-height: 1.75rem;
   padding: calc(var(--space-2) - 4px) var(--space-3);
+
+  &.iconOnly {
+    width: 1.75rem;
+    min-width: 1.75rem;
+    padding: 0;
+  }
 }
 
 .segmented.lg {
   min-height: 2.5rem;
   padding: calc(var(--space-3) - 3px) var(--space-5);
+
+  &.iconOnly {
+    width: 2.5rem;
+    min-width: 2.5rem;
+    padding: 0;
+  }
 }
 
 .line {

@@ -62,13 +62,69 @@ const Component = () => null;
 
 export const Animated = {
   View: Component,
+
   Value: class {
+    setValue() {}
+
     interpolate() {
       return '';
     }
   },
+
   timing() {
-    return { start() {} };
+    return {
+      start(callback) {
+        callback?.();
+      },
+
+      stop() {},
+    };
+  },
+
+  parallel() {
+    return {
+      start(callback) {
+        callback?.();
+      },
+
+      stop() {},
+    };
+  },
+
+  sequence() {
+    return {
+      start(callback) {
+        callback?.();
+      },
+
+      stop() {},
+    };
+  },
+};
+
+export const Easing = {
+  linear(value) {
+    return value;
+  },
+
+  ease(value) {
+    return value;
+  },
+
+  bezier() {
+    return (value) => value;
+  },
+
+  in(easing) {
+    return easing;
+  },
+
+  out(easing) {
+    return easing;
+  },
+
+  inOut(easing) {
+    return easing;
   },
 };
 
@@ -81,6 +137,16 @@ export const Dimensions = {
 export const AccessibilityInfo = {
   announceForAccessibility() {},
   setAccessibilityFocus() {},
+
+  isReduceMotionEnabled() {
+    return Promise.resolve(false);
+  },
+
+  addEventListener() {
+    return {
+      remove() {},
+    };
+  },
 };
 
 export function findNodeHandle() {

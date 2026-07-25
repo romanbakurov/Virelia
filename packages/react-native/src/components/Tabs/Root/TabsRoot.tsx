@@ -6,7 +6,7 @@ import { useTabs } from '../../../hooks';
 import { useThemeStyles } from '../../../theme';
 import { createStyles } from '../Tabs.styles';
 import { TabsProvider } from '../TabsContext';
-import type { RegisteredTab, TabsProps } from '../types';
+import type { RegisteredTab, TabsProps, TabsTriggerLayout } from '../types';
 
 export const TabsRoot = ({
   children,
@@ -26,7 +26,9 @@ export const TabsRoot = ({
   const styles = useThemeStyles(createStyles);
   const isControlled = controlledValue !== undefined;
   const [version, setVersion] = useState(0);
+  const [indicatorVersion, setIndicatorVersion] = useState(0);
   const triggersRef = useRef<RegisteredTab[]>([]);
+  const triggerLayoutsRef = useRef(new Map<string, TabsTriggerLayout>());
   const { value, setValue } = useTabs({
     value: controlledValue,
     defaultValue,
@@ -60,6 +62,23 @@ export const TabsRoot = ({
     },
     []
   );
+
+  const registerTriggerLayout = useCallback(
+    (triggerValue: string, layout: TabsTriggerLayout | undefined) => {
+      if (!layout) {
+        triggerLayoutsRef.current.delete(triggerValue);
+      } else {
+        triggerLayoutsRef.current.set(triggerValue, layout);
+      }
+
+      setIndicatorVersion((current) => current + 1);
+    },
+    []
+  );
+
+  const getTriggerLayout = useCallback((triggerValue: string) => {
+    return triggerLayoutsRef.current.get(triggerValue);
+  }, []);
 
   useEffect(() => {
     const enabledTabs = triggersRef.current.filter((tab) => !tab.disabled);
@@ -97,6 +116,9 @@ export const TabsRoot = ({
       lazyMount,
       disabled,
       registerTrigger,
+      indicatorVersion,
+      getTriggerLayout,
+      registerTriggerLayout,
     }),
     [
       activationMode,
@@ -105,6 +127,9 @@ export const TabsRoot = ({
       keepMounted,
       lazyMount,
       orientation,
+      getTriggerLayout,
+      indicatorVersion,
+      registerTriggerLayout,
       registerTrigger,
       setValue,
       size,

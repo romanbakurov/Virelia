@@ -20,6 +20,13 @@ export interface RegisteredTab {
   disabled: boolean;
 }
 
+export interface TabsTriggerLayout {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface TabsContextValue {
   value?: TabsValue;
   setValue: (value: TabsValue) => void;
@@ -35,5 +42,11 @@ export interface TabsContextValue {
     value: TabsValue,
     disabled: boolean,
     mounted: boolean
+  ) => void;
+  indicatorVersion: number;
+  getTriggerLayout: (value: TabsValue) => TabsTriggerLayout | undefined;
+  registerTriggerLayout: (
+    value: TabsValue,
+    layout: TabsTriggerLayout | undefined
   ) => void;
 }
