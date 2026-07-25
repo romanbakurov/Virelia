@@ -2,8 +2,8 @@ import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 
 import { View } from 'react-native';
 
-import { useControllableState } from '../../../hooks';
-import { useNativeDismiss, useNativeFloatingPosition } from '../../../managers';
+import { useControllableState, useOverlayDismiss } from '../../../hooks';
+import { useNativeFloatingPosition } from '../../../managers';
 import { TooltipProvider } from '../internal/TooltipContext';
 import { resolveTooltipDelay } from '../internal/useTooltipDelay';
 
@@ -78,11 +78,11 @@ export const TooltipRoot = ({
     openTooltip();
   }, [clearCloseTimer, disabled, resolvedDelay, setOpen, updatePosition]);
 
-  const dismiss = useNativeDismiss({
+  const dismiss = useOverlayDismiss({
     id: contentId,
-    visible: open && !disabled,
+    active: open && !disabled,
     closeOnOutsidePress,
-    onClose: hide,
+    requestClose: hide,
   });
 
   useEffect(() => {

@@ -17,8 +17,7 @@ import {
   View,
 } from 'react-native';
 
-import { useDropdown } from '../../hooks';
-import { useNativeDismiss } from '../../managers';
+import { useDropdown, useOverlayDismiss } from '../../hooks';
 import { useThemeStyles } from '../../theme';
 
 import { DropdownContent } from './Content/DropdownContent';
@@ -149,10 +148,10 @@ function DropdownRoot({
     closeDropdown();
     requestAnimationFrame(focusTrigger);
   }, [closeDropdown, focusTrigger]);
-  const dismiss = useNativeDismiss({
+  const dismiss = useOverlayDismiss({
     id: overlayId,
-    visible: isOpen,
-    onClose: closeAndFocusTrigger,
+    active: isOpen,
+    requestClose: closeAndFocusTrigger,
   });
 
   const handleSelect = useCallback(

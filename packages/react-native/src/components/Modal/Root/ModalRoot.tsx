@@ -1,5 +1,4 @@
-import { useModal } from '../../../hooks';
-import { useNativeDismiss } from '../../../managers';
+import { useModal, useOverlayDismiss } from '../../../hooks';
 import ModalContext from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
@@ -16,11 +15,11 @@ export const ModalRoot = ({
     onOpenChange,
     closeOnOutsidePress,
   });
-  const dismiss = useNativeDismiss({
+  const dismiss = useOverlayDismiss({
     id: modal.contentId,
-    visible: modal.open,
+    active: modal.open,
     closeOnOutsidePress: modal.closeOnOutsidePress,
-    onClose: modal.requestClose,
+    requestClose: modal.requestClose,
   });
 
   return (

@@ -3,8 +3,7 @@ import { useId, useMemo, useRef, useState } from 'react';
 import type { TextInput } from 'react-native';
 import { View } from 'react-native';
 
-import { useSelect } from '../../../hooks';
-import { useNativeDismiss } from '../../../managers';
+import { useOverlayDismiss, useSelect } from '../../../hooks';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';
 import { SelectContext } from '../internal/SelectContext';
@@ -229,11 +228,11 @@ export function SelectRoot(props: SelectProps) {
   });
 
   const hasValue = selectedValues.length > 0;
-  const dismiss = useNativeDismiss({
+  const dismiss = useOverlayDismiss({
     id: overlayId,
-    visible: isOpen,
+    active: isOpen,
     closeOnOutsidePress: dismissOnBackdropPress,
-    onClose: closeDropdown,
+    requestClose: closeDropdown,
   });
 
   const clearValue = () => {
