@@ -15,15 +15,15 @@ export const createStyles = (theme: NativeTheme) =>
     bubble: {
       position: 'absolute',
       zIndex: 1000,
-      maxWidth: 280,
+      maxWidth: theme.components.tooltip.content.maxWidth,
 
-      paddingHorizontal: theme.tokens.spacing[3],
-      paddingVertical: theme.tokens.spacing[2],
+      paddingHorizontal: theme.components.tooltip.content.paddingX,
+      paddingVertical: theme.components.tooltip.content.paddingY,
 
       backgroundColor: theme.components.tooltip.content.bg,
       borderColor: theme.components.tooltip.content.border,
-      borderRadius: theme.tokens.radius.sm,
-      borderWidth: 1,
+      borderRadius: theme.components.tooltip.content.radius,
+      borderWidth: theme.components.tooltip.content.borderWidth,
 
       shadowColor: theme.tokens.shadows.md.color,
       shadowOffset: {
@@ -39,8 +39,8 @@ export const createStyles = (theme: NativeTheme) =>
       flexShrink: 1,
       color: theme.components.tooltip.content.fg,
       fontFamily: theme.tokens.typography.family.regular,
-      fontSize: theme.tokens.typography.size.sm,
-      lineHeight: theme.tokens.typography.lineHeight.sm,
+      fontSize: theme.components.tooltip.content.fontSize,
+      lineHeight: theme.components.tooltip.content.lineHeight,
       textAlign: 'center',
     },
   });
