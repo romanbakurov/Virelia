@@ -16,12 +16,14 @@ import { createStyles } from './DropdownTrigger.styles';
 import type { DropdownTriggerProps } from './types';
 
 export function DropdownTrigger({
+  asChild = false,
   label,
   trigger,
   children,
   icon,
   arrowIcon,
   showArrow = true,
+  color = 'primary',
   size = 'md',
   disabled = false,
   isOpen,
@@ -33,6 +35,7 @@ export function DropdownTrigger({
 }: DropdownTriggerProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const colorPalette = theme.components.dropdown[color];
   const textSizeStyle = {
     sm: styles.textSm,
     md: styles.textMd,
@@ -86,8 +89,8 @@ export function DropdownTrigger({
   const contentColor = disabled
     ? theme.components.dropdown.trigger.disabled.fg
     : isPressed
-      ? theme.components.dropdown.trigger.hover.fg
-      : theme.components.dropdown.trigger.default.fg;
+      ? colorPalette.trigger.hover.fg
+      : colorPalette.trigger.default.fg;
 
   const arrow = arrowIcon ? (
     renderColoredNode(arrowIcon, contentColor)
@@ -98,7 +101,7 @@ export function DropdownTrigger({
   const renderedIcon = icon ? renderColoredNode(icon, contentColor) : null;
   const triggerContent = trigger ?? children;
 
-  if (isValidElement(triggerContent)) {
+  if (asChild && isValidElement(triggerContent)) {
     const child = triggerContent as ReactElement<{
       accessibilityHint?: string;
       accessibilityLabel?: string;
@@ -142,9 +145,17 @@ export function DropdownTrigger({
       style={[
         styles.trigger,
         styles[size],
+        {
+          backgroundColor: colorPalette.trigger.default.bg,
+          borderColor: colorPalette.trigger.default.border,
+        },
         isIconOnly && styles.iconOnly,
         isIconOnly && iconOnlySizeStyle,
-        isPressed && !disabled && styles.triggerPressed,
+        isPressed &&
+          !disabled && {
+            backgroundColor: colorPalette.trigger.hover.bg,
+            borderColor: colorPalette.trigger.hover.border,
+          },
         disabled && styles.triggerDisabled,
         triggerStyle,
       ]}

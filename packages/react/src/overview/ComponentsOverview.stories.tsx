@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Check,
   Download,
   Filter,
-  Menu,
+  MoreHorizontal,
+  MoreVertical,
   Save,
   Search,
   Settings,
 } from '@vellira-ui/icons';
 import { animatedIcons } from '@vellira-ui/icons/lottie';
-import type { CSSProperties, ReactNode } from 'react';
-const noop = () => undefined;
+import type {
+  ComponentProps,
+  ComponentRef,
+  CSSProperties,
+  ReactNode,
+} from 'react';
 
 import { AnimatedIconPreview } from '../../../icons/src/storybook/AnimatedIconPreview';
 import { Dropdown } from '../components/Dropdown';
@@ -27,6 +32,8 @@ import { Checkbox } from '../primitives/Checkbox';
 import { Input } from '../primitives/Input';
 import { Portal } from '../primitives/Portal';
 import { Radio } from '../primitives/Radio';
+
+const noop = () => undefined;
 
 const meta = {
   title: 'Overview/Web',
@@ -134,6 +141,132 @@ function renderLargeGroupedSelectItems() {
         ))}
       </Select.Group>
     </>
+  );
+}
+
+type MoreActionsIconButtonProps = Omit<
+  ComponentProps<typeof Button>,
+  'aria-label' | 'appearance' | 'children' | 'iconOnly' | 'iconStart'
+> & {
+  isOpen?: boolean;
+};
+
+const MoreActionsIconButton = forwardRef<
+  ComponentRef<typeof Button>,
+  MoreActionsIconButtonProps
+>(function MoreActionsIconButton(
+  {
+    color,
+    isOpen = false,
+    onBlur,
+    onMouseDown,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseUp,
+    size,
+    ...props
+  },
+  ref
+) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const isActive = isOpen || isHovered || isPressed;
+  const baseIconStyle = {
+    position: 'absolute',
+    inset: 0,
+    display: 'inline-flex',
+    transformOrigin: 'center',
+    transition:
+      'opacity 160ms ease, transform 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+    willChange: 'opacity, transform',
+  } satisfies CSSProperties;
+
+  return (
+    <Button
+      {...props}
+      ref={ref}
+      aria-label='More report actions'
+      appearance='ghost'
+      color={color ?? 'neutral'}
+      iconOnly
+      iconStart={
+        <span
+          aria-hidden='true'
+          style={{
+            display: 'inline-flex',
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <span
+            style={{
+              ...baseIconStyle,
+              opacity: isActive ? 0 : 1,
+              transform: isActive
+                ? 'rotate(90deg) scale(0.92)'
+                : 'rotate(0deg) scale(1)',
+            }}
+          >
+            <MoreHorizontal size='100%' />
+          </span>
+          <span
+            style={{
+              ...baseIconStyle,
+              opacity: isActive ? 1 : 0,
+              transform: isActive
+                ? 'rotate(0deg) scale(1)'
+                : 'rotate(-90deg) scale(0.92)',
+            }}
+          >
+            <MoreVertical size='100%' />
+          </span>
+        </span>
+      }
+      size={size}
+      onBlur={(event) => {
+        setIsHovered(false);
+        setIsPressed(false);
+        onBlur?.(event);
+      }}
+      onMouseDown={(event) => {
+        setIsPressed(true);
+        onMouseDown?.(event);
+      }}
+      onMouseEnter={(event) => {
+        setIsHovered(true);
+        onMouseEnter?.(event);
+      }}
+      onMouseLeave={(event) => {
+        setIsHovered(false);
+        setIsPressed(false);
+        onMouseLeave?.(event);
+      }}
+      onMouseUp={(event) => {
+        setIsPressed(false);
+        onMouseUp?.(event);
+      }}
+    />
+  );
+});
+
+function OverviewIconOnlyDropdown() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dropdown placement='bottom-end' open={open} onOpenChange={setOpen}>
+      <Dropdown.Trigger asChild>
+        <MoreActionsIconButton isOpen={open} />
+      </Dropdown.Trigger>
+      <Dropdown.Content>
+        <Dropdown.Item icon={<Settings />} onSelect={noop}>
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item icon={<Download />} onSelect={noop}>
+          Export
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
   );
 }
 
@@ -1147,25 +1280,7 @@ function WebComponentsOverview() {
                     </Dropdown.Item>
                   </Dropdown.Content>
                 </Dropdown>
-                <Dropdown placement='bottom-end'>
-                  <Dropdown.Trigger asChild>
-                    <Button
-                      appearance='ghost'
-                      color='neutral'
-                      iconOnly
-                      iconStart={<Menu />}
-                      aria-label='More report actions'
-                    />
-                  </Dropdown.Trigger>
-                  <Dropdown.Content>
-                    <Dropdown.Item icon={<Settings />} onSelect={noop}>
-                      Settings
-                    </Dropdown.Item>
-                    <Dropdown.Item icon={<Download />} onSelect={noop}>
-                      Export
-                    </Dropdown.Item>
-                  </Dropdown.Content>
-                </Dropdown>
+                <OverviewIconOnlyDropdown />
               </div>
             </div>
 

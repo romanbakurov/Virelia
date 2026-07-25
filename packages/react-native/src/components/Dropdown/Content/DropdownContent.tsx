@@ -20,6 +20,7 @@ export function DropdownContent({
   isOpen,
   children,
   onClose,
+  color = 'primary',
   contentStyle,
   accessibilityLabel,
   presentation,
@@ -31,6 +32,7 @@ export function DropdownContent({
 }: DropdownContentProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
+  const colorPalette = theme.components.dropdown[color];
   const isSheet = presentation === 'sheet';
   const animation = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -121,6 +123,9 @@ export function DropdownContent({
           style={[
             styles.menu,
             styles[`${presentation}Menu`],
+            {
+              borderColor: colorPalette.content.border,
+            },
             contentStyle,
             menuAnimatedStyle,
           ]}

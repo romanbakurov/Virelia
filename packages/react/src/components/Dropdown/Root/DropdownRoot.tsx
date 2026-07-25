@@ -61,8 +61,6 @@ export const DropdownRoot = ({
   onSearch,
   empty,
   noOptionsText,
-  triggerClassName,
-  dropdownClassName,
   className,
 }: DropdownProps) => {
   const generatedId = useId();
@@ -289,7 +287,6 @@ export const DropdownRoot = ({
     isOpen,
     contentId,
     triggerId,
-    triggerClassName,
     setTriggerRef,
     onClick: handleClick,
     onKeyDown: handleKeyDown,
@@ -302,7 +299,6 @@ export const DropdownRoot = ({
     contentId,
     contentProps: parsed.content?.props,
     disabled,
-    dropdownClassName,
     entries: filteredParsed.entries,
     getItemId: (index: number) => `${contentId}-item-${index}`,
     isOpen,
@@ -344,9 +340,7 @@ export const DropdownRoot = ({
           data-disabled={disabled || undefined}
         >
           {parsed.trigger ?? null}
-          {parsed.portal ?? parsed.content ?? (
-            <DropdownContent className={dropdownClassName} />
-          )}
+          {parsed.portal ?? parsed.content ?? <DropdownContent />}
         </div>
       </DropdownProvider>
     </DropdownTriggerProvider>

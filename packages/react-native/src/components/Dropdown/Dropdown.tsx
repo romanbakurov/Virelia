@@ -57,6 +57,7 @@ function DropdownRoot({
   onOpenChange,
   presentation = 'auto',
   closeOnSelect = true,
+  color = 'primary',
   disabled = false,
   loading = false,
   loadingText = 'Loading actions...',
@@ -207,6 +208,7 @@ function DropdownRoot({
         <DropdownItem
           label={item.props.children}
           value={item.props.value ?? item.id}
+          color={color}
           icon={item.props.icon}
           danger={item.props.danger}
           disabled={item.props.disabled}
@@ -217,7 +219,7 @@ function DropdownRoot({
         />
       );
     },
-    [handleSelect, itemStyle, styles.emptyText, textStyle]
+    [color, handleSelect, itemStyle, styles.emptyText, textStyle]
   );
 
   const data: NativeDropdownEntry[] = loading
@@ -247,11 +249,13 @@ function DropdownRoot({
   return (
     <View style={[styles.root, style]}>
       <DropdownTrigger
+        asChild={Boolean(parsed.trigger)}
         label={label}
         trigger={trigger ?? parsed.trigger}
         icon={icon}
         arrowIcon={arrowIcon}
         showArrow={showArrow}
+        color={color}
         disabled={disabled || parsed.triggerProps?.disabled}
         isOpen={isOpen}
         size={size}
@@ -267,6 +271,7 @@ function DropdownRoot({
       <DropdownContent
         isOpen={isOpen}
         onClose={dismiss.requestClose}
+        color={color}
         contentStyle={[contentStyle, contentStyleFromSlot]}
         accessibilityLabel={menuAccessibilityLabel}
         presentation={presentationFromSlot ?? resolvedPresentation}

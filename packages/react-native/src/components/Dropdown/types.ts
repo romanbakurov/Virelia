@@ -1,18 +1,18 @@
-import type { BaseDropdownProps, TextWrap } from '@vellira-ui/types';
+import type { TextWrap } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export type DropdownPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
+export type DropdownSize = 'sm' | 'md' | 'lg';
+export type DropdownColor =
+  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
 
 export type DropdownSelectEvent = {
   preventDefault: () => void;
   defaultPrevented: boolean;
 };
 
-export interface DropdownProps extends Omit<
-  BaseDropdownProps,
-  'items' | 'onSelect'
-> {
+export interface DropdownProps {
   children?: ReactNode;
   label?: ReactNode;
 
@@ -23,8 +23,15 @@ export interface DropdownProps extends Omit<
 
   presentation?: DropdownPresentation;
   closeOnSelect?: boolean;
+  /** Semantic palette for trigger, content, focus, and pressed item states. */
+  color?: DropdownColor;
+  disabled?: boolean;
   loading?: boolean;
   loadingText?: ReactNode;
+  size?: DropdownSize;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   searchable?: boolean;
   command?: boolean;
   searchValue?: string;

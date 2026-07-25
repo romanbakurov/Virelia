@@ -45,6 +45,22 @@ const changeInputValue = (input: HTMLInputElement | null, value: string) => {
   input.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
+const toCssColor = (color: string) => {
+  if (!color.startsWith('#')) return color;
+
+  const value = color.replace('#', '');
+  const red = parseInt(value.slice(0, 2), 16);
+  const green = parseInt(value.slice(2, 4), 16);
+  const blue = parseInt(value.slice(4, 6), 16);
+
+  return `rgb(${red}, ${green}, ${blue})`;
+};
+
+const pressNativeElement = (element: HTMLElement | undefined) => {
+  element?.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+  element?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+};
+
 describe('Native Dropdown', () => {
   it('supports compound trigger, content, and item selection', () => {
     const onSelect = vi.fn();
@@ -298,6 +314,25 @@ describe('Native Dropdown', () => {
       container.querySelector<HTMLButtonElement>('[role="button"]');
 
     expect(trigger?.textContent).toContain('Actions');
+
+    unmount();
+  });
+
+  it('wraps custom trigger prop content in an interactive trigger', () => {
+    const { container, unmount } = render(
+      <Dropdown label='Actions' trigger={<span>Custom trigger</span>}>
+        {renderActionContent()}
+      </Dropdown>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.textContent).toContain('Custom trigger');
+
+    act(() => trigger?.click());
+
+    expect(container.textContent).toContain('Edit');
 
     unmount();
   });
@@ -673,8 +708,8 @@ describe('Native Dropdown', () => {
     );
 
     act(() => {
-      editItem?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-      deleteItem?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      pressNativeElement(editItem);
+      pressNativeElement(deleteItem);
     });
 
     const [editIcon, deleteIcon] = Array.from(
@@ -682,10 +717,10 @@ describe('Native Dropdown', () => {
     );
 
     expect(editIcon?.dataset.color).toBe(
-      nativeThemes.light.components.dropdown.item.hover.fg
+      nativeThemes.light.components.dropdown.primary.item.pressed.fg
     );
     expect(deleteIcon?.dataset.color).toBe(
-      nativeThemes.light.components.dropdown.item.danger.hover.fg
+      nativeThemes.light.components.dropdown.item.danger.default.fg
     );
 
     unmount();
@@ -729,4 +764,76 @@ describe('Native Dropdown', () => {
       unmount();
     }
   );
+
+  it('uses the primary color palette for high contrast default trigger and content', () => {
+    const Icon = ({ color }: { color?: string }) => (
+      <span data-color={color} data-testid='trigger-icon' />
+    );
+
+    const { container, unmount } = render(
+      <ThemeProvider defaultTheme='highContrast'>
+        <Dropdown label='Actions' icon={<Icon />}>
+          <Dropdown.Content>
+            <Dropdown.Item value='edit'>Edit</Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown>
+      </ThemeProvider>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    const icon = container.querySelector<HTMLElement>(
+      '[data-testid="trigger-icon"]'
+    );
+
+    expect(icon?.dataset.color).toBe(
+      nativeThemes.highContrast.components.dropdown.primary.trigger.default.fg
+    );
+
+    act(() => trigger?.click());
+
+    const menu = container.querySelector<HTMLElement>('[role="menu"]');
+
+    expect(menu?.style.borderColor).toBe(
+      toCssColor(
+        nativeThemes.highContrast.components.dropdown.primary.content.border
+      )
+    );
+
+    unmount();
+  });
+
+  it('uses the configured semantic color palette for trigger and content', () => {
+    const Icon = ({ color }: { color?: string }) => (
+      <span data-color={color} data-testid='colored-icon' />
+    );
+
+    const { container, unmount } = render(
+      <Dropdown label='Actions' color='success' icon={<Icon />}>
+        <Dropdown.Content>
+          <Dropdown.Item value='edit'>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+    const triggerIcon = container.querySelector<HTMLElement>(
+      '[data-testid="colored-icon"]'
+    );
+
+    expect(triggerIcon?.dataset.color).toBe(
+      nativeThemes.light.components.dropdown.success.trigger.default.fg
+    );
+
+    act(() => trigger?.click());
+
+    const menu = container.querySelector<HTMLElement>('[role="menu"]');
+
+    expect(menu?.style.borderColor).toBe(
+      toCssColor(nativeThemes.light.components.dropdown.success.content.border)
+    );
+
+    unmount();
+  });
 });

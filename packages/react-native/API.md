@@ -558,38 +558,39 @@ custom non-text triggers, provide `accessibilityLabel` and add
 
 <!-- api-docgen:start native.DropdownProps.DropdownProps -->
 
-| Prop                 | Type                      | Required | Description                                       |
-| -------------------- | ------------------------- | -------- | ------------------------------------------------- |
-| `label`              | `ReactNode`               | No       | Default trigger label.                            |
-| `trigger`            | `ReactNode`               | No       | Custom trigger content.                           |
-| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                 |
-| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                              |
-| `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                 |
-| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                 |
-| `disabled`           | `boolean`                 | No       | Disables the trigger.                             |
-| `icon`               | `ReactNode`               | No       | Icon rendered inside the component.               |
-| `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.        |
-| `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.   |
-| `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                              |
-| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.              |
-| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers. |
-| `size`               | `DropdownSize`            | No       | Dropdown size.                                    |
-| `open`               | `boolean`                 | No       | Controlled open state.                            |
-| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                  |
-| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.               |
-| `children`           | `ReactNode`               | No       | Content rendered inside the component.            |
-| `presentation`       | `DropdownPresentation`    | No       | —                                                 |
-| `closeOnSelect`      | `boolean`                 | No       | —                                                 |
-| `loading`            | `boolean`                 | No       | —                                                 |
-| `loadingText`        | `ReactNode`               | No       | —                                                 |
-| `searchable`         | `boolean`                 | No       | —                                                 |
-| `command`            | `boolean`                 | No       | —                                                 |
-| `searchValue`        | `string`                  | No       | —                                                 |
-| `defaultSearchValue` | `string`                  | No       | —                                                 |
-| `searchPlaceholder`  | `string`                  | No       | —                                                 |
-| `onSearch`           | `(value: string) => void` | No       | —                                                 |
-| `empty`              | `ReactNode`               | No       | —                                                 |
-| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.      |
+| Prop                 | Type                      | Required | Description                                                            |
+| -------------------- | ------------------------- | -------- | ---------------------------------------------------------------------- |
+| `label`              | `ReactNode`               | No       | Default trigger label.                                                 |
+| `trigger`            | `ReactNode`               | No       | Custom trigger content.                                                |
+| `style`              | `StyleProp<ViewStyle>`    | No       | Extra root style.                                                      |
+| `triggerStyle`       | `StyleProp<ViewStyle>`    | No       | Extra trigger style.                                                   |
+| `itemStyle`          | `StyleProp<ViewStyle>`    | No       | Extra item style.                                                      |
+| `textStyle`          | `StyleProp<TextStyle>`    | No       | Extra text style.                                                      |
+| `disabled`           | `boolean`                 | No       | Disables the trigger.                                                  |
+| `icon`               | `ReactNode`               | No       | Icon rendered inside the component.                                    |
+| `arrowIcon`          | `ReactNode`               | No       | Custom arrow icon rendered in the trigger.                             |
+| `showArrow`          | `boolean`                 | No       | Controls whether the trigger arrow is rendered.                        |
+| `contentStyle`       | `StyleProp<ViewStyle>`    | No       | Extra content style.                                                   |
+| `accessibilityLabel` | `string`                  | No       | Accessible label for screen readers.                                   |
+| `accessibilityHint`  | `string`                  | No       | Additional accessibility hint for screen readers.                      |
+| `size`               | `DropdownSize`            | No       | Dropdown size.                                                         |
+| `open`               | `boolean`                 | No       | Controlled open state.                                                 |
+| `defaultOpen`        | `boolean`                 | No       | Initial uncontrolled open state.                                       |
+| `onOpenChange`       | `(open: boolean) => void` | No       | Called when the open state changes.                                    |
+| `children`           | `ReactNode`               | No       | Content rendered inside the component.                                 |
+| `presentation`       | `DropdownPresentation`    | No       | —                                                                      |
+| `closeOnSelect`      | `boolean`                 | No       | —                                                                      |
+| `loading`            | `boolean`                 | No       | —                                                                      |
+| `loadingText`        | `ReactNode`               | No       | —                                                                      |
+| `searchable`         | `boolean`                 | No       | —                                                                      |
+| `command`            | `boolean`                 | No       | —                                                                      |
+| `searchValue`        | `string`                  | No       | —                                                                      |
+| `defaultSearchValue` | `string`                  | No       | —                                                                      |
+| `searchPlaceholder`  | `string`                  | No       | —                                                                      |
+| `onSearch`           | `(value: string) => void` | No       | —                                                                      |
+| `empty`              | `ReactNode`               | No       | —                                                                      |
+| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                           |
+| `color`              | `DropdownColor`           | No       | Semantic palette for trigger, content, focus, and pressed item states. |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->
 

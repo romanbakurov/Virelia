@@ -1,8 +1,12 @@
-import type { BaseDropdownTriggerProps, DropdownSize } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
+import type { DropdownColor, DropdownSize } from '../types';
+
+export interface DropdownTriggerProps {
+  asChild?: boolean;
+  isOpen: boolean;
+  color?: DropdownColor;
   label?: ReactNode;
   trigger?: ReactNode;
   children?: ReactNode;

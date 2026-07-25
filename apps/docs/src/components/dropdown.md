@@ -61,15 +61,19 @@ open.
 
 ## Trigger Guidance
 
-Use `Dropdown.Trigger asChild` with Button for most triggers.
+Use `Dropdown.Trigger asChild` with Button for most web triggers.
 
 ```tsx
-import { Menu } from '@vellira-ui/icons';
+import { MoreHorizontal } from '@vellira-ui/icons';
 import { Button, Dropdown } from '@vellira-ui/react';
 
 <Dropdown>
   <Dropdown.Trigger asChild>
-    <Button aria-label='More invoice actions' iconOnly iconStart={<Menu />} />
+    <Button
+      aria-label='More invoice actions'
+      iconOnly
+      iconStart={<MoreHorizontal />}
+    />
   </Dropdown.Trigger>
 
   <Dropdown.Content>
@@ -78,6 +82,47 @@ import { Button, Dropdown } from '@vellira-ui/react';
   </Dropdown.Content>
 </Dropdown>;
 ```
+
+## Rich Items
+
+Simple item metadata can be passed as props.
+
+```tsx
+<Dropdown.Item
+  icon={<MoreHorizontal />}
+  description='Creates a copy in the current workspace'
+  badge='New'
+  shortcut='⌘D'
+  onSelect={duplicateReport}
+>
+  Duplicate
+</Dropdown.Item>
+```
+
+For more control, use the explicit item slots. Prefer the current slot names:
+`Dropdown.ItemIcon`, `Dropdown.ItemDescription`, `Dropdown.ItemBadge`, and
+`Dropdown.ItemShortcut`.
+
+```tsx
+<Dropdown.Item onSelect={openSettings}>
+  <Dropdown.ItemIcon>
+    <MoreHorizontal />
+  </Dropdown.ItemIcon>
+  Settings
+  <Dropdown.ItemBadge>Beta</Dropdown.ItemBadge>
+</Dropdown.Item>
+```
+
+## Tokens
+
+Dropdown uses semantic palettes from the root `color` prop:
+`primary`, `neutral`, `success`, `warning`, and `danger`. The palette affects
+trigger, content border, focus, and item interaction states. Item-level
+`color='danger'` is reserved for destructive actions.
+
+The web renderer consumes CSS variables generated from component tokens, while
+the native renderer reads the same semantic token shape from
+`theme.components.dropdown[color]`.
 
 ## Checkbox And Radio Items
 

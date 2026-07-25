@@ -11,6 +11,10 @@ import { render } from '../../test-utils/render';
 
 import { Dropdown } from './Dropdown';
 
+import contentStyles from './Content/DropdownContent.module.scss';
+import itemStyles from './Item/DropdownItem.module.scss';
+import triggerStyles from './Trigger/DropdownTrigger.module.scss';
+
 function pressKey(target: EventTarget, key: string) {
   act(() => {
     target.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
@@ -401,6 +405,28 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('applies semantic color token classes to trigger, content, and items', () => {
+    const { container, unmount } = render(
+      <Dropdown defaultOpen color='success'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item color='success'>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+    const menu = document.querySelector<HTMLElement>('[role="menu"]');
+    const item = document.querySelector<HTMLElement>('[role="menuitem"]');
+
+    expect(trigger?.className).toContain(triggerStyles.success);
+    expect(menu?.className).toContain(contentStyles.success);
+    expect(menu?.dataset.color).toBe('success');
+    expect(item?.className).toContain(itemStyles.success);
+
+    unmount();
+  });
+
   it('supports item-level close behavior overrides', () => {
     const onPersist = vi.fn();
     const onClose = vi.fn();
@@ -771,7 +797,7 @@ describe('Dropdown', () => {
     unmount();
   });
 
-  it('supports explicit Portal and item slot aliases', () => {
+  it('supports explicit Portal and item slots', () => {
     const { container, unmount } = render(
       <Dropdown defaultOpen>
         <Dropdown.Trigger>Actions</Dropdown.Trigger>
@@ -779,15 +805,15 @@ describe('Dropdown', () => {
           <Dropdown.Content>
             <Dropdown.Arrow className='dropdown-arrow' />
             <Dropdown.Item>
-              <Dropdown.Icon>
+              <Dropdown.ItemIcon>
                 <span data-testid='copy-icon' />
-              </Dropdown.Icon>
+              </Dropdown.ItemIcon>
               Copy
-              <Dropdown.Description>
+              <Dropdown.ItemDescription>
                 Copy current selection
-              </Dropdown.Description>
-              <Dropdown.Badge>New</Dropdown.Badge>
-              <Dropdown.Shortcut>⌘C</Dropdown.Shortcut>
+              </Dropdown.ItemDescription>
+              <Dropdown.ItemBadge>New</Dropdown.ItemBadge>
+              <Dropdown.ItemShortcut>⌘C</Dropdown.ItemShortcut>
             </Dropdown.Item>
           </Dropdown.Content>
         </Portal>
@@ -845,30 +871,6 @@ describe('Dropdown', () => {
         'input[aria-label="Type a command..."]'
       )
     ).not.toBeNull();
-
-    unmount();
-  });
-
-  it('supports Select-style className aliases', () => {
-    const { container, unmount } = render(
-      <Dropdown
-        defaultOpen
-        triggerClassName='trigger-alias'
-        dropdownClassName='dropdown-alias'
-      >
-        <Dropdown.Trigger>Actions</Dropdown.Trigger>
-        <Dropdown.Content>
-          <Dropdown.Item>Edit</Dropdown.Item>
-        </Dropdown.Content>
-      </Dropdown>
-    );
-
-    expect(container.querySelector('button')?.className).toContain(
-      'trigger-alias'
-    );
-    expect(document.querySelector('[role="menu"]')?.className).toContain(
-      'dropdown-alias'
-    );
 
     unmount();
   });

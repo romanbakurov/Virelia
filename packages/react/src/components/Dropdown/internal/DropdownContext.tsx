@@ -25,7 +25,6 @@ export type DropdownContextValue = {
   contentId: string;
   contentProps?: DropdownContentProps;
   disabled?: boolean;
-  dropdownClassName?: string;
   entries: DropdownRenderEntry[];
   getItemId: (index: number) => string;
   isOpen: boolean;
@@ -63,7 +62,6 @@ export type DropdownTriggerContextValue = {
   contentId: string;
   triggerId: string;
   setTriggerRef: RefCallback<HTMLElement>;
-  triggerClassName?: string;
   onClick: MouseEventHandler<HTMLElement>;
   onKeyDown: KeyboardEventHandler<HTMLElement>;
 };

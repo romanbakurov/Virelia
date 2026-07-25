@@ -123,9 +123,13 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
     size: 'Select size.',
   },
   'web.DropdownProps.DropdownProps': {
+    color:
+      'Semantic palette for trigger, content, focus, and item interaction states.',
     size: 'Dropdown size.',
   },
   'native.DropdownProps.DropdownProps': {
+    color:
+      'Semantic palette for trigger, content, focus, and pressed item states.',
     size: 'Dropdown size.',
   },
   'web.TabsProps.TabsProps': {

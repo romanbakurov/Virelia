@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-native';
 import {
@@ -6,14 +6,22 @@ import {
   Close,
   Download,
   Filter,
-  Menu,
+  MoreHorizontal,
+  MoreVertical,
   Save,
   Search,
   Settings,
   Trash,
 } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { Dropdown } from '../components/Dropdown';
 import { Modal } from '../components/Modal';
@@ -106,6 +114,113 @@ function renderDropdownContent() {
         Delete report
       </Dropdown.Item>
     </Dropdown.Content>
+  );
+}
+
+function RotatingMoreIcon({
+  active,
+  color,
+  size,
+}: {
+  active: boolean;
+  color?: string;
+  size?: number;
+}) {
+  const rotation = useRef(new Animated.Value(active ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(rotation, {
+      toValue: active ? 1 : 0,
+      duration: 180,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [active, rotation]);
+
+  const resolvedSize = size ?? 20;
+
+  return (
+    <View
+      style={{
+        width: resolvedSize,
+        height: resolvedSize,
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Animated.View
+        style={{
+          position: 'absolute',
+          opacity: rotation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0],
+          }),
+          transform: [
+            {
+              rotate: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0deg', '90deg'],
+              }),
+            },
+            {
+              scale: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0.92],
+              }),
+            },
+          ],
+        }}
+      >
+        <MoreHorizontal color={color} size={resolvedSize} />
+      </Animated.View>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          opacity: rotation,
+          transform: [
+            {
+              rotate: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['-90deg', '0deg'],
+              }),
+            },
+            {
+              scale: rotation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.92, 1],
+              }),
+            },
+          ],
+        }}
+      >
+        <MoreVertical color={color} size={resolvedSize} />
+      </Animated.View>
+    </View>
+  );
+}
+
+function OverviewIconOnlyDropdown() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Dropdown
+      accessibilityLabel='More report actions'
+      color='neutral'
+      icon={<RotatingMoreIcon active={open} />}
+      label='More report actions'
+      open={open}
+      showArrow={false}
+      onOpenChange={setOpen}
+    >
+      <Dropdown.Content presentation='popover'>
+        <Dropdown.Item value='settings' icon={<Settings />}>
+          Settings
+        </Dropdown.Item>
+        <Dropdown.Item value='download' icon={<Download />}>
+          Export
+        </Dropdown.Item>
+      </Dropdown.Content>
+    </Dropdown>
   );
 }
 
@@ -910,25 +1025,7 @@ function NativeComponentsOverview() {
                 </Dropdown.Trigger>
                 {renderDropdownContent()}
               </Dropdown>
-              <Dropdown>
-                <Dropdown.Trigger>
-                  <Button
-                    accessibilityLabel='More report actions'
-                    appearance='ghost'
-                    color='neutral'
-                    iconOnly
-                    iconStart={<Menu />}
-                  />
-                </Dropdown.Trigger>
-                <Dropdown.Content presentation='popover'>
-                  <Dropdown.Item value='settings' icon={<Settings />}>
-                    Settings
-                  </Dropdown.Item>
-                  <Dropdown.Item value='download' icon={<Download />}>
-                    Export
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown>
+              <OverviewIconOnlyDropdown />
             </View>
           </View>
 

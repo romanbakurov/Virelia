@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-import type { DropdownPresentation } from '../types';
+import type { DropdownColor, DropdownPresentation } from '../types';
 
 export interface DropdownContentProps {
   isOpen: boolean;
   children: ReactNode;
   onClose: () => void;
+  color?: DropdownColor;
   contentStyle?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
   presentation: Exclude<DropdownPresentation, 'auto'>;

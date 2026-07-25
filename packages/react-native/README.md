@@ -114,23 +114,27 @@ export function RoleSelect() {
 
 ### Dropdown Notes
 
-Use `Dropdown` for contextual actions, not saved form values. The `items` model
-is flat: use `{ type: 'group', label }` as a heading before related actions and
-`{ type: 'separator' }` between sections. Use `open`, `defaultOpen`, and
-`onOpenChange` for menu state, and `onSelect` for the selected action value.
+Use `Dropdown` for contextual actions, not saved form values. Compose native
+menus with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`, groups,
+labels, and separators. Use `open`, `defaultOpen`, and `onOpenChange` for menu
+state. Use root `color` for the semantic trigger and menu palette, and
+`Dropdown.Item danger` for destructive commands.
 
 ```tsx
-import type { DropdownItem } from '@vellira-ui/react-native';
 import { Dropdown } from '@vellira-ui/react-native';
 
-const items: DropdownItem[] = [
-  { type: 'group', label: 'File' },
-  { label: 'Duplicate', value: 'duplicate' },
-  { type: 'separator' },
-  { label: 'Delete', value: 'delete', danger: true },
-];
-
-<Dropdown label='Actions' items={items} onSelect={handleAction} />;
+<Dropdown color='primary' label='Actions'>
+  <Dropdown.Content>
+    <Dropdown.Label>File</Dropdown.Label>
+    <Dropdown.Item value='duplicate' onSelect={duplicate}>
+      Duplicate
+    </Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='delete' danger onSelect={deleteFile}>
+      Delete
+    </Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>;
 ```
 
 ### FormField Notes

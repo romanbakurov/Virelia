@@ -28,7 +28,6 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
     styles.dropdown,
     styles[context.color],
     context.contentProps?.className,
-    context.dropdownClassName,
     className
   );
   const content = (
