@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, useState } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -31,6 +31,38 @@ function TabsExample({
 
       <Tabs.Content value='usage'>Usage panel</Tabs.Content>
     </Tabs>
+  );
+}
+
+function RemovableActiveTriggerExample() {
+  const [showSettings, setShowSettings] = useState(true);
+
+  return (
+    <>
+      <button
+        type='button'
+        onClick={() => setShowSettings((current) => !current)}
+      >
+        Toggle settings
+      </button>
+
+      <Tabs defaultValue='home'>
+        <Tabs.List aria-label='Dynamic tabs'>
+          <Tabs.Trigger value='home'>Home</Tabs.Trigger>
+          <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
+          {showSettings && (
+            <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          )}
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='home'>Home panel</Tabs.Content>
+        <Tabs.Content value='profile'>Profile panel</Tabs.Content>
+        {showSettings && (
+          <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+        )}
+      </Tabs>
+    </>
   );
 }
 
@@ -301,6 +333,57 @@ describe('Tabs', () => {
 
     expect(indicator?.style.height).toBe('36px');
     expect(indicator?.style.transform).toBe('translateY(32px)');
+
+    unmount();
+  });
+
+  it('moves selection and indicator when the active trigger is removed', async () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+
+        if (element.id.includes('trigger-profile')) {
+          return rect({ left: 64, right: 144, top: 0, width: 80, height: 32 });
+        }
+
+        if (element.id.includes('trigger-settings')) {
+          return rect({ left: 144, right: 232, top: 0, width: 88, height: 32 });
+        }
+
+        return rect({ left: 0, right: 240, top: 0, width: 240, height: 40 });
+      }
+    );
+
+    const { container, unmount } = render(<RemovableActiveTriggerExample />);
+
+    await act(async () => undefined);
+
+    act(() => {
+      container
+        .querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
+        ?.click();
+    });
+
+    await act(async () => undefined);
+
+    act(() => {
+      container.querySelector<HTMLButtonElement>('button')?.click();
+    });
+
+    await act(async () => undefined);
+
+    const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    const indicator = container.querySelector<HTMLElement>(
+      '[data-testid="indicator"]'
+    );
+
+    expect([...tabs].map((tab) => tab.textContent)).toEqual([
+      'Home',
+      'Profile',
+    ]);
+    expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+    expect(indicator?.style.width).toBe('80px');
+    expect(indicator?.style.transform).toBe('translateX(64px)');
 
     unmount();
   });

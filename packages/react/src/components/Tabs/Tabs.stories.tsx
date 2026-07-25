@@ -12,6 +12,7 @@ import {
 } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
 
+import { Button } from '../../primitives/Button';
 import { Tabs } from '../Tabs';
 
 const noop = () => undefined;
@@ -377,12 +378,14 @@ const DynamicTriggersDemo = () => {
 
   return (
     <div style={stackStyle}>
-      <button
+      <Button
+        appearance='outline'
+        color='neutral'
         type='button'
         onClick={() => setShowProfile((current) => !current)}
       >
-        Toggle profile
-      </button>
+        {showProfile ? 'Hide profile tab' : 'Show profile tab'}
+      </Button>
 
       <Tabs defaultValue='home'>
         <Tabs.List aria-label='Dynamic account sections'>

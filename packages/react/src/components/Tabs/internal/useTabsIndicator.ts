@@ -26,7 +26,11 @@ export const useTabsIndicator = () => {
     const trigger = document.getElementById(getTriggerId(value));
 
     if (!list || !trigger) {
-      setStyle({});
+      setStyle({
+        width: 0,
+        height: 0,
+        transform: 'translateX(0)',
+      });
       return;
     }
 

@@ -87,6 +87,12 @@ export const TabsRoot = ({
 
           pendingFallbackValueRef.current =
             nextTab?.value ?? previousTab?.value;
+
+          if (!isControlled && pendingFallbackValueRef.current) {
+            setValue(pendingFallbackValueRef.current);
+            setFocusedValue(pendingFallbackValueRef.current);
+            pendingFallbackValueRef.current = undefined;
+          }
         }
       }
 
@@ -96,7 +102,14 @@ export const TabsRoot = ({
         disabled || triggerDisabled
       );
     },
-    [disabled, registerCollectionTrigger, triggersRef]
+    [
+      disabled,
+      isControlled,
+      registerCollectionTrigger,
+      setFocusedValue,
+      setValue,
+      triggersRef,
+    ]
   );
 
   const { onKeyDown } = useTabsKeyboard({
