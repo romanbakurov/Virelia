@@ -321,12 +321,92 @@ describe('Tabs', () => {
 
     expect(indicator?.getAttribute('aria-hidden')).toBe('true');
     expect(indicator?.style.width).toBe('64px');
-    expect(indicator?.style.transform).toBe('translateX(16px)');
+    expect(indicator?.style.transform).toBe('translate3d(16px, 0, 0)');
     expect(observe).toHaveBeenCalled();
 
     unmount();
 
     expect(disconnect).toHaveBeenCalled();
+  });
+
+  it('animates the line indicator through a collapsed capsule', async () => {
+    const animate = vi.fn();
+
+    Object.defineProperty(HTMLElement.prototype, 'animate', {
+      configurable: true,
+      value: animate,
+    });
+
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+
+        if (element.id.includes('trigger-general')) {
+          return rect({ left: 16, right: 80, top: 0, width: 64, height: 32 });
+        }
+
+        if (element.id.includes('trigger-settings')) {
+          return rect({ left: 120, right: 216, top: 0, width: 96, height: 32 });
+        }
+
+        return rect({ left: 0, right: 240, top: 0, width: 240, height: 40 });
+      }
+    );
+
+    const { container, unmount } = render(
+      <Tabs defaultValue='general'>
+        <Tabs.List aria-label='Animated indicator tabs'>
+          <Tabs.Trigger value='general'>General</Tabs.Trigger>
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='general'>General panel</Tabs.Content>
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    );
+
+    await act(async () => undefined);
+
+    act(() => {
+      container
+        .querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
+        ?.click();
+    });
+
+    await act(async () => undefined);
+
+    expect(animate).toHaveBeenCalledWith(
+      [
+        {
+          width: '64px',
+          transform: 'translate3d(16px, 0, 0)',
+          offset: 0,
+        },
+        {
+          width: '8px',
+          transform: 'translate3d(44px, 0, 0)',
+          offset: 0.28,
+        },
+        {
+          width: '8px',
+          transform: 'translate3d(164px, 0, 0)',
+          offset: 0.64,
+        },
+        {
+          width: '96px',
+          transform: 'translate3d(120px, 0, 0)',
+          offset: 1,
+        },
+      ],
+      {
+        duration: 360,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        fill: 'none',
+      }
+    );
+
+    unmount();
   });
 
   it('positions the indicator under the active trigger in rtl', async () => {
@@ -362,7 +442,7 @@ describe('Tabs', () => {
     );
 
     expect(indicator?.style.width).toBe('80px');
-    expect(indicator?.style.transform).toBe('translateX(72px)');
+    expect(indicator?.style.transform).toBe('translate3d(72px, 0, 0)');
 
     unmount();
   });
@@ -400,7 +480,7 @@ describe('Tabs', () => {
     );
 
     expect(indicator?.style.height).toBe('36px');
-    expect(indicator?.style.transform).toBe('translateY(32px)');
+    expect(indicator?.style.transform).toBe('translate3d(0, 32px, 0)');
 
     unmount();
   });
@@ -451,7 +531,7 @@ describe('Tabs', () => {
     ]);
     expect(tabs[1].getAttribute('aria-selected')).toBe('true');
     expect(indicator?.style.width).toBe('80px');
-    expect(indicator?.style.transform).toBe('translateX(64px)');
+    expect(indicator?.style.transform).toBe('translate3d(64px, 0, 0)');
 
     unmount();
   });
@@ -494,7 +574,7 @@ describe('Tabs', () => {
       '[data-testid="indicator"]'
     );
 
-    expect(indicator?.style.transform).toBe('translateX(144px)');
+    expect(indicator?.style.transform).toBe('translate3d(144px, 0, 0)');
 
     act(() => {
       container.querySelector<HTMLButtonElement>('button')?.click();
@@ -506,7 +586,7 @@ describe('Tabs', () => {
       container.querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
     ).not.toBeNull();
     expect(indicator?.style.width).toBe('88px');
-    expect(indicator?.style.transform).toBe('translateX(64px)');
+    expect(indicator?.style.transform).toBe('translate3d(64px, 0, 0)');
 
     unmount();
   });
