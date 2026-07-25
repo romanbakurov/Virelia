@@ -49,26 +49,26 @@ const CustomTooltipContent = () => {
   );
 };
 
-function NativeTooltipDemo({
+function TooltipPreview({
   children,
-  tooltipContent,
-  withArrow = true,
-  contentStyle,
+  panelChildren,
+  showArrow = true,
+  panelStyle,
   textStyle,
   ...args
 }: ComponentProps<typeof Tooltip> & {
   children: ReactNode;
-  tooltipContent: ReactNode;
-  withArrow?: boolean;
-  contentStyle?: ComponentProps<typeof Tooltip.Content>['style'];
+  panelChildren: ReactNode;
+  showArrow?: boolean;
+  panelStyle?: ComponentProps<typeof Tooltip.Content>['style'];
   textStyle?: ComponentProps<typeof Tooltip.Content>['textStyle'];
 }) {
   return (
     <Tooltip {...args}>
       <Tooltip.Trigger>{children}</Tooltip.Trigger>
-      <Tooltip.Content style={contentStyle} textStyle={textStyle}>
-        {tooltipContent}
-        {withArrow && <Tooltip.Arrow />}
+      <Tooltip.Content style={panelStyle} textStyle={textStyle}>
+        {panelChildren}
+        {showArrow && <Tooltip.Arrow />}
       </Tooltip.Content>
     </Tooltip>
   );
@@ -90,7 +90,7 @@ Contextual helper displayed on long press in React Native.
 - Compound API with Trigger, Content, and Arrow parts
 - Long press interaction for touch interfaces
 - Controlled and uncontrolled open state
-- Text or custom ReactNode content
+- String or custom children in Tooltip.Content
 - Top, bottom, left, and right placement
 - Disabled state
 - Native accessibility support
@@ -163,32 +163,29 @@ type Story = StoryObj<typeof Tooltip>;
 
 export const Default: Story = {
   render: (args) => (
-    <NativeTooltipDemo
-      {...args}
-      tooltipContent='Helpful native tooltip content'
-    >
+    <TooltipPreview {...args} panelChildren='Helpful native tooltip content'>
       <Trigger />
-    </NativeTooltipDemo>
+    </TooltipPreview>
   ),
 };
 
 export const LongContent: Story = {
   render: (args) => (
-    <NativeTooltipDemo
+    <TooltipPreview
       {...args}
-      tooltipContent='Use this tooltip for short contextual help. Keep content concise on small screens.'
-      contentStyle={{ maxWidth: 280 }}
+      panelChildren='Use this tooltip for short contextual help. Keep content concise on small screens.'
+      panelStyle={{ maxWidth: 280 }}
     >
       <Trigger label='Long tooltip' />
-    </NativeTooltipDemo>
+    </TooltipPreview>
   ),
 };
 
 export const CustomContent: Story = {
   render: (args) => (
-    <NativeTooltipDemo {...args} tooltipContent={<CustomTooltipContent />}>
+    <TooltipPreview {...args} panelChildren={<CustomTooltipContent />}>
       <Trigger label='Custom content' />
-    </NativeTooltipDemo>
+    </TooltipPreview>
   ),
 };
 
@@ -197,19 +194,19 @@ export const Disabled: Story = {
     disabled: true,
   },
   render: (args) => (
-    <NativeTooltipDemo {...args} tooltipContent='Disabled tooltip'>
+    <TooltipPreview {...args} panelChildren='Disabled tooltip'>
       <Trigger label='Disabled tooltip' />
-    </NativeTooltipDemo>
+    </TooltipPreview>
   ),
 };
 
 export const AutoHide: Story = {
   render: (args) => (
-    <NativeTooltipDemo
+    <TooltipPreview
       {...args}
-      tooltipContent='This tooltip will disappear automatically.'
+      panelChildren='This tooltip will disappear automatically.'
     >
       <Trigger label='Auto hide' />
-    </NativeTooltipDemo>
+    </TooltipPreview>
   ),
 };

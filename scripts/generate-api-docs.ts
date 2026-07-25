@@ -29,7 +29,6 @@ const fallbackDescriptions: Record<string, string> = {
   activeIndex: 'Currently active tab index.',
   ariaLabel: 'Accessible trigger label for icon-only or custom triggers.',
   arrowIcon: 'Custom arrow icon rendered in the trigger.',
-  bubbleStyle: 'Extra tooltip bubble style.',
   contentClassName: 'Extra CSS class for the menu content element.',
   contentStyle: 'Extra content style.',
   error: 'Error message rendered for invalid state.',
