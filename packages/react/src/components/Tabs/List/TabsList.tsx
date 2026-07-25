@@ -9,10 +9,11 @@ import styles from './TabsList.module.scss';
 export const TabsList = ({
   children,
   className,
-  scrollable = false,
+  scrollable: scrollableProp,
   ...props
 }: TabsListProps) => {
-  const { orientation, variant } = useTabsContext();
+  const { orientation, variant, scrollable: rootScrollable } = useTabsContext();
+  const scrollable = scrollableProp ?? rootScrollable;
 
   return (
     <div

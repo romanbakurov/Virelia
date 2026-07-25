@@ -10,3 +10,8 @@ export interface TabsTriggerProps extends BaseTabsTriggerProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }
+
+export interface TabsSlotProps {
+  children: ReactNode;
+  style?: StyleProp<ViewStyle>;
+}

@@ -27,6 +27,7 @@ export const TabsRoot = ({
   size = 'md',
   keepMounted = false,
   lazyMount = false,
+  scrollable = false,
   disabled = false,
   className,
   ...props
@@ -136,6 +137,7 @@ export const TabsRoot = ({
 
     keepMounted,
     lazyMount,
+    scrollable,
     disabled,
 
     registerTrigger,

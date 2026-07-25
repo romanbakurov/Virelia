@@ -631,6 +631,7 @@ import { Tabs } from '@vellira-ui/react-native';
 | `size`           | `TabsSize`                   | No       | Input size.                                              |
 | `dir`            | `'ltr' \| 'rtl'`             | No       | —                                                        |
 | `disabled`       | `boolean`                    | No       | Disables interaction.                                    |
+| `scrollable`     | `boolean`                    | No       | —                                                        |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 

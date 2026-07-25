@@ -11,6 +11,12 @@ afterEach(() => {
 });
 
 describe('Native Tabs', () => {
+  it('exposes indicator and trigger slots through the compound export', () => {
+    expect(Tabs.Indicator).toBeDefined();
+    expect(Tabs.Icon).toBeDefined();
+    expect(Tabs.Badge).toBeDefined();
+  });
+
   it('switches active panel when tab is pressed', () => {
     const { container, unmount } = render(
       <Tabs>

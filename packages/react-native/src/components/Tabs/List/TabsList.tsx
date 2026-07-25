@@ -8,11 +8,12 @@ import type { TabsListProps } from './types';
 
 export const TabsList = ({
   children,
-  scrollable = false,
+  scrollable: scrollableProp,
   style,
 }: TabsListProps) => {
   const styles = useThemeStyles(createStyles);
-  const { orientation, variant } = useTabs();
+  const { orientation, variant, scrollable: rootScrollable } = useTabs();
+  const scrollable = scrollableProp ?? rootScrollable;
   const listStyle = [
     styles.list,
     variant === 'pills' && styles.listPills,
