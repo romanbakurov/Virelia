@@ -66,6 +66,36 @@ function RemovableActiveTriggerExample() {
   );
 }
 
+function RemovableSiblingTriggerExample() {
+  const [showProfile, setShowProfile] = useState(true);
+
+  return (
+    <>
+      <button
+        type='button'
+        onClick={() => setShowProfile((current) => !current)}
+      >
+        Toggle profile
+      </button>
+
+      <Tabs defaultValue='home'>
+        <Tabs.List aria-label='Dynamic tabs'>
+          <Tabs.Trigger value='home'>Home</Tabs.Trigger>
+          {showProfile && <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>}
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='home'>Home panel</Tabs.Content>
+        {showProfile && (
+          <Tabs.Content value='profile'>Profile panel</Tabs.Content>
+        )}
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    </>
+  );
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -383,6 +413,61 @@ describe('Tabs', () => {
     ]);
     expect(tabs[1].getAttribute('aria-selected')).toBe('true');
     expect(indicator?.style.width).toBe('80px');
+    expect(indicator?.style.transform).toBe('translateX(64px)');
+
+    unmount();
+  });
+
+  it('repositions the indicator when a sibling trigger is removed', async () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+        const profileExists = Boolean(
+          document.querySelector('[id*="trigger-profile"]')
+        );
+
+        if (element.id.includes('trigger-settings')) {
+          return profileExists
+            ? rect({ left: 144, right: 232, top: 0, width: 88, height: 32 })
+            : rect({ left: 64, right: 152, top: 0, width: 88, height: 32 });
+        }
+
+        if (element.id.includes('trigger-profile')) {
+          return rect({ left: 64, right: 144, top: 0, width: 80, height: 32 });
+        }
+
+        return rect({ left: 0, right: 240, top: 0, width: 240, height: 40 });
+      }
+    );
+
+    const { container, unmount } = render(<RemovableSiblingTriggerExample />);
+
+    await act(async () => undefined);
+
+    act(() => {
+      container
+        .querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
+        ?.click();
+    });
+
+    await act(async () => undefined);
+
+    const indicator = container.querySelector<HTMLElement>(
+      '[data-testid="indicator"]'
+    );
+
+    expect(indicator?.style.transform).toBe('translateX(144px)');
+
+    act(() => {
+      container.querySelector<HTMLButtonElement>('button')?.click();
+    });
+
+    await act(async () => undefined);
+
+    expect(
+      container.querySelector<HTMLButtonElement>('[id*="trigger-settings"]')
+    ).not.toBeNull();
+    expect(indicator?.style.width).toBe('88px');
     expect(indicator?.style.transform).toBe('translateX(64px)');
 
     unmount();

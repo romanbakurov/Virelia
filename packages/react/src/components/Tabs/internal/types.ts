@@ -21,6 +21,7 @@ export interface RegisteredContent {
 export interface TabsContextValue {
   value?: TabsValue;
   focusedValue?: TabsValue;
+  collectionVersion: number;
   setValue: (value: TabsValue) => void;
   setFocusedValue: (value: TabsValue) => void;
 

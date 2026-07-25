@@ -136,6 +136,7 @@ export const TabsRoot = ({
   const contextValue: TabsContextValue = {
     value,
     focusedValue,
+    collectionVersion: version,
     setValue,
     setFocusedValue,
 
