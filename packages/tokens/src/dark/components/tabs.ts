@@ -35,6 +35,7 @@ export const tabs = createTabsTokens({
   }),
   neutral: createTabsPalette({
     ...defaults,
+    triggerHoverBg: colors.vellira[800],
     triggerActiveFg: colors.vellira[100],
     triggerActiveBorder: colors.vellira[300],
     indicator: colors.vellira[300],
@@ -42,8 +43,8 @@ export const tabs = createTabsTokens({
     segmentedActiveBg: surface.active,
     segmentedActiveBorder: 'transparent',
     segmentedActiveFg: colors.vellira[100],
-    pillHoverBg: colors.vellira[850],
-    pillActiveBg: colors.vellira[800],
+    pillHoverBg: colors.vellira[800],
+    pillActiveBg: colors.vellira[700],
     pillActiveBorder: colors.vellira[600],
     pillActiveFg: colors.vellira[100],
   }),
