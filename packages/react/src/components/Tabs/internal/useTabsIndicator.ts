@@ -6,7 +6,7 @@ import { useTabsContext } from './TabsContext';
 
 export type TabsIndicatorStyle = Pick<
   CSSProperties,
-  'width' | 'height' | 'opacity' | 'transform'
+  'width' | 'height' | 'transform'
 >;
 
 export const useTabsIndicator = () => {
@@ -45,14 +45,17 @@ export const useTabsIndicator = () => {
         variant === 'line' && previousValueRef.current !== value;
 
       if (orientation === 'vertical') {
+        const translate = `translateY(${triggerRect.top - listRect.top + list.scrollTop}px)`;
         const nextStyle = {
           height: triggerRect.height,
-          opacity: 1,
-          transform: `translateY(${triggerRect.top - listRect.top + list.scrollTop}px)`,
+          transform: variant === 'line' ? `${translate} scaleY(1)` : translate,
         } satisfies TabsIndicatorStyle;
 
         if (revealLine) {
-          setStyle({ ...nextStyle, opacity: 0 });
+          setStyle({
+            ...nextStyle,
+            transform: `${translate} scaleY(0.08)`,
+          });
           animationFrame = window.requestAnimationFrame(() => {
             setStyle(nextStyle);
           });
@@ -66,14 +69,17 @@ export const useTabsIndicator = () => {
       }
 
       const offset = triggerRect.left - listRect.left + list.scrollLeft;
+      const translate = `translateX(${offset}px)`;
       const nextStyle = {
         width: triggerRect.width,
-        opacity: 1,
-        transform: `translateX(${offset}px)`,
+        transform: variant === 'line' ? `${translate} scaleX(1)` : translate,
       } satisfies TabsIndicatorStyle;
 
       if (revealLine) {
-        setStyle({ ...nextStyle, opacity: 0 });
+        setStyle({
+          ...nextStyle,
+          transform: `${translate} scaleX(0.08)`,
+        });
         animationFrame = window.requestAnimationFrame(() => {
           setStyle(nextStyle);
         });
