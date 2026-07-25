@@ -30,7 +30,7 @@
 .segmented {
   gap: 0;
   padding: var(--space-1);
-  background: var(--tabs-pills-hover-bg);
+  background: var(--tabs-segmented-bg);
   border: 1px solid var(--tabs-list-border);
   border-radius: var(--radius-lg);
 }
@@ -52,7 +52,7 @@
   z-index: 0;
   width: 0;
   height: 3px;
-  background: var(--tabs-indicator-active-bg);
+  background: var(--tabs-indicator-bg);
   border-radius: var(--radius-full);
   pointer-events: none;
   transition:
@@ -71,8 +71,8 @@
   top: var(--space-1);
   bottom: var(--space-1);
   height: auto;
-  background: var(--tabs-pills-active-bg);
-  border: 1px solid var(--tabs-pills-active-border);
+  background: var(--tabs-segmented-active-bg);
+  border: 1px solid var(--tabs-segmented-active-border);
 }
 
 @media (prefers-reduced-motion: reduce) {

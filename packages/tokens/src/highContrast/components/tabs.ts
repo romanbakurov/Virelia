@@ -1,87 +1,103 @@
-import { action } from '../semantic/action.js';
+import {
+  createTabsPalette,
+  createTabsTokens,
+} from '../../factories/createTabsTokens.js';
+import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
-import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
-import { navigation } from '../semantic/navigation.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
-export const tabs = {
+const defaults = {
+  triggerDefaultFg: text.secondary,
+  triggerHoverFg: text.primary,
+  triggerHoverBg: surface.hover,
+  triggerActiveBg: 'transparent',
+  segmentedBg: surface.hover,
+  focusRing: focus.ring.color,
+};
+
+export const tabs = createTabsTokens({
+  primary: createTabsPalette({
+    ...defaults,
+    triggerActiveFg: colors.warning[300],
+    triggerActiveBorder: colors.warning[300],
+    indicator: colors.warning[300],
+    indicatorHover: colors.warning[200],
+    segmentedActiveBg: colors.gray[800],
+    segmentedActiveBorder: colors.warning[300],
+    segmentedActiveFg: colors.warning[200],
+    pillHoverBg: colors.gray[900],
+    pillActiveBg: colors.gray[800],
+    pillActiveBorder: colors.warning[300],
+    pillActiveFg: colors.warning[200],
+  }),
+  neutral: createTabsPalette({
+    ...defaults,
+    triggerActiveFg: colors.mono[50],
+    triggerActiveBorder: colors.mono[50],
+    indicator: colors.mono[50],
+    indicatorHover: colors.gray[200],
+    segmentedActiveBg: colors.gray[800],
+    segmentedActiveBorder: colors.mono[50],
+    segmentedActiveFg: colors.mono[50],
+    pillHoverBg: colors.gray[900],
+    pillActiveBg: colors.gray[800],
+    pillActiveBorder: colors.mono[50],
+    pillActiveFg: colors.mono[50],
+  }),
+  success: createTabsPalette({
+    ...defaults,
+    triggerActiveFg: colors.success[300],
+    triggerActiveBorder: colors.success[300],
+    indicator: colors.success[300],
+    indicatorHover: colors.success[200],
+    segmentedActiveBg: colors.gray[800],
+    segmentedActiveBorder: colors.success[300],
+    segmentedActiveFg: colors.success[200],
+    pillHoverBg: colors.gray[900],
+    pillActiveBg: colors.gray[800],
+    pillActiveBorder: colors.success[300],
+    pillActiveFg: colors.success[200],
+  }),
+  warning: createTabsPalette({
+    ...defaults,
+    triggerActiveFg: colors.warning[300],
+    triggerActiveBorder: colors.warning[300],
+    indicator: colors.warning[300],
+    indicatorHover: colors.warning[200],
+    segmentedActiveBg: colors.gray[800],
+    segmentedActiveBorder: colors.warning[300],
+    segmentedActiveFg: colors.warning[200],
+    pillHoverBg: colors.gray[900],
+    pillActiveBg: colors.gray[800],
+    pillActiveBorder: colors.warning[300],
+    pillActiveFg: colors.warning[200],
+  }),
+  danger: createTabsPalette({
+    ...defaults,
+    triggerActiveFg: colors.error[300],
+    triggerActiveBorder: colors.error[300],
+    indicator: colors.error[300],
+    indicatorHover: colors.error[200],
+    segmentedActiveBg: colors.gray[800],
+    segmentedActiveBorder: colors.error[300],
+    segmentedActiveFg: colors.error[200],
+    pillHoverBg: colors.gray[900],
+    pillActiveBg: colors.gray[800],
+    pillActiveBorder: colors.error[300],
+    pillActiveFg: colors.error[200],
+  }),
+  disabled: {
+    bg: 'transparent',
+    fg: text.disabled,
+    border: 'transparent',
+  },
   list: {
     border: border.default,
+    segmentedBg: surface.hover,
   },
-
-  trigger: {
-    default: {
-      bg: 'transparent',
-      fg: text.secondary,
-      border: 'transparent',
-    },
-
-    hover: {
-      bg: 'transparent',
-      fg: navigation.tabHover.fg,
-      border: 'transparent',
-    },
-
-    active: {
-      bg: 'transparent',
-      fg: text.interactive,
-      border: action.primary.default.border,
-    },
-
-    focus: {
-      ring: focus.ring,
-    },
-
-    disabled: {
-      bg: 'transparent',
-      fg: text.disabled,
-      border: 'transparent',
-    },
-  },
-
-  pills: {
-    default: {
-      bg: 'transparent',
-      fg: text.secondary,
-      border: 'transparent',
-    },
-
-    hover: {
-      bg: surface.hover,
-      fg: text.primary,
-      border: border.default,
-    },
-
-    active: {
-      bg: control.selected.default.bg,
-      fg: control.selected.default.fg,
-      border: control.selected.default.border,
-    },
-
-    disabled: {
-      bg: 'transparent',
-      fg: text.disabled,
-      border: 'transparent',
-    },
-  },
-
-  indicator: {
-    default: {
-      bg: text.interactive,
-    },
-
-    hover: {
-      bg: text.interactiveHover,
-    },
-
-    active: {
-      bg: text.interactiveActive,
-    },
-  },
-
   panel: {
     fg: text.primary,
   },
-} as const;
+});

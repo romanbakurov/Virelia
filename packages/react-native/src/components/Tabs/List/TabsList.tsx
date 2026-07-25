@@ -16,7 +16,7 @@ export const TabsList = ({
   const scrollable = scrollableProp ?? rootScrollable;
   const listStyle = [
     styles.list,
-    variant === 'pills' && styles.listPills,
+    variant === 'segmented' && styles.listSegmented,
     orientation === 'vertical' && styles.listVertical,
     style,
   ];

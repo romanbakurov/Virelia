@@ -1,4 +1,36 @@
+$tabs-colors: primary, neutral, success, warning, danger;
+
+@mixin tabs-color-vars($color) {
+  --tabs-trigger-default-bg: var(--tabs-#{$color}-trigger-default-bg);
+  --tabs-trigger-default-fg: var(--tabs-#{$color}-trigger-default-fg);
+  --tabs-trigger-default-border: var(--tabs-#{$color}-trigger-default-border);
+  --tabs-trigger-hover-bg: var(--tabs-#{$color}-trigger-hover-bg);
+  --tabs-trigger-hover-fg: var(--tabs-#{$color}-trigger-hover-fg);
+  --tabs-trigger-hover-border: var(--tabs-#{$color}-trigger-hover-border);
+  --tabs-trigger-active-bg: var(--tabs-#{$color}-trigger-active-bg);
+  --tabs-trigger-active-fg: var(--tabs-#{$color}-trigger-active-fg);
+  --tabs-trigger-active-border: var(--tabs-#{$color}-trigger-active-border);
+  --tabs-pills-default-bg: var(--tabs-#{$color}-pills-default-bg);
+  --tabs-pills-default-fg: var(--tabs-#{$color}-pills-default-fg);
+  --tabs-pills-default-border: var(--tabs-#{$color}-pills-default-border);
+  --tabs-pills-hover-bg: var(--tabs-#{$color}-pills-hover-bg);
+  --tabs-pills-hover-fg: var(--tabs-#{$color}-pills-hover-fg);
+  --tabs-pills-hover-border: var(--tabs-#{$color}-pills-hover-border);
+  --tabs-pills-active-bg: var(--tabs-#{$color}-pills-active-bg);
+  --tabs-pills-active-fg: var(--tabs-#{$color}-pills-active-fg);
+  --tabs-pills-active-border: var(--tabs-#{$color}-pills-active-border);
+  --tabs-segmented-bg: var(--tabs-#{$color}-segmented-bg);
+  --tabs-segmented-active-bg: var(--tabs-#{$color}-segmented-active-bg);
+  --tabs-segmented-active-fg: var(--tabs-#{$color}-segmented-active-fg);
+  --tabs-segmented-active-border: var(--tabs-#{$color}-segmented-active-border);
+  --tabs-indicator-bg: var(--tabs-#{$color}-indicator-bg);
+  --tabs-indicator-hover-bg: var(--tabs-#{$color}-indicator-hover-bg);
+  --tabs-focus-ring: var(--tabs-#{$color}-focus-ring);
+}
+
 .tabs {
+  @include tabs-color-vars(primary);
+
   width: 100%;
   min-width: 0;
 
@@ -6,5 +38,11 @@
     display: flex;
     align-items: flex-start;
     gap: var(--space-6);
+  }
+
+  @each $color in $tabs-colors {
+    &[data-color='#{$color}'] {
+      @include tabs-color-vars($color);
+    }
   }
 }

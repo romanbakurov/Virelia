@@ -16,7 +16,7 @@ export const createStyles = (theme: NativeTheme) =>
       justifyContent: 'center',
       paddingHorizontal: theme.tokens.spacing[4],
       paddingVertical: theme.tokens.spacing[2],
-      backgroundColor: theme.components.tabs.trigger.default.bg,
+      borderWidth: 1,
     },
 
     tabVertical: {
@@ -38,7 +38,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     horizontalIndicatorActive: {
-      backgroundColor: theme.components.tabs.indicator.active.bg,
+      backgroundColor: 'transparent',
     },
 
     verticalIndicator: {
@@ -51,19 +51,19 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     verticalIndicatorActive: {
-      backgroundColor: theme.components.tabs.indicator.active.bg,
+      backgroundColor: 'transparent',
     },
 
     verticalIndicatorPressed: {
-      backgroundColor: theme.components.tabs.indicator.hover.bg,
+      backgroundColor: 'transparent',
     },
 
     tabHovered: {
-      backgroundColor: theme.components.tabs.trigger.hover.bg,
+      backgroundColor: 'transparent',
     },
 
     tabPressed: {
-      backgroundColor: theme.components.tabs.trigger.active.bg,
+      backgroundColor: 'transparent',
     },
 
     tabFocused: {
@@ -71,41 +71,41 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabDefaultActive: {
-      backgroundColor: theme.components.tabs.trigger.active.bg,
+      backgroundColor: 'transparent',
     },
 
     tabDisabled: {
-      backgroundColor: theme.components.tabs.trigger.disabled.bg,
+      backgroundColor: theme.components.tabs.disabled.bg,
     },
 
     tabText: {
       flexShrink: 0,
       textAlign: 'center',
       lineHeight: theme.tokens.typography.lineHeight.md,
-      color: theme.components.tabs.trigger.default.fg,
+      color: theme.components.tabs.primary.trigger.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.md,
       fontWeight: fontWeight(theme.tokens.typography.weight.regular),
     },
 
     tabTextHover: {
-      color: theme.components.tabs.trigger.hover.fg,
+      color: theme.components.tabs.primary.trigger.hover.fg,
     },
 
     tabTextPressed: {
-      color: theme.components.tabs.trigger.active.fg,
+      color: theme.components.tabs.primary.trigger.active.fg,
     },
 
     tabTextDisabled: {
-      color: theme.components.tabs.trigger.disabled.fg,
+      color: theme.components.tabs.disabled.fg,
     },
 
     tabTextActive: {
-      color: theme.components.tabs.trigger.active.fg,
+      color: theme.components.tabs.primary.trigger.active.fg,
     },
 
     tabTextPillsActive: {
-      color: theme.components.tabs.pills.active.fg,
+      color: theme.components.tabs.primary.pills.active.fg,
     },
 
     tabPills: {
@@ -116,16 +116,16 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabPillsActive: {
-      backgroundColor: theme.components.tabs.pills.active.bg,
+      backgroundColor: 'transparent',
       borderRadius: theme.tokens.radius.md,
     },
 
     tabPillsHover: {
-      backgroundColor: theme.components.tabs.pills.hover.bg,
+      backgroundColor: 'transparent',
     },
 
     tabPillsPressed: {
-      backgroundColor: theme.components.tabs.pills.active.bg,
+      backgroundColor: 'transparent',
     },
 
     tabIcon: {
@@ -135,7 +135,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     tabDescription: {
       fontSize: theme.tokens.typography.size.sm,
-      color: theme.components.tabs.trigger.default.fg,
+      color: theme.components.tabs.primary.trigger.default.fg,
     },
 
     tabBadge: {
@@ -144,29 +144,29 @@ export const createStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       paddingHorizontal: theme.tokens.spacing[2],
-      backgroundColor: theme.components.tabs.pills.active.bg,
+      backgroundColor: theme.components.tabs.primary.pills.active.bg,
       borderRadius: theme.tokens.radius.full,
     },
 
     tabBadgeText: {
-      color: theme.components.tabs.pills.active.fg,
+      color: theme.components.tabs.primary.pills.active.fg,
       fontSize: theme.tokens.typography.size.sm,
       fontWeight: fontWeight(theme.tokens.typography.weight.medium),
     },
 
     tabIconHover: {
-      color: theme.components.tabs.trigger.hover.fg,
+      color: theme.components.tabs.primary.trigger.hover.fg,
     },
 
     tabIconPressed: {
-      color: theme.components.tabs.trigger.active.fg,
+      color: theme.components.tabs.primary.trigger.active.fg,
     },
 
     tabIconActive: {
-      color: theme.components.tabs.trigger.active.fg,
+      color: theme.components.tabs.primary.trigger.active.fg,
     },
 
     tabIconPillsActive: {
-      color: theme.components.tabs.pills.active.fg,
+      color: theme.components.tabs.primary.pills.active.fg,
     },
   });

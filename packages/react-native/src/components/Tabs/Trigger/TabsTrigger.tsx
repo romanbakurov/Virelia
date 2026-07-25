@@ -24,6 +24,7 @@ export const TabsTrigger = ({
   const {
     value: selectedValue,
     variant,
+    color,
     orientation,
     disabled: rootDisabled,
     setValue,
@@ -35,6 +36,25 @@ export const TabsTrigger = ({
   const isLine = variant === 'line';
   const isSegmented = variant === 'segmented';
   const isVertical = orientation === 'vertical';
+  const palette = theme.components.tabs[color];
+  const state = isDisabled
+    ? theme.components.tabs.disabled
+    : isPills
+      ? isActive
+        ? palette.pills.active
+        : palette.pills.default
+      : isActive
+        ? palette.trigger.active
+        : palette.trigger.default;
+  const pressedState = isDisabled
+    ? state
+    : isPills
+      ? isActive
+        ? palette.pills.active
+        : palette.pills.hover
+      : isActive
+        ? palette.trigger.active
+        : palette.trigger.hover;
 
   useEffect(() => {
     registerTrigger(value, Boolean(isDisabled), true);
@@ -46,10 +66,10 @@ export const TabsTrigger = ({
 
   const iconColor =
     isPills && isActive
-      ? theme.components.tabs.pills.active.fg
+      ? palette.pills.active.fg
       : isActive
-        ? theme.components.tabs.trigger.active.fg
-        : theme.components.tabs.trigger.default.fg;
+        ? palette.trigger.active.fg
+        : state.fg;
 
   const renderedIcon = isValidElement(icon)
     ? cloneElement(icon as ReactElement<{ color?: string }>, {
@@ -72,11 +92,22 @@ export const TabsTrigger = ({
         isVertical && styles.tabVertical,
 
         isPills && styles.tabPills,
-        isPills && isActive && styles.tabPillsActive,
+        isPills &&
+          isActive && {
+            borderColor: palette.pills.active.border,
+            backgroundColor: palette.pills.active.bg,
+          },
 
-        pressed && !isDisabled && styles.tabPressed,
+        {
+          borderColor: state.border,
+          backgroundColor: pressed ? pressedState.bg : state.bg,
+        },
 
-        isSegmented && isActive && styles.tabDefaultActive,
+        isSegmented &&
+          isActive && {
+            borderColor: palette.segmented.active.border,
+            backgroundColor: palette.segmented.active.bg,
+          },
 
         isDisabled && styles.tabDisabled,
         style,
@@ -89,7 +120,9 @@ export const TabsTrigger = ({
               pointerEvents='none'
               style={[
                 styles.horizontalIndicator,
-                isActive && styles.horizontalIndicatorActive,
+                isActive && {
+                  backgroundColor: palette.indicator.bg,
+                },
               ]}
             />
           )}
@@ -99,11 +132,14 @@ export const TabsTrigger = ({
               pointerEvents='none'
               style={[
                 styles.verticalIndicator,
-                isActive && styles.verticalIndicatorActive,
+                isActive && {
+                  backgroundColor: palette.indicator.bg,
+                },
                 pressed &&
                   !isActive &&
-                  !isDisabled &&
-                  styles.verticalIndicatorPressed,
+                  !isDisabled && {
+                    backgroundColor: palette.indicator.hoverBg,
+                  },
               ]}
             />
           )}
@@ -116,9 +152,12 @@ export const TabsTrigger = ({
               ellipsizeMode='tail'
               style={[
                 styles.tabText,
-                isPills && isActive && styles.tabTextPillsActive,
-                !isPills && isActive && styles.tabTextActive,
-                isDisabled && styles.tabTextDisabled,
+                {
+                  color:
+                    isSegmented && isActive
+                      ? palette.segmented.active.fg
+                      : state.fg,
+                },
                 textStyle,
               ]}
             >
@@ -130,15 +169,37 @@ export const TabsTrigger = ({
             <Text
               numberOfLines={2}
               ellipsizeMode='tail'
-              style={[styles.tabText, styles.tabDescription]}
+              style={[
+                styles.tabText,
+                styles.tabDescription,
+                {
+                  color: isDisabled
+                    ? theme.components.tabs.disabled.fg
+                    : state.fg,
+                },
+              ]}
             >
               {description}
             </Text>
           )}
 
           {badge != null && (
-            <View style={styles.tabBadge}>
-              <Text style={styles.tabBadgeText}>{badge}</Text>
+            <View
+              style={[
+                styles.tabBadge,
+                {
+                  backgroundColor: palette.pills.active.bg,
+                },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.tabBadgeText,
+                  { color: palette.pills.active.fg },
+                ]}
+              >
+                {badge}
+              </Text>
             </View>
           )}
         </>

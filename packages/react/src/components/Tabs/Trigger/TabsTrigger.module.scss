@@ -25,15 +25,15 @@
   &:focus-visible:not(:disabled) {
     @include focus-border(
       var(--tabs-trigger-active-border),
-      var(--tabs-trigger-focus-ring-color)
+      var(--tabs-focus-ring)
     );
-    @include focus-ring(var(--tabs-trigger-focus-ring-color));
+    @include focus-ring(var(--tabs-focus-ring));
   }
 
   &:disabled {
-    color: var(--tabs-trigger-disabled-fg);
-    background-color: var(--tabs-trigger-disabled-bg);
-    border-color: var(--tabs-trigger-disabled-border, transparent);
+    color: var(--tabs-disabled-fg);
+    background-color: var(--tabs-disabled-bg);
+    border-color: var(--tabs-disabled-border, transparent);
     cursor: not-allowed;
   }
 
@@ -100,7 +100,7 @@
   }
 
   &[aria-selected='true'] {
-    color: var(--tabs-trigger-active-fg);
+    color: var(--tabs-segmented-active-fg);
     background-color: var(--tabs-trigger-active-bg);
   }
 }

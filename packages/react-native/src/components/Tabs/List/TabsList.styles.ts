@@ -12,9 +12,12 @@ export const createStyles = (theme: NativeTheme) =>
       marginBottom: theme.tokens.spacing[4],
     },
 
-    listPills: {
-      backgroundColor: theme.components.tabs.pills.default.bg,
+    listSegmented: {
+      padding: theme.tokens.spacing[1],
+      backgroundColor: theme.components.tabs.list.segmentedBg,
+      borderColor: theme.components.tabs.list.border,
       borderRadius: theme.tokens.radius.lg,
+      borderWidth: 1,
     },
 
     listVertical: {
