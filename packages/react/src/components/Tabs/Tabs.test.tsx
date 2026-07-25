@@ -61,8 +61,29 @@ function VerticalTabsExample() {
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
   document.body.innerHTML = '';
 });
+
+const rect = ({
+  left = 0,
+  right = 0,
+  top = 0,
+  width = 0,
+  height = 0,
+}: Partial<DOMRect> = {}) =>
+  ({
+    x: left,
+    y: top,
+    left,
+    right,
+    top,
+    bottom: top + height,
+    width,
+    height,
+    toJSON: () => ({}),
+  }) as DOMRect;
 
 describe('Tabs', () => {
   it('selects the first enabled trigger by default in uncontrolled mode', () => {
@@ -341,6 +362,215 @@ describe('Tabs', () => {
     expect(Tabs.Badge).toBeDefined();
   });
 
+  it('renders trigger slots, simple badge content, and scrollable list state', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='settings'>
+        <Tabs.List aria-label='Rich tabs' scrollable>
+          <Tabs.Trigger
+            value='settings'
+            icon={<span>prop icon</span>}
+            badge={4}
+          >
+            Settings
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='advanced'>
+            <Tabs.Icon>
+              <span>slot icon</span>
+            </Tabs.Icon>
+            <span>Advanced</span>
+            <Tabs.Badge>New</Tabs.Badge>
+          </Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+        <Tabs.Content value='advanced'>Advanced panel</Tabs.Content>
+      </Tabs>
+    );
+
+    expect(
+      container
+        .querySelector('[role="tablist"]')
+        ?.getAttribute('data-scrollable')
+    ).toBe('');
+    expect(container.textContent).toContain('prop icon');
+    expect(container.textContent).toContain('4');
+    expect(container.textContent).toContain('slot icon');
+    expect(container.textContent).toContain('New');
+
+    unmount();
+  });
+
+  it('renders the visual indicator from active trigger geometry', async () => {
+    const disconnect = vi.fn();
+    const observe = vi.fn();
+
+    vi.stubGlobal(
+      'ResizeObserver',
+      class ResizeObserver {
+        observe = observe;
+        disconnect = disconnect;
+      }
+    );
+
+    Object.defineProperty(document, 'fonts', {
+      configurable: true,
+      value: { ready: Promise.resolve() },
+    });
+
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+
+        if (element.id.includes('trigger-settings')) {
+          return rect({ left: 24, right: 88, top: 12, width: 64, height: 32 });
+        }
+
+        return rect({ left: 8, right: 208, top: 4, width: 200, height: 40 });
+      }
+    );
+
+    const { container, unmount } = render(
+      <Tabs defaultValue='settings' variant='segmented'>
+        <Tabs.List aria-label='Indicator tabs'>
+          <Tabs.Trigger value='general'>General</Tabs.Trigger>
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='general'>General panel</Tabs.Content>
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    );
+
+    await act(async () => undefined);
+
+    const indicator = container.querySelector<HTMLElement>(
+      '[data-testid="indicator"]'
+    );
+
+    expect(indicator?.getAttribute('aria-hidden')).toBe('true');
+    expect(indicator?.style.width).toBe('64px');
+    expect(indicator?.style.transform).toBe('translateX(16px)');
+    expect(observe).toHaveBeenCalled();
+
+    unmount();
+
+    expect(disconnect).toHaveBeenCalled();
+  });
+
+  it('renders a vertical indicator using trigger height', async () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function getBoundingClientRect() {
+        const element = this as HTMLElement;
+
+        if (element.id.includes('trigger-settings')) {
+          return rect({ left: 0, right: 120, top: 42, width: 120, height: 36 });
+        }
+
+        return rect({ left: 0, right: 140, top: 10, width: 140, height: 120 });
+      }
+    );
+
+    const { container, unmount } = render(
+      <Tabs defaultValue='settings' orientation='vertical'>
+        <Tabs.List aria-label='Vertical indicator tabs'>
+          <Tabs.Trigger value='general'>General</Tabs.Trigger>
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+          <Tabs.Indicator data-testid='indicator' />
+        </Tabs.List>
+
+        <Tabs.Content value='general'>General panel</Tabs.Content>
+        <Tabs.Content value='settings'>Settings panel</Tabs.Content>
+      </Tabs>
+    );
+
+    await act(async () => undefined);
+
+    const indicator = container.querySelector<HTMLElement>(
+      '[data-testid="indicator"]'
+    );
+
+    expect(indicator?.style.height).toBe('36px');
+    expect(indicator?.style.transform).toBe('translateY(32px)');
+
+    unmount();
+  });
+
+  it('keeps all content mounted when keepMounted is enabled', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' keepMounted>
+        <Tabs.List aria-label='Keep mounted tabs'>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const panels = container.querySelectorAll<HTMLElement>('[role="tabpanel"]');
+
+    expect(panels).toHaveLength(2);
+    expect(panels[0].hidden).toBe(false);
+    expect(panels[1].hidden).toBe(true);
+
+    unmount();
+  });
+
+  it('force mounts inactive content independently of root mounting policy', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview'>
+        <Tabs.List aria-label='Force mounted tabs'>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage' forceMount>
+          Usage panel
+        </Tabs.Content>
+      </Tabs>
+    );
+
+    const panels = container.querySelectorAll<HTMLElement>('[role="tabpanel"]');
+
+    expect(panels).toHaveLength(2);
+    expect(panels[1].hidden).toBe(true);
+
+    unmount();
+  });
+
+  it('applies root disabled state to triggers', () => {
+    const onValueChange = vi.fn();
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' disabled onValueChange={onValueChange}>
+        <Tabs.List aria-label='Disabled tabs'>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='usage'>Usage</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='usage'>Usage panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+
+    expect(tabs[0].disabled).toBe(true);
+    expect(tabs[0].getAttribute('data-disabled')).toBe('');
+
+    act(() => {
+      tabs[1].click();
+    });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+
+    unmount();
+  });
+
   it('warns without crashing when a controlled value has no trigger', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
@@ -359,7 +589,6 @@ describe('Tabs', () => {
       'Tabs: value "billing" does not match any Tabs.Trigger.'
     );
 
-    warn.mockRestore();
     unmount();
   });
 
@@ -381,7 +610,29 @@ describe('Tabs', () => {
       'Tabs.Trigger values must be unique. Duplicate value: "general".'
     );
 
-    warn.mockRestore();
+    unmount();
+  });
+
+  it('warns when content has no matching trigger', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const { unmount } = render(
+      <Tabs defaultValue='general'>
+        <Tabs.List aria-label='Missing trigger value'>
+          <Tabs.Trigger value='general'>General</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='general'>General panel</Tabs.Content>
+        <Tabs.Content value='orphan' forceMount>
+          Orphan panel
+        </Tabs.Content>
+      </Tabs>
+    );
+
+    expect(warn).toHaveBeenCalledWith(
+      'Tabs.Content value "orphan" does not match any Tabs.Trigger.'
+    );
+
     unmount();
   });
 });
