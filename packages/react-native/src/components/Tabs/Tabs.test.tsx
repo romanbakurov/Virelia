@@ -214,4 +214,104 @@ describe('Native Tabs', () => {
 
     unmount();
   });
+
+  it('renders icon and badge props on a trigger', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='settings' variant='segmented'>
+        <Tabs.List>
+          <Tabs.Trigger
+            value='settings'
+            icon={<span data-testid='settings-icon'>icon</span>}
+            badge='New'
+          >
+            Settings
+          </Tabs.Trigger>
+
+          <Tabs.Indicator />
+        </Tabs.List>
+
+        <Tabs.Content value='settings'>Settings content</Tabs.Content>
+      </Tabs>
+    );
+
+    const trigger = container.querySelector<HTMLButtonElement>('[role="tab"]');
+
+    expect(
+      container.querySelector('[data-testid="settings-icon"]')
+    ).not.toBeNull();
+
+    expect(trigger?.textContent).toContain('Settings');
+    expect(trigger?.textContent).toContain('New');
+
+    unmount();
+  });
+
+  it('renders Tabs.Icon inside the Tabs context', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>
+          <Tabs.Icon>
+            <span data-testid='tabs-icon'>Icon</span>
+          </Tabs.Icon>
+        </Tabs.Content>
+      </Tabs>
+    );
+
+    expect(container.querySelector('[data-testid="tabs-icon"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('renders Tabs.Badge inside the Tabs context', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>
+          <Tabs.Badge>New</Tabs.Badge>
+        </Tabs.Content>
+      </Tabs>
+    );
+
+    expect(container.textContent).toContain('New');
+
+    unmount();
+  });
+
+  it('renders compound icon and badge slots together', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' size='lg' color='success'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+        </Tabs.List>
+
+        <Tabs.Content value='overview'>
+          <Tabs.Icon>
+            <span data-testid='compound-icon'>Icon</span>
+          </Tabs.Icon>
+
+          <Tabs.Badge>12</Tabs.Badge>
+        </Tabs.Content>
+      </Tabs>
+    );
+
+    expect(
+      container.querySelector('[data-testid="compound-icon"]')
+    ).not.toBeNull();
+    expect(container.textContent).toContain('12');
+
+    unmount();
+  });
+
+  it('throws when a compound slot is rendered outside Tabs', () => {
+    expect(() => {
+      render(<Tabs.Badge>New</Tabs.Badge>);
+    }).toThrow('Tabs components must be used inside <Tabs>.');
+  });
 });
