@@ -6,13 +6,14 @@ import { useTabsContext } from './TabsContext';
 
 export type TabsIndicatorStyle = Pick<
   CSSProperties,
-  'width' | 'height' | 'transform'
+  'width' | 'height' | 'opacity' | 'transform'
 >;
 
 export const useTabsIndicator = () => {
   const indicatorRef = useRef<HTMLSpanElement | null>(null);
+  const previousValueRef = useRef<string | undefined>(undefined);
   const [style, setStyle] = useState<TabsIndicatorStyle>({});
-  const { value, orientation, collectionVersion, getTriggerId } =
+  const { value, orientation, variant, collectionVersion, getTriggerId } =
     useTabsContext();
 
   useEffect(() => {
@@ -35,24 +36,53 @@ export const useTabsIndicator = () => {
       return;
     }
 
+    let animationFrame = 0;
+
     const update = () => {
       const listRect = list.getBoundingClientRect();
       const triggerRect = trigger.getBoundingClientRect();
+      const revealLine =
+        variant === 'line' && previousValueRef.current !== value;
 
       if (orientation === 'vertical') {
-        setStyle({
+        const nextStyle = {
           height: triggerRect.height,
+          opacity: 1,
           transform: `translateY(${triggerRect.top - listRect.top + list.scrollTop}px)`,
-        });
+        } satisfies TabsIndicatorStyle;
+
+        if (revealLine) {
+          setStyle({ ...nextStyle, opacity: 0 });
+          animationFrame = window.requestAnimationFrame(() => {
+            setStyle(nextStyle);
+          });
+          previousValueRef.current = value;
+          return;
+        }
+
+        setStyle(nextStyle);
+        previousValueRef.current = value;
         return;
       }
 
       const offset = triggerRect.left - listRect.left + list.scrollLeft;
-
-      setStyle({
+      const nextStyle = {
         width: triggerRect.width,
+        opacity: 1,
         transform: `translateX(${offset}px)`,
-      });
+      } satisfies TabsIndicatorStyle;
+
+      if (revealLine) {
+        setStyle({ ...nextStyle, opacity: 0 });
+        animationFrame = window.requestAnimationFrame(() => {
+          setStyle(nextStyle);
+        });
+        previousValueRef.current = value;
+        return;
+      }
+
+      setStyle(nextStyle);
+      previousValueRef.current = value;
     };
 
     update();
@@ -77,10 +107,11 @@ export const useTabsIndicator = () => {
         observer.disconnect();
       }
 
+      window.cancelAnimationFrame(animationFrame);
       list.removeEventListener('scroll', update);
       window.removeEventListener('resize', update);
     };
-  }, [collectionVersion, getTriggerId, orientation, value]);
+  }, [collectionVersion, getTriggerId, orientation, value, variant]);
 
   return useMemo(
     () => ({

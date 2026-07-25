@@ -58,12 +58,35 @@
   transition:
     transform 0.2s ease,
     width 0.2s ease,
-    height 0.2s ease;
+    height 0.2s ease,
+    opacity 0.16s ease;
 }
 
 .vertical .indicator {
   inset: 0 -1px auto auto;
   width: 3px;
+  height: 0;
+}
+
+.line .indicator {
+  transition:
+    opacity 0.16s ease,
+    width 0.16s ease,
+    height 0.16s ease;
+}
+
+.pills .indicator {
+  top: 0;
+  bottom: 0;
+  height: auto;
+  background: var(--tabs-pills-active-bg);
+  border: 1px solid var(--tabs-pills-active-border);
+  border-radius: var(--radius-md);
+}
+
+.pills.vertical .indicator {
+  inset: 0 auto auto 0;
+  width: 100%;
   height: 0;
 }
 

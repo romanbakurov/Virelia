@@ -411,7 +411,7 @@ export const Basic: Story = {
       <Tabs {...args}>
         <Tabs.List aria-label='Account sections'>
           <DemoTriggers />
-          {args.variant !== 'pills' && <Tabs.Indicator />}
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -451,7 +451,7 @@ export const Variants: Story = {
           <Tabs defaultValue='home' variant={variant}>
             <Tabs.List aria-label={`${variant} variant`}>
               <DemoTriggers />
-              {variant !== 'pills' && <Tabs.Indicator />}
+              <Tabs.Indicator />
             </Tabs.List>
 
             <DemoContent />
@@ -471,6 +471,7 @@ export const Colors: Story = {
             <Tabs defaultValue='home' color={color} variant='pills'>
               <Tabs.List aria-label={`${color} tabs`}>
                 <DemoTriggers />
+                <Tabs.Indicator />
               </Tabs.List>
 
               <DemoContent />
@@ -600,6 +601,7 @@ export const Icons: Story = {
       <Tabs defaultValue='home' variant='pills'>
         <Tabs.List aria-label='Icon-only tabs'>
           <DemoTriggers iconOnly />
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />
@@ -620,6 +622,7 @@ export const Badges: Story = {
           <Tabs.Trigger value='settings' badge='New'>
             Settings
           </Tabs.Trigger>
+          <Tabs.Indicator />
         </Tabs.List>
 
         <DemoContent />

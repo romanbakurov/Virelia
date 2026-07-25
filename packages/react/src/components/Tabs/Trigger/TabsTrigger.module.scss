@@ -177,16 +177,17 @@
 .pills {
   color: var(--tabs-pills-default-fg);
   background-color: var(--tabs-pills-default-bg);
+  border-color: transparent;
   border-radius: var(--radius-md);
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, [aria-selected='true']) {
     color: var(--tabs-pills-hover-fg);
     background-color: var(--tabs-pills-hover-bg);
   }
 
   &[aria-selected='true'] {
     color: var(--tabs-pills-active-fg);
-    background-color: var(--tabs-pills-active-bg);
+    background-color: transparent;
   }
 }
 
