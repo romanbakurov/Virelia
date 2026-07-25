@@ -791,7 +791,10 @@ markup. If `Tabs.Trigger` receives both the `icon` prop and an explicit
 
 ## Tooltip
 
-Floating helper text that appears around a target element.
+Floating helper text that appears around a target element. Compose web Tooltip
+with `Tooltip.Trigger`, `Tooltip.Content`, and optional `Tooltip.Arrow`.
+`Tooltip.Trigger asChild` should be used when the trigger already has its own
+button or control semantics.
 
 ```tsx
 import { Button, Portal, Tooltip } from '@vellira-ui/react';

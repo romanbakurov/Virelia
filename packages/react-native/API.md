@@ -707,7 +707,9 @@ the explicit compound slot takes precedence.
 
 ## Tooltip
 
-Floating helper text around a native target.
+Floating helper text around a native target. Compose native Tooltip with
+`Tooltip.Trigger`, `Tooltip.Content`, and optional `Tooltip.Arrow`; the root
+manages placement, open state, delay, and dismissal.
 
 ```tsx
 import { Tooltip, Button } from '@vellira-ui/react-native';

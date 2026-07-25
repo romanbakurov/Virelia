@@ -108,13 +108,34 @@ export function InvoiceToolbar() {
 }
 ```
 
+## Native Usage
+
+Native Tooltip uses the same compound structure as Web, but opens from touch
+interaction instead of hover. Keep the trigger accessible on its own and put
+short helper copy inside `Tooltip.Content`.
+
+```tsx
+import { Info } from '@vellira-ui/icons/native';
+import { Button, Tooltip } from '@vellira-ui/react-native';
+
+<Tooltip placement='top'>
+  <Tooltip.Trigger>
+    <Button accessibilityLabel='Workspace info' iconStart={<Info />} />
+  </Tooltip.Trigger>
+
+  <Tooltip.Content>
+    Only workspace owners can change billing.
+    <Tooltip.Arrow />
+  </Tooltip.Content>
+</Tooltip>;
+```
+
 ## Accessibility
 
 - The trigger still needs its own accessible name.
 - Do not rely on Tooltip for essential form instructions.
 - Keep content concise.
-- Native tooltip behavior should be tested with touch and screen reader flows,
-  because hover does not exist on most mobile devices.
+- Native tooltip behavior should be tested with touch and screen reader flows.
 
 ## See Also
 
