@@ -1,3 +1,4 @@
+export * from './behavior';
 export * from './useControllableState';
 export * from './useDropdown';
 export * from './useKeyboardNavigation';
