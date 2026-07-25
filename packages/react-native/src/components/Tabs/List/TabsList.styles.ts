@@ -23,9 +23,9 @@ export const createStyles = (theme: NativeTheme) =>
     listVertical: {
       flexDirection: 'column',
       alignSelf: 'flex-start',
-      width: 140,
-      minWidth: 140,
-      maxWidth: 140,
+      width: 156,
+      minWidth: 156,
+      maxWidth: 156,
       flexGrow: 0,
       flexShrink: 0,
       gap: theme.tokens.spacing[1],
