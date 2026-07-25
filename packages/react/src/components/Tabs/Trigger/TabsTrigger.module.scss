@@ -139,9 +139,9 @@
   border-color: transparent;
   border-radius: var(--radius-lg);
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, [aria-selected='true']) {
     color: var(--tabs-trigger-hover-fg);
-    background-color: transparent;
+    background-color: var(--tabs-trigger-hover-bg);
   }
 
   &[aria-selected='true'] {
