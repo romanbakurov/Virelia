@@ -1,0 +1,121 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  border-bottom: 1px solid var(--border-muted);
+  background: color-mix(in srgb, var(--surface-default) 82%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  width: min(1240px, calc(100% - 48px));
+  min-height: 68px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.brandMark {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-primary-contrast);
+  font-size: 14px;
+  font-weight: 700;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-primary-500) 28%, transparent);
+}
+
+.brandName {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.navigationLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.navigationLink:hover {
+  color: var(--text-primary);
+  background: var(--surface-subtle);
+}
+
+.navigationLink:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.themeSwitcherPlaceholder {
+  width: 36px;
+  height: 36px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+}
+
+@media (width <= 980px) {
+  .container {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .navigation {
+    display: none;
+  }
+}
+
+@media (width <= 640px) {
+  .container {
+    width: min(100% - 32px, 1240px);
+    min-height: 60px;
+  }
+
+  .brandName {
+    display: none;
+  }
+
+  .themeSwitcherPlaceholder {
+    display: none;
+  }
+}

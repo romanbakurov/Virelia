@@ -33,6 +33,7 @@ export default [
       '**/ios/**',
       '**/*.jar',
       '**/*.aar',
+      '**/.next/**',
     ],
   },
 

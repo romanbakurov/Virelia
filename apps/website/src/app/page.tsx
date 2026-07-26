@@ -1,32 +1,18 @@
-'use client';
-
-import { Button, Tabs } from '@vellira-ui/react';
+import { SiteHeader } from '@/components/SiteHeader';
+import { Hero } from '@/sections/Hero';
 
 export default function HomePage() {
   return (
-    <main
-      style={{
-        display: 'grid',
-        gap: 24,
-        minHeight: '100vh',
-        padding: 48,
-      }}
-    >
-      <h1>Vellira</h1>
+    <>
+      <SiteHeader />
 
-      <Button>Get started</Button>
+      <main>
+        <Hero />
 
-      <Tabs defaultValue='web'>
-        <Tabs.List aria-label='Platform'>
-          <Tabs.Trigger value='web'>Web</Tabs.Trigger>
-          <Tabs.Trigger value='native'>Native</Tabs.Trigger>
-          <Tabs.Indicator />
-        </Tabs.List>
-
-        <Tabs.Content value='web'>React components</Tabs.Content>
-
-        <Tabs.Content value='native'>React Native components</Tabs.Content>
-      </Tabs>
-    </main>
+        <section id='components' aria-label='Components' />
+        <section id='themes' aria-label='Themes' />
+        <section id='pro' aria-label='Vellira Pro' />
+      </main>
+    </>
   );
 }
