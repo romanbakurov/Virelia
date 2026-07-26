@@ -133,12 +133,6 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
           window.clearTimeout(subOpenTimerRef.current);
         }}
       >
-        {hasIndicator && (
-          <span className={styles.indicator} aria-hidden='true'>
-            {isChecked ? <Check /> : null}
-          </span>
-        )}
-
         {icon && <span className={styles.itemIcon}>{icon}</span>}
 
         <span className={styles.itemText}>
@@ -149,7 +143,15 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
         </span>
 
         {badge && <span className={styles.itemBadge}>{badge}</span>}
+
         {shortcut && <span className={styles.itemShortcut}>{shortcut}</span>}
+
+        {hasIndicator && (
+          <span className={styles.indicator} aria-hidden='true'>
+            {isChecked ? <Check /> : null}
+          </span>
+        )}
+
         {isSubTrigger && (
           <span className={styles.itemShortcut} aria-hidden='true'>
             <ChevronRight />
