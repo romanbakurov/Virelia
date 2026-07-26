@@ -11,8 +11,15 @@ import styles from './Hero.module.css';
 export function Hero() {
   return (
     <section className={styles.hero}>
+      <div className={styles.background} aria-hidden='true'>
+        <div className={styles.grid} />
+        <div className={styles.glowPrimary} />
+        <div className={styles.glowSecondary} />
+        <div className={styles.glowAccent} />
+      </div>
+
       <div className={styles.content}>
-        <div className={styles.copy}>
+        <div className={`${styles.copy} ${styles.copyEnter}`}>
           <span className={styles.eyebrow}>React + React Native</span>
 
           <h1 className={styles.title}>
@@ -39,12 +46,12 @@ export function Hero() {
             </Button>
 
             <Button appearance='ghost' color='neutral' asChild>
-              <Link href='https://github.com/vellira-dev/vellira'>GitHub</Link>
+              <Link href='https://github.com/vellira-dev/Vellira'>GitHub</Link>
             </Button>
           </div>
         </div>
 
-        <div className={styles.preview}>
+        <div className={`${styles.preview} ${styles.previewEnter}`}>
           <HeroPreview />
         </div>
       </div>
