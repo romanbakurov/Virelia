@@ -666,6 +666,7 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 | `onSearch`           | `(value: string) => void` | No       | —                                                                          |
 | `empty`              | `ReactNode`               | No       | —                                                                          |
 | `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                               |
+| `collisionPadding`   | `number`                  | No       | —                                                                          |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 
