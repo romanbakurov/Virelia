@@ -29,6 +29,7 @@ export type DropdownProps = {
   color?: DropdownColor;
   placement?: Placement;
   offset?: number;
+  collisionPadding?: number;
   matchTriggerWidth?: boolean;
   minWidth?: number | string;
   maxWidth?: number | string;

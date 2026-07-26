@@ -42,6 +42,7 @@ export const DropdownRoot = ({
   color = 'primary',
   placement = 'bottom-start',
   offset = 2,
+  collisionPadding = 8,
   matchTriggerWidth = false,
   minWidth,
   maxWidth,
@@ -147,6 +148,7 @@ export const DropdownRoot = ({
     matchTriggerWidth,
     avoidCollisions,
     offset,
+    collisionPadding,
     mobileSheetBreakpoint: 640,
   });
 

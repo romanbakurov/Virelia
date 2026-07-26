@@ -24,7 +24,7 @@ export function ThemeSwitcher() {
     options.find((option) => option.value === preference) ?? options[2];
 
   return (
-    <Dropdown>
+    <Dropdown placement='bottom-end' offset={8} collisionPadding={16}>
       <Dropdown.Trigger asChild>
         <Button
           type='button'
@@ -38,13 +38,20 @@ export function ThemeSwitcher() {
         </Button>
       </Dropdown.Trigger>
 
-      <Dropdown.Content
-        align='end'
-        sideOffset={8}
-        collisionPadding={16}
-        className={styles.content}
-      >
-        <Dropdown.RadioGroup value={preference} onValueChange={setPreference}>
+      <Dropdown.Content className={styles.content}>
+        <Dropdown.RadioGroup
+          value={preference}
+          onValueChange={(value) => {
+            if (
+              value === 'light' ||
+              value === 'dark' ||
+              value === 'system' ||
+              value === 'high-contrast'
+            ) {
+              setPreference(value);
+            }
+          }}
+        >
           {options.map((option) => (
             <Dropdown.RadioItem
               key={option.value}
