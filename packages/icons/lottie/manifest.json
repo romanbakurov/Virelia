@@ -1,7 +1,21 @@
 {
   "name": "Vellira Animated Icons",
-  "count": 103,
+  "count": 105,
   "icons": [
+    {
+      "name": "ArrowLeftRight",
+      "category": "System",
+      "file": "System/ArrowLeftRight.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ArrowTopButton",
+      "category": "System",
+      "file": "System/ArrowTopButton.json",
+      "frames": 15,
+      "fps": 30
+    },
     {
       "name": "ArrowDown",
       "category": "Navigation",

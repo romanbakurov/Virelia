@@ -1,21 +1,116 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
+
+import type { AnimatedIconData } from '@vellira-ui/icons/lottie';
+import { animatedIcons } from '@vellira-ui/icons/lottie';
 import { Button, Dropdown } from '@vellira-ui/react';
+import lottie, {
+  type AnimationItem,
+} from 'lottie-web/build/player/lottie_light';
 
 import { useWebsiteThemeContext } from '@/providers/WebsiteThemeContext';
 
 import styles from './ThemeSwitcher.module.css';
 
 const options = [
-  { value: 'light', label: 'Light', symbol: '☀' },
-  { value: 'dark', label: 'Dark', symbol: '☾' },
-  { value: 'system', label: 'System', symbol: '◐' },
+  { value: 'light', label: 'Light', icon: animatedIcons.Sun },
+  { value: 'dark', label: 'Dark', icon: animatedIcons.Moon },
+  { value: 'system', label: 'System', icon: animatedIcons.System },
   {
     value: 'high-contrast',
     label: 'High Contrast',
-    symbol: '◉',
+    icon: animatedIcons.Contrast,
   },
 ] as const;
+
+type AnimatedThemeIconProps = {
+  data: AnimatedIconData;
+};
+
+function cloneAnimationData(data: AnimatedIconData): object {
+  return JSON.parse(JSON.stringify(data)) as object;
+}
+
+function getTriggerElement(container: HTMLSpanElement): HTMLElement {
+  return (
+    container.closest<HTMLElement>(
+      'button, a, [role="button"], [role="menuitemradio"], [data-animated-icon-trigger]'
+    ) ?? container
+  );
+}
+
+function applyCurrentColor(container: HTMLElement) {
+  const paintedNodes = container.querySelectorAll<SVGElement>(
+    'path[fill], path[stroke], g[fill], g[stroke]'
+  );
+
+  paintedNodes.forEach((node) => {
+    const fill = node.getAttribute('fill');
+    const stroke = node.getAttribute('stroke');
+
+    if (fill && fill !== 'none') node.setAttribute('fill', 'currentColor');
+    if (stroke && stroke !== 'none') {
+      node.setAttribute('stroke', 'currentColor');
+    }
+  });
+}
+
+function AnimatedThemeIcon({ data }: AnimatedThemeIconProps) {
+  const containerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
+
+    const animation: AnimationItem = lottie.loadAnimation({
+      container,
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      animationData: cloneAnimationData(data),
+      rendererSettings: {
+        preserveAspectRatio: 'xMidYMid meet',
+        progressiveLoad: false,
+      },
+    });
+
+    const syncColor = () => applyCurrentColor(container);
+    const playOnce = () => {
+      animation.stop();
+      animation.setDirection(1);
+      animation.play();
+    };
+    const reset = () => {
+      animation.stop();
+      animation.goToAndStop(0, true);
+      syncColor();
+    };
+
+    animation.addEventListener('DOMLoaded', syncColor);
+    animation.addEventListener('enterFrame', syncColor);
+
+    const trigger = getTriggerElement(container);
+    trigger.addEventListener('pointerenter', playOnce);
+    trigger.addEventListener('focusin', playOnce);
+    trigger.addEventListener('pointerleave', reset);
+    trigger.addEventListener('focusout', reset);
+
+    animation.goToAndStop(0, true);
+
+    return () => {
+      trigger.removeEventListener('pointerenter', playOnce);
+      trigger.removeEventListener('focusin', playOnce);
+      trigger.removeEventListener('pointerleave', reset);
+      trigger.removeEventListener('focusout', reset);
+      animation.removeEventListener('DOMLoaded', syncColor);
+      animation.removeEventListener('enterFrame', syncColor);
+      animation.destroy();
+    };
+  }, [data]);
+
+  return <span ref={containerRef} className={styles.icon} aria-hidden='true' />;
+}
 
 export function ThemeSwitcher() {
   const { preference, setPreference } = useWebsiteThemeContext();
@@ -34,7 +129,7 @@ export function ThemeSwitcher() {
           size='sm'
           aria-label={`Theme: ${activeOption.label}`}
         >
-          <span aria-hidden='true'>{activeOption.symbol}</span>
+          <AnimatedThemeIcon data={activeOption.icon} />
         </Button>
       </Dropdown.Trigger>
 
@@ -59,7 +154,7 @@ export function ThemeSwitcher() {
               className={styles.item}
             >
               <Dropdown.ItemIcon>
-                <span aria-hidden='true'>{option.symbol}</span>
+                <AnimatedThemeIcon data={option.icon} />
               </Dropdown.ItemIcon>
 
               {option.label}

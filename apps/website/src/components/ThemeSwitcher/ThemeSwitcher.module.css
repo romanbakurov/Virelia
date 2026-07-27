@@ -16,6 +16,21 @@
   min-height: 36px;
 }
 
+.icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: currentcolor;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .label {
   display: none;
 }

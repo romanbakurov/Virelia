@@ -1,6 +1,8 @@
 export { default as ArrowDown } from './generated/ArrowDown.native.js';
 export { default as ArrowLeft } from './generated/ArrowLeft.native.js';
+export { default as ArrowLeftRight } from './generated/ArrowLeftRight.native.js';
 export { default as ArrowRight } from './generated/ArrowRight.native.js';
+export { default as ArrowTopButton } from './generated/ArrowTopButton.native.js';
 export { default as ArrowUp } from './generated/ArrowUp.native.js';
 export { default as At } from './generated/At.native.js';
 export { default as Bag } from './generated/Bag.native.js';
