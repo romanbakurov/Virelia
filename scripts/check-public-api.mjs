@@ -37,7 +37,9 @@ const publicSymbolContracts = {
   'packages/icons/src/native.ts': [
     'ArrowDown',
     'ArrowLeft',
+    'ArrowLeftRight',
     'ArrowRight',
+    'ArrowTopButton',
     'ArrowUp',
     'At',
     'Bag',
@@ -141,7 +143,9 @@ const publicSymbolContracts = {
   'packages/icons/src/web.ts': [
     'ArrowDown',
     'ArrowLeft',
+    'ArrowLeftRight',
     'ArrowRight',
+    'ArrowTopButton',
     'ArrowUp',
     'At',
     'Bag',
