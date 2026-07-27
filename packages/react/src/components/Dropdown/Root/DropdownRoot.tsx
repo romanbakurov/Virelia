@@ -41,6 +41,7 @@ export const DropdownRoot = ({
   size = 'md',
   color = 'primary',
   placement = 'bottom-start',
+  strategy,
   offset = 2,
   collisionPadding = 8,
   matchTriggerWidth = false,
@@ -145,6 +146,7 @@ export const DropdownRoot = ({
   const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
     open: isOpen,
     placement,
+    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
     matchTriggerWidth,
     avoidCollisions,
     offset,

@@ -1,4 +1,4 @@
-import type { Placement } from '@floating-ui/react';
+import type { Placement, Strategy } from '@floating-ui/react';
 import type {
   AnchorHTMLAttributes,
   CSSProperties,
@@ -28,6 +28,7 @@ export type DropdownProps = {
   /** Semantic palette for trigger, content, focus, and item interaction states. */
   color?: DropdownColor;
   placement?: Placement;
+  strategy?: Strategy;
   offset?: number;
   collisionPadding?: number;
   matchTriggerWidth?: boolean;

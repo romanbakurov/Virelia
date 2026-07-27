@@ -131,6 +131,7 @@ export const useFloatingPosition = ({
   const {
     refs,
     floatingStyles,
+    isPositioned,
     update,
     context,
     middlewareData,
@@ -155,7 +156,13 @@ export const useFloatingPosition = ({
     context,
     placement: resolvedPlacement,
     middlewareData,
-    floatingStyles: isMobileSheet ? {} : floatingStyles,
+    floatingStyles: isMobileSheet
+      ? {}
+      : {
+          ...floatingStyles,
+          visibility:
+            open && !isPositioned ? 'hidden' : floatingStyles.visibility,
+        },
     isMobileSheet,
     setRef: refs.setReference,
     setFloatingRef: refs.setFloating,

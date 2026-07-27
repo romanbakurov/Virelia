@@ -18,6 +18,14 @@
     --checkbox-primary-pressed-label-fg
   );
   --checkbox-selected-ring: var(--checkbox-primary-ring);
+  --checkbox-hover-bg: color-mix(
+    in srgb,
+    var(--checkbox-selected-bg) 12%,
+    var(--checkbox-default-bg)
+  );
+  --checkbox-hover-border: var(--checkbox-selected-border);
+  --checkbox-hover-fg: var(--checkbox-default-fg);
+  --checkbox-hover-label-fg: var(--checkbox-selected-hover-label-fg);
   --checkbox-size: 20px;
 
   display: flex;
