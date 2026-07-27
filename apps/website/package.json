@@ -10,9 +10,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/icons": "workspace:*",
     "@vellira-ui/react": "workspace:*",
     "@vellira-ui/tokens": "workspace:*",
+    "motion": "^12.42.2",
     "next": "16.2.11",
     "react": "19.2.4",
     "react-dom": "19.2.4"

@@ -3,7 +3,9 @@ import { expect, test } from '@playwright/test';
 
 async function expectVelliraFont(page: Page) {
   await expect
-    .poll(() => page.evaluate(() => document.fonts.check('16px VelliraSans')))
+    .poll(() =>
+      page.evaluate(() => document.fonts.check('16px  "Vellira Sans"'))
+    )
     .toBe(true);
 }
 
@@ -14,10 +16,10 @@ test.describe('Storybook typography', () => {
     const root = page.locator('#storybook-root');
     await expect(root).toBeVisible();
     await expectVelliraFont(page);
-    await expect(root).toHaveCSS('font-family', /VelliraSans/);
+    await expect(root).toHaveCSS('font-family', /Vellira Sans/);
     await expect(page.getByLabel('Email')).toHaveCSS(
       'font-family',
-      /VelliraSans/
+      /Vellira Sans/
     );
   });
 
@@ -27,9 +29,9 @@ test.describe('Storybook typography', () => {
     const docs = page.locator('#storybook-docs');
     await expect(docs).toBeVisible();
     await expectVelliraFont(page);
-    await expect(docs).toHaveCSS('font-family', /VelliraSans/);
+    await expect(docs).toHaveCSS('font-family', /Vellira Sans/);
     await expect(
       page.getByRole('heading', { exact: true, name: 'Input' })
-    ).toHaveCSS('font-family', /VelliraSans/);
+    ).toHaveCSS('font-family', /Vellira Sans/);
   });
 });

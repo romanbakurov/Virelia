@@ -1,5 +1,6 @@
 import { SiteHeader } from '@/components/SiteHeader';
 import { Hero } from '@/sections/Hero';
+import { PlatformParity } from '@/sections/PlatformParity';
 
 export default function HomePage() {
   return (
@@ -8,6 +9,7 @@ export default function HomePage() {
 
       <main>
         <Hero />
+        <PlatformParity />
 
         <section id='components' aria-label='Components' />
         <section id='themes' aria-label='Themes' />

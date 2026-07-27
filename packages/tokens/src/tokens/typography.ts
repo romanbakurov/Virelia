@@ -1,10 +1,13 @@
 export const typography = {
   family: {
-    base: "VelliraSans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    base: "'Vellira Sans', Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+
     extraLight: 'VelliraSans-ExtraLight',
     regular: 'VelliraSans-Regular',
     medium: 'VelliraSans-Medium',
     semibold: 'VelliraSans-SemiBold',
+    bold: 'VelliraSans-Bold',
+    extraBold: 'VelliraSans-ExtraBold',
   },
 
   size: {

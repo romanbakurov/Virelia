@@ -1,7 +1,16 @@
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-family-base);
 }
 
 body {
   margin: 0;
+  font-family: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }

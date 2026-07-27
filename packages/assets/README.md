@@ -34,14 +34,14 @@ src: url('@vellira-ui/assets/fonts/VelliraSans-Regular.woff2') format('woff2');
 
 Available font files:
 
-- `VelliraSans-ExtraLight.woff2`
-- `VelliraSans-Regular.woff2`
-- `VelliraSans-Medium.woff2`
-- `VelliraSans-SemiBold.woff2`
-- `VelliraSans-ExtraLight.ttf`
-- `VelliraSans-Regular.ttf`
-- `VelliraSans-Medium.ttf`
-- `VelliraSans-SemiBold.ttf`
+- `Vellira Sans-ExtraLight.woff2`
+- `Vellira Sans-Regular.woff2`
+- `Vellira Sans-Medium.woff2`
+- `Vellira Sans-SemiBold.woff2`
+- `Vellira Sans-ExtraLight.ttf`
+- `Vellira Sans-Regular.ttf`
+- `Vellira Sans-Medium.ttf`
+- `Vellira Sans-SemiBold.ttf`
 
 ## Package Structure
 

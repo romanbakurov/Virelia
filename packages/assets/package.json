@@ -16,7 +16,7 @@
     "**/*.scss"
   ],
   "exports": {
-    "./styles": "./styles/fonts.scss",
+    "./styles": "./styles/fonts.css",
     "./styles/*": "./styles/*",
     "./fonts/*": "./fonts/*"
   },
