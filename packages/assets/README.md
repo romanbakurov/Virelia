@@ -21,7 +21,7 @@ import '@vellira-ui/assets/styles';
 or directly:
 
 ```ts
-import '@vellira-ui/assets/styles/fonts.scss';
+import '@vellira-ui/assets/styles/fonts.css';
 ```
 
 ## Font Files
