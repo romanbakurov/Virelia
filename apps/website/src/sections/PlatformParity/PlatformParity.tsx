@@ -3,11 +3,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
-import { Button, Checkbox, Input, Tabs, useTheme } from '@vellira-ui/react';
+import {
+  ArrowLeftRight,
+  Check,
+  ChevronDown,
+  Copy,
+  Download,
+  Grid,
+  Monitor,
+  Settings,
+  Smartphone,
+  System,
+  Users,
+} from '@vellira-ui/icons';
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  Input,
+  Radio,
+  RadioGroup,
+  Select,
+  Tabs,
+  useTheme,
+} from '@vellira-ui/react';
 
 import styles from './PlatformParity.module.css';
 
-type PlatformPreviewTab = 'design' | 'code';
+type PlatformPreviewTab = 'overview' | 'permissions';
+type PreviewDensity = 'comfortable' | 'compact';
+type TeamValue = 'design' | 'platform' | 'mobile';
 type PreviewTheme = 'light' | 'dark' | 'high-contrast';
 
 type NativePreviewMessage = {
@@ -17,31 +42,72 @@ type NativePreviewMessage = {
     workspace: string;
     notificationsEnabled: boolean;
     activeTab: PlatformPreviewTab;
+    density: PreviewDensity;
+    team: TeamValue;
     theme: PreviewTheme;
   };
 };
 
 const isPlatformPreviewTab = (value: string): value is PlatformPreviewTab =>
-  value === 'design' || value === 'code';
+  value === 'overview' || value === 'permissions';
+
+const isPreviewDensity = (value: string): value is PreviewDensity =>
+  value === 'comfortable' || value === 'compact';
+
+const isTeamValue = (value: string): value is TeamValue =>
+  value === 'design' || value === 'platform' || value === 'mobile';
 
 const sharedApi = [
-  'Shared component concepts',
-  'Consistent variants and sizes',
-  'Unified design tokens',
-  'Platform-native behaviour',
+  {
+    icon: <ArrowLeftRight />,
+    label: 'State',
+    title: 'One controlled state model',
+    description:
+      'Inputs, selects, tabs, radio, and checkbox controls share the same value/change contract.',
+  },
+  {
+    icon: <Grid />,
+    label: 'Scale',
+    title: 'Shared sizes and color intents',
+    description:
+      'Use the same size and intent vocabulary while each renderer maps it to platform primitives.',
+  },
+  {
+    icon: <System />,
+    label: 'Tokens',
+    title: 'Token-backed surfaces and borders',
+    description:
+      'Surfaces, borders, focus rings, and shadows resolve from theme tokens instead of hard-coded color.',
+  },
+  {
+    icon: <Smartphone />,
+    label: 'Feel',
+    title: 'Native-feeling platform patterns',
+    description:
+      'Menus, sheets, touch targets, and web overlays keep native behavior without splitting the API.',
+  },
 ] as const;
 
 export function PlatformParity() {
   const { theme } = useTheme();
   const shouldReduceMotion = useReducedMotion();
 
-  const [workspace, setWorkspace] = useState('Vellira Web');
+  const [workspace, setWorkspace] = useState('Vellira Product Suite');
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [activeTab, setActiveTab] = useState<PlatformPreviewTab>('design');
-
+  const [activeTab, setActiveTab] = useState<PlatformPreviewTab>('overview');
+  const [density, setDensity] = useState<PreviewDensity>('comfortable');
+  const [team, setTeam] = useState<TeamValue>('design');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const previewTheme: PreviewTheme =
     theme === 'highContrast' ? 'high-contrast' : theme;
+
+  const selectedTeam =
+    team === 'design'
+      ? 'Design systems'
+      : team === 'platform'
+        ? 'Platform team'
+        : 'Mobile squad';
 
   const sendPreviewState = useCallback(() => {
     const message: NativePreviewMessage = {
@@ -51,6 +117,8 @@ export function PlatformParity() {
         workspace,
         notificationsEnabled,
         activeTab,
+        density,
+        team,
         theme: previewTheme,
       },
     };
@@ -59,7 +127,7 @@ export function PlatformParity() {
       message,
       'http://localhost:8081'
     );
-  }, [workspace, notificationsEnabled, activeTab, previewTheme]);
+  }, [workspace, notificationsEnabled, activeTab, density, team, previewTheme]);
 
   useEffect(() => {
     sendPreviewState();
@@ -118,17 +186,113 @@ export function PlatformParity() {
             </div>
 
             <div className={styles.preview}>
+              <div className={styles.previewToolbar}>
+                <div className={styles.previewTitle}>
+                  <span aria-hidden='true'>
+                    <Monitor />
+                  </span>
+                  <div>
+                    <strong>Workspace settings</strong>
+                    <small>Real React components</small>
+                  </div>
+                </div>
+
+                <Dropdown
+                  open={dropdownOpen}
+                  onOpenChange={setDropdownOpen}
+                  placement='bottom-end'
+                >
+                  <Dropdown.Trigger asChild>
+                    <Button
+                      appearance='outline'
+                      color='neutral'
+                      size='sm'
+                      iconEnd={<ChevronDown />}
+                    >
+                      Publish
+                    </Button>
+                  </Dropdown.Trigger>
+
+                  <Dropdown.Content>
+                    <Dropdown.Label>Release actions</Dropdown.Label>
+                    <Dropdown.Item icon={<Copy />}>
+                      Copy platform config
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={<Download />}>
+                      Export token bundle
+                    </Dropdown.Item>
+                    <Dropdown.Separator />
+                    <Dropdown.Item icon={<Settings />}>
+                      Review rollout rules
+                    </Dropdown.Item>
+                  </Dropdown.Content>
+                </Dropdown>
+              </div>
+
               <Input
                 label='Workspace'
                 value={workspace}
                 onValueChange={setWorkspace}
+                description='The same controlled value updates both platform previews.'
               />
 
-              <Checkbox
-                label='Enable notifications'
-                checked={notificationsEnabled}
-                onCheckedChange={setNotificationsEnabled}
-              />
+              <Select
+                label='Owning team'
+                value={team}
+                onValueChange={(value) => {
+                  if (isTeamValue(value)) {
+                    setTeam(value);
+                  }
+                }}
+                startIcon={<Users />}
+              >
+                <Select.Item value='design' icon={<Grid />}>
+                  Design systems
+                  <Select.ItemDescription>
+                    Components and foundations
+                  </Select.ItemDescription>
+                  <Select.ItemBadge>Core</Select.ItemBadge>
+                </Select.Item>
+                <Select.Item value='platform' icon={<Monitor />}>
+                  Platform team
+                  <Select.ItemDescription>
+                    Web delivery and tooling
+                  </Select.ItemDescription>
+                  <Select.ItemBadge>Web</Select.ItemBadge>
+                </Select.Item>
+                <Select.Item value='mobile' icon={<Smartphone />}>
+                  Mobile squad
+                  <Select.ItemDescription>
+                    Native previews and gestures
+                  </Select.ItemDescription>
+                  <Select.ItemBadge>RN</Select.ItemBadge>
+                </Select.Item>
+              </Select>
+
+              <div className={styles.controlGrid}>
+                <Checkbox
+                  label='Enable notifications'
+                  description='Mirrors to native switch styling.'
+                  checked={notificationsEnabled}
+                  onCheckedChange={setNotificationsEnabled}
+                />
+
+                <RadioGroup
+                  name='preview-density'
+                  label='Density'
+                  value={density}
+                  onValueChange={(value) => {
+                    if (isPreviewDensity(value)) {
+                      setDensity(value);
+                    }
+                  }}
+                  orientation='horizontal'
+                  size='sm'
+                >
+                  <Radio value='comfortable' label='Comfort' />
+                  <Radio value='compact' label='Compact' />
+                </RadioGroup>
+              </div>
 
               <Tabs
                 value={activeTab}
@@ -137,24 +301,49 @@ export function PlatformParity() {
                     setActiveTab(value);
                   }
                 }}
-                variant='pills'
+                variant='segmented'
               >
-                <Tabs.List>
-                  <Tabs.Trigger value='design'>Design</Tabs.Trigger>
-                  <Tabs.Trigger value='code'>Code</Tabs.Trigger>
+                <Tabs.List aria-label='Preview panel'>
+                  <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+                  <Tabs.Trigger value='permissions'>Permissions</Tabs.Trigger>
                   <Tabs.Indicator />
                 </Tabs.List>
 
-                <Tabs.Content value='design'>
-                  <span className={styles.visuallyHidden}>Design preview</span>
+                <Tabs.Content value='overview'>
+                  <div className={styles.tabPanel}>
+                    <div>
+                      <span>Active team</span>
+                      <strong>{selectedTeam}</strong>
+                    </div>
+                    <div>
+                      <span>Density</span>
+                      <strong>
+                        {density === 'comfortable' ? 'Comfort' : 'Compact'}
+                      </strong>
+                    </div>
+                  </div>
                 </Tabs.Content>
 
-                <Tabs.Content value='code'>
-                  <span className={styles.visuallyHidden}>Code preview</span>
+                <Tabs.Content value='permissions'>
+                  <div className={styles.tabPanel}>
+                    <div>
+                      <span>Role</span>
+                      <strong>Owner</strong>
+                    </div>
+                    <div>
+                      <span>Release</span>
+                      <strong>Protected</strong>
+                    </div>
+                  </div>
                 </Tabs.Content>
               </Tabs>
 
-              <Button>Continue</Button>
+              <div className={styles.previewActions}>
+                <Button iconStart={<Check />}>Sync changes</Button>
+                <Button appearance='ghost' color='neutral'>
+                  Preview API
+                </Button>
+              </div>
             </div>
           </motion.article>
 
@@ -180,7 +369,9 @@ export function PlatformParity() {
             }}
           >
             <span className={styles.bridgeLine} />
-            <span className={styles.bridgeIcon}>↔</span>
+            <span className={styles.bridgeIcon}>
+              <ArrowLeftRight aria-hidden='true' />
+            </span>
             <span className={styles.bridgeLine} />
           </motion.div>
 
@@ -240,14 +431,56 @@ export function PlatformParity() {
           </motion.article>
         </div>
 
-        <ul className={styles.features}>
-          {sharedApi.map((feature) => (
-            <li key={feature}>
-              <span aria-hidden='true'>✓</span>
-              {feature}
-            </li>
-          ))}
-        </ul>
+        <div className={styles.featuresWrap}>
+          <div className={styles.featuresHeader}>
+            <span className={styles.featuresLabel}>Shared contract</span>
+            <p>
+              The same component decisions travel between web and native while
+              each surface keeps its platform feel.
+            </p>
+          </div>
+
+          <ul className={styles.features} aria-label='Shared platform contract'>
+            {sharedApi.map((feature, index) => (
+              <motion.li
+                key={feature.title}
+                initial={
+                  shouldReduceMotion
+                    ? { opacity: 0 }
+                    : { opacity: 0, x: -46, scale: 0.98 }
+                }
+                whileInView={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.35,
+                }}
+                transition={{
+                  delay: shouldReduceMotion ? 0 : index * 0.1,
+                  duration: shouldReduceMotion ? 0.18 : 0.72,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <span className={styles.featureNumber}>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                <span className={styles.featureIcon} aria-hidden='true'>
+                  {feature.icon}
+                </span>
+
+                <div>
+                  <small>{feature.label}</small>
+                  <strong>{feature.title}</strong>
+                  <p>{feature.description}</p>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
