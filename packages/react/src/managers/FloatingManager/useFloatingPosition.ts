@@ -28,6 +28,7 @@ export interface UseFloatingPositionReturn {
   placement: Placement;
   middlewareData: ReturnType<typeof useFloating>['middlewareData'];
   floatingStyles: ReturnType<typeof useFloating>['floatingStyles'];
+  isPositioned: boolean;
   isMobileSheet: boolean;
   setRef: ReturnType<typeof useFloating>['refs']['setReference'];
   setFloatingRef: ReturnType<typeof useFloating>['refs']['setFloating'];
@@ -156,6 +157,7 @@ export const useFloatingPosition = ({
     context,
     placement: resolvedPlacement,
     middlewareData,
+    isPositioned,
     floatingStyles: isMobileSheet
       ? {}
       : {
