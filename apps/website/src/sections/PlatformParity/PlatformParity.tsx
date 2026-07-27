@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 
-import { Button, Checkbox, Input, Tabs } from '@vellira-ui/react';
+import { Button, Checkbox, Input, Tabs, useTheme } from '@vellira-ui/react';
 
 import styles from './PlatformParity.module.css';
 
 type PlatformPreviewTab = 'design' | 'code';
+type PreviewTheme = 'light' | 'dark' | 'high-contrast';
 
 type NativePreviewMessage = {
   source: 'vellira-website';
@@ -16,6 +17,7 @@ type NativePreviewMessage = {
     workspace: string;
     notificationsEnabled: boolean;
     activeTab: PlatformPreviewTab;
+    theme: PreviewTheme;
   };
 };
 
@@ -30,6 +32,7 @@ const sharedApi = [
 ] as const;
 
 export function PlatformParity() {
+  const { theme } = useTheme();
   const shouldReduceMotion = useReducedMotion();
 
   const [workspace, setWorkspace] = useState('Vellira Web');
@@ -37,6 +40,8 @@ export function PlatformParity() {
   const [activeTab, setActiveTab] = useState<PlatformPreviewTab>('design');
 
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const previewTheme: PreviewTheme =
+    theme === 'highContrast' ? 'high-contrast' : theme;
 
   const sendPreviewState = useCallback(() => {
     const message: NativePreviewMessage = {
@@ -46,6 +51,7 @@ export function PlatformParity() {
         workspace,
         notificationsEnabled,
         activeTab,
+        theme: previewTheme,
       },
     };
 
@@ -53,7 +59,7 @@ export function PlatformParity() {
       message,
       'http://localhost:8081'
     );
-  }, [activeTab, notificationsEnabled, workspace]);
+  }, [workspace, notificationsEnabled, activeTab, previewTheme]);
 
   useEffect(() => {
     sendPreviewState();
@@ -114,7 +120,7 @@ export function PlatformParity() {
             <div className={styles.preview}>
               <Input
                 label='Workspace'
-                defaultValue='Vellira Web'
+                value={workspace}
                 onValueChange={setWorkspace}
               />
 
