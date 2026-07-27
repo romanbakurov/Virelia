@@ -1,13 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { Button } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
 import styles from './SiteHeader.module.css';
-
-import Image from 'next/image';
 
 const navigation = [
   { label: 'Components', href: '#components' },

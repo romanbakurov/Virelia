@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { Check, Monitor, Smartphone, System } from '@vellira-ui/icons';
 import { Button, Input, Tabs } from '@vellira-ui/react';
 
 import styles from './Hero.module.css';
@@ -58,6 +59,18 @@ export function HeroPreview() {
       </div>
 
       <div className={styles.previewBody}>
+        <div className={styles.previewMeta}>
+          <span className={styles.previewMetaIcon}>
+            <Monitor aria-hidden='true' />
+            <Smartphone aria-hidden='true' />
+          </span>
+          <span>React and Native APIs stay in sync</span>
+          <strong>
+            <System aria-hidden='true' />
+            Tokens synced
+          </strong>
+        </div>
+
         <Tabs
           value={activeTab}
           onValueChange={handleTabChange}
@@ -83,14 +96,14 @@ export function HeroPreview() {
               </div>
             </div>
 
-            <Button>Save changes</Button>
+            <Button className={styles.previewButton}>Save changes</Button>
           </Tabs.Content>
 
           <Tabs.Content value='settings' className={styles.previewPanel}>
             <div className={styles.capabilityList}>
               <div className={styles.capabilityItem}>
                 <span className={styles.capabilityCheck} aria-hidden='true'>
-                  ✓
+                  <Check />
                 </span>
 
                 <span>
@@ -101,7 +114,7 @@ export function HeroPreview() {
 
               <div className={styles.capabilityItem}>
                 <span className={styles.capabilityCheck} aria-hidden='true'>
-                  ✓
+                  <Check />
                 </span>
 
                 <span>
@@ -112,7 +125,7 @@ export function HeroPreview() {
 
               <div className={styles.capabilityItem}>
                 <span className={styles.capabilityCheck} aria-hidden='true'>
-                  ✓
+                  <Check />
                 </span>
 
                 <span>
@@ -123,6 +136,21 @@ export function HeroPreview() {
             </div>
           </Tabs.Content>
         </Tabs>
+
+        <div className={styles.tokenStrip} aria-label='Theme token preview'>
+          <span>
+            <i className={styles.tokenSwatchPrimary} aria-hidden='true' />
+            Primary
+          </span>
+          <span>
+            <i className={styles.tokenSwatchSurface} aria-hidden='true' />
+            Surface
+          </span>
+          <span>
+            <i className={styles.tokenSwatchBorder} aria-hidden='true' />
+            Border
+          </span>
+        </div>
       </div>
     </div>
   );

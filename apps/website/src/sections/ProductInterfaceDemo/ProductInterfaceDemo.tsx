@@ -1,13 +1,65 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { type ComponentType, type SVGProps, useEffect, useState } from 'react';
 
+import {
+  ChevronDown,
+  Contrast,
+  Copy,
+  Download,
+  Grid,
+  Home,
+  Package,
+  System,
+  Trash,
+} from '@vellira-ui/icons';
 import { Button, Checkbox, Dropdown, Input, Tabs } from '@vellira-ui/react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import styles from './ProductInterfaceDemo.module.css';
 
 type WorkspaceView = 'design' | 'code';
+type WindowControlTone = 'danger' | 'warning' | 'success';
+type IconComponent = ComponentType<
+  SVGProps<SVGSVGElement> & {
+    size?: number | string;
+    color?: string;
+  }
+>;
+
+type NavigationItem = {
+  label: string;
+  icon: IconComponent;
+  badge?: string;
+  active?: boolean;
+};
+
+const windowControlTones = [
+  'danger',
+  'warning',
+  'success',
+] as const satisfies readonly WindowControlTone[];
+
+const navigationItems: readonly NavigationItem[] = [
+  {
+    label: 'Overview',
+    icon: Home,
+    active: true,
+  },
+  {
+    label: 'Components',
+    icon: Package,
+    badge: '28',
+  },
+  {
+    label: 'Tokens',
+    icon: Grid,
+  },
+  {
+    label: 'Themes',
+    icon: Contrast,
+  },
+] as const satisfies readonly NavigationItem[];
 
 export function ProductInterfaceDemo() {
   const shouldReduceMotion = useReducedMotion();
@@ -116,7 +168,11 @@ export function ProductInterfaceDemo() {
   }, [animationStarted, shouldReduceMotion]);
 
   return (
-    <section className={styles.section}>
+    <section
+      id='interface'
+      className={styles.section}
+      aria-labelledby='product-interface-demo-title'
+    >
       <motion.div
         className={styles.background}
         aria-hidden='true'
@@ -148,7 +204,7 @@ export function ProductInterfaceDemo() {
         >
           <span className={styles.eyebrow}>Component system</span>
 
-          <h2 className={styles.title}>
+          <h2 id='product-interface-demo-title' className={styles.title}>
             Build complete interfaces.
             <span>Not isolated components.</span>
           </h2>
@@ -188,9 +244,13 @@ export function ProductInterfaceDemo() {
         >
           <div className={styles.windowHeader}>
             <div className={styles.windowControls} aria-hidden='true'>
-              <span className={styles.previewDot} />
-              <span className={styles.previewDot} />
-              <span className={styles.previewDot} />
+              {windowControlTones.map((tone) => (
+                <span
+                  key={tone}
+                  className={styles.previewDot}
+                  data-tone={tone}
+                />
+              ))}
             </div>
 
             <span className={styles.windowTitle}>Vellira workspace</span>
@@ -233,26 +293,32 @@ export function ProductInterfaceDemo() {
               </div>
 
               <nav className={styles.navigation} aria-label='Demo navigation'>
-                <button type='button' className={styles.activeNavigationItem}>
-                  <span className={styles.navigationIcon} aria-hidden='true' />
-                  Overview
-                </button>
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
 
-                <button type='button' className={styles.navigationItem}>
-                  <span className={styles.navigationIcon} aria-hidden='true' />
-                  Components
-                  <span className={styles.navigationBadge}>28</span>
-                </button>
-
-                <button type='button' className={styles.navigationItem}>
-                  <span className={styles.navigationIcon} aria-hidden='true' />
-                  Tokens
-                </button>
-
-                <button type='button' className={styles.navigationItem}>
-                  <span className={styles.navigationIcon} aria-hidden='true' />
-                  Themes
-                </button>
+                  return (
+                    <button
+                      key={item.label}
+                      type='button'
+                      className={
+                        item.active
+                          ? styles.activeNavigationItem
+                          : styles.navigationItem
+                      }
+                    >
+                      <Icon
+                        className={styles.navigationIcon}
+                        aria-hidden='true'
+                      />
+                      {item.label}
+                      {item.badge ? (
+                        <span className={styles.navigationBadge}>
+                          {item.badge}
+                        </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
               </nav>
 
               <div className={styles.sidebarFooter}>
@@ -279,7 +345,12 @@ export function ProductInterfaceDemo() {
                   placement='bottom-end'
                 >
                   <Dropdown.Trigger asChild>
-                    <Button appearance='outline' color='neutral' size='sm'>
+                    <Button
+                      appearance='outline'
+                      color='neutral'
+                      size='sm'
+                      iconEnd={<ChevronDown />}
+                    >
                       Actions
                     </Button>
                   </Dropdown.Trigger>
@@ -287,12 +358,16 @@ export function ProductInterfaceDemo() {
                   <Dropdown.Content>
                     <Dropdown.Label>Workspace actions</Dropdown.Label>
 
-                    <Dropdown.Item>Duplicate workspace</Dropdown.Item>
-                    <Dropdown.Item>Export configuration</Dropdown.Item>
+                    <Dropdown.Item icon={<Copy />}>
+                      Duplicate workspace
+                    </Dropdown.Item>
+                    <Dropdown.Item icon={<Download />}>
+                      Export configuration
+                    </Dropdown.Item>
 
                     <Dropdown.Separator />
 
-                    <Dropdown.Item color='danger'>
+                    <Dropdown.Item color='danger' icon={<Trash />}>
                       Delete workspace
                     </Dropdown.Item>
                   </Dropdown.Content>
@@ -456,7 +531,10 @@ export function ProductInterfaceDemo() {
 
                   <div className={styles.inspectorFooter}>
                     <span>Shared API</span>
-                    <strong>React · React Native</strong>
+                    <strong>
+                      <System aria-hidden='true' />
+                      React · React Native
+                    </strong>
                   </div>
                 </motion.aside>
               </div>
