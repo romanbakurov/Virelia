@@ -266,8 +266,8 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
     return [
       baseStyle,
       {
-        top: 0,
-        left: 0,
+        top: -1,
+        left: -1,
         width,
         height,
         backgroundColor: palette.segmented.active.bg,

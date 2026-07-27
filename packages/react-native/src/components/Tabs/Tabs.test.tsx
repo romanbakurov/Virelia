@@ -86,6 +86,29 @@ describe('Native Tabs', () => {
     unmount();
   });
 
+  it('stretches segmented triggers evenly across the list', () => {
+    const { container, unmount } = render(
+      <Tabs defaultValue='overview' variant='segmented'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='access'>Access</Tabs.Trigger>
+          <Tabs.Indicator />
+        </Tabs.List>
+        <Tabs.Content value='overview'>Overview panel</Tabs.Content>
+        <Tabs.Content value='access'>Access panel</Tabs.Content>
+      </Tabs>
+    );
+
+    const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+
+    expect(tabs[0].style.flex).toBe('1 1 0%');
+    expect(tabs[0].style.minWidth).toBe('0px');
+    expect(tabs[1].style.flex).toBe('1 1 0%');
+    expect(tabs[1].style.minWidth).toBe('0px');
+
+    unmount();
+  });
+
   it('exposes tablist, tab names, selected state, and disabled state', () => {
     const { container, unmount } = render(
       <Tabs>

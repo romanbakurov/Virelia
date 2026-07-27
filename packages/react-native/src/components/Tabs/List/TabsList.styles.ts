@@ -14,6 +14,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     listSegmented: {
+      gap: theme.tokens.spacing[1],
       padding: 2,
       backgroundColor: theme.components.tabs.list.segmentedBg,
       borderColor: theme.components.tabs.list.border,
