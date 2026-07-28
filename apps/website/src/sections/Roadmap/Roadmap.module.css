@@ -1,0 +1,743 @@
+.section {
+  position: relative;
+  padding: 112px 24px;
+  overflow: hidden;
+  background: var(--surface-default);
+}
+
+.glow {
+  position: absolute;
+  top: 34%;
+  left: 50%;
+  width: min(1120px, 92vw);
+  height: 760px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 28% 36%,
+      color-mix(in srgb, var(--color-primary-500) 10%, transparent),
+      transparent 44%
+    ),
+    radial-gradient(
+      circle at 76% 54%,
+      color-mix(in srgb, var(--color-primary-500) 16%, transparent),
+      transparent 48%
+    );
+  opacity: 0.12;
+  filter: blur(96px);
+  transform: translateX(-50%);
+}
+
+.container {
+  position: relative;
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  justify-items: center;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow,
+.panelEyebrow {
+  color: var(--color-primary-400);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 20px 0 0;
+  color: var(--text-primary);
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.title span {
+  display: block;
+  color: var(--color-primary-400);
+}
+
+.description {
+  max-width: 690px;
+  margin: 24px 0 0;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.roadmapPanel {
+  margin-top: 64px;
+  overflow: hidden;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: calc(var(--radius-xl) + 8px);
+  box-shadow: var(--shadow-xl), var(--shadow-inset);
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 88px;
+  padding: 18px 24px;
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent);
+  border-bottom: 1px solid var(--border-muted);
+  gap: 24px;
+}
+
+.panelHeader > div {
+  display: grid;
+  gap: 4px;
+}
+
+.panelHeader h3,
+.releaseHeader h3,
+.milestonesHeader h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.panelHeader h3 {
+  font-size: 18px;
+}
+
+.githubLink,
+.changelogLink {
+  white-space: nowrap;
+}
+
+.githubLink {
+  color: var(--text-secondary);
+  background: transparent;
+  border-color: color-mix(in srgb, var(--border-muted) 72%, transparent);
+  box-shadow: none;
+  opacity: 0.86;
+}
+
+.githubLink:hover {
+  color: var(--text-primary);
+  border-color: var(--border-muted);
+  opacity: 1;
+}
+
+.githubLink svg,
+.changelogLink svg {
+  flex: 0 0 auto;
+  transition: transform 180ms ease;
+}
+
+.githubLink:hover svg,
+.changelogLink:hover svg {
+  transform: translateX(2px);
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.45fr);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at 36% 20%,
+      color-mix(in srgb, var(--color-primary-500) 6%, transparent),
+      transparent 52%
+    ),
+    color-mix(in srgb, var(--surface-subtle) 72%, transparent);
+  border-right: 1px solid var(--border-muted);
+  gap: 14px;
+}
+
+.column {
+  display: flex;
+  align-self: start;
+  min-width: 0;
+  flex-direction: column;
+  padding: 16px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.column[data-tone='success'] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-success-500) 22%,
+    var(--border-muted)
+  );
+}
+
+.column[data-tone='primary'] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 26%,
+    var(--border-muted)
+  );
+}
+
+.column[data-tone='neutral'] {
+  border-color: var(--border-muted);
+}
+
+.columnHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 72px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-muted);
+  gap: 14px;
+}
+
+.columnHeader > div {
+  display: grid;
+  gap: 5px;
+}
+
+.columnHeader span {
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.column[data-tone='success'] .columnHeader span {
+  color: var(--color-success-600);
+}
+
+.column[data-tone='primary'] .columnHeader span {
+  color: var(--color-primary-500);
+}
+
+.columnHeader h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.columnHeader > strong {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  background: color-mix(
+    in srgb,
+    var(--surface-subtle) 72%,
+    var(--surface-default)
+  );
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-inset);
+}
+
+.column[data-tone='success'] .columnHeader > strong {
+  color: var(--color-success-600);
+  background: color-mix(
+    in srgb,
+    var(--color-success-500) 10%,
+    var(--surface-default)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-success-500) 30%,
+    var(--border-muted)
+  );
+}
+
+.column[data-tone='primary'] .columnHeader > strong {
+  color: var(--color-primary-500);
+  background: color-mix(
+    in srgb,
+    var(--color-primary-500) 10%,
+    var(--surface-default)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 30%,
+    var(--border-muted)
+  );
+}
+
+.columnItems {
+  display: grid;
+  margin-top: 14px;
+  gap: 10px;
+}
+
+.roadmapItem {
+  padding: 14px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.roadmapItem:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 28%,
+    var(--border-muted)
+  );
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.itemTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.itemTop strong {
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.itemTop span {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  color: var(--text-tertiary);
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+}
+
+.column[data-tone='success'] .itemTop span {
+  color: var(--color-success-600);
+  border-color: color-mix(
+    in srgb,
+    var(--color-success-500) 22%,
+    var(--border-muted)
+  );
+}
+
+.column[data-tone='primary'] .itemTop span {
+  color: var(--color-primary-500);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 22%,
+    var(--border-muted)
+  );
+}
+
+.roadmapItem p {
+  margin: 9px 0 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.releasePanel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 26px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--color-primary-500) 7%, var(--surface-default)),
+    var(--surface-default) 54%
+  );
+  border-left: 1px solid
+    color-mix(in srgb, var(--color-primary-500) 18%, var(--border-muted));
+  box-shadow: inset 1px 0 0
+    color-mix(in srgb, var(--surface-default) 52%, transparent);
+}
+
+.releaseHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.releaseHeader > div {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.releaseHeader h3 {
+  font-size: 30px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.releaseHeader code {
+  display: inline-flex;
+  padding: 3px 12px;
+  color: var(--color-primary-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: color-mix(
+    in srgb,
+    var(--color-primary-500) 8%,
+    var(--surface-default)
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--color-primary-500) 20%, var(--border-muted));
+  border-radius: var(--radius-full);
+}
+
+.releaseVersion {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 3px;
+  gap: 8px;
+}
+
+.releaseBadge,
+.updatedBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+}
+
+.releaseBadge {
+  flex: 0 0 auto;
+  color: var(--color-success-600);
+  background: color-mix(
+    in srgb,
+    var(--color-success-500) 8%,
+    var(--surface-default)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-success-500) 22%,
+    var(--border-muted)
+  );
+}
+
+.releaseDescription {
+  margin: 24px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.releaseChanges {
+  display: grid;
+  margin-top: 26px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-muted);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.releaseChanges > div {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-muted);
+  gap: 10px;
+}
+
+.releaseChanges > div:last-child {
+  border-bottom: 0;
+}
+
+.releaseChanges span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--color-success-600);
+  background: color-mix(
+    in srgb,
+    var(--color-success-500) 10%,
+    var(--surface-default)
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--color-success-500) 22%, var(--border-muted));
+  border-radius: var(--radius-full);
+}
+
+.changelogLink {
+  align-self: flex-start;
+  margin-top: 28px;
+  background: color-mix(in srgb, var(--surface-default) 88%, transparent);
+}
+
+.milestones {
+  padding: 26px 24px 28px;
+  background:
+    radial-gradient(
+      circle at 14% 16%,
+      color-mix(in srgb, var(--color-primary-500) 5%, transparent),
+      transparent 42%
+    ),
+    color-mix(in srgb, var(--surface-default) 84%, transparent);
+  border-top: 1px solid var(--border-muted);
+}
+
+.milestonesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 22px;
+}
+
+.milestonesHeader > div {
+  display: grid;
+  gap: 5px;
+}
+
+.milestonesHeader h3 {
+  font-size: 18px;
+}
+
+.updatedBadge {
+  color: var(--text-secondary);
+  background: var(--surface-subtle);
+  gap: 8px;
+}
+
+.updatedBadge > span {
+  width: 7px;
+  height: 7px;
+  background: var(--color-success-500);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-success-500) 12%, transparent);
+  animation: status-pulse 2200ms ease-in-out infinite;
+}
+
+.milestoneList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 22px;
+  gap: 12px;
+}
+
+.milestoneList > article {
+  position: relative;
+  min-width: 0;
+  padding: 18px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.milestoneList > article:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 26%,
+    var(--border-muted)
+  );
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.milestoneMarker {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 18px;
+  margin-bottom: 14px;
+}
+
+.milestoneMarker::after {
+  flex: 1;
+  height: 1px;
+  background: var(--border-muted);
+  content: '';
+}
+
+.milestoneMarker > span {
+  width: 9px;
+  height: 9px;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 5px
+    color-mix(in srgb, var(--color-primary-500) 10%, transparent);
+  animation: milestone-pulse 2600ms ease-in-out infinite;
+}
+
+.milestoneList code {
+  display: inline-flex;
+  color: var(--color-primary-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.milestoneDate {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.milestoneList article > div:last-child {
+  display: grid;
+  margin-top: 12px;
+  gap: 5px;
+}
+
+.milestoneList strong {
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.milestoneList p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 68px;
+  padding: 14px 20px;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent);
+  border-top: 1px solid var(--border-muted);
+  gap: 28px;
+}
+
+.footer span {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  gap: 7px;
+}
+
+.footer svg {
+  flex: 0 0 auto;
+  color: var(--color-success-500);
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes milestone-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 5px
+      color-mix(in srgb, var(--color-primary-500) 10%, transparent);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px
+      color-mix(in srgb, var(--color-primary-500) 5%, transparent);
+    transform: scale(0.94);
+  }
+}
+
+@media (width <= 1080px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .board {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-muted);
+  }
+}
+
+@media (width <= 820px) {
+  .board,
+  .milestoneList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (width <= 640px) {
+  .section {
+    padding: 80px 16px;
+  }
+
+  .panelHeader,
+  .milestonesHeader,
+  .releaseHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .githubLink {
+    width: 100%;
+  }
+
+  .board,
+  .releasePanel,
+  .milestones {
+    padding: 18px;
+  }
+
+  .footer {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .updatedBadge > span,
+  .milestoneMarker > span {
+    animation: none;
+  }
+
+  .githubLink svg,
+  .changelogLink svg,
+  .roadmapItem,
+  .milestoneList > article {
+    transition: none;
+  }
+}

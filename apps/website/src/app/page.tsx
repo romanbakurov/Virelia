@@ -10,6 +10,7 @@ import { ProductionWorkflow } from '@/sections/ProductionWorkflow';
 import { QuickStart } from '@/sections/QuickStart';
 import { SocialProof } from '@/sections/SocialProof';
 import { Pro } from '@/sections/Pro';
+import { Roadmap } from '@/sections/Roadmap';
 
 export default function HomePage() {
   return (
@@ -27,6 +28,7 @@ export default function HomePage() {
         <QuickStart />
         <SocialProof />
         <Pro />
+        <Roadmap />
       </main>
 
       <BackToTop />

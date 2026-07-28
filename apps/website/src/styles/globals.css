@@ -8,6 +8,10 @@ body {
   font-family: inherit;
 }
 
+section[id] {
+  scroll-margin-top: 96px;
+}
+
 button,
 input,
 select,

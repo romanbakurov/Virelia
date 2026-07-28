@@ -10,9 +10,10 @@ import styles from './SiteHeader.module.css';
 
 const navigation = [
   { label: 'Components', href: '#components' },
+  { label: 'Platforms', href: '#platforms' },
   { label: 'Themes', href: '#themes' },
   { label: 'Pro', href: '#pro' },
-  { label: 'Roadmap', href: '/roadmap' },
+  { label: 'Roadmap', href: '#roadmap' },
 ] as const;
 
 export function SiteHeader() {
@@ -63,13 +64,7 @@ export function SiteHeader() {
           <ThemeSwitcher />
 
           <Button asChild size='sm'>
-            <a
-              href='https://docs.vellira.dev/getting-started'
-              target='_blank'
-              rel='noreferrer noopener'
-            >
-              Get started
-            </a>
+            <a href='#quick-start'>Get started</a>
           </Button>
         </div>
       </div>
