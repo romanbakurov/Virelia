@@ -18,9 +18,9 @@ import styles from './SocialProof.module.css';
 
 const proofMetrics = [
   {
-    value: '8',
+    value: '6',
     label: 'Published packages',
-    detail: 'React, Native, tokens, icons and shared infrastructure.',
+    detail: 'React, Native, tokens, icons, types and build outputs.',
   },
   {
     value: '3',
@@ -76,6 +76,9 @@ const footerItems = [
   },
 ] as const;
 
+const workflowStartDelay = 760;
+const workflowStepDelay = 520;
+
 function AnimatedMetric({
   enabled,
   value,
@@ -91,7 +94,7 @@ function AnimatedMetric({
     }
 
     const controls = animate(0, value, {
-      duration: 1,
+      duration: 1.35,
       ease: [0.16, 1, 0.3, 1],
       onUpdate: (latest) => {
         setDisplayValue(Math.round(latest));
@@ -133,7 +136,7 @@ export function SocialProof() {
         () => {
           setActiveCheck(index);
         },
-        650 + index * 360
+        workflowStartDelay + index * workflowStepDelay
       )
     );
 
@@ -141,7 +144,7 @@ export function SocialProof() {
       () => {
         setWorkflowComplete(true);
       },
-      650 + workflowChecks.length * 360 + 300
+      workflowStartDelay + workflowChecks.length * workflowStepDelay + 420
     );
 
     return () => {
@@ -409,8 +412,8 @@ export function SocialProof() {
                             : { opacity: 0, x: -18 }
                         }
                         transition={{
-                          delay: shouldReduceMotion ? 0 : 0.52 + index * 0.1,
-                          duration: shouldReduceMotion ? 0 : 0.45,
+                          delay: shouldReduceMotion ? 0 : 0.62 + index * 0.14,
+                          duration: shouldReduceMotion ? 0 : 0.52,
                           ease: [0.16, 1, 0.3, 1],
                         }}
                       >
@@ -479,7 +482,7 @@ export function SocialProof() {
                 }
                 transition={{
                   delay: shouldReduceMotion ? 0 : 0.16,
-                  duration: shouldReduceMotion ? 0 : 0.5,
+                  duration: shouldReduceMotion ? 0 : 0.62,
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
@@ -509,7 +512,7 @@ export function SocialProof() {
                       }
                       transition={{
                         delay: shouldReduceMotion ? 0 : 0.18 + index * 0.1,
-                        duration: shouldReduceMotion ? 0 : 0.45,
+                        duration: shouldReduceMotion ? 0 : 0.52,
                         ease: [0.16, 1, 0.3, 1],
                       }}
                     >
@@ -544,8 +547,8 @@ export function SocialProof() {
                         : { opacity: 0, x: 24, scale: 0.97 }
                     }
                     transition={{
-                      delay: shouldReduceMotion ? 0 : 0.48 + index * 0.14,
-                      duration: shouldReduceMotion ? 0 : 0.55,
+                      delay: shouldReduceMotion ? 0 : 0.58 + index * 0.18,
+                      duration: shouldReduceMotion ? 0 : 0.65,
                       ease: [0.16, 1, 0.3, 1],
                     }}
                   >
@@ -617,8 +620,8 @@ export function SocialProof() {
               workflowComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }
             }
             transition={{
-              delay: shouldReduceMotion ? 0 : 0.65,
-              duration: shouldReduceMotion ? 0 : 0.55,
+              delay: shouldReduceMotion ? 0 : 0.82,
+              duration: shouldReduceMotion ? 0 : 0.62,
               ease: [0.16, 1, 0.3, 1],
             }}
           >

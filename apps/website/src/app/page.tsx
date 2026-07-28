@@ -8,6 +8,7 @@ import { ThemeStudio } from '@/sections/ThemeStudio';
 import { ProductionWorkflow } from '@/sections/ProductionWorkflow';
 import { QuickStart } from '@/sections/QuickStart';
 import { SocialProof } from '@/sections/SocialProof';
+import { Pro } from '@/sections/Pro';
 
 export default function HomePage() {
   return (
@@ -24,8 +25,7 @@ export default function HomePage() {
         <ProductionWorkflow />
         <QuickStart />
         <SocialProof />
-
-        <section id='pro' aria-label='Vellira Pro' />
+        <Pro />
       </main>
     </>
   );
