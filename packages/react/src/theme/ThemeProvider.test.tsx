@@ -69,6 +69,25 @@ describe('ThemeProvider', () => {
     );
   });
 
+  it('can keep document theme unchanged for scoped previews', () => {
+    document.documentElement.dataset.velliraTheme = 'light';
+
+    render(
+      <ThemeProvider defaultTheme='dark' syncDocument={false}>
+        <div>Content</div>
+      </ThemeProvider>
+    );
+
+    expect(screen.getByText('Content').parentElement).toHaveAttribute(
+      'data-vellira-theme',
+      'dark'
+    );
+    expect(document.documentElement).toHaveAttribute(
+      'data-vellira-theme',
+      'light'
+    );
+  });
+
   it('provides theme value through context', () => {
     render(
       <ThemeProvider defaultTheme='dark'>

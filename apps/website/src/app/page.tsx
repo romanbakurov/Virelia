@@ -4,6 +4,7 @@ import { PlatformParity } from '@/sections/PlatformParity';
 import { CodeShowcase } from '@/sections/CodeShowcase';
 import { ComponentShowcase } from '@/sections/ComponentShowcase';
 import { ProductInterfaceDemo } from '@/sections/ProductInterfaceDemo';
+import { ThemeStudio } from '@/sections/ThemeStudio';
 
 export default function HomePage() {
   return (
@@ -16,8 +17,8 @@ export default function HomePage() {
         <ComponentShowcase />
         <ProductInterfaceDemo />
         <CodeShowcase />
+        <ThemeStudio />
 
-        <section id='themes' aria-label='Themes' />
         <section id='pro' aria-label='Vellira Pro' />
       </main>
     </>
