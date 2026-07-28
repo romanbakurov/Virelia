@@ -6,6 +6,7 @@ import { ComponentShowcase } from '@/sections/ComponentShowcase';
 import { ProductInterfaceDemo } from '@/sections/ProductInterfaceDemo';
 import { ThemeStudio } from '@/sections/ThemeStudio';
 import { ProductionWorkflow } from '@/sections/ProductionWorkflow';
+import { QuickStart } from '@/sections/QuickStart';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <ProductInterfaceDemo />
         <CodeShowcase />
         <ProductionWorkflow />
+        <QuickStart />
 
         <section id='pro' aria-label='Vellira Pro' />
       </main>
