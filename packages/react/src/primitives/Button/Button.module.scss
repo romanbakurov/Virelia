@@ -149,7 +149,7 @@ $button-appearances: solid, outline, ghost, soft, link;
 
 .label {
   display: inline-grid;
-  align-items: center;
+  place-items: center;
   min-width: 0;
 }
 
