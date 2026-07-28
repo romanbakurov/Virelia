@@ -1,4 +1,5 @@
 import { SiteHeader } from '@/components/SiteHeader';
+import { BackToTop } from '@/components/BackToTop';
 import { Hero } from '@/sections/Hero';
 import { PlatformParity } from '@/sections/PlatformParity';
 import { CodeShowcase } from '@/sections/CodeShowcase';
@@ -27,6 +28,8 @@ export default function HomePage() {
         <SocialProof />
         <Pro />
       </main>
+
+      <BackToTop />
     </>
   );
 }
