@@ -135,6 +135,7 @@
   border-radius: var(--radius-full);
   box-shadow: 0 0 0 4px
     color-mix(in srgb, var(--color-success-500) 12%, transparent);
+  animation: live-status-pulse 2200ms ease-in-out infinite;
 }
 
 .appShell {
@@ -513,6 +514,25 @@
   white-space: nowrap;
   border: 0;
   clip-path: inset(50%);
+}
+
+@keyframes live-status-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveStatus span {
+    animation: none;
+  }
 }
 
 @media (width <= 960px) {

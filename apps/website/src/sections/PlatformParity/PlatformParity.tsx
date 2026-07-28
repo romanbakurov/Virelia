@@ -372,6 +372,8 @@ export function PlatformParity() {
             <span className={styles.bridgeIcon}>
               <ArrowLeftRight aria-hidden='true' />
             </span>
+            <span className={styles.bridgePulse} />
+            <span className={styles.bridgePulseReverse} />
             <span className={styles.bridgeLine} />
           </motion.div>
 
@@ -434,6 +436,7 @@ export function PlatformParity() {
         <div className={styles.featuresWrap}>
           <div className={styles.featuresHeader}>
             <span className={styles.featuresLabel}>Shared contract</span>
+            <h3>One state. Native rendering.</h3>
             <p>
               The same component decisions travel between web and native while
               each surface keeps its platform feel.

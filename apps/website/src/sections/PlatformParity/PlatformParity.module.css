@@ -278,6 +278,7 @@
 }
 
 .bridge {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -292,12 +293,14 @@
   background: linear-gradient(
     to bottom,
     transparent,
-    var(--border-strong),
+    color-mix(in srgb, var(--color-primary-500) 34%, var(--border-strong)),
     transparent
   );
 }
 
 .bridgeIcon {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -310,9 +313,43 @@
   animation: bridge-exchange 4.5s ease-in-out infinite;
 }
 
+.bridgeIcon::before {
+  position: absolute;
+  inset: -6px;
+  z-index: -1;
+  background: color-mix(in srgb, var(--color-primary-500) 16%, transparent);
+  border-radius: inherit;
+  content: '';
+  opacity: 0;
+  filter: blur(10px);
+  animation: bridge-glow 4.5s ease-in-out infinite;
+}
+
 .bridgeIcon svg {
   width: 24px;
   height: 24px;
+}
+
+.bridgePulse,
+.bridgePulseReverse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  background: color-mix(in srgb, var(--color-primary-500) 86%, white);
+  border-radius: var(--radius-full);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--color-primary-500) 14%, transparent),
+    0 0 18px color-mix(in srgb, var(--color-primary-500) 34%, transparent);
+  transform: translate(-50%, -50%);
+  animation: bridge-pulse-down 4.8s ease-in-out infinite;
+}
+
+.bridgePulseReverse {
+  animation-name: bridge-pulse-up;
+  animation-delay: 2.4s;
 }
 
 .phoneStage {
@@ -443,6 +480,14 @@
   text-transform: uppercase;
 }
 
+.featuresHeader h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
 .featuresHeader p {
   margin: 0;
   color: var(--text-secondary);
@@ -477,6 +522,20 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm), var(--shadow-inset);
   gap: 18px;
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.features li:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 18%,
+    var(--border-muted)
+  );
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  transform: translateY(-6px);
 }
 
 .features li::before {
@@ -516,6 +575,11 @@
   border: 1px solid var(--action-primary-muted-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
+  transition: transform 220ms ease;
+}
+
+.features li:hover .featureIcon {
+  transform: rotate(-4deg) scale(1.04);
 }
 
 [data-vellira-theme='light'] .featureIcon {
@@ -577,9 +641,20 @@
     background: linear-gradient(
       to right,
       transparent,
-      var(--border-strong),
+      color-mix(in srgb, var(--color-primary-500) 34%, var(--border-strong)),
       transparent
     );
+  }
+
+  .bridgePulse,
+  .bridgePulseReverse {
+    top: 50%;
+    left: 50%;
+    animation-name: bridge-pulse-right;
+  }
+
+  .bridgePulseReverse {
+    animation-name: bridge-pulse-left;
   }
 
   .features {
@@ -648,9 +723,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bridgeIcon {
+  .bridgeIcon,
+  .bridgeIcon::before,
+  .bridgePulse,
+  .bridgePulseReverse {
     transform: none;
     animation: none;
+  }
+
+  .features li,
+  .featureIcon {
+    transition: none;
   }
 }
 
@@ -672,5 +755,96 @@
 
   65% {
     transform: translateX(4px);
+  }
+}
+
+@keyframes bridge-glow {
+  0%,
+  26%,
+  74%,
+  100% {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes bridge-pulse-down {
+  0%,
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -86px) scale(0.7);
+  }
+
+  38%,
+  62% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 0;
+    transform: translate(-50%, 86px) scale(1);
+  }
+}
+
+@keyframes bridge-pulse-up {
+  0%,
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 86px) scale(0.7);
+  }
+
+  38%,
+  62% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 0;
+    transform: translate(-50%, -86px) scale(1);
+  }
+}
+
+@keyframes bridge-pulse-right {
+  0%,
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate(-96px, -50%) scale(0.7);
+  }
+
+  38%,
+  62% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 0;
+    transform: translate(96px, -50%) scale(1);
+  }
+}
+
+@keyframes bridge-pulse-left {
+  0%,
+  22%,
+  100% {
+    opacity: 0;
+    transform: translate(96px, -50%) scale(0.7);
+  }
+
+  38%,
+  62% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 0;
+    transform: translate(-96px, -50%) scale(1);
   }
 }

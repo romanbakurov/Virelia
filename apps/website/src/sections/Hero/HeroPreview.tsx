@@ -8,8 +8,10 @@ import { Button, Input, Tabs } from '@vellira-ui/react';
 import styles from './Hero.module.css';
 
 type PreviewTab = 'overview' | 'settings';
+type TokenPreview = 'primary' | 'surface' | 'border';
 
-const TAB_CHANGE_INTERVAL = 4500;
+const TAB_CHANGE_INTERVAL = 7000;
+const NAME_CHANGE_INTERVAL = 8500;
 const INTERACTION_PAUSE = 9000;
 
 const isPreviewTab = (value: string): value is PreviewTab =>
@@ -17,7 +19,20 @@ const isPreviewTab = (value: string): value is PreviewTab =>
 
 export function HeroPreview() {
   const [activeTab, setActiveTab] = useState<PreviewTab>('overview');
+  const [projectName, setProjectName] = useState('Vellira');
+  const [activeToken, setActiveToken] = useState<TokenPreview>('primary');
+  const [assembled, setAssembled] = useState(false);
   const pauseUntilRef = useRef(0);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setAssembled(true);
+    }, 1600);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -35,17 +50,41 @@ export function HeroPreview() {
     };
   }, []);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      if (Date.now() < pauseUntilRef.current) {
+        return;
+      }
+
+      setProjectName((currentName) =>
+        currentName === 'Vellira' ? 'Vellira UI' : 'Vellira'
+      );
+    }, NAME_CHANGE_INTERVAL);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const pauseAutomation = () => {
+    pauseUntilRef.current = Date.now() + INTERACTION_PAUSE;
+  };
+
   const handleTabChange = (value: string) => {
     if (!isPreviewTab(value)) {
       return;
     }
 
-    pauseUntilRef.current = Date.now() + INTERACTION_PAUSE;
+    pauseAutomation();
     setActiveTab(value);
   };
 
   return (
-    <div className={styles.previewShell}>
+    <div
+      className={styles.previewShell}
+      data-assembled={assembled}
+      data-token={activeToken}
+    >
       <div className={styles.previewHeader}>
         <span className={styles.previewDot} />
         <span className={styles.previewDot} />
@@ -83,7 +122,14 @@ export function HeroPreview() {
           </Tabs.List>
 
           <Tabs.Content value='overview' className={styles.previewPanel}>
-            <Input label='Project name' defaultValue='Vellira' />
+            <Input
+              label='Project name'
+              value={projectName}
+              onValueChange={(value) => {
+                pauseAutomation();
+                setProjectName(value);
+              }}
+            />
 
             <div className={styles.previewField}>
               <span className={styles.previewFieldLabel}>Platform</span>
@@ -138,18 +184,42 @@ export function HeroPreview() {
         </Tabs>
 
         <div className={styles.tokenStrip} aria-label='Theme token preview'>
-          <span>
+          <button
+            type='button'
+            className={styles.tokenButton}
+            data-active={activeToken === 'primary'}
+            onClick={() => {
+              pauseAutomation();
+              setActiveToken('primary');
+            }}
+          >
             <i className={styles.tokenSwatchPrimary} aria-hidden='true' />
             Primary
-          </span>
-          <span>
+          </button>
+          <button
+            type='button'
+            className={styles.tokenButton}
+            data-active={activeToken === 'surface'}
+            onClick={() => {
+              pauseAutomation();
+              setActiveToken('surface');
+            }}
+          >
             <i className={styles.tokenSwatchSurface} aria-hidden='true' />
             Surface
-          </span>
-          <span>
+          </button>
+          <button
+            type='button'
+            className={styles.tokenButton}
+            data-active={activeToken === 'border'}
+            onClick={() => {
+              pauseAutomation();
+              setActiveToken('border');
+            }}
+          >
             <i className={styles.tokenSwatchBorder} aria-hidden='true' />
             Border
-          </span>
+          </button>
         </div>
       </div>
     </div>

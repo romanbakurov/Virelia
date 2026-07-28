@@ -194,11 +194,7 @@ function PreviewContent({
         : 'Mobile squad';
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.screen}>
       <View style={styles.statusBar} aria-hidden>
         <Text style={styles.statusTime}>9:41</Text>
 
@@ -217,146 +213,152 @@ function PreviewContent({
         </View>
       </View>
 
-      <View style={styles.header}>
-        <View style={styles.headerIcon}>
-          <Smartphone color={headerIconColor} size={18} />
-        </View>
-
-        <View style={styles.headerText}>
-          <Text style={styles.headerLabel}>React Native</Text>
-          <Text style={styles.headerTitle} numberOfLines={1}>
-            {workspace || 'Untitled workspace'}
-          </Text>
-        </View>
-
-        <Dropdown>
-          <Dropdown.Trigger>
-            <Button
-              accessibilityLabel='Native actions'
-              appearance='outline'
-              color='neutral'
-              iconEnd={<ChevronDown />}
-              size='sm'
-            >
-              Actions
-            </Button>
-          </Dropdown.Trigger>
-
-          <Dropdown.Content presentation='sheet'>
-            <Dropdown.Label>Native actions</Dropdown.Label>
-            <Dropdown.Item value='copy' icon={<Copy />}>
-              Copy config
-            </Dropdown.Item>
-            <Dropdown.Item value='export' icon={<Download />}>
-              Export bundle
-            </Dropdown.Item>
-            <Dropdown.Separator />
-            <Dropdown.Item value='settings' icon={<Settings />}>
-              Rollout rules
-            </Dropdown.Item>
-          </Dropdown.Content>
-        </Dropdown>
-      </View>
-
-      <View style={styles.card}>
-        <Input
-          label='Workspace'
-          value={workspace}
-          onValueChange={onWorkspaceChange}
-          description='Synced from the website through the same state payload.'
-        />
-
-        <Select
-          label='Owning team'
-          value={team}
-          onValueChange={(value) => {
-            if (isPreviewTeam(value)) {
-              onTeamChange(value);
-            }
-          }}
-          startIcon={<Users />}
-          presentation='sheet'
-        >
-          <Select.Item
-            value='design'
-            label='Design systems'
-            description='Components and foundations'
-            badge='Core'
-            icon={<Grid />}
-          />
-          <Select.Item
-            value='platform'
-            label='Platform team'
-            description='Web delivery and tooling'
-            badge='Web'
-            icon={<Monitor />}
-          />
-          <Select.Item
-            value='mobile'
-            label='Mobile squad'
-            description='Native previews and gestures'
-            badge='RN'
-            icon={<Smartphone />}
-          />
-        </Select>
-
-        <Checkbox
-          label='Enable notifications'
-          description='Native checkbox, shared boolean state.'
-          checked={notificationsEnabled}
-          onCheckedChange={onNotificationsChange}
-        />
-
-        <RadioGroup
-          label='Density'
-          value={density}
-          onValueChange={(value) => {
-            if (isPreviewDensity(value)) {
-              onDensityChange(value);
-            }
-          }}
-          orientation='horizontal'
-          size='sm'
-        >
-          <Radio value='comfortable' label='Comfort' />
-          <Radio value='compact' label='Compact' />
-        </RadioGroup>
-      </View>
-
-      <Tabs
-        value={activeTab}
-        onValueChange={(value) => {
-          if (isPreviewTab(value)) {
-            onActiveTabChange(value);
-          }
-        }}
-        variant='segmented'
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
       >
-        <Tabs.List>
-          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
-          <Tabs.Trigger value='permissions'>Access</Tabs.Trigger>
-          <Tabs.Indicator />
-        </Tabs.List>
-
-        <Tabs.Content value='overview'>
-          <View style={styles.panel}>
-            <Text style={styles.panelLabel}>Active team</Text>
-            <Text style={styles.panelValue}>{selectedTeam}</Text>
+        <View style={styles.header}>
+          <View style={styles.headerIcon}>
+            <Smartphone color={headerIconColor} size={18} />
           </View>
-        </Tabs.Content>
 
-        <Tabs.Content value='permissions'>
-          <View style={styles.panel}>
-            <Text style={styles.panelLabel}>Release guard</Text>
-            <Text style={styles.panelValue}>Owner approval</Text>
+          <View style={styles.headerText}>
+            <Text style={styles.headerLabel}>React Native</Text>
+            <Text style={styles.headerTitle} numberOfLines={1}>
+              {workspace || 'Untitled workspace'}
+            </Text>
           </View>
-        </Tabs.Content>
-      </Tabs>
 
-      <Button fullWidth iconStart={<Check />}>
-        Sync native changes
-      </Button>
-    </ScrollView>
+          <Dropdown>
+            <Dropdown.Trigger>
+              <Button
+                accessibilityLabel='Native actions'
+                appearance='outline'
+                color='neutral'
+                iconEnd={<ChevronDown />}
+                size='sm'
+              >
+                Actions
+              </Button>
+            </Dropdown.Trigger>
+
+            <Dropdown.Content presentation='sheet'>
+              <Dropdown.Label>Native actions</Dropdown.Label>
+              <Dropdown.Item value='copy' icon={<Copy />}>
+                Copy config
+              </Dropdown.Item>
+              <Dropdown.Item value='export' icon={<Download />}>
+                Export bundle
+              </Dropdown.Item>
+              <Dropdown.Separator />
+              <Dropdown.Item value='settings' icon={<Settings />}>
+                Rollout rules
+              </Dropdown.Item>
+            </Dropdown.Content>
+          </Dropdown>
+        </View>
+
+        <View style={styles.card}>
+          <Input
+            label='Workspace'
+            value={workspace}
+            onValueChange={onWorkspaceChange}
+            description='Synced from the website through the same state payload.'
+          />
+
+          <Select
+            label='Owning team'
+            value={team}
+            onValueChange={(value) => {
+              if (isPreviewTeam(value)) {
+                onTeamChange(value);
+              }
+            }}
+            startIcon={<Users />}
+            presentation='sheet'
+          >
+            <Select.Item
+              value='design'
+              label='Design systems'
+              description='Components and foundations'
+              badge='Core'
+              icon={<Grid />}
+            />
+            <Select.Item
+              value='platform'
+              label='Platform team'
+              description='Web delivery and tooling'
+              badge='Web'
+              icon={<Monitor />}
+            />
+            <Select.Item
+              value='mobile'
+              label='Mobile squad'
+              description='Native previews and gestures'
+              badge='RN'
+              icon={<Smartphone />}
+            />
+          </Select>
+
+          <Checkbox
+            label='Enable notifications'
+            description='Native checkbox, shared boolean state.'
+            checked={notificationsEnabled}
+            onCheckedChange={onNotificationsChange}
+          />
+
+          <RadioGroup
+            label='Density'
+            value={density}
+            onValueChange={(value) => {
+              if (isPreviewDensity(value)) {
+                onDensityChange(value);
+              }
+            }}
+            orientation='horizontal'
+            size='sm'
+          >
+            <Radio value='comfortable' label='Comfort' />
+            <Radio value='compact' label='Compact' />
+          </RadioGroup>
+        </View>
+
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => {
+            if (isPreviewTab(value)) {
+              onActiveTabChange(value);
+            }
+          }}
+          variant='segmented'
+        >
+          <Tabs.List>
+            <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+            <Tabs.Trigger value='permissions'>Access</Tabs.Trigger>
+            <Tabs.Indicator />
+          </Tabs.List>
+
+          <Tabs.Content value='overview'>
+            <View style={styles.panel}>
+              <Text style={styles.panelLabel}>Active team</Text>
+              <Text style={styles.panelValue}>{selectedTeam}</Text>
+            </View>
+          </Tabs.Content>
+
+          <Tabs.Content value='permissions'>
+            <View style={styles.panel}>
+              <Text style={styles.panelLabel}>Release guard</Text>
+              <Text style={styles.panelValue}>Owner approval</Text>
+            </View>
+          </Tabs.Content>
+        </Tabs>
+
+        <Button fullWidth iconStart={<Check />}>
+          Sync native changes
+        </Button>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -369,20 +371,33 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       backgroundColor: theme.semantic.surface.background,
     },
 
+    scroll: {
+      flex: 1,
+    },
+
     content: {
       gap: 14,
       minHeight: '100%',
       paddingHorizontal: 18,
-      paddingTop: 14,
+      paddingTop: 48,
       paddingBottom: 22,
     },
 
     statusBar: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 10,
       minHeight: 24,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingHorizontal: 4,
+      paddingHorizontal: 22,
+      paddingTop: 14,
+      paddingBottom: 10,
+      backgroundColor: theme.semantic.surface.background,
+      elevation: 10,
     },
 
     statusTime: {

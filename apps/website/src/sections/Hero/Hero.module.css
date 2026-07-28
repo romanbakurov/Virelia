@@ -251,6 +251,38 @@
     box-shadow 320ms ease;
 }
 
+.previewShell[data-token='primary'] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 22%,
+    var(--border-muted)
+  );
+  box-shadow:
+    0 26px 70px color-mix(in srgb, var(--color-primary-500) 12%, transparent),
+    var(--shadow-xl),
+    var(--shadow-inset);
+}
+
+.previewShell[data-token='surface'] {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-elevated) 88%, var(--surface-default)),
+    color-mix(in srgb, var(--surface-subtle) 96%, transparent)
+  );
+}
+
+.previewShell[data-token='border'] {
+  border-color: color-mix(
+    in srgb,
+    var(--border-strong) 72%,
+    var(--border-muted)
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--border-strong) 34%, transparent),
+    var(--shadow-xl),
+    var(--shadow-inset);
+}
+
 .previewShell::before {
   position: absolute;
   inset: 0;
@@ -295,6 +327,8 @@
   border-bottom: 1px solid
     color-mix(in srgb, var(--border-muted) 76%, transparent);
   backdrop-filter: blur(16px);
+  opacity: 0;
+  animation: preview-part-in 520ms cubic-bezier(0.16, 1, 0.3, 1) 760ms forwards;
 }
 
 .previewDot {
@@ -353,6 +387,8 @@
   position: relative;
   z-index: 3;
   padding: 26px;
+  opacity: 0;
+  animation: preview-part-in 560ms cubic-bezier(0.16, 1, 0.3, 1) 900ms forwards;
 }
 
 .previewMeta {
@@ -366,11 +402,13 @@
   border: 1px solid var(--border-muted);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-inset);
+  opacity: 0;
+  animation: preview-part-in 520ms cubic-bezier(0.16, 1, 0.3, 1) 980ms forwards;
 }
 
 .previewMeta span,
 .previewMeta strong,
-.tokenStrip span {
+.tokenButton {
   display: inline-flex;
   align-items: center;
   min-width: 0;
@@ -425,6 +463,27 @@
   animation: preview-panel-in 420ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.previewPanel > * {
+  opacity: 0;
+  animation: preview-part-in 460ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.previewPanel > *:nth-child(1) {
+  animation-delay: 1080ms;
+}
+
+.previewPanel > *:nth-child(2) {
+  animation-delay: 1160ms;
+}
+
+.previewPanel > *:nth-child(3) {
+  animation-delay: 1240ms;
+}
+
+.previewShell[data-assembled='true'] .previewPanel > * {
+  animation-delay: 0ms;
+}
+
 .previewField {
   display: grid;
   gap: 8px;
@@ -467,7 +526,25 @@
 }
 
 .previewButton {
+  position: relative;
   min-height: 40px;
+  overflow: hidden;
+}
+
+.previewButton::after {
+  position: absolute;
+  inset: -40% auto -40% -55%;
+  width: 44%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, white 42%, transparent),
+    transparent
+  );
+  content: '';
+  pointer-events: none;
+  transform: skewX(-18deg);
+  animation: preview-save-shimmer 8s ease-in-out infinite;
 }
 
 .capabilityList {
@@ -528,11 +605,36 @@
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid var(--border-muted);
+  opacity: 0;
+  animation: preview-part-in 520ms cubic-bezier(0.16, 1, 0.3, 1) 1340ms forwards;
 }
 
-.tokenStrip span {
+.tokenButton {
+  justify-content: flex-start;
+  padding: 0 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+  cursor: pointer;
   gap: 7px;
   min-height: 28px;
+  font-family: inherit;
+}
+
+.tokenButton:hover,
+.tokenButton[data-active='true'] {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-default) 82%, transparent);
+  border-color: var(--border-muted);
+}
+
+.tokenButton:active {
+  transform: scale(0.97);
 }
 
 .tokenStrip i {
@@ -673,11 +775,28 @@
 @keyframes hero-preview-in {
   from {
     opacity: 0;
-    transform: translateY(44px) scale(0.96);
+    border-color: transparent;
+    filter: blur(12px);
+    transform: translateY(52px) scale(0.94);
   }
 
   to {
     opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes preview-part-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
     transform: translateY(0) scale(1);
   }
 }
@@ -737,15 +856,40 @@
   }
 }
 
+@keyframes preview-save-shimmer {
+  0%,
+  72%,
+  100% {
+    opacity: 0;
+    transform: translateX(0) skewX(-18deg);
+  }
+
+  78% {
+    opacity: 0.9;
+  }
+
+  88% {
+    opacity: 0;
+    transform: translateX(360%) skewX(-18deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .copyEnter,
   .previewEnter,
+  .previewHeader,
+  .previewBody,
+  .previewMeta,
   .previewPanel,
+  .previewPanel > *,
+  .tokenStrip,
   .glowPrimary,
   .glowSecondary,
   .glowAccent,
-  .previewStatus::before {
+  .previewStatus::before,
+  .previewButton::after {
     opacity: 1;
+    filter: none;
     transform: none;
     animation: none;
   }
