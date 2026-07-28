@@ -1,0 +1,308 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  padding: calc(var(--space-16) + var(--space-12)) var(--space-6)
+    calc(var(--space-16) + var(--space-10));
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  width: min(980px, 100%);
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  margin-bottom: var(--space-12);
+  color: var(--color-primary-400);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 800px;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.title span {
+  display: block;
+  margin-top: var(--space-2);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-400),
+    var(--color-primary-600)
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.description {
+  max-width: 700px;
+  margin: var(--space-10) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: 1.65;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--space-8) + var(--space-1));
+  margin-top: calc(var(--space-12) + var(--space-2));
+}
+
+.secondaryLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: calc(var(--space-6) + var(--space-1));
+}
+
+.secondaryLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition:
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.secondaryLinks a:hover {
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.secondaryLinks a svg {
+  transition: transform 220ms ease;
+}
+
+.secondaryLinks a:hover svg {
+  transform: translateX(2px);
+}
+
+.installCommand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: calc(var(--space-16) + var(--space-2));
+}
+
+.installLabel {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.commandCapsule {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-default) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-muted) 46%, transparent);
+  border-radius: var(--radius-full);
+  box-shadow:
+    0 18px 50px rgb(0 0 0 / 8%),
+    0 4px 14px rgb(0 0 0 / 4%);
+  gap: var(--space-3);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
+}
+
+.commandCapsule:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 28%,
+    var(--border-muted)
+  );
+  box-shadow:
+    0 18px 56px color-mix(in srgb, var(--color-primary-500) 10%, transparent),
+    0 18px 50px rgb(0 0 0 / 8%),
+    0 4px 14px rgb(0 0 0 / 4%);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.commandCapsule > span {
+  color: var(--color-primary-400);
+  font-family: var(--font-family-regular);
+  font-size: var(--font-size-sm);
+}
+
+.commandCapsule code {
+  color: var(--text-primary);
+  font-family: var(--font-family-regular);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.copyButton {
+  --button-neutral-ghost-default-bg: transparent;
+  --button-neutral-ghost-default-fg: var(--text-secondary);
+  --button-neutral-ghost-default-border: transparent;
+  --button-neutral-ghost-hover-bg: color-mix(
+    in srgb,
+    var(--surface-subtle) 72%,
+    transparent
+  );
+  --button-neutral-ghost-hover-fg: var(--text-primary);
+  --button-neutral-ghost-hover-border: color-mix(
+    in srgb,
+    var(--color-primary-500) 8%,
+    var(--border-muted)
+  );
+  --button-neutral-ghost-pressed-bg: color-mix(
+    in srgb,
+    var(--surface-subtle) 86%,
+    transparent
+  );
+  --button-neutral-ghost-pressed-fg: var(--text-primary);
+  --button-neutral-ghost-pressed-border: color-mix(
+    in srgb,
+    var(--color-primary-500) 10%,
+    var(--border-muted)
+  );
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+  cursor: pointer;
+  min-height: 36px;
+  gap: var(--space-2);
+}
+
+.copyButton:hover {
+  color: var(--text-primary);
+  transform: scale(1.015);
+}
+
+.installMeta {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.glow {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 760px;
+  height: 760px;
+  background: radial-gradient(
+    circle,
+    rgb(109 91 255 / 18%) 0%,
+    rgb(109 91 255 / 8%) 35%,
+    transparent 72%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(124 92 255 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(124 92 255 / 5%) 1px, transparent 1px);
+  background-size: 48px 48px;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-mask-image: radial-gradient(circle, black 35%, transparent 100%);
+  mask-image: radial-gradient(circle, black 35%, transparent 100%);
+  pointer-events: none;
+}
+
+@media (width <= 900px) {
+  .section {
+    padding: calc(var(--space-16) + var(--space-4)) var(--space-4);
+  }
+
+  .eyebrow {
+    margin-bottom: var(--space-8);
+  }
+
+  .description {
+    margin-top: calc(var(--space-6) + var(--space-1));
+    font-size: var(--font-size-md);
+  }
+
+  .actions {
+    margin-top: var(--space-10);
+  }
+
+  .secondaryLinks {
+    gap: var(--space-5);
+  }
+
+  .installCommand {
+    margin-top: var(--space-12);
+  }
+
+  .commandCapsule {
+    justify-content: space-between;
+    width: min(100%, 420px);
+  }
+
+  .glow {
+    width: min(580px, 92vw);
+    height: 560px;
+  }
+}
+
+@media (width <= 560px) {
+  .title {
+    font-size: clamp(40px, 14vw, 54px);
+  }
+
+  .commandCapsule {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    min-height: auto;
+    padding: var(--space-4);
+    border-radius: calc(var(--radius-xl) + var(--space-2));
+  }
+
+  .commandCapsule code {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .copyButton {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}

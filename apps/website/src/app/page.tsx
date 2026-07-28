@@ -11,6 +11,7 @@ import { QuickStart } from '@/sections/QuickStart';
 import { SocialProof } from '@/sections/SocialProof';
 import { Pro } from '@/sections/Pro';
 import { Roadmap } from '@/sections/Roadmap';
+import { FinalCta } from '@/sections/FinalCta';
 
 export default function HomePage() {
   return (
@@ -29,6 +30,7 @@ export default function HomePage() {
         <SocialProof />
         <Pro />
         <Roadmap />
+        <FinalCta />
       </main>
 
       <BackToTop />
