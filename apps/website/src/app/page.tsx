@@ -12,6 +12,7 @@ import { SocialProof } from '@/sections/SocialProof';
 import { Pro } from '@/sections/Pro';
 import { Roadmap } from '@/sections/Roadmap';
 import { FinalCta } from '@/sections/FinalCta';
+import { SiteFooter } from '@/sections/SiteFooter';
 
 export default function HomePage() {
   return (
@@ -31,6 +32,7 @@ export default function HomePage() {
         <Pro />
         <Roadmap />
         <FinalCta />
+        <SiteFooter />
       </main>
 
       <BackToTop />

@@ -1,0 +1,223 @@
+.footer {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-16) var(--space-6) var(--space-8);
+  background: color-mix(
+    in srgb,
+    var(--surface-subtle) 62%,
+    var(--surface-default)
+  );
+  border-top: 1px solid var(--border-muted);
+}
+
+.glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(860px, 88vw);
+  height: 360px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at top,
+    color-mix(in srgb, var(--color-primary-500) 12%, transparent),
+    transparent 72%
+  );
+  opacity: 0.72;
+  filter: blur(84px);
+  transform: translateX(-50%);
+}
+
+.container {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.9fr) minmax(
+      280px,
+      0.75fr
+    );
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  gap: var(--space-10);
+}
+
+.brandColumn {
+  display: grid;
+  align-content: start;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.brand {
+  display: inline-flex;
+  width: fit-content;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.brand:hover {
+  opacity: 0.86;
+  transform: translateY(-1px);
+}
+
+.brandColumn p,
+.statusCard p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+}
+
+.signalList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.signalList span {
+  display: inline-flex;
+  align-items: center;
+  min-height: calc(var(--space-8) + var(--space-1));
+  padding: 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: color-mix(in srgb, var(--surface-default) 74%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  gap: var(--space-2);
+}
+
+.signalList svg {
+  color: var(--color-success-500);
+}
+
+.linkGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.linkGroup {
+  display: grid;
+  align-content: start;
+  gap: calc(var(--space-2) + var(--space-1) / 2);
+}
+
+.linkGroup h2,
+.statusEyebrow {
+  margin: 0 0 var(--space-2);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.linkGroup a,
+.statusLink {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-height: calc(var(--space-8) + var(--space-1));
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  gap: var(--space-2);
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.linkGroup a:hover,
+.statusLink:hover {
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.linkGroup a svg,
+.statusLink svg {
+  transition: transform 180ms ease;
+}
+
+.linkGroup a:hover svg,
+.statusLink:hover svg {
+  transform: translateX(2px);
+}
+
+.statusCard {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--surface-default) 78%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm), var(--shadow-inset);
+}
+
+.statusCard strong {
+  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  line-height: 1.25;
+}
+
+.statusLink {
+  margin-top: var(--space-2);
+  color: var(--color-primary-400);
+  font-weight: var(--font-weight-semibold);
+}
+
+.bottomBar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: min(1180px, 100%);
+  margin: var(--space-12) auto 0;
+  padding-top: var(--space-6);
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  border-top: 1px solid var(--border-muted);
+  gap: var(--space-3);
+}
+
+@media (width <= 980px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .linkGrid {
+    grid-template-columns: repeat(2, minmax(0, 220px));
+  }
+
+  .statusCard {
+    max-width: 520px;
+  }
+}
+
+@media (width <= 640px) {
+  .footer {
+    padding: var(--space-12) var(--space-4) var(--space-6);
+  }
+
+  .container,
+  .linkGrid {
+    gap: var(--space-8);
+  }
+
+  .linkGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomBar {
+    justify-content: flex-start;
+    margin-top: var(--space-10);
+  }
+}

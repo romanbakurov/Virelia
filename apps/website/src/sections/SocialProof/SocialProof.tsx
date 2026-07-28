@@ -82,9 +82,11 @@ const workflowStepDelay = 520;
 function AnimatedMetric({
   enabled,
   value,
+  delay = 0,
 }: {
   enabled: boolean;
   value: number;
+  delay?: number;
 }) {
   const [displayValue, setDisplayValue] = useState(enabled ? value : 0);
 
@@ -93,18 +95,22 @@ function AnimatedMetric({
       return;
     }
 
-    const controls = animate(0, value, {
-      duration: 1.35,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (latest) => {
-        setDisplayValue(Math.round(latest));
-      },
-    });
+    let controls: ReturnType<typeof animate> | undefined;
+    const timer = window.setTimeout(() => {
+      controls = animate(0, value, {
+        duration: 2.6,
+        ease: [0.16, 1, 0.16, 1],
+        onUpdate: (latest) => {
+          setDisplayValue(Math.round(latest));
+        },
+      });
+    }, delay);
 
     return () => {
-      controls.stop();
+      window.clearTimeout(timer);
+      controls?.stop();
     };
-  }, [enabled, value]);
+  }, [delay, enabled, value]);
 
   return displayValue;
 }
@@ -547,8 +553,8 @@ export function SocialProof() {
                         : { opacity: 0, x: 24, scale: 0.97 }
                     }
                     transition={{
-                      delay: shouldReduceMotion ? 0 : 0.58 + index * 0.18,
-                      duration: shouldReduceMotion ? 0 : 0.65,
+                      delay: shouldReduceMotion ? 0 : 0.12 + index * 0.16,
+                      duration: shouldReduceMotion ? 0 : 0.82,
                       ease: [0.16, 1, 0.3, 1],
                     }}
                   >
@@ -559,7 +565,8 @@ export function SocialProof() {
 
                     <strong>
                       <AnimatedMetric
-                        enabled={workflowComplete}
+                        delay={shouldReduceMotion ? 0 : 1000}
+                        enabled={isDashboardInView}
                         value={Number(metric.value)}
                       />
                     </strong>
@@ -615,13 +622,13 @@ export function SocialProof() {
 
           <motion.footer
             className={styles.dashboardFooter}
-            initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
             animate={
-              workflowComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }
+              isDashboardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
             }
             transition={{
-              delay: shouldReduceMotion ? 0 : 0.82,
-              duration: shouldReduceMotion ? 0 : 0.62,
+              delay: shouldReduceMotion ? 0 : 2.35,
+              duration: shouldReduceMotion ? 0 : 1,
               ease: [0.16, 1, 0.3, 1],
             }}
           >
