@@ -3,6 +3,7 @@ import { Children } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
+import { TooltipArrow } from '../Arrow';
 import { useTooltipContext } from '../internal/TooltipContext';
 import { createStyles } from '../Tooltip.styles';
 
@@ -11,6 +12,7 @@ import type { TooltipContentProps } from './types';
 export const TooltipContent = ({
   children,
   forceMount = false,
+  withArrow = false,
   style,
   textStyle,
 }: TooltipContentProps) => {
@@ -44,6 +46,7 @@ export const TooltipContent = ({
           child
         )
       )}
+      {withArrow && <TooltipArrow />}
     </View>
   );
 

@@ -790,7 +790,10 @@ export function ThemeStudio() {
 
         <ul className={styles.proofs} aria-label='Token system features'>
           {tokenProofs.map((proof) => (
-            <li key={proof}>{proof}</li>
+            <li key={proof}>
+              <Check size={13} aria-hidden='true' />
+              {proof}
+            </li>
           ))}
         </ul>
       </div>

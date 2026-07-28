@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 
 import { cn } from '@utils/cn';
 
+import { TooltipArrow } from '../Arrow';
 import { composeRefs } from '../internal/composeEventHandlers';
 import { useTooltipContext } from '../internal/TooltipContext';
 
@@ -10,7 +11,17 @@ import type { TooltipContentProps } from './types';
 import styles from './TooltipContent.module.scss';
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
-  ({ children, forceMount = false, className, style, ...props }, ref) => {
+  (
+    {
+      children,
+      forceMount = false,
+      withArrow = false,
+      className,
+      style,
+      ...props
+    },
+    ref
+  ) => {
     const tooltip = useTooltipContext();
 
     if (!forceMount && !tooltip.open) {
@@ -36,6 +47,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
         }}
       >
         {children}
+        {withArrow && <TooltipArrow />}
       </div>
     );
   }

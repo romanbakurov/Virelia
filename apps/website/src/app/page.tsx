@@ -5,6 +5,7 @@ import { CodeShowcase } from '@/sections/CodeShowcase';
 import { ComponentShowcase } from '@/sections/ComponentShowcase';
 import { ProductInterfaceDemo } from '@/sections/ProductInterfaceDemo';
 import { ThemeStudio } from '@/sections/ThemeStudio';
+import { ProductionWorkflow } from '@/sections/ProductionWorkflow';
 
 export default function HomePage() {
   return (
@@ -13,11 +14,12 @@ export default function HomePage() {
 
       <main>
         <Hero />
-        <PlatformParity />
         <ComponentShowcase />
+        <PlatformParity />
+        <ThemeStudio />
         <ProductInterfaceDemo />
         <CodeShowcase />
-        <ThemeStudio />
+        <ProductionWorkflow />
 
         <section id='pro' aria-label='Vellira Pro' />
       </main>

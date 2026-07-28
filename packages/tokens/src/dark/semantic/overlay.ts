@@ -7,9 +7,9 @@ export const overlay = {
   backdrop: 'rgba(0,0,0,.72)',
 
   tooltip: {
-    bg: colors.mono[50],
-    fg: colors.mono[950],
-    border: border.subtle,
+    bg: surface.elevated,
+    fg: colors.vellira[100],
+    border: border.default,
   },
 
   popover: {

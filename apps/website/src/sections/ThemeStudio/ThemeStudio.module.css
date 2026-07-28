@@ -1246,9 +1246,9 @@
   gap: 7px;
 }
 
-.proofs li::before {
+.proofs svg {
+  flex: 0 0 auto;
   color: var(--color-success-500);
-  content: '✓';
 }
 
 @keyframes live-status-pulse {

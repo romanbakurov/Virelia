@@ -101,10 +101,7 @@ tooltip.
   </Tooltip.Trigger>
 
   <Portal>
-    <Tooltip.Content>
-      Search all projects
-      <Tooltip.Arrow />
-    </Tooltip.Content>
+    <Tooltip.Content withArrow>Search all projects</Tooltip.Content>
   </Portal>
 </Tooltip>
 \`\`\`
@@ -244,9 +241,8 @@ function TooltipDemo({
     <Tooltip {...args}>
       <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
       <Portal>
-        <Tooltip.Content>
+        <Tooltip.Content withArrow={withArrow}>
           {tooltipContent}
-          {withArrow && <Tooltip.Arrow />}
         </Tooltip.Content>
       </Portal>
     </Tooltip>
