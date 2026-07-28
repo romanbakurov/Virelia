@@ -164,8 +164,6 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  color: var(--text-inverse);
-  font-weight: 700;
   background: linear-gradient(
     135deg,
     var(--color-primary-400),
@@ -174,6 +172,14 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 8px 20px
     color-mix(in srgb, var(--color-primary-500) 24%, transparent);
+}
+
+.brandMark img,
+.workspaceAvatar img {
+  grid-area: 1 / 1;
+  width: calc(var(--space-4) + var(--space-1));
+  height: calc(var(--space-4) + var(--space-1));
+  object-fit: contain;
 }
 
 .brand > div,
@@ -410,9 +416,6 @@
   place-items: center;
   width: 42px;
   height: 42px;
-  color: var(--text-inverse);
-  font-size: var(--font-size-lg);
-  font-weight: 700;
   background: linear-gradient(
     135deg,
     var(--color-primary-400),

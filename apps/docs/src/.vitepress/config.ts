@@ -8,10 +8,45 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+    [
+      'link',
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/brand/icons/favicon.svg',
+      },
+    ],
+    ['link', { rel: 'icon', href: '/brand/icons/favicon.ico' }],
+    [
+      'link',
+      {
+        rel: 'icon',
+        sizes: '32x32',
+        href: '/brand/icons/favicon-32x32.png',
+      },
+    ],
+    [
+      'link',
+      {
+        rel: 'icon',
+        sizes: '16x16',
+        href: '/brand/icons/favicon-16x16.png',
+      },
+    ],
+    [
+      'link',
+      {
+        rel: 'apple-touch-icon',
+        href: '/brand/icons/apple-touch-icon.png',
+      },
+    ],
   ],
   themeConfig: {
-    logo: '/logo.svg',
+    logo: {
+      light: '/brand/logos/logo-dark.svg',
+      dark: '/brand/logos/logo-light.svg',
+      alt: 'Vellira',
+    },
     nav: [
       { text: 'Quick Start', link: '/getting-started' },
       { text: 'Components', link: '/components/' },

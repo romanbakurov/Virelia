@@ -284,7 +284,9 @@ export function ProductInterfaceDemo() {
               viewport={{ once: true, amount: 0.4 }}
             >
               <div className={styles.brand}>
-                <span className={styles.brandMark}>V</span>
+                <span className={styles.brandMark} aria-hidden='true'>
+                  <img src='/brand/icons/logo-icon-white.svg' alt='' />
+                </span>
 
                 <div>
                   <strong>Vellira</strong>
@@ -497,8 +499,8 @@ export function ProductInterfaceDemo() {
                   </div>
 
                   <div className={styles.workspacePreview}>
-                    <div className={styles.workspaceAvatar}>
-                      {workspace.trim().charAt(0).toUpperCase() || 'V'}
+                    <div className={styles.workspaceAvatar} aria-hidden='true'>
+                      <img src='/brand/icons/logo-icon-white.svg' alt='' />
                     </div>
 
                     <div>
