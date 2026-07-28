@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 
 import {
   ChevronDown,
+  Check,
   Copy as CopyIcon,
   Edit,
   Monitor,
@@ -51,6 +52,13 @@ const storybookLinks: Record<ExampleName, string> = {
   dropdown:
     'https://storybook.vellira.dev/?path=/docs/components-dropdown--docs',
 };
+
+const featureItems = [
+  'TypeScript',
+  'Accessible',
+  'Tree-shakeable',
+  'Theme-aware',
+] as const;
 
 const activeLineByExample: Record<ExampleName, number> = {
   button: 5,
@@ -858,10 +866,12 @@ export function CodeShowcase() {
             </Button>
 
             <ul className={styles.features} aria-label='Package features'>
-              <li>TypeScript</li>
-              <li>Accessible</li>
-              <li>Tree-shakeable</li>
-              <li>Theme-aware</li>
+              {featureItems.map((feature) => (
+                <li key={feature}>
+                  <Check size={13} aria-hidden='true' />
+                  {feature}
+                </li>
+              ))}
             </ul>
           </motion.div>
         </motion.div>

@@ -393,6 +393,8 @@
     var(--surface-subtle) 58%,
     var(--surface-default)
   );
+  border-left: 1px solid
+    color-mix(in srgb, var(--border-muted) 32%, var(--surface-default));
 }
 
 .previewHeader > div:first-child {
@@ -669,9 +671,9 @@
   white-space: nowrap;
 }
 
-.features li::before {
+.features svg {
+  flex: 0 0 auto;
   color: var(--color-success-500);
-  content: '✓';
 }
 
 .visuallyHidden {
