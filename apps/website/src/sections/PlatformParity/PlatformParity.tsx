@@ -48,7 +48,7 @@ type NativePreviewMessage = {
   };
 };
 
-const NATIVE_PREVIEW_URL = 'http://localhost:8081';
+const NATIVE_PREVIEW_URL = 'https://native.vellira.dev';
 const NATIVE_PREVIEW_ORIGIN = new URL(NATIVE_PREVIEW_URL).origin;
 
 const isPlatformPreviewTab = (value: string): value is PlatformPreviewTab =>
