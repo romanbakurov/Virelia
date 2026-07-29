@@ -16,6 +16,17 @@ const navigation = [
   { label: 'Roadmap', href: '#roadmap' },
 ] as const;
 
+function scrollToAnchor(hash: string) {
+  const target = document.getElementById(hash.slice(1));
+
+  if (!target) {
+    return;
+  }
+
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.history.pushState(null, '', hash);
+}
+
 export function SiteHeader() {
   return (
     <header className={styles.header}>
@@ -32,13 +43,17 @@ export function SiteHeader() {
 
         <nav className={styles.navigation} aria-label='Primary navigation'>
           {navigation.map((item) => (
-            <Link
+            <a
               key={item.label}
               className={styles.navigationLink}
               href={item.href}
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToAnchor(item.href);
+              }}
             >
               {item.label}
-            </Link>
+            </a>
           ))}
 
           <a
