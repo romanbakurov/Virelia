@@ -43,4 +43,5 @@ coverage/
 **/playwright-report/
 
 # Lighthouse CI reports
+.lighthouseci/
 lighthouse-results/
