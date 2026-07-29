@@ -239,6 +239,7 @@ function PreviewContent({
                 iconStart={<ChevronDown />}
                 iconOnly
                 size='sm'
+                style={styles.headerActionButton}
               />
             </Dropdown.Trigger>
 
@@ -492,6 +493,20 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       fontSize: 16,
       fontWeight: '700',
       lineHeight: 20,
+    },
+
+    headerActionButton: {
+      borderColor: theme.components.button.neutral.outline.default.border,
+      ...Platform.select({
+        web: {
+          boxShadow: 'none',
+        },
+        default: {
+          elevation: 0,
+          shadowOpacity: 0,
+          shadowRadius: 0,
+        },
+      }),
     },
 
     card: {
