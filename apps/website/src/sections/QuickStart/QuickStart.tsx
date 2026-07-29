@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { Check, Copy } from '@vellira-ui/icons';
-import { Button, Checkbox, Tabs } from '@vellira-ui/react';
+import { Button, Checkbox } from '@vellira-ui/react';
 import { motion, useReducedMotion } from 'motion/react';
 
 import styles from './QuickStart.module.css';
@@ -251,54 +251,44 @@ export function QuickStart() {
                   <div className={styles.controlGrid}>
                     <div className={styles.controlField}>
                       <span>Variant</span>
-                      <Tabs
-                        value={appearance}
-                        onValueChange={(value) =>
-                          setAppearance(value as Appearance)
-                        }
-                        variant='segmented'
-                        size='sm'
+                      <div
+                        className={styles.segmentedControl}
+                        role='group'
+                        aria-label='Button appearance'
                       >
-                        <Tabs.List
-                          aria-label='Button appearance'
-                          className={styles.controlTabsList}
-                        >
-                          {appearances.map((option) => (
-                            <Tabs.Trigger
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </Tabs.Trigger>
-                          ))}
-                          <Tabs.Indicator />
-                        </Tabs.List>
-                      </Tabs>
+                        {appearances.map((option) => (
+                          <button
+                            key={option.value}
+                            type='button'
+                            className={styles.segmentedButton}
+                            aria-pressed={appearance === option.value}
+                            onClick={() => setAppearance(option.value)}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <div className={styles.controlField}>
                       <span>Size</span>
-                      <Tabs
-                        value={size}
-                        onValueChange={(value) => setSize(value as ButtonSize)}
-                        variant='segmented'
-                        size='sm'
+                      <div
+                        className={styles.segmentedControl}
+                        role='group'
+                        aria-label='Button size'
                       >
-                        <Tabs.List
-                          aria-label='Button size'
-                          className={styles.controlTabsList}
-                        >
-                          {sizes.map((option) => (
-                            <Tabs.Trigger
-                              key={option.value}
-                              value={option.value}
-                            >
-                              {option.label}
-                            </Tabs.Trigger>
-                          ))}
-                          <Tabs.Indicator />
-                        </Tabs.List>
-                      </Tabs>
+                        {sizes.map((option) => (
+                          <button
+                            key={option.value}
+                            type='button'
+                            className={styles.segmentedButton}
+                            aria-pressed={size === option.value}
+                            onClick={() => setSize(option.value)}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
 

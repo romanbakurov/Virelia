@@ -411,19 +411,52 @@
   white-space: nowrap;
 }
 
-.controlTabsList {
+.segmentedControl {
   display: flex;
   width: 100%;
-  margin-bottom: 0;
+  min-height: 36px;
+  padding: 3px;
+  background: var(--tabs-primary-segmented-bg);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  gap: 3px;
 }
 
-.controlTabsList > button {
+.segmentedButton {
   flex: 1 1 0;
-  justify-content: center;
+  padding: 0 var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-lg) - 3px);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+  cursor: pointer;
+  min-height: 30px;
   min-width: 0;
-  padding-right: var(--space-2);
-  padding-left: var(--space-2);
+  font-family: inherit;
   white-space: nowrap;
+}
+
+.segmentedButton:hover {
+  color: var(--text-primary);
+}
+
+.segmentedButton[aria-pressed='true'] {
+  color: var(--tabs-primary-segmented-active-fg);
+  background: var(--tabs-primary-segmented-active-bg);
+  border-color: var(--tabs-primary-segmented-active-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.segmentedButton:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: 2px;
 }
 
 .loadingToggle {
@@ -606,6 +639,7 @@
   }
 
   .copyButton,
+  .segmentedButton,
   .editor,
   .footer a {
     transition: none;

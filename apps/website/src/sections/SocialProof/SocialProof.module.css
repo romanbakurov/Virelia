@@ -116,17 +116,17 @@
   object-fit: contain;
 }
 
-.repositoryLogoLight {
-  display: none;
-}
-
-[data-vellira-theme='dark'] .repositoryLogoDark,
-[data-vellira-theme='high-contrast'] .repositoryLogoDark {
+.repositoryLogoDark {
   display: none;
 }
 
 [data-vellira-theme='dark'] .repositoryLogoLight,
 [data-vellira-theme='high-contrast'] .repositoryLogoLight {
+  display: none;
+}
+
+[data-vellira-theme='dark'] .repositoryLogoDark,
+[data-vellira-theme='high-contrast'] .repositoryLogoDark {
   display: block;
 }
 

@@ -5,7 +5,8 @@ import Link from 'next/link';
 
 import { motion, useReducedMotion } from 'motion/react';
 
-import { ArrowRight, Check } from '@vellira-ui/icons';
+import { ArrowLeftRight, ArrowRight, Check } from '@vellira-ui/icons';
+import { useTheme } from '@vellira-ui/react';
 
 import styles from './SiteFooter.module.css';
 
@@ -40,6 +41,11 @@ const footerSignals = [
 
 export function SiteFooter() {
   const shouldReduceMotion = useReducedMotion();
+  const { theme } = useTheme();
+  const logoSrc =
+    theme === 'light'
+      ? '/brand/logos/logo-light.svg'
+      : '/brand/logos/logo-dark.svg';
 
   return (
     <footer className={styles.footer}>
@@ -67,14 +73,13 @@ export function SiteFooter() {
         }}
         viewport={{ once: true, amount: 0.35 }}
       >
+        <p className={styles.closingLine}>
+          Start with one component. Scale to an entire design system.
+        </p>
+
         <div className={styles.brandColumn}>
           <Link className={styles.brand} href='/' aria-label='Vellira home'>
-            <Image
-              src='/brand/logos/logo-gradient.svg'
-              alt='Vellira'
-              width={112}
-              height={36}
-            />
+            <Image src={logoSrc} alt='Vellira' width={112} height={36} />
           </Link>
 
           <p>
@@ -98,6 +103,7 @@ export function SiteFooter() {
 
             {productLinks.map((link) => (
               <a key={link.label} href={link.href}>
+                <span className={styles.linkMarker} aria-hidden='true' />
                 {link.label}
               </a>
             ))}
@@ -113,6 +119,7 @@ export function SiteFooter() {
                 target='_blank'
                 rel='noreferrer noopener'
               >
+                <span className={styles.linkMarker} aria-hidden='true' />
                 {link.label}
                 <ArrowRight size={13} aria-hidden='true' />
               </a>
@@ -122,28 +129,39 @@ export function SiteFooter() {
 
         <aside className={styles.statusCard}>
           <span className={styles.statusEyebrow}>Shared foundation</span>
-          <strong>React + React Native</strong>
-          <p>
-            One component contract, synchronized tokens and real implementation
-            paths for web and native teams.
-          </p>
+          <strong className={styles.foundationTitle}>
+            React
+            <ArrowLeftRight size={16} aria-hidden='true' />
+            React Native
+          </strong>
 
-          <a
-            className={styles.statusLink}
-            href='https://github.com/vellira-dev/Vellira'
-            target='_blank'
-            rel='noreferrer noopener'
-          >
-            View source
-            <ArrowRight size={14} aria-hidden='true' />
-          </a>
+          <div className={styles.foundationMap} aria-hidden='true'>
+            <span>React</span>
+            <span>Tokens</span>
+            <span>Native</span>
+          </div>
+
+          <div className={styles.statusList} aria-label='Project status'>
+            <span>
+              <Check size={13} aria-hidden='true' />
+              Open source
+            </span>
+            <span>
+              <Check size={13} aria-hidden='true' />
+              Built in public
+            </span>
+            <span>
+              <Check size={13} aria-hidden='true' />
+              Production ready
+            </span>
+          </div>
         </aside>
       </motion.div>
 
       <div className={styles.bottomBar}>
         <span>© 2026 Vellira</span>
-        <span>Independent modules</span>
-        <span>One seamless system</span>
+        <span>Independent modules. One seamless system.</span>
+        <span>Built in public</span>
       </div>
     </footer>
   );

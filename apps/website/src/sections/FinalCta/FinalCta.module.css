@@ -2,7 +2,7 @@
   position: relative;
   overflow: hidden;
   padding: calc(var(--space-16) + var(--space-12)) var(--space-6)
-    calc(var(--space-16) + var(--space-10));
+    var(--space-12);
 }
 
 .container {
@@ -212,6 +212,7 @@
 }
 
 .installMeta {
+  margin-top: var(--space-2);
   color: var(--text-tertiary);
   font-size: var(--font-size-sm);
 }
@@ -247,7 +248,8 @@
 
 @media (width <= 900px) {
   .section {
-    padding: calc(var(--space-16) + var(--space-4)) var(--space-4);
+    padding: calc(var(--space-16) + var(--space-4)) var(--space-4)
+      var(--space-10);
   }
 
   .eyebrow {

@@ -1,29 +1,31 @@
 .footer {
   position: relative;
   overflow: hidden;
-  padding: var(--space-16) var(--space-6) var(--space-8);
-  background: color-mix(
-    in srgb,
-    var(--surface-subtle) 62%,
-    var(--surface-default)
+  padding: var(--space-12) var(--space-6) var(--space-8);
+  background: linear-gradient(
+    180deg,
+    var(--surface-default) 0%,
+    var(--surface-default) 34%,
+    color-mix(in srgb, var(--surface-subtle) 8%, var(--surface-default)) 56%,
+    color-mix(in srgb, var(--surface-subtle) 34%, var(--surface-default)) 80%,
+    color-mix(in srgb, var(--surface-subtle) 58%, var(--surface-default)) 100%
   );
-  border-top: 1px solid var(--border-muted);
 }
 
 .glow {
   position: absolute;
-  top: 0;
+  top: 28%;
   left: 50%;
   width: min(860px, 88vw);
-  height: 360px;
+  height: 320px;
   pointer-events: none;
   background: radial-gradient(
     ellipse at top,
-    color-mix(in srgb, var(--color-primary-500) 12%, transparent),
+    color-mix(in srgb, var(--color-primary-500) 8%, transparent),
     transparent 72%
   );
-  opacity: 0.72;
-  filter: blur(84px);
+  opacity: 0.54;
+  filter: blur(104px);
   transform: translateX(-50%);
 }
 
@@ -37,6 +39,17 @@
   width: min(1180px, 100%);
   margin: 0 auto;
   gap: var(--space-10);
+}
+
+.closingLine {
+  grid-column: 1 / -1;
+  max-width: 760px;
+  margin: 0 0 var(--space-2);
+  color: var(--text-primary);
+  font-size: clamp(26px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0;
 }
 
 .brandColumn {
@@ -62,7 +75,7 @@
 }
 
 .brandColumn p,
-.statusCard p {
+.statusList {
   max-width: 520px;
   margin: 0;
   color: var(--text-secondary);
@@ -118,7 +131,7 @@
 }
 
 .linkGroup a,
-.statusLink {
+.statusList span {
   display: inline-flex;
   align-items: center;
   width: fit-content;
@@ -135,43 +148,130 @@
 }
 
 .linkGroup a:hover,
-.statusLink:hover {
+.statusList span:hover {
   color: var(--text-primary);
   transform: translateY(-1px);
 }
 
-.linkGroup a svg,
-.statusLink svg {
+.linkMarker {
+  width: 10px;
+  height: 10px;
+  border: 1px solid
+    color-mix(in srgb, var(--color-primary-500) 34%, var(--border-muted));
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 2px
+    color-mix(in srgb, var(--surface-default) 74%, transparent);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.linkGroup a:hover .linkMarker {
+  background: color-mix(in srgb, var(--color-primary-500) 18%, transparent);
+  border-color: var(--color-primary-400);
+  transform: rotate(45deg);
+}
+
+.linkGroup a svg {
   transition: transform 180ms ease;
 }
 
-.linkGroup a:hover svg,
-.statusLink:hover svg {
+.linkGroup a:hover svg {
   transform: translateX(2px);
 }
 
 .statusCard {
   display: grid;
   align-content: start;
-  gap: var(--space-4);
+  gap: var(--space-3);
   min-width: 0;
-  padding: var(--space-5);
-  background: color-mix(in srgb, var(--surface-default) 78%, transparent);
-  border: 1px solid var(--border-muted);
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--surface-default) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-muted) 76%, transparent);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm), var(--shadow-inset);
+  box-shadow: var(--shadow-inset);
 }
 
 .statusCard strong {
   color: var(--text-primary);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   line-height: 1.25;
 }
 
-.statusLink {
-  margin-top: var(--space-2);
+.foundationTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.foundationTitle svg {
+  flex: 0 0 auto;
   color: var(--color-primary-400);
+}
+
+.foundationMap {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  margin: var(--space-1) 0;
+  gap: var(--space-2);
+}
+
+.foundationMap::before {
+  position: absolute;
+  top: calc(var(--space-5) + var(--space-1));
+  bottom: calc(var(--space-5) + var(--space-1));
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-primary-500) 18%, transparent),
+    color-mix(in srgb, var(--border-muted) 84%, transparent),
+    color-mix(in srgb, var(--color-success-500) 18%, transparent)
+  );
+  content: '';
+}
+
+.foundationMap span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  min-width: 74px;
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
+  background: color-mix(in srgb, var(--surface-default) 90%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  place-items: center;
+}
+
+.foundationMap span:nth-child(2) {
+  color: var(--color-primary-400);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 28%,
+    var(--border-muted)
+  );
+}
+
+.statusList {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+}
+
+.statusList span {
+  min-height: 28px;
+  font-size: var(--font-size-xs);
+  gap: var(--space-2);
+}
+
+.statusList svg {
+  color: var(--color-success-500);
 }
 
 .bottomBar {
@@ -204,7 +304,7 @@
 
 @media (width <= 640px) {
   .footer {
-    padding: var(--space-12) var(--space-4) var(--space-6);
+    padding: var(--space-10) var(--space-4) var(--space-6);
   }
 
   .container,

@@ -48,6 +48,9 @@ type NativePreviewMessage = {
   };
 };
 
+const NATIVE_PREVIEW_URL = 'http://localhost:8081';
+const NATIVE_PREVIEW_ORIGIN = new URL(NATIVE_PREVIEW_URL).origin;
+
 const isPlatformPreviewTab = (value: string): value is PlatformPreviewTab =>
   value === 'overview' || value === 'permissions';
 
@@ -98,6 +101,7 @@ export function PlatformParity() {
   const [density, setDensity] = useState<PreviewDensity>('comfortable');
   const [team, setTeam] = useState<TeamValue>('design');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [nativePreviewLoaded, setNativePreviewLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const previewTheme: PreviewTheme =
     theme === 'highContrast' ? 'high-contrast' : theme;
@@ -123,15 +127,25 @@ export function PlatformParity() {
       },
     };
 
-    iframeRef.current?.contentWindow?.postMessage(
-      message,
-      'http://localhost:8081'
-    );
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        message,
+        NATIVE_PREVIEW_ORIGIN
+      );
+    } catch {
+      setNativePreviewLoaded(false);
+    }
   }, [workspace, notificationsEnabled, activeTab, density, team, previewTheme]);
 
   useEffect(() => {
+    if (!nativePreviewLoaded) return;
+
     sendPreviewState();
-  }, [sendPreviewState]);
+  }, [nativePreviewLoaded, sendPreviewState]);
+
+  const handleNativePreviewLoad = useCallback(() => {
+    setNativePreviewLoaded(true);
+  }, []);
 
   return (
     <section
@@ -422,10 +436,10 @@ export function PlatformParity() {
                   <iframe
                     ref={iframeRef}
                     className={styles.phoneScreen}
-                    src='http://localhost:8081'
+                    src={NATIVE_PREVIEW_URL}
                     title='Vellira React Native preview'
                     loading='lazy'
-                    onLoad={sendPreviewState}
+                    onLoad={handleNativePreviewLoad}
                   />
                 </div>
               </div>
