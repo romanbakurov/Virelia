@@ -78,6 +78,9 @@ const footerItems = [
 
 const workflowStartDelay = 760;
 const workflowStepDelay = 520;
+const metricStartDelay = 1000;
+const metricAnimationDuration = 2600;
+const qualityRevealDelay = metricStartDelay + metricAnimationDuration - 320;
 
 function AnimatedMetric({
   enabled,
@@ -98,7 +101,7 @@ function AnimatedMetric({
     let controls: ReturnType<typeof animate> | undefined;
     const timer = window.setTimeout(() => {
       controls = animate(0, value, {
-        duration: 2.6,
+        duration: metricAnimationDuration / 1000,
         ease: [0.16, 1, 0.16, 1],
         onUpdate: (latest) => {
           setDisplayValue(Math.round(latest));
@@ -123,6 +126,7 @@ export function SocialProof() {
     amount: 0.22,
   });
   const [activeCheck, setActiveCheck] = useState(-1);
+  const [qualityReady, setQualityReady] = useState(false);
   const [workflowComplete, setWorkflowComplete] = useState(false);
 
   useEffect(() => {
@@ -132,6 +136,7 @@ export function SocialProof() {
 
     if (shouldReduceMotion) {
       setActiveCheck(workflowChecks.length - 1);
+      setQualityReady(true);
       setWorkflowComplete(true);
 
       return;
@@ -152,9 +157,13 @@ export function SocialProof() {
       },
       workflowStartDelay + workflowChecks.length * workflowStepDelay + 420
     );
+    const qualityTimer = window.setTimeout(() => {
+      setQualityReady(true);
+    }, qualityRevealDelay);
 
     return () => {
       timers.forEach(window.clearTimeout);
+      window.clearTimeout(qualityTimer);
       window.clearTimeout(completionTimer);
     };
   }, [isDashboardInView, shouldReduceMotion]);
@@ -482,9 +491,7 @@ export function SocialProof() {
                 className={styles.qualityCard}
                 initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }}
                 animate={
-                  workflowComplete
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 18 }
+                  qualityReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
                 }
                 transition={{
                   delay: shouldReduceMotion ? 0 : 0.16,
@@ -512,7 +519,7 @@ export function SocialProof() {
                         shouldReduceMotion ? false : { opacity: 0, y: 16 }
                       }
                       animate={
-                        workflowComplete
+                        qualityReady
                           ? { opacity: 1, y: 0 }
                           : { opacity: 0, y: 16 }
                       }
@@ -565,7 +572,7 @@ export function SocialProof() {
 
                     <strong>
                       <AnimatedMetric
-                        delay={shouldReduceMotion ? 0 : 1000}
+                        delay={shouldReduceMotion ? 0 : metricStartDelay}
                         enabled={isDashboardInView}
                         value={Number(metric.value)}
                       />
