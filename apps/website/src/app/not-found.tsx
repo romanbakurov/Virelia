@@ -2,13 +2,11 @@ import Link from 'next/link';
 
 import { ArrowRight } from '@vellira-ui/icons';
 
-import styles from './not-found.module.css';
-
 export default function NotFound() {
   return (
-    <main className={styles.page}>
-      <section className={styles.panel} aria-labelledby='not-found-title'>
-        <span className={styles.eyebrow}>404</span>
+    <main className='not-found-page'>
+      <section className='not-found-panel' aria-labelledby='not-found-title'>
+        <span className='not-found-eyebrow'>404</span>
 
         <h1 id='not-found-title'>Page not found</h1>
 
@@ -16,7 +14,7 @@ export default function NotFound() {
           The page may have moved, or the URL does not match a Vellira route.
         </p>
 
-        <Link className={styles.homeLink} href='/'>
+        <Link className='not-found-home-link' href='/'>
           Back to home
           <ArrowRight size={16} aria-hidden='true' />
         </Link>
