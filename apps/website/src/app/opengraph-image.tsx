@@ -17,11 +17,8 @@ const palettes = {
   dark: {
     background: '#0D0A1A',
     backgroundMid: '#17112B',
-    backgroundEnd: '#23183D',
-    frame: 'rgba(18, 14, 32, 0.92)',
+    backgroundEnd: '#241A3F',
     surface: '#120E20',
-    surfaceElevated: '#1B162A',
-    surfaceSoft: '#262038',
     text: '#FDFCFF',
     textMuted: '#C9C1D9',
     textSubtle: '#9E93B4',
@@ -29,32 +26,21 @@ const palettes = {
     primaryStrong: '#775FFF',
     secondaryBlob: '#123E61',
     badgeBg: 'rgba(38, 32, 56, 0.86)',
-    tabBg: 'rgba(13, 10, 26, 0.76)',
-    mutedLine: 'rgba(201, 193, 217, 0.24)',
-    mutedLineSoft: 'rgba(201, 193, 217, 0.18)',
-    border: 'rgba(228, 221, 244, 0.18)',
-    borderStrong: 'rgba(167, 139, 250, 0.32)',
+    borderStrong: 'rgba(228, 221, 244, 0.18)',
   },
   light: {
     background: '#FDFCFF',
-    backgroundMid: '#F1EDFF',
-    backgroundEnd: '#E9F8FF',
-    frame: 'rgba(255, 255, 255, 0.92)',
+    backgroundMid: '#F3EFFF',
+    backgroundEnd: '#EAF8FF',
     surface: '#FFFFFF',
-    surfaceElevated: '#F7F3FF',
-    surfaceSoft: '#EEE8FF',
     text: '#171126',
     textMuted: '#5C526F',
     textSubtle: '#817694',
     primary: '#5B3DFF',
     primaryStrong: '#775FFF',
     secondaryBlob: '#BDEFFF',
-    badgeBg: 'rgba(238, 232, 255, 0.86)',
-    tabBg: 'rgba(253, 252, 255, 0.86)',
-    mutedLine: 'rgba(92, 82, 111, 0.18)',
-    mutedLineSoft: 'rgba(92, 82, 111, 0.12)',
-    border: 'rgba(92, 82, 111, 0.16)',
-    borderStrong: 'rgba(91, 61, 255, 0.24)',
+    badgeBg: 'rgba(238, 232, 255, 0.9)',
+    borderStrong: 'rgba(91, 61, 255, 0.18)',
   },
 } as const;
 
@@ -62,16 +48,16 @@ type OgTheme = keyof typeof palettes;
 
 export function createOpenGraphImage(theme: OgTheme = 'dark') {
   const palette = palettes[theme];
-  const featureBadgeStyle = {
+  const badgeStyle = {
     display: 'flex',
     alignItems: 'center',
-    padding: '9px 14px',
+    padding: '10px 16px',
     color: palette.textMuted,
     background: palette.badgeBg,
-    border: `1px solid ${palette.border}`,
+    border: `1px solid ${palette.borderStrong}`,
     borderRadius: 999,
-    fontSize: 17,
-    fontWeight: 600,
+    fontSize: 18,
+    fontWeight: 650,
   } as const;
 
   return new ImageResponse(
@@ -82,21 +68,21 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        background: `linear-gradient(135deg, ${palette.background} 0%, ${palette.backgroundMid} 54%, ${palette.backgroundEnd} 100%)`,
         color: palette.text,
-        fontFamily: 'Arial, Helvetica, sans-serif',
+        background: `linear-gradient(135deg, ${palette.background} 0%, ${palette.backgroundMid} 56%, ${palette.backgroundEnd} 100%)`,
+        fontFamily: 'Vellira Sans, Inter, ui-sans-serif, system-ui, sans-serif',
       }}
     >
       <div
         style={{
           position: 'absolute',
-          top: -220,
-          left: -170,
+          top: -240,
+          left: -180,
           width: 640,
           height: 640,
           background: palette.primaryStrong,
           borderRadius: 999,
-          opacity: 0.32,
+          opacity: theme === 'dark' ? 0.26 : 0.1,
         }}
       />
 
@@ -104,40 +90,26 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
         style={{
           position: 'absolute',
           right: -260,
-          bottom: -280,
-          width: 720,
-          height: 720,
+          bottom: -320,
+          width: 760,
+          height: 760,
           background: palette.secondaryBlob,
           borderRadius: 999,
-          opacity: 0.54,
+          opacity: theme === 'dark' ? 0.46 : 0.7,
         }}
       />
 
       <div
         style={{
           position: 'absolute',
-          right: 344,
-          top: 76,
-          width: 240,
-          height: 240,
-          background: palette.primary,
-          borderRadius: 999,
-          opacity: 0.14,
-        }}
-      />
-
-      <div
-        style={{
-          position: 'absolute',
-          inset: 42,
+          inset: 36,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '46px 56px',
-          background: palette.frame,
-          border: `1px solid ${palette.border}`,
-          borderRadius: 34,
-          boxShadow: '0 30px 100px rgba(0, 0, 0, 0.34)',
+          padding: '58px 64px',
+          background: palette.surface,
+          border: `1px solid ${palette.borderStrong}`,
+          borderRadius: 32,
         }}
       >
         <div
@@ -149,301 +121,11 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
         >
           <img
             src={logoSrc}
-            width={204}
-            height={54}
+            width={190}
+            height={52}
             alt='Vellira'
             style={{ objectFit: 'contain' }}
           />
-
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              padding: '11px 18px',
-              color: palette.textMuted,
-              background: palette.badgeBg,
-              border: `1px solid ${palette.border}`,
-              borderRadius: 999,
-              fontSize: 20,
-              fontWeight: 600,
-            }}
-          >
-            React + React Native
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 48,
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: 650,
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                marginBottom: 18,
-                color: palette.primary,
-                fontSize: 21,
-                fontWeight: 800,
-                textTransform: 'uppercase',
-              }}
-            >
-              React · React Native · Design tokens
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                fontSize: 69,
-                fontWeight: 800,
-                lineHeight: 0.98,
-              }}
-            >
-              <span>Independent modules.</span>
-              <span
-                style={{
-                  display: 'flex',
-                  marginTop: 10,
-                  color: palette.primary,
-                }}
-              >
-                One seamless system.
-              </span>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                marginTop: 28,
-                color: palette.textMuted,
-                fontSize: 24,
-                lineHeight: 1.35,
-              }}
-            >
-              Production-ready components with shared APIs, accessible behaviour
-              and semantic themes.
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: 350,
-              height: 320,
-              overflow: 'hidden',
-              background: `linear-gradient(180deg, ${palette.surfaceElevated} 0%, ${palette.surface} 100%)`,
-              border: `1px solid ${palette.borderStrong}`,
-              borderRadius: 26,
-              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.34)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                height: 44,
-                padding: '0 16px',
-                background: palette.badgeBg,
-                borderBottom: `1px solid ${palette.border}`,
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  background: '#F87171',
-                  borderRadius: 999,
-                }}
-              />
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  background: '#FBBF24',
-                  borderRadius: 999,
-                }}
-              />
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  background: '#34D399',
-                  borderRadius: 999,
-                }}
-              />
-              <span
-                style={{
-                  display: 'flex',
-                  marginLeft: 8,
-                  color: palette.textSubtle,
-                  fontSize: 13,
-                  fontWeight: 700,
-                }}
-              >
-                Vellira preview
-              </span>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 14,
-                padding: 20,
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '11px 12px',
-                  background: palette.badgeBg,
-                  border: `1px solid ${palette.border}`,
-                  borderRadius: 16,
-                }}
-              >
-                <span
-                  style={{
-                    color: palette.textMuted,
-                    fontSize: 14,
-                    fontWeight: 700,
-                  }}
-                >
-                  Tokens synced
-                </span>
-                <span
-                  style={{
-                    color: palette.primary,
-                    fontSize: 14,
-                    fontWeight: 800,
-                  }}
-                >
-                  Live
-                </span>
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  gap: 8,
-                  padding: 5,
-                  background: palette.tabBg,
-                  border: `1px solid ${palette.border}`,
-                  borderRadius: 16,
-                }}
-              >
-                <span
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flex: 1,
-                    padding: '9px 0',
-                    color: palette.text,
-                    background: palette.surfaceSoft,
-                    borderRadius: 12,
-                    fontSize: 14,
-                    fontWeight: 800,
-                  }}
-                >
-                  React
-                </span>
-                <span
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flex: 1,
-                    padding: '9px 0',
-                    color: palette.textSubtle,
-                    borderRadius: 12,
-                    fontSize: 14,
-                    fontWeight: 800,
-                  }}
-                >
-                  Native
-                </span>
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10,
-                  marginTop: 2,
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    height: 14,
-                    width: '82%',
-                    background: palette.primary,
-                    borderRadius: 999,
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    height: 14,
-                    width: '64%',
-                    background: palette.mutedLine,
-                    borderRadius: 999,
-                  }}
-                />
-                <div
-                  style={{
-                    display: 'flex',
-                    height: 14,
-                    width: '72%',
-                    background: palette.mutedLineSoft,
-                    borderRadius: 999,
-                  }}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  marginTop: 4,
-                }}
-              >
-                <span style={featureBadgeStyle}>Primary</span>
-                <span style={featureBadgeStyle}>Surface</span>
-                <span style={featureBadgeStyle}>Border</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              gap: 12,
-            }}
-          >
-            <span style={featureBadgeStyle}>Accessible</span>
-            <span style={featureBadgeStyle}>Type-safe</span>
-            <span style={featureBadgeStyle}>Themeable</span>
-          </div>
 
           <div
             style={{
@@ -455,6 +137,76 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
           >
             vellira.dev
           </div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            maxWidth: 1000,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              marginBottom: 24,
+              color: palette.primary,
+              fontSize: 24,
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            React · React Native · Design tokens
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              fontSize: 82,
+              fontWeight: 800,
+              lineHeight: 1.02,
+              letterSpacing: 0,
+            }}
+          >
+            <span>Independent modules.</span>
+
+            <span
+              style={{
+                display: 'flex',
+                marginTop: 8,
+                color: palette.primary,
+              }}
+            >
+              One seamless system.
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              maxWidth: 900,
+              marginTop: 32,
+              color: palette.textMuted,
+              fontSize: 27,
+              lineHeight: 1.4,
+            }}
+          >
+            Cross-platform components with shared APIs, accessible behaviour and
+            semantic design tokens.
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+          }}
+        >
+          <span style={badgeStyle}>Accessible</span>
+          <span style={badgeStyle}>Type-safe</span>
+          <span style={badgeStyle}>Themeable</span>
         </div>
       </div>
     </div>,
