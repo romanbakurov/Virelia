@@ -79,7 +79,7 @@ export function SiteFooter() {
 
         <div className={styles.brandColumn}>
           <Link className={styles.brand} href='/' aria-label='Vellira home'>
-            <Image src={logoSrc} alt='Vellira' width={112} height={36} />
+            <Image src={logoSrc} alt='Vellira' width={96} height={25} />
           </Link>
 
           <p>
