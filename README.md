@@ -10,6 +10,7 @@ It provides shared design tokens, renderer-neutral contracts, reusable interacti
 [![npm downloads](https://img.shields.io/npm/dm/@vellira-ui/react)](https://www.npmjs.com/package/@vellira-ui/react)
 [![GitHub Release](https://img.shields.io/github/v/release/romanbakurov/Vellira)](https://github.com/romanbakurov/Vellira/releases)
 [![CI](https://github.com/romanbakurov/Vellira/actions/workflows/ci.yml/badge.svg)](https://github.com/romanbakurov/Vellira/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vellira-dev/vellira/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vellira-dev/vellira)
 ![React](https://img.shields.io/badge/React-19.2.3-blue)
 ![React Native](https://img.shields.io/badge/React%20Native-0.85.3-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x%20%2F%206.x-blue)
