@@ -37,6 +37,9 @@ const palettes = {
     primaryStrong: '#775FFF',
     secondaryBlob: '#123E61',
     borderStrong: 'rgba(228, 221, 244, 0.18)',
+    borderSoft: 'rgba(228, 221, 244, 0.09)',
+    field: '#171126',
+    shadow: 'rgba(0, 0, 0, 0.34)',
   },
   light: {
     background: '#FDFCFF',
@@ -50,6 +53,9 @@ const palettes = {
     primaryStrong: '#775FFF',
     secondaryBlob: '#BDEFFF',
     borderStrong: 'rgba(91, 61, 255, 0.18)',
+    borderSoft: 'rgba(91, 61, 255, 0.08)',
+    field: '#FDFCFF',
+    shadow: 'rgba(91, 61, 255, 0.14)',
   },
 } as const;
 
@@ -75,26 +81,13 @@ export async function createOpenGraphImage(theme: OgTheme = 'dark') {
       <div
         style={{
           position: 'absolute',
-          top: -240,
-          left: -180,
-          width: 640,
-          height: 640,
-          background: palette.primaryStrong,
-          borderRadius: 999,
-          opacity: theme === 'dark' ? 0.18 : 0.08,
-        }}
-      />
-
-      <div
-        style={{
-          position: 'absolute',
-          right: -260,
-          bottom: -320,
-          width: 760,
-          height: 760,
+          right: 44,
+          bottom: 24,
+          width: 560,
+          height: 560,
           background: palette.secondaryBlob,
           borderRadius: 999,
-          opacity: theme === 'dark' ? 0.24 : 0.42,
+          opacity: theme === 'dark' ? 0.11 : 0.18,
         }}
       />
 
@@ -104,8 +97,7 @@ export async function createOpenGraphImage(theme: OgTheme = 'dark') {
           inset: 0,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'flex-start',
-          padding: '58px 68px 68px',
+          padding: '58px 68px 54px',
         }}
       >
         <div
@@ -117,8 +109,8 @@ export async function createOpenGraphImage(theme: OgTheme = 'dark') {
         >
           <img
             src={logoSrc}
-            width={160}
-            height={42}
+            width={136}
+            height={36}
             alt='Vellira'
             style={{ objectFit: 'contain' }}
           />
@@ -138,59 +130,321 @@ export async function createOpenGraphImage(theme: OgTheme = 'dark') {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            maxWidth: 1000,
-            marginTop: 82,
+            position: 'relative',
+            alignItems: 'flex-start',
+            flex: 1,
+            marginTop: 62,
           }}
         >
           <div
             style={{
               display: 'flex',
-              marginBottom: 26,
-              color: palette.textSubtle,
-              fontSize: 18,
-              fontWeight: 600,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-            }}
-          >
-            React · React Native · Design tokens
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
               flexDirection: 'column',
-              fontSize: 82,
-              fontWeight: 700,
-              lineHeight: 1.02,
-              letterSpacing: 0,
+              width: 660,
+              flexShrink: 0,
+              paddingTop: 10,
             }}
           >
-            <span>Independent modules.</span>
-
-            <span
+            <div
               style={{
                 display: 'flex',
-                marginTop: 8,
-                color: palette.primary,
+                marginBottom: 22,
+                color: palette.textSubtle,
+                fontSize: 15,
+                fontWeight: 600,
+                letterSpacing: 0,
+                textTransform: 'uppercase',
               }}
             >
-              One seamless system.
-            </span>
+              React · React Native · Design tokens
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                fontSize: 60,
+                fontWeight: 700,
+                lineHeight: 1.08,
+                letterSpacing: 0,
+              }}
+            >
+              <span>Independent modules.</span>
+
+              <span
+                style={{
+                  display: 'flex',
+                  marginTop: 14,
+                  color: palette.primary,
+                }}
+              >
+                One seamless system.
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                maxWidth: 560,
+                marginTop: 28,
+                color: palette.textMuted,
+                fontSize: 22,
+                lineHeight: 1.35,
+              }}
+            >
+              <span>Accessible components for React and React Native</span>
+              <span>with shared APIs and semantic design tokens.</span>
+            </div>
           </div>
 
           <div
             style={{
               display: 'flex',
-              maxWidth: 900,
-              marginTop: 34,
-              color: palette.textMuted,
-              fontSize: 27,
-              lineHeight: 1.35,
+              position: 'relative',
+              width: 390,
+              height: 362,
+              flexShrink: 0,
+              marginLeft: 45,
+              marginTop: -22,
+              marginRight: 0,
             }}
           >
-            Cross-platform components for React and React Native.
+            <div
+              style={{
+                position: 'absolute',
+                inset: 18,
+                display: 'flex',
+                background: palette.primaryStrong,
+                borderRadius: 28,
+                opacity: theme === 'dark' ? 0.18 : 0.12,
+                transform: 'rotate(3deg)',
+              }}
+            />
+
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '26px 28px',
+                background: palette.surface,
+                border: `1px solid ${palette.borderStrong}`,
+                borderRadius: 28,
+                boxShadow: `0 28px 70px ${palette.shadow}`,
+                transform: 'rotate(-2deg)',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <span
+                  style={{
+                    color: palette.text,
+                    fontSize: 22,
+                    fontWeight: 700,
+                  }}
+                >
+                  Project settings
+                </span>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginTop: 26,
+                }}
+              >
+                <span
+                  style={{
+                    color: palette.textSubtle,
+                    fontSize: 15,
+                    fontWeight: 600,
+                  }}
+                >
+                  Project name
+                </span>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: 46,
+                    marginTop: 9,
+                    padding: '0 16px',
+                    color: palette.textMuted,
+                    background: palette.field,
+                    border: `1px solid ${palette.borderStrong}`,
+                    borderRadius: 14,
+                    fontSize: 17,
+                    fontWeight: 500,
+                  }}
+                >
+                  Vellira UI
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  marginTop: 22,
+                }}
+              >
+                <span
+                  style={{
+                    color: palette.textSubtle,
+                    fontSize: 15,
+                    fontWeight: 600,
+                  }}
+                >
+                  Theme
+                </span>
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: 18,
+                    marginTop: 12,
+                    color: palette.textMuted,
+                    fontSize: 17,
+                    fontWeight: 600,
+                  }}
+                >
+                  <span
+                    style={{ display: 'flex', alignItems: 'center', gap: 9 }}
+                  >
+                    <span
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 19,
+                        height: 19,
+                        border: `2px solid ${palette.primary}`,
+                        borderRadius: 999,
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: 'flex',
+                          width: 7,
+                          height: 7,
+                          background: palette.primary,
+                          borderRadius: 999,
+                        }}
+                      />
+                    </span>
+                    Dark
+                  </span>
+                  <span
+                    style={{ display: 'flex', alignItems: 'center', gap: 9 }}
+                  >
+                    <span
+                      style={{
+                        display: 'flex',
+                        width: 19,
+                        height: 19,
+                        border: `2px solid ${theme === 'dark' ? '#55496D' : '#CFC5E3'}`,
+                        borderRadius: 999,
+                        boxSizing: 'border-box',
+                      }}
+                    />
+                    Light
+                  </span>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 9,
+                  marginTop: 22,
+                }}
+              >
+                {['Button', 'Checkbox', 'Select'].map((item) => (
+                  <div
+                    key={item}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 11,
+                      color: palette.textMuted,
+                      fontSize: 17,
+                      fontWeight: 600,
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 20,
+                        height: 20,
+                        color: theme === 'dark' ? '#A78BFA' : '#5B3DFF',
+                        background: theme === 'dark' ? '#251D3B' : '#F3EFFF',
+                        border: `2px solid ${theme === 'dark' ? '#7B67B0' : '#B8AAFF'}`,
+                        borderRadius: 6,
+                        boxSizing: 'border-box',
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          width: 12,
+                          height: 12,
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: 'flex',
+                            width: 8,
+                            height: 5,
+                            borderLeft: `2px solid ${theme === 'dark' ? '#A78BFA' : '#5B3DFF'}`,
+                            borderBottom: `2px solid ${theme === 'dark' ? '#A78BFA' : '#5B3DFF'}`,
+                            transform: 'rotate(-45deg)',
+                            marginTop: -2,
+                          }}
+                        />
+                      </span>
+                    </span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginTop: 22,
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: 120,
+                    height: 46,
+                    color: '#FFFFFF',
+                    background: palette.primaryStrong,
+                    borderRadius: 14,
+                    fontSize: 17,
+                    fontWeight: 700,
+                  }}
+                >
+                  Create
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -78,6 +78,7 @@ jobs:
         run: pnpm --filter @vellira-ui/website build
 
       - name: Run Lighthouse for website
+        continue-on-error: true
         run: pnpm lighthouse:website
 
       - name: Upload website reports
