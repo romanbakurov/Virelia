@@ -236,11 +236,10 @@ function PreviewContent({
                 accessibilityLabel='Native actions'
                 appearance='outline'
                 color='neutral'
+                iconStart={<ChevronDown />}
                 iconOnly
                 size='sm'
-              >
-                <ChevronDown />
-              </Button>
+              />
             </Dropdown.Trigger>
 
             <Dropdown.Content presentation='sheet'>

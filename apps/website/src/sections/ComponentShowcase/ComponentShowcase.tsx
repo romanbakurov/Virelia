@@ -523,17 +523,22 @@ export function ComponentShowcase() {
                           closeOnSelect={false}
                           portal={false}
                         >
-                          <Dropdown.Trigger asChild>
-                            <Button
-                              appearance='outline'
-                              color='neutral'
-                              className={styles.dropdownTriggerButton}
-                              iconEnd={<ChevronDown aria-hidden='true' />}
-                            >
-                              {dropdownExample === 'actions' && 'Actions'}
-                              {dropdownExample === 'access' && 'Invite'}
-                              {dropdownExample === 'command' && 'Search'}
-                            </Button>
+                          <Dropdown.Trigger
+                            asChild
+                            className={styles.dropdownTriggerButton}
+                          >
+                            <button type='button'>
+                              <span>
+                                {dropdownExample === 'actions' && 'Actions'}
+                                {dropdownExample === 'access' && 'Invite'}
+                                {dropdownExample === 'command' && 'Search'}
+                              </span>
+                              <ChevronDown
+                                className={styles.dropdownTriggerIcon}
+                                size={16}
+                                aria-hidden='true'
+                              />
+                            </button>
                           </Dropdown.Trigger>
 
                           <Dropdown.Content
