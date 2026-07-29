@@ -148,23 +148,39 @@ function isAlreadyPublishedError(output) {
   );
 }
 
+function getNpmErrorCode(output) {
+  const codeMatch = output.match(/\b(?:npm ERR! )?code\s+([A-Z0-9_]+)/i);
+  const statusMatch = output.match(/\b(?:HTTP|status)\s+([0-9]{3})\b/i);
+
+  return codeMatch?.[1]?.toUpperCase() ?? statusMatch?.[1] ?? null;
+}
+
 function isRetryablePublishError(output) {
-  return [
-    'ECONNRESET',
-    'ECONNREFUSED',
-    'ETIMEDOUT',
-    'EAI_AGAIN',
-    'ENOTFOUND',
-    'socket hang up',
-    'Service Unavailable',
-    'Gateway Timeout',
-    'Too Many Requests',
-    'code E429',
-    'code E500',
-    'code E502',
-    'code E503',
-    'code E504',
-  ].some((pattern) => output.includes(pattern));
+  const errorCode = getNpmErrorCode(output);
+
+  if (['401', '403', 'E401', 'E403', 'EPUBLISHCONFLICT'].includes(errorCode)) {
+    return false;
+  }
+
+  if (
+    [
+      'ECONNRESET',
+      'ETIMEDOUT',
+      'EAI_AGAIN',
+      '429',
+      '502',
+      '503',
+      '504',
+      'E429',
+      'E502',
+      'E503',
+      'E504',
+    ].includes(errorCode)
+  ) {
+    return true;
+  }
+
+  return /\b(?:ECONNRESET|ETIMEDOUT|EAI_AGAIN)\b/.test(output);
 }
 
 function runNpmPublish(packageInfo) {
@@ -258,6 +274,28 @@ function wait(milliseconds) {
   });
 }
 
+function hasProvenanceAttestations(dist) {
+  if (!dist || typeof dist !== 'object') {
+    return false;
+  }
+
+  if (!Object.hasOwn(dist, 'attestations')) {
+    return false;
+  }
+
+  const { attestations } = dist;
+
+  if (Array.isArray(attestations)) {
+    return attestations.length > 0;
+  }
+
+  if (attestations && typeof attestations === 'object') {
+    return Object.keys(attestations).length > 0;
+  }
+
+  return Boolean(attestations);
+}
+
 async function verifyPublishedPackage(packageInfo) {
   const maxAttempts = publishRetries + 1;
 
@@ -282,7 +320,7 @@ async function verifyPublishedPackage(packageInfo) {
         );
       }
 
-      if (!dist?.attestations) {
+      if (!hasProvenanceAttestations(dist)) {
         if (attempt < maxAttempts) {
           console.warn(
             `[release] ${packageInfo.name} provenance metadata is not visible yet; retrying.`
