@@ -299,13 +299,7 @@ export function Pro() {
                   className={styles.primaryAction}
                   iconEnd={<ArrowRight size={15} aria-hidden='true' />}
                 >
-                  <a
-                    href='https://github.com/vellira-dev/Vellira/discussions'
-                    target='_blank'
-                    rel='noreferrer'
-                  >
-                    Follow the roadmap
-                  </a>
+                  <a href='#roadmap'>Follow the roadmap</a>
                 </Button>
 
                 <p className={styles.proNote}>

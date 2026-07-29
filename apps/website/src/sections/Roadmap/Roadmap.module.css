@@ -2,6 +2,7 @@
   position: relative;
   padding: 112px 24px;
   overflow: hidden;
+  scroll-margin-top: 96px;
   background: var(--surface-default);
 }
 
