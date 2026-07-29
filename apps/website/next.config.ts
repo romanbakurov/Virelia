@@ -2,9 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-  experimental: {
-    inlineCss: true,
-  },
   transpilePackages: [
     '@vellira-ui/react',
     '@vellira-ui/tokens',
