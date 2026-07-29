@@ -315,6 +315,10 @@
   line-height: 1.5;
 }
 
+.headerAction {
+  white-space: nowrap;
+}
+
 .workspaceBody {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.6fr);
@@ -583,6 +587,20 @@
 
   .workspaceHeader {
     display: grid;
+    gap: 16px;
+  }
+
+  .workspaceHeader > div {
+    min-width: 0;
+  }
+
+  .workspaceHeader h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  .headerAction {
+    justify-content: center;
+    width: 100%;
   }
 
   .cardHeader {

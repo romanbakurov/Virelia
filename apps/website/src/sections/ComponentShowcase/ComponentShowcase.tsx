@@ -517,8 +517,8 @@ export function ComponentShowcase() {
                           open
                           placement='bottom-end'
                           offset={8}
-                          minWidth={360}
-                          maxWidth={360}
+                          minWidth='min(360px, calc(100vw - 64px))'
+                          maxWidth='min(360px, calc(100vw - 64px))'
                           closeOnSelect={false}
                           portal={false}
                         >

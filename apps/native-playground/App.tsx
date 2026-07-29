@@ -236,10 +236,10 @@ function PreviewContent({
                 accessibilityLabel='Native actions'
                 appearance='outline'
                 color='neutral'
-                iconEnd={<ChevronDown />}
+                iconOnly
                 size='sm'
               >
-                Actions
+                <ChevronDown />
               </Button>
             </Dropdown.Trigger>
 
@@ -484,6 +484,7 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       color: theme.semantic.text.subtle,
       fontSize: 11,
       fontWeight: '700',
+      lineHeight: 13,
       textTransform: 'uppercase',
     },
 
@@ -491,6 +492,7 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       color: theme.semantic.text.primary,
       fontSize: 16,
       fontWeight: '700',
+      lineHeight: 20,
     },
 
     card: {

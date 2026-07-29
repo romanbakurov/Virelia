@@ -352,6 +352,7 @@ export function ProductInterfaceDemo() {
                       color='neutral'
                       size='sm'
                       iconEnd={<ChevronDown />}
+                      className={styles.headerAction}
                     >
                       Actions
                     </Button>

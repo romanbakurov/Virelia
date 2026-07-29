@@ -489,6 +489,12 @@
   gap: var(--space-2);
 }
 
+.checkName span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .checkIndicator {
   display: inline-grid;
   flex: 0 0 auto;
@@ -832,6 +838,22 @@
     padding: calc(var(--space-16) + var(--space-4)) var(--space-4);
   }
 
+  .header {
+    max-width: 420px;
+  }
+
+  .title {
+    margin-top: var(--space-4);
+    font-size: clamp(30px, 9.2vw, 36px);
+    line-height: 1.05;
+  }
+
+  .description {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-base);
+    line-height: 1.58;
+  }
+
   .dashboardHeader,
   .workflowSummary,
   .qualityHeader {
@@ -853,6 +875,40 @@
     padding: var(--space-4);
   }
 
+  .repositoryToolbar {
+    display: grid;
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .branchSelector,
+  .lastRun,
+  .lastRun span,
+  .commitLink {
+    min-width: 0;
+  }
+
+  .lastRun {
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--space-2);
+  }
+
+  .lastRun span,
+  .commitLink {
+    min-height: 32px;
+    padding: 0 var(--space-2);
+    white-space: nowrap;
+  }
+
+  .lastRun span {
+    flex: 0 0 auto;
+  }
+
+  .commitLink {
+    overflow: hidden;
+  }
+
   .checksTable,
   .qualityList,
   .metrics,
@@ -861,10 +917,15 @@
   }
 
   .checksTable > div {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--space-3) 0;
-    gap: var(--space-1);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .checkResult {
+    white-space: nowrap;
   }
 }
 

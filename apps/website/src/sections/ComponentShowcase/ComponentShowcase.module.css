@@ -50,7 +50,7 @@
   font-size: clamp(42px, 6vw, 68px);
   font-weight: 700;
   line-height: 1.02;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
 }
 
 .title span {
@@ -188,6 +188,8 @@
 .componentButton {
   position: relative;
   z-index: 0;
+  display: inline-grid;
+  place-items: center;
   padding: 0 14px;
   color: var(--text-secondary);
   font-size: 13px;
@@ -790,12 +792,20 @@
   }
 
   .stage {
-    min-height: 700px;
+    min-height: 640px;
     padding: 28px 18px;
   }
 
   .demo {
-    min-height: 620px;
+    min-height: 560px;
+  }
+
+  .dropdownDemo {
+    min-height: 540px;
+  }
+
+  .dropdownShell {
+    min-height: 420px;
   }
 
   .buttonRow {
@@ -816,6 +826,27 @@
 }
 
 @media (width <= 560px) {
+  .title {
+    font-size: clamp(33px, 10.4vw, 42px);
+    line-height: 1.08;
+  }
+
+  .description {
+    font-size: var(--font-size-base);
+    line-height: 1.58;
+  }
+
+  .componentPicker {
+    width: 100%;
+  }
+
+  .componentButton {
+    min-width: 78px;
+    min-height: 36px;
+    padding: 0 12px;
+    text-align: center;
+  }
+
   .toolbarMeta {
     flex-direction: column;
     align-items: flex-start;
@@ -834,5 +865,41 @@
 
   .modalInspector {
     grid-template-columns: 1fr;
+  }
+
+  .stage {
+    min-height: 560px;
+    padding: 18px 12px;
+  }
+
+  .demo,
+  .dropdownDemo {
+    min-height: 500px;
+  }
+
+  .dropdownShell {
+    min-height: 426px;
+    padding: 14px;
+  }
+
+  .dropdownToolbar {
+    display: grid;
+    gap: 14px;
+  }
+
+  .dropdownToolbar strong {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .dropdownPreview {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-top: 18px;
+  }
+
+  .dropdownMetric {
+    min-height: 58px;
+    padding: 12px;
   }
 }
