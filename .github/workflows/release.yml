@@ -7,22 +7,19 @@ on:
 permissions:
   contents: write
   id-token: write
-  issues: write
-  packages: write
-  pull-requests: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22.22.0
           cache: pnpm
@@ -30,7 +27,7 @@ jobs:
           scope: '@vellira-ui'
 
       - name: Install npm with trusted publishing support
-        run: npm install --global npm@11
+        run: npm install --global npm@11.18.0
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -77,7 +74,7 @@ jobs:
 
       - name: Create version sync PR
         id: version-sync-pr
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           token: ${{ secrets.RELEASE_SYNC_TOKEN }}
           add-paths: |
