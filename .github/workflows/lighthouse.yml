@@ -2,20 +2,13 @@ name: Lighthouse CI
 
 on:
   pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
-concurrency:
-  group: lighthouse-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
+permissions: read-all
 
 jobs:
-  lighthouse:
-    name: Lighthouse CI
+  docs:
+    name: Lighthouse / Docs
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -40,14 +33,52 @@ jobs:
       - name: Build documentation
         run: pnpm --filter @vellira-ui/docs build
 
-      - name: Run Lighthouse CI
-        run: pnpm lighthouse
+      - name: Run Lighthouse for documentation
+        run: pnpm lighthouse:docs
 
-      - name: Upload Lighthouse reports
+      - name: Upload documentation reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lighthouse-reports
-          path: lighthouse-results
+          name: lighthouse-docs
+          path: lighthouse-results/docs
+          if-no-files-found: warn
+          retention-days: 14
+
+  website:
+    name: Lighthouse / Website
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build website
+        run: pnpm --filter @vellira-ui/website build
+
+      - name: Run Lighthouse for website
+        run: pnpm lighthouse:website
+
+      - name: Upload website reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-website
+          path: lighthouse-results/website
           if-no-files-found: warn
           retention-days: 14

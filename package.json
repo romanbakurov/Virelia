@@ -58,9 +58,9 @@
     "website:dev": "pnpm --filter @vellira-ui/website dev",
     "website:build": "pnpm --filter @vellira-ui/website build",
     "website:typecheck": "pnpm --filter @vellira-ui/website typecheck",
-    "lighthouse": "lhci autorun --config=./lighthouserc.cjs",
-    "lighthouse:collect": "lhci collect --config=./lighthouserc.cjs",
-    "lighthouse:assert": "lhci assert --config=./lighthouserc.cjs"
+    "lighthouse": "pnpm lighthouse:docs && pnpm lighthouse:website",
+    "lighthouse:docs": "lhci autorun --config=./lighthouserc.docs.cjs",
+    "lighthouse:website": "lhci autorun --config=./lighthouserc.website.cjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",

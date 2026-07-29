@@ -72,7 +72,7 @@ module.exports = {
 
     upload: {
       target: 'filesystem',
-      outputDir: './lighthouse-results',
+      outputDir: './lighthouse-results/docs',
       reportFilenamePattern: '%%PATHNAME%%-%%DATETIME%%-report.%%EXTENSION%%',
     },
   },
