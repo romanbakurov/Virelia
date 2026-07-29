@@ -16,6 +16,7 @@ interface UseFloatingPositionProps {
   placement?: Placement;
   strategy?: Strategy;
   offset?: number;
+  collisionPadding?: number;
   matchTriggerWidth?: boolean;
   avoidCollisions?: boolean;
   mobileSheetBreakpoint?: number;
@@ -27,6 +28,7 @@ export interface UseFloatingPositionReturn {
   placement: Placement;
   middlewareData: ReturnType<typeof useFloating>['middlewareData'];
   floatingStyles: ReturnType<typeof useFloating>['floatingStyles'];
+  isPositioned: boolean;
   isMobileSheet: boolean;
   setRef: ReturnType<typeof useFloating>['refs']['setReference'];
   setFloatingRef: ReturnType<typeof useFloating>['refs']['setFloating'];
@@ -77,6 +79,7 @@ export const useFloatingPosition = ({
   placement: initialPlacement = 'bottom-start',
   strategy = 'fixed',
   offset: offsetValue = 2,
+  collisionPadding = 8,
   matchTriggerWidth = false,
   avoidCollisions = true,
   mobileSheetBreakpoint,
@@ -87,7 +90,15 @@ export const useFloatingPosition = ({
   const middleware: Middleware[] = useMemo(
     () => [
       offset(offsetValue),
-      ...(avoidCollisions ? [flip()] : []),
+
+      ...(avoidCollisions
+        ? [
+            flip({
+              padding: collisionPadding,
+            }),
+          ]
+        : []),
+
       size({
         apply({ rects, elements }) {
           if (!matchTriggerWidth || isMobileSheet) return;
@@ -97,11 +108,20 @@ export const useFloatingPosition = ({
           });
         },
       }),
-      ...(avoidCollisions ? [shift({ padding: 8 })] : []),
+
+      ...(avoidCollisions
+        ? [
+            shift({
+              padding: collisionPadding,
+            }),
+          ]
+        : []),
+
       ...customMiddleware,
     ],
     [
       avoidCollisions,
+      collisionPadding,
       customMiddleware,
       isMobileSheet,
       matchTriggerWidth,
@@ -112,6 +132,7 @@ export const useFloatingPosition = ({
   const {
     refs,
     floatingStyles,
+    isPositioned,
     update,
     context,
     middlewareData,
@@ -136,7 +157,14 @@ export const useFloatingPosition = ({
     context,
     placement: resolvedPlacement,
     middlewareData,
-    floatingStyles: isMobileSheet ? {} : floatingStyles,
+    isPositioned,
+    floatingStyles: isMobileSheet
+      ? {}
+      : {
+          ...floatingStyles,
+          visibility:
+            open && !isPositioned ? 'hidden' : floatingStyles.visibility,
+        },
     isMobileSheet,
     setRef: refs.setReference,
     setFloatingRef: refs.setFloating,

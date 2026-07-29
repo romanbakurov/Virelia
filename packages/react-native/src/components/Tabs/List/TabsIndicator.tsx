@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
-import { AccessibilityInfo, Animated, Easing } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
 import { useTheme } from '../../../theme';
 import { useTabs } from '../TabsContext';
@@ -17,6 +17,10 @@ const COLLAPSED_SIZE = 8;
 const LINE_ANIMATION_DURATION = 360;
 const SURFACE_ANIMATION_DURATION = 220;
 const easing = Easing?.bezier?.(0.22, 1, 0.36, 1) ?? ((value: number) => value);
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 
 const animateValue = (
   value: Animated.Value,
@@ -266,18 +270,25 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
     return [
       baseStyle,
       {
-        top: 0,
-        left: 0,
+        top: -1,
+        left: -1,
         width,
         height,
         backgroundColor: palette.segmented.active.bg,
         borderColor: palette.segmented.active.border,
         borderRadius: theme.tokens.radius.lg,
         borderWidth: 1,
-        shadowColor: '#181521',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.06,
-        shadowRadius: 2,
+        ...Platform.select({
+          web: {
+            boxShadow: '0 1px 2px rgba(24, 21, 33, 0.06)',
+          },
+          default: {
+            shadowColor: '#181521',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.06,
+            shadowRadius: 2,
+          },
+        }),
         transform: [{ translateX }, { translateY }],
       },
       style,
@@ -304,8 +315,8 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
     <Animated.View
       accessibilityElementsHidden
       importantForAccessibility='no-hide-descendants'
-      pointerEvents='none'
-      style={indicatorStyle}
+      {...nativePointerEventsNone}
+      style={[indicatorStyle, webPointerEventsNone]}
     >
       {children}
     </Animated.View>

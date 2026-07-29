@@ -20,6 +20,13 @@
   --radio-selected-pressed-fg: var(--radio-primary-pressed-fg);
   --radio-selected-pressed-label-fg: var(--radio-primary-pressed-label-fg);
   --radio-selected-ring: var(--radio-primary-ring);
+  --radio-hover-bg: color-mix(
+    in srgb,
+    var(--radio-selected-bg) 22%,
+    var(--radio-default-bg)
+  );
+  --radio-hover-border: var(--radio-selected-border);
+  --radio-hover-fg: var(--radio-selected-hover-label-fg);
 
   display: flex;
   flex-direction: column;

@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 
 import { Portal } from '@primitives/Portal';
 import { cn } from '@utils/cn';
@@ -21,8 +21,30 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
   className,
 }) => {
   const context = useDropdownContext();
+  const {
+    contentReadyToFocus,
+    isOpen,
+    setContentRef: setContextContentRef,
+  } = context;
+  const contentRef = useRef<HTMLUListElement | null>(null);
+  const setContentRef = useCallback(
+    (node: HTMLUListElement | null) => {
+      contentRef.current = node;
+      setContextContentRef(node);
+    },
+    [setContextContentRef]
+  );
 
-  if (!context.isOpen) return null;
+  useEffect(() => {
+    const node = contentRef.current;
+
+    if (!isOpen || !contentReadyToFocus || !node) return;
+    if (node.contains(document.activeElement)) return;
+
+    node.focus({ preventScroll: true });
+  }, [contentReadyToFocus, isOpen]);
+
+  if (!isOpen) return null;
 
   const contentClassName = cn(
     styles.dropdown,
@@ -32,9 +54,10 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
   );
   const content = (
     <ul
-      ref={context.setContentRef}
+      ref={setContentRef}
       id={context.contentId}
       role='menu'
+      autoFocus
       tabIndex={-1}
       aria-labelledby={context.triggerId}
       aria-activedescendant={

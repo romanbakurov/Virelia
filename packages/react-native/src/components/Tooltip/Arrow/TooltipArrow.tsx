@@ -1,9 +1,14 @@
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { useTheme } from '../../../theme/useTheme';
 import { useTooltipContext } from '../internal/TooltipContext';
 
 import type { TooltipArrowProps } from './types';
+
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 
 export const TooltipArrow = ({ style }: TooltipArrowProps) => {
   const { theme } = useTheme();
@@ -30,7 +35,7 @@ export const TooltipArrow = ({ style }: TooltipArrowProps) => {
 
   return (
     <View
-      pointerEvents='none'
+      {...nativePointerEventsNone}
       style={[
         {
           position: 'absolute',
@@ -41,6 +46,7 @@ export const TooltipArrow = ({ style }: TooltipArrowProps) => {
           [staticSide]: -size / 2,
           ...crossAxisStyle,
         },
+        webPointerEventsNone,
         style,
       ]}
     />

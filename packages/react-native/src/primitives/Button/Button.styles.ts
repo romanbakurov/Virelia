@@ -1,4 +1,4 @@
-import { StyleSheet, type TextStyle } from 'react-native';
+import { Platform, StyleSheet, type TextStyle } from 'react-native';
 
 import type { NativeTheme } from '../../theme';
 
@@ -66,14 +66,21 @@ export const createStyles = (theme: NativeTheme) =>
 
     focused: {
       borderColor: theme.semantic.focus.ring.color,
-      shadowColor: theme.semantic.focus.ring.color,
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.18,
-      shadowRadius: 8,
-      elevation: 2,
+      ...Platform.select({
+        web: {
+          boxShadow: `0 0 0 4px ${theme.semantic.focus.ring.color}`,
+        },
+        default: {
+          shadowColor: theme.semantic.focus.ring.color,
+          shadowOffset: {
+            width: 0,
+            height: 0,
+          },
+          shadowOpacity: 0.18,
+          shadowRadius: 8,
+          elevation: 2,
+        },
+      }),
     },
 
     pressed: {

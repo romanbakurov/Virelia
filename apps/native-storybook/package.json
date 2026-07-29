@@ -1,7 +1,7 @@
 {
   "name": "@vellira-ui/native-storybook",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "index.tsx",
   "private": true,
   "scripts": {
     "start": "expo start --dev-client",
@@ -20,6 +20,7 @@
     "@storybook/addon-ondevice-controls": "^10.5.0",
     "@storybook/react-native": "^10.5.0",
     "@storybook/react-native-ui-lite": "^10.5.0",
+    "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/icons": "workspace:*",
     "@vellira-ui/react-native": "workspace:*",
     "babel-loader": "^10.1.1",

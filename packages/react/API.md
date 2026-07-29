@@ -666,6 +666,8 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 | `onSearch`           | `(value: string) => void` | No       | —                                                                          |
 | `empty`              | `ReactNode`               | No       | —                                                                          |
 | `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                               |
+| `collisionPadding`   | `number`                  | No       | —                                                                          |
+| `strategy`           | `Strategy`                | No       | —                                                                          |
 
 <!-- api-docgen:end web.DropdownProps.DropdownProps -->
 
@@ -853,6 +855,7 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
 | `forceMount` | `boolean`       | No       | Keeps the tooltip content mounted even when the tooltip is closed. |
 | `className`  | `string`        | No       | Extra CSS class for the root element.                              |
 | `style`      | `CSSProperties` | No       | Extra root style.                                                  |
+| `withArrow`  | `boolean`       | No       | —                                                                  |
 
 <!-- api-docgen:end web.TooltipContentProps.TooltipContentProps -->
 
@@ -1000,6 +1003,7 @@ import { ThemeProvider } from '@vellira-ui/react';
 | `theme`         | `ThemeName`                  | No       | Controlled theme value.                   |
 | `defaultTheme`  | `ThemeName`                  | No       | Initial theme for uncontrolled usage.     |
 | `onThemeChange` | `(theme: ThemeName) => void` | No       | Called whenever the active theme changes. |
+| `syncDocument`  | `boolean`                    | No       | —                                         |
 
 <!-- api-docgen:end web.ThemeProviderProps.ThemeProviderProps -->
 <!-- api-docgen:end web.ThemeProviderProps.ThemeProvider -->

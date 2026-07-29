@@ -41,7 +41,9 @@ export const DropdownRoot = ({
   size = 'md',
   color = 'primary',
   placement = 'bottom-start',
+  strategy,
   offset = 2,
+  collisionPadding = 8,
   matchTriggerWidth = false,
   minWidth,
   maxWidth,
@@ -141,12 +143,20 @@ export const DropdownRoot = ({
     loop,
   });
 
-  const { floatingStyles, setRef, setFloatingRef } = useFloatingPosition({
+  const {
+    floatingStyles,
+    isMobileSheet,
+    isPositioned,
+    setRef,
+    setFloatingRef,
+  } = useFloatingPosition({
     open: isOpen,
     placement,
+    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
     matchTriggerWidth,
     avoidCollisions,
     offset,
+    collisionPadding,
     mobileSheetBreakpoint: 640,
   });
 
@@ -261,9 +271,12 @@ export const DropdownRoot = ({
     (node: HTMLElement | null) => {
       contentRef.current = node;
       setFloatingRef(node);
-      node?.focus();
+
+      if (isMobileSheet) {
+        node?.focus({ preventScroll: true });
+      }
     },
-    [setFloatingRef]
+    [isMobileSheet, setFloatingRef]
   );
 
   useOverlayDismiss({
@@ -296,6 +309,7 @@ export const DropdownRoot = ({
     activeIndex,
     closeOnSelect,
     color,
+    contentReadyToFocus: isMobileSheet || isPositioned,
     contentId,
     contentProps: parsed.content?.props,
     disabled,

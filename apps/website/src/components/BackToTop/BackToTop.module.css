@@ -1,0 +1,79 @@
+.button {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 60;
+  display: inline-grid;
+  place-items: center;
+  width: calc(var(--space-12) + var(--space-1));
+  height: calc(var(--space-12) + var(--space-1));
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-default) 88%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-primary-500) 18%, var(--border-muted));
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+  cursor: pointer;
+  backdrop-filter: blur(18px);
+}
+
+.button::before {
+  position: absolute;
+  inset: -5px;
+  background: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
+  border-radius: inherit;
+  opacity: 0;
+  transform: scale(0.88);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+  content: '';
+}
+
+.button:hover {
+  color: var(--color-primary-500);
+  background: var(--surface-default);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-500) 34%,
+    var(--border-muted)
+  );
+  box-shadow: var(--shadow-xl), var(--shadow-inset);
+}
+
+.button:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary-400);
+  outline-offset: var(--space-1);
+}
+
+.button svg {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+@media (width <= 640px) {
+  .button {
+    right: var(--space-4);
+    bottom: var(--space-4);
+    width: var(--space-12);
+    height: var(--space-12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button::before {
+    transition: none;
+  }
+}

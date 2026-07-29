@@ -1,7 +1,21 @@
 {
   "name": "Vellira Animated Icons",
-  "count": 99,
+  "count": 105,
   "icons": [
+    {
+      "name": "ArrowLeftRight",
+      "category": "System",
+      "file": "System/ArrowLeftRight.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "ArrowTopButton",
+      "category": "System",
+      "file": "System/ArrowTopButton.json",
+      "frames": 15,
+      "fps": 30
+    },
     {
       "name": "ArrowDown",
       "category": "Navigation",
@@ -440,6 +454,34 @@
       "name": "Users",
       "category": "System",
       "file": "System/Users.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Contrast",
+      "category": "System",
+      "file": "System/Contrast.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Moon",
+      "category": "System",
+      "file": "System/Moon.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Sun",
+      "category": "System",
+      "file": "System/Sun.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "System",
+      "category": "System",
+      "file": "System/System.json",
       "frames": 15,
       "fps": 30
     },

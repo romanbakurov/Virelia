@@ -273,7 +273,7 @@ assertColor(theme.components.input.default.bg, 'components.input.default.bg');
 await import('@vellira-ui/react/styles');
 
 const assetFiles = [
-  '@vellira-ui/assets/styles/fonts.scss',
+  '@vellira-ui/assets/styles/fonts.css',
   '@vellira-ui/assets/fonts/VelliraSans-Regular.woff2',
 ];
 

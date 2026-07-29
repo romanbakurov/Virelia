@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  gap: 4px;
+}
+
+.content {
+  width: 220px;
+}
+
+.item {
+  min-height: 36px;
+}
+
+.icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: currentcolor;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  display: none;
+}
+
+@media (width >= 1180px) {
+  .label {
+    display: inline;
+  }
+}

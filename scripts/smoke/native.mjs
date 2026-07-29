@@ -134,6 +134,14 @@ export const Dimensions = {
   },
 };
 
+export const Platform = {
+  OS: 'ios',
+
+  select(specifics) {
+    return specifics.ios ?? specifics.native ?? specifics.default;
+  },
+};
+
 export const AccessibilityInfo = {
   announceForAccessibility() {},
   setAccessibilityFocus() {},

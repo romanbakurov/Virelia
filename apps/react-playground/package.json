@@ -1,5 +1,5 @@
 {
-  "name": "@vellira-ui/web-playground",
+  "name": "@vellira-ui/react-playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/react": "workspace:^",
+    "@vellira-ui/tokens": "workspace:*",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

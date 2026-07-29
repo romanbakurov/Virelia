@@ -20,9 +20,8 @@ describe('Tooltip', () => {
       <Tooltip delay={0} placement='top-start'>
         <Tooltip.Trigger>Trigger</Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content style={{ maxWidth: '18rem' }}>
+          <Tooltip.Content withArrow style={{ maxWidth: '18rem' }}>
             Helpful text
-            <Tooltip.Arrow />
           </Tooltip.Content>
         </Portal>
       </Tooltip>
@@ -44,6 +43,24 @@ describe('Tooltip', () => {
     expect(tooltip?.textContent).toContain('Helpful text');
     expect(tooltip?.style.maxWidth).toBe('18rem');
     expect(arrow?.style.bottom).toBe('calc(var(--tooltip-arrow-size) / -2)');
+
+    unmount();
+  });
+
+  it('can render content without the optional arrow', () => {
+    const { unmount } = render(
+      <Tooltip open>
+        <Tooltip.Trigger>Trigger</Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content>Tooltip without arrow</Tooltip.Content>
+        </Portal>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector('[role="tooltip"]');
+
+    expect(tooltip?.textContent).toContain('Tooltip without arrow');
+    expect(tooltip?.querySelector('div')).toBeNull();
 
     unmount();
   });

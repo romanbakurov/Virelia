@@ -1,0 +1,1021 @@
+.section {
+  position: relative;
+  padding: 112px 24px;
+  overflow: hidden;
+  background: var(--surface-default);
+}
+
+.glow {
+  position: absolute;
+  top: 24%;
+  left: 50%;
+  width: min(980px, 90vw);
+  height: 600px;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-primary-500) 22%, transparent),
+    transparent 70%
+  );
+  opacity: 0.12;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: blur(90px);
+}
+
+.container {
+  position: relative;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.header {
+  display: grid;
+  justify-items: center;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  color: var(--color-primary-400);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 20px 0 0;
+  color: var(--text-primary);
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.title span {
+  display: block;
+  color: var(--color-primary-400);
+}
+
+.description {
+  max-width: 670px;
+  margin: 24px 0 0;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.showcase {
+  overflow: hidden;
+  margin-top: 64px;
+  background: color-mix(in srgb, var(--surface-default) 94%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: calc(var(--radius-xl) + 6px);
+  box-shadow:
+    0 30px 90px rgb(0 0 0 / 11%),
+    inset 0 1px 0 rgb(255 255 255 / 7%);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 74px;
+  padding: 14px 18px;
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent);
+  border-bottom: 1px solid var(--border-muted);
+  gap: 18px;
+}
+
+.componentPicker {
+  display: flex;
+  min-width: 0;
+  overflow-x: auto;
+  gap: 6px;
+}
+
+.toolbarMeta {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.renderBadge {
+  display: inline-flex;
+  align-items: flex-start;
+  min-height: 42px;
+  padding-left: 16px;
+  border-left: 1px solid var(--border-muted);
+  gap: 10px;
+}
+
+.renderBadge > span {
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
+  background: var(--color-success-500);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-success-500) 10%, transparent);
+}
+
+.renderBadge div {
+  display: grid;
+  gap: 2px;
+}
+
+.renderBadge span,
+.toolbarLinks a {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.renderBadge code {
+  color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.toolbarLinks {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding-left: 16px;
+  border-left: 1px solid var(--border-muted);
+  gap: 8px;
+}
+
+.toolbarLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 10px;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.toolbarLinks a::after {
+  display: inline-block;
+  margin-left: 5px;
+  color: var(--color-primary-400);
+  content: '↗';
+  transition: transform 160ms ease;
+}
+
+.toolbarLinks a:hover {
+  color: var(--text-primary);
+  background: var(--surface-default);
+  border-color: var(--border-muted);
+}
+
+.toolbarLinks a:hover::after {
+  transform: translate(2px, -2px);
+}
+
+.componentButton {
+  position: relative;
+  z-index: 0;
+  display: inline-grid;
+  place-items: center;
+  min-width: max-content;
+  padding: 0 24px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+  cursor: pointer;
+  min-height: 38px;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.componentButton:hover,
+.componentButton[data-active='true'] {
+  color: var(--text-primary);
+}
+
+.componentButton:hover {
+  background: var(--surface-subtle);
+}
+
+.componentButton[data-active='true']:hover {
+  background: transparent;
+}
+
+.componentButton:active {
+  transform: scale(0.97);
+}
+
+.activeTabBackground {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--surface-default) 92%, white),
+    inset 0 -1px 0 color-mix(in srgb, var(--border-muted) 80%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--color-primary-500) 3%, transparent),
+    0 5px 16px rgb(0 0 0 / 6%);
+}
+
+.componentButtonLabel {
+  position: relative;
+  z-index: 1;
+  padding: 0 1px;
+}
+
+.packageStatus {
+  animation: package-status-pulse 2200ms ease-in-out infinite;
+}
+
+.stage {
+  display: grid;
+  place-items: center;
+  min-height: 620px;
+  padding: 48px;
+  background:
+    radial-gradient(
+      circle at center,
+      color-mix(in srgb, var(--color-primary-500) 7%, transparent),
+      transparent 58%
+    ),
+    color-mix(in srgb, var(--surface-subtle) 76%, transparent);
+}
+
+.demo {
+  display: grid;
+  place-items: center;
+  width: min(760px, 100%);
+  min-height: 500px;
+}
+
+.buttonDemo {
+  display: grid;
+  width: min(720px, 100%);
+  gap: 16px;
+}
+
+.buttonMatrix {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: 76px repeat(4, minmax(96px, 1fr));
+  align-items: center;
+  gap: 10px;
+}
+
+.buttonRow > span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.softButtonDemo {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--border-strong) 78%, transparent),
+    0 1px 2px rgb(0 0 0 / 6%);
+}
+
+.buttonCombos,
+.tooltipDemo,
+.modalActions,
+.modalTriggers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.buttonCombos {
+  justify-self: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 12px;
+  background: color-mix(in srgb, var(--surface-default) 86%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+}
+
+.dropdownDemo {
+  display: grid;
+  justify-items: center;
+  width: min(680px, 100%);
+  min-height: 450px;
+  align-content: start;
+  gap: 16px;
+}
+
+.dropdownSwitcher {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px;
+  overflow-x: auto;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-full);
+  gap: 4px;
+}
+
+.dropdownSwitchButton {
+  display: inline-grid;
+  place-items: center;
+  min-width: 84px;
+  min-height: 34px;
+  padding: 0 14px;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+  cursor: pointer;
+}
+
+.dropdownSwitchButton:hover,
+.dropdownSwitchButton[data-active='true'] {
+  color: var(--text-primary);
+}
+
+.dropdownSwitchButton[data-active='true'] {
+  background: var(--surface-default);
+  border-color: var(--border-muted);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--surface-default) 92%, white),
+    0 5px 14px rgb(0 0 0 / 6%);
+}
+
+.dropdownTriggerButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 132px;
+  min-height: 40px;
+  padding: 0 15px 0 17px;
+  color: var(--button-neutral-outline-default-fg);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: 1;
+  white-space: nowrap;
+  background: var(--button-neutral-outline-default-bg);
+  border: 0;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 1px var(--button-neutral-outline-default-border);
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.dropdownTriggerButton:hover {
+  color: var(--button-neutral-outline-hover-fg);
+  background: var(--button-neutral-outline-hover-bg);
+  box-shadow: inset 0 0 0 1px var(--button-neutral-outline-hover-border);
+}
+
+.dropdownTriggerButton:focus-visible {
+  outline: 0;
+  box-shadow:
+    inset 0 0 0 1px var(--button-neutral-outline-focus-border),
+    0 0 0 2px color-mix(in srgb, var(--focus-ring-color) 24%, transparent);
+}
+
+.dropdownTriggerIcon {
+  display: block;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: currentcolor;
+  fill: currentcolor;
+  transition: transform 160ms ease;
+}
+
+.dropdownTriggerButton[data-state='open'] .dropdownTriggerIcon {
+  transform: rotate(180deg);
+}
+
+.dropdownShell {
+  position: relative;
+  width: min(620px, 100%);
+  min-height: 382px;
+  overflow: visible;
+  padding: 18px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 10%);
+}
+
+.dropdownToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.dropdownToolbar > div {
+  display: grid;
+  gap: 6px;
+}
+
+.dropdownToolbar strong {
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.dropdownContent {
+  z-index: 4;
+}
+
+.dropdownPreview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-top: 22px;
+}
+
+.dropdownMetric {
+  display: grid;
+  gap: 6px;
+  min-height: 76px;
+  padding: 14px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.dropdownMetric span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.dropdownMetric strong {
+  color: var(--text-primary);
+  font-size: 19px;
+  line-height: 1.1;
+}
+
+.inputDemo,
+.checkboxDemo {
+  display: grid;
+  width: min(520px, 100%);
+  gap: 24px;
+}
+
+.checkboxDemo {
+  gap: 14px;
+}
+
+.modalDemo {
+  display: grid;
+  justify-items: center;
+  width: min(700px, 100%);
+  gap: 24px;
+}
+
+.modalShell {
+  display: grid;
+  align-items: stretch;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 16px;
+}
+
+.modalPreviewCard {
+  display: grid;
+  align-content: center;
+  min-height: 260px;
+  padding: 28px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 44px rgb(0 0 0 / 9%);
+  gap: 24px;
+}
+
+.modalPreviewCard > div {
+  display: grid;
+  max-width: 360px;
+  gap: 8px;
+}
+
+.modalPreviewCard strong {
+  color: var(--text-primary);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.modalPreviewCard p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.modalInspector {
+  display: grid;
+  align-content: stretch;
+  gap: 10px;
+}
+
+.modalInspector > div {
+  display: grid;
+  align-content: center;
+  min-height: 80px;
+  padding: 16px;
+  background: color-mix(in srgb, var(--surface-default) 88%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  gap: 6px;
+}
+
+.modalInspector span {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.modalInspector strong {
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+.modalForm,
+.checklist {
+  display: grid;
+  gap: 18px;
+}
+
+.previewPage,
+.codePage,
+.tokensPage {
+  width: min(560px, 100%);
+  min-height: 300px;
+  margin-top: 18px;
+  padding: 24px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+}
+
+.previewPage {
+  display: grid;
+  gap: 22px;
+}
+
+.metricGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.metricGrid > div {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.metricGrid span,
+.statusList span,
+.activityItem span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.metricGrid strong {
+  color: var(--text-primary);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.statusList {
+  display: grid;
+  gap: 10px;
+}
+
+.statusList span {
+  position: relative;
+  padding-left: 18px;
+}
+
+.statusList span::before {
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--color-success-500);
+  border-radius: var(--radius-full);
+  content: '';
+}
+
+.previewPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.previewPageHeader > div {
+  display: grid;
+  gap: 5px;
+}
+
+.previewPageHeader strong {
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.pageEyebrow {
+  color: var(--color-primary-400);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.codePage {
+  overflow: hidden;
+  padding: 0;
+}
+
+.activityPage {
+  display: grid;
+  width: min(560px, 100%);
+  min-height: 300px;
+  margin-top: 18px;
+  padding: 24px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-xl);
+  gap: 14px;
+}
+
+.activityItem {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.activityItem svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary-500);
+}
+
+.activityItem strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.codeHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 18px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  background: var(--surface-subtle);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.codePage pre {
+  margin: 0;
+  padding: 28px;
+  overflow-x: auto;
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.codePage code,
+.tokenRow code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.tokensPage {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.tokenRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.tokenRow > span {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+}
+
+.tokenRow > div {
+  display: grid;
+  gap: 3px;
+}
+
+.tokenRow strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.tokenRow code {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.primarySwatch {
+  background: var(--color-primary-500);
+}
+
+.surfaceSwatch {
+  background: var(--surface-default);
+}
+
+.borderSwatch {
+  background: var(--border-strong);
+}
+
+.choiceHeader {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.choiceHeader strong {
+  color: var(--text-primary);
+  font-size: 18px;
+}
+
+.choiceCard {
+  width: 100%;
+  padding: 14px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.radioDemo {
+  width: min(520px, 100%);
+}
+
+.radioChoiceCard {
+  width: 100%;
+  min-width: 0;
+  padding: 14px;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 58px;
+  padding: 0 20px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--surface-subtle) 84%, transparent);
+  border-top: 1px solid var(--border-muted);
+  gap: 8px;
+}
+
+@keyframes package-status-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .packageStatus {
+    animation: none;
+  }
+}
+
+@media (width <= 760px) {
+  .section {
+    padding: 80px 16px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .componentPicker,
+  .toolbarMeta {
+    width: 100%;
+  }
+
+  .toolbarMeta {
+    justify-content: space-between;
+  }
+
+  .toolbarLinks {
+    overflow-x: auto;
+  }
+
+  .stage {
+    min-height: 640px;
+    padding: 28px 18px;
+  }
+
+  .demo {
+    min-height: 560px;
+  }
+
+  .dropdownDemo {
+    min-height: 540px;
+  }
+
+  .dropdownShell {
+    min-height: 420px;
+  }
+
+  .buttonRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .buttonRow > span {
+    grid-column: 1 / -1;
+  }
+
+  .modalShell {
+    grid-template-columns: 1fr;
+  }
+
+  .modalInspector {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (width <= 560px) {
+  .title {
+    font-size: clamp(33px, 10.4vw, 42px);
+    line-height: 1.08;
+  }
+
+  .description {
+    font-size: var(--font-size-base);
+    line-height: 1.58;
+  }
+
+  .componentPicker {
+    width: 100%;
+  }
+
+  .componentButton {
+    min-width: max-content;
+    min-height: 36px;
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .toolbarMeta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbarLinks {
+    width: 100%;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .renderBadge {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .modalInspector {
+    grid-template-columns: 1fr;
+  }
+
+  .stage {
+    min-height: 560px;
+    padding: 18px 12px;
+  }
+
+  .demo,
+  .dropdownDemo {
+    min-height: 500px;
+  }
+
+  .dropdownShell {
+    min-height: 426px;
+    padding: 14px;
+  }
+
+  .dropdownToolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 14px;
+  }
+
+  .dropdownToolbar > div {
+    min-width: 0;
+  }
+
+  .dropdownToolbar strong {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+
+  .dropdownSwitcher {
+    width: min(100%, 332px);
+  }
+
+  .dropdownSwitchButton {
+    min-width: 92px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .dropdownTriggerButton {
+    min-width: 124px;
+    min-height: 38px;
+    padding: 0 13px 0 15px;
+  }
+
+  .dropdownPreview {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-top: 18px;
+  }
+
+  .dropdownMetric {
+    min-height: 58px;
+    padding: 12px;
+  }
+}

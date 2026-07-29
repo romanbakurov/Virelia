@@ -501,6 +501,13 @@ export const StyleSheet = {
   },
 };
 
+export const Platform = {
+  OS: 'web',
+  select<T>(specifics: { web?: T; default?: T }): T | undefined {
+    return specifics.web ?? specifics.default;
+  },
+};
+
 export const Dimensions = {
   get() {
     return { width: 1024, height: 768 };

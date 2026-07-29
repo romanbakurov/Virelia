@@ -2,6 +2,7 @@ import { forwardRef, useEffect } from 'react';
 
 import type { RadioSize } from '@vellira-ui/types';
 import {
+  Platform,
   Pressable,
   type PressableStateCallbackType,
   type StyleProp,
@@ -28,6 +29,11 @@ const indicatorSizeBySize = {
   md: 8,
   lg: 10,
 } satisfies Record<RadioSize, number>;
+
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 
 export const Radio = forwardRef<View, RadioProps>(
   (
@@ -173,9 +179,10 @@ export const Radio = forwardRef<View, RadioProps>(
           {(state) => (
             <>
               <View
-                pointerEvents='none'
+                {...nativePointerEventsNone}
                 style={[
                   styles.control,
+                  webPointerEventsNone,
                   {
                     width: controlSize,
                     height: controlSize,
@@ -219,7 +226,10 @@ export const Radio = forwardRef<View, RadioProps>(
               </View>
 
               {(label || description) && (
-                <View pointerEvents='none' style={styles.content}>
+                <View
+                  {...nativePointerEventsNone}
+                  style={[styles.content, webPointerEventsNone]}
+                >
                   {label &&
                     (typeof label === 'string' ? (
                       <Text

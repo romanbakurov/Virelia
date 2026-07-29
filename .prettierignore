@@ -29,3 +29,11 @@ storybook-static
 # Generated files
 *.generated.*
 *.gen.*
+
+**/.next/**
+**/dist/**
+**/storybook-static/**
+**/playwright-report/**
+**/test-results/**
+**/.expo/**
+**/next-env.d.ts

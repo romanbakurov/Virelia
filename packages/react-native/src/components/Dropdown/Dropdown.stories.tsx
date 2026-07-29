@@ -11,7 +11,14 @@ import {
   Trash,
 } from '@vellira-ui/icons';
 import type { ComponentProps, ReactNode } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { fn } from 'storybook/test';
 
 import { Button } from '../../primitives/Button';
@@ -81,7 +88,7 @@ function RotatingMoreIcon({
       toValue: active ? 1 : 0,
       duration: 180,
       easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [active, rotation]);
 

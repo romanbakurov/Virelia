@@ -11,5 +11,6 @@ export interface ThemeProviderProps {
   theme?: ThemeName;
   defaultTheme?: ThemeName;
   onThemeChange?: (theme: ThemeName) => void;
+  syncDocument?: boolean;
   children: ReactNode;
 }

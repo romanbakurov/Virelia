@@ -22,6 +22,7 @@ export type DropdownContextValue = {
   activeIndex: number;
   closeOnSelect: boolean;
   color: DropdownColor;
+  contentReadyToFocus: boolean;
   contentId: string;
   contentProps?: DropdownContentProps;
   disabled?: boolean;

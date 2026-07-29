@@ -766,6 +766,7 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 | `forceMount` | `boolean`              | No       | Keeps the tooltip content mounted even when the tooltip is closed. |
 | `style`      | `StyleProp<ViewStyle>` | No       | Extra root style.                                                  |
 | `textStyle`  | `StyleProp<TextStyle>` | No       | Extra tooltip text style.                                          |
+| `withArrow`  | `boolean`              | No       | —                                                                  |
 
 <!-- api-docgen:end native.TooltipContentProps.TooltipContentProps -->
 

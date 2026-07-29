@@ -12,6 +12,7 @@ export const ThemeProvider = ({
   theme,
   defaultTheme = 'light',
   onThemeChange,
+  syncDocument = true,
   children,
 }: ThemeProviderProps) => {
   const [currentTheme, setCurrentTheme] = useControllableState({
@@ -23,6 +24,7 @@ export const ThemeProvider = ({
   const normalizedTheme = normalizeThemeName(currentTheme);
 
   useEffect(() => {
+    if (!syncDocument) return undefined;
     if (typeof document === 'undefined') return undefined;
 
     const { documentElement } = document;
@@ -38,7 +40,7 @@ export const ThemeProvider = ({
 
       documentElement.dataset.velliraTheme = previousTheme;
     };
-  }, [normalizedTheme]);
+  }, [normalizedTheme, syncDocument]);
 
   const value = useMemo(
     () => ({

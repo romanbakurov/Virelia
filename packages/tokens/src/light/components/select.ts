@@ -194,7 +194,7 @@ export const select = {
     },
 
     groupLabel: {
-      fg: colors.primary[600],
+      fg: colors.primary[700],
     },
 
     separator: {

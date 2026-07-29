@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
@@ -39,14 +39,21 @@ export const createStyles = (theme: NativeTheme) =>
       borderTopRightRadius: theme.tokens.radius.lg,
       borderWidth: 1,
 
-      shadowColor: '#000000',
-      shadowOffset: {
-        width: 0,
-        height: -4,
-      },
-      shadowOpacity: 0.24,
-      shadowRadius: 16,
-      elevation: 12,
+      ...Platform.select({
+        web: {
+          boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.24)',
+        },
+        default: {
+          shadowColor: '#000000',
+          shadowOffset: {
+            width: 0,
+            height: -4,
+          },
+          shadowOpacity: 0.24,
+          shadowRadius: 16,
+          elevation: 12,
+        },
+      }),
     },
 
     sheetMenu: {

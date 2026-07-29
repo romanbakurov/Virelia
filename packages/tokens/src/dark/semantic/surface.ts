@@ -6,6 +6,7 @@ export const surface = {
   muted: colors.vellira[900],
   subtle: colors.vellira[850],
   elevated: colors.vellira[800],
+  background: colors.vellira[800],
 
   hover: colors.vellira[800],
   active: colors.vellira[700],

@@ -1,7 +1,13 @@
 import { cloneElement, isValidElement } from 'react';
 
 import { ChevronDown, Close } from '@vellira-ui/icons';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
 import { createSelectSlot } from '../internal/SelectCollection';
@@ -14,6 +20,15 @@ export const SelectTriggerSlot = createSelectSlot<SelectTriggerSlotProps>(
   'trigger',
   'Select.Trigger'
 );
+
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const nativePointerEventsBoxNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'box-none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
+const webPointerEventsBoxNone =
+  Platform.OS === 'web' ? { pointerEvents: 'box-none' as const } : undefined;
 
 export function SelectTrigger({
   displayText,
@@ -49,6 +64,18 @@ export function SelectTrigger({
   const resolvedIconSize = size === 'lg' ? 18 : 16;
 
   const showClearButton = clearable && hasValue && !disabled && !loading;
+  const openRingStyle =
+    Platform.OS === 'web'
+      ? {
+          boxShadow: `0 0 0 3px ${theme.components.select[color].ring}`,
+        }
+      : {
+          shadowColor: theme.components.select[color].ring,
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.16,
+          shadowRadius: 6,
+          elevation: 1,
+        };
 
   const triggerWithClearStyle = {
     sm: styles.triggerWithClearSm,
@@ -143,13 +170,7 @@ export function SelectTrigger({
           },
           styles[size],
           showClearButton && triggerWithClearStyle[size],
-          isOpen && {
-            shadowColor: theme.components.select[color].ring,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.16,
-            shadowRadius: 6,
-            elevation: 1,
-          },
+          isOpen && openRingStyle,
           hasError && {
             borderColor: theme.components.select.trigger.error.border,
           },
@@ -162,8 +183,8 @@ export function SelectTrigger({
       >
         {startIcon && (
           <View
-            pointerEvents='none'
-            style={styles.startIcon}
+            {...nativePointerEventsNone}
+            style={[styles.startIcon, webPointerEventsNone]}
             accessibilityElementsHidden
             importantForAccessibility='no'
           >
@@ -185,8 +206,8 @@ export function SelectTrigger({
           />
         ) : showClearButton ? null : endIcon ? (
           <View
-            pointerEvents='none'
-            style={styles.endIcon}
+            {...nativePointerEventsNone}
+            style={[styles.endIcon, webPointerEventsNone]}
             accessibilityElementsHidden
             importantForAccessibility='no'
           >
@@ -205,8 +226,12 @@ export function SelectTrigger({
 
       {showClearButton && (
         <View
-          pointerEvents='box-none'
-          style={[styles.clearButtonContainer, clearButtonContainerStyle[size]]}
+          {...nativePointerEventsBoxNone}
+          style={[
+            styles.clearButtonContainer,
+            clearButtonContainerStyle[size],
+            webPointerEventsBoxNone,
+          ]}
         >
           <Pressable
             accessibilityRole='button'

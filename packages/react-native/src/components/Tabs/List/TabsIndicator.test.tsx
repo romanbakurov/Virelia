@@ -86,6 +86,12 @@ vi.mock('react-native', async () => {
       addEventListener: mocks.accessibility.addEventListener,
     },
 
+    Platform: {
+      OS: 'web',
+      select: <T,>(specifics: { web?: T; default?: T }) =>
+        specifics.web ?? specifics.default,
+    },
+
     Animated: {
       ...actual.Animated,
 
