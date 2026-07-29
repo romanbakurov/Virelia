@@ -12,6 +12,7 @@ import {
   AccessibilityInfo,
   findNodeHandle,
   FlatList,
+  Platform,
   Text,
   useWindowDimensions,
   View,
@@ -136,6 +137,21 @@ function DropdownRoot({
   }, [isOpen, menuAccessibilityLabel]);
 
   const focusTrigger = useCallback(() => {
+    if (Platform.OS === 'web') {
+      const triggerNode = triggerRef.current;
+
+      if (
+        triggerNode &&
+        typeof triggerNode === 'object' &&
+        'focus' in triggerNode &&
+        typeof triggerNode.focus === 'function'
+      ) {
+        triggerNode.focus();
+      }
+
+      return;
+    }
+
     if (typeof findNodeHandle !== 'function') return;
 
     const handle = findNodeHandle(triggerRef.current);
