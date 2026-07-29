@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Publish to Chromatic
         if: github.actor != 'dependabot[bot]'
-        uses: chromaui/action@aeb03996bc5edda8cb56ac3cf4f5f294b4846baf # v18
+        uses: chromaui/action@14cfaef73576e69f95f47f60058063f46ca38719 # v18
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
