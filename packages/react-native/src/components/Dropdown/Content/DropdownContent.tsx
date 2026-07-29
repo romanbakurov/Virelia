@@ -5,6 +5,7 @@ import {
   AccessibilityInfo,
   Animated,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   TextInput,
@@ -15,6 +16,11 @@ import { useTheme, useThemeStyles } from '../../../theme';
 
 import { createStyles } from './DropdownContent.styles';
 import type { DropdownContentProps } from './types';
+
+const nativePointerEventsBoxNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'box-none' } as const);
+const webPointerEventsBoxNone =
+  Platform.OS === 'web' ? { pointerEvents: 'box-none' as const } : undefined;
 
 export function DropdownContent({
   isOpen,
@@ -66,7 +72,7 @@ export function DropdownContent({
     Animated.timing(animation, {
       toValue: 1,
       duration: isSheet ? 220 : 160,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [animation, isOpen, isSheet, reduceMotion]);
 
@@ -106,8 +112,12 @@ export function DropdownContent({
     >
       <View style={[styles.modalRoot, styles[presentation]]}>
         <Animated.View
-          pointerEvents='box-none'
-          style={[styles.backdrop, backdropAnimatedStyle]}
+          {...nativePointerEventsBoxNone}
+          style={[
+            styles.backdrop,
+            backdropAnimatedStyle,
+            webPointerEventsBoxNone,
+          ]}
         >
           <Pressable
             accessibilityRole='button'

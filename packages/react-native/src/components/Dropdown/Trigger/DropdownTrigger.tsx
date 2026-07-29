@@ -8,7 +8,7 @@ import {
 
 import { ChevronDown } from '@vellira-ui/icons';
 import type { ReactElement, ReactNode } from 'react';
-import { Animated, Pressable, Text, View } from 'react-native';
+import { Animated, Platform, Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
 
@@ -55,7 +55,7 @@ export function DropdownTrigger({
     Animated.timing(rotateAnim, {
       toValue: isOpen ? 1 : 0,
       duration: 180,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [isOpen, rotateAnim]);
 

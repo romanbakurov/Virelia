@@ -1,6 +1,6 @@
 import { Children } from 'react';
 
-import { Modal, Pressable, Text, View } from 'react-native';
+import { Modal, Platform, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
 import { TooltipArrow } from '../Arrow';
@@ -8,6 +8,11 @@ import { useTooltipContext } from '../internal/TooltipContext';
 import { createStyles } from '../Tooltip.styles';
 
 import type { TooltipContentProps } from './types';
+
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 
 export const TooltipContent = ({
   children,
@@ -27,9 +32,10 @@ export const TooltipContent = ({
   const bubble = (
     <View
       nativeID={tooltip.contentId}
-      pointerEvents='none'
+      {...nativePointerEventsNone}
       style={[
         styles.bubble,
+        webPointerEventsNone,
         {
           top: tooltip.position.top,
           left: tooltip.position.left,

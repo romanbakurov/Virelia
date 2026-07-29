@@ -1,4 +1,4 @@
-import { type DimensionValue, StyleSheet } from 'react-native';
+import { type DimensionValue, Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
@@ -17,13 +17,20 @@ export const createStyles = (theme: NativeTheme) =>
       borderRadius: theme.components.modal.content.radius,
       borderWidth: theme.components.modal.content.borderWidth,
 
-      shadowColor: theme.tokens.shadows.lg.color,
-      shadowOffset: {
-        width: theme.tokens.shadows.lg.x,
-        height: theme.tokens.shadows.lg.y,
-      },
-      shadowOpacity: theme.tokens.shadows.lg.opacity,
-      shadowRadius: theme.tokens.shadows.lg.blur,
-      elevation: theme.tokens.shadows.lg.elevation,
+      ...Platform.select({
+        web: {
+          boxShadow: `${theme.tokens.shadows.lg.x}px ${theme.tokens.shadows.lg.y}px ${theme.tokens.shadows.lg.blur}px ${theme.tokens.shadows.lg.color}`,
+        },
+        default: {
+          shadowColor: theme.tokens.shadows.lg.color,
+          shadowOffset: {
+            width: theme.tokens.shadows.lg.x,
+            height: theme.tokens.shadows.lg.y,
+          },
+          shadowOpacity: theme.tokens.shadows.lg.opacity,
+          shadowRadius: theme.tokens.shadows.lg.blur,
+          elevation: theme.tokens.shadows.lg.elevation,
+        },
+      }),
     },
   });

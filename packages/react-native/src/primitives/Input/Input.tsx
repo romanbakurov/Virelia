@@ -1,7 +1,7 @@
 import { cloneElement, forwardRef, useState } from 'react';
 
 import type { TextInputProps } from 'react-native';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, Text, TextInput, View } from 'react-native';
 
 import { FormField, useFormFieldContext } from '../../patterns/FormField';
 import { useTheme, useThemeStyles } from '../../theme';
@@ -80,6 +80,11 @@ const applyMask = (value: string, mask: InputProps['mask']) => {
     : applyPatternMask(value, mask);
 };
 
+const nativePointerEventsNone =
+  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
+const webPointerEventsNone =
+  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
+
 export const Input = forwardRef<TextInput, InputProps>(
   (
     {
@@ -157,6 +162,19 @@ export const Input = forwardRef<TextInput, InputProps>(
       : readOnly
         ? theme.components.input.readOnly.placeholder
         : inputState.placeholder;
+    const focusedRingStyle =
+      Platform.OS === 'web'
+        ? { boxShadow: `0 0 0 3px ${inputColorPalette.ring}` }
+        : {
+            shadowColor: inputColorPalette.ring,
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            shadowOpacity: 0.18,
+            shadowRadius: 6,
+            elevation: 1,
+          };
 
     const isPassword = type === 'password';
     const [isPasswordRevealed, setIsPasswordRevealed] = useState(false);
@@ -213,8 +231,8 @@ export const Input = forwardRef<TextInput, InputProps>(
       <View style={styles.inputWrapper}>
         {startIcon && (
           <View
-            pointerEvents='none'
-            style={styles.leftIcon}
+            {...nativePointerEventsNone}
+            style={[styles.leftIcon, webPointerEventsNone]}
             accessibilityElementsHidden
             importantForAccessibility='no'
           >
@@ -270,14 +288,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                 color: inputPalette.focus.fg,
                 backgroundColor: inputPalette.focus.bg,
                 borderColor: inputPalette.focus.border,
-                shadowColor: inputColorPalette.ring,
-                shadowOffset: {
-                  width: 0,
-                  height: 0,
-                },
-                shadowOpacity: 0.18,
-                shadowRadius: 6,
-                elevation: 1,
+                ...focusedRingStyle,
               },
             isInvalid && styles.error,
             isFocused &&
@@ -327,8 +338,8 @@ export const Input = forwardRef<TextInput, InputProps>(
           showRightIcon &&
           endIcon && (
             <View
-              pointerEvents='none'
-              style={styles.rightIcon}
+              {...nativePointerEventsNone}
+              style={[styles.rightIcon, webPointerEventsNone]}
               accessibilityElementsHidden
               importantForAccessibility='no'
             >

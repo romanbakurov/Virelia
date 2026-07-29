@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../theme';
 
@@ -140,14 +140,23 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.input.focus.fg,
       backgroundColor: theme.components.input.focus.bg,
       borderColor: theme.components.input.focus.border,
-      shadowColor: resolveRingColor(theme.components.input.focus.ring),
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.18,
-      shadowRadius: 6,
-      elevation: 1,
+      ...Platform.select({
+        web: {
+          boxShadow: `0 0 0 3px ${resolveRingColor(
+            theme.components.input.focus.ring
+          )}`,
+        },
+        default: {
+          shadowColor: resolveRingColor(theme.components.input.focus.ring),
+          shadowOffset: {
+            width: 0,
+            height: 0,
+          },
+          shadowOpacity: 0.18,
+          shadowRadius: 6,
+          elevation: 1,
+        },
+      }),
     },
 
     error: {
@@ -156,14 +165,23 @@ export const createStyles = (theme: NativeTheme) =>
 
     errorFocused: {
       borderColor: theme.components.input.error.border,
-      shadowColor: resolveRingColor(theme.components.input.error.ring),
-      shadowOffset: {
-        width: 0,
-        height: 0,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 1,
+      ...Platform.select({
+        web: {
+          boxShadow: `0 0 0 3px ${resolveRingColor(
+            theme.components.input.error.ring
+          )}`,
+        },
+        default: {
+          shadowColor: resolveRingColor(theme.components.input.error.ring),
+          shadowOffset: {
+            width: 0,
+            height: 0,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 6,
+          elevation: 1,
+        },
+      }),
     },
 
     readOnly: {

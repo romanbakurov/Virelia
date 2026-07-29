@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../theme';
 
@@ -25,14 +25,21 @@ export const createStyles = (theme: NativeTheme) =>
       borderRadius: theme.components.tooltip.content.radius,
       borderWidth: theme.components.tooltip.content.borderWidth,
 
-      shadowColor: theme.tokens.shadows.md.color,
-      shadowOffset: {
-        width: theme.tokens.shadows.md.x,
-        height: theme.tokens.shadows.md.y,
-      },
-      shadowOpacity: theme.tokens.shadows.md.opacity,
-      shadowRadius: theme.tokens.shadows.md.blur,
-      elevation: theme.tokens.shadows.md.elevation,
+      ...Platform.select({
+        web: {
+          boxShadow: `${theme.tokens.shadows.md.x}px ${theme.tokens.shadows.md.y}px ${theme.tokens.shadows.md.blur}px ${theme.tokens.shadows.md.color}`,
+        },
+        default: {
+          shadowColor: theme.tokens.shadows.md.color,
+          shadowOffset: {
+            width: theme.tokens.shadows.md.x,
+            height: theme.tokens.shadows.md.y,
+          },
+          shadowOpacity: theme.tokens.shadows.md.opacity,
+          shadowRadius: theme.tokens.shadows.md.blur,
+          elevation: theme.tokens.shadows.md.elevation,
+        },
+      }),
     },
 
     text: {
