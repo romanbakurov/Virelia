@@ -17,6 +17,14 @@ The main CI workflow validates:
 - Storybook and end-to-end tests;
 - package smoke tests.
 
+## Dependency Updates
+
+Dependabot opens automatic pull requests for dependency updates.
+
+The repository checks npm workspace dependencies and GitHub Actions weekly.
+Related npm updates are grouped for React, Storybook, Vite, Expo, and linting
+tooling.
+
 ## Local Commands
 
 Run the full pipeline before opening a significant pull request.
