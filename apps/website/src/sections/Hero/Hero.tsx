@@ -1,8 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-
-import { Button } from '@vellira-ui/react';
 
 import { HeroPreview } from './HeroPreview';
 
@@ -33,21 +29,26 @@ export function Hero() {
           </p>
 
           <div className={styles.actions}>
-            <Button asChild>
-              <Link href='https://docs.vellira.dev/getting-started'>
-                Get started
-              </Link>
-            </Button>
+            <Link
+              className={`${styles.actionLink} ${styles.actionPrimary}`}
+              href='https://docs.vellira.dev/getting-started'
+            >
+              Get started
+            </Link>
 
-            <Button appearance='outline' color='neutral' asChild>
-              <Link href='https://docs.vellira.dev/components'>
-                Explore components
-              </Link>
-            </Button>
+            <Link
+              className={`${styles.actionLink} ${styles.actionOutline}`}
+              href='https://docs.vellira.dev/components'
+            >
+              Explore components
+            </Link>
 
-            <Button appearance='ghost' color='neutral' asChild>
-              <Link href='https://github.com/vellira-dev/Vellira'>GitHub</Link>
-            </Button>
+            <Link
+              className={`${styles.actionLink} ${styles.actionGhost}`}
+              href='https://github.com/vellira-dev/Vellira'
+            >
+              GitHub
+            </Link>
           </div>
         </div>
 
