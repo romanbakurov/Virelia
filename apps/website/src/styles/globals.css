@@ -12,6 +12,11 @@ section[id] {
   scroll-margin-top: 96px;
 }
 
+main > section:not(:first-child) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 840px;
+}
+
 button,
 input,
 select,
