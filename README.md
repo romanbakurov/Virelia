@@ -60,6 +60,7 @@ Vellira is split into focused packages that can be installed independently.
 
 ## Links
 
+- [Website](https://vellira.dev)
 - [Documentation](https://docs.vellira.dev)
 - [GitHub Repository](https://github.com/romanbakurov/Vellira)
 - [Storybook Demo](https://storybook.vellira.dev)

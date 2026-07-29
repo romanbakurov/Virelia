@@ -52,15 +52,16 @@ pnpm check:public-api
 
 ## Deployment
 
-The documentation site deploys to `https://docs.vellira.dev` from the
-`Deploy Docs` workflow. The workflow builds the VitePress app, verifies the
-generated artifact, and deploys it to Cloudflare Pages.
+The marketing site is available at `https://vellira.dev`. The documentation
+site deploys to `https://docs.vellira.dev` from the `Deploy Docs` workflow.
+The workflow builds the VitePress app, verifies the generated artifact, and
+deploys it to Cloudflare Pages.
 
 Storybook remains the live component review surface. The target public split is:
 
 | Site                    | Description                                    |
 | ----------------------- | ---------------------------------------------- |
-| `www.vellira.dev`       | Marketing and product positioning              |
+| `vellira.dev`           | Marketing and product positioning              |
 | `docs.vellira.dev`      | Documentation, guides, API references, theming |
 | `storybook.vellira.dev` | Live component states and visual review        |
 
