@@ -1,11 +1,13 @@
+const websitePort = 3210;
+const websiteUrl = `http://127.0.0.1:${websitePort}/`;
+
 module.exports = {
   ci: {
     collect: {
-      startServerCommand:
-        'pnpm --filter @vellira-ui/website start --hostname 127.0.0.1 --port 3000',
+      startServerCommand: `pnpm --filter @vellira-ui/website start --hostname 127.0.0.1 --port ${websitePort}`,
       startServerReadyPattern: 'Ready',
       startServerReadyTimeout: 30000,
-      url: ['http://127.0.0.1:3000/'],
+      url: [websiteUrl],
       numberOfRuns: 3,
       settings: {
         chromeFlags:
