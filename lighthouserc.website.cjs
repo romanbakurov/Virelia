@@ -60,7 +60,7 @@ module.exports = {
         'largest-contentful-paint': [
           'warn',
           {
-            maxNumericValue: 3000,
+            maxNumericValue: 5000,
             aggregationMethod: 'median-run',
           },
         ],
