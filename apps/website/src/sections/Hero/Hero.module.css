@@ -186,65 +186,6 @@
   margin-top: 36px;
 }
 
-.actionLink {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 18px;
-  color: var(--text-primary);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  transition:
-    color 160ms ease,
-    background-color 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease;
-}
-
-.actionLink:hover {
-  transform: translateY(-1px);
-}
-
-.actionLink:focus-visible {
-  outline: var(--focus-ring-width) solid var(--focus-ring-color);
-  outline-offset: 3px;
-}
-
-.actionPrimary {
-  color: var(--action-primary-solid-default-fg);
-  background: var(--action-primary-solid-default-bg);
-  border-color: var(--action-primary-solid-default-border);
-}
-
-.actionPrimary:hover {
-  background: var(--action-primary-solid-hover-bg);
-  border-color: var(--action-primary-solid-hover-border);
-}
-
-.actionOutline {
-  color: var(--text-primary);
-  background: var(--surface-default);
-  border-color: var(--border-muted);
-  box-shadow: var(--shadow-inset);
-}
-
-.actionOutline:hover,
-.actionGhost:hover {
-  background: var(--surface-subtle);
-  border-color: var(--border-strong);
-}
-
-.actionGhost {
-  color: var(--text-secondary);
-  background: transparent;
-  border-color: transparent;
-}
-
 .preview {
   position: relative;
   min-width: 0;
