@@ -1,3 +1,6 @@
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import { ImageResponse } from 'next/og';
 
 export const alt = 'Vellira - independent modules, one seamless system';
@@ -13,6 +16,14 @@ const logoSvg = `<svg width="1021" height="270" viewBox="0 0 1021 270" fill="non
 
 const logoSrc = `data:image/svg+xml;utf8,${encodeURIComponent(logoSvg)}`;
 
+const fontDirectory = join(process.cwd(), '../../packages/assets/fonts');
+
+const fontDataPromise = Promise.all([
+  readFile(join(fontDirectory, 'VelliraSans-Regular.ttf')),
+  readFile(join(fontDirectory, 'VelliraSans-SemiBold.ttf')),
+  readFile(join(fontDirectory, 'VelliraSans-Bold.ttf')),
+]);
+
 const palettes = {
   dark: {
     background: '#0D0A1A',
@@ -25,7 +36,6 @@ const palettes = {
     primary: '#A78BFA',
     primaryStrong: '#775FFF',
     secondaryBlob: '#123E61',
-    badgeBg: 'rgba(38, 32, 56, 0.86)',
     borderStrong: 'rgba(228, 221, 244, 0.18)',
   },
   light: {
@@ -39,26 +49,15 @@ const palettes = {
     primary: '#5B3DFF',
     primaryStrong: '#775FFF',
     secondaryBlob: '#BDEFFF',
-    badgeBg: 'rgba(238, 232, 255, 0.9)',
     borderStrong: 'rgba(91, 61, 255, 0.18)',
   },
 } as const;
 
 type OgTheme = keyof typeof palettes;
 
-export function createOpenGraphImage(theme: OgTheme = 'dark') {
+export async function createOpenGraphImage(theme: OgTheme = 'dark') {
   const palette = palettes[theme];
-  const badgeStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '10px 16px',
-    color: palette.textMuted,
-    background: palette.badgeBg,
-    border: `1px solid ${palette.borderStrong}`,
-    borderRadius: 999,
-    fontSize: 18,
-    fontWeight: 650,
-  } as const;
+  const [regularFont, semiBoldFont, boldFont] = await fontDataPromise;
 
   return new ImageResponse(
     <div
@@ -70,7 +69,7 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
         overflow: 'hidden',
         color: palette.text,
         background: `linear-gradient(135deg, ${palette.background} 0%, ${palette.backgroundMid} 56%, ${palette.backgroundEnd} 100%)`,
-        fontFamily: 'Vellira Sans, Inter, ui-sans-serif, system-ui, sans-serif',
+        fontFamily: 'Vellira Sans',
       }}
     >
       <div
@@ -82,7 +81,7 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
           height: 640,
           background: palette.primaryStrong,
           borderRadius: 999,
-          opacity: theme === 'dark' ? 0.26 : 0.1,
+          opacity: theme === 'dark' ? 0.18 : 0.08,
         }}
       />
 
@@ -95,21 +94,18 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
           height: 760,
           background: palette.secondaryBlob,
           borderRadius: 999,
-          opacity: theme === 'dark' ? 0.46 : 0.7,
+          opacity: theme === 'dark' ? 0.24 : 0.42,
         }}
       />
 
       <div
         style={{
           position: 'absolute',
-          inset: 36,
+          inset: 0,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '58px 64px',
-          background: palette.surface,
-          border: `1px solid ${palette.borderStrong}`,
-          borderRadius: 32,
+          justifyContent: 'flex-start',
+          padding: '58px 68px 68px',
         }}
       >
         <div
@@ -121,8 +117,8 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
         >
           <img
             src={logoSrc}
-            width={190}
-            height={52}
+            width={160}
+            height={42}
             alt='Vellira'
             style={{ objectFit: 'contain' }}
           />
@@ -144,16 +140,17 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
             display: 'flex',
             flexDirection: 'column',
             maxWidth: 1000,
+            marginTop: 82,
           }}
         >
           <div
             style={{
               display: 'flex',
-              marginBottom: 24,
-              color: palette.primary,
-              fontSize: 24,
-              fontWeight: 700,
-              letterSpacing: '0.08em',
+              marginBottom: 26,
+              color: palette.textSubtle,
+              fontSize: 18,
+              fontWeight: 600,
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
             }}
           >
@@ -165,7 +162,7 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
               display: 'flex',
               flexDirection: 'column',
               fontSize: 82,
-              fontWeight: 800,
+              fontWeight: 700,
               lineHeight: 1.02,
               letterSpacing: 0,
             }}
@@ -187,33 +184,43 @@ export function createOpenGraphImage(theme: OgTheme = 'dark') {
             style={{
               display: 'flex',
               maxWidth: 900,
-              marginTop: 32,
+              marginTop: 34,
               color: palette.textMuted,
               fontSize: 27,
-              lineHeight: 1.4,
+              lineHeight: 1.35,
             }}
           >
-            Cross-platform components with shared APIs, accessible behaviour and
-            semantic design tokens.
+            Cross-platform components for React and React Native.
           </div>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            gap: 12,
-          }}
-        >
-          <span style={badgeStyle}>Accessible</span>
-          <span style={badgeStyle}>Type-safe</span>
-          <span style={badgeStyle}>Themeable</span>
         </div>
       </div>
     </div>,
-    size
+    {
+      ...size,
+      fonts: [
+        {
+          name: 'Vellira Sans',
+          data: regularFont,
+          weight: 400,
+          style: 'normal',
+        },
+        {
+          name: 'Vellira Sans',
+          data: semiBoldFont,
+          weight: 600,
+          style: 'normal',
+        },
+        {
+          name: 'Vellira Sans',
+          data: boldFont,
+          weight: 700,
+          style: 'normal',
+        },
+      ],
+    }
   );
 }
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
   return createOpenGraphImage('dark');
 }

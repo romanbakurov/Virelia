@@ -1,7 +1,5 @@
 import { createOpenGraphImage } from '../opengraph-image';
 
-export const runtime = 'edge';
-
-export function GET() {
+export async function GET() {
   return createOpenGraphImage('light');
 }
