@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 import '@vellira-ui/assets/styles';
-import '@vellira-ui/tokens/css';
 import '@vellira-ui/react/styles';
 
 import { WebsiteProviders } from '@/providers/WebsiteProviders';
