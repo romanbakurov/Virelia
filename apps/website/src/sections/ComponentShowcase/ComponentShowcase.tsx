@@ -5,6 +5,7 @@ import { useState } from 'react';
 import {
   Bell,
   Check,
+  ChevronDown,
   Copy,
   Download,
   File,
@@ -469,27 +470,27 @@ export function ComponentShowcase() {
                     <motion.div
                       variants={shouldReduceMotion ? undefined : itemVariants}
                     >
-                      <Tabs
-                        value={dropdownExample}
-                        onValueChange={(value) => {
-                          setDropdownExample(value as DropdownExample);
-                        }}
-                        variant='segmented'
+                      <div
+                        role='tablist'
                         className={styles.dropdownSwitcher}
                         aria-label='Dropdown examples'
                       >
-                        <Tabs.List aria-label='Dropdown examples'>
-                          {dropdownExamples.map((example) => (
-                            <Tabs.Trigger
-                              key={example.value}
-                              value={example.value}
-                            >
-                              {example.label}
-                            </Tabs.Trigger>
-                          ))}
-                          <Tabs.Indicator />
-                        </Tabs.List>
-                      </Tabs>
+                        {dropdownExamples.map((example) => (
+                          <button
+                            key={example.value}
+                            type='button'
+                            role='tab'
+                            aria-selected={dropdownExample === example.value}
+                            className={styles.dropdownSwitchButton}
+                            data-active={dropdownExample === example.value}
+                            onClick={() => {
+                              setDropdownExample(example.value);
+                            }}
+                          >
+                            {example.label}
+                          </button>
+                        ))}
+                      </div>
                     </motion.div>
 
                     <motion.div
@@ -522,10 +523,17 @@ export function ComponentShowcase() {
                           closeOnSelect={false}
                           portal={false}
                         >
-                          <Dropdown.Trigger>
-                            {dropdownExample === 'actions' && 'Actions'}
-                            {dropdownExample === 'access' && 'Invite'}
-                            {dropdownExample === 'command' && 'Search'}
+                          <Dropdown.Trigger asChild>
+                            <Button
+                              appearance='outline'
+                              color='neutral'
+                              className={styles.dropdownTriggerButton}
+                              iconEnd={<ChevronDown aria-hidden='true' />}
+                            >
+                              {dropdownExample === 'actions' && 'Actions'}
+                              {dropdownExample === 'access' && 'Invite'}
+                              {dropdownExample === 'command' && 'Search'}
+                            </Button>
                           </Dropdown.Trigger>
 
                           <Dropdown.Content
