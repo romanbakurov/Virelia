@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: 'Vellira',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/brand/social/vellira-og-code-to-ui.png',
         width: 1200,
         height: 630,
         alt: 'Vellira design system',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: 'Vellira',
     description:
       'Production-ready React and React Native components with shared APIs, themes, and design tokens.',
-    images: ['/opengraph-image'],
+    images: ['/brand/social/vellira-og-code-to-ui.png'],
   },
 
   icons: {
