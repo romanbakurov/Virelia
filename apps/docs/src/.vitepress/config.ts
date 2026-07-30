@@ -1,12 +1,19 @@
 import { defineConfig } from 'vitepress';
 
+const siteUrl = 'https://docs.vellira.dev';
+const siteDescription =
+  'TypeScript-first design system documentation for React and React Native applications.';
+const socialImage = `${siteUrl}/brand/social/vellira-og-code-to-ui.png`;
+
 export default defineConfig({
   title: 'Vellira',
   base: '/',
-  description:
-    'TypeScript-first design system for React and React Native applications.',
+  description: siteDescription,
   cleanUrls: true,
   lastUpdated: true,
+  sitemap: {
+    hostname: siteUrl,
+  },
   head: [
     [
       'link',
@@ -40,6 +47,20 @@ export default defineConfig({
         href: '/brand/icons/apple-touch-icon.png',
       },
     ],
+    ['link', { rel: 'canonical', href: siteUrl }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Vellira Docs' }],
+    ['meta', { property: 'og:title', content: 'Vellira Documentation' }],
+    ['meta', { property: 'og:description', content: siteDescription }],
+    ['meta', { property: 'og:url', content: siteUrl }],
+    ['meta', { property: 'og:image', content: socialImage }],
+    ['meta', { property: 'og:image:width', content: '1200' }],
+    ['meta', { property: 'og:image:height', content: '630' }],
+    ['meta', { property: 'og:image:alt', content: 'Vellira design system' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Vellira Documentation' }],
+    ['meta', { name: 'twitter:description', content: siteDescription }],
+    ['meta', { name: 'twitter:image', content: socialImage }],
   ],
   themeConfig: {
     siteTitle: false,
