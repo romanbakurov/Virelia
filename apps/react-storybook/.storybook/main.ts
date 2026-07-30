@@ -27,6 +27,8 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
   ],
 
+  staticDirs: ['../public'],
+
   async viteFinal(config) {
     return mergeConfig(config, {
       root: storybookRoot,
