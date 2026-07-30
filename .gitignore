@@ -41,3 +41,7 @@ coverage/
 
 **/test-results/
 **/playwright-report/
+
+# Lighthouse CI reports
+.lighthouseci/
+lighthouse-results/

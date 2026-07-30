@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
+import { JsonLd } from '@/components/seo/JsonLd';
 
 import '@vellira-ui/assets/styles';
-import '@vellira-ui/tokens/css';
 import '@vellira-ui/react/styles';
 
 import { WebsiteProviders } from '@/providers/WebsiteProviders';
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     siteName: 'Vellira',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/brand/social/vellira-og-code-to-ui.png',
         width: 1200,
         height: 630,
         alt: 'Vellira design system',
@@ -42,8 +43,10 @@ export const metadata: Metadata = {
     title: 'Vellira',
     description:
       'Production-ready React and React Native components with shared APIs, themes, and design tokens.',
-    images: ['/opengraph-image'],
+    images: ['/brand/social/vellira-og-code-to-ui.png'],
   },
+
+  manifest: '/manifest.webmanifest',
 
   icons: {
     icon: [
@@ -65,7 +68,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
+        <JsonLd />
         <WebsiteProviders>{children}</WebsiteProviders>
+        <Analytics />
       </body>
     </html>
   );

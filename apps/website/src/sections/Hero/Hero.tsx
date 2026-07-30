@@ -19,7 +19,7 @@ export function Hero() {
       </div>
 
       <div className={styles.content}>
-        <div className={`${styles.copy} ${styles.copyEnter}`}>
+        <div className={styles.copy}>
           <span className={styles.eyebrow}>React + React Native</span>
 
           <h1 className={styles.title}>

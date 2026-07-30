@@ -80,7 +80,7 @@ const workflowStartDelay = 760;
 const workflowStepDelay = 520;
 const metricStartDelay = 1000;
 const metricAnimationDuration = 2600;
-const qualityRevealDelay = metricStartDelay + metricAnimationDuration - 320;
+const qualityRevealDelay = 1500;
 
 function AnimatedMetric({
   enabled,
@@ -494,7 +494,7 @@ export function SocialProof() {
                   qualityReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }
                 }
                 transition={{
-                  delay: shouldReduceMotion ? 0 : 0.16,
+                  delay: 0,
                   duration: shouldReduceMotion ? 0 : 0.62,
                   ease: [0.16, 1, 0.3, 1],
                 }}
