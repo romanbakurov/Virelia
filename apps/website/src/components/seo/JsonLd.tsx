@@ -10,7 +10,7 @@ const organizationJsonLd = {
     '@type': 'ImageObject',
     url: 'https://vellira.dev/brand/logos/logo-gradient.svg',
   },
-  sameAs: ['https://github.com/vellira-dev/Vellira'],
+  sameAs: ['https://github.com/vellira-dev/vellira'],
 };
 
 const websiteJsonLd = {
@@ -22,6 +22,20 @@ const websiteJsonLd = {
   description:
     'A cross-platform design system for React and React Native with accessible components and semantic design tokens.',
   publisher: {
+    '@id': 'https://vellira.dev/#organization',
+  },
+};
+
+const sourceCodeJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareSourceCode',
+  '@id': 'https://vellira.dev/#source-code',
+  name: 'Vellira',
+  url: 'https://vellira.dev',
+  codeRepository: 'https://github.com/vellira-dev/vellira',
+  programmingLanguage: 'TypeScript',
+  license: 'https://opensource.org/license/mit',
+  creator: {
     '@id': 'https://vellira.dev/#organization',
   },
 };
@@ -44,6 +58,13 @@ export function JsonLd() {
         type='application/ld+json'
         dangerouslySetInnerHTML={{
           __html: serializeJsonLd(websiteJsonLd),
+        }}
+      />
+
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(sourceCodeJsonLd),
         }}
       />
     </>
