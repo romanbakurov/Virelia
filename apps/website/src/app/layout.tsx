@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 
 import '@vellira-ui/assets/styles';
 import '@vellira-ui/react/styles';
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang='en' suppressHydrationWarning>
       <body>
         <WebsiteProviders>{children}</WebsiteProviders>
+        <Analytics />
       </body>
     </html>
   );
