@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
+import { JsonLd } from '@/components/seo/JsonLd';
 
 import '@vellira-ui/assets/styles';
 import '@vellira-ui/react/styles';
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
+        <JsonLd />
         <WebsiteProviders>{children}</WebsiteProviders>
         <Analytics />
       </body>
