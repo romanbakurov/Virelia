@@ -37,7 +37,8 @@ export function SiteHeader() {
             alt='Vellira'
             width={100}
             height={32}
-            priority
+            preload
+            fetchPriority='high'
           />
         </Link>
 
