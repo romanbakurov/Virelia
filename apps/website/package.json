@@ -14,6 +14,7 @@
     "@vellira-ui/icons": "workspace:*",
     "@vellira-ui/react": "workspace:*",
     "@vellira-ui/tokens": "workspace:*",
+    "@vercel/analytics": "^2.0.1",
     "lottie-web": "^5.13.0",
     "motion": "^12.42.2",
     "next": "16.2.11",
