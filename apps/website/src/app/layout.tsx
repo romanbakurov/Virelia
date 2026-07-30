@@ -46,6 +46,8 @@ export const metadata: Metadata = {
     images: ['/brand/social/vellira-og-code-to-ui.png'],
   },
 
+  manifest: '/manifest.webmanifest',
+
   icons: {
     icon: [
       { url: '/brand/icons/favicon.svg', type: 'image/svg+xml' },
