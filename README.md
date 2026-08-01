@@ -1,3 +1,10 @@
+<p align="center">
+  <img
+    src="./packages/assets/brand/social/vellira-og-code-to-ui.png"
+    alt="Vellira Preview"
+  />
+</p>
+
 # Vellira
 
 <p align="center">
@@ -38,13 +45,6 @@ Accessibility Minded • Cross Platform • Modular
 </p>
 
 ---
-
-<p align="center">
-  <img
-    src="./packages/assets/brand/social/vellira-og-code-to-ui.png"
-    alt="Vellira Preview"
-  />
-</p>
 
 ## Why Vellira?
 
