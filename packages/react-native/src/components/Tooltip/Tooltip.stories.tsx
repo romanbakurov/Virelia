@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ComponentProps, ReactNode } from 'react';
 import { Text, View } from 'react-native';
@@ -33,6 +35,18 @@ const Trigger = ({ label = 'Press and hold' }: { label?: string }) => (
   </View>
 );
 
+const sectionStyle = {
+  alignItems: 'flex-start' as const,
+  gap: 16,
+  padding: 20,
+};
+
+const matrixStyle = {
+  flexDirection: 'row' as const,
+  flexWrap: 'wrap' as const,
+  gap: 12,
+};
+
 const CustomTooltipContent = () => {
   const { theme } = useTheme();
 
@@ -66,10 +80,41 @@ function TooltipPreview({
   return (
     <Tooltip {...args}>
       <Tooltip.Trigger>{children}</Tooltip.Trigger>
-      <Tooltip.Content style={panelStyle} textStyle={textStyle}>
+      <Tooltip.Content
+        style={panelStyle}
+        textStyle={textStyle}
+        withArrow={showArrow}
+      >
         {panelChildren}
-        {showArrow && <Tooltip.Arrow />}
       </Tooltip.Content>
+    </Tooltip>
+  );
+}
+
+function ControlledTooltip({
+  defaultOpen,
+  open,
+  ...args
+}: ComponentProps<typeof Tooltip>) {
+  const [isOpen, setIsOpen] = useState(open ?? defaultOpen ?? false);
+
+  useEffect(() => {
+    setIsOpen(open ?? defaultOpen ?? false);
+  }, [open, defaultOpen]);
+
+  return (
+    <Tooltip
+      {...args}
+      open={isOpen}
+      onOpenChange={(nextOpen) => {
+        setIsOpen(nextOpen);
+        args.onOpenChange?.(nextOpen);
+      }}
+    >
+      <Tooltip.Trigger>
+        <Trigger label={isOpen ? 'Tooltip open' : 'Tooltip closed'} />
+      </Tooltip.Trigger>
+      <Tooltip.Content withArrow>Controlled native tooltip</Tooltip.Content>
     </Tooltip>
   );
 }
@@ -91,7 +136,9 @@ Contextual helper displayed on long press in React Native.
 - Long press interaction for touch interfaces
 - Controlled and uncontrolled open state
 - String or custom children in Tooltip.Content
-- Top, bottom, left, and right placement
+- Top, bottom, left, right, and aligned placement variants
+- Configurable open and close delays
+- Optional arrow and force-mounted content
 - Disabled state
 - Native accessibility support
 
@@ -146,6 +193,13 @@ press-only surface.
       description: 'Initial uncontrolled open state.',
       control: 'boolean',
     },
+    delay: {
+      description: 'Open delay in milliseconds, or open/close delay object.',
+      control: 'number',
+      table: {
+        type: { summary: 'number | { open?: number; close?: number }' },
+      },
+    },
     open: {
       control: false,
       description: 'Controlled open state.',
@@ -163,29 +217,63 @@ type Story = StoryObj<typeof Tooltip>;
 
 export const Default: Story = {
   render: (args) => (
-    <TooltipPreview {...args} panelChildren='Helpful native tooltip content'>
-      <Trigger />
-    </TooltipPreview>
+    <View style={sectionStyle}>
+      <TooltipPreview {...args} panelChildren='Helpful native tooltip content'>
+        <Trigger />
+      </TooltipPreview>
+    </View>
+  ),
+};
+
+export const Controlled: Story = {
+  args: {
+    defaultOpen: true,
+  },
+  render: (args) => (
+    <View style={sectionStyle}>
+      <ControlledTooltip {...args} />
+    </View>
+  ),
+};
+
+export const Placement: Story = {
+  render: () => (
+    <View style={[sectionStyle, matrixStyle]}>
+      {placements.map((placement) => (
+        <TooltipPreview
+          key={placement}
+          placement={placement}
+          delay={0}
+          panelChildren={`${placement} tooltip`}
+        >
+          <Trigger label={placement} />
+        </TooltipPreview>
+      ))}
+    </View>
   ),
 };
 
 export const LongContent: Story = {
   render: (args) => (
-    <TooltipPreview
-      {...args}
-      panelChildren='Use this tooltip for short contextual help. Keep content concise on small screens.'
-      panelStyle={{ maxWidth: 280 }}
-    >
-      <Trigger label='Long tooltip' />
-    </TooltipPreview>
+    <View style={sectionStyle}>
+      <TooltipPreview
+        {...args}
+        panelChildren='Use this tooltip for short contextual help. Keep content concise on small screens.'
+        panelStyle={{ maxWidth: 280 }}
+      >
+        <Trigger label='Long tooltip' />
+      </TooltipPreview>
+    </View>
   ),
 };
 
 export const CustomContent: Story = {
   render: (args) => (
-    <TooltipPreview {...args} panelChildren={<CustomTooltipContent />}>
-      <Trigger label='Custom content' />
-    </TooltipPreview>
+    <View style={sectionStyle}>
+      <TooltipPreview {...args} panelChildren={<CustomTooltipContent />}>
+        <Trigger label='Custom content' />
+      </TooltipPreview>
+    </View>
   ),
 };
 
@@ -194,19 +282,81 @@ export const Disabled: Story = {
     disabled: true,
   },
   render: (args) => (
-    <TooltipPreview {...args} panelChildren='Disabled tooltip'>
-      <Trigger label='Disabled tooltip' />
-    </TooltipPreview>
+    <View style={sectionStyle}>
+      <TooltipPreview {...args} panelChildren='Disabled tooltip'>
+        <Trigger label='Disabled tooltip' />
+      </TooltipPreview>
+    </View>
+  ),
+};
+
+export const CustomDelay: Story = {
+  args: {
+    delay: 500,
+  },
+  render: (args) => (
+    <View style={sectionStyle}>
+      <TooltipPreview {...args} panelChildren='Appears after 500ms'>
+        <Trigger label='Slow tooltip' />
+      </TooltipPreview>
+    </View>
+  ),
+};
+
+export const NoDelay: Story = {
+  args: {
+    delay: 0,
+  },
+  render: (args) => (
+    <View style={sectionStyle}>
+      <TooltipPreview {...args} panelChildren='Appears immediately'>
+        <Trigger label='Instant tooltip' />
+      </TooltipPreview>
+    </View>
+  ),
+};
+
+export const WithoutArrow: Story = {
+  render: (args) => (
+    <View style={sectionStyle}>
+      <TooltipPreview
+        {...args}
+        panelChildren='Tooltip without arrow'
+        showArrow={false}
+      >
+        <Trigger label='No arrow' />
+      </TooltipPreview>
+    </View>
   ),
 };
 
 export const AutoHide: Story = {
   render: (args) => (
-    <TooltipPreview
-      {...args}
-      panelChildren='This tooltip will disappear automatically.'
-    >
-      <Trigger label='Auto hide' />
-    </TooltipPreview>
+    <View style={sectionStyle}>
+      <TooltipPreview
+        {...args}
+        panelChildren='This tooltip will disappear automatically.'
+      >
+        <Trigger label='Auto hide' />
+      </TooltipPreview>
+    </View>
+  ),
+};
+
+export const ForceMount: Story = {
+  args: {
+    open: false,
+  },
+  render: (args) => (
+    <View style={sectionStyle}>
+      <Tooltip {...args}>
+        <Tooltip.Trigger>
+          <Trigger label='Force mounted' />
+        </Tooltip.Trigger>
+        <Tooltip.Content forceMount withArrow>
+          Mounted with closed state
+        </Tooltip.Content>
+      </Tooltip>
+    </View>
   ),
 };
