@@ -16,6 +16,24 @@ const navigation = [
   { label: 'Roadmap', href: '#roadmap' },
 ] as const;
 
+const externalLinks = [
+  {
+    label: 'Documentation',
+    href: 'https://docs.vellira.dev',
+    icon: '/brand/navigation/documentation.svg',
+  },
+  {
+    label: 'Storybook',
+    href: 'https://storybook.vellira.dev',
+    icon: '/brand/navigation/storybook.svg',
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/vellira-dev/vellira',
+    icon: '/brand/navigation/github.svg',
+  },
+] as const;
+
 function scrollToAnchor(hash: string) {
   const target = document.getElementById(hash.slice(1));
 
@@ -61,34 +79,35 @@ export function SiteHeader() {
         <div className={styles.actions}>
           <ThemeSwitcher />
 
-          <Button asChild size='sm' appearance='soft'>
-            <a
-              href='https://docs.vellira.dev'
-              target='_blank'
-              rel='noreferrer noopener'
+          {externalLinks.map((link) => (
+            <Button
+              key={link.label}
+              asChild
+              size='sm'
+              appearance='ghost'
+              shape='square'
+              iconOnly
+              iconStart={
+                <img
+                  className={styles.actionIcon}
+                  src={link.icon}
+                  alt=''
+                  aria-hidden='true'
+                />
+              }
             >
-              Documentation
-            </a>
-          </Button>
+              <a
+                href={link.href}
+                target='_blank'
+                rel='noreferrer noopener'
+                aria-label={link.label}
+                title={link.label}
+              />
+            </Button>
+          ))}
 
-          <Button asChild size='sm' appearance='ghost'>
-            <a
-              href='https://storybook.vellira.dev'
-              target='_blank'
-              rel='noreferrer noopener'
-            >
-              Storybook
-            </a>
-          </Button>
-
-          <Button asChild size='sm' appearance='ghost'>
-            <a
-              href='https://github.com/vellira-dev/vellira'
-              target='_blank'
-              rel='noreferrer noopener'
-            >
-              GitHub
-            </a>
+          <Button asChild size='sm'>
+            <a href='#quick-start'>Get started</a>
           </Button>
         </div>
       </div>

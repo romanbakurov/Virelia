@@ -25,11 +25,13 @@ const toolbarLinks = [
     id: 'documentation',
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
+    icon: '/brand/navigation/documentation.svg',
   },
   {
     id: 'github',
     label: 'GitHub',
     href: 'https://github.com/vellira-dev/vellira',
+    icon: '/brand/navigation/github.svg',
   },
 ] as const;
 
@@ -46,8 +48,19 @@ addons.register('vellira/navigation-links', () => {
             href: link.href,
             rel: 'noreferrer noopener',
             target: '_blank',
+            title: link.label,
           },
-          link.label
+          React.createElement('img', {
+            alt: '',
+            'aria-hidden': 'true',
+            className: 'velliraToolbarIcon',
+            src: link.icon,
+          }),
+          React.createElement(
+            'span',
+            { className: 'velliraToolbarLabel' },
+            link.label
+          )
         ),
     });
   });

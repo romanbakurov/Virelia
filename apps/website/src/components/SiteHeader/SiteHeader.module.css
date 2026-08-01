@@ -65,6 +65,12 @@
   gap: calc(var(--space-2) + var(--space-1) / 2);
 }
 
+.actionIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 @media (width <= 980px) {
   .container {
     grid-template-columns: auto 1fr auto;

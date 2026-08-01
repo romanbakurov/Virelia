@@ -12,9 +12,11 @@ textarea {
 
 .velliraToolbarLink {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   color: #4b5563;
   font-size: 13px;
   font-weight: 700;
@@ -30,4 +32,22 @@ textarea {
 .velliraToolbarLink:focus-visible {
   outline: 2px solid #7c3aed;
   outline-offset: 2px;
+}
+
+.velliraToolbarIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.velliraToolbarLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
 }

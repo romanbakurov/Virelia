@@ -1,9 +1,17 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 import { defineConfig } from 'vitepress';
 
 const siteUrl = 'https://docs.vellira.dev';
 const siteDescription =
   'TypeScript-first design system documentation for React and React Native applications.';
 const socialImage = `${siteUrl}/brand/social/vellira-og-code-to-ui.png`;
+const navigationIcon = (name: string) =>
+  readFileSync(
+    resolve(process.cwd(), '../../packages/assets/brand/navigation', name),
+    'utf8'
+  );
 
 export default defineConfig({
   title: 'Vellira',
@@ -76,9 +84,6 @@ export default defineConfig({
       { text: 'Native', link: '/native' },
       { text: 'Tokens', link: '/tokens' },
       { text: 'Production', link: '/production' },
-      { text: 'Website', link: 'https://vellira.dev' },
-      { text: 'GitHub', link: 'https://github.com/vellira-dev/vellira' },
-      { text: 'Storybook', link: 'https://storybook.vellira.dev' },
     ],
     sidebar: [
       {
@@ -132,7 +137,18 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vellira-dev/vellira' },
+      {
+        icon: { svg: navigationIcon('website.svg') },
+        link: 'https://vellira.dev',
+      },
+      {
+        icon: { svg: navigationIcon('github.svg') },
+        link: 'https://github.com/vellira-dev/vellira',
+      },
+      {
+        icon: { svg: navigationIcon('storybook.svg') },
+        link: 'https://storybook.vellira.dev',
+      },
     ],
     search: {
       provider: 'local',

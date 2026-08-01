@@ -27,7 +27,13 @@ const config: StorybookConfig = {
     '@chromatic-com/storybook',
   ],
 
-  staticDirs: ['../public'],
+  staticDirs: [
+    '../public',
+    {
+      from: '../../../packages/assets/brand/navigation',
+      to: '/brand/navigation',
+    },
+  ],
 
   async viteFinal(config) {
     return mergeConfig(config, {
