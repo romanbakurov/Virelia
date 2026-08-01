@@ -29,7 +29,7 @@ export interface SelectContentProps extends Omit<
   searchPlaceholder?: string;
   loading?: boolean;
   loadingText?: ReactNode;
-  noOptionsText: ReactNode;
+  emptyText: ReactNode;
   searchSlot?: ReactNode;
   headerSlot?: ReactNode;
   emptySlot?: ReactNode;

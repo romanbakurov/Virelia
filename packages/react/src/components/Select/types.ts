@@ -28,7 +28,6 @@ interface SelectOwnProps {
   error?: ReactNode;
   empty?: ReactNode;
   loadingText?: ReactNode;
-  noOptionsText?: ReactNode;
   placement?: Extract<Placement, 'bottom' | 'top' | 'left' | 'right'>;
   matchTriggerWidth?: boolean;
   avoidCollisions?: boolean;

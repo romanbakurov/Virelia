@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement } from 'react';
+import { cloneElement, isValidElement, useState } from 'react';
 
 import { Check } from '@vellira-ui/icons';
 import type { ReactElement, ReactNode } from 'react';
@@ -45,17 +45,24 @@ export const SelectItemRow = ({
   const { theme } = useTheme();
   const styles = useThemeStyles(createItemStyles);
   const { color, variant, renderOption } = useSelectContext();
+  const [isHovered, setIsHovered] = useState(false);
   const optionPalette =
     theme.components.select[option.color ?? color][variant].option;
   const getOptionState = (pressed: boolean) => {
     if (isDisabled) return theme.components.select.option.disabled;
     if (isSelected) {
-      return pressed ? optionPalette.selectedPressed : optionPalette.selected;
+      return pressed
+        ? optionPalette.selectedPressed
+        : isHovered
+          ? optionPalette.selectedHover
+          : optionPalette.selected;
     }
 
     return pressed
       ? optionPalette.pressed
-      : theme.components.select.option.default;
+      : isHovered
+        ? optionPalette.hover
+        : theme.components.select.option.default;
   };
 
   return (
@@ -69,6 +76,8 @@ export const SelectItemRow = ({
         disabled: isDisabled,
       }}
       onPress={() => onSelect(option)}
+      onHoverIn={() => setIsHovered(true)}
+      onHoverOut={() => setIsHovered(false)}
       style={({ pressed }) => {
         const optionState = getOptionState(pressed);
 

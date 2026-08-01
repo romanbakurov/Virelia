@@ -44,7 +44,6 @@ export const SelectRoot = ({
   placeholder = 'Select...',
   empty,
   loadingText = 'Loading...',
-  noOptionsText,
   size,
   color = 'primary',
   variant = 'outline',
@@ -332,7 +331,7 @@ export const SelectRoot = ({
     : multiple && selectedOptions.length
       ? selectedOptions.map((option) => option.label).join(', ')
       : (selectedOption?.label ?? placeholder);
-  const emptyText = empty ?? noOptionsText ?? 'No options available';
+  const emptyText = empty ?? 'No options available';
   const showClear =
     clearable && selectedValues.length > 0 && !isDisabled && !loading;
 
@@ -388,7 +387,7 @@ export const SelectRoot = ({
     searchValue,
     loading,
     loadingText,
-    noOptionsText: emptyText,
+    emptyText,
     renderOption,
     selectedValue: singleSelectedValue,
     selectedValues,

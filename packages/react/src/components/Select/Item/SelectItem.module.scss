@@ -1,4 +1,5 @@
 .option {
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
@@ -12,27 +13,53 @@
   border-radius: var(--radius-sm);
   transition:
     color 0.15s ease,
-    background-color 0.15s ease,
     border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow 0.15s ease;
   cursor: pointer;
+  isolation: isolate;
   box-sizing: border-box;
   min-height: 36px;
   gap: var(--space-3);
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: '';
+    pointer-events: none;
+    background-color: var(--select-option-current-hover-bg);
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition:
+      transform 380ms cubic-bezier(0.33, 1, 0.68, 1),
+      background-color 140ms ease;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   &:hover:not(.selected, .disabled) {
     color: var(--select-option-current-hover-fg);
-    background-color: var(--select-option-current-hover-bg);
     border-color: var(--select-option-current-hover-border);
-    transform: translateX(2px);
+  }
+
+  &:hover:not(.selected, .disabled)::before {
+    background-color: var(--select-option-current-hover-bg);
+    transform: scaleX(1);
   }
 
   &:active:not(.selected, .disabled) {
     color: var(--select-option-current-pressed-fg);
-    background-color: var(--select-option-current-pressed-bg);
     border-color: var(--select-option-current-pressed-border);
-    transform: translateX(1px) scale(0.995);
+  }
+
+  &:active:not(.selected, .disabled)::before {
+    background-color: var(--select-option-current-pressed-bg);
+    transform: scaleX(1);
   }
 }
 
@@ -60,16 +87,22 @@
 
 .selected:hover:not(.disabled) {
   color: var(--select-option-current-selected-hover-fg);
-  background-color: var(--select-option-current-selected-hover-bg);
   border-color: var(--select-option-current-selected-hover-border);
-  transform: translateX(2px);
+}
+
+.selected:hover:not(.disabled)::before {
+  background-color: var(--select-option-current-selected-hover-bg);
+  transform: scaleX(1);
 }
 
 .selected:active:not(.disabled) {
   color: var(--select-option-current-selected-pressed-fg);
-  background-color: var(--select-option-current-selected-pressed-bg);
   border-color: var(--select-option-current-selected-pressed-border);
-  transform: translateX(1px) scale(0.995);
+}
+
+.selected:active:not(.disabled)::before {
+  background-color: var(--select-option-current-selected-pressed-bg);
+  transform: scaleX(1);
 }
 
 .active:not(.selected, .disabled) {
@@ -288,6 +321,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .option,
+  .option::before,
   .selected,
   .check {
     transition: none;

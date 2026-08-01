@@ -213,6 +213,7 @@ Single-value or multiple-value select control for choosing from a predefined lis
 - Sizes, disabled state, required state, and disabled options
 - Keyboard navigation, Escape close behavior, and selected option indicator
 - Floating dropdown placement with trigger-width matching
+- Token-driven colors, borders, shadows, focus rings, and dropdown-style option hover motion
 - Compound API with Trigger, Value, Icon, Content, Search, Group, Label, Item,
   ItemIcon, ItemDescription, ItemBadge, Separator, Empty, and Loading parts
 - Multiple selection with maxSelected, 10+ selected value overflow, and
@@ -334,14 +335,6 @@ Single-value or multiple-value select control for choosing from a predefined lis
       control: 'text',
       table: {
         type: { summary: 'string' },
-      },
-    },
-    noOptionsText: {
-      description: 'Content shown inside the dropdown when options is empty.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-        defaultValue: { summary: 'No options available' },
       },
     },
     value: {

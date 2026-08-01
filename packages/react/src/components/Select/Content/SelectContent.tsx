@@ -64,7 +64,7 @@ export const SelectContentSurface = ({
   searchPlaceholder = 'Search...',
   loading,
   loadingText = 'Loading...',
-  noOptionsText,
+  emptyText,
   searchSlot,
   headerSlot,
   emptySlot,
@@ -361,7 +361,7 @@ export const SelectContentSurface = ({
             aria-selected='false'
             className={styles.empty}
           >
-            {emptySlot ?? noOptionsText}
+            {emptySlot ?? emptyText}
           </li>
         )}
       </ul>
