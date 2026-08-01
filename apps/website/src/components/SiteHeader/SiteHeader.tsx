@@ -49,43 +49,59 @@ function scrollToAnchor(hash: string) {
   window.history.pushState(null, '', hash);
 }
 
+function getNavigationSections() {
+  return navigation
+    .map((item) => ({
+      href: item.href,
+      element: document.getElementById(item.href.slice(1)),
+    }))
+    .filter(
+      (
+        item
+      ): item is {
+        href: (typeof navigation)[number]['href'];
+        element: HTMLElement;
+      } => Boolean(item.element)
+    )
+    .sort(
+      (first, second) =>
+        first.element.getBoundingClientRect().top +
+        window.scrollY -
+        (second.element.getBoundingClientRect().top + window.scrollY)
+    );
+}
+
 export function SiteHeader() {
   const [activeHash, setActiveHash] = useState<
     (typeof navigation)[number]['href']
   >(navigation[0].href);
 
   useEffect(() => {
-    const sections = navigation
-      .map((item) => document.getElementById(item.href.slice(1)))
-      .filter((section): section is HTMLElement => Boolean(section));
+    const sections = getNavigationSections();
 
     if (sections.length === 0) return undefined;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (first, second) =>
-              second.intersectionRatio - first.intersectionRatio
-          )
-          .at(0);
+    const updateActiveHash = () => {
+      const activationY =
+        window.scrollY + Math.min(window.innerHeight * 0.45, 460);
+      const activeSection =
+        sections.findLast(({ element }) => element.offsetTop <= activationY) ??
+        sections[0];
 
-        if (visible?.target.id) {
-          setActiveHash(
-            `#${visible.target.id}` as (typeof navigation)[number]['href']
-          );
-        }
-      },
-      {
-        rootMargin: '-30% 0px -60% 0px',
-        threshold: [0.1, 0.35, 0.6],
-      }
-    );
+      setActiveHash(activeSection.href);
+    };
 
-    sections.forEach((section) => observer.observe(section));
+    updateActiveHash();
 
-    return () => observer.disconnect();
+    window.addEventListener('scroll', updateActiveHash, { passive: true });
+    window.addEventListener('resize', updateActiveHash);
+    window.addEventListener('hashchange', updateActiveHash);
+
+    return () => {
+      window.removeEventListener('scroll', updateActiveHash);
+      window.removeEventListener('resize', updateActiveHash);
+      window.removeEventListener('hashchange', updateActiveHash);
+    };
   }, []);
 
   return (
