@@ -45,7 +45,18 @@ function scrollToAnchor(hash: string) {
     return;
   }
 
-  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToTarget = (behavior: ScrollBehavior) => {
+    window.scrollTo({
+      top: target.getBoundingClientRect().top + window.scrollY,
+      behavior,
+    });
+  };
+
+  scrollToTarget('smooth');
+  window.setTimeout(() => scrollToTarget('auto'), 420);
+  window.setTimeout(() => scrollToTarget('auto'), 900);
+  window.setTimeout(() => scrollToTarget('auto'), 1600);
+  window.setTimeout(() => scrollToTarget('auto'), 2400);
   window.history.pushState(null, '', hash);
 }
 
