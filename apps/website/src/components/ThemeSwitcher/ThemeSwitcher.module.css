@@ -18,8 +18,8 @@
 
 .icon {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: var(--theme-icon-size, 20px);
+  height: var(--theme-icon-size, 20px);
   color: currentcolor;
   line-height: 0;
   pointer-events: none;
