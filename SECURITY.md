@@ -1,24 +1,65 @@
 # Security Policy
 
+The security of Vellira and its users is important to us.
+
 ## Supported Versions
 
-Security updates are provided for the latest released version of Vellira.
+Security updates are provided for the latest published version of Vellira.
+
+| Version | Supported |
+| ------- | --------- |
+| Latest  | ✅        |
+| Older   | ❌        |
+
+Users are encouraged to upgrade to the latest available version before
+reporting an issue.
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it privately.
+Please do not report security vulnerabilities through public GitHub issues,
+pull requests, discussions, or social media.
 
-Please do not open a public GitHub issue for security-related vulnerabilities.
+Report vulnerabilities privately using one of the following methods:
 
-Contact:
+1. Submit a private vulnerability report through GitHub Security Advisories.
+2. Email **security@vellira.dev**.
 
-- Email: [ronbakurov@gmail.com](mailto:ronbakurov@gmail.com)
+When reporting a vulnerability, include as much relevant information as
+possible:
 
-Include:
+- affected package and version;
+- vulnerability description;
+- reproduction steps or proof of concept;
+- potential impact;
+- suggested mitigation, when available.
 
-- Description of the vulnerability
-- Steps to reproduce
-- Affected package(s)
-- Potential impact
+## Response Process
 
-Reports will be reviewed as quickly as possible.
+After receiving a report, we aim to:
+
+- acknowledge receipt as soon as reasonably possible;
+- investigate and assess the report;
+- communicate progress when appropriate;
+- prepare and publish a fix when the vulnerability is confirmed;
+- coordinate public disclosure with the reporter.
+
+Response and resolution times may vary depending on the complexity and severity
+of the issue.
+
+## Responsible Disclosure
+
+Please allow reasonable time for investigation and remediation before publicly
+disclosing a vulnerability.
+
+We ask reporters to:
+
+- avoid accessing or modifying data that does not belong to them;
+- avoid disrupting services or availability;
+- keep vulnerability details private until a fix or coordinated disclosure is
+  available;
+- act in good faith.
+
+We appreciate responsible security research and thank everyone who helps improve
+the security of Vellira.
+
+Thank you for helping keep Vellira and its users secure.
