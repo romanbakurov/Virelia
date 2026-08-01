@@ -71,6 +71,15 @@ body {
   backdrop-filter: blur(16px);
 }
 
+@media (width <= 767px) {
+  .VPNavScreen {
+    top: var(--vp-nav-height) !important;
+    bottom: 0;
+    height: auto;
+    min-height: calc(100dvh - var(--vp-nav-height));
+  }
+}
+
 .VPNavBar .title {
   font-weight: 700;
 }
