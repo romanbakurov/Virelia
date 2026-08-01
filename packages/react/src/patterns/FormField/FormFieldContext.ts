@@ -7,6 +7,7 @@ export type FormFieldContextValue = {
   labelId?: string;
   descriptionId?: string;
   errorId?: string;
+  messageId?: string;
   required: boolean;
   disabled: boolean;
   invalid: boolean;

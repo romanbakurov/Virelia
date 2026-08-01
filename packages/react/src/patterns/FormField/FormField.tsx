@@ -1,6 +1,7 @@
 import {
   type AriaAttributes,
   cloneElement,
+  Fragment,
   isValidElement,
   type ReactElement,
   useId,
@@ -27,6 +28,9 @@ export const FormField = ({
   label,
   description,
   error,
+  message,
+  messageTone = 'neutral',
+  messageLive = 'off',
   required = false,
   disabled = false,
   invalid = false,
@@ -34,6 +38,7 @@ export const FormField = ({
   labelPosition = 'top',
   size = 'md',
   labelInfo,
+  labelAction,
   optionalText,
   children,
   bindControl = true,
@@ -42,6 +47,7 @@ export const FormField = ({
   labelClassName,
   descriptionClassName,
   errorClassName,
+  messageClassName,
   ...rest
 }: FormFieldProps) => {
   const generatedId = useId();
@@ -51,14 +57,25 @@ export const FormField = ({
     description && controlId ? `${controlId}-description` : undefined;
 
   const errorId = error && controlId ? `${controlId}-error` : undefined;
+  const messageId =
+    !error && message && controlId ? `${controlId}-message` : undefined;
   const isInvalid = invalid || Boolean(error);
+  const visibleMessage = error ?? message;
+  const visibleTone = error ? 'danger' : messageTone;
+  const messageToneClassName = {
+    neutral: styles.messageToneNeutral,
+    success: styles.messageToneSuccess,
+    warning: styles.messageToneWarning,
+    danger: styles.messageToneDanger,
+  }[visibleTone];
   const labelledBy = mergeIds(labelId);
-  const describedBy = mergeIds(descriptionId, errorId);
+  const describedBy = mergeIds(descriptionId, errorId, messageId);
   const contextValue = {
     controlId,
     labelId,
     descriptionId,
     errorId,
+    messageId,
     required,
     disabled,
     invalid: isInvalid,
@@ -67,9 +84,10 @@ export const FormField = ({
     ariaDescribedBy: describedBy,
   };
 
-  const child = isValidElement<FieldControlProps>(children)
-    ? (children as ReactElement<FieldControlProps>)
-    : undefined;
+  const child =
+    isValidElement<FieldControlProps>(children) && children.type !== Fragment
+      ? (children as ReactElement<FieldControlProps>)
+      : undefined;
   const control =
     bindControl && child
       ? cloneElement(child, {
@@ -106,26 +124,36 @@ export const FormField = ({
       data-orientation={orientation}
       data-size={size}
     >
-      {label && (
-        <label
-          id={labelId}
-          htmlFor={controlId}
-          className={cn(styles.label, labelClassName)}
-        >
-          <span className={styles.labelText}>{label}</span>
+      {(label || labelAction) && (
+        <div className={styles.labelRow}>
+          {label && (
+            <label
+              id={labelId}
+              htmlFor={controlId}
+              className={cn(styles.label, labelClassName)}
+            >
+              <span className={styles.labelText}>{label}</span>
 
-          {required && (
-            <span className={styles.required} aria-hidden='true'>
-              *
-            </span>
+              {required && (
+                <span className={styles.required} aria-hidden='true'>
+                  *
+                </span>
+              )}
+
+              {!required && optionalText && (
+                <span className={styles.optional}>{optionalText}</span>
+              )}
+
+              {labelInfo && (
+                <span className={styles.labelInfo}>{labelInfo}</span>
+              )}
+            </label>
           )}
 
-          {!required && optionalText && (
-            <span className={styles.optional}>{optionalText}</span>
+          {labelAction && (
+            <div className={styles.labelAction}>{labelAction}</div>
           )}
-
-          {labelInfo && <span className={styles.labelInfo}>{labelInfo}</span>}
-        </label>
+        </div>
       )}
 
       {description && (
@@ -141,13 +169,18 @@ export const FormField = ({
         <div className={cn(styles.control, controlClassName)}>{control}</div>
       </FormFieldContext.Provider>
 
-      {error && (
+      {visibleMessage && (
         <div
-          id={errorId}
-          className={cn(styles.errorText, errorClassName)}
-          role='alert'
+          id={error ? errorId : messageId}
+          className={cn(
+            styles.message,
+            messageToneClassName,
+            error ? errorClassName : messageClassName
+          )}
+          role={error ? 'alert' : undefined}
+          aria-live={!error && messageLive === 'polite' ? 'polite' : undefined}
         >
-          {error}
+          {visibleMessage}
         </div>
       )}
     </div>

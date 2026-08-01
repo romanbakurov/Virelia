@@ -71,6 +71,8 @@ Composable field wrapper for custom form controls in React Native.
 
 - Label and custom label content
 - Description and custom supporting content
+- Lower message slot with neutral, success, warning, or danger tone
+- Error message replaces lower message and announces through a live region
 - Required indicator
 - Error message and custom error content
 - Disabled visual state
@@ -103,6 +105,9 @@ FormField provides visual field structure and announces error content with a pol
   },
   args: {
     label: 'Label',
+    message: '',
+    messageTone: 'neutral',
+    messageLive: 'off',
     required: false,
     disabled: false,
     invalid: false,
@@ -123,6 +128,24 @@ FormField provides visual field structure and announces error content with a pol
     error: {
       control: 'text',
       description: 'Validation content displayed below the control.',
+    },
+
+    message: {
+      control: 'text',
+      description:
+        'Supporting result or status content displayed below the control.',
+    },
+
+    messageTone: {
+      control: 'radio',
+      options: ['neutral', 'success', 'warning', 'danger'],
+      description: 'Visual tone for message content.',
+    },
+
+    messageLive: {
+      control: 'radio',
+      options: ['off', 'polite'],
+      description: 'Live region behavior for non-error message content.',
     },
 
     required: {
@@ -166,6 +189,11 @@ FormField provides visual field structure and announces error content with a pol
       description: 'Additional label content, such as an info affordance.',
     },
 
+    labelAction: {
+      control: false,
+      description: 'Action rendered next to the label.',
+    },
+
     children: {
       control: false,
       description: 'Custom form control rendered inside the field.',
@@ -194,6 +222,11 @@ FormField provides visual field structure and announces error content with a pol
     errorStyle: {
       control: false,
       description: 'Style applied to string or numeric error content.',
+    },
+
+    messageStyle: {
+      control: false,
+      description: 'Style applied to string or numeric message content.',
     },
   },
 };
@@ -386,6 +419,65 @@ function CustomErrorExample() {
   );
 }
 
+function MessageTonesExample() {
+  return (
+    <Section title='MessageTones'>
+      <View style={{ gap: 16 }}>
+        <FormField
+          label='Email'
+          description='Used for account notifications.'
+          message='Email address is available.'
+          messageTone='success'
+        >
+          <DemoControl placeholder='name@company.com' />
+        </FormField>
+
+        <FormField
+          label='API key'
+          message='This key expires in 7 days.'
+          messageTone='warning'
+        >
+          <DemoControl placeholder='vk_live_...' />
+        </FormField>
+
+        <FormField
+          label='Project slug'
+          message='Lower priority message is replaced by error.'
+          error='This slug is already used.'
+        >
+          <DemoControl placeholder='vellira-ui' error />
+        </FormField>
+      </View>
+    </Section>
+  );
+}
+
+function LabelActionExample() {
+  const { theme } = useTheme();
+
+  return (
+    <Section title='LabelAction'>
+      <FormField
+        label='Password'
+        labelAction={
+          <Text
+            style={{
+              color: theme.semantic.text.interactive,
+              fontFamily: theme.tokens.typography.family.medium,
+              fontSize: theme.tokens.typography.size.sm,
+            }}
+          >
+            Forgot?
+          </Text>
+        }
+        message='Use at least 12 characters.'
+      >
+        <DemoControl placeholder='Password' />
+      </FormField>
+    </Section>
+  );
+}
+
 export const Playground: Story = {
   args: {
     children: <DemoControl placeholder='Alex Johnson' />,
@@ -535,6 +627,14 @@ export const CustomDescription: Story = {
 
 export const CustomError: Story = {
   render: () => <CustomErrorExample />,
+};
+
+export const MessageTones: Story = {
+  render: () => <MessageTonesExample />,
+};
+
+export const LabelAction: Story = {
+  render: () => <LabelActionExample />,
 };
 
 export const CustomStyles: Story = {

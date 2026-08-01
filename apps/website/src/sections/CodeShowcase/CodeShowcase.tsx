@@ -182,6 +182,8 @@ export function Example() {
     <FormField
       label='Workspace name'
       description='Visible to your team.'
+      message='Workspace name is available.'
+      messageTone='success'
     >
       <Input
         placeholder='Vellira workspace'
@@ -689,6 +691,8 @@ export function CodeShowcase() {
                         <FormField
                           label='Workspace name'
                           description='Visible to your team.'
+                          message='Workspace name is available.'
+                          messageTone='success'
                         >
                           <Input
                             value={workspace}

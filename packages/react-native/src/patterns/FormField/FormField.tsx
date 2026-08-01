@@ -13,11 +13,15 @@ export function FormField({
   label,
   description,
   error,
+  message,
+  messageTone = 'neutral',
+  messageLive = 'off',
   required = false,
   disabled = false,
   invalid = false,
   size = 'md',
   labelInfo,
+  labelAction,
   optionalText,
   children,
   style,
@@ -25,6 +29,7 @@ export function FormField({
   labelStyle,
   descriptionStyle,
   errorStyle,
+  messageStyle,
   ...rest
 }: FormFieldProps) {
   const { theme } = useTheme();
@@ -35,22 +40,34 @@ export function FormField({
   const labelId = label ? `${controlId}-label` : undefined;
   const descriptionId = description ? `${controlId}-description` : undefined;
   const errorId = error ? `${controlId}-error` : undefined;
+  const messageId = !error && message ? `${controlId}-message` : undefined;
   const isInvalid = invalid || Boolean(error);
+  const visibleMessage = error ?? message;
+  const visibleTone = error ? 'danger' : messageTone;
   const contextValue = {
     controlId,
     labelId,
     descriptionId,
     errorId,
+    messageId,
     description,
     error,
+    message,
     required,
     disabled,
     invalid: isInvalid,
     size,
     ariaLabelledBy: labelId,
     ariaDescribedBy:
-      [descriptionId, errorId].filter(Boolean).join(' ') || undefined,
+      [descriptionId, errorId, messageId].filter(Boolean).join(' ') ||
+      undefined,
   };
+  const messageToneStyle = {
+    neutral: undefined,
+    success: styles.messageSuccess,
+    warning: styles.messageWarning,
+    danger: styles.messageDanger,
+  }[visibleTone];
 
   return (
     <View
@@ -58,77 +75,83 @@ export function FormField({
       accessibilityState={disabled ? { disabled: true } : undefined}
       style={[styles.root, { gap: sizeTokens.gap }, style]}
     >
-      {label &&
-        (typeof label === 'string' || typeof label === 'number' ? (
-          <Text
-            style={[
-              styles.label,
-              {
-                fontSize: sizeTokens.labelFontSize,
-                lineHeight: sizeTokens.labelLineHeight,
-              },
-              disabled && styles.labelDisabled,
-              labelStyle,
-            ]}
-          >
-            {label}
-
-            {required && (
-              <Text
-                style={styles.required}
-                accessible={false}
-                importantForAccessibility='no'
-              >
-                {' *'}
-              </Text>
-            )}
-
-            {!required && optionalText && (
+      {(label || labelAction) && (
+        <View style={[styles.labelRow, { gap: sizeTokens.gap }]}>
+          {label &&
+            (typeof label === 'string' || typeof label === 'number' ? (
               <Text
                 style={[
-                  styles.optional,
+                  styles.label,
                   {
-                    fontSize: sizeTokens.optionalFontSize,
-                    lineHeight: sizeTokens.optionalLineHeight,
+                    fontSize: sizeTokens.labelFontSize,
+                    lineHeight: sizeTokens.labelLineHeight,
                   },
+                  disabled && styles.labelDisabled,
+                  labelStyle,
                 ]}
               >
-                {optionalText}
-              </Text>
-            )}
+                {label}
 
-            {labelInfo && (
-              <Text
-                style={[
-                  styles.labelInfo,
-                  {
-                    fontSize: sizeTokens.labelInfoFontSize,
-                    lineHeight: sizeTokens.labelInfoSize,
-                  },
-                ]}
-              >
+                {required && (
+                  <Text
+                    style={styles.required}
+                    accessible={false}
+                    importantForAccessibility='no'
+                  >
+                    {' *'}
+                  </Text>
+                )}
+
+                {!required && optionalText && (
+                  <Text
+                    style={[
+                      styles.optional,
+                      {
+                        fontSize: sizeTokens.optionalFontSize,
+                        lineHeight: sizeTokens.optionalLineHeight,
+                      },
+                    ]}
+                  >
+                    {optionalText}
+                  </Text>
+                )}
+
+                {labelInfo && (
+                  <Text
+                    style={[
+                      styles.labelInfo,
+                      {
+                        fontSize: sizeTokens.labelInfoFontSize,
+                        lineHeight: sizeTokens.labelInfoSize,
+                      },
+                    ]}
+                  >
+                    {labelInfo}
+                  </Text>
+                )}
+              </Text>
+            ) : (
+              <View style={styles.customLabel}>
+                {label}
+
+                {required && (
+                  <Text
+                    style={styles.required}
+                    accessible={false}
+                    importantForAccessibility='no'
+                  >
+                    *
+                  </Text>
+                )}
+
+                {!required && optionalText}
                 {labelInfo}
-              </Text>
-            )}
-          </Text>
-        ) : (
-          <View style={styles.customLabel}>
-            {label}
+              </View>
+            ))}
 
-            {required && (
-              <Text
-                style={styles.required}
-                accessible={false}
-                importantForAccessibility='no'
-              >
-                *
-              </Text>
-            )}
-
-            {!required && optionalText}
-            {labelInfo}
-          </View>
-        ))}
+          {labelAction && <View style={styles.labelAction}>{labelAction}</View>}
+        </View>
+      )}
 
       {description &&
         (typeof description === 'string' || typeof description === 'number' ? (
@@ -155,24 +178,34 @@ export function FormField({
         </View>
       </FormFieldContext.Provider>
 
-      {error &&
-        (typeof error === 'string' || typeof error === 'number' ? (
+      {visibleMessage &&
+        (typeof visibleMessage === 'string' ||
+        typeof visibleMessage === 'number' ? (
           <Text
-            accessibilityLiveRegion='polite'
+            accessibilityLiveRegion={
+              error || messageLive === 'polite' ? 'polite' : undefined
+            }
             style={[
-              styles.error,
+              styles.message,
               {
                 fontSize: sizeTokens.helperTextFontSize,
                 lineHeight: sizeTokens.helperTextLineHeight,
               },
+              messageToneStyle,
               disabled && styles.helperTextDisabled,
-              errorStyle,
+              error ? errorStyle : messageStyle,
             ]}
           >
-            {error}
+            {visibleMessage}
           </Text>
         ) : (
-          <View accessibilityLiveRegion='polite'>{error}</View>
+          <View
+            accessibilityLiveRegion={
+              error || messageLive === 'polite' ? 'polite' : undefined
+            }
+          >
+            {visibleMessage}
+          </View>
         ))}
     </View>
   );

@@ -6,7 +6,13 @@ export interface FormFieldProps
   extends
     Omit<
       BaseFormFieldProps,
-      'description' | 'error' | 'label' | 'labelInfo' | 'optionalText'
+      | 'description'
+      | 'error'
+      | 'label'
+      | 'labelAction'
+      | 'labelInfo'
+      | 'message'
+      | 'optionalText'
     >,
     Omit<ViewProps, 'children' | 'style' | 'accessibilityState'> {
   /** Visible field label. */
@@ -15,8 +21,12 @@ export interface FormFieldProps
   description?: ReactNode;
   /** Error content. Also implies invalid state. */
   error?: ReactNode;
+  /** Supporting result/status message. Replaced by error when present. */
+  message?: ReactNode;
   /** Additional label content, such as an info affordance. */
   labelInfo?: ReactNode;
+  /** Action rendered next to the label. */
+  labelAction?: ReactNode;
   /** Optional marker shown for non-required fields. Do not combine with required. */
   optionalText?: ReactNode;
   /** Control or custom field layout content. */
@@ -33,4 +43,6 @@ export interface FormFieldProps
   descriptionStyle?: StyleProp<TextStyle>;
   /** Style for the error content. */
   errorStyle?: StyleProp<TextStyle>;
+  /** Style for the message content. */
+  messageStyle?: StyleProp<TextStyle>;
 }

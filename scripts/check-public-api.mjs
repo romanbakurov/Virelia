@@ -401,6 +401,8 @@ const publicSymbolContracts = {
     'CheckboxSize',
     'DropdownSize',
     'FloatingPlacement',
+    'FormFieldMessageLive',
+    'FormFieldMessageTone',
     'InputAdornmentTone',
     'InputBaseProps',
     'InputColor',

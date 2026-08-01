@@ -5,7 +5,13 @@ export interface FormFieldProps
   extends
     Omit<
       BaseFormFieldProps,
-      'description' | 'error' | 'label' | 'labelInfo' | 'optionalText'
+      | 'description'
+      | 'error'
+      | 'label'
+      | 'labelAction'
+      | 'labelInfo'
+      | 'message'
+      | 'optionalText'
     >,
     Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'id'> {
   /** Field id used as the control id. Generated when omitted. */
@@ -17,8 +23,12 @@ export interface FormFieldProps
   description?: ReactNode;
   /** Error content linked to compatible controls. Also implies invalid state. */
   error?: ReactNode;
+  /** Supporting result/status message linked to compatible controls. Replaced by error when present. */
+  message?: ReactNode;
   /** Additional label content, such as an info affordance. */
   labelInfo?: ReactNode;
+  /** Action rendered next to the label without nesting inside the label element. */
+  labelAction?: ReactNode;
   /** Optional marker shown for non-required fields. Do not combine with required. */
   optionalText?: ReactNode;
   /** Control or custom field layout content. */
@@ -34,4 +44,6 @@ export interface FormFieldProps
   descriptionClassName?: string;
   /** Class name applied to the error content. */
   errorClassName?: string;
+  /** Class name applied to the message content. */
+  messageClassName?: string;
 }

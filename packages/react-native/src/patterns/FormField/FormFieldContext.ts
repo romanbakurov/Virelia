@@ -8,8 +8,10 @@ export type NativeFormFieldContextValue = {
   labelId?: string;
   descriptionId?: string;
   errorId?: string;
+  messageId?: string;
   description?: ReactNode;
   error?: ReactNode;
+  message?: ReactNode;
   required: boolean;
   disabled: boolean;
   invalid: boolean;
