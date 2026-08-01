@@ -11,7 +11,11 @@ const navigationIcon = (name: string) =>
   readFileSync(
     resolve(process.cwd(), '../../packages/assets/brand/navigation', name),
     'utf8'
-  );
+  )
+    .replaceAll('fill="black"', 'fill="currentColor"')
+    .replaceAll('fill="#1B1F23"', 'fill="currentColor"')
+    .replaceAll('stroke="black"', 'stroke="currentColor"')
+    .replaceAll('stroke="#1B1F23"', 'stroke="currentColor"');
 
 export default defineConfig({
   title: 'Vellira',
