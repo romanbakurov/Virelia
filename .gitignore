@@ -42,6 +42,10 @@ coverage/
 **/test-results/
 **/playwright-report/
 
+# Generated shared brand assets
+apps/docs/src/public/brand/
+apps/website/public/brand/
+
 # Lighthouse CI reports
 .lighthouseci/
 lighthouse-results/

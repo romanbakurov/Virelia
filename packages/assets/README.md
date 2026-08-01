@@ -43,10 +43,30 @@ Available font files:
 - `Vellira Sans-Medium.ttf`
 - `Vellira Sans-SemiBold.ttf`
 
+## Brand Assets
+
+Brand assets are stored once in this package:
+
+```
+brand/
+  icons/
+  logos/
+  social/
+```
+
+Apps that need public `/brand/...` URLs should sync the shared directory into
+their public assets folder before dev/build:
+
+```bash
+pnpm --filter @vellira-ui/assets sync-brand <destination-public-brand-dir>
+```
+
 ## Package Structure
 
 ```
+brand/
 fonts/
+scripts/
 styles/
 ```
 
@@ -55,7 +75,7 @@ styles/
 This package is intended to become the shared home for static assets used across the Vellira ecosystem, including:
 
 - Fonts
-- Documentation assets
+- Brand and documentation assets
 - Storybook assets
 - Future shared media resources
 

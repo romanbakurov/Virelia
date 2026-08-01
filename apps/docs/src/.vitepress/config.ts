@@ -65,8 +65,8 @@ export default defineConfig({
   themeConfig: {
     siteTitle: false,
     logo: {
-      light: '/brand/logos/logo-light.svg',
-      dark: '/brand/logos/logo-dark.svg',
+      light: '/brand/logos/logo-dark.svg',
+      dark: '/brand/logos/logo-light.svg',
       alt: 'Vellira',
     },
     nav: [

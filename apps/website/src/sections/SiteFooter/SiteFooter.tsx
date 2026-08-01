@@ -44,8 +44,8 @@ export function SiteFooter() {
   const { theme } = useTheme();
   const logoSrc =
     theme === 'light'
-      ? '/brand/logos/logo-light.svg'
-      : '/brand/logos/logo-dark.svg';
+      ? '/brand/logos/logo-dark.svg'
+      : '/brand/logos/logo-light.svg';
 
   return (
     <footer className={styles.footer}>
