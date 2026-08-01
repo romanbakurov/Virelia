@@ -315,7 +315,6 @@ const publicSymbolContracts = {
     'ThemeProvider',
     'ThemeProviderProps',
     'Tooltip',
-    'TooltipArrowProps',
     'TooltipContentProps',
     'TooltipProps',
     'TooltipRootProps',
