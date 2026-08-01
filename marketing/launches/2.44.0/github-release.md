@@ -16,13 +16,13 @@ This release marks the first public launch of Vellira.
 ## Highlights
 
 - Shared component APIs across React and React Native
-- Accessibility-first components
+- Accessibility-minded components with documented keyboard and semantic behavior
 - Shared design tokens and TypeScript contracts
 - Reusable interaction logic
 - Platform-specific implementations
 - Tree-shakeable modular packages
 - Interactive Storybook
-- Comprehensive documentation
+- Documentation, Storybook examples and generated package API references
 - Automated testing and release pipeline
 
 ## Components

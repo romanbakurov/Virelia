@@ -1,7 +1,7 @@
 # Vellira
 
 <p align="center">
-  <img src="https://vellira.dev/logo.svg" alt="Vellira" width="120" />
+  <img src="./packages/assets/brand/logos/logo-gradient.svg" alt="Vellira" width="120" />
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@ MIT Licensed • TypeScript First • Open Source
 </p>
 
 <p align="center">
-Accessibility First • Cross Platform • Modular
+Accessibility Minded • Cross Platform • Modular
 </p>
 
 <p align="center">
@@ -41,7 +41,7 @@ Accessibility First • Cross Platform • Modular
 
 <p align="center">
   <img
-    src="./marketing/media-kit/social/vellira-og-code-to-ui.png"
+    src="./packages/assets/brand/social/vellira-og-code-to-ui.png"
     alt="Vellira Preview"
   />
 </p>
@@ -69,7 +69,7 @@ Each platform still gets its own native implementation, ensuring familiar behavi
 
 ✔ Consistent APIs on both platforms
 
-✔ Accessibility-first components
+✔ Accessibility-minded component APIs
 
 ✔ Modern TypeScript-first developer experience
 
@@ -92,12 +92,12 @@ Each platform still gets its own native implementation, ensuring familiar behavi
 
 - TypeScript-first APIs
 - Tree-shakeable packages
-- Comprehensive documentation
+- Practical documentation
 - Predictable component architecture
 
 ### 🎨 UI
 
-- Accessibility-first components
+- Accessibility-minded components
 - CSS Variables
 - Shared Design Tokens
 - Interactive Storybook
@@ -154,19 +154,47 @@ pnpm add @vellira-ui/tokens
 ## Quick Example
 
 ```tsx
-import "@vellira-ui/react/styles.css";
-import { Button } from "@vellira-ui/react";
+import '@vellira-ui/react/styles';
+import { Select } from '@vellira-ui/react';
 
-export default function Example() {
-    return (
-        <Button
-            appearance="solid"
-            color="primary"
-            size="md"
-        >
-            Get Started
-        </Button>
-    );
+export function ReleaseTeamSelect() {
+  return (
+    <Select
+      label='Release owner'
+      description='Assign the team responsible for the next rollout.'
+      placeholder='Choose a team'
+      defaultValue='frontend-platform'
+      color='primary'
+      variant='outline'
+      clearable
+    >
+      <Select.Group label='Core teams'>
+        <Select.Item
+          value='design-systems'
+          label='Design Systems'
+          description='Components, tokens and accessibility reviews'
+          badge='Core'
+        />
+        <Select.Item
+          value='frontend-platform'
+          label='Frontend Platform'
+          description='Build tooling, docs and release quality'
+          badge='Web'
+        />
+      </Select.Group>
+
+      <Select.Separator />
+
+      <Select.Group label='Operations'>
+        <Select.Item
+          value='customer-support'
+          label='Customer Support'
+          description='Escalations, feedback and adoption notes'
+          badge='CS'
+        />
+      </Select.Group>
+    </Select>
+  );
 }
 ```
 
@@ -175,7 +203,7 @@ export default function Example() {
 ## Packages
 
 | Package                    | Platform     | Purpose                            |
-|----------------------------|--------------|------------------------------------|
+| -------------------------- | ------------ | ---------------------------------- |
 | `@vellira-ui/react`        | Web          | UI components for React            |
 | `@vellira-ui/react-native` | React Native | UI components for React Native     |
 | `@vellira-ui/tokens`       | Shared       | Design tokens                      |
@@ -186,22 +214,23 @@ export default function Example() {
 ---
 
 ## Components
+
 Every component is available for both React and React Native, providing a familiar developer experience with a consistent API across platforms.
 
-| Component | React | React Native |
-|-----------|:-----:|:------------:|
-| Button | ✅ | ✅ |
-| Checkbox | ✅ | ✅ |
-| Dropdown | ✅ | ✅ |
-| FormField | ✅ | ✅ |
-| Input | ✅ | ✅ |
-| Modal | ✅ | ✅ |
-| Portal | ✅ | ✅ |
-| Radio | ✅ | ✅ |
-| RadioGroup | ✅ | ✅ |
-| Select | ✅ | ✅ |
-| Tabs | ✅ | ✅ |
-| Tooltip | ✅ | ✅ |
+| Component  | React | React Native |
+| ---------- | :---: | :----------: |
+| Button     |  ✅   |      ✅      |
+| Checkbox   |  ✅   |      ✅      |
+| Dropdown   |  ✅   |      ✅      |
+| FormField  |  ✅   |      ✅      |
+| Input      |  ✅   |      ✅      |
+| Modal      |  ✅   |      ✅      |
+| Portal     |  ✅   |      ✅      |
+| Radio      |  ✅   |      ✅      |
+| RadioGroup |  ✅   |      ✅      |
+| Select     |  ✅   |      ✅      |
+| Tabs       |  ✅   |      ✅      |
+| Tooltip    |  ✅   |      ✅      |
 
 ---
 
@@ -251,8 +280,6 @@ Explore every component interactively.
 
 📖 **[Storybook](https://storybook.vellira.dev)**
 
-Explore every component interactively.
-
 ---
 
 ## Roadmap
@@ -300,12 +327,12 @@ See the documentation for compatibility details.
 
 ---
 
-Built with ❤️ by Roman Bakurov.
+Built by Roman Bakurov.
 
-If Vellira helps you build better interfaces, consider ⭐ starring the repository on GitHub.
+If Vellira helps you build better interfaces, consider starring the repository on GitHub.
 
 Every star helps the project reach more developers.
 
 ## License
 
-MIT © Roman Bakurov
+MIT (c) Roman Bakurov

@@ -13,7 +13,7 @@ Even when the visual design stayed the same, I kept duplicating:
 - components
 - design tokens
 - interaction logic
-- accessibility work
+- accessibility behavior
 - documentation
 
 Eventually I found myself maintaining two separate component libraries instead of one shared system.
@@ -48,7 +48,7 @@ Some technical highlights:
 
 - React + React Native
 - TypeScript-first
-- Accessibility-first
+- Accessibility-minded component APIs
 - Shared design tokens
 - CSS Variables
 - Storybook

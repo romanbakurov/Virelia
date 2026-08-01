@@ -14,8 +14,6 @@ The idea behind the project is straightforward:
 
 Today I'm excited to share the **first public release** of Vellira.
 
-*(Insert Website screenshot here)*
-
 ---
 
 # Who is Vellira for?
@@ -42,13 +40,9 @@ The JavaScript ecosystem already offers many excellent UI libraries.
 
 Projects like Material UI, Mantine, Chakra UI, Radix UI and React Aria each solve different problems exceptionally well.
 
-Projects like Material UI, Mantine, Chakra UI, Radix UI and React Aria each solve different problems exceptionally well.
-
 Vellira isn't trying to replace them.
 
 Instead, it focuses on a different challenge: providing a shared foundation for applications that target both React and React Native.
-
-providing a shared foundation for applications that target both React and React Native.
 
 So why build another one?
 
@@ -184,14 +178,14 @@ This architecture allows platform-specific rendering while keeping the developer
 
 # Package overview
 
-| Package | Purpose |
-|----------|---------|
-| `@vellira-ui/react` | React component library |
-| `@vellira-ui/react-native` | React Native component library |
-| `@vellira-ui/tokens` | Shared design tokens |
-| `@vellira-ui/core` | Shared hooks and interaction logic |
-| `@vellira-ui/icons` | Cross-platform icon library |
-| `@vellira-ui/types` | Shared TypeScript types |
+| Package                    | Purpose                            |
+| -------------------------- | ---------------------------------- |
+| `@vellira-ui/react`        | React component library            |
+| `@vellira-ui/react-native` | React Native component library     |
+| `@vellira-ui/tokens`       | Shared design tokens               |
+| `@vellira-ui/core`         | Shared hooks and interaction logic |
+| `@vellira-ui/icons`        | Cross-platform icon library        |
+| `@vellira-ui/types`        | Shared TypeScript types            |
 
 Each package has a single responsibility and can evolve independently.
 
@@ -201,20 +195,20 @@ Each package has a single responsibility and can evolve independently.
 
 The first public release includes a solid foundation of commonly used UI components.
 
-| Component | React | React Native |
-|-----------|:-----:|:------------:|
-| Button | ✅ | ✅ |
-| Checkbox | ✅ | ✅ |
-| Dropdown | ✅ | ✅ |
-| FormField | ✅ | ✅ |
-| Input | ✅ | ✅ |
-| Modal | ✅ | ✅ |
-| Portal | ✅ | ✅ |
-| Radio | ✅ | ✅ |
-| RadioGroup | ✅ | ✅ |
-| Select | ✅ | ✅ |
-| Tabs | ✅ | ✅ |
-| Tooltip | ✅ | ✅ |
+| Component  | React | React Native |
+| ---------- | :---: | :----------: |
+| Button     |  ✅   |      ✅      |
+| Checkbox   |  ✅   |      ✅      |
+| Dropdown   |  ✅   |      ✅      |
+| FormField  |  ✅   |      ✅      |
+| Input      |  ✅   |      ✅      |
+| Modal      |  ✅   |      ✅      |
+| Portal     |  ✅   |      ✅      |
+| Radio      |  ✅   |      ✅      |
+| RadioGroup |  ✅   |      ✅      |
+| Select     |  ✅   |      ✅      |
+| Tabs       |  ✅   |      ✅      |
+| Tooltip    |  ✅   |      ✅      |
 
 This foundation intentionally focuses on the components developers use every day.
 
@@ -226,44 +220,104 @@ The goal of the first release wasn't to ship the largest component library, but 
 
 One of the core ideas behind Vellira is that switching between React and React Native shouldn't require learning a completely different component model.
 
-For example, creating a button looks familiar regardless of the target platform.
+For example, a real Select with grouped options, metadata and a clearable value keeps the same shape across platforms.
 
 ### React
-```tsx
-import "@vellira-ui/react/styles.css";
-import { Button } from "@vellira-ui/react";
 
-export default function Example() {
-    return (
-        <Button
-            appearance="solid"
-            color="primary"
-            size="md"
-        >
-            Get Started
-        </Button>
-    );
+```tsx
+import '@vellira-ui/react/styles';
+import { Select } from '@vellira-ui/react';
+
+export function ReleaseTeamSelect() {
+  return (
+    <Select
+      label='Release owner'
+      description='Assign the team responsible for the next rollout.'
+      placeholder='Choose a team'
+      defaultValue='frontend-platform'
+      color='primary'
+      variant='outline'
+      clearable
+    >
+      <Select.Group label='Core teams'>
+        <Select.Item
+          value='design-systems'
+          label='Design Systems'
+          description='Components, tokens and accessibility reviews'
+          badge='Core'
+        />
+        <Select.Item
+          value='frontend-platform'
+          label='Frontend Platform'
+          description='Build tooling, docs and release quality'
+          badge='Web'
+        />
+      </Select.Group>
+
+      <Select.Separator />
+
+      <Select.Group label='Operations'>
+        <Select.Item
+          value='customer-support'
+          label='Customer Support'
+          description='Escalations, feedback and adoption notes'
+          badge='CS'
+        />
+      </Select.Group>
+    </Select>
+  );
 }
 ```
 
 ### React Native
-```tsx
-import { Button } from "@vellira-ui/react-native";
 
-export default function Example() {
-    return (
-        <Button
-            appearance="solid"
-            color="primary"
-            size="md"
-        >
-            Get Started
-        </Button>
-    );
+```tsx
+import { Select } from '@vellira-ui/react-native';
+
+export function ReleaseTeamSelect() {
+  return (
+    <Select
+      label='Release owner'
+      description='Assign the team responsible for the next rollout.'
+      placeholder='Choose a team'
+      defaultValue='frontend-platform'
+      color='primary'
+      variant='outline'
+      presentation='sheet'
+      clearable
+    >
+      <Select.Group label='Core teams'>
+        <Select.Item
+          value='design-systems'
+          label='Design Systems'
+          description='Components, tokens and accessibility reviews'
+          badge='Core'
+        />
+        <Select.Item
+          value='frontend-platform'
+          label='Frontend Platform'
+          description='Build tooling, docs and release quality'
+          badge='Web'
+        />
+      </Select.Group>
+
+      <Select.Separator />
+
+      <Select.Group label='Operations'>
+        <Select.Item
+          value='customer-support'
+          label='Customer Support'
+          description='Escalations, feedback and adoption notes'
+          badge='CS'
+        />
+      </Select.Group>
+    </Select>
+  );
 }
 ```
+
 **Same API.**
-**Native rendering.**
+**Platform-specific rendering.**
 
 The React Native version follows the same philosophy, making it easier to move between platforms while preserving native rendering under the hood.
 
@@ -299,17 +353,15 @@ Every public component is built with accessibility in mind.
 
 That includes things such as:
 
-- keyboard navigation
-- focus management
+- keyboard navigation on the web
+- focus management where the interaction requires it
 - semantic HTML where applicable
-- ARIA attributes
+- ARIA attributes where applicable
 - predictable interaction patterns
 
-Accessibility shouldn't require extra work from developers using the library.
+The goal is to make accessible defaults the starting point, not an optional enhancement.
 
-Accessible components should be the default—not an optional enhancement.
-
-The default experience should already be a good one.
+Application teams still need to provide good labels, copy and product-level flows, but the component primitives should not make that harder.
 
 ---
 
@@ -344,8 +396,6 @@ Rather than looking through source code, developers can immediately see how a co
 
 This also makes regression testing and future development significantly easier.
 
-*(Insert Storybook screenshot here)*
-
 ---
 
 # Quality Before Quantity
@@ -356,7 +406,7 @@ I wanted to take a different approach.
 
 Instead of releasing dozens of unfinished components, Vellira focuses on building a smaller collection of polished, reusable building blocks.
 
-Every public component goes through the same development process:
+Every public component is expected to go through the same development process:
 
 - implementation
 - accessibility review

@@ -108,7 +108,7 @@ Rather than shipping dozens of unfinished components, I wanted every public comp
 
 - documentation;
 - Storybook examples;
-- accessibility support;
+- accessibility behavior where the platform supports it;
 - automated tests;
 - predictable APIs.
 

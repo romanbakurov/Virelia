@@ -10,7 +10,7 @@ Today Vellira includes:
 
 • shared design tokens
 • consistent APIs
-• accessibility-first components
+• accessibility-minded components
 • Storybook
 • documentation
 • automated releases
