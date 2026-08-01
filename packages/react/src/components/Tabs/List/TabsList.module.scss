@@ -94,7 +94,7 @@
   background: var(--tabs-segmented-active-bg);
   border: 1px solid var(--tabs-segmented-active-border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 1px 2px rgb(24 21 33 / 6%);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {

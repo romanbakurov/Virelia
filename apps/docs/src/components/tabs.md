@@ -171,22 +171,6 @@ export function AccountSettings() {
 - Panels should not unmount critical unsaved user input unless the app handles
   persistence intentionally.
 
-## Migration From The Old API
-
-Use `value`, `defaultValue`, and `onValueChange` instead of
-`activeIndex`/`onChange`. Use `Tabs.Trigger` and `Tabs.Content` instead of
-`Tabs.Tab` and `Tabs.Panel`.
-
-```tsx
-<Tabs defaultValue='profile'>
-  <Tabs.List aria-label='Settings'>
-    <Tabs.Trigger value='profile'>Profile</Tabs.Trigger>
-  </Tabs.List>
-
-  <Tabs.Content value='profile'>Profile settings</Tabs.Content>
-</Tabs>
-```
-
 ## See Also
 
 - [Button](/components/button) for actions inside tab panels.

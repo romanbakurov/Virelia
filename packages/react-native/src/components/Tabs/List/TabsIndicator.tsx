@@ -280,13 +280,17 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
         borderWidth: 1,
         ...Platform.select({
           web: {
-            boxShadow: '0 1px 2px rgba(24, 21, 33, 0.06)',
+            boxShadow: `${theme.tokens.shadows.sm.x}px ${theme.tokens.shadows.sm.y}px ${theme.tokens.shadows.sm.blur}px ${theme.tokens.shadows.sm.color}`,
           },
           default: {
-            shadowColor: '#181521',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.06,
-            shadowRadius: 2,
+            shadowColor: theme.tokens.shadows.sm.color,
+            shadowOffset: {
+              width: theme.tokens.shadows.sm.x,
+              height: theme.tokens.shadows.sm.y,
+            },
+            shadowOpacity: theme.tokens.shadows.sm.opacity,
+            shadowRadius: theme.tokens.shadows.sm.blur,
+            elevation: theme.tokens.shadows.sm.elevation,
           },
         }),
         transform: [{ translateX }, { translateY }],
@@ -304,6 +308,7 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
     size,
     style,
     theme.tokens.radius,
+    theme.tokens.shadows.sm,
     translateX,
     translateY,
     variant,

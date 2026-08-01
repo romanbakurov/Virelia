@@ -220,7 +220,7 @@ export function ComponentShowcase() {
   const [tabValue, setTabValue] = useState('preview');
   const [dropdownExample, setDropdownExample] =
     useState<DropdownExample>('actions');
-  const activeIndex = components.findIndex(
+  const activeComponentIndex = components.findIndex(
     (component) => component.value === activeComponent
   );
   const activeLinks = componentLinks[activeComponent];
@@ -230,7 +230,7 @@ export function ComponentShowcase() {
       (component) => component.value === nextComponent
     );
 
-    setDirection(nextIndex > activeIndex ? 1 : -1);
+    setDirection(nextIndex > activeComponentIndex ? 1 : -1);
     setActiveComponent(nextComponent);
   };
 

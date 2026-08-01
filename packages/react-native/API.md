@@ -613,9 +613,7 @@ import { Tabs } from '@vellira-ui/react-native';
 
 Tabs use stable string values. `Tabs.Trigger value` must match
 `Tabs.Content value`; the selected panel does not depend on render order. Use
-`Tabs.List scrollable` for horizontally scrollable native tab rows. Root-level
-`scrollable`, `Tabs.Tab`, `Tabs.Panel`, `activeIndex`, and `onChange` are not
-part of the public API.
+`Tabs.List scrollable` for horizontally scrollable native tab rows.
 
 Mounting defaults to only the active panel. `keepMounted`, `lazyMount`, and
 `Tabs.Content forceMount` control panel lifetime when local state or expensive
