@@ -157,6 +157,56 @@ describe('FormField', () => {
     unmount();
   });
 
+  it('supports compound slots for label, description, control and message', () => {
+    const { container, unmount } = render(
+      <FormField id='compound-email' required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>Used for notifications.</FormField.Description>
+        <FormField.Control>
+          <input />
+        </FormField.Control>
+        <FormField.Message tone='success' live='polite'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
+    );
+
+    const input = container.querySelector('input');
+    const label = container.querySelector('label');
+    const description = container.querySelector('#compound-email-description');
+    const message = container.querySelector('#compound-email-message');
+
+    expect(label?.getAttribute('for')).toBe('compound-email');
+    expect(label?.textContent).toContain('Email');
+    expect(label?.textContent).toContain('*');
+    expect(description?.textContent).toBe('Used for notifications.');
+    expect(message?.textContent).toBe('Email address is available.');
+    expect(message?.getAttribute('aria-live')).toBe('polite');
+    expect(input?.id).toBe('compound-email');
+    expect(input?.required).toBe(true);
+    expect(input?.getAttribute('aria-labelledby')).toBe('compound-email-label');
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      'compound-email-description compound-email-message'
+    );
+
+    unmount();
+  });
+
+  it('lets FormField.Control opt out of automatic child binding', () => {
+    const { container, unmount } = render(
+      <FormField id='compound-manual'>
+        <FormField.Label>Manual</FormField.Label>
+        <FormField.Control bindControl={false}>
+          <input />
+        </FormField.Control>
+      </FormField>
+    );
+
+    expect(container.querySelector('input')?.id).toBe('');
+
+    unmount();
+  });
+
   it('gives error content priority over a supporting message', () => {
     const { container, unmount } = render(
       <FormField

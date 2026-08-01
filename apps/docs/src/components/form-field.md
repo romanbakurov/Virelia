@@ -206,6 +206,36 @@ When `bindControl` is enabled, one direct non-Fragment React element receives
 Fragments, multiple children, and `bindControl={false}` leave binding to your
 custom control or adapter.
 
+## Compound API
+
+Use compound slots when the field markup is easier to read as ordered field
+parts. The slots render through the same FormField layout, ids, message priority,
+and accessibility wiring as the props API.
+
+```tsx
+<FormField id='email' required>
+  <FormField.Label>Email</FormField.Label>
+  <FormField.Description>Used for notifications.</FormField.Description>
+  <FormField.Control>
+    <Input />
+  </FormField.Control>
+  <FormField.Message tone='success'>Available</FormField.Message>
+</FormField>
+```
+
+`FormField.Control` supports `bindControl={false}` on web for manually wired
+controls.
+
+```tsx
+<FormField id='avatar'>
+  <FormField.Label>Avatar</FormField.Label>
+  <FormField.Control bindControl={false}>
+    <FileUploadControl />
+  </FormField.Control>
+  <FormField.Message>PNG or JPG up to 2 MB.</FormField.Message>
+</FormField>
+```
+
 ## Native Notes
 
 Native FormField keeps the same conceptual props. Native controls may support a

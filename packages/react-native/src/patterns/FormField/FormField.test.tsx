@@ -87,6 +87,31 @@ describe('Native FormField', () => {
     unmount();
   });
 
+  it('supports compound slots for label, description, control and message', () => {
+    const { container, unmount } = render(
+      <FormField required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>Used for notifications.</FormField.Description>
+        <FormField.Control>
+          <input aria-label='Email' />
+        </FormField.Control>
+        <FormField.Message tone='success' live='polite'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
+    );
+
+    expect(container.textContent).toContain('Email');
+    expect(container.textContent).toContain('Used for notifications.');
+    expect(container.textContent).toContain('*');
+
+    const message = container.querySelector('[aria-live="polite"]');
+
+    expect(message?.textContent).toBe('Email address is available.');
+
+    unmount();
+  });
+
   it('supports polite message updates when requested', () => {
     const { container, unmount } = render(
       <FormField

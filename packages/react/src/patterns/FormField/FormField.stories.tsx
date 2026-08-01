@@ -385,6 +385,25 @@ export const LabelAction: Story = {
   ),
 };
 
+export const CompoundApi: Story = {
+  render: () => (
+    <Section title='Compound API'>
+      <FormField id='compound-email' required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>
+          Used for account notifications.
+        </FormField.Description>
+        <FormField.Control>
+          <Input color='success' placeholder='name@company.com' />
+        </FormField.Control>
+        <FormField.Message tone='success'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
+    </Section>
+  ),
+};
+
 export const NativeControlBinding: Story = {
   render: () => (
     <Section title='Native control binding'>

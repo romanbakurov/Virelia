@@ -1,4 +1,8 @@
-import type { BaseFormFieldProps } from '@vellira-ui/types';
+import type {
+  BaseFormFieldProps,
+  FormFieldMessageLive,
+  FormFieldMessageTone,
+} from '@vellira-ui/types';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export interface FormFieldProps
@@ -46,4 +50,47 @@ export interface FormFieldProps
   errorClassName?: string;
   /** Class name applied to the message content. */
   messageClassName?: string;
+}
+
+export interface FormFieldLabelProps {
+  /** Label content. */
+  children: ReactNode;
+  /** Action rendered next to the label without nesting inside the label element. */
+  action?: ReactNode;
+  /** Additional label content, such as an info affordance. */
+  info?: ReactNode;
+  /** Optional marker shown for non-required fields. Do not combine with required. */
+  optionalText?: ReactNode;
+  /** Class name applied to the label. */
+  className?: string;
+}
+
+export interface FormFieldDescriptionProps extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'id'
+> {
+  /** Supporting text linked to compatible controls. */
+  children: ReactNode;
+}
+
+export interface FormFieldControlProps extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children'
+> {
+  /** Control or custom field layout content. */
+  children: ReactNode;
+  /** Automatically binds a direct native control child with generated id and aria props. */
+  bindControl?: boolean;
+}
+
+export interface FormFieldMessageProps extends Omit<
+  ComponentPropsWithoutRef<'div'>,
+  'children' | 'id'
+> {
+  /** Supporting result/status message linked to compatible controls. Replaced by error when present. */
+  children: ReactNode;
+  /** Visual tone for message. Error always uses danger tone. */
+  tone?: FormFieldMessageTone;
+  /** Live region behavior for non-error message content. */
+  live?: FormFieldMessageLive;
 }

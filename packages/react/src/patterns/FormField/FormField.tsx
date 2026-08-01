@@ -1,16 +1,24 @@
 import {
   type AriaAttributes,
+  Children,
   cloneElement,
   Fragment,
   isValidElement,
   type ReactElement,
+  type ReactNode,
   useId,
 } from 'react';
 
 import { cn } from '@utils/cn';
 
 import { FormFieldContext } from './FormFieldContext';
-import type { FormFieldProps } from './types';
+import type {
+  FormFieldControlProps,
+  FormFieldDescriptionProps,
+  FormFieldLabelProps,
+  FormFieldMessageProps,
+  FormFieldProps,
+} from './types';
 
 import styles from './FormField.module.scss';
 
@@ -20,17 +28,92 @@ type FieldControlProps = AriaAttributes & {
   disabled?: boolean;
 };
 
+type FormFieldSlot = 'label' | 'description' | 'control' | 'message';
+type FormFieldSlotComponent<TProps> = ((
+  props: TProps
+) => ReactElement | null) & {
+  __velliraFormFieldPart?: FormFieldSlot;
+  displayName?: string;
+};
+
+type ParsedFormFieldChildren = {
+  hasSlots: boolean;
+  label?: FormFieldLabelProps;
+  description?: FormFieldDescriptionProps;
+  control?: FormFieldControlProps;
+  message?: FormFieldMessageProps;
+  fallbackChildren?: ReactNode;
+};
+
 const mergeIds = (...ids: Array<string | undefined>) =>
   ids.filter(Boolean).join(' ') || undefined;
 
-export const FormField = ({
+function createFormFieldSlot<TProps extends object>(
+  name: FormFieldSlot,
+  displayName: string
+) {
+  const Slot: FormFieldSlotComponent<TProps> = () => null;
+  Slot.__velliraFormFieldPart = name;
+  Slot.displayName = displayName;
+  return Slot;
+}
+
+function parseFormFieldChildren(children: ReactNode): ParsedFormFieldChildren {
+  const fallbackChildren: ReactNode[] = [];
+  const parsed: ParsedFormFieldChildren = { hasSlots: false };
+
+  Children.forEach(children, (child) => {
+    if (!isValidElement(child)) {
+      if (child !== null && child !== undefined && child !== false) {
+        fallbackChildren.push(child);
+      }
+      return;
+    }
+
+    const type = child.type as FormFieldSlotComponent<unknown>;
+
+    switch (type.__velliraFormFieldPart) {
+      case 'label':
+        parsed.hasSlots = true;
+        parsed.label = child.props as FormFieldLabelProps;
+        return;
+
+      case 'description':
+        parsed.hasSlots = true;
+        parsed.description = child.props as FormFieldDescriptionProps;
+        return;
+
+      case 'control':
+        parsed.hasSlots = true;
+        parsed.control = child.props as FormFieldControlProps;
+        return;
+
+      case 'message':
+        parsed.hasSlots = true;
+        parsed.message = child.props as FormFieldMessageProps;
+        return;
+
+      default:
+        fallbackChildren.push(child);
+    }
+  });
+
+  if (fallbackChildren.length > 0) {
+    parsed.fallbackChildren =
+      fallbackChildren.length === 1 ? fallbackChildren[0] : fallbackChildren;
+  }
+
+  return parsed;
+}
+
+const FormFieldRoot = ({
   id,
   label,
   description,
   error,
   message,
-  messageTone = 'neutral',
-  messageLive = 'off',
+  messageTone,
+  messageLive,
   required = false,
   disabled = false,
   invalid = false,
@@ -50,18 +133,37 @@ export const FormField = ({
   messageClassName,
   ...rest
 }: FormFieldProps) => {
+  const parsedChildren = parseFormFieldChildren(children);
+  const resolvedLabel = label ?? parsedChildren.label?.children;
+  const resolvedDescription =
+    description ?? parsedChildren.description?.children;
+  const resolvedMessage = message ?? parsedChildren.message?.children;
+  const resolvedMessageTone =
+    messageTone ?? parsedChildren.message?.tone ?? 'neutral';
+  const resolvedMessageLive =
+    messageLive ?? parsedChildren.message?.live ?? 'off';
+  const resolvedLabelInfo = labelInfo ?? parsedChildren.label?.info;
+  const resolvedLabelAction = labelAction ?? parsedChildren.label?.action;
+  const resolvedOptionalText =
+    optionalText ?? parsedChildren.label?.optionalText;
+  const resolvedChildren = parsedChildren.hasSlots
+    ? (parsedChildren.control?.children ?? parsedChildren.fallbackChildren)
+    : children;
+  const resolvedBindControl =
+    parsedChildren.control?.bindControl ?? bindControl;
+
   const generatedId = useId();
   const controlId = id ?? generatedId;
-  const labelId = label ? `${controlId}-label` : undefined;
+  const labelId = resolvedLabel ? `${controlId}-label` : undefined;
   const descriptionId =
-    description && controlId ? `${controlId}-description` : undefined;
+    resolvedDescription && controlId ? `${controlId}-description` : undefined;
 
   const errorId = error && controlId ? `${controlId}-error` : undefined;
   const messageId =
-    !error && message && controlId ? `${controlId}-message` : undefined;
+    !error && resolvedMessage && controlId ? `${controlId}-message` : undefined;
   const isInvalid = invalid || Boolean(error);
-  const visibleMessage = error ?? message;
-  const visibleTone = error ? 'danger' : messageTone;
+  const visibleMessage = error ?? resolvedMessage;
+  const visibleTone = error ? 'danger' : resolvedMessageTone;
   const messageToneClassName = {
     neutral: styles.messageToneNeutral,
     success: styles.messageToneSuccess,
@@ -85,11 +187,12 @@ export const FormField = ({
   };
 
   const child =
-    isValidElement<FieldControlProps>(children) && children.type !== Fragment
-      ? (children as ReactElement<FieldControlProps>)
+    isValidElement<FieldControlProps>(resolvedChildren) &&
+    resolvedChildren.type !== Fragment
+      ? (resolvedChildren as ReactElement<FieldControlProps>)
       : undefined;
   const control =
-    bindControl && child
+    resolvedBindControl && child
       ? cloneElement(child, {
           id: child.props.id ?? controlId,
           required: child.props.required ?? required,
@@ -105,7 +208,7 @@ export const FormField = ({
             describedBy
           ),
         })
-      : children;
+      : resolvedChildren;
 
   return (
     <div
@@ -124,15 +227,19 @@ export const FormField = ({
       data-orientation={orientation}
       data-size={size}
     >
-      {(label || labelAction) && (
+      {(resolvedLabel || resolvedLabelAction) && (
         <div className={styles.labelRow}>
-          {label && (
+          {resolvedLabel && (
             <label
               id={labelId}
               htmlFor={controlId}
-              className={cn(styles.label, labelClassName)}
+              className={cn(
+                styles.label,
+                parsedChildren.label?.className,
+                labelClassName
+              )}
             >
-              <span className={styles.labelText}>{label}</span>
+              <span className={styles.labelText}>{resolvedLabel}</span>
 
               {required && (
                 <span className={styles.required} aria-hidden='true'>
@@ -140,33 +247,45 @@ export const FormField = ({
                 </span>
               )}
 
-              {!required && optionalText && (
-                <span className={styles.optional}>{optionalText}</span>
+              {!required && resolvedOptionalText && (
+                <span className={styles.optional}>{resolvedOptionalText}</span>
               )}
 
-              {labelInfo && (
-                <span className={styles.labelInfo}>{labelInfo}</span>
+              {resolvedLabelInfo && (
+                <span className={styles.labelInfo}>{resolvedLabelInfo}</span>
               )}
             </label>
           )}
 
-          {labelAction && (
-            <div className={styles.labelAction}>{labelAction}</div>
+          {resolvedLabelAction && (
+            <div className={styles.labelAction}>{resolvedLabelAction}</div>
           )}
         </div>
       )}
 
-      {description && (
+      {resolvedDescription && (
         <div
           id={descriptionId}
-          className={cn(styles.description, descriptionClassName)}
+          className={cn(
+            styles.description,
+            parsedChildren.description?.className,
+            descriptionClassName
+          )}
         >
-          {description}
+          {resolvedDescription}
         </div>
       )}
 
       <FormFieldContext.Provider value={contextValue}>
-        <div className={cn(styles.control, controlClassName)}>{control}</div>
+        <div
+          className={cn(
+            styles.control,
+            parsedChildren.control?.className,
+            controlClassName
+          )}
+        >
+          {control}
+        </div>
       </FormFieldContext.Provider>
 
       {visibleMessage && (
@@ -175,10 +294,13 @@ export const FormField = ({
           className={cn(
             styles.message,
             messageToneClassName,
+            !error && parsedChildren.message?.className,
             error ? errorClassName : messageClassName
           )}
           role={error ? 'alert' : undefined}
-          aria-live={!error && messageLive === 'polite' ? 'polite' : undefined}
+          aria-live={
+            !error && resolvedMessageLive === 'polite' ? 'polite' : undefined
+          }
         >
           {visibleMessage}
         </div>
@@ -186,3 +308,28 @@ export const FormField = ({
     </div>
   );
 };
+
+const FormFieldLabel = createFormFieldSlot<FormFieldLabelProps>(
+  'label',
+  'FormField.Label'
+);
+const FormFieldDescription = createFormFieldSlot<FormFieldDescriptionProps>(
+  'description',
+  'FormField.Description'
+);
+const FormFieldControl = createFormFieldSlot<FormFieldControlProps>(
+  'control',
+  'FormField.Control'
+);
+const FormFieldMessage = createFormFieldSlot<FormFieldMessageProps>(
+  'message',
+  'FormField.Message'
+);
+
+export const FormField = Object.assign(FormFieldRoot, {
+  Label: FormFieldLabel,
+  Description: FormFieldDescription,
+  Control: FormFieldControl,
+  Message: FormFieldMessage,
+  displayName: 'FormField',
+});

@@ -32,7 +32,13 @@ export type {
 export { Tabs } from './components/Tabs';
 export type { TooltipProps } from './components/Tooltip';
 export { Tooltip } from './components/Tooltip';
-export type { FormFieldProps } from './patterns/FormField';
+export type {
+  FormFieldControlProps,
+  FormFieldDescriptionProps,
+  FormFieldLabelProps,
+  FormFieldMessageProps,
+  FormFieldProps,
+} from './patterns/FormField';
 export { FormField } from './patterns/FormField';
 export type { ButtonProps } from './primitives/Button';
 export { Button } from './primitives/Button';

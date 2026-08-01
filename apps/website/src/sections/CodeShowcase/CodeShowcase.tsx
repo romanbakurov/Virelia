@@ -180,14 +180,18 @@ export function Example() {
 export function Example() {
   return (
     <FormField
-      label='Workspace name'
-      description='Visible to your team.'
-      message='Workspace name is available.'
-      messageTone='success'
+      id='workspace'
     >
-      <Input
-        placeholder='Vellira workspace'
-      />
+      <FormField.Label>Workspace name</FormField.Label>
+      <FormField.Description>
+        Visible to your team.
+      </FormField.Description>
+      <FormField.Control>
+        <Input placeholder='Vellira workspace' />
+      </FormField.Control>
+      <FormField.Message tone='success'>
+        Workspace name is available.
+      </FormField.Message>
     </FormField>
   );
 }`;
@@ -688,16 +692,20 @@ export function CodeShowcase() {
                           <strong>Workspace details</strong>
                         </div>
 
-                        <FormField
-                          label='Workspace name'
-                          description='Visible to your team.'
-                          message='Workspace name is available.'
-                          messageTone='success'
-                        >
-                          <Input
-                            value={workspace}
-                            onValueChange={setWorkspace}
-                          />
+                        <FormField id='workspace'>
+                          <FormField.Label>Workspace name</FormField.Label>
+                          <FormField.Description>
+                            Visible to your team.
+                          </FormField.Description>
+                          <FormField.Control>
+                            <Input
+                              value={workspace}
+                              onValueChange={setWorkspace}
+                            />
+                          </FormField.Control>
+                          <FormField.Message tone='success'>
+                            Workspace name is available.
+                          </FormField.Message>
                         </FormField>
 
                         <div className={styles.fieldMeta}>
