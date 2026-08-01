@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,10 +11,10 @@ import styles from './SiteHeader.module.css';
 
 const navigation = [
   { label: 'Components', href: '#components' },
-  { label: 'Platforms', href: '#platforms' },
   { label: 'Themes', href: '#themes' },
-  { label: 'Pro', href: '#pro' },
+  { label: 'Platforms', href: '#platforms' },
   { label: 'Roadmap', href: '#roadmap' },
+  { label: 'Pro', href: '#pro' },
 ] as const;
 
 const externalLinks = [
@@ -46,6 +47,44 @@ function scrollToAnchor(hash: string) {
 }
 
 export function SiteHeader() {
+  const [activeHash, setActiveHash] = useState<
+    (typeof navigation)[number]['href']
+  >(navigation[0].href);
+
+  useEffect(() => {
+    const sections = navigation
+      .map((item) => document.getElementById(item.href.slice(1)))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    if (sections.length === 0) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (first, second) =>
+              second.intersectionRatio - first.intersectionRatio
+          )
+          .at(0);
+
+        if (visible?.target.id) {
+          setActiveHash(
+            `#${visible.target.id}` as (typeof navigation)[number]['href']
+          );
+        }
+      },
+      {
+        rootMargin: '-30% 0px -60% 0px',
+        threshold: [0.1, 0.35, 0.6],
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -66,8 +105,10 @@ export function SiteHeader() {
               key={item.label}
               className={styles.navigationLink}
               href={item.href}
+              aria-current={activeHash === item.href ? 'page' : undefined}
               onClick={(event) => {
                 event.preventDefault();
+                setActiveHash(item.href);
                 scrollToAnchor(item.href);
               }}
             >
@@ -89,10 +130,13 @@ export function SiteHeader() {
                 shape='square'
                 iconOnly
                 iconStart={
-                  <img
+                  <span
                     className={styles.actionIcon}
-                    src={link.icon}
-                    alt=''
+                    style={
+                      {
+                        '--action-icon': `url(${link.icon})`,
+                      } as CSSProperties
+                    }
                     aria-hidden='true'
                   />
                 }
@@ -108,7 +152,7 @@ export function SiteHeader() {
             ))}
           </div>
 
-          <Button asChild size='sm'>
+          <Button asChild size='sm' className={styles.ctaButton}>
             <a href='#quick-start'>Get started</a>
           </Button>
         </div>

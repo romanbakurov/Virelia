@@ -11,7 +11,7 @@
 .container {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: calc(var(--space-6) + var(--space-1));
+  gap: var(--space-10);
   align-items: center;
   width: min(1240px, calc(100% - var(--space-12)));
   min-height: calc(var(--space-16) + var(--space-1));
@@ -21,6 +21,7 @@
 .brand {
   display: inline-flex;
   align-items: center;
+  margin-right: var(--space-2);
   color: var(--text-primary);
   text-decoration: none;
 }
@@ -34,12 +35,13 @@
 }
 
 .navigationLink {
+  position: relative;
   display: inline-flex;
   align-items: center;
   min-height: calc(var(--space-8) + var(--space-1));
   padding: 0 calc(var(--space-2) + var(--space-1) / 2);
   color: var(--text-secondary);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
   border-radius: var(--radius-md);
@@ -51,6 +53,31 @@
 .navigationLink:hover {
   color: var(--text-primary);
   background: var(--surface-subtle);
+}
+
+.navigationLink::after {
+  position: absolute;
+  right: calc(var(--space-2) + var(--space-1) / 2);
+  bottom: -1px;
+  left: calc(var(--space-2) + var(--space-1) / 2);
+  height: 2px;
+  background: var(--text-brand);
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transform: scaleX(0.55);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  content: '';
+}
+
+.navigationLink[aria-current='page'] {
+  color: var(--text-primary);
+}
+
+.navigationLink[aria-current='page']::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 .navigationLink:focus-visible {
@@ -68,13 +95,26 @@
 .externalActions {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: calc(var(--space-4) + var(--space-1) / 2);
+  color: var(--text-primary);
 }
 
 .actionIcon {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
+  width: 20px;
+  height: 20px;
+  background: currentcolor;
+  mask: var(--action-icon) center / contain no-repeat;
+}
+
+.ctaButton {
+  min-height: 34px;
+  border-radius: 28px;
+}
+
+.ctaButton:hover {
+  box-shadow:
+    0 10px 24px color-mix(in srgb, var(--text-brand) 18%, transparent),
+    inset 0 0 0 1px var(--button-primary-solid-hover-border);
 }
 
 @media (width <= 980px) {
