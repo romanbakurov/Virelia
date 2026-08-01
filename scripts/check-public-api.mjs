@@ -51,6 +51,7 @@ const publicSymbolContracts = {
     'Bag',
     'Bell',
     'BellOff',
+    'Book',
     'Bookmark',
     'Calendar',
     'Camera',
@@ -145,6 +146,7 @@ const publicSymbolContracts = {
     'VolumeOff',
     'Warning',
     'Wallet',
+    'Website',
   ],
   'packages/icons/src/web.ts': [
     'ArrowDown',
@@ -157,6 +159,7 @@ const publicSymbolContracts = {
     'Bag',
     'Bell',
     'BellOff',
+    'Book',
     'Bookmark',
     'Calendar',
     'Camera',
@@ -251,6 +254,7 @@ const publicSymbolContracts = {
     'VolumeOff',
     'Warning',
     'Wallet',
+    'Website',
   ],
   'packages/icons/src/lottie.ts': [
     'AnimatedIconData',

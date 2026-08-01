@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { Book, File } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
@@ -20,17 +21,24 @@ const externalLinks = [
   {
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
-    icon: '/brand/navigation/documentation.svg',
+    icon: <File size={16} aria-hidden='true' />,
   },
   {
     label: 'Storybook',
     href: 'https://storybook.vellira.dev',
-    icon: '/brand/navigation/storybook.svg',
+    icon: <Book size={16} aria-hidden='true' />,
   },
   {
     label: 'GitHub',
     href: 'https://github.com/vellira-dev/vellira',
-    icon: '/brand/navigation/github.svg',
+    icon: (
+      <img
+        className={styles.actionIcon}
+        src='/brand/navigation/github.svg'
+        alt=''
+        aria-hidden='true'
+      />
+    ),
   },
 ] as const;
 
@@ -87,14 +95,7 @@ export function SiteHeader() {
               appearance='ghost'
               shape='square'
               iconOnly
-              iconStart={
-                <img
-                  className={styles.actionIcon}
-                  src={link.icon}
-                  alt=''
-                  aria-hidden='true'
-                />
-              }
+              iconStart={link.icon}
             >
               <a
                 href={link.href}

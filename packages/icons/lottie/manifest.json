@@ -1,6 +1,6 @@
 {
   "name": "Vellira Animated Icons",
-  "count": 105,
+  "count": 107,
   "icons": [
     {
       "name": "ArrowLeftRight",
@@ -202,6 +202,20 @@
       "name": "BellOff",
       "category": "Communication",
       "file": "Communication/BellOff.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Book",
+      "category": "Communication",
+      "file": "Communication/Book.json",
+      "frames": 15,
+      "fps": 30
+    },
+    {
+      "name": "Website",
+      "category": "Communication",
+      "file": "Communication/Website.json",
       "frames": 15,
       "fps": 30
     },
