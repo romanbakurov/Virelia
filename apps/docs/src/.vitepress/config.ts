@@ -76,6 +76,9 @@ export default defineConfig({
       { text: 'Native', link: '/native' },
       { text: 'Tokens', link: '/tokens' },
       { text: 'Production', link: '/production' },
+      { text: 'Website', link: 'https://vellira.dev' },
+      { text: 'GitHub', link: 'https://github.com/vellira-dev/vellira' },
+      { text: 'Storybook', link: 'https://storybook.vellira.dev' },
     ],
     sidebar: [
       {

@@ -56,31 +56,39 @@ export function SiteHeader() {
               {item.label}
             </a>
           ))}
-
-          <a
-            className={styles.navigationLink}
-            href='https://docs.vellira.dev'
-            target='_blank'
-            rel='noreferrer noopener'
-          >
-            Docs
-          </a>
-
-          <a
-            className={styles.navigationLink}
-            href='https://github.com/vellira-dev/Vellira'
-            target='_blank'
-            rel='noreferrer noopener'
-          >
-            GitHub
-          </a>
         </nav>
 
         <div className={styles.actions}>
           <ThemeSwitcher />
 
-          <Button asChild size='sm'>
-            <a href='#quick-start'>Get started</a>
+          <Button asChild size='sm' appearance='soft'>
+            <a
+              href='https://docs.vellira.dev'
+              target='_blank'
+              rel='noreferrer noopener'
+            >
+              Documentation
+            </a>
+          </Button>
+
+          <Button asChild size='sm' appearance='ghost'>
+            <a
+              href='https://storybook.vellira.dev'
+              target='_blank'
+              rel='noreferrer noopener'
+            >
+              Storybook
+            </a>
+          </Button>
+
+          <Button asChild size='sm' appearance='ghost'>
+            <a
+              href='https://github.com/vellira-dev/vellira'
+              target='_blank'
+              rel='noreferrer noopener'
+            >
+              GitHub
+            </a>
           </Button>
         </div>
       </div>
