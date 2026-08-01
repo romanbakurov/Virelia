@@ -51,34 +51,11 @@ $select-variants: outline, filled, soft;
   overflow: hidden;
   user-select: none;
 
-  &::after {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at center,
-      color-mix(in srgb, currentcolor 14%, transparent) 0%,
-      transparent 68%
-    );
-    border-radius: inherit;
-    opacity: 0;
-    transform: scale(0.82);
-    transition:
-      opacity 0.18s ease,
-      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-    content: '';
-    pointer-events: none;
-  }
-
   &:hover:not(.disabled) {
     color: var(--select-current-hover-fg);
     background-color: var(--select-current-hover-bg);
     border-color: var(--select-current-hover-border);
     transform: translateY(-1px);
-
-    &::after {
-      opacity: 0.55;
-      transform: scale(1);
-    }
 
     .arrow {
       color: var(--select-current-hover-icon);
@@ -99,12 +76,6 @@ $select-variants: outline, filled, soft;
 
   &:active:not(.disabled) {
     transform: scale(0.985);
-
-    &::after {
-      opacity: 0.82;
-      transform: scale(1.08);
-      transition-duration: 0.08s;
-    }
   }
 }
 
@@ -254,10 +225,6 @@ $select-variants: outline, filled, soft;
   border-color: var(--select-trigger-disabled-border);
   transform: none;
   cursor: not-allowed;
-
-  &::after {
-    opacity: 0;
-  }
 
   .arrow {
     color: var(--select-trigger-disabled-fg);

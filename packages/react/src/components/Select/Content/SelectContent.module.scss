@@ -217,11 +217,9 @@ $select-variants: outline, filled, soft;
   line-height: var(--line-height-xs);
   text-align: left;
   background: transparent;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: var(--radius-sm);
-  transition:
-    color 0.15s ease,
-    border-color 0.15s ease;
+  transition: color 0.15s ease;
   cursor: pointer;
   isolation: isolate;
   gap: var(--space-3);
@@ -245,10 +243,6 @@ $select-variants: outline, filled, soft;
   > * {
     position: relative;
     z-index: 1;
-  }
-
-  &:hover:not(:disabled) {
-    border-color: var(--select-option-current-hover-border);
   }
 
   &:hover:not(:disabled)::before {
