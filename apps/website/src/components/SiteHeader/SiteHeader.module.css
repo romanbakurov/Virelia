@@ -138,7 +138,7 @@
 
 .ctaButton:hover {
   box-shadow:
-    0 14px 30px color-mix(in srgb, var(--text-brand) 24%, transparent),
+    0 8px 18px color-mix(in srgb, var(--text-brand) 16%, transparent),
     inset 0 0 0 1px var(--button-primary-solid-hover-border);
   transform: translateY(-1px);
 }
