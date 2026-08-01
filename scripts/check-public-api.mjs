@@ -8,7 +8,13 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(dirname, '..');
 
 const packageExportContracts = {
-  'packages/assets/package.json': ['./fonts/*', './styles', './styles/*'],
+  'packages/assets/package.json': [
+    './brand/*',
+    './fonts/*',
+    './styles',
+    './styles/*',
+    './sync-brand',
+  ],
   'packages/core/package.json': ['.'],
   'packages/icons/package.json': ['.', './lottie', './native', './web'],
   'packages/react-native/package.json': ['.'],
