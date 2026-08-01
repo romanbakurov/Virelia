@@ -110,7 +110,7 @@ function renderDropdownContent() {
         Filter view
       </Dropdown.Item>
       <Dropdown.Separator />
-      <Dropdown.Item value='delete' icon={<Trash />} danger>
+      <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
         Delete report
       </Dropdown.Item>
     </Dropdown.Content>
@@ -1101,7 +1101,7 @@ function NativeComponentsOverview() {
                   <Dropdown.Item value='download' icon={<Download />}>
                     Download report
                   </Dropdown.Item>
-                  <Dropdown.Item value='delete' icon={<Trash />} danger>
+                  <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
                     Delete report
                   </Dropdown.Item>
                 </Dropdown.Content>

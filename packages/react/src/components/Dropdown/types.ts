@@ -50,7 +50,6 @@ export type DropdownProps = {
   searchPlaceholder?: string;
   onSearch?: (value: string) => void;
   empty?: ReactNode;
-  noOptionsText?: ReactNode;
 };
 
 export type DropdownTriggerProps = {

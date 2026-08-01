@@ -106,7 +106,7 @@ export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
       {context.loading ? (
         <DropdownLoadingSurface>{context.loadingText}</DropdownLoadingSurface>
       ) : context.searchable && context.items.length === 0 ? (
-        <DropdownEmptySurface>{context.noOptionsText}</DropdownEmptySurface>
+        <DropdownEmptySurface>{context.empty}</DropdownEmptySurface>
       ) : context.entries.length ? (
         context.entries.map((entry) => {
           if (entry.type === 'groupStart') {

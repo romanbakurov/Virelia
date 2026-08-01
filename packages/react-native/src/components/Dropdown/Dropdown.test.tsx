@@ -24,7 +24,7 @@ function renderActionContent({
       <Dropdown.Item value='edit' icon={editIcon} onSelect={onEdit}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item value='delete' danger icon={deleteIcon}>
+      <Dropdown.Item value='delete' color='danger' icon={deleteIcon}>
         Delete
       </Dropdown.Item>
     </Dropdown.Content>
@@ -75,7 +75,7 @@ describe('Native Dropdown', () => {
             Edit
           </Dropdown.Item>
           <Dropdown.Separator />
-          <Dropdown.Item value='delete' danger>
+          <Dropdown.Item value='delete' color='danger'>
             Delete
           </Dropdown.Item>
         </Dropdown.Content>
@@ -658,7 +658,7 @@ describe('Native Dropdown', () => {
           <Dropdown.Item value='edit' icon={<Icon />}>
             Edit
           </Dropdown.Item>
-          <Dropdown.Item value='delete' danger icon={<Icon />}>
+          <Dropdown.Item value='delete' color='danger' icon={<Icon />}>
             Delete
           </Dropdown.Item>
           <Dropdown.Item value='archive' disabled icon={<Icon />}>

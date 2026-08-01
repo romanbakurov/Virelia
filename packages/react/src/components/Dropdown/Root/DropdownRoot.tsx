@@ -62,7 +62,6 @@ export const DropdownRoot = ({
   searchPlaceholder,
   onSearch,
   empty,
-  noOptionsText,
   className,
 }: DropdownProps) => {
   const generatedId = useId();
@@ -319,7 +318,7 @@ export const DropdownRoot = ({
     items: filteredParsed.items,
     loading,
     loadingText,
-    noOptionsText: empty ?? noOptionsText,
+    empty,
     maxWidth,
     minWidth,
     openSubId,

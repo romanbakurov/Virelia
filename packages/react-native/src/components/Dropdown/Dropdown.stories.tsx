@@ -56,7 +56,7 @@ function renderActionContent(onSelect?: (value: string) => void) {
       <Dropdown.Item
         value='delete'
         icon={<Trash />}
-        danger
+        color='danger'
         onSelect={() => onSelect?.('delete')}
       >
         Delete account
@@ -249,7 +249,7 @@ and secondary actions, not for selecting a saved form value.
 - Text, icon and custom triggers
 - Groups and separators
 - Searchable and command-style action lists
-- Disabled and danger action items
+- Disabled and destructive action items
 - Long text support
 - Compound Trigger, Content and Item API matching web usage
 - Content presentation: auto, sheet, modal or popover
@@ -273,7 +273,7 @@ RadioGroup when a small set of choices should stay visible for comparison.
       Edit
     </Dropdown.Item>
     <Dropdown.Separator />
-    <Dropdown.Item value='delete' danger onSelect={handleDelete}>
+    <Dropdown.Item value='delete' color='danger' onSelect={handleDelete}>
       Delete
     </Dropdown.Item>
   </Dropdown.Content>
@@ -384,11 +384,6 @@ RadioGroup when a small set of choices should stay visible for comparison.
     empty: {
       control: 'text',
       description: 'Content shown when a searchable menu has no matches.',
-    },
-
-    noOptionsText: {
-      control: 'text',
-      description: 'Fallback empty text for searchable menus.',
     },
 
     onOpenChange: {
@@ -545,7 +540,7 @@ export const CompoundApi: Story = {
             Duplicate
           </Dropdown.Item>
           <Dropdown.Separator />
-          <Dropdown.Item value='delete' icon={<Trash />} danger>
+          <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
             Delete
           </Dropdown.Item>
         </Dropdown.Content>
@@ -669,7 +664,7 @@ export const WithGroups: Story = {
           </Dropdown.Item>
           <Dropdown.Separator />
           <Dropdown.Label>Danger</Dropdown.Label>
-          <Dropdown.Item value='delete' icon={<Trash />} danger>
+          <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
             Delete
           </Dropdown.Item>
         </Dropdown.Content>
@@ -692,7 +687,7 @@ export const WithDisabledItems: Story = {
           <Dropdown.Item value='refresh' icon={<Refresh />} disabled>
             Refresh
           </Dropdown.Item>
-          <Dropdown.Item value='delete' icon={<Trash />} danger>
+          <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
             Delete
           </Dropdown.Item>
         </Dropdown.Content>
@@ -710,10 +705,10 @@ export const DangerActions: Story = {
       <Dropdown {...args}>
         <Dropdown.Content>
           <Dropdown.Item value='archive'>Archive project</Dropdown.Item>
-          <Dropdown.Item value='delete-draft' danger>
+          <Dropdown.Item value='delete-draft' color='danger'>
             Delete draft
           </Dropdown.Item>
-          <Dropdown.Item value='delete-project' danger>
+          <Dropdown.Item value='delete-project' color='danger'>
             Delete project
           </Dropdown.Item>
         </Dropdown.Content>
@@ -762,7 +757,7 @@ export const Searchable: Story = {
           <Dropdown.Item value='refresh' icon={<Refresh />}>
             Refresh report
           </Dropdown.Item>
-          <Dropdown.Item value='delete' icon={<Trash />} danger>
+          <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
             Delete workspace
           </Dropdown.Item>
         </Dropdown.Content>
@@ -791,7 +786,7 @@ export const Command: Story = {
           <Dropdown.Item value='refresh' icon={<Refresh />}>
             Refresh report
           </Dropdown.Item>
-          <Dropdown.Item value='delete' icon={<Trash />} danger>
+          <Dropdown.Item value='delete' icon={<Trash />} color='danger'>
             Delete workspace
           </Dropdown.Item>
         </Dropdown.Content>

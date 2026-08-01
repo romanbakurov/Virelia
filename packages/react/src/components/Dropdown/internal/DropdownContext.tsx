@@ -32,7 +32,7 @@ export type DropdownContextValue = {
   items: DropdownCollectionItem[];
   loading?: boolean;
   loadingText?: ReactNode;
-  noOptionsText?: ReactNode;
+  empty?: ReactNode;
   maxWidth?: number | string;
   minWidth?: number | string;
   openSubId?: string;
