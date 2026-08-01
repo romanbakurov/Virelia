@@ -22,13 +22,13 @@ const externalLinks = [
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
     icon: '/brand/navigation/documentation.svg',
-    iconSize: 22,
+    iconSize: 20,
   },
   {
     label: 'Storybook',
     href: 'https://storybook.vellira.dev',
     icon: '/brand/navigation/storybook.svg',
-    iconSize: 18,
+    iconSize: 20,
   },
   {
     label: 'GitHub',
@@ -135,6 +135,7 @@ export function SiteHeader() {
                 appearance='ghost'
                 shape='square'
                 iconOnly
+                className={styles.externalAction}
                 iconStart={
                   <span
                     className={styles.actionIcon}

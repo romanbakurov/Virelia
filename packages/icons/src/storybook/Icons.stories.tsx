@@ -140,6 +140,7 @@ const staticIconCategories = [
       'Book',
       'Chat',
       'Doc',
+      'Docs',
       'Inbox',
       'Mail',
       'Message',

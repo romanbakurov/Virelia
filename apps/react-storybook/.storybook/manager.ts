@@ -50,11 +50,14 @@ addons.register('vellira/navigation-links', () => {
             target: '_blank',
             title: link.label,
           },
-          React.createElement('img', {
-            alt: '',
+          React.createElement('span', {
             'aria-hidden': 'true',
             className: 'velliraToolbarIcon',
-            src: link.icon,
+            style: {
+              '--vellira-toolbar-icon': `url(${link.icon})`,
+            } as React.CSSProperties & {
+              '--vellira-toolbar-icon': string;
+            },
           }),
           React.createElement(
             'span',

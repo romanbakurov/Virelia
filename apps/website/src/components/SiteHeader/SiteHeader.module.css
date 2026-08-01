@@ -114,9 +114,13 @@
   color: var(--text-primary);
 }
 
+.externalAction {
+  --icon-size: 24px;
+}
+
 .actionIcon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   background: currentcolor;
   mask: var(--action-icon) center / var(--action-icon-size, 20px)
     var(--action-icon-size, 20px) no-repeat;

@@ -35,9 +35,10 @@ textarea {
 }
 
 .velliraToolbarIcon {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
+  width: 20px;
+  height: 20px;
+  background: currentcolor;
+  mask: var(--vellira-toolbar-icon) center / 16px 16px no-repeat;
 }
 
 .velliraToolbarLabel {
