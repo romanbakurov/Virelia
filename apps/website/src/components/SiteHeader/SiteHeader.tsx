@@ -28,7 +28,7 @@ const externalLinks = [
     label: 'Storybook',
     href: 'https://storybook.vellira.dev',
     icon: '/brand/navigation/storybook.svg',
-    iconSize: 20,
+    iconSize: 21,
   },
   {
     label: 'GitHub',
