@@ -1435,9 +1435,8 @@ function WebComponentsOverview() {
                     </Button>
                   </Tooltip.Trigger>
                   <Portal>
-                    <Tooltip.Content>
+                    <Tooltip.Content withArrow>
                       Tooltip text is shown on hover or focus.
-                      <Tooltip.Arrow />
                     </Tooltip.Content>
                   </Portal>
                 </Tooltip>
@@ -1451,9 +1450,8 @@ function WebComponentsOverview() {
                     />
                   </Tooltip.Trigger>
                   <Portal>
-                    <Tooltip.Content>
+                    <Tooltip.Content withArrow>
                       Icon buttons keep their own accessible label.
-                      <Tooltip.Arrow />
                     </Tooltip.Content>
                   </Portal>
                 </Tooltip>
@@ -1472,9 +1470,8 @@ function WebComponentsOverview() {
                         </Button>
                       </Tooltip.Trigger>
                       <Portal>
-                        <Tooltip.Content>
+                        <Tooltip.Content withArrow>
                           {placement} placement
-                          <Tooltip.Arrow />
                         </Tooltip.Content>
                       </Portal>
                     </Tooltip>

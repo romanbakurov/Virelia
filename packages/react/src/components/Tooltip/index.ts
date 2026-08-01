@@ -1,5 +1,3 @@
-export type { TooltipArrowProps } from './Arrow';
-export { TooltipArrow } from './Arrow';
 export type { TooltipContentProps } from './Content';
 export { TooltipContent } from './Content';
 export type { TooltipRootProps } from './Root';

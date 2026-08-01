@@ -131,10 +131,7 @@ describe('Native Tooltip', () => {
         <Tooltip.Trigger>
           <span>Show help</span>
         </Tooltip.Trigger>
-        <Tooltip.Content>
-          Open by default
-          <Tooltip.Arrow />
-        </Tooltip.Content>
+        <Tooltip.Content withArrow>Open by default</Tooltip.Content>
       </Tooltip>
     );
 
@@ -144,6 +141,60 @@ describe('Native Tooltip', () => {
 
     expect(tooltip?.textContent).toContain('Open by default');
     expect(arrow).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports the withArrow content prop', () => {
+    const { unmount } = render(
+      <Tooltip defaultOpen>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content withArrow>With arrow prop</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector('[id$="-content"]');
+    const arrow = tooltip?.querySelector('div');
+
+    expect(tooltip?.textContent).toContain('With arrow prop');
+    expect(arrow).not.toBeNull();
+
+    unmount();
+  });
+
+  it('respects close delay before hiding content', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip delay={{ open: 0, close: 200 }}>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Close delayed tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = container.querySelector('button');
+
+    act(() => {
+      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    });
+
+    expect(document.body.textContent).toContain('Close delayed tooltip');
+
+    act(() => {
+      vi.advanceTimersByTime(199);
+    });
+
+    expect(document.body.textContent).toContain('Close delayed tooltip');
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(document.body.textContent).not.toContain('Close delayed tooltip');
 
     unmount();
   });

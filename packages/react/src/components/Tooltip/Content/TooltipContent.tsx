@@ -2,7 +2,6 @@ import { forwardRef } from 'react';
 
 import { cn } from '@utils/cn';
 
-import { TooltipArrow } from '../Arrow';
 import { composeRefs } from '../internal/composeEventHandlers';
 import { useTooltipContext } from '../internal/TooltipContext';
 
@@ -47,10 +46,34 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
         }}
       >
         {children}
-        {withArrow && <TooltipArrow />}
+        {withArrow && <InternalArrow />}
       </div>
     );
   }
 );
 
 TooltipContent.displayName = 'Tooltip.Content';
+
+function InternalArrow() {
+  const tooltip = useTooltipContext();
+  const side = tooltip.placement.split('-')[0] as
+    'top' | 'right' | 'bottom' | 'left';
+  const staticSide = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  }[side];
+
+  return (
+    <div
+      ref={tooltip.arrowRef}
+      className={styles.arrow}
+      style={{
+        left: tooltip.arrowX != null ? `${tooltip.arrowX}px` : undefined,
+        top: tooltip.arrowY != null ? `${tooltip.arrowY}px` : undefined,
+        [staticSide]: 'calc(var(--tooltip-arrow-size) / -2)',
+      }}
+    />
+  );
+}

@@ -792,7 +792,7 @@ markup. If `Tabs.Trigger` receives both the `icon` prop and an explicit
 ## Tooltip
 
 Floating helper text that appears around a target element. Compose web Tooltip
-with `Tooltip.Trigger`, `Tooltip.Content`, and optional `Tooltip.Arrow`.
+with `Tooltip.Trigger`, `Tooltip.Content`, and optional `withArrow`.
 `Tooltip.Trigger asChild` should be used when the trigger already has its own
 button or control semantics.
 
@@ -804,10 +804,7 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
     <Button aria-label='More actions'>...</Button>
   </Tooltip.Trigger>
   <Portal>
-    <Tooltip.Content>
-      More actions
-      <Tooltip.Arrow />
-    </Tooltip.Content>
+    <Tooltip.Content withArrow>More actions</Tooltip.Content>
   </Portal>
 </Tooltip>;
 ```
@@ -858,16 +855,6 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
 | `withArrow`  | `boolean`       | No       | —                                                                  |
 
 <!-- api-docgen:end web.TooltipContentProps.TooltipContentProps -->
-
-### Tooltip.Arrow Props
-
-<!-- api-docgen:start web.TooltipArrowProps.TooltipArrowProps -->
-
-| Prop        | Type     | Required | Description                            |
-| ----------- | -------- | -------- | -------------------------------------- |
-| `className` | `string` | No       | Extra CSS class for the arrow element. |
-
-<!-- api-docgen:end web.TooltipArrowProps.TooltipArrowProps -->
 
 ## Portal
 

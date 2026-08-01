@@ -1,7 +1,7 @@
 # Tooltip
 
-Tooltip provides short, non-critical helper text for a focused or hovered
-control. It should clarify UI, not carry required instructions.
+Tooltip provides short, non-critical helper text for a focused, hovered, or
+long-pressed control. It should clarify UI, not carry required instructions.
 
 <StorybookFrame
   story="tooltip.triggers"
@@ -24,12 +24,88 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
     <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
   </Tooltip.Trigger>
   <Portal>
-    <Tooltip.Content>
-      Copy project ID
-      <Tooltip.Arrow />
-    </Tooltip.Content>
+    <Tooltip.Content withArrow>Copy project ID</Tooltip.Content>
   </Portal>
 </Tooltip>;
+```
+
+## Web Usage
+
+Web Tooltip opens from hover and focus. Use `Tooltip.Trigger asChild` when the
+trigger is an existing Vellira control, and render floating content through
+`Portal` so it is not clipped by parent layout.
+
+```tsx
+import { Copy } from '@vellira-ui/icons';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
+
+export function CopyProjectId() {
+  return (
+    <Tooltip placement='top' delay={{ open: 250, close: 100 }}>
+      <Tooltip.Trigger asChild>
+        <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content withArrow>Copy project ID</Tooltip.Content>
+      </Portal>
+    </Tooltip>
+  );
+}
+```
+
+## Native Usage
+
+Native Tooltip uses the same compound structure as Web, but opens from long
+press instead of hover. Keep the trigger accessible on its own and put short
+helper copy inside `Tooltip.Content`.
+
+```tsx
+import { Info } from '@vellira-ui/icons/native';
+import { Button, Tooltip } from '@vellira-ui/react-native';
+
+export function WorkspaceInfo() {
+  return (
+    <Tooltip placement='top' delay={{ open: 250, close: 2500 }}>
+      <Tooltip.Trigger>
+        <Button accessibilityLabel='Workspace info' iconStart={<Info />} />
+      </Tooltip.Trigger>
+
+      <Tooltip.Content withArrow>
+        Only workspace owners can change billing.
+      </Tooltip.Content>
+    </Tooltip>
+  );
+}
+```
+
+## Controlled State
+
+Use `open` and `onOpenChange` when Tooltip visibility must follow another
+piece of UI state. Use `defaultOpen` for previews, onboarding hints, and tests
+that need the content mounted immediately.
+
+```tsx
+import { useState } from 'react';
+
+import { Info } from '@vellira-ui/icons';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
+
+export function ControlledTooltip() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Tooltip open={open} onOpenChange={setOpen}>
+      <Tooltip.Trigger asChild>
+        <Button aria-label='Show billing help' iconOnly iconStart={<Info />} />
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content withArrow>
+          Billing changes are saved per workspace.
+        </Tooltip.Content>
+      </Portal>
+    </Tooltip>
+  );
+}
 ```
 
 ## Content Guidance
@@ -38,25 +114,50 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
 | ------------------------------------------- | --------------------------------------- |
 | `Copy project ID`                           | Paragraphs or multi-step instructions   |
 | `Only workspace owners can delete projects` | Critical validation only shown on hover |
-| `Press ⌘K to open command menu`             | Interactive content inside the tooltip  |
+| `Press Cmd+K to open command menu`          | Interactive content inside the tooltip  |
 
 ## Delays And Placement
 
 Use short open delays for icon-heavy toolbars. Use a close delay only when the
-tooltip should feel forgiving during pointer movement.
+tooltip should feel forgiving during pointer movement or native auto-hide.
+Both web and native support the same placement names: `top`, `right`, `bottom`,
+`left`, plus `*-start` and `*-end` variants.
 
 ```tsx
 import { Filter } from '@vellira-ui/icons';
 import { Button, Portal, Tooltip } from '@vellira-ui/react';
 
-<Tooltip placement='top' delay={{ open: 250, close: 100 }}>
+export function FilterTooltip() {
+  return (
+    <Tooltip placement='bottom-start' delay={{ open: 150, close: 100 }}>
+      <Tooltip.Trigger asChild>
+        <Button iconOnly aria-label='Filter invoices' iconStart={<Filter />} />
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Content withArrow>Filter invoices</Tooltip.Content>
+      </Portal>
+    </Tooltip>
+  );
+}
+```
+
+## Force Mounted Content
+
+Use `forceMount` when animation, measurement, or snapshot coverage needs the
+content node to exist while the tooltip is closed. Hidden force-mounted content
+should still contain concise helper copy.
+
+```tsx
+import { Info } from '@vellira-ui/icons';
+import { Button, Portal, Tooltip } from '@vellira-ui/react';
+
+<Tooltip open={false}>
   <Tooltip.Trigger asChild>
-    <Button iconOnly aria-label='Filter invoices' iconStart={<Filter />} />
+    <Button aria-label='Plan details' iconOnly iconStart={<Info />} />
   </Tooltip.Trigger>
   <Portal>
-    <Tooltip.Content>
-      Filter invoices
-      <Tooltip.Arrow />
+    <Tooltip.Content forceMount withArrow>
+      Available on Pro workspaces.
     </Tooltip.Content>
   </Portal>
 </Tooltip>;
@@ -80,7 +181,7 @@ export function InvoiceToolbar() {
           />
         </Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content>Search invoices</Tooltip.Content>
+          <Tooltip.Content withArrow>Search invoices</Tooltip.Content>
         </Portal>
       </Tooltip>
       <Tooltip>
@@ -92,7 +193,7 @@ export function InvoiceToolbar() {
           />
         </Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content>Filter invoices</Tooltip.Content>
+          <Tooltip.Content withArrow>Filter invoices</Tooltip.Content>
         </Portal>
       </Tooltip>
       <Tooltip>
@@ -100,7 +201,7 @@ export function InvoiceToolbar() {
           <Button aria-label='Export CSV' iconOnly iconStart={<Download />} />
         </Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content>Export CSV</Tooltip.Content>
+          <Tooltip.Content withArrow>Export CSV</Tooltip.Content>
         </Portal>
       </Tooltip>
     </div>
@@ -108,33 +209,12 @@ export function InvoiceToolbar() {
 }
 ```
 
-## Native Usage
-
-Native Tooltip uses the same compound structure as Web, but opens from touch
-interaction instead of hover. Keep the trigger accessible on its own and put
-short helper copy inside `Tooltip.Content`.
-
-```tsx
-import { Info } from '@vellira-ui/icons/native';
-import { Button, Tooltip } from '@vellira-ui/react-native';
-
-<Tooltip placement='top'>
-  <Tooltip.Trigger>
-    <Button accessibilityLabel='Workspace info' iconStart={<Info />} />
-  </Tooltip.Trigger>
-
-  <Tooltip.Content>
-    Only workspace owners can change billing.
-    <Tooltip.Arrow />
-  </Tooltip.Content>
-</Tooltip>;
-```
-
 ## Accessibility
 
 - The trigger still needs its own accessible name.
 - Do not rely on Tooltip for essential form instructions.
 - Keep content concise.
+- Web Tooltip opens on focus for keyboard users.
 - Native tooltip behavior should be tested with touch and screen reader flows.
 
 ## See Also

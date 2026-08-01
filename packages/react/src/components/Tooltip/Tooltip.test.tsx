@@ -241,4 +241,41 @@ describe('Tooltip', () => {
 
     unmount();
   });
+
+  it('respects close delay before hiding content', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip delay={{ open: 0, close: 200 }}>
+        <Tooltip.Trigger>Trigger</Tooltip.Trigger>
+        <Portal>
+          <Tooltip.Content>Close delayed tooltip</Tooltip.Content>
+        </Portal>
+      </Tooltip>
+    );
+
+    const trigger = container.querySelector('button');
+
+    act(() => {
+      trigger?.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+      vi.advanceTimersByTime(0);
+    });
+
+    expect(document.body.textContent).toContain('Close delayed tooltip');
+
+    act(() => {
+      trigger?.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+      vi.advanceTimersByTime(199);
+    });
+
+    expect(document.body.textContent).toContain('Close delayed tooltip');
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(document.body.textContent).not.toContain('Close delayed tooltip');
+
+    unmount();
+  });
 });

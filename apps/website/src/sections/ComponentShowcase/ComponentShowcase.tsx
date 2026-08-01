@@ -1115,10 +1115,7 @@ export function ComponentShowcase() {
                               {label}
                             </Button>
                           </Tooltip.Trigger>
-                          <Tooltip.Content>
-                            {content}
-                            <Tooltip.Arrow />
-                          </Tooltip.Content>
+                          <Tooltip.Content withArrow>{content}</Tooltip.Content>
                         </Tooltip>
                       </motion.div>
                     ))}
@@ -1130,9 +1127,8 @@ export function ComponentShowcase() {
                         <Tooltip.Trigger asChild>
                           <Button iconStart={<Share />}>Share</Button>
                         </Tooltip.Trigger>
-                        <Tooltip.Content>
+                        <Tooltip.Content withArrow>
                           Invite teammates or copy a public preview link.
-                          <Tooltip.Arrow />
                         </Tooltip.Content>
                       </Tooltip>
                     </motion.div>

@@ -1263,9 +1263,8 @@ function NativeComponentsOverview() {
                       Long press
                     </Button>
                   </Tooltip.Trigger>
-                  <Tooltip.Content>
+                  <Tooltip.Content withArrow>
                     Long press to show tooltip content.
-                    <Tooltip.Arrow />
                   </Tooltip.Content>
                 </Tooltip>
                 <Tooltip>
@@ -1277,9 +1276,8 @@ function NativeComponentsOverview() {
                       iconStart={<Filter />}
                     />
                   </Tooltip.Trigger>
-                  <Tooltip.Content>
+                  <Tooltip.Content withArrow>
                     Icon buttons keep their accessible label.
-                    <Tooltip.Arrow />
                   </Tooltip.Content>
                 </Tooltip>
               </View>
@@ -1303,9 +1301,8 @@ function NativeComponentsOverview() {
                           {placement}
                         </Button>
                       </Tooltip.Trigger>
-                      <Tooltip.Content>
+                      <Tooltip.Content withArrow>
                         {placement} placement
-                        <Tooltip.Arrow />
                       </Tooltip.Content>
                     </Tooltip>
                   )

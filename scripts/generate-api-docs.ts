@@ -174,10 +174,6 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
     forceMount:
       'Keeps the tooltip content mounted even when the tooltip is closed.',
   },
-  'web.TooltipArrowProps.TooltipArrowProps': {
-    className: 'Extra CSS class for the arrow element.',
-    style: 'Extra inline styles for the arrow element.',
-  },
   'native.TooltipProps.Tooltip': {
     closeOnOutsidePress:
       'Closes the tooltip when the user presses outside the content.',
@@ -193,9 +189,6 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
     forceMount:
       'Keeps the tooltip content mounted even when the tooltip is closed.',
     textStyle: 'Extra tooltip text style.',
-  },
-  'native.TooltipArrowProps.TooltipArrowProps': {
-    style: 'Extra arrow style.',
   },
   'native.TabsProps.TabsProps': {
     activationMode:
@@ -315,12 +308,6 @@ const sections: ApiSection[] = [
   ),
   section(
     'web',
-    '### Tooltip.Arrow Props',
-    'TooltipArrowProps',
-    'src/components/Tooltip/Arrow/types.ts'
-  ),
-  section(
-    'web',
     '### Modal Props',
     'ModalProps',
     'src/components/Modal/types.ts'
@@ -427,12 +414,6 @@ const sections: ApiSection[] = [
     '### Tooltip.Content Props',
     'TooltipContentProps',
     'src/components/Tooltip/Content/types.ts'
-  ),
-  section(
-    'native',
-    '### Tooltip.Arrow Props',
-    'TooltipArrowProps',
-    'src/components/Tooltip/Arrow/types.ts'
   ),
   section(
     'native',

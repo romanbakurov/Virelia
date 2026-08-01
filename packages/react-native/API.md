@@ -709,8 +709,8 @@ the explicit compound slot takes precedence.
 ## Tooltip
 
 Floating helper text around a native target. Compose native Tooltip with
-`Tooltip.Trigger`, `Tooltip.Content`, and optional `Tooltip.Arrow`; the root
-manages placement, open state, delay, and dismissal.
+`Tooltip.Trigger`, `Tooltip.Content`, and optional `withArrow`; the root manages
+placement, open state, delay, and dismissal.
 
 ```tsx
 import { Tooltip, Button } from '@vellira-ui/react-native';
@@ -720,10 +720,7 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
     <Button>More</Button>
   </Tooltip.Trigger>
 
-  <Tooltip.Content>
-    More actions
-    <Tooltip.Arrow />
-  </Tooltip.Content>
+  <Tooltip.Content withArrow>More actions</Tooltip.Content>
 </Tooltip>;
 ```
 
@@ -769,16 +766,6 @@ import { Tooltip, Button } from '@vellira-ui/react-native';
 | `withArrow`  | `boolean`              | No       | —                                                                  |
 
 <!-- api-docgen:end native.TooltipContentProps.TooltipContentProps -->
-
-### Tooltip.Arrow Props
-
-<!-- api-docgen:start native.TooltipArrowProps.TooltipArrowProps -->
-
-| Prop    | Type                   | Required | Description        |
-| ------- | ---------------------- | -------- | ------------------ |
-| `style` | `StyleProp<ViewStyle>` | No       | Extra arrow style. |
-
-<!-- api-docgen:end native.TooltipArrowProps.TooltipArrowProps -->
 
 ## Portal
 
