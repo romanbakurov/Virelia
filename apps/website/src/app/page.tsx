@@ -22,15 +22,15 @@ export default function HomePage() {
       <main>
         <Hero />
         <ComponentShowcase />
-        <PlatformParity />
         <ThemeStudio />
+        <PlatformParity />
         <ProductInterfaceDemo />
         <CodeShowcase />
         <ProductionWorkflow />
         <QuickStart />
         <SocialProof />
-        <Pro />
         <Roadmap />
+        <Pro />
         <FinalCta />
         <SiteFooter />
       </main>
