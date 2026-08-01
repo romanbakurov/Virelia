@@ -113,6 +113,31 @@ Keep Pull Requests as small as reasonably possible.
 
 ---
 
+# Project Architecture
+
+The repository is organized as a modular monorepo.
+
+```text
+packages/
+├── react
+├── react-native
+├── tokens
+├── core
+├── icons
+├── types
+└── assets
+```
+
+Each package has a clearly defined responsibility.
+
+- `react` — Web components
+- `react-native` — React Native components
+- `tokens` — Shared design tokens
+- `core` — Shared hooks and interaction logic
+- `types` — Shared TypeScript types
+- `icons` — Cross-platform icon library
+- `assets` — Fonts and design assets
+
 # Component Development
 
 All public components must follow the project conventions described in:
@@ -201,6 +226,16 @@ General principles:
 - Preserve backward compatibility whenever possible.
 
 ---
+
+# Good First Issues
+
+If you're contributing for the first time, consider looking for issues labeled:
+
+- good first issue
+- help wanted
+- documentation
+
+These are intended to help new contributors get started with the project.
 
 # Thank You
 
