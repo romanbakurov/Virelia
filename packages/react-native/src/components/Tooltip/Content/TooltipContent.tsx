@@ -3,7 +3,7 @@ import { Children } from 'react';
 import { Modal, Platform, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
-import { TooltipArrow } from '../Arrow';
+import { useTheme } from '../../../theme/useTheme';
 import { useTooltipContext } from '../internal/TooltipContext';
 import { createStyles } from '../Tooltip.styles';
 
@@ -52,7 +52,7 @@ export const TooltipContent = ({
           child
         )
       )}
-      {withArrow && <TooltipArrow />}
+      {withArrow && <InternalArrow />}
     </View>
   );
 
@@ -75,3 +75,45 @@ export const TooltipContent = ({
 };
 
 TooltipContent.displayName = 'Tooltip.Content';
+
+function InternalArrow() {
+  const { theme } = useTheme();
+  const tooltip = useTooltipContext();
+  const size = theme.components.tooltip.arrow.size;
+  const side = tooltip.placement.split('-')[0] as
+    'top' | 'right' | 'bottom' | 'left';
+  const staticSide = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  }[side];
+  const crossAxisStyle =
+    side === 'left' || side === 'right'
+      ? {
+          top: '50%' as const,
+          marginTop: -size / 2,
+        }
+      : {
+          left: '50%' as const,
+          marginLeft: -size / 2,
+        };
+
+  return (
+    <View
+      {...nativePointerEventsNone}
+      style={[
+        {
+          position: 'absolute',
+          width: size,
+          height: size,
+          backgroundColor: theme.components.tooltip.arrow.bg,
+          transform: [{ rotate: '45deg' }],
+          [staticSide]: -size / 2,
+          ...crossAxisStyle,
+        },
+        webPointerEventsNone,
+      ]}
+    />
+  );
+}

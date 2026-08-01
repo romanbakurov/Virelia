@@ -273,10 +273,7 @@ function ControlledTooltip({
         <Button>{isOpen ? 'Tooltip open' : 'Tooltip closed'}</Button>
       </Tooltip.Trigger>
       <Portal>
-        <Tooltip.Content>
-          Controlled tooltip
-          <Tooltip.Arrow />
-        </Tooltip.Content>
+        <Tooltip.Content withArrow>Controlled tooltip</Tooltip.Content>
       </Portal>
     </Tooltip>
   );
@@ -423,10 +420,7 @@ export const MatchTriggerWidth: Story = {
           <Button style={{ width: 240 }}>Matched width trigger</Button>
         </Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content>
-            Matches trigger width
-            <Tooltip.Arrow />
-          </Tooltip.Content>
+          <Tooltip.Content withArrow>Matches trigger width</Tooltip.Content>
         </Portal>
       </Tooltip>
     </Section>
@@ -501,9 +495,8 @@ export const ForceMount: Story = {
           <Button>Force mounted</Button>
         </Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content forceMount>
+          <Tooltip.Content forceMount withArrow>
             Mounted with closed state
-            <Tooltip.Arrow />
           </Tooltip.Content>
         </Portal>
       </Tooltip>

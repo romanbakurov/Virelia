@@ -12,10 +12,7 @@ describe('Tooltip accessibility', () => {
       <Tooltip open>
         <Tooltip.Trigger>Save</Tooltip.Trigger>
         <Portal>
-          <Tooltip.Content>
-            Save changes
-            <Tooltip.Arrow />
-          </Tooltip.Content>
+          <Tooltip.Content withArrow>Save changes</Tooltip.Content>
         </Portal>
       </Tooltip>
     );

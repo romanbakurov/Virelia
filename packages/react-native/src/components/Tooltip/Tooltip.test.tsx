@@ -131,10 +131,7 @@ describe('Native Tooltip', () => {
         <Tooltip.Trigger>
           <span>Show help</span>
         </Tooltip.Trigger>
-        <Tooltip.Content>
-          Open by default
-          <Tooltip.Arrow />
-        </Tooltip.Content>
+        <Tooltip.Content withArrow>Open by default</Tooltip.Content>
       </Tooltip>
     );
 

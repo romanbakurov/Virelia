@@ -530,10 +530,9 @@ export function ThemeStudio() {
                             Tokens
                           </Button>
                         </Tooltip.Trigger>
-                        <Tooltip.Content>
+                        <Tooltip.Content withArrow>
                           Semantic tokens drive focus, color, radius, and
                           density.
-                          <Tooltip.Arrow />
                         </Tooltip.Content>
                       </Tooltip>
 

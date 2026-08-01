@@ -25,7 +25,6 @@ export type {
 } from './components/Tabs';
 export { Tabs } from './components/Tabs';
 export type {
-  TooltipArrowProps,
   TooltipContentProps,
   TooltipProps,
   TooltipRootProps,

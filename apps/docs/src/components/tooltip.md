@@ -24,10 +24,7 @@ import { Button, Portal, Tooltip } from '@vellira-ui/react';
     <Button aria-label='Copy project ID' iconOnly iconStart={<Copy />} />
   </Tooltip.Trigger>
   <Portal>
-    <Tooltip.Content>
-      Copy project ID
-      <Tooltip.Arrow />
-    </Tooltip.Content>
+    <Tooltip.Content withArrow>Copy project ID</Tooltip.Content>
   </Portal>
 </Tooltip>;
 ```

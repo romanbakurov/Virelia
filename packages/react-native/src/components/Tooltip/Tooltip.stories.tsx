@@ -154,10 +154,7 @@ press-only surface.
     <Button>Long press me</Button>
   </Tooltip.Trigger>
 
-  <Tooltip.Content>
-    Additional information
-    <Tooltip.Arrow />
-  </Tooltip.Content>
+  <Tooltip.Content withArrow>Additional information</Tooltip.Content>
 </Tooltip>
 \`\`\`
 
