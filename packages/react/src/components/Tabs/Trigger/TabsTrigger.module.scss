@@ -19,8 +19,30 @@
     border-color 0.2s ease,
     box-shadow 0.2s ease;
   cursor: pointer;
+  isolation: isolate;
   gap: var(--space-2);
   min-height: 2.25rem;
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: '';
+    pointer-events: none;
+    background-color: var(--tabs-trigger-hover-bg);
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition:
+      transform 380ms cubic-bezier(0.33, 1, 0.68, 1),
+      background-color 140ms ease;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
 
   &:focus-visible:not(:disabled) {
     @include focus-border(
@@ -155,7 +177,11 @@
 
   &:hover:not(:disabled, [aria-selected='true']) {
     color: var(--tabs-trigger-hover-fg);
+  }
+
+  &:hover:not(:disabled, [aria-selected='true'])::before {
     background-color: var(--tabs-trigger-hover-bg);
+    transform: scaleX(1);
   }
 
   &[aria-selected='true'] {
@@ -197,7 +223,11 @@
 
   &:hover:not(:disabled) {
     color: var(--tabs-trigger-hover-fg);
+  }
+
+  &:hover:not(:disabled)::before {
     background-color: var(--tabs-trigger-hover-bg);
+    transform: scaleX(1);
   }
 
   &[aria-selected='true'] {
@@ -214,7 +244,11 @@
 
   &:hover:not(:disabled, [aria-selected='true']) {
     color: var(--tabs-pills-hover-fg);
+  }
+
+  &:hover:not(:disabled, [aria-selected='true'])::before {
     background-color: var(--tabs-pills-hover-bg);
+    transform: scaleX(1);
   }
 
   &[aria-selected='true'] {
@@ -247,7 +281,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .trigger {
+  .trigger,
+  .trigger::before {
     transition: none;
   }
 }
