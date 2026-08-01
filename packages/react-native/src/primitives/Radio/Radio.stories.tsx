@@ -29,6 +29,7 @@ Radio allows selecting a single option.
 - Selected colors: primary, neutral, success, warning and danger
 - Custom selected indicator
 - Optional label and description
+- Token-driven size, typography, color states, and press feedback
 - Disabled and error states
 - Accessibility support
 - Compatible with RadioGroup
@@ -186,14 +187,14 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       gap: 16,
       borderWidth: 1,
       borderColor: theme.semantic.border.muted,
-      borderRadius: 20,
+      borderRadius: theme.tokens.radius.xl,
       backgroundColor: theme.semantic.surface.subtle,
     },
 
     subtitle: {
       color: theme.semantic.text.secondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: theme.tokens.typography.size.sm,
+      fontWeight: theme.tokens.typography.weight.semibold,
     },
   });
 

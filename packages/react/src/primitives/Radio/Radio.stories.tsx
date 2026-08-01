@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-const noop = () => undefined;
 
 import { RadioGroup } from '../../components/RadioGroup';
 
 import { Radio } from './index';
+
+const noop = () => undefined;
 
 const meta = {
   title: 'Primitives/Radio',
@@ -27,6 +28,7 @@ A single radio control for selecting one option.
 - Custom selected indicator
 - Optional label and description
 - Required, disabled and error states
+- Token-driven size, typography, color states, focus rings, and motion
 - Standalone usage or composition inside RadioGroup
 - Standard input and accessibility props
 

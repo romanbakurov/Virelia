@@ -3,6 +3,7 @@ import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Radio } from './Radio';
 
@@ -135,6 +136,51 @@ describe('Native Radio', () => {
     expect(
       container.querySelector('[data-testid="native-custom-radio-indicator"]')
     ).not.toBeNull();
+
+    unmount();
+  });
+
+  it('uses radio size tokens for control, indicator, and error offset', () => {
+    const theme = nativeThemes.dark;
+    const { container, unmount } = render(
+      <ThemeProvider defaultTheme='dark'>
+        <Radio
+          value='token-size'
+          label='Token size'
+          error='Required.'
+          size='lg'
+          checked
+        />
+      </ThemeProvider>
+    );
+
+    const control = Array.from(
+      container.querySelectorAll<HTMLElement>('div')
+    ).find(
+      (element) =>
+        element.style.width ===
+          `${theme.components.radio.size.lg.controlSize}px` &&
+        element.style.height ===
+          `${theme.components.radio.size.lg.controlSize}px`
+    );
+    const indicator = Array.from(
+      container.querySelectorAll<HTMLElement>('div')
+    ).find(
+      (element) =>
+        element.style.width ===
+          `${theme.components.radio.size.lg.indicatorSize}px` &&
+        element.style.height ===
+          `${theme.components.radio.size.lg.indicatorSize}px`
+    );
+    const error = container.querySelector<HTMLElement>('[aria-live="polite"]');
+
+    expect(control).not.toBeUndefined();
+    expect(indicator).not.toBeUndefined();
+    expect(error?.style.marginLeft).toBe(
+      `${
+        theme.components.radio.size.lg.controlSize + theme.tokens.spacing[2]
+      }px`
+    );
 
     unmount();
   });
