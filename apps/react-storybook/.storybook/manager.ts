@@ -26,12 +26,14 @@ const toolbarLinks = [
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
     icon: '/brand/navigation/documentation.svg',
+    iconSize: '17px',
   },
   {
     id: 'github',
     label: 'GitHub',
     href: 'https://github.com/vellira-dev/vellira',
     icon: '/brand/navigation/github.svg',
+    iconSize: '16px',
   },
 ] as const;
 
@@ -55,8 +57,10 @@ addons.register('vellira/navigation-links', () => {
             className: 'velliraToolbarIcon',
             style: {
               '--vellira-toolbar-icon': `url(${link.icon})`,
+              '--vellira-toolbar-icon-size': link.iconSize,
             } as React.CSSProperties & {
               '--vellira-toolbar-icon': string;
+              '--vellira-toolbar-icon-size': string;
             },
           }),
           React.createElement(

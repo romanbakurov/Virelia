@@ -27,6 +27,7 @@ export { default as Copy } from './generated/Copy.native.js';
 export { default as CreditCard } from './generated/CreditCard.native.js';
 export { default as Doc } from './generated/Doc.native.js';
 export { default as Docs } from './generated/Docs.native.js';
+export { default as DocsVellira } from './generated/DocsVellira.native.js';
 export { default as Dollar } from './generated/Dollar.native.js';
 export { default as Download } from './generated/Download.native.js';
 export { default as Edit } from './generated/Edit.native.js';

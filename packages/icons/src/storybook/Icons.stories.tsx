@@ -247,7 +247,7 @@ const staticIconCategories = [
   },
   {
     category: 'Brand',
-    icons: ['GitHub', 'Storybook'],
+    icons: ['DocsVellira', 'GitHub', 'Storybook'],
   },
 ] satisfies Array<{ category: string; icons: StaticIconName[] }>;
 

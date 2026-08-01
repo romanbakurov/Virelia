@@ -38,7 +38,9 @@ textarea {
   width: 20px;
   height: 20px;
   background: currentcolor;
-  mask: var(--vellira-toolbar-icon) center / 16px 16px no-repeat;
+  mask: var(--vellira-toolbar-icon) center /
+    var(--vellira-toolbar-icon-size, 16px)
+    var(--vellira-toolbar-icon-size, 16px) no-repeat;
 }
 
 .velliraToolbarLabel {

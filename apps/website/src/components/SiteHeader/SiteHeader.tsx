@@ -22,7 +22,7 @@ const externalLinks = [
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
     icon: '/brand/navigation/documentation.svg',
-    iconSize: 20,
+    iconSize: 21,
   },
   {
     label: 'Storybook',

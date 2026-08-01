@@ -27,6 +27,7 @@ export { default as Copy } from './generated/Copy.web.js';
 export { default as CreditCard } from './generated/CreditCard.web.js';
 export { default as Doc } from './generated/Doc.web.js';
 export { default as Docs } from './generated/Docs.web.js';
+export { default as DocsVellira } from './generated/DocsVellira.web.js';
 export { default as Dollar } from './generated/Dollar.web.js';
 export { default as Download } from './generated/Download.web.js';
 export { default as Edit } from './generated/Edit.web.js';
