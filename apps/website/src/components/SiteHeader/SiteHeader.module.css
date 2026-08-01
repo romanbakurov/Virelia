@@ -21,7 +21,7 @@
 .brand {
   display: inline-flex;
   align-items: center;
-  margin-right: var(--space-2);
+  margin-right: var(--space-4);
   color: var(--text-primary);
   text-decoration: none;
 }
@@ -38,6 +38,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  gap: var(--space-1);
   min-height: calc(var(--space-8) + var(--space-1));
   padding: 0 calc(var(--space-2) + var(--space-1) / 2);
   color: var(--text-secondary);
@@ -85,6 +86,20 @@
   outline-offset: var(--space-1);
 }
 
+.navigationBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 var(--space-1);
+  color: var(--text-brand);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  letter-spacing: 0;
+  background: color-mix(in srgb, var(--text-brand) 10%, transparent);
+  border-radius: var(--radius-full);
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
@@ -100,20 +115,26 @@
 }
 
 .actionIcon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   background: currentcolor;
-  mask: var(--action-icon) center / contain no-repeat;
+  mask: var(--action-icon) center / var(--action-icon-size, 20px)
+    var(--action-icon-size, 20px) no-repeat;
 }
 
 .ctaButton {
   min-height: 34px;
   border-radius: 28px;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .ctaButton:hover {
   box-shadow:
-    0 10px 24px color-mix(in srgb, var(--text-brand) 18%, transparent),
+    0 12px 28px color-mix(in srgb, var(--text-brand) 22%, transparent),
     inset 0 0 0 1px var(--button-primary-solid-hover-border);
 }
 

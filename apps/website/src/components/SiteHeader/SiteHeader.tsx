@@ -14,7 +14,7 @@ const navigation = [
   { label: 'Themes', href: '#themes' },
   { label: 'Platforms', href: '#platforms' },
   { label: 'Roadmap', href: '#roadmap' },
-  { label: 'Pro', href: '#pro' },
+  { label: 'Pro', href: '#pro', badge: 'NEW' },
 ] as const;
 
 const externalLinks = [
@@ -22,16 +22,19 @@ const externalLinks = [
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
     icon: '/brand/navigation/documentation.svg',
+    iconSize: 22,
   },
   {
     label: 'Storybook',
     href: 'https://storybook.vellira.dev',
     icon: '/brand/navigation/storybook.svg',
+    iconSize: 18,
   },
   {
     label: 'GitHub',
     href: 'https://github.com/vellira-dev/vellira',
     icon: '/brand/navigation/github.svg',
+    iconSize: 20,
   },
 ] as const;
 
@@ -112,7 +115,10 @@ export function SiteHeader() {
                 scrollToAnchor(item.href);
               }}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {'badge' in item && (
+                <span className={styles.navigationBadge}>{item.badge}</span>
+              )}
             </a>
           ))}
         </nav>
@@ -135,6 +141,7 @@ export function SiteHeader() {
                     style={
                       {
                         '--action-icon': `url(${link.icon})`,
+                        '--action-icon-size': `${link.iconSize}px`,
                       } as CSSProperties
                     }
                     aria-hidden='true'
