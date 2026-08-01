@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
 import { useModal, useOverlayDismiss } from '../../../hooks';
+import { nativeThemes } from '../../../theme';
 import ModalContext from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
-const DEFAULT_OPEN_DURATION = 180;
-const DEFAULT_CLOSE_DURATION = 150;
 const linearEasing = (value: number) => value;
 
 const easingMap = {
@@ -19,6 +18,8 @@ const easingMap = {
   'ease-in-out': Easing?.inOut?.(Easing?.ease ?? linearEasing) ?? linearEasing,
 } as const;
 
+const parseDuration = (duration: string) => Number.parseFloat(duration);
+
 const resolveDuration = (duration: ModalProps['duration']) => {
   if (typeof duration === 'number') {
     return {
@@ -28,8 +29,12 @@ const resolveDuration = (duration: ModalProps['duration']) => {
   }
 
   return {
-    close: duration?.close ?? DEFAULT_CLOSE_DURATION,
-    open: duration?.open ?? DEFAULT_OPEN_DURATION,
+    close:
+      duration?.close ??
+      parseDuration(nativeThemes.light.components.modal.motion.closeDuration),
+    open:
+      duration?.open ??
+      parseDuration(nativeThemes.light.components.modal.motion.openDuration),
   };
 };
 

@@ -719,7 +719,10 @@ export function ComponentShowcase() {
                           </p>
                         </div>
 
-                        <Modal>
+                        <Modal
+                          animation='scale'
+                          duration={{ open: 180, close: 150 }}
+                        >
                           <Modal.Trigger asChild>
                             <Button iconStart={<Settings />}>
                               Open settings

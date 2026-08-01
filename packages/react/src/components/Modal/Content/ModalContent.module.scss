@@ -32,14 +32,16 @@
 
 .animated {
   &[data-state='open'] {
-    animation: modal-content-open var(--modal-animation-open-duration, 180ms)
-      var(--modal-animation-easing, cubic-bezier(0.22, 1, 0.36, 1)) both;
+    animation: modal-content-open
+      var(--modal-animation-open-duration, var(--modal-motion-open-duration))
+      var(--modal-animation-easing, var(--modal-motion-easing)) both;
     visibility: visible;
   }
 
   &[data-state='closed'] {
-    animation: modal-content-close var(--modal-animation-close-duration, 150ms)
-      var(--modal-animation-easing, cubic-bezier(0.22, 1, 0.36, 1)) both;
+    animation: modal-content-close
+      var(--modal-animation-close-duration, var(--modal-motion-close-duration))
+      var(--modal-animation-easing, var(--modal-motion-easing)) both;
   }
 
   &[data-animation='none'] {

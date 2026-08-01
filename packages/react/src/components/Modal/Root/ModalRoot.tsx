@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '@utils/cn';
+import { lightTheme } from '@vellira-ui/tokens';
 import type { CSSProperties } from 'react';
 
 import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
@@ -8,17 +9,16 @@ import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
-const DEFAULT_OPEN_DURATION = 180;
-const DEFAULT_CLOSE_DURATION = 150;
-
 const easingMap = {
-  standard: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  standard: lightTheme.components.modal.motion.easing,
   linear: 'linear',
   ease: 'ease',
   'ease-in': 'ease-in',
   'ease-out': 'ease-out',
   'ease-in-out': 'ease-in-out',
 } as const;
+
+const parseDuration = (duration: string) => Number.parseFloat(duration);
 
 const resolveDuration = (duration: ModalProps['duration']) => {
   if (typeof duration === 'number') {
@@ -29,8 +29,12 @@ const resolveDuration = (duration: ModalProps['duration']) => {
   }
 
   return {
-    close: duration?.close ?? DEFAULT_CLOSE_DURATION,
-    open: duration?.open ?? DEFAULT_OPEN_DURATION,
+    close:
+      duration?.close ??
+      parseDuration(lightTheme.components.modal.motion.closeDuration),
+    open:
+      duration?.open ??
+      parseDuration(lightTheme.components.modal.motion.openDuration),
   };
 };
 

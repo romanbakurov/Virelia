@@ -33,7 +33,12 @@ const modalLayout = {
   maxHeight: '90vh',
   nativeMaxHeight: '90%',
   zIndexOffset: '1',
-  animationDuration: '160ms',
+} as const;
+
+const modalMotion = {
+  closeDuration: '150ms',
+  easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  openDuration: '180ms',
 } as const;
 
 export const createModalTokens = (config: ModalTokensConfig) =>
@@ -41,7 +46,7 @@ export const createModalTokens = (config: ModalTokensConfig) =>
     overlay: {
       bg: config.overlayBg,
       blur: 4,
-      animationDuration: '200ms',
+      animationDuration: modalMotion.openDuration,
     },
 
     content: {
@@ -59,7 +64,7 @@ export const createModalTokens = (config: ModalTokensConfig) =>
       viewportMargin: config.spacing8,
       topOffset: config.spacing10,
       zIndexOffset: modalLayout.zIndexOffset,
-      animationDuration: modalLayout.animationDuration,
+      animationDuration: modalMotion.openDuration,
 
       size: {
         sm: 400,
@@ -125,4 +130,6 @@ export const createModalTokens = (config: ModalTokensConfig) =>
         border: 'transparent',
       },
     },
+
+    motion: modalMotion,
   }) as const;

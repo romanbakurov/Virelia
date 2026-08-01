@@ -176,12 +176,12 @@ shadow, spacing, and close-button states. Prefer theme tokens for custom form
 controls inside modal bodies so light, dark, and high-contrast themes stay in
 sync.
 
-The default motion is a scale/fade entrance with a small vertical lift:
-backdrop opacity runs for 180ms on open and 150ms on close; content animates
-opacity, scale, and `translateY` over the same timings. Use `animation='slide'`,
+Default motion is driven by `modal.motion` tokens: backdrop opacity runs for
+180ms on open and 150ms on close; content animates opacity, scale, and
+`translateY` over the same timings. Use `animation='slide'`,
 `animation='fade'`, or `animation='none'` when the product surface needs a
 different motion profile. `duration` accepts either a number or
-`{ open, close }`, and `easing='standard'` is the default curve.
+`{ open, close }`, and `easing='standard'` uses the tokenized default curve.
 
 ## Accessibility
 
