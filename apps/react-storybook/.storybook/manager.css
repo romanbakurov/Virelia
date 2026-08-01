@@ -9,3 +9,48 @@ select,
 textarea {
   font-family: inherit;
 }
+
+.velliraToolbarLink {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.velliraToolbarLink:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+.velliraToolbarLink:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.velliraToolbarIcon {
+  width: 20px;
+  height: 20px;
+  background: currentcolor;
+  mask: var(--vellira-toolbar-icon) center /
+    var(--vellira-toolbar-icon-size, 16px)
+    var(--vellira-toolbar-icon-size, 16px) no-repeat;
+}
+
+.velliraToolbarLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}

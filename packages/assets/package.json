@@ -18,15 +18,24 @@
   "exports": {
     "./styles": "./styles/fonts.css",
     "./styles/*": "./styles/*",
-    "./fonts/*": "./fonts/*"
+    "./fonts/*": "./fonts/*",
+    "./brand/*": "./brand/*",
+    "./sync-brand": "./scripts/sync-brand.mjs"
   },
   "files": [
+    "brand",
     "fonts",
+    "scripts",
     "styles",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {},
+  "bin": {
+    "vellira-sync-brand": "./scripts/sync-brand.mjs"
+  },
+  "scripts": {
+    "sync-brand": "node scripts/sync-brand.mjs"
+  },
   "publishConfig": {
     "access": "public"
   }

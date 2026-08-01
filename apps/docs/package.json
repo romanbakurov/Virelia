@@ -7,8 +7,12 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "sync:brand": "pnpm --filter @vellira-ui/assets sync-brand apps/docs/src/public/brand",
+    "predev": "pnpm run sync:brand",
     "dev": "vitepress dev src",
+    "prebuild": "pnpm run sync:brand",
     "build": "vitepress build src",
+    "prepreview": "pnpm run sync:brand",
     "preview": "vitepress preview src"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import type { AnimatedIconData } from '@vellira-ui/icons/lottie';
 import lottie, {
@@ -38,16 +38,34 @@ function applyCurrentColor(container: HTMLElement) {
   });
 }
 
+function getEmbeddedSvg(data: AnimatedIconData): string | undefined {
+  const assets = (data as { assets?: Array<{ p?: string }> }).assets ?? [];
+  const image = assets.find((asset) =>
+    asset.p?.startsWith('data:image/svg+xml;utf8,')
+  );
+
+  if (!image?.p) return undefined;
+
+  const encodedSvg = image.p.slice('data:image/svg+xml;utf8,'.length);
+
+  return decodeURIComponent(encodedSvg)
+    .replace(/\swidth="[^"]*"/, ' width="100%"')
+    .replace(/\sheight="[^"]*"/, ' height="100%"')
+    .replace(/fill="(?!none")[^"]*"/g, 'fill="currentColor"')
+    .replace(/stroke="(?!none")[^"]*"/g, 'stroke="currentColor"');
+}
+
 export function AnimatedIconPreview({
   data,
   size = 16,
   play = 'hover',
 }: AnimatedIconPreviewProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
+  const embeddedSvg = useMemo(() => getEmbeddedSvg(data), [data]);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return undefined;
+    if (!container || embeddedSvg) return undefined;
 
     const animation: AnimationItem = lottie.loadAnimation({
       container,
@@ -95,7 +113,23 @@ export function AnimatedIconPreview({
       animation.removeEventListener('enterFrame', syncColor);
       animation.destroy();
     };
-  }, [data, play]);
+  }, [data, embeddedSvg, play]);
+
+  if (embeddedSvg) {
+    return (
+      <span
+        aria-hidden='true'
+        style={{
+          display: 'block',
+          width: size,
+          height: size,
+          lineHeight: 0,
+          pointerEvents: 'none',
+        }}
+        dangerouslySetInnerHTML={{ __html: embeddedSvg }}
+      />
+    );
+  }
 
   return (
     <span
