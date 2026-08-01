@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/vellira-dev/vellira/discussions
+    about: Ask questions and discuss ideas with the community.
+
+  - name: Security vulnerability
+    url: https://github.com/vellira-dev/vellira/security/advisories/new
+    about: Privately report a security vulnerability.
