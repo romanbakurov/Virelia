@@ -35,6 +35,7 @@ Compound-first dialog for focused tasks and confirmations.
 - Escape and outside-press dismissal controls
 - Focus trap, initial focus, final focus, focus restoration, and scroll lock
 - Content sizes and inside/outside scroll behavior
+- Token-driven overlay, content surface, shadow, spacing, and close button states
 - data-state hooks for animation libraries
 
 ### Usage
@@ -395,7 +396,10 @@ function InitialFocusDemo() {
         <Portal>
           <Modal.Overlay />
           <Modal.Content>
-            <Modal.Header title='Edit profile' showClose />
+            <Modal.Header>
+              <Modal.Title>Edit profile</Modal.Title>
+              <Modal.Close />
+            </Modal.Header>
             <Modal.Body>
               <Input
                 ref={inputRef}
@@ -435,7 +439,10 @@ export const NestedModal: Story = {
           <Portal>
             <Modal.Overlay />
             <Modal.Content size='sm'>
-              <Modal.Header title='Nested modal' showClose />
+              <Modal.Header>
+                <Modal.Title>Nested modal</Modal.Title>
+                <Modal.Close />
+              </Modal.Header>
               <Modal.Body>This dialog sits above the parent modal.</Modal.Body>
             </Modal.Content>
           </Portal>

@@ -727,11 +727,14 @@ export function ComponentShowcase() {
                           </Modal.Trigger>
                           <Modal.Overlay />
                           <Modal.Content size='md' scrollBehavior='inside'>
-                            <Modal.Header showClose>
-                              <Modal.Title>Workspace settings</Modal.Title>
-                              <Modal.Description>
-                                Edit team-facing workspace details.
-                              </Modal.Description>
+                            <Modal.Header>
+                              <div>
+                                <Modal.Title>Workspace settings</Modal.Title>
+                                <Modal.Description>
+                                  Edit team-facing workspace details.
+                                </Modal.Description>
+                              </div>
+                              <Modal.Close />
                             </Modal.Header>
                             <Modal.Body>
                               <div className={styles.modalForm}>

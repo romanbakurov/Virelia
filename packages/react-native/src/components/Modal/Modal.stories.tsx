@@ -5,6 +5,7 @@ import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '../../primitives/Button';
 import { Portal } from '../../primitives/Portal';
+import { useTheme } from '../../theme';
 
 import { Modal } from '.';
 
@@ -28,6 +29,12 @@ const meta = {
 Compound-first native dialog with Root, Trigger, Overlay, Content, Header,
 Body, Footer, and Close parts. Use the shared Portal primitive for explicit
 layer composition.
+
+**Features**
+
+- Token-driven overlay, content surface, shadow, spacing, and close button states
+- Controlled and uncontrolled open state
+- Trigger and Close composition through asChild
 
 ### Usage
 
@@ -132,6 +139,7 @@ function NativeModalDemo({
 
 function NativeFormModal() {
   const [density, setDensity] = useState('comfortable');
+  const { theme } = useTheme();
 
   return (
     <Modal>
@@ -148,10 +156,12 @@ function NativeFormModal() {
                   accessibilityLabel='Workspace email'
                   defaultValue='team@vellira.dev'
                   style={{
+                    backgroundColor: theme.semantic.surface.default,
                     borderWidth: 1,
-                    borderColor: '#CBD5E1',
-                    borderRadius: 8,
-                    padding: 12,
+                    borderColor: theme.semantic.border.muted,
+                    borderRadius: theme.tokens.radius.md,
+                    color: theme.semantic.text.primary,
+                    padding: theme.tokens.spacing[3],
                   }}
                 />
                 {(['comfortable', 'compact', 'dense'] as const).map((value) => (

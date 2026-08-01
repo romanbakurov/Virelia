@@ -89,6 +89,30 @@ describe('Native Modal', () => {
     }
   );
 
+  it.each([
+    ['dark', nativeThemes.dark.components.modal.content],
+    ['highContrast', nativeThemes.highContrast.components.modal.content],
+  ] as const)(
+    'uses modal content surface tokens in the %s theme',
+    (themeName, contentTokens) => {
+      const { container, unmount } = render(
+        <ThemeProvider defaultTheme={themeName}>
+          <NativeModal />
+        </ThemeProvider>
+      );
+
+      const content = Array.from(container.querySelectorAll('div')).find(
+        (element) =>
+          element.style.backgroundColor === toCssRgb(contentTokens.bg)
+      );
+
+      expect(content?.style.borderColor).toBe(toCssRgb(contentTokens.border));
+      expect(content?.style.borderRadius).toBe(`${contentTokens.radius}px`);
+
+      unmount();
+    }
+  );
+
   it('does not render modal content when closed', () => {
     const { container, unmount } = render(<NativeModal open={false} />);
 
