@@ -58,6 +58,7 @@ const warning = createInputColorPalette({
   filledBg: colors.warning[950],
   filledHoverBg: colors.warning[900],
   hoverBg: colors.warning[950],
+  placeholder: text.primary,
   ring: colors.warning[500],
 });
 
