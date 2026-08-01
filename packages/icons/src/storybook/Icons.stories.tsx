@@ -17,6 +17,8 @@ type StaticIconComponent = ComponentType<
   }
 >;
 
+type StaticIconName = keyof typeof staticIcons;
+
 const meta = {
   title: 'Icons/Overview',
   parameters: {
@@ -94,9 +96,179 @@ const categoryHeadingStyle = {
   fontWeight: 700,
 } satisfies CSSProperties;
 
-const staticIconEntries = Object.entries(staticIcons).sort(
-  ([first], [second]) => first.localeCompare(second)
-) as Array<[string, StaticIconComponent]>;
+const staticIconCategories = [
+  {
+    category: 'Actions',
+    icons: [
+      'Check',
+      'Copy',
+      'Download',
+      'Edit',
+      'Filter',
+      'Minus',
+      'Plus',
+      'Refresh',
+      'Search',
+      'Share',
+      'Trash',
+      'Upload',
+    ],
+  },
+  {
+    category: 'Commerce',
+    icons: [
+      'Bag',
+      'Cart',
+      'CreditCard',
+      'Dollar',
+      'Euro',
+      'Gift',
+      'Package',
+      'Percent',
+      'Receipt',
+      'Tag',
+      'Truck',
+      'Wallet',
+    ],
+  },
+  {
+    category: 'Communication',
+    icons: [
+      'At',
+      'Bell',
+      'BellOff',
+      'Book',
+      'Chat',
+      'Doc',
+      'Inbox',
+      'Mail',
+      'Message',
+      'Microphone',
+      'MicrophoneOff',
+      'Phone',
+      'Send',
+      'Video',
+      'Website',
+    ],
+  },
+  {
+    category: 'Interface',
+    icons: [
+      'Grid',
+      'Laptop',
+      'Link',
+      'List',
+      'Menu',
+      'Monitor',
+      'MoreHorizontal',
+      'MoreVertical',
+      'Printer',
+      'QrCode',
+      'Smartphone',
+      'Tablet',
+    ],
+  },
+  {
+    category: 'Media',
+    icons: [
+      'FastForward',
+      'Headphones',
+      'Pause',
+      'Play',
+      'Rewind',
+      'SkipBack',
+      'SkipForward',
+      'Stop',
+      'Volume',
+      'VolumeHigh',
+      'VolumeLow',
+      'VolumeOff',
+    ],
+  },
+  {
+    category: 'Navigation',
+    icons: [
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ChevronDown',
+      'ChevronLeft',
+      'ChevronRight',
+      'ChevronUp',
+      'Close',
+      'Collapse',
+      'Expand',
+    ],
+  },
+  {
+    category: 'Status',
+    icons: [
+      'Bookmark',
+      'Error',
+      'Eye',
+      'EyeOff',
+      'Heart',
+      'Help',
+      'Info',
+      'Loader',
+      'Pin',
+      'Star',
+      'Success',
+      'Warning',
+    ],
+  },
+  {
+    category: 'System',
+    icons: [
+      'ArrowLeftRight',
+      'ArrowTopButton',
+      'Calendar',
+      'Camera',
+      'Clock',
+      'Contrast',
+      'Exit',
+      'File',
+      'Folder',
+      'FolderOpen',
+      'Home',
+      'Image',
+      'Lock',
+      'LockOpen',
+      'Moon',
+      'Save',
+      'Settings',
+      'Sun',
+      'System',
+      'User',
+      'Users',
+    ],
+  },
+  {
+    category: 'Brand',
+    icons: ['GitHub', 'Storybook'],
+  },
+] satisfies Array<{ category: string; icons: StaticIconName[] }>;
+
+function renderStaticIconCategories() {
+  return staticIconCategories.map(({ category, icons }) => (
+    <div key={category} style={categoryStyle}>
+      <h3 style={categoryHeadingStyle}>{category}</h3>
+      <div style={gridStyle}>
+        {icons.map((name) => {
+          const Icon = staticIcons[name] as StaticIconComponent;
+
+          return (
+            <div key={name} style={cardStyle} title={name}>
+              <Icon aria-hidden='true' size={24} />
+              <span style={labelStyle}>{name}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  ));
+}
 
 const animatedIconsByCategory = animatedIconManifest.icons.reduce<
   Record<string, Array<[AnimatedIconName, AnimatedIconData]>>
@@ -117,14 +289,7 @@ export const Static: Story = {
     <main style={pageStyle}>
       <section style={sectionStyle}>
         <h2 style={headingStyle}>Static icons</h2>
-        <div style={gridStyle}>
-          {staticIconEntries.map(([name, Icon]) => (
-            <div key={name} style={cardStyle} title={name}>
-              <Icon aria-hidden='true' size={24} />
-              <span style={labelStyle}>{name}</span>
-            </div>
-          ))}
-        </div>
+        {renderStaticIconCategories()}
       </section>
     </main>
   ),
@@ -163,14 +328,7 @@ export const All: Story = {
     <main style={pageStyle}>
       <section style={sectionStyle}>
         <h2 style={headingStyle}>Static icons</h2>
-        <div style={gridStyle}>
-          {staticIconEntries.map(([name, Icon]) => (
-            <div key={name} style={cardStyle} title={name}>
-              <Icon aria-hidden='true' size={24} />
-              <span style={labelStyle}>{name}</span>
-            </div>
-          ))}
-        </div>
+        {renderStaticIconCategories()}
       </section>
       <section style={sectionStyle}>
         <h2 style={headingStyle}>Animated icons</h2>

@@ -79,32 +79,34 @@ export function SiteHeader() {
         <div className={styles.actions}>
           <ThemeSwitcher />
 
-          {externalLinks.map((link) => (
-            <Button
-              key={link.label}
-              asChild
-              size='sm'
-              appearance='ghost'
-              shape='square'
-              iconOnly
-              iconStart={
-                <img
-                  className={styles.actionIcon}
-                  src={link.icon}
-                  alt=''
-                  aria-hidden='true'
+          <div className={styles.externalActions}>
+            {externalLinks.map((link) => (
+              <Button
+                key={link.label}
+                asChild
+                size='sm'
+                appearance='ghost'
+                shape='square'
+                iconOnly
+                iconStart={
+                  <img
+                    className={styles.actionIcon}
+                    src={link.icon}
+                    alt=''
+                    aria-hidden='true'
+                  />
+                }
+              >
+                <a
+                  href={link.href}
+                  target='_blank'
+                  rel='noreferrer noopener'
+                  aria-label={link.label}
+                  title={link.label}
                 />
-              }
-            >
-              <a
-                href={link.href}
-                target='_blank'
-                rel='noreferrer noopener'
-                aria-label={link.label}
-                title={link.label}
-              />
-            </Button>
-          ))}
+              </Button>
+            ))}
+          </div>
 
           <Button asChild size='sm'>
             <a href='#quick-start'>Get started</a>
