@@ -24,7 +24,7 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   sitemap: {
-    hostname: siteUrl,
+    hostname: 'https://docs.vellira.dev',
   },
   head: [
     [
