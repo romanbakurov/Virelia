@@ -1,4 +1,10 @@
-import { Modal as RNModal, Pressable, View } from 'react-native';
+import {
+  Animated,
+  Modal as RNModal,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
 import { useModalContext } from '../internal/ModalContext';
@@ -7,24 +13,38 @@ import type { ModalOverlayProps } from '../types';
 
 export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
   const styles = useThemeStyles(createStyles);
-  const { closeOnOutsidePress, onClose, onOutsideClose, open } =
-    useModalContext();
+  const {
+    animation,
+    animationProgress,
+    closeOnOutsidePress,
+    onClose,
+    onOutsideClose,
+    shouldRender,
+  } = useModalContext();
+  const backdropStyle =
+    animation === 'none'
+      ? undefined
+      : {
+          opacity: animationProgress,
+        };
 
   return (
     <RNModal
-      visible={open}
+      visible={shouldRender}
       transparent
-      animationType='fade'
+      animationType='none'
       onRequestClose={onClose}
     >
       <View style={[styles.overlay, overlayStyle]}>
-        <Pressable
-          testID='modal-backdrop'
-          accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
-          accessibilityLabel={closeOnOutsidePress ? 'Close modal' : undefined}
-          style={styles.backdrop}
-          onPress={closeOnOutsidePress ? onOutsideClose : undefined}
-        />
+        <Animated.View style={[styles.backdrop, backdropStyle]}>
+          <Pressable
+            testID='modal-backdrop'
+            accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
+            accessibilityLabel={closeOnOutsidePress ? 'Close modal' : undefined}
+            style={StyleSheet.absoluteFill}
+            onPress={closeOnOutsidePress ? onOutsideClose : undefined}
+          />
+        </Animated.View>
 
         {children}
       </View>

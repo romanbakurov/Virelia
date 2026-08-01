@@ -1,17 +1,47 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { cn } from '@utils/cn';
+import type { CSSProperties } from 'react';
 
 import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
 
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
+const DEFAULT_OPEN_DURATION = 180;
+const DEFAULT_CLOSE_DURATION = 150;
+
+const easingMap = {
+  standard: 'cubic-bezier(0.22, 1, 0.36, 1)',
+  linear: 'linear',
+  ease: 'ease',
+  'ease-in': 'ease-in',
+  'ease-out': 'ease-out',
+  'ease-in-out': 'ease-in-out',
+} as const;
+
+const resolveDuration = (duration: ModalProps['duration']) => {
+  if (typeof duration === 'number') {
+    return {
+      close: duration,
+      open: duration,
+    };
+  }
+
+  return {
+    close: duration?.close ?? DEFAULT_CLOSE_DURATION,
+    open: duration?.open ?? DEFAULT_OPEN_DURATION,
+  };
+};
+
 export const ModalRoot = ({
   children,
   open,
   defaultOpen = false,
   onOpenChange,
+  animation = 'scale',
+  duration,
+  easing = 'standard',
   modal = true,
   closeOnEscape = true,
   closeOnOutsidePress = true,
@@ -46,7 +76,30 @@ export const ModalRoot = ({
   } = modalState;
   const [titlePresent, setTitlePresent] = useState(false);
   const [descriptionPresent, setDescriptionPresent] = useState(false);
-  const shouldRender = isOpen;
+  const animationDuration = resolveDuration(duration);
+  const shouldAnimate = animation !== 'none';
+  const closeDuration = shouldAnimate ? animationDuration.close : 0;
+  const [shouldRender, setShouldRender] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      return;
+    }
+
+    if (closeDuration === 0) {
+      setShouldRender(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShouldRender(false);
+    }, closeDuration);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [closeDuration, isOpen]);
 
   const requestClose = useCallback(() => {
     requestModalClose();
@@ -65,6 +118,16 @@ export const ModalRoot = ({
     active: isOpen,
     enabled: preventScroll,
   });
+
+  const animationStyle = useMemo(
+    () =>
+      ({
+        '--modal-animation-close-duration': `${animationDuration.close}ms`,
+        '--modal-animation-easing': easingMap[easing],
+        '--modal-animation-open-duration': `${animationDuration.open}ms`,
+      }) as CSSProperties,
+    [animationDuration.close, animationDuration.open, easing]
+  );
 
   useEffect(() => {
     if (
@@ -94,6 +157,8 @@ export const ModalRoot = ({
 
   const context = useMemo(
     () => ({
+      animation,
+      animationStyle,
       closeOnEscape,
       closeOnOutsidePress,
       contentId,
@@ -122,6 +187,8 @@ export const ModalRoot = ({
       trapFocus,
     }),
     [
+      animation,
+      animationStyle,
       closeOnEscape,
       closeOnOutsidePress,
       contentId,

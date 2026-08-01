@@ -6,19 +6,55 @@
   inset: 0;
   backdrop-filter: blur(var(--modal-overlay-blur));
   visibility: hidden;
-  transition:
-    opacity var(--modal-overlay-animation-duration) ease,
-    visibility 0s linear var(--modal-overlay-animation-duration);
 
   &--open {
     opacity: 1;
     visibility: visible;
-    transition-delay: 0s;
+  }
+}
+
+.overlay--animated {
+  &[data-state='open'] {
+    animation: modal-overlay-open var(--modal-animation-open-duration, 180ms)
+      var(--modal-animation-easing, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  &[data-state='closed'] {
+    animation: modal-overlay-close var(--modal-animation-close-duration, 150ms)
+      var(--modal-animation-easing, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  }
+
+  &[data-animation='none'] {
+    animation: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .overlay--animated {
-    transition: none;
+    animation: none;
+  }
+}
+
+@keyframes modal-overlay-open {
+  from {
+    opacity: 0;
+    visibility: visible;
+  }
+
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes modal-overlay-close {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  to {
+    opacity: 0;
+    visibility: hidden;
   }
 }

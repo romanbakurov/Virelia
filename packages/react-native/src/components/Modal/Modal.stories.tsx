@@ -16,7 +16,13 @@ const meta = {
   component: Modal,
   tags: ['autodocs'],
   args: {
+    animation: 'scale',
     defaultOpen: false,
+    duration: {
+      close: 150,
+      open: 180,
+    },
+    easing: 'standard',
     closeOnOutsidePress: true,
     onOpenChange: noop,
   },
@@ -33,6 +39,7 @@ layer composition.
 **Features**
 
 - Token-driven overlay, content surface, shadow, spacing, and close button states
+- Configurable animations: scale, slide, fade, or none
 - Controlled and uncontrolled open state
 - Trigger and Close composition through asChild
 
@@ -85,6 +92,39 @@ layer composition.
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' },
+      },
+    },
+    animation: {
+      control: 'radio',
+      options: ['scale', 'slide', 'fade', 'none'],
+      table: {
+        type: { summary: "'scale' | 'slide' | 'fade' | 'none'" },
+        defaultValue: { summary: "'scale'" },
+      },
+    },
+    duration: {
+      control: 'object',
+      table: {
+        type: { summary: 'number | { open?: number; close?: number }' },
+        defaultValue: { summary: '{ open: 180, close: 150 }' },
+      },
+    },
+    easing: {
+      control: 'radio',
+      options: [
+        'standard',
+        'linear',
+        'ease',
+        'ease-in',
+        'ease-out',
+        'ease-in-out',
+      ],
+      table: {
+        type: {
+          summary:
+            "'standard' | 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out'",
+        },
+        defaultValue: { summary: "'standard'" },
       },
     },
     children: {

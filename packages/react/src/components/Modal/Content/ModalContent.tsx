@@ -66,7 +66,7 @@ export const ModalContent = ({
     enabled: root.modal,
   });
 
-  if (!active && !forceMount) return null;
+  if (!root.shouldRender && !forceMount) return null;
 
   const labelledBy = ariaLabelledBy ?? (ariaLabel ? undefined : root.titleId);
   const describedBy = ariaDescribedBy ?? root.descriptionId;
@@ -85,13 +85,14 @@ export const ModalContent = ({
           animated && styles.animated,
           className
         )}
-        style={style}
+        style={{ ...root.animationStyle, ...style }}
         role={root.role}
         aria-modal={root.modal ? 'true' : undefined}
         aria-label={ariaLabel}
         aria-labelledby={labelledBy}
         aria-describedby={describedBy}
         data-state={active ? 'open' : 'closed'}
+        data-animation={root.animation}
       >
         {children}
       </div>
