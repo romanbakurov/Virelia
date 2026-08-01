@@ -17,9 +17,11 @@
 }
 
 .icon {
+  --theme-icon-size: 25px;
+
   display: block;
-  width: var(--theme-icon-size, 20px);
-  height: var(--theme-icon-size, 20px);
+  width: var(--theme-icon-size);
+  height: var(--theme-icon-size);
   color: currentcolor;
   line-height: 0;
   pointer-events: none;

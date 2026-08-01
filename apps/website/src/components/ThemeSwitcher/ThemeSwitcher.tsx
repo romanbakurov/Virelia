@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef } from 'react';
 
 import type { AnimatedIconData } from '@vellira-ui/icons/lottie';
 import { animatedIcons } from '@vellira-ui/icons/lottie';
@@ -14,7 +14,7 @@ import { useWebsiteThemeContext } from '@/providers/WebsiteThemeContext';
 import styles from './ThemeSwitcher.module.css';
 
 const options = [
-  { value: 'light', label: 'Light', icon: animatedIcons.Sun, iconSize: 25 },
+  { value: 'light', label: 'Light', icon: animatedIcons.Sun },
   { value: 'dark', label: 'Dark', icon: animatedIcons.Moon },
   { value: 'system', label: 'System', icon: animatedIcons.System },
   {
@@ -26,7 +26,6 @@ const options = [
 
 type AnimatedThemeIconProps = {
   data: AnimatedIconData;
-  size?: number;
 };
 
 function cloneAnimationData(data: AnimatedIconData): object {
@@ -57,7 +56,7 @@ function applyCurrentColor(container: HTMLElement) {
   });
 }
 
-function AnimatedThemeIcon({ data, size }: AnimatedThemeIconProps) {
+function AnimatedThemeIcon({ data }: AnimatedThemeIconProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -110,18 +109,7 @@ function AnimatedThemeIcon({ data, size }: AnimatedThemeIconProps) {
     };
   }, [data]);
 
-  return (
-    <span
-      ref={containerRef}
-      className={styles.icon}
-      style={
-        size
-          ? ({ '--theme-icon-size': `${size}px` } as CSSProperties)
-          : undefined
-      }
-      aria-hidden='true'
-    />
-  );
+  return <span ref={containerRef} className={styles.icon} aria-hidden='true' />;
 }
 
 export function ThemeSwitcher() {
@@ -141,12 +129,7 @@ export function ThemeSwitcher() {
           size='sm'
           aria-label={`Theme: ${activeOption.label}`}
         >
-          <AnimatedThemeIcon
-            data={activeOption.icon}
-            size={
-              'iconSize' in activeOption ? activeOption.iconSize : undefined
-            }
-          />
+          <AnimatedThemeIcon data={activeOption.icon} />
         </Button>
       </Dropdown.Trigger>
 
@@ -171,10 +154,7 @@ export function ThemeSwitcher() {
               className={styles.item}
             >
               <Dropdown.ItemIcon>
-                <AnimatedThemeIcon
-                  data={option.icon}
-                  size={'iconSize' in option ? option.iconSize : undefined}
-                />
+                <AnimatedThemeIcon data={option.icon} />
               </Dropdown.ItemIcon>
 
               {option.label}
