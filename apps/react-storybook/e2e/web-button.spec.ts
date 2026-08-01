@@ -18,18 +18,6 @@ test.describe('web Button', () => {
 
     await expect(matrix).toBeVisible();
     await expect(matrix.getByRole('button')).toHaveCount(25);
-
-    await page.mouse.move(0, 0);
-
-    await matrix.evaluate((element) => {
-      element.scrollIntoView({
-        block: 'center',
-        inline: 'center',
-      });
-    });
-
-    await page.waitForTimeout(250);
-
     await expect(matrix).toHaveScreenshot(
       `web-button-matrix-${testInfo.project.name}.png`,
       {
@@ -45,7 +33,6 @@ test.describe('web Button', () => {
     const primaryOutline = page.getByRole('button', {
       name: 'primary outline',
     });
-
     await primarySolid.hover();
 
     await expect(primarySolid).toHaveCSS(
@@ -75,6 +62,7 @@ test.describe('web Button', () => {
     }
 
     await expect(primaryOutline).toBeFocused();
+
     await expect(primaryOutline).toHaveCSS('outline-style', 'solid');
     await expect(primaryOutline).toHaveCSS('outline-width', '2px');
   });
