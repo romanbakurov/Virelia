@@ -62,8 +62,12 @@
 
 .selected {
   color: var(--select-option-current-selected-fg);
-  background-color: var(--select-option-current-selected-bg);
   animation: optionPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.selected::before {
+  background-color: var(--select-option-current-selected-bg);
+  transform: scaleX(1);
 }
 
 .selected .description {
@@ -76,6 +80,9 @@
 
 .selected.active:not(.disabled) {
   color: var(--select-option-current-selected-active-fg);
+}
+
+.selected.active:not(.disabled)::before {
   background-color: var(--select-option-current-selected-active-bg);
 }
 
@@ -99,7 +106,11 @@
 
 .active:not(.selected, .disabled) {
   color: var(--select-option-current-active-fg);
+}
+
+.active:not(.selected, .disabled)::before {
   background-color: var(--select-option-current-active-bg);
+  transform: scaleX(1);
 }
 
 .active:not(.selected, .disabled) .description {
