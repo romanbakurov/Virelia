@@ -7,11 +7,23 @@ const siteUrl = 'https://docs.vellira.dev';
 const siteDescription =
   'TypeScript-first design system documentation for React and React Native applications.';
 const socialImage = `${siteUrl}/brand/social/vellira-og-code-to-ui.png`;
-const navigationIcon = (name: string) =>
-  readFileSync(
+const navigationIcon = (name: string, opticalScale = 1) => {
+  const svg = readFileSync(
     resolve(process.cwd(), '../../packages/assets/brand/navigation', name),
     'utf8'
   );
+
+  if (opticalScale === 1) {
+    return svg;
+  }
+
+  const padding = (24 - 24 * opticalScale) / 2;
+  const viewBox = `${-padding} ${-padding} ${24 + padding * 2} ${
+    24 + padding * 2
+  }`;
+
+  return svg.replace('viewBox="0 0 24 24"', `viewBox="${viewBox}"`);
+};
 
 export default defineConfig({
   title: 'Vellira',
@@ -146,7 +158,7 @@ export default defineConfig({
         link: 'https://github.com/vellira-dev/vellira',
       },
       {
-        icon: { svg: navigationIcon('storybook.svg') },
+        icon: { svg: navigationIcon('storybook.svg', 0.95) },
         link: 'https://storybook.vellira.dev',
       },
     ],
