@@ -38,6 +38,16 @@ const externalLinks = [
   },
 ] as const;
 
+let pendingAnchorScrollTimers: number[] = [];
+
+function cancelPendingAnchorScroll() {
+  for (const timer of pendingAnchorScrollTimers) {
+    window.clearTimeout(timer);
+  }
+
+  pendingAnchorScrollTimers = [];
+}
+
 function scrollToAnchor(hash: string) {
   const target = document.getElementById(hash.slice(1));
 
@@ -45,19 +55,24 @@ function scrollToAnchor(hash: string) {
     return;
   }
 
+  cancelPendingAnchorScroll();
+
   const scrollToTarget = (behavior: ScrollBehavior) => {
-    window.scrollTo({
-      top: target.getBoundingClientRect().top + window.scrollY,
-      behavior,
-    });
+    target.scrollIntoView({ behavior, block: 'start' });
   };
 
   scrollToTarget('smooth');
-  window.setTimeout(() => scrollToTarget('auto'), 420);
-  window.setTimeout(() => scrollToTarget('auto'), 900);
-  window.setTimeout(() => scrollToTarget('auto'), 1600);
-  window.setTimeout(() => scrollToTarget('auto'), 2400);
   window.history.pushState(null, '', hash);
+
+  pendingAnchorScrollTimers = [700, 1500].map((delay) =>
+    window.setTimeout(() => {
+      if (window.location.hash !== hash) {
+        return;
+      }
+
+      scrollToTarget('auto');
+    }, delay)
+  );
 }
 
 function getNavigationSections() {
@@ -88,11 +103,11 @@ export function SiteHeader() {
   >(navigation[0].href);
 
   useEffect(() => {
-    const sections = getNavigationSections();
-
-    if (sections.length === 0) return undefined;
-
     const updateActiveHash = () => {
+      const sections = getNavigationSections();
+
+      if (sections.length === 0) return;
+
       const activationY =
         window.scrollY + Math.min(window.innerHeight * 0.45, 460);
       const activeSection =
@@ -107,11 +122,20 @@ export function SiteHeader() {
     window.addEventListener('scroll', updateActiveHash, { passive: true });
     window.addEventListener('resize', updateActiveHash);
     window.addEventListener('hashchange', updateActiveHash);
+    window.addEventListener('wheel', cancelPendingAnchorScroll, {
+      passive: true,
+    });
+    window.addEventListener('touchstart', cancelPendingAnchorScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener('scroll', updateActiveHash);
       window.removeEventListener('resize', updateActiveHash);
       window.removeEventListener('hashchange', updateActiveHash);
+      window.removeEventListener('wheel', cancelPendingAnchorScroll);
+      window.removeEventListener('touchstart', cancelPendingAnchorScroll);
+      cancelPendingAnchorScroll();
     };
   }, []);
 
