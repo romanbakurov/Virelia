@@ -1,0 +1,50 @@
+name: Documentation issue
+description: Report missing, incorrect, or unclear documentation
+title: 'docs: '
+labels:
+  - documentation
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page or section
+      description: Link to the affected documentation page when possible.
+      placeholder: 'https://docs.vellira.dev/components/button'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue type
+      options:
+        - Missing information
+        - Incorrect information
+        - Unclear explanation
+        - Broken link
+        - Broken example
+        - Typo or formatting
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Explain what should be corrected or improved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Provide a suggested wording or example when possible.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to submit a pull request for this.

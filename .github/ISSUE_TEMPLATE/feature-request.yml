@@ -1,0 +1,62 @@
+name: Feature request
+description: Suggest a new feature or improvement
+title: 'feat: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement to Vellira.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - React
+        - React Native
+        - Design tokens
+        - Icons
+        - Accessibility
+        - Documentation
+        - Storybook
+        - Developer tooling
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem or limitation would this feature solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API, behavior, or implementation you would prefer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any alternatives or workarounds you considered.
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples
+      description: Include code examples, screenshots, or references when useful.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to help implement this feature.
