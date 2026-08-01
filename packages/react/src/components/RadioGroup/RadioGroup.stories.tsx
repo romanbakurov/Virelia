@@ -28,6 +28,7 @@ Groups multiple Radio controls and manages selection of exactly one value.
 - Group label and description
 - Vertical and horizontal orientation
 - Shared selected color inherited by child Radio controls
+- Token-driven Radio sizing, spacing, colors, and motion
 - Required and disabled group states
 - Disabled individual Radio controls
 - Validation error message

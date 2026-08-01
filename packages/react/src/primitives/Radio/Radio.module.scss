@@ -1,12 +1,12 @@
 @use '@styles/mixins' as *;
 
 .root {
-  --radio-size: 16px;
-  --radio-indicator-size: 8px;
-  --radio-label-font-size: var(--font-size-md);
-  --radio-label-line-height: var(--line-height-md);
-  --radio-description-font-size: var(--font-size-sm);
-  --radio-description-line-height: var(--line-height-sm);
+  --radio-size: var(--radio-size-md-control-size);
+  --radio-indicator-size: var(--radio-size-md-indicator-size);
+  --radio-label-font-size: var(--radio-size-md-label-font-size);
+  --radio-label-line-height: var(--radio-size-md-label-line-height);
+  --radio-description-font-size: var(--radio-size-md-description-font-size);
+  --radio-description-line-height: var(--radio-size-md-description-line-height);
   --radio-selected-bg: var(--radio-primary-default-bg);
   --radio-selected-border: var(--radio-primary-default-border);
   --radio-selected-fg: var(--radio-primary-default-fg);
@@ -147,30 +147,30 @@
 }
 
 .sm {
-  --radio-size: 14px;
-  --radio-indicator-size: 6px;
-  --radio-label-font-size: var(--font-size-sm);
-  --radio-label-line-height: var(--line-height-sm);
-  --radio-description-font-size: var(--font-size-xs);
-  --radio-description-line-height: var(--line-height-xs);
+  --radio-size: var(--radio-size-sm-control-size);
+  --radio-indicator-size: var(--radio-size-sm-indicator-size);
+  --radio-label-font-size: var(--radio-size-sm-label-font-size);
+  --radio-label-line-height: var(--radio-size-sm-label-line-height);
+  --radio-description-font-size: var(--radio-size-sm-description-font-size);
+  --radio-description-line-height: var(--radio-size-sm-description-line-height);
 }
 
 .md {
-  --radio-size: 16px;
-  --radio-indicator-size: 8px;
-  --radio-label-font-size: var(--font-size-md);
-  --radio-label-line-height: var(--line-height-md);
-  --radio-description-font-size: var(--font-size-sm);
-  --radio-description-line-height: var(--line-height-sm);
+  --radio-size: var(--radio-size-md-control-size);
+  --radio-indicator-size: var(--radio-size-md-indicator-size);
+  --radio-label-font-size: var(--radio-size-md-label-font-size);
+  --radio-label-line-height: var(--radio-size-md-label-line-height);
+  --radio-description-font-size: var(--radio-size-md-description-font-size);
+  --radio-description-line-height: var(--radio-size-md-description-line-height);
 }
 
 .lg {
-  --radio-size: 20px;
-  --radio-indicator-size: 10px;
-  --radio-label-font-size: var(--font-size-lg);
-  --radio-label-line-height: var(--line-height-lg);
-  --radio-description-font-size: var(--font-size-md);
-  --radio-description-line-height: var(--line-height-md);
+  --radio-size: var(--radio-size-lg-control-size);
+  --radio-indicator-size: var(--radio-size-lg-indicator-size);
+  --radio-label-font-size: var(--radio-size-lg-label-font-size);
+  --radio-label-line-height: var(--radio-size-lg-label-line-height);
+  --radio-description-font-size: var(--radio-size-lg-description-font-size);
+  --radio-description-line-height: var(--radio-size-lg-description-line-height);
 }
 
 .wrapper {
@@ -217,11 +217,12 @@
   border: 1px solid var(--radio-default-border);
   border-radius: 50%;
   transition:
-    color 0.15s ease,
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    color var(--radio-motion-control-duration) var(--radio-motion-easing),
+    background-color var(--radio-motion-control-duration)
+      var(--radio-motion-easing),
+    border-color var(--radio-motion-control-duration) var(--radio-motion-easing),
+    box-shadow var(--radio-motion-control-duration) var(--radio-motion-easing),
+    transform var(--radio-motion-indicator-duration) var(--radio-motion-easing);
   box-sizing: border-box;
   margin-top: calc((var(--radio-label-line-height) - var(--radio-size)) / 2);
 }
@@ -238,9 +239,10 @@
   opacity: 0;
   transform: scale(0.6);
   transition:
-    background-color 0.15s ease,
-    opacity 0.15s ease,
-    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color var(--radio-motion-control-duration)
+      var(--radio-motion-easing),
+    opacity var(--radio-motion-control-duration) var(--radio-motion-easing),
+    transform var(--radio-motion-indicator-duration) var(--radio-motion-easing);
 }
 
 .customIcon {
@@ -259,7 +261,8 @@
 .input:checked + .control {
   background-color: var(--radio-selected-bg);
   border-color: var(--radio-selected-border);
-  animation: radio-pop 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: radio-pop var(--radio-motion-selected-duration)
+    var(--radio-motion-easing);
 }
 
 .input:checked + .control .indicator {
@@ -267,7 +270,8 @@
   background-color: var(--radio-selected-fg);
   opacity: 1;
   transform: scale(1);
-  animation: radio-indicator-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: radio-indicator-in var(--radio-motion-indicator-duration)
+    var(--radio-motion-easing);
 }
 
 .input:checked + .control .customIcon {
@@ -334,7 +338,7 @@
 .input:active:not(:disabled) + .control {
   background-color: var(--radio-pressed-bg);
   border-color: var(--radio-pressed-border);
-  transform: scale(0.92);
+  transform: scale(var(--radio-motion-active-scale));
 }
 
 .input:checked:active:not(:disabled) + .control {
@@ -383,7 +387,8 @@
   font-size: var(--radio-label-font-size);
   font-weight: var(--font-weight-regular);
   line-height: var(--radio-label-line-height);
-  transition: color 0.15s ease;
+  transition: color var(--radio-motion-control-duration)
+    var(--radio-motion-easing);
 }
 
 .description,

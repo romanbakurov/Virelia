@@ -1051,6 +1051,8 @@ export function ComponentShowcase() {
                   >
                     <RadioGroup
                       label='Component release channel'
+                      size='md'
+                      color='primary'
                       value={radioValue}
                       onValueChange={setRadioValue}
                     >

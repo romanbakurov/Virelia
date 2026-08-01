@@ -1,6 +1,5 @@
 import { forwardRef, useEffect } from 'react';
 
-import type { RadioSize } from '@vellira-ui/types';
 import {
   Platform,
   Pressable,
@@ -17,18 +16,6 @@ import { useTheme } from '../../theme';
 
 import { createStyles } from './Radio.styles';
 import type { RadioProps } from './types';
-
-const controlSizeBySize = {
-  sm: 14,
-  md: 16,
-  lg: 20,
-} satisfies Record<RadioSize, number>;
-
-const indicatorSizeBySize = {
-  sm: 6,
-  md: 8,
-  lg: 10,
-} satisfies Record<RadioSize, number>;
 
 const nativePointerEventsNone =
   Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
@@ -83,33 +70,10 @@ export const Radio = forwardRef<View, RadioProps>(
     const resolvedSize = sizeProp ?? group?.size ?? 'md';
     const resolvedColor = colorProp ?? group?.color ?? 'primary';
     const radioColor = theme.components.radio[resolvedColor];
+    const radioSize = theme.components.radio.size[resolvedSize];
 
-    const controlSize = controlSizeBySize[resolvedSize];
-    const indicatorSize = indicatorSizeBySize[resolvedSize];
-
-    const typographySizeByRadioSize = {
-      sm: {
-        labelSize: theme.tokens.typography.size.sm,
-        labelLineHeight: theme.tokens.typography.lineHeight.sm,
-        descriptionSize: theme.tokens.typography.size.xs,
-        descriptionLineHeight: theme.tokens.typography.lineHeight.xs,
-      },
-      md: {
-        labelSize: theme.tokens.typography.size.md,
-        labelLineHeight: theme.tokens.typography.lineHeight.md,
-        descriptionSize: theme.tokens.typography.size.sm,
-        descriptionLineHeight: theme.tokens.typography.lineHeight.sm,
-      },
-      lg: {
-        labelSize: theme.tokens.typography.size.lg,
-        labelLineHeight: theme.tokens.typography.lineHeight.lg,
-        descriptionSize: theme.tokens.typography.size.md,
-        descriptionLineHeight: theme.tokens.typography.lineHeight.md,
-      },
-    } as const;
-
-    const typographySize = typographySizeByRadioSize[resolvedSize];
-    const controlMarginTop = (typographySize.labelLineHeight - controlSize) / 2;
+    const controlMarginTop =
+      (radioSize.labelLineHeight - radioSize.controlSize) / 2;
 
     useEffect(() => {
       if (
@@ -184,8 +148,8 @@ export const Radio = forwardRef<View, RadioProps>(
                   styles.control,
                   webPointerEventsNone,
                   {
-                    width: controlSize,
-                    height: controlSize,
+                    width: radioSize.controlSize,
+                    height: radioSize.controlSize,
                     marginTop: controlMarginTop,
                   },
                   resolvedChecked && {
@@ -197,7 +161,9 @@ export const Radio = forwardRef<View, RadioProps>(
                     !resolvedDisabled && {
                       backgroundColor: radioColor.pressed.bg,
                       borderColor: radioColor.pressed.border,
-                      transform: [{ scale: 0.96 }],
+                      transform: [
+                        { scale: theme.components.radio.motion.pressedScale },
+                      ],
                     },
                   resolvedInvalid && styles.controlInvalid,
                   resolvedDisabled && styles.controlDisabled,
@@ -212,8 +178,8 @@ export const Radio = forwardRef<View, RadioProps>(
                       style={[
                         styles.indicator,
                         {
-                          width: indicatorSize,
-                          height: indicatorSize,
+                          width: radioSize.indicatorSize,
+                          height: radioSize.indicatorSize,
                           backgroundColor:
                             state.pressed && !resolvedDisabled
                               ? radioColor.pressed.fg
@@ -236,8 +202,8 @@ export const Radio = forwardRef<View, RadioProps>(
                         style={[
                           styles.label,
                           {
-                            fontSize: typographySize.labelSize,
-                            lineHeight: typographySize.labelLineHeight,
+                            fontSize: radioSize.labelFontSize,
+                            lineHeight: radioSize.labelLineHeight,
                           },
                           resolvedChecked && {
                             color: radioColor.default.labelFg,
@@ -264,8 +230,8 @@ export const Radio = forwardRef<View, RadioProps>(
                         style={[
                           styles.description,
                           {
-                            fontSize: typographySize.descriptionSize,
-                            lineHeight: typographySize.descriptionLineHeight,
+                            fontSize: radioSize.descriptionFontSize,
+                            lineHeight: radioSize.descriptionLineHeight,
                           },
                           resolvedDisabled && styles.textDisabled,
                           descriptionStyle,
@@ -288,9 +254,9 @@ export const Radio = forwardRef<View, RadioProps>(
             style={[
               styles.error,
               {
-                marginLeft: controlSize + theme.tokens.spacing[2],
-                fontSize: typographySize.descriptionSize,
-                lineHeight: typographySize.descriptionLineHeight,
+                marginLeft: radioSize.controlSize + theme.tokens.spacing[2],
+                fontSize: radioSize.descriptionFontSize,
+                lineHeight: radioSize.descriptionLineHeight,
               },
               errorStyle,
             ]}

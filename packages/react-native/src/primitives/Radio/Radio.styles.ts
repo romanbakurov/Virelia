@@ -17,7 +17,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     pressablePressed: {
-      opacity: 0.8,
+      opacity: theme.components.radio.motion.pressedOpacity,
     },
 
     pressableDisabled: {
@@ -31,16 +31,6 @@ export const createStyles = (theme: NativeTheme) =>
       borderRadius: theme.tokens.radius.full,
       borderColor: theme.components.radio.default.border,
       backgroundColor: theme.components.radio.default.bg,
-    },
-
-    controlChecked: {
-      borderColor: theme.components.radio.primary.default.border,
-      backgroundColor: theme.components.radio.primary.default.bg,
-    },
-
-    controlCheckedPressed: {
-      borderColor: theme.components.radio.primary.pressed.border,
-      backgroundColor: theme.components.radio.primary.pressed.bg,
     },
 
     controlInvalid: {
@@ -62,10 +52,6 @@ export const createStyles = (theme: NativeTheme) =>
       backgroundColor: theme.components.radio.primary.default.fg,
     },
 
-    indicatorPressed: {
-      backgroundColor: theme.components.radio.primary.pressed.fg,
-    },
-
     indicatorDisabled: {
       backgroundColor: theme.components.radio.selectedDisabled.fg,
     },
@@ -78,14 +64,6 @@ export const createStyles = (theme: NativeTheme) =>
     label: {
       color: theme.components.radio.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
-    },
-
-    labelChecked: {
-      color: theme.components.radio.primary.default.labelFg,
-    },
-
-    labelCheckedPressed: {
-      color: theme.components.radio.primary.pressed.labelFg,
     },
 
     labelInvalid: {

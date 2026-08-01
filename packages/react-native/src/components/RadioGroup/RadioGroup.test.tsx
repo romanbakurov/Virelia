@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Radio } from '../../primitives/Radio';
 import { render } from '../../test-utils/render';
+import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { RadioGroup } from './RadioGroup';
 
@@ -174,6 +175,38 @@ describe('Native RadioGroup', () => {
 
     expect(radios[0].getAttribute('aria-checked')).toBe('true');
     expect(radios[1].textContent).toContain('Active');
+
+    unmount();
+  });
+
+  it('uses radio group and radio size tokens', () => {
+    const theme = nativeThemes.dark;
+    const { container, unmount } = render(
+      <ThemeProvider defaultTheme='dark'>
+        <RadioGroup label='Plan' size='lg' orientation='horizontal'>
+          <PlanRadios />
+        </RadioGroup>
+      </ThemeProvider>
+    );
+
+    const group = container.querySelector<HTMLElement>('[role="radiogroup"]');
+    const control = Array.from(
+      container.querySelectorAll<HTMLElement>('div')
+    ).find(
+      (element) =>
+        element.style.width ===
+          `${theme.components.radio.size.lg.controlSize}px` &&
+        element.style.height ===
+          `${theme.components.radio.size.lg.controlSize}px`
+    );
+
+    expect(group?.style.columnGap).toBe(
+      `${theme.components.radioGroup.size.lg.horizontalGap}px`
+    );
+    expect(group?.style.rowGap).toBe(
+      `${theme.components.radioGroup.size.lg.itemGap}px`
+    );
+    expect(control).not.toBeUndefined();
 
     unmount();
   });
