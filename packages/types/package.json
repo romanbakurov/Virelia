@@ -1,6 +1,6 @@
 {
   "name": "@vellira-ui/types",
-  "version": "2.44.5",
+  "version": "2.45.0",
   "description": "Shared TypeScript types for Vellira Design System",
   "author": "Roman Bakurov",
   "license": "MIT",
