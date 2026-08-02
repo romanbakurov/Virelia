@@ -1051,6 +1051,8 @@ export function ComponentShowcase() {
                   >
                     <RadioGroup
                       label='Component release channel'
+                      size='md'
+                      color='primary'
                       value={radioValue}
                       onValueChange={setRadioValue}
                     >
@@ -1059,6 +1061,7 @@ export function ComponentShowcase() {
                       >
                         <Radio
                           value='starter'
+                          size='md'
                           wrapperClassName={styles.radioChoiceCard}
                           label='Canary'
                           description='Ship every merged change to an internal preview.'
@@ -1071,6 +1074,7 @@ export function ComponentShowcase() {
                       >
                         <Radio
                           value='pro'
+                          size='md'
                           wrapperClassName={styles.radioChoiceCard}
                           label='Stable'
                           description='Publish after typecheck, smoke, and visual review.'
@@ -1083,6 +1087,7 @@ export function ComponentShowcase() {
                       >
                         <Radio
                           value='enterprise'
+                          size='md'
                           wrapperClassName={styles.radioChoiceCard}
                           label='Long-term support'
                           description='Patch only critical fixes for production apps.'

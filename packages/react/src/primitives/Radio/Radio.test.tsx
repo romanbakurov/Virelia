@@ -177,4 +177,17 @@ describe('Radio', () => {
 
     unmount();
   });
+
+  it('applies token-backed size and color classes', () => {
+    const { container, unmount } = render(
+      <Radio value='warning' label='Warning option' size='lg' color='warning' />
+    );
+
+    const root = container.firstElementChild;
+
+    expect(root?.className).toContain('lg');
+    expect(root?.className).toContain('colorWarning');
+
+    unmount();
+  });
 });

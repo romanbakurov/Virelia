@@ -68,6 +68,8 @@ describe.each([
     );
     expect(theme.components.select.trigger.default.bg).toBeDefined();
     expect(theme.components.select.clearButton.hoverBg).toBeDefined();
+    expect(theme.components.radio.size.md.controlSize).toBeDefined();
+    expect(theme.components.radio.motion.controlDuration).toBeDefined();
     expect(theme.components.tabs.primary.trigger.default.bg).toBeDefined();
     expect(theme.components.tabs.success.indicator.bg).toBeDefined();
     expect(theme.components.tabs.disabled.fg).toBeDefined();

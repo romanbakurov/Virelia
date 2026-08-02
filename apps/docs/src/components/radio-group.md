@@ -33,6 +33,15 @@ Use `value` with `onValueChange` for controlled groups, or `defaultValue` for
 uncontrolled groups. `size` and `color` can be set on RadioGroup and inherited
 by child Radio controls. Individual Radio items can override them.
 
+RadioGroup spacing and Radio item sizing, typography, color states, focus
+rings, and selected/pressed motion are driven by component tokens. Prefer
+`size` and `color` props over custom dimensions or hardcoded colors.
+
+Standalone Radio uses the same token contract as RadioGroup items. `size`
+controls the visual control, indicator, label typography, and description
+typography; `color` controls selected, hover, pressed, focus, invalid, disabled,
+and selected-disabled states.
+
 ```tsx
 <RadioGroup label='Status' color='danger' defaultValue='blocked'>
   <Radio value='blocked' label='Blocked' />

@@ -33,6 +33,7 @@ Accessible group for selecting exactly one option in React Native.
 - Error message
 - Vertical and horizontal orientation
 - Shared selected color inherited by child Radio controls
+- Token-driven Radio sizing, spacing, colors, and press states
 - Disabled group state
 - Disabled individual Radio controls
 - Sizes: sm, md and lg
@@ -189,14 +190,14 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       gap: 16,
       borderWidth: 1,
       borderColor: theme.semantic.border.muted,
-      borderRadius: 20,
+      borderRadius: theme.tokens.radius.xl,
       backgroundColor: theme.semantic.surface.subtle,
     },
 
     subtitle: {
       color: theme.semantic.text.secondary,
-      fontSize: 13,
-      fontWeight: '600',
+      fontSize: theme.tokens.typography.size.sm,
+      fontWeight: theme.tokens.typography.weight.semibold,
     },
   });
 
