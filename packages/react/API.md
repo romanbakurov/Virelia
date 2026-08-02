@@ -319,6 +319,11 @@ and `disabled` to that control when needed. The root wrapper does not receive th
 | `labelPosition`        | `'start' \| 'top'`           | No       | —                                                   |
 | `invalid`              | `boolean`                    | No       | —                                                   |
 | `orientation`          | `'vertical' \| 'horizontal'` | No       | —                                                   |
+| `message`              | `ReactNode`                  | No       | —                                                   |
+| `labelAction`          | `ReactNode`                  | No       | —                                                   |
+| `messageClassName`     | `string`                     | No       | —                                                   |
+| `messageTone`          | `FormFieldMessageTone`       | No       | —                                                   |
+| `messageLive`          | `FormFieldMessageLive`       | No       | —                                                   |
 
 <!-- api-docgen:end web.FormFieldProps.FormField -->
 

@@ -65,6 +65,113 @@ describe('Native FormField', () => {
     unmount();
   });
 
+  it('renders supporting messages without live updates by default', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Email'
+        description='Used for account notifications.'
+        message='Email address is available.'
+        messageTone='success'
+      >
+        <input aria-label='Email' />
+      </FormField>
+    );
+
+    const message = Array.from(container.querySelectorAll('span')).find(
+      (node) => node.textContent === 'Email address is available.'
+    );
+
+    expect(message).toBeTruthy();
+    expect(message?.getAttribute('aria-live')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports compound slots for label, description, control and message', () => {
+    const { container, unmount } = render(
+      <FormField required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>Used for notifications.</FormField.Description>
+        <FormField.Control>
+          <input aria-label='Email' />
+        </FormField.Control>
+        <FormField.Message tone='success' live='polite'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
+    );
+
+    expect(container.textContent).toContain('Email');
+    expect(container.textContent).toContain('Used for notifications.');
+    expect(container.textContent).toContain('*');
+
+    const message = container.querySelector('[aria-live="polite"]');
+
+    expect(message?.textContent).toBe('Email address is available.');
+
+    unmount();
+  });
+
+  it('supports polite message updates when requested', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='API key'
+        message='This key expires in 7 days.'
+        messageLive='polite'
+      >
+        <input aria-label='API key' />
+      </FormField>
+    );
+
+    const message = container.querySelector('[aria-live="polite"]');
+
+    expect(message?.textContent).toBe('This key expires in 7 days.');
+
+    unmount();
+  });
+
+  it('gives error content priority over a supporting message', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Project slug'
+        message='Slug is available.'
+        error='This slug is already used.'
+      >
+        <input aria-label='Project slug' />
+      </FormField>
+    );
+
+    expect(container.textContent).not.toContain('Slug is available.');
+
+    const error = container.querySelector('[aria-live="polite"]');
+
+    expect(error?.textContent).toBe('This slug is already used.');
+
+    unmount();
+  });
+
+  it('renders label actions outside the label text', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Password'
+        labelAction={<button type='button'>Forgot?</button>}
+      >
+        <input aria-label='Password' />
+      </FormField>
+    );
+
+    const label = Array.from(container.querySelectorAll('span')).find(
+      (node) => node.textContent === 'Password'
+    );
+    const action = container.querySelector('button');
+
+    expect(label?.textContent).toBe('Password');
+    expect(action?.textContent).toBe('Forgot?');
+    expect(label?.contains(action)).toBe(false);
+
+    unmount();
+  });
+
   it('marks the root disabled for assistive technology and keeps children responsible for interaction state', () => {
     const { container, unmount } = render(
       <FormField testID='field' label='Email' disabled>
@@ -81,18 +188,18 @@ describe('Native FormField', () => {
     unmount();
   });
 
-  it('applies style overrides to the root, control, label, description and error slots', () => {
+  it('applies style overrides to the root, control, label, description and message slots', () => {
     const { container, unmount } = render(
       <FormField
         testID='field'
         label='Project'
         description='Visible in the workspace.'
-        error='Project is required.'
+        message='Project is available.'
         style={{ maxWidth: 320 }}
         controlStyle={{ marginTop: 4 }}
         labelStyle={{ fontWeight: '700' }}
         descriptionStyle={{ fontStyle: 'italic' }}
-        errorStyle={{ textDecorationLine: 'underline' }}
+        messageStyle={{ textDecorationLine: 'underline' }}
       >
         <input aria-label='Project' />
       </FormField>
@@ -105,14 +212,16 @@ describe('Native FormField', () => {
     const description = Array.from(container.querySelectorAll('span')).find(
       (node) => node.textContent === 'Visible in the workspace.'
     );
-    const error = container.querySelector<HTMLElement>('[aria-live="polite"]');
+    const message = Array.from(
+      container.querySelectorAll<HTMLElement>('span')
+    ).find((node) => node.textContent === 'Project is available.');
     const controlWrapper = container.querySelector('input')?.parentElement;
 
     expect(field?.style.maxWidth).toBe('320px');
     expect(controlWrapper?.style.marginTop).toBe('4px');
     expect(label?.style.fontWeight).toBe('700');
     expect(description?.style.fontStyle).toBe('italic');
-    expect(error?.style.textDecorationLine).toBe('underline');
+    expect(message?.style.textDecorationLine).toBe('underline');
 
     unmount();
   });

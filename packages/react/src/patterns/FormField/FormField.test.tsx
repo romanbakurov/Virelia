@@ -132,6 +132,177 @@ describe('FormField', () => {
     unmount();
   });
 
+  it('links a supporting message to a direct child control', () => {
+    const { container, unmount } = render(
+      <FormField
+        id='email'
+        label='Email'
+        description='Used for account notifications.'
+        message='Email address is available.'
+        messageTone='success'
+      >
+        <input />
+      </FormField>
+    );
+
+    const input = container.querySelector('input');
+    const message = container.querySelector('#email-message');
+
+    expect(message?.textContent).toBe('Email address is available.');
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      'email-description email-message'
+    );
+    expect(container.querySelector('[role="alert"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports compound slots for label, description, control and message', () => {
+    const { container, unmount } = render(
+      <FormField id='compound-email' required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>Used for notifications.</FormField.Description>
+        <FormField.Control>
+          <input />
+        </FormField.Control>
+        <FormField.Message tone='success' live='polite'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
+    );
+
+    const input = container.querySelector('input');
+    const label = container.querySelector('label');
+    const description = container.querySelector('#compound-email-description');
+    const message = container.querySelector('#compound-email-message');
+
+    expect(label?.getAttribute('for')).toBe('compound-email');
+    expect(label?.textContent).toContain('Email');
+    expect(label?.textContent).toContain('*');
+    expect(description?.textContent).toBe('Used for notifications.');
+    expect(message?.textContent).toBe('Email address is available.');
+    expect(message?.getAttribute('aria-live')).toBe('polite');
+    expect(input?.id).toBe('compound-email');
+    expect(input?.required).toBe(true);
+    expect(input?.getAttribute('aria-labelledby')).toBe('compound-email-label');
+    expect(input?.getAttribute('aria-describedby')).toBe(
+      'compound-email-description compound-email-message'
+    );
+
+    unmount();
+  });
+
+  it('lets FormField.Control opt out of automatic child binding', () => {
+    const { container, unmount } = render(
+      <FormField id='compound-manual'>
+        <FormField.Label>Manual</FormField.Label>
+        <FormField.Control bindControl={false}>
+          <input />
+        </FormField.Control>
+      </FormField>
+    );
+
+    expect(container.querySelector('input')?.id).toBe('');
+
+    unmount();
+  });
+
+  it('gives error content priority over a supporting message', () => {
+    const { container, unmount } = render(
+      <FormField
+        id='slug'
+        label='Project slug'
+        message='Slug is available.'
+        error='This slug is already used.'
+      >
+        <input />
+      </FormField>
+    );
+
+    const input = container.querySelector('input');
+    const error = container.querySelector('#slug-error');
+
+    expect(container.querySelector('#slug-message')).toBeNull();
+    expect(error?.getAttribute('role')).toBe('alert');
+    expect(error?.textContent).toBe('This slug is already used.');
+    expect(input?.getAttribute('aria-invalid')).toBe('true');
+    expect(input?.getAttribute('aria-describedby')).toBe('slug-error');
+
+    unmount();
+  });
+
+  it('keeps supporting messages quiet unless polite live updates are requested', () => {
+    const { container, unmount } = render(
+      <FormField
+        id='api-key'
+        label='API key'
+        message='This key expires in 7 days.'
+        messageLive='polite'
+        messageClassName='message-class'
+      >
+        <input />
+      </FormField>
+    );
+
+    const message = container.querySelector('#api-key-message');
+
+    expect(message?.getAttribute('aria-live')).toBe('polite');
+    expect(message?.className).toContain('message-class');
+
+    unmount();
+  });
+
+  it('renders label actions outside the label element', () => {
+    const { container, unmount } = render(
+      <FormField
+        id='password'
+        label='Password'
+        labelAction={<button type='button'>Forgot password?</button>}
+      >
+        <input />
+      </FormField>
+    );
+
+    const label = container.querySelector('label');
+    const action = container.querySelector('button');
+
+    expect(label?.textContent).toBe('Password');
+    expect(label?.contains(action)).toBe(false);
+
+    unmount();
+  });
+
+  it('does not auto-bind fragments, multiple children or opt-out controls', () => {
+    const { container, unmount, rerender } = render(
+      <FormField id='fragment-field' label='Fragment field'>
+        <>
+          <input />
+        </>
+      </FormField>
+    );
+
+    expect(container.querySelector('input')?.id).toBe('');
+
+    rerender(
+      <FormField id='multi-field' label='Multiple field'>
+        <input />
+        <input />
+      </FormField>
+    );
+
+    expect(container.querySelector('input')?.id).toBe('');
+
+    rerender(
+      <FormField id='manual-field' label='Manual field' bindControl={false}>
+        <input />
+      </FormField>
+    );
+
+    expect(container.querySelector('input')?.id).toBe('');
+
+    unmount();
+  });
+
   it('applies root and slot class names while forwarding safe div props', () => {
     const { container, unmount } = render(
       <FormField

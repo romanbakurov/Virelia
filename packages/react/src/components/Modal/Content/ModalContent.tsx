@@ -30,6 +30,7 @@ export const ModalContent = ({
 }: ModalContentProps) => {
   const root = useModalContext();
   const active = root.open;
+  const focusScopeActive = active && root.shouldRender;
   const [contentNode, setContentNode] = useState<HTMLElement | null>(null);
   const setContentRef = useCallback(
     (node: HTMLElement | null) => {
@@ -51,7 +52,7 @@ export const ModalContent = ({
     requestClose: root.requestClose,
   });
   useModalFocusTrap({
-    active,
+    active: focusScopeActive,
     contentRef: root.contentRef,
     enabled: root.trapFocus,
     finalFocus: root.finalFocus,

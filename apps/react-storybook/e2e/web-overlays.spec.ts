@@ -178,7 +178,6 @@ test.describe('web overlays', () => {
     const cancelButton = dialog.getByRole('button', { name: 'Cancel' });
     const saveButton = dialog.getByRole('button', { name: 'Save changes' });
 
-    await page.keyboard.press('Tab');
     await expect(closeButton).toBeFocused();
 
     await page.keyboard.press('Tab');

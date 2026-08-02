@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { CSSProperties, ReactNode } from 'react';
 
+import { Button } from '../../primitives/Button';
 import { Input } from '../../primitives/Input';
 
 import { FormField } from './FormField';
@@ -109,6 +110,8 @@ Infrastructure for field semantics, layout, state propagation, and accessible la
 
 **Core contract**
 - Generates and shares control, label, description, and error ids
+- Renders a lower message slot with neutral, success, warning, or danger tone
+- Keeps error as the highest-priority message and alert state
 - Provides \`required\`, \`disabled\`, \`invalid\`, and \`size\` through context
 - Merges description and error ids into \`aria-describedby\`
 - Lets Vellira controls such as Input inherit field state automatically
@@ -138,6 +141,9 @@ For common fields, use the shorthand API on Input:
   args: {
     label: 'Email',
     description: 'Used for account notifications.',
+    message: '',
+    messageTone: 'neutral',
+    messageLive: 'off',
     required: false,
     disabled: false,
     invalid: false,
@@ -149,6 +155,15 @@ For common fields, use the shorthand API on Input:
     id: { control: 'text' },
     label: { control: 'text' },
     description: { control: 'text' },
+    message: { control: 'text' },
+    messageTone: {
+      control: 'radio',
+      options: ['neutral', 'success', 'warning', 'danger'],
+    },
+    messageLive: {
+      control: 'radio',
+      options: ['off', 'polite'],
+    },
     error: { control: 'text' },
     required: { control: 'boolean' },
     disabled: { control: 'boolean' },
@@ -166,6 +181,7 @@ For common fields, use the shorthand API on Input:
       options: ['top', 'start'],
     },
     optionalText: { control: 'text' },
+    labelAction: { control: false },
     labelInfo: { control: false },
     children: { control: false },
     bindControl: { control: 'boolean' },
@@ -174,6 +190,7 @@ For common fields, use the shorthand API on Input:
     labelClassName: { control: 'text' },
     descriptionClassName: { control: 'text' },
     errorClassName: { control: 'text' },
+    messageClassName: { control: 'text' },
   },
 } satisfies Meta<typeof FormField>;
 
@@ -313,6 +330,76 @@ export const OptionalAndInfo: Story = {
           <Input placeholder='vk_live_...' />
         </FormField>
       </div>
+    </Section>
+  ),
+};
+
+export const MessageTones: Story = {
+  render: () => (
+    <Section title='Message tones'>
+      <div style={columnStyle}>
+        <FormField
+          label='Email'
+          description='Used for account notifications.'
+          message='Email address is available.'
+          messageTone='success'
+        >
+          <Input color='success' placeholder='name@company.com' />
+        </FormField>
+
+        <FormField
+          label='API key'
+          message='This key expires in 7 days.'
+          messageTone='warning'
+        >
+          <Input color='warning' placeholder='vk_live_...' />
+        </FormField>
+
+        <FormField
+          label='Project slug'
+          message='Lower priority message is replaced by error.'
+          error='This slug is already used.'
+        >
+          <Input invalid placeholder='vellira-ui' />
+        </FormField>
+      </div>
+    </Section>
+  ),
+};
+
+export const LabelAction: Story = {
+  render: () => (
+    <Section title='Label action'>
+      <FormField
+        label='Password'
+        labelAction={
+          <Button appearance='ghost' color='neutral' size='sm'>
+            Forgot password?
+          </Button>
+        }
+        message='Use at least 12 characters.'
+      >
+        <Input type='password' placeholder='Password' />
+      </FormField>
+    </Section>
+  ),
+};
+
+export const CompoundApi: Story = {
+  render: () => (
+    <Section title='Compound API'>
+      <FormField id='compound-email' required>
+        <FormField.Label>Email</FormField.Label>
+        <FormField.Description>
+          Used for account notifications.
+        </FormField.Description>
+        <FormField.Control>
+          <Input color='success' placeholder='name@company.com' />
+        </FormField.Control>
+        <FormField.Message tone='success'>
+          Email address is available.
+        </FormField.Message>
+      </FormField>
     </Section>
   ),
 };

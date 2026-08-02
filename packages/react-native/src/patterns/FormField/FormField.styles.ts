@@ -22,6 +22,17 @@ export const createStyles = (theme: NativeTheme) =>
       lineHeight: theme.components.formField.size.md.labelLineHeight,
     },
 
+    labelRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      gap: theme.components.formField.size.md.gap,
+    },
+
+    labelAction: {
+      flexShrink: 0,
+    },
+
     labelDisabled: {
       color: theme.components.formField.disabled.labelFg,
     },
@@ -70,11 +81,23 @@ export const createStyles = (theme: NativeTheme) =>
       alignSelf: 'stretch',
     },
 
-    error: {
-      color: theme.components.formField.helperText.error.fg,
+    message: {
+      color: theme.components.formField.helperText.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.components.formField.size.md.helperTextFontSize,
       lineHeight: theme.components.formField.size.md.helperTextLineHeight,
+    },
+
+    messageSuccess: {
+      color: theme.components.formField.helperText.success.fg,
+    },
+
+    messageWarning: {
+      color: theme.components.formField.helperText.warning.fg,
+    },
+
+    messageDanger: {
+      color: theme.components.formField.helperText.error.fg,
     },
 
     helperTextDisabled: {

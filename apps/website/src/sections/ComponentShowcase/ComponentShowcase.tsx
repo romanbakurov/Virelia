@@ -811,6 +811,8 @@ export function ComponentShowcase() {
                       <FormField
                         label='Workspace name'
                         description='Controlled value with clear action.'
+                        message='Workspace name is available.'
+                        messageTone='success'
                       >
                         <Input
                           value={inputValue}
@@ -827,6 +829,11 @@ export function ComponentShowcase() {
                       <FormField
                         label='Domain'
                         description='Segmented addons stay attached to the field.'
+                        labelAction={
+                          <Button appearance='link' color='neutral' size='sm'>
+                            Manage
+                          </Button>
+                        }
                       >
                         <Input
                           startAddon='https://'
@@ -842,6 +849,8 @@ export function ComponentShowcase() {
                       <FormField
                         label='Phone'
                         description='Mask keeps typed digits in a known format.'
+                        message='This number can receive verification codes.'
+                        messageTone='neutral'
                       >
                         <Input
                           type='tel'
@@ -856,6 +865,7 @@ export function ComponentShowcase() {
                     >
                       <FormField
                         label='Project slug'
+                        message='Lower priority message is replaced by error.'
                         error='This slug is already used.'
                       >
                         <Input

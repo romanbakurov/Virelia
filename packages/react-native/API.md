@@ -270,6 +270,11 @@ root exposes disabled state when `disabled` is set.
 | `labelPosition`    | `'start' \| 'top'`           | No       | —                                 |
 | `invalid`          | `boolean`                    | No       | —                                 |
 | `orientation`      | `'vertical' \| 'horizontal'` | No       | —                                 |
+| `message`          | `ReactNode`                  | No       | —                                 |
+| `labelAction`      | `ReactNode`                  | No       | —                                 |
+| `messageStyle`     | `StyleProp<TextStyle>`       | No       | —                                 |
+| `messageTone`      | `FormFieldMessageTone`       | No       | —                                 |
+| `messageLive`      | `FormFieldMessageLive`       | No       | —                                 |
 
 <!-- api-docgen:end native.FormFieldProps.FormField -->
 

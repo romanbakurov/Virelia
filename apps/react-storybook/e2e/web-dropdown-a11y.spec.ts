@@ -46,13 +46,30 @@ async function expectNoAxeViolations(page: Page) {
         }
     ).axe;
 
-    const results = await axe.run(document.body, {
-      rules: {
-        region: { enabled: false },
-      },
-    });
+    let results: Awaited<ReturnType<typeof axe.run>> | undefined;
 
-    return results.violations.map((violation) => ({
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      try {
+        results = await axe.run(document.body, {
+          rules: {
+            region: { enabled: false },
+          },
+        });
+        break;
+      } catch (error) {
+        if (
+          !(error instanceof Error) ||
+          !error.message.includes('Axe is already running') ||
+          attempt === 4
+        ) {
+          throw error;
+        }
+
+        await new Promise((resolve) => window.setTimeout(resolve, 50));
+      }
+    }
+
+    return (results?.violations ?? []).map((violation) => ({
       id: violation.id,
       help: violation.help,
       nodes: violation.nodes.map((node) => ({
