@@ -698,9 +698,7 @@ import { Tabs } from '@vellira-ui/react';
 
 Tabs use stable string values. `Tabs.Trigger value` must match
 `Tabs.Content value`; the selected panel does not depend on render order. Use
-`Tabs.List scrollable` for horizontally scrollable tab rows. Root-level
-`scrollable`, `Tabs.Tab`, `Tabs.Panel`, `activeIndex`, and `onChange` are not
-part of the public API.
+`Tabs.List scrollable` for horizontally scrollable tab rows.
 
 Keyboard navigation supports Arrow keys, `Home`, and `End`. In automatic mode,
 focus selects the next tab; in manual mode, `Enter` or `Space` selects the

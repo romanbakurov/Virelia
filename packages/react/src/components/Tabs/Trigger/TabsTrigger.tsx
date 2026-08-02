@@ -72,6 +72,9 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
 
     const hasSimpleSlots =
       (hasIcon && !hasExplicitIcon) || badge || description;
+    const hasOnlyTextChildren = childArray.every(
+      (child) => typeof child === 'string' || typeof child === 'number'
+    );
 
     return (
       <button
@@ -126,6 +129,8 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 <span className={styles.description}>{description}</span>
               )}
             </span>
+          ) : hasOnlyTextChildren ? (
+            <span className={styles.label}>{children}</span>
           ) : (
             children
           ))}

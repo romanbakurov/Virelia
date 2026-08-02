@@ -29,6 +29,7 @@ Navigation component used to organize related content into multiple views.
 - Line, pills, and segmented variants
 - Primary, neutral, success, warning, and danger colors
 - Sizes: sm, md, and lg
+- Token-driven colors, radii, spacing, focus rings, and segmented surface shadow
 - Disabled triggers, rich trigger content, icons, badges, and descriptions
 - List-level scrollable tabs
 - keepMounted, lazyMount, and forceMount mounting policies

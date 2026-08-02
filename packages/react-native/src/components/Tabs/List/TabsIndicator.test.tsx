@@ -14,6 +14,16 @@ const mocks = vi.hoisted(() => {
         lg: 12,
         full: 999,
       },
+      shadows: {
+        sm: {
+          x: 0,
+          y: 1,
+          blur: 3,
+          color: '#0f172a',
+          opacity: 0.04,
+          elevation: 1,
+        },
+      },
     },
 
     components: {
@@ -423,6 +433,20 @@ describe('Native TabsIndicator', () => {
     ]);
 
     first.unmount();
+  });
+
+  it('uses system shadow tokens for the segmented floating surface', async () => {
+    mocks.tabs.variant = 'segmented';
+
+    const { container, unmount } = render(<TabsIndicator />);
+
+    await flushEffects();
+
+    const indicator = container.firstElementChild as HTMLElement;
+
+    expect(indicator.style.boxShadow).toBe('0px 1px 3px #0f172a');
+
+    unmount();
   });
 
   it.each([
