@@ -192,7 +192,29 @@ describe('Native Select', () => {
     unmount();
   });
 
-  it('keeps the legacy options fallback working', () => {
+  it('uses hover tokens when an option is hovered', () => {
+    const { container, unmount } = render(
+      <Select label='Country' options={options} />
+    );
+
+    openSelect(container);
+
+    const option = getButtonByText('France');
+
+    act(() => {
+      option?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+    });
+
+    expect(option?.style.backgroundColor).toBe(
+      hexToRgb(
+        nativeThemes.light.components.select.primary.outline.option.hover.bg
+      )
+    );
+
+    unmount();
+  });
+
+  it('supports simple options arrays', () => {
     const onValueChange = vi.fn();
 
     const { container, unmount } = render(

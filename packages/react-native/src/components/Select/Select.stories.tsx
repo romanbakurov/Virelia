@@ -67,11 +67,12 @@ Native select control with the same public philosophy as Web Select, but with na
 **Features**
 
 - Children-first API with \`Select.Item\`, \`Select.Group\`, \`Select.Separator\`
-- Optional legacy \`options\` fallback for simple lists
+- Optional \`options\` array for simple lists
 - \`value/defaultValue/onValueChange\`, \`color/variant/size\`
 - FormField context inheritance and shorthand field props
 - Searchable, clearable, loading, multiple, maxSelected and controlled open
 - Rich item metadata: description, icon, badge, disabled and color
+- Token-driven colors, borders, shadows, focus rings, and option states
 - Native presentations: \`auto\`, \`sheet\`, \`modal\`, \`popover\`
 
 ### Usage

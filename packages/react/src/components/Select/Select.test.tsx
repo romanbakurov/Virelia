@@ -1007,9 +1007,9 @@ describe('Select', () => {
       root.render(
         <Select
           id='country'
+          empty='No countries found'
           label='Country'
           name='country'
-          noOptionsText='No countries found'
           onValueChange={onValueChange}
         />
       );

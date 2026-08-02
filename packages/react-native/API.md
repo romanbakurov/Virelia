@@ -449,7 +449,7 @@ only the values that still fit are added.
 | `description`            | `string`                                                         | No       | Additional descriptive text.                                          |
 | `error`                  | `ReactNode`                                                      | No       | Error message or custom error content.                                |
 | `children`               | `ReactNode`                                                      | No       | `Select.Item`, `Select.Group`, and related compound slots.            |
-| `options`                | `SelectItemProps[]`                                              | No       | Compatibility fallback for simple option arrays.                      |
+| `options`                | `SelectItemProps[]`                                              | No       | Simple option array alternative to compound items.                    |
 | `value`                  | `string \| string[] \| null`                                     | No       | Controlled selected value.                                            |
 | `defaultValue`           | `string \| string[] \| null`                                     | No       | Initial selected value for uncontrolled usage.                        |
 | `onValueChange`          | `(value: string \| null) => void) \| ((value: string[]) => void` | No       | Called when the selected value changes.                               |

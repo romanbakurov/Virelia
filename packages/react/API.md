@@ -547,7 +547,6 @@ shows the first 10 labels and a `+N` overflow count.
 | `dropdownClassName` | `string`                                                                 | No       | Extra CSS class for the dropdown element.        |
 | `size`              | `SelectSize`                                                             | No       | Select size.                                     |
 | `aria-label`        | `string`                                                                 | No       | Accessible trigger label.                        |
-| `noOptionsText`     | `ReactNode`                                                              | No       | Content shown when no options are available.     |
 | `onBlur`            | `FocusEventHandler<HTMLButtonElement>`                                   | No       | Called when the trigger loses focus.             |
 | `onFocus`           | `FocusEventHandler<HTMLButtonElement>`                                   | No       | Called when the trigger receives focus.          |
 | `aria-describedby`  | `string`                                                                 | No       | —                                                |
