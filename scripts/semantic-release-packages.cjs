@@ -20,6 +20,15 @@ const publishRetries = Number.parseInt(
   process.env.VELLIRA_RELEASE_PUBLISH_RETRIES ?? '2',
   10
 );
+const verificationAttempts = Number.parseInt(
+  process.env.VELLIRA_RELEASE_VERIFICATION_ATTEMPTS ?? '8',
+  10
+);
+
+const verificationBaseDelayMs = Number.parseInt(
+  process.env.VELLIRA_RELEASE_VERIFICATION_BASE_DELAY_MS ?? '5000',
+  10
+);
 const minimumTrustedPublishingNpmVersion = '11.5.1';
 
 function getPackageDirectory(packageName) {
@@ -138,13 +147,47 @@ function createPackageInfo(packageName) {
 
 function isAlreadyPublishedError(output) {
   return (
+    output.includes('cannot publish over the previously published version') ||
     output.includes('cannot publish over the previously published versions') ||
+    output.includes(
+      'You cannot publish over the previously published version'
+    ) ||
     output.includes(
       'You cannot publish over the previously published versions'
     ) ||
     output.includes('previously published versions') ||
     output.includes('EPUBLISHCONFLICT') ||
     output.includes('code E409')
+  );
+}
+
+function isRetryableVerificationError(output) {
+  const errorCode = getNpmErrorCode(output);
+
+  if (
+    [
+      '404',
+      'E404',
+      '429',
+      'E429',
+      '500',
+      'E500',
+      '502',
+      'E502',
+      '503',
+      'E503',
+      '504',
+      'E504',
+      'ECONNRESET',
+      'ETIMEDOUT',
+      'EAI_AGAIN',
+    ].includes(errorCode)
+  ) {
+    return true;
+  }
+
+  return /\b(?:E404|E429|E500|E502|E503|E504|ECONNRESET|ETIMEDOUT|EAI_AGAIN)\b/i.test(
+    output
   );
 }
 
@@ -274,6 +317,10 @@ function wait(milliseconds) {
   });
 }
 
+function getVerificationDelay(attempt) {
+  return verificationBaseDelayMs * attempt;
+}
+
 function hasProvenanceAttestations(dist) {
   if (!dist || typeof dist !== 'object') {
     return false;
@@ -297,9 +344,7 @@ function hasProvenanceAttestations(dist) {
 }
 
 async function verifyPublishedPackage(packageInfo) {
-  const maxAttempts = publishRetries + 1;
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 1; attempt <= verificationAttempts; attempt += 1) {
     const result = await runNpmViewDist(packageInfo);
     const output = `${result.stdout}\n${result.stderr}`;
 
@@ -310,41 +355,64 @@ async function verifyPublishedPackage(packageInfo) {
         dist = JSON.parse(result.stdout);
       } catch (error) {
         throw new Error(
-          `Unable to parse npm registry metadata for ${packageInfo.name}@${packageInfo.version}: ${error.message}`
+          `Unable to parse npm registry metadata for ` +
+            `${packageInfo.name}@${packageInfo.version}: ${error.message}`
         );
       }
 
-      if (!dist?.integrity || !dist?.tarball) {
-        throw new Error(
-          `npm registry metadata for ${packageInfo.name}@${packageInfo.version} is missing tarball integrity.`
+      const hasIntegrity = Boolean(dist?.integrity);
+      const hasTarball = Boolean(dist?.tarball);
+      const hasProvenance = hasProvenanceAttestations(dist);
+
+      if (hasIntegrity && hasTarball && hasProvenance) {
+        console.log(
+          `[release] Verified npm provenance metadata for ` +
+            `${packageInfo.name}@${packageInfo.version}.`
         );
+
+        return;
       }
 
-      if (!hasProvenanceAttestations(dist)) {
-        if (attempt < maxAttempts) {
-          console.warn(
-            `[release] ${packageInfo.name} provenance metadata is not visible yet; retrying.`
+      if (attempt === verificationAttempts) {
+        if (!hasIntegrity || !hasTarball) {
+          throw new Error(
+            `npm registry metadata for ${packageInfo.name}@` +
+              `${packageInfo.version} is missing tarball integrity.`
           );
-          await wait(1000 * attempt);
-          continue;
         }
 
         throw new Error(
-          `npm registry metadata for ${packageInfo.name}@${packageInfo.version} is missing provenance attestations.`
+          `npm registry metadata for ${packageInfo.name}@` +
+            `${packageInfo.version} is missing provenance attestations.`
         );
       }
 
-      console.log(
-        `[release] Verified npm provenance metadata for ${packageInfo.name}@${packageInfo.version}.`
+      const delayMs = getVerificationDelay(attempt);
+      const missingMetadata = [
+        !hasIntegrity && 'integrity',
+        !hasTarball && 'tarball',
+        !hasProvenance && 'provenance',
+      ]
+        .filter(Boolean)
+        .join(', ');
+
+      console.warn(
+        `[release] ${packageInfo.name}@${packageInfo.version} is visible, ` +
+          `but ${missingMetadata} metadata is not available yet; ` +
+          `retrying in ${delayMs / 1000}s ` +
+          `(${attempt}/${verificationAttempts}).`
       );
 
-      return;
+      await wait(delayMs);
+      continue;
     }
 
-    const retryable = result.error || isRetryablePublishError(output);
+    const retryable =
+      Boolean(result.error) || isRetryableVerificationError(output);
 
-    if (!retryable || attempt === maxAttempts) {
+    if (!retryable || attempt === verificationAttempts) {
       writeCommandOutput(packageInfo.name, result);
+
       const reason = result.error
         ? result.error.message
         : `npm view exited with status ${result.status}`;
@@ -354,11 +422,22 @@ async function verifyPublishedPackage(packageInfo) {
       );
     }
 
+    const delayMs = getVerificationDelay(attempt);
+    const errorCode = getNpmErrorCode(output) ?? 'unknown transient error';
+
     console.warn(
-      `[release] ${packageInfo.name} provenance verification attempt ${attempt}/${maxAttempts} failed; retrying.`
+      `[release] ${packageInfo.name}@${packageInfo.version} is not fully ` +
+        `available from npm yet (${errorCode}); retrying in ` +
+        `${delayMs / 1000}s (${attempt}/${verificationAttempts}).`
     );
-    await wait(1000 * attempt);
+
+    await wait(delayMs);
   }
+
+  throw new Error(
+    `Unexpected verification loop exit for ` +
+      `${packageInfo.name}@${packageInfo.version}.`
+  );
 }
 
 async function publishPackage(packageInfo) {
@@ -524,6 +603,21 @@ exports.publish = async () => {
 
   if (!Number.isInteger(publishRetries) || publishRetries < 0) {
     throw new Error('VELLIRA_RELEASE_PUBLISH_RETRIES must be zero or greater.');
+  }
+
+  if (!Number.isInteger(verificationAttempts) || verificationAttempts < 1) {
+    throw new Error(
+      'VELLIRA_RELEASE_VERIFICATION_ATTEMPTS must be a positive integer.'
+    );
+  }
+
+  if (
+    !Number.isInteger(verificationBaseDelayMs) ||
+    verificationBaseDelayMs < 0
+  ) {
+    throw new Error(
+      'VELLIRA_RELEASE_VERIFICATION_BASE_DELAY_MS must be zero or greater.'
+    );
   }
 
   assertTrustedPublishingEnvironment();
