@@ -125,6 +125,77 @@ describe('Modal', () => {
     unmount();
   });
 
+  it('applies configurable animation settings to overlay and content', () => {
+    const { unmount } = render(
+      <Modal open animation='slide' duration={{ open: 220, close: 140 }}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Animated'>
+            <Modal.Body>Animated body</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    const overlay = document.querySelector(
+      '[aria-hidden="true"][data-animation="slide"]'
+    );
+    const dialog = document.querySelector('[role="dialog"]');
+
+    expect(overlay?.getAttribute('data-animation')).toBe('slide');
+    expect(dialog?.getAttribute('data-animation')).toBe('slide');
+    expect(
+      (dialog as HTMLElement).style.getPropertyValue(
+        '--modal-animation-open-duration'
+      )
+    ).toBe('220ms');
+    expect(
+      (dialog as HTMLElement).style.getPropertyValue(
+        '--modal-animation-close-duration'
+      )
+    ).toBe('140ms');
+
+    unmount();
+  });
+
+  it('keeps modal mounted until the close animation completes', () => {
+    vi.useFakeTimers();
+
+    function ModalHarness({ open }: { open: boolean }) {
+      return (
+        <Modal open={open}>
+          <Portal>
+            <Modal.Overlay />
+            <Modal.Content ariaLabel='Animated close'>
+              <Modal.Body>Animated close body</Modal.Body>
+            </Modal.Content>
+          </Portal>
+        </Modal>
+      );
+    }
+
+    const { rerender, unmount } = render(<ModalHarness open />);
+
+    rerender(<ModalHarness open={false} />);
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+
+    act(() => {
+      vi.advanceTimersByTime(149);
+    });
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+
+    unmount();
+    vi.useRealTimers();
+  });
+
   it('moves focus into the dialog and restores it to the opener on close', async () => {
     function ModalHarness({ open }: { open: boolean }) {
       return (

@@ -11,9 +11,9 @@ export const ModalOverlay = ({
   animated = true,
   forceMount = false,
 }: ModalOverlayProps) => {
-  const { open } = useModalContext();
+  const { animation, animationStyle, open, shouldRender } = useModalContext();
 
-  if (!open && !forceMount) return null;
+  if (!shouldRender && !forceMount) return null;
 
   return (
     <div
@@ -23,7 +23,9 @@ export const ModalOverlay = ({
         animated && styles['overlay--animated'],
         className
       )}
+      style={animationStyle}
       data-state={open ? 'open' : 'closed'}
+      data-animation={animation}
       aria-hidden='true'
     />
   );

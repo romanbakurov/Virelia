@@ -6,9 +6,15 @@ import type {
   RefObject,
 } from 'react';
 
-import type { ModalAutoFocusEvent, ModalOutsideEvent } from '../types';
+import type {
+  ModalAnimation,
+  ModalAutoFocusEvent,
+  ModalOutsideEvent,
+} from '../types';
 
 export type ModalContextValue = {
+  animation: ModalAnimation;
+  animationStyle: CSSProperties;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
   contentId: string;

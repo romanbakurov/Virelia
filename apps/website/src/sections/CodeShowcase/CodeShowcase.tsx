@@ -200,7 +200,10 @@ export function Example() {
 
 export function Example() {
   return (
-    <Modal>
+    <Modal
+      animation='scale'
+      duration={{ open: 180, close: 150 }}
+    >
       <Modal.Trigger asChild>
         <Button>Open modal</Button>
       </Modal.Trigger>
@@ -720,7 +723,12 @@ export function CodeShowcase() {
                           Open modal
                         </Button>
 
-                        <Modal open={modalOpen} onOpenChange={setModalOpen}>
+                        <Modal
+                          open={modalOpen}
+                          animation='scale'
+                          duration={{ open: 180, close: 150 }}
+                          onOpenChange={setModalOpen}
+                        >
                           <Portal>
                             <Modal.Overlay />
                             <Modal.Content>

@@ -22,6 +22,7 @@
   border-radius: var(--modal-content-radius);
   box-shadow: var(--modal-content-shadow);
   outline: none;
+  opacity: 1;
 
   &[data-state='closed'] {
     opacity: 0;
@@ -30,34 +31,82 @@
 }
 
 .animated {
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease,
-    visibility 0s linear var(--modal-content-animation-duration);
-
   &[data-state='open'] {
-    transition-delay: 0s;
+    animation: modal-content-open
+      var(--modal-animation-open-duration, var(--modal-motion-open-duration))
+      var(--modal-animation-easing, var(--modal-motion-easing)) both;
+    visibility: visible;
+  }
+
+  &[data-state='closed'] {
+    animation: modal-content-close
+      var(--modal-animation-close-duration, var(--modal-motion-close-duration))
+      var(--modal-animation-easing, var(--modal-motion-easing)) both;
+  }
+
+  &[data-animation='none'] {
+    animation: none;
   }
 }
 
 .center {
+  --modal-content-open-transform: translate(-50%, -50%) scale(1);
+  --modal-content-scale-open-from-transform: translate(-50%, calc(-50% + 8px))
+    scale(0.96);
+  --modal-content-scale-close-to-transform: translate(-50%, calc(-50% + 4px))
+    scale(0.98);
+  --modal-content-slide-open-from-transform: translate(-50%, calc(-50% + 16px));
+  --modal-content-slide-close-to-transform: translate(-50%, calc(-50% + 8px));
+
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.98);
+  transform: var(--modal-content-open-transform);
 
   &[data-state='open'] {
-    transform: translate(-50%, -50%) scale(1);
+    transform: var(--modal-content-open-transform);
   }
 }
 
 .top {
+  --modal-content-open-transform: translateX(-50%) translateY(0) scale(1);
+  --modal-content-scale-open-from-transform: translateX(-50%) translateY(8px)
+    scale(0.96);
+  --modal-content-scale-close-to-transform: translateX(-50%) translateY(4px)
+    scale(0.98);
+  --modal-content-slide-open-from-transform: translateX(-50%) translateY(16px);
+  --modal-content-slide-close-to-transform: translateX(-50%) translateY(8px);
+
   top: var(--modal-content-top-offset);
   left: 50%;
-  transform: translateX(-50%) translateY(-8px);
+  transform: var(--modal-content-open-transform);
 
   &[data-state='open'] {
-    transform: translateX(-50%) translateY(0);
+    transform: var(--modal-content-open-transform);
   }
+}
+
+.content[data-animation='scale'] {
+  --modal-content-open-from-transform: var(
+    --modal-content-scale-open-from-transform
+  );
+  --modal-content-close-to-transform: var(
+    --modal-content-scale-close-to-transform
+  );
+}
+
+.content[data-animation='slide'] {
+  --modal-content-open-from-transform: var(
+    --modal-content-slide-open-from-transform
+  );
+  --modal-content-close-to-transform: var(
+    --modal-content-slide-close-to-transform
+  );
+}
+
+.content[data-animation='fade'],
+.content[data-animation='none'] {
+  --modal-content-open-from-transform: var(--modal-content-open-transform);
+  --modal-content-close-to-transform: var(--modal-content-open-transform);
 }
 
 .sm {
@@ -92,6 +141,32 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animated {
-    transition: none;
+    animation: none;
+  }
+}
+
+@keyframes modal-content-open {
+  from {
+    opacity: 0;
+    transform: var(--modal-content-open-from-transform);
+  }
+
+  to {
+    opacity: 1;
+    transform: var(--modal-content-open-transform);
+  }
+}
+
+@keyframes modal-content-close {
+  from {
+    opacity: 1;
+    transform: var(--modal-content-open-transform);
+    visibility: visible;
+  }
+
+  to {
+    opacity: 0;
+    transform: var(--modal-content-close-to-transform);
+    visibility: hidden;
   }
 }

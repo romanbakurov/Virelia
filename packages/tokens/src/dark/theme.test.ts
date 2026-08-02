@@ -5,6 +5,31 @@ import { lightTheme } from '../light/theme';
 
 import { darkTheme } from './theme';
 
+const relativeLuminance = (hex: string) => {
+  const [red = 0, green = 0, blue = 0] = hex
+    .slice(1)
+    .match(/../g)!
+    .map((channel) => {
+      const value = parseInt(channel, 16) / 255;
+
+      return value <= 0.03928
+        ? value / 12.92
+        : ((value + 0.055) / 1.055) ** 2.4;
+    });
+
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+};
+
+const contrastRatio = (foreground: string, background: string) => {
+  const foregroundLuminance = relativeLuminance(foreground);
+  const backgroundLuminance = relativeLuminance(background);
+
+  return (
+    (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+    (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+  );
+};
+
 describe.each([
   ['light', lightTheme],
   ['dark', darkTheme],
@@ -55,6 +80,24 @@ describe('dark theme select', () => {
     expect(
       darkTheme.components.select.primary.outline.option.hover.bg
     ).not.toBe(darkTheme.components.select.dropdown.bg);
+  });
+
+  it('keeps filled hover placeholder contrast at AA level', () => {
+    const colors = [
+      'primary',
+      'neutral',
+      'success',
+      'warning',
+      'danger',
+    ] as const;
+
+    for (const color of colors) {
+      const state = darkTheme.components.select[color].filled.hover;
+
+      expect(contrastRatio(state.placeholder, state.bg)).toBeGreaterThanOrEqual(
+        4.5
+      );
+    }
   });
 });
 

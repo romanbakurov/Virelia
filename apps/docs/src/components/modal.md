@@ -169,6 +169,20 @@ export function InviteTeammateDialog() {
 | Footer  | Put the safe action and primary action in a predictable order.   |
 | Close   | Use `Modal.Close` for cancel and icon close controls.            |
 
+## Styling
+
+Modal uses component tokens for overlay color, content surface, border, radius,
+shadow, spacing, and close-button states. Prefer theme tokens for custom form
+controls inside modal bodies so light, dark, and high-contrast themes stay in
+sync.
+
+Default motion is driven by `modal.motion` tokens: backdrop opacity runs for
+180ms on open and 150ms on close; content animates opacity, scale, and
+`translateY` over the same timings. Use `animation='slide'`,
+`animation='fade'`, or `animation='none'` when the product surface needs a
+different motion profile. `duration` accepts either a number or
+`{ open, close }`, and `easing='standard'` uses the tokenized default curve.
+
 ## Accessibility
 
 - Provide a visible `Modal.Title` or pass `ariaLabel` to `Modal.Content`.

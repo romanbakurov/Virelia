@@ -11,11 +11,25 @@ export type ModalOutsideEvent = {
   defaultPrevented: boolean;
 };
 
+export type ModalAnimation = 'scale' | 'slide' | 'fade' | 'none';
+export type ModalAnimationEasing =
+  'standard' | 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+
+export type ModalAnimationDuration =
+  | number
+  | {
+      close?: number;
+      open?: number;
+    };
+
 export interface ModalProps {
   children: ReactNode;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  animation?: ModalAnimation;
+  duration?: ModalAnimationDuration;
+  easing?: ModalAnimationEasing;
   modal?: boolean;
   closeOnEscape?: boolean;
   closeOnOutsidePress?: boolean;

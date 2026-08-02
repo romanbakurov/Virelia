@@ -1,11 +1,18 @@
 import { createContext, useContext } from 'react';
 
+import type { Animated } from 'react-native';
+
+import type { ModalAnimation } from '../types';
+
 interface ModalContextType {
+  animation: ModalAnimation;
+  animationProgress: Animated.Value;
   closeOnOutsidePress: boolean;
   onClose?: () => void;
   onOutsideClose?: () => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  shouldRender: boolean;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);

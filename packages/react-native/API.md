@@ -827,6 +827,9 @@ import { Button, Modal, Portal } from '@vellira-ui/react-native';
 | `onOpenChange`        | `(open: boolean) => void` | No       | Called when the open state changes.  |
 | `closeOnOutsidePress` | `boolean`                 | No       | Allows closing by pressing backdrop. |
 | `closeOnEscape`       | `boolean`                 | No       | Reserved for API parity with web.    |
+| `animation`           | `ModalAnimation`          | No       | —                                    |
+| `duration`            | `ModalAnimationDuration`  | No       | —                                    |
+| `easing`              | `ModalAnimationEasing`    | No       | —                                    |
 
 <!-- api-docgen:end native.ModalProps.ModalProps -->
 

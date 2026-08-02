@@ -5,6 +5,7 @@ import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '../../primitives/Button';
 import { Portal } from '../../primitives/Portal';
+import { useTheme } from '../../theme';
 
 import { Modal } from '.';
 
@@ -15,7 +16,13 @@ const meta = {
   component: Modal,
   tags: ['autodocs'],
   args: {
+    animation: 'scale',
     defaultOpen: false,
+    duration: {
+      close: 150,
+      open: 180,
+    },
+    easing: 'standard',
     closeOnOutsidePress: true,
     onOpenChange: noop,
   },
@@ -28,6 +35,13 @@ const meta = {
 Compound-first native dialog with Root, Trigger, Overlay, Content, Header,
 Body, Footer, and Close parts. Use the shared Portal primitive for explicit
 layer composition.
+
+**Features**
+
+- Token-driven overlay, content surface, shadow, spacing, and close button states
+- Configurable animations: scale, slide, fade, or none
+- Controlled and uncontrolled open state
+- Trigger and Close composition through asChild
 
 ### Usage
 
@@ -78,6 +92,39 @@ layer composition.
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' },
+      },
+    },
+    animation: {
+      control: 'radio',
+      options: ['scale', 'slide', 'fade', 'none'],
+      table: {
+        type: { summary: "'scale' | 'slide' | 'fade' | 'none'" },
+        defaultValue: { summary: "'scale'" },
+      },
+    },
+    duration: {
+      control: 'object',
+      table: {
+        type: { summary: 'number | { open?: number; close?: number }' },
+        defaultValue: { summary: '{ open: 180, close: 150 }' },
+      },
+    },
+    easing: {
+      control: 'radio',
+      options: [
+        'standard',
+        'linear',
+        'ease',
+        'ease-in',
+        'ease-out',
+        'ease-in-out',
+      ],
+      table: {
+        type: {
+          summary:
+            "'standard' | 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out'",
+        },
+        defaultValue: { summary: "'standard'" },
       },
     },
     children: {
@@ -132,6 +179,7 @@ function NativeModalDemo({
 
 function NativeFormModal() {
   const [density, setDensity] = useState('comfortable');
+  const { theme } = useTheme();
 
   return (
     <Modal>
@@ -148,10 +196,12 @@ function NativeFormModal() {
                   accessibilityLabel='Workspace email'
                   defaultValue='team@vellira.dev'
                   style={{
+                    backgroundColor: theme.semantic.surface.default,
                     borderWidth: 1,
-                    borderColor: '#CBD5E1',
-                    borderRadius: 8,
-                    padding: 12,
+                    borderColor: theme.semantic.border.muted,
+                    borderRadius: theme.tokens.radius.md,
+                    color: theme.semantic.text.primary,
+                    padding: theme.tokens.spacing[3],
                   }}
                 />
                 {(['comfortable', 'compact', 'dense'] as const).map((value) => (

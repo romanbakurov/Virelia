@@ -1536,7 +1536,10 @@ function WebComponentsOverview() {
                     <Portal>
                       <Modal.Overlay />
                       <Modal.Content size={size}>
-                        <Modal.Header title={`Size ${size}`} showClose />
+                        <Modal.Header>
+                          <Modal.Title>{`Size ${size}`}</Modal.Title>
+                          <Modal.Close />
+                        </Modal.Header>
                         <Modal.Body>
                           Modal content uses token-based width for each size.
                         </Modal.Body>
@@ -1559,7 +1562,10 @@ function WebComponentsOverview() {
                   <Portal>
                     <Modal.Overlay />
                     <Modal.Content>
-                      <Modal.Header title='Explicit close' showClose />
+                      <Modal.Header>
+                        <Modal.Title>Explicit close</Modal.Title>
+                        <Modal.Close />
+                      </Modal.Header>
                       <Modal.Body>
                         Outside press is disabled for this modal.
                       </Modal.Body>
@@ -1573,11 +1579,15 @@ function WebComponentsOverview() {
                   <Portal>
                     <Modal.Overlay />
                     <Modal.Content>
-                      <Modal.Header
-                        title='Delete report?'
-                        description='This action cannot be undone.'
-                        showClose
-                      />
+                      <Modal.Header>
+                        <div>
+                          <Modal.Title>Delete report?</Modal.Title>
+                          <Modal.Description>
+                            This action cannot be undone.
+                          </Modal.Description>
+                        </div>
+                        <Modal.Close />
+                      </Modal.Header>
                       <Modal.Body>
                         Report data will be permanently removed.
                       </Modal.Body>

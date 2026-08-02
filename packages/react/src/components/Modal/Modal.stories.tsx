@@ -35,6 +35,8 @@ Compound-first dialog for focused tasks and confirmations.
 - Escape and outside-press dismissal controls
 - Focus trap, initial focus, final focus, focus restoration, and scroll lock
 - Content sizes and inside/outside scroll behavior
+- Token-driven overlay, content surface, shadow, spacing, and close button states
+- Configurable animations: scale, slide, fade, or none
 - data-state hooks for animation libraries
 
 ### Usage
@@ -75,6 +77,12 @@ Compound-first dialog for focused tasks and confirmations.
     },
   },
   args: {
+    animation: 'scale',
+    duration: {
+      close: 150,
+      open: 180,
+    },
+    easing: 'standard',
     onOpenChange: noop,
   },
   argTypes: {
@@ -115,6 +123,39 @@ Compound-first dialog for focused tasks and confirmations.
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: 'true' },
+      },
+    },
+    animation: {
+      control: 'radio',
+      options: ['scale', 'slide', 'fade', 'none'],
+      table: {
+        type: { summary: "'scale' | 'slide' | 'fade' | 'none'" },
+        defaultValue: { summary: "'scale'" },
+      },
+    },
+    duration: {
+      control: 'object',
+      table: {
+        type: { summary: 'number | { open?: number; close?: number }' },
+        defaultValue: { summary: '{ open: 180, close: 150 }' },
+      },
+    },
+    easing: {
+      control: 'radio',
+      options: [
+        'standard',
+        'linear',
+        'ease',
+        'ease-in',
+        'ease-out',
+        'ease-in-out',
+      ],
+      table: {
+        type: {
+          summary:
+            "'standard' | 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out'",
+        },
+        defaultValue: { summary: "'standard'" },
       },
     },
     className: {
@@ -395,7 +436,10 @@ function InitialFocusDemo() {
         <Portal>
           <Modal.Overlay />
           <Modal.Content>
-            <Modal.Header title='Edit profile' showClose />
+            <Modal.Header>
+              <Modal.Title>Edit profile</Modal.Title>
+              <Modal.Close />
+            </Modal.Header>
             <Modal.Body>
               <Input
                 ref={inputRef}
@@ -435,7 +479,10 @@ export const NestedModal: Story = {
           <Portal>
             <Modal.Overlay />
             <Modal.Content size='sm'>
-              <Modal.Header title='Nested modal' showClose />
+              <Modal.Header>
+                <Modal.Title>Nested modal</Modal.Title>
+                <Modal.Close />
+              </Modal.Header>
               <Modal.Body>This dialog sits above the parent modal.</Modal.Body>
             </Modal.Content>
           </Portal>

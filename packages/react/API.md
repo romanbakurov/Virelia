@@ -940,6 +940,9 @@ import { Button, Modal, Portal } from '@vellira-ui/react';
 | `onPointerDownOutside` | `(event: ModalOutsideEvent) => void`   | No       | —                                     |
 | `onInteractOutside`    | `(event: ModalOutsideEvent) => void`   | No       | —                                     |
 | `className`            | `string`                               | No       | Extra CSS class for the root element. |
+| `animation`            | `ModalAnimation`                       | No       | —                                     |
+| `duration`             | `ModalAnimationDuration`               | No       | —                                     |
+| `easing`               | `ModalAnimationEasing`                 | No       | —                                     |
 
 <!-- api-docgen:end web.ModalProps.ModalProps -->
 
