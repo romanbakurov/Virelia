@@ -17,14 +17,42 @@ const navigationIcon = (name: string) =>
     .replaceAll('stroke="black"', 'stroke="currentColor"')
     .replaceAll('stroke="#1B1F23"', 'stroke="currentColor"');
 
+const pageUrl = (relativePath: string) => {
+  const path = relativePath.replace(/index\.md$/, '').replace(/\.md$/, '');
+
+  return new URL(path, `${siteUrl}/`).toString();
+};
+
 export default defineConfig({
-  title: 'Vellira',
+  title: 'Vellira Docs',
+  titleTemplate: ':title | Vellira Docs',
   base: '/',
   description: siteDescription,
   cleanUrls: true,
   lastUpdated: true,
   sitemap: {
     hostname: siteUrl,
+  },
+  transformPageData(pageData) {
+    const canonicalUrl = pageUrl(pageData.relativePath);
+    const isHome = pageData.relativePath === 'index.md';
+
+    const title = isHome
+      ? 'Vellira Documentation'
+      : `${pageData.title} | Vellira Docs`;
+
+    const description = pageData.frontmatter.description || siteDescription;
+
+    pageData.frontmatter.head ??= [];
+
+    pageData.frontmatter.head.push(
+      ['link', { rel: 'canonical', href: canonicalUrl }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { property: 'og:url', content: canonicalUrl }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: description }]
+    );
   },
   head: [
     [
@@ -59,19 +87,19 @@ export default defineConfig({
         href: '/brand/icons/apple-touch-icon.png',
       },
     ],
-    ['link', { rel: 'canonical', href: siteUrl }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'Vellira Docs' }],
-    ['meta', { property: 'og:title', content: 'Vellira Documentation' }],
-    ['meta', { property: 'og:description', content: siteDescription }],
-    ['meta', { property: 'og:url', content: siteUrl }],
     ['meta', { property: 'og:image', content: socialImage }],
     ['meta', { property: 'og:image:width', content: '1200' }],
     ['meta', { property: 'og:image:height', content: '630' }],
-    ['meta', { property: 'og:image:alt', content: 'Vellira design system' }],
+    [
+      'meta',
+      {
+        property: 'og:image:alt',
+        content: 'Vellira design system documentation',
+      },
+    ],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title', content: 'Vellira Documentation' }],
-    ['meta', { name: 'twitter:description', content: siteDescription }],
     ['meta', { name: 'twitter:image', content: socialImage }],
   ],
   themeConfig: {
