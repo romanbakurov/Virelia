@@ -174,8 +174,21 @@ test.describe('web overlays', () => {
     await expectPortaled(page, '[role="dialog"]');
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
 
+    const closeButton = dialog.getByRole('button', { name: 'Close dialog' });
+    const cancelButton = dialog.getByRole('button', { name: 'Cancel' });
+    const saveButton = dialog.getByRole('button', { name: 'Save changes' });
+
     await page.keyboard.press('Tab');
-    await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused();
+    await expect(closeButton).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(cancelButton).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(saveButton).toBeFocused();
+
+    await page.keyboard.press('Tab');
+    await expect(closeButton).toBeFocused();
 
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
