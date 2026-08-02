@@ -534,7 +534,7 @@ import { Button, Dropdown } from '@vellira-ui/react-native';
       Edit
     </Dropdown.Item>
     <Dropdown.Separator />
-    <Dropdown.Item value='delete' danger onSelect={handleDelete}>
+    <Dropdown.Item value='delete' color='danger' onSelect={handleDelete}>
       Delete
     </Dropdown.Item>
   </Dropdown.Content>
@@ -589,7 +589,6 @@ custom non-text triggers, provide `accessibilityLabel` and add
 | `searchPlaceholder`  | `string`                  | No       | —                                                                      |
 | `onSearch`           | `(value: string) => void` | No       | —                                                                      |
 | `empty`              | `ReactNode`               | No       | —                                                                      |
-| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                           |
 | `color`              | `DropdownColor`           | No       | Semantic palette for trigger, content, focus, and pressed item states. |
 
 <!-- api-docgen:end native.DropdownProps.DropdownProps -->

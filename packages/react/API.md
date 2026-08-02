@@ -665,7 +665,6 @@ uncontrolled with `defaultOpen`. Prefer `Dropdown.Trigger asChild` with
 | `searchPlaceholder`  | `string`                  | No       | —                                                                          |
 | `onSearch`           | `(value: string) => void` | No       | —                                                                          |
 | `empty`              | `ReactNode`               | No       | —                                                                          |
-| `noOptionsText`      | `ReactNode`               | No       | Content shown when no options are available.                               |
 | `collisionPadding`   | `number`                  | No       | —                                                                          |
 | `strategy`           | `Strategy`                | No       | —                                                                          |
 

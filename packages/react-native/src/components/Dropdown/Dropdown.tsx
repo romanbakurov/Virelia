@@ -69,7 +69,6 @@ function DropdownRoot({
   searchPlaceholder,
   onSearch,
   empty,
-  noOptionsText,
   size = 'md',
   style,
   triggerStyle,
@@ -224,9 +223,9 @@ function DropdownRoot({
         <DropdownItem
           label={item.props.children}
           value={item.props.value ?? item.id}
-          color={color}
+          rootColor={color}
+          color={item.props.color}
           icon={item.props.icon}
-          danger={item.props.danger}
           disabled={item.props.disabled}
           textWrap={item.props.textWrap}
           itemStyle={itemStyle}
@@ -251,7 +250,7 @@ function DropdownRoot({
           {
             type: 'empty',
             id: 'empty',
-            props: { children: empty ?? noOptionsText ?? 'No actions found' },
+            props: { children: empty ?? 'No actions found' },
           },
         ]
       : filteredParsed.entries;

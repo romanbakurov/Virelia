@@ -11,9 +11,9 @@ import type { DropdownItemProps } from './types';
 export function DropdownItem({
   label,
   value,
-  color = 'primary',
+  rootColor = 'primary',
+  color = 'default',
   icon,
-  danger = false,
   disabled = false,
   textWrap = 'truncate',
   itemStyle,
@@ -22,7 +22,9 @@ export function DropdownItem({
 }: DropdownItemProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const colorPalette = theme.components.dropdown[color];
+  const rootColorPalette = theme.components.dropdown[rootColor];
+  const itemColorPalette =
+    color === 'default' ? undefined : theme.components.dropdown[color];
 
   const renderColoredNode = (node: ReactNode, color: string) => {
     if (!isValidElement(node)) return node;
@@ -35,14 +37,20 @@ export function DropdownItem({
       return theme.components.dropdown.item.disabled.fg;
     }
 
-    if (danger) {
+    if (color === 'danger') {
       return pressed
         ? theme.components.dropdown.item.danger.active.fg
         : theme.components.dropdown.item.danger.default.fg;
     }
 
+    if (itemColorPalette) {
+      return pressed
+        ? itemColorPalette.item.pressed.fg
+        : itemColorPalette.item.fg;
+    }
+
     return pressed
-      ? colorPalette.item.pressed.fg
+      ? rootColorPalette.item.pressed.fg
       : theme.components.dropdown.item.default.fg;
   };
 
@@ -51,14 +59,20 @@ export function DropdownItem({
       return theme.components.dropdown.item.disabled.bg;
     }
 
-    if (danger) {
+    if (color === 'danger') {
       return pressed
         ? theme.components.dropdown.item.danger.active.bg
         : theme.components.dropdown.item.danger.default.bg;
     }
 
+    if (itemColorPalette) {
+      return pressed
+        ? itemColorPalette.item.pressed.bg
+        : theme.components.dropdown.item.default.bg;
+    }
+
     return pressed
-      ? colorPalette.item.pressed.bg
+      ? rootColorPalette.item.pressed.bg
       : theme.components.dropdown.item.default.bg;
   };
 

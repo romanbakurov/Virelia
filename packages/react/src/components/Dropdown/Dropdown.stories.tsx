@@ -516,13 +516,6 @@ Action menu for commands, toggles, radio choices, links, and submenus.
         type: { summary: 'ReactNode' },
       },
     },
-    noOptionsText: {
-      description: 'Fallback empty content shown when search has no matches.',
-      control: 'text',
-      table: {
-        type: { summary: 'ReactNode' },
-      },
-    },
     className: {
       description: 'Additional class name for the Dropdown root wrapper.',
       control: false,

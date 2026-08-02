@@ -6,6 +6,8 @@ export type DropdownPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
 export type DropdownSize = 'sm' | 'md' | 'lg';
 export type DropdownColor =
   'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+export type DropdownItemColor =
+  'default' | 'primary' | 'success' | 'warning' | 'danger';
 
 export type DropdownSelectEvent = {
   preventDefault: () => void;
@@ -39,7 +41,6 @@ export interface DropdownProps {
   searchPlaceholder?: string;
   onSearch?: (value: string) => void;
   empty?: ReactNode;
-  noOptionsText?: ReactNode;
 
   style?: StyleProp<ViewStyle>;
   triggerStyle?: StyleProp<ViewStyle>;
@@ -72,7 +73,8 @@ export interface DropdownItemProps {
   children: ReactNode;
   value?: string;
   icon?: ReactNode;
-  danger?: boolean;
+  /** Semantic item color. Use `danger` for destructive actions. */
+  color?: DropdownItemColor;
   disabled?: boolean;
   closeOnSelect?: boolean;
   textWrap?: TextWrap;

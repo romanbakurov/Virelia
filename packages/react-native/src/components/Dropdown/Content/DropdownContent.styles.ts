@@ -41,17 +41,17 @@ export const createStyles = (theme: NativeTheme) =>
 
       ...Platform.select({
         web: {
-          boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.24)',
+          boxShadow: `${theme.tokens.shadows.lg.x}px ${-theme.tokens.shadows.lg.y}px ${theme.tokens.shadows.lg.blur}px ${theme.tokens.shadows.lg.color}`,
         },
         default: {
-          shadowColor: '#000000',
+          shadowColor: theme.tokens.shadows.lg.color,
           shadowOffset: {
-            width: 0,
-            height: -4,
+            width: theme.tokens.shadows.lg.x,
+            height: -theme.tokens.shadows.lg.y,
           },
-          shadowOpacity: 0.24,
-          shadowRadius: 16,
-          elevation: 12,
+          shadowOpacity: theme.tokens.shadows.lg.opacity,
+          shadowRadius: theme.tokens.shadows.lg.blur,
+          elevation: theme.tokens.shadows.lg.elevation,
         },
       }),
     },
