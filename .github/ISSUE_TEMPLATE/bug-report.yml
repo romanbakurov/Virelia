@@ -1,0 +1,97 @@
+name: Bug report
+description: Report reproducible behavior that appears to be incorrect
+title: 'bug: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Vellira.
+
+        Before submitting, please search existing issues to avoid duplicates.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is affected?
+      options:
+        - '@vellira-ui/react'
+        - '@vellira-ui/react-native'
+        - '@vellira-ui/tokens'
+        - '@vellira-ui/core'
+        - '@vellira-ui/icons'
+        - '@vellira-ui/types'
+        - Documentation
+        - Storybook
+        - Website
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Vellira version
+      placeholder: '2.43.1'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clearly describe the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide a minimal reproduction, repository, StackBlitz, or steps.
+      placeholder: |
+        1. Render...
+        2. Interact with...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        OS:
+        Browser:
+        React:
+        React Native:
+        Node:
+        Package manager:
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues for duplicates.
+          required: true
+        - label: I provided a minimal reproduction or clear reproduction steps.
+          required: true
