@@ -149,7 +149,7 @@ Release types:
 Before opening a Pull Request, all commands below must succeed:
 
 ```bash
-pnpm ci
+pnpm validate
 ```
 
 `pnpm ci` runs:
@@ -297,7 +297,7 @@ Package versions are managed automatically during the release process.
 General principles:
 
 - Keep components focused.
-- Prefer composition over configuration.
+- Favor composition over configuration.
 - Keep APIs predictable.
 - Reuse shared logic from `@vellira-ui/core`.
 - Reuse shared types from `@vellira-ui/types`.
