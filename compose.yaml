@@ -1,0 +1,144 @@
+services:
+  workspace:
+    image: vellira-dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /workspace
+    command: sleep infinity
+    volumes:
+      - .:/workspace
+      - vellira_node_modules:/workspace/node_modules
+
+  install:
+    image: vellira-dev
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    working_dir: /workspace
+    command:
+      - pnpm
+      - install
+      - --frozen-lockfile
+      - --fetch-retries=5
+      - --fetch-retry-mintimeout=20000
+      - --fetch-retry-maxtimeout=120000
+      - --fetch-timeout=300000
+      - --network-concurrency=8
+    volumes:
+      - .:/workspace
+      - vellira_node_modules:/workspace/node_modules
+      - vellira_pnpm_store:/pnpm/store
+    restart: "no"
+
+  website:
+    image: vellira-dev
+    working_dir: /workspace
+    command:
+      - pnpm
+      - --filter
+      - "@vellira-ui/website"
+      - dev
+      - --hostname
+      - 0.0.0.0
+      - --port
+      - "3000"
+    depends_on:
+      install:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/workspace
+      - vellira_node_modules:/workspace/node_modules
+      - vellira_pnpm_store:/pnpm/store
+      - website_next:/workspace/apps/website/.next
+    environment:
+      NODE_ENV: development
+
+  docs:
+    image: vellira-dev
+    working_dir: /workspace
+    command:
+      - pnpm
+      - --filter
+      - "@vellira-ui/docs"
+      - dev
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5173"
+    depends_on:
+      install:
+        condition: service_completed_successfully
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/workspace
+      - vellira_node_modules:/workspace/node_modules
+      - vellira_pnpm_store:/pnpm/store
+      - docs_cache:/workspace/apps/docs/src/.vitepress/cache
+    environment:
+      NODE_ENV: development
+
+  storybook:
+    image: vellira-dev
+    working_dir: /workspace
+    command:
+      - pnpm
+      - --filter
+      - "@vellira-ui/react-storybook"
+      - dev
+      - --host
+      - 0.0.0.0
+      - --port
+      - "6006"
+    depends_on:
+      install:
+        condition: service_completed_successfully
+    ports:
+      - "6006:6006"
+    volumes:
+      - .:/workspace
+      - vellira_node_modules:/workspace/node_modules
+      - vellira_pnpm_store:/pnpm/store
+    environment:
+      NODE_ENV: development
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.61.1-noble
+    platform: linux/amd64
+    working_dir: /workspace
+    entrypoint:
+      - /bin/bash
+      - -lc
+    command:
+      - >
+        corepack enable &&
+        pnpm install
+        --frozen-lockfile
+        --fetch-retries=5
+        --fetch-retry-mintimeout=20000
+        --fetch-retry-maxtimeout=120000
+        --fetch-timeout=300000
+        --network-concurrency=8 &&
+        pnpm --filter @vellira-ui/react-storybook test:e2e
+    volumes:
+      - .:/workspace
+      - playwright_node_modules:/workspace/node_modules
+      - playwright_pnpm_store:/pnpm/store
+    environment:
+      CI: "true"
+      PNPM_HOME: /pnpm
+      PATH: /pnpm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    ipc: host
+    profiles:
+      - test
+
+volumes:
+  vellira_node_modules:
+  vellira_pnpm_store:
+  playwright_node_modules:
+  playwright_pnpm_store:
+  website_next:
+  docs_cache:
