@@ -6,6 +6,10 @@ const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 async function openStory(page: Page, id: string) {
   await page.goto(storyUrl(id));
   await expect(page.locator('#storybook-root')).toBeVisible();
+
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
 }
 
 test.describe('web Button', () => {
@@ -18,6 +22,44 @@ test.describe('web Button', () => {
 
     await expect(matrix).toBeVisible();
     await expect(matrix.getByRole('button')).toHaveCount(25);
+    const firstButton = matrix.getByRole('button').first();
+
+    console.log(
+      await firstButton.evaluate((element) => {
+        const styles = getComputedStyle(element);
+
+        return {
+          fontFamily: styles.fontFamily,
+          fontSize: styles.fontSize,
+          fontWeight: styles.fontWeight,
+          lineHeight: styles.lineHeight,
+          letterSpacing: styles.letterSpacing,
+        };
+      })
+    );
+
+    console.log('Viewport:', page.viewportSize());
+
+    console.log(
+      'Matrix:',
+      await matrix.evaluate((el) => ({
+        width: el.getBoundingClientRect().width,
+        height: el.getBoundingClientRect().height,
+      }))
+    );
+
+    console.log(
+      'Fonts:',
+      await page.evaluate(() => ({
+        ready: document.fonts.status,
+        velliraSansLoaded: document.fonts.check('16px "Vellira Sans"'),
+        loadedFonts: [...document.fonts].map((font) => ({
+          family: font.family,
+          weight: font.weight,
+          status: font.status,
+        })),
+      }))
+    );
     await expect(matrix).toHaveScreenshot(
       `web-button-matrix-${testInfo.project.name}.png`,
       {
