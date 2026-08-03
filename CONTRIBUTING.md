@@ -68,6 +68,17 @@ Update snapshots:
 pnpm docker:e2e:update
 ```
 
+### Updating Playwright
+
+When upgrading `@playwright/test`, keep the Docker image in `compose.yaml` synchronized.
+
+For example:
+
+- `@playwright/test@1.61.1`
+- `mcr.microsoft.com/playwright:v1.61.1-noble`
+
+Using matching versions helps keep local Docker and CI visual regression environments consistent.
+
 ### GitHub Codespaces
 
 Open the repository in GitHub Codespaces to start contributing without installing Node.js, pnpm, or project dependencies locally.

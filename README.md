@@ -267,7 +267,7 @@ pnpm docker:e2e:update
 ## Packages
 
 | Package                    | Purpose                            |
-| -------------------------- |------------------------------------|
+| -------------------------- | ---------------------------------- |
 | `@vellira-ui/react`        | UI components for React            |
 | `@vellira-ui/react-native` | UI components for React Native     |
 | `@vellira-ui/tokens`       | Design tokens                      |
