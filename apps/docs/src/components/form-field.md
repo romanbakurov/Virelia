@@ -1,3 +1,8 @@
+---
+title: FormField – React Form Component
+description: Compose accessible React form fields with labels, helper text, validation messages, and consistent layouts.
+---
+
 # FormField
 
 FormField provides shared field semantics for labels, descriptions, errors,

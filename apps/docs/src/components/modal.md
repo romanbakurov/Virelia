@@ -1,3 +1,8 @@
+---
+title: Modal – React Modal Component
+description: Accessible React modal dialog with focus trapping, portal rendering, keyboard navigation, and customizable layouts.
+---
+
 # Modal
 
 Modal is for focused decisions and blocking workflows. It should reduce the

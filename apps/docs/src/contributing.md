@@ -1,3 +1,8 @@
+---
+title: Contributing to Vellira
+description: Learn how to contribute to Vellira, set up the development environment, follow coding standards, and submit pull requests.
+---
+
 # Contributing
 
 Use this page as the short contribution path. The repository-level guides still

@@ -1,3 +1,8 @@
+---
+title: Checkbox – React Checkbox Component
+description: Accessible React checkbox component with indeterminate state, validation, descriptions, keyboard support, and TypeScript integration.
+---
+
 # Checkbox
 
 Checkbox represents an independent boolean choice. It works for agreements,

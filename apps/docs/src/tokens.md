@@ -1,3 +1,8 @@
+---
+title: Design Tokens
+description: Explore Vellira design tokens for colors, typography, spacing, radii, shadows, and theming across React and React Native.
+---
+
 # Tokens
 
 `@vellira-ui/tokens` is the single source of truth for the Vellira

@@ -1,3 +1,8 @@
+---
+title: Getting Started with Vellira
+description: Learn how to install Vellira, set up React or React Native, import styles, and build your first interface with accessible UI components.
+---
+
 # Quick Start
 
 This guide gets you from installation to a working Vellira component in a few

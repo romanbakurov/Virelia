@@ -1,3 +1,8 @@
+---
+title: Vellira Ecosystem
+description: Learn how the Vellira ecosystem is organized across the marketing website, documentation, and Storybook for development, learning, and component exploration.
+---
+
 # Vellira Ecosystem
 
 Vellira is designed around three focused public surfaces. Each serves a single

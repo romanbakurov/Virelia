@@ -1,3 +1,8 @@
+---
+title: Dropdown – React Menu Component
+description: Create accessible React dropdown menus with keyboard navigation, submenus, checkboxes, radio items, and TypeScript support.
+---
+
 # Dropdown
 
 Dropdown is for contextual actions: commands that apply to the current object,
