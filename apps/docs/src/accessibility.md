@@ -1,3 +1,8 @@
+---
+title: Accessibility – React & React Native
+description: Learn how Vellira builds accessible React and React Native components with keyboard navigation, focus management, ARIA support, and WCAG-conscious design.
+---
+
 # Accessibility
 
 Accessibility is a core part of Vellira's component API.

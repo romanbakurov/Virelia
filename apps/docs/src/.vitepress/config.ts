@@ -37,9 +37,10 @@ export default defineConfig({
     const canonicalUrl = pageUrl(pageData.relativePath);
     const isHome = pageData.relativePath === 'index.md';
 
-    const title = isHome
-      ? 'Vellira Documentation'
-      : `${pageData.title} | Vellira Docs`;
+    const pageTitle =
+      pageData.frontmatter.title || pageData.title || 'Vellira Documentation';
+
+    const socialTitle = isHome ? pageTitle : `${pageTitle} | Vellira Docs`;
 
     const description = pageData.frontmatter.description || siteDescription;
 
@@ -47,10 +48,10 @@ export default defineConfig({
 
     pageData.frontmatter.head.push(
       ['link', { rel: 'canonical', href: canonicalUrl }],
-      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:title', content: socialTitle }],
       ['meta', { property: 'og:description', content: description }],
       ['meta', { property: 'og:url', content: canonicalUrl }],
-      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:title', content: socialTitle }],
       ['meta', { name: 'twitter:description', content: description }]
     );
   },

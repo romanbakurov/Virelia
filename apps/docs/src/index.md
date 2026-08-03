@@ -1,7 +1,7 @@
 ---
 layout: home
 title: React & React Native Design System
-description: Production-ready React and React Native UI components, design tokens, theming, accessibility, and TypeScript support.
+description: Explore Vellira, a production-ready React and React Native design system with accessible UI components, shared design tokens, theming, and TypeScript support.
 
 hero:
   name: Vellira

@@ -1,3 +1,8 @@
+---
+title: React Web Components
+description: Learn how to use Vellira in React applications with installation, theming, styling, accessibility, and production-ready components.
+---
+
 # Web
 
 `@vellira-ui/react` contains the React DOM implementation of Vellira.

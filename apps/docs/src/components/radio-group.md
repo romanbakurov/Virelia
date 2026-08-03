@@ -1,3 +1,8 @@
+---
+title: RadioGroup – React Radio Component
+description: Build accessible React radio groups with keyboard navigation, validation, descriptions, and TypeScript support.
+---
+
 # RadioGroup
 
 RadioGroup presents a visible set of mutually exclusive choices. It is best

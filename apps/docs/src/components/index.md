@@ -1,3 +1,8 @@
+---
+title: React UI Components
+description: Browse Vellira's accessible React and React Native UI components, including Button, Input, Modal, Select, Checkbox, Tabs, Tooltip, and more.
+---
+
 # Components
 
 Vellira components are documented as product-ready building blocks: when to use

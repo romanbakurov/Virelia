@@ -1,3 +1,8 @@
+---
+title: Button – React Button Component
+description: Build accessible React buttons with multiple appearances, colors, loading states, icons, keyboard shortcuts, and full TypeScript support.
+---
+
 # Button
 
 Button is the action primitive for Vellira. It should feel precise enough for

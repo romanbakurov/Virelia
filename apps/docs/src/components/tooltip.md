@@ -1,3 +1,8 @@
+---
+title: Tooltip – React Tooltip Component
+description: Build accessible React tooltips with keyboard and pointer interactions, positioning, and customizable content.
+---
+
 # Tooltip
 
 Tooltip provides short, non-critical helper text for a focused, hovered, or

@@ -1,3 +1,8 @@
+---
+title: Production Deployment Guide
+description: Prepare Vellira for production with accessibility, testing, CI/CD, bundle optimization, and deployment best practices.
+---
+
 # Production
 
 Install only the renderer and supporting packages your application requires.

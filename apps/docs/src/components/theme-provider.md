@@ -1,3 +1,8 @@
+---
+title: ThemeProvider – React Theming
+description: Configure themes, color modes, and shared design tokens for React applications with Vellira ThemeProvider.
+---
+
 # ThemeProvider
 
 ThemeProvider gives Vellira components access to the active theme. Use it near
