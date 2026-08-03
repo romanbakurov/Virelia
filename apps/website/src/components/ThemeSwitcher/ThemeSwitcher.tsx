@@ -5,9 +5,7 @@ import { useEffect, useRef } from 'react';
 import type { AnimatedIconData } from '@vellira-ui/icons/lottie';
 import { animatedIcons } from '@vellira-ui/icons/lottie';
 import { Button, Dropdown } from '@vellira-ui/react';
-import lottie, {
-  type AnimationItem,
-} from 'lottie-web/build/player/lottie_light';
+import type { AnimationItem } from 'lottie-web';
 
 import { useWebsiteThemeContext } from '@/providers/WebsiteThemeContext';
 
@@ -61,51 +59,82 @@ function AnimatedThemeIcon({ data }: AnimatedThemeIconProps) {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return undefined;
 
-    const animation: AnimationItem = lottie.loadAnimation({
-      container,
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      animationData: cloneAnimationData(data),
-      rendererSettings: {
-        preserveAspectRatio: 'xMidYMid meet',
-        progressiveLoad: false,
-      },
-    });
+    if (!container) {
+      return undefined;
+    }
 
-    const syncColor = () => applyCurrentColor(container);
+    const animationContainer = container;
+
+    let animation: AnimationItem | undefined;
+    let cancelled = false;
+    let trigger: HTMLElement | undefined;
+
+    const syncColor = () => {
+      applyCurrentColor(animationContainer);
+    };
+
     const playOnce = () => {
+      if (!animation) return;
+
       animation.stop();
       animation.setDirection(1);
       animation.play();
     };
+
     const reset = () => {
+      if (!animation) return;
+
       animation.stop();
       animation.goToAndStop(0, true);
       syncColor();
     };
 
-    animation.addEventListener('DOMLoaded', syncColor);
-    animation.addEventListener('enterFrame', syncColor);
+    async function initializeAnimation() {
+      const { default: lottie } =
+        await import('lottie-web/build/player/lottie_light');
 
-    const trigger = getTriggerElement(container);
-    trigger.addEventListener('pointerenter', playOnce);
-    trigger.addEventListener('focusin', playOnce);
-    trigger.addEventListener('pointerleave', reset);
-    trigger.addEventListener('focusout', reset);
+      if (cancelled) {
+        return;
+      }
 
-    animation.goToAndStop(0, true);
+      animation = lottie.loadAnimation({
+        container: animationContainer,
+        renderer: 'svg',
+        loop: false,
+        autoplay: false,
+        animationData: cloneAnimationData(data),
+        rendererSettings: {
+          preserveAspectRatio: 'xMidYMid meet',
+          progressiveLoad: false,
+        },
+      });
+
+      animation.addEventListener('DOMLoaded', syncColor);
+      animation.addEventListener('enterFrame', syncColor);
+
+      trigger = getTriggerElement(animationContainer);
+      trigger.addEventListener('pointerenter', playOnce);
+      trigger.addEventListener('focusin', playOnce);
+      trigger.addEventListener('pointerleave', reset);
+      trigger.addEventListener('focusout', reset);
+
+      animation.goToAndStop(0, true);
+    }
+
+    void initializeAnimation();
 
     return () => {
-      trigger.removeEventListener('pointerenter', playOnce);
-      trigger.removeEventListener('focusin', playOnce);
-      trigger.removeEventListener('pointerleave', reset);
-      trigger.removeEventListener('focusout', reset);
-      animation.removeEventListener('DOMLoaded', syncColor);
-      animation.removeEventListener('enterFrame', syncColor);
-      animation.destroy();
+      cancelled = true;
+
+      trigger?.removeEventListener('pointerenter', playOnce);
+      trigger?.removeEventListener('focusin', playOnce);
+      trigger?.removeEventListener('pointerleave', reset);
+      trigger?.removeEventListener('focusout', reset);
+
+      animation?.removeEventListener('DOMLoaded', syncColor);
+      animation?.removeEventListener('enterFrame', syncColor);
+      animation?.destroy();
     };
   }, [data]);
 
