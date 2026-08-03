@@ -4,18 +4,19 @@
   "description": "Production-ready React and React Native components with shared APIs, themes, and design tokens.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#14162f",
   "theme_color": "#5B5EFF",
   "icons": [
     {
-      "src": "/brand/icons/icon-192.png",
+      "src": "/brand/app-icons/vellira-app-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/brand/icons/icon-512.png",
+      "src": "/brand/app-icons/vellira-app-icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

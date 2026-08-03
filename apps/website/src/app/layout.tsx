@@ -59,7 +59,7 @@ export const metadata: Metadata = {
       { url: '/brand/icons/favicon-16x16.png', sizes: '16x16' },
     ],
 
-    apple: '/brand/icons/apple-touch-icon.png',
+    apple: '/brand/app-icons/vellira-apple-touch-icon.png',
   },
 };
 
