@@ -60,7 +60,17 @@
     "website:typecheck": "pnpm --filter @vellira-ui/website typecheck",
     "lighthouse": "pnpm lighthouse:docs && pnpm lighthouse:website",
     "lighthouse:docs": "lhci autorun --config=./lighthouserc.docs.cjs",
-    "lighthouse:website": "lhci autorun --config=./lighthouserc.website.cjs"
+    "lighthouse:website": "lhci autorun --config=./lighthouserc.website.cjs",
+    "docker:up": "docker compose up",
+    "docker:down": "docker compose down",
+    "docker:build": "docker compose build",
+    "docker:website": "docker compose up website",
+    "docker:docs": "docker compose up docs",
+    "docker:storybook": "docker compose up storybook",
+    "docker:install": "docker compose run --rm install",
+    "docker:shell": "docker compose exec workspace bash",
+    "docker:e2e": "docker compose --profile test run --rm playwright",
+    "docker:e2e:update": "docker compose --profile test run --rm -e PLAYWRIGHT_ARGS=--update-snapshots playwright"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",
