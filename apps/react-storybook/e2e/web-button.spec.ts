@@ -7,6 +7,7 @@ async function openStory(page: Page, id: string) {
   await page.goto(storyUrl(id));
   await expect(page.locator('#storybook-root')).toBeVisible();
 
+  // Ensure web fonts are fully loaded before visual assertions.
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
