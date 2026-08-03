@@ -45,5 +45,16 @@ jobs:
       - name: Tests and coverage
         run: pnpm ci:test
 
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            apps/react-storybook/test-results
+            apps/react-storybook/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Smoke packages
         run: pnpm ci:smoke
