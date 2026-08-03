@@ -22,44 +22,6 @@ test.describe('web Button', () => {
 
     await expect(matrix).toBeVisible();
     await expect(matrix.getByRole('button')).toHaveCount(25);
-    const firstButton = matrix.getByRole('button').first();
-
-    console.log(
-      await firstButton.evaluate((element) => {
-        const styles = getComputedStyle(element);
-
-        return {
-          fontFamily: styles.fontFamily,
-          fontSize: styles.fontSize,
-          fontWeight: styles.fontWeight,
-          lineHeight: styles.lineHeight,
-          letterSpacing: styles.letterSpacing,
-        };
-      })
-    );
-
-    console.log('Viewport:', page.viewportSize());
-
-    console.log(
-      'Matrix:',
-      await matrix.evaluate((el) => ({
-        width: el.getBoundingClientRect().width,
-        height: el.getBoundingClientRect().height,
-      }))
-    );
-
-    console.log(
-      'Fonts:',
-      await page.evaluate(() => ({
-        ready: document.fonts.status,
-        velliraSansLoaded: document.fonts.check('16px "Vellira Sans"'),
-        loadedFonts: [...document.fonts].map((font) => ({
-          family: font.family,
-          weight: font.weight,
-          status: font.status,
-        })),
-      }))
-    );
     await expect(matrix).toHaveScreenshot(
       `web-button-matrix-${testInfo.project.name}.png`,
       {
