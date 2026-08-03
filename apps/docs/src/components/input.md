@@ -1,3 +1,8 @@
+---
+title: Input – React Input Component
+description: Create accessible React input fields with labels, validation, helper text, icons, and customizable styling.
+---
+
 # Input
 
 Input captures short free-form text with field semantics, validation state,

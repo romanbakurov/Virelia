@@ -1,3 +1,8 @@
+---
+title: React Component Overview
+description: Browse Vellira's React and React Native UI components, compare common states, and preview accessible Buttons, Inputs, Modals, Selects, Checkboxes, Tabs, Tooltips, and more.
+---
+
 # Component Overview
 
 Explore the available Vellira components and their common states before diving

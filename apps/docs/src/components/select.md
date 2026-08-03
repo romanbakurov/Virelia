@@ -1,3 +1,8 @@
+---
+title: Select – React Select Component
+description: Accessible React select component with keyboard navigation, search, validation, and customizable dropdown menus.
+---
+
 # Select
 
 Select lets users choose one or more saved values from a compact list. It is a

@@ -1,3 +1,8 @@
+---
+title: Tabs – React Tabs Component
+description: Accessible React tabs with keyboard navigation, controlled state, and flexible layouts.
+---
+
 # Tabs
 
 Tabs organize peer sections of the same context. They work best for dense
