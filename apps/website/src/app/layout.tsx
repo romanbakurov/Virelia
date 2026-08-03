@@ -11,20 +11,23 @@ import { WebsiteProviders } from '@/providers/WebsiteProviders';
 import '../styles/globals.css';
 
 const siteDescription =
-  'Production-ready React and React Native UI components, design tokens, theming, accessibility, and TypeScript support for modern applications.';
+  'Production-ready React and React Native design system with accessible UI components, shared design tokens, theming, and TypeScript-first APIs.';
+
+const siteTitle =
+  'Vellira — React & React Native Design System for Modern Applications';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://vellira.dev'),
   title: {
-    default: 'Vellira — React & React Native Design System',
-    template: '%s · Vellira',
+    default: siteTitle,
+    template: '%s | Vellira',
   },
   description: siteDescription,
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Vellira',
+    title: siteTitle,
     description: siteDescription,
     url: '/',
     siteName: 'Vellira',
@@ -33,7 +36,7 @@ export const metadata: Metadata = {
         url: '/brand/social/vellira-og-code-to-ui.png',
         width: 1200,
         height: 630,
-        alt: 'Vellira design system',
+        alt: 'Vellira React and React Native design system',
       },
     ],
     locale: 'en_US',
@@ -41,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vellira',
+    title: siteTitle,
     description: siteDescription,
     images: ['/brand/social/vellira-og-code-to-ui.png'],
   },
