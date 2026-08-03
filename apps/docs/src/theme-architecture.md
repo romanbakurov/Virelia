@@ -1,3 +1,8 @@
+---
+title: Design Token Architecture
+description: Learn how Vellira organizes primitive colors, semantic tokens, component tokens, and platform-specific themes.
+---
+
 # Theme Architecture
 
 Vellira separates design decisions into layers. Each layer has a narrower job

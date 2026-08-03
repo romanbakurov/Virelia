@@ -1,3 +1,8 @@
+---
+title: Quality Assurance
+description: Discover how Vellira ensures quality through testing, accessibility verification, Storybook, linting, and continuous integration.
+---
+
 # Quality
 
 Quality in Vellira covers documentation, type definitions, component behavior,
