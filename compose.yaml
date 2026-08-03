@@ -105,8 +105,40 @@ services:
     environment:
       NODE_ENV: development
 
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.61.1-noble
+    platform: linux/amd64
+    working_dir: /workspace
+    entrypoint:
+      - /bin/bash
+      - -lc
+    command:
+      - >
+        corepack enable &&
+        pnpm install
+        --frozen-lockfile
+        --fetch-retries=5
+        --fetch-retry-mintimeout=20000
+        --fetch-retry-maxtimeout=120000
+        --fetch-timeout=300000
+        --network-concurrency=8 &&
+        pnpm --filter @vellira-ui/react-storybook test:e2e
+    volumes:
+      - .:/workspace
+      - playwright_node_modules:/workspace/node_modules
+      - playwright_pnpm_store:/pnpm/store
+    environment:
+      CI: "true"
+      PNPM_HOME: /pnpm
+      PATH: /pnpm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    ipc: host
+    profiles:
+      - test
+
 volumes:
   vellira_node_modules:
   vellira_pnpm_store:
+  playwright_node_modules:
+  playwright_pnpm_store:
   website_next:
   docs_cache:
