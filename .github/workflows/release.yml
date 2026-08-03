@@ -47,6 +47,9 @@ jobs:
       - name: Typecheck & API validation
         run: pnpm ci:typecheck
 
+      - name: Install Playwright browser
+        run: pnpm ci:playwright
+
       - name: Unit and Storybook tests
         run: pnpm test:unit && pnpm test:storybook
 
