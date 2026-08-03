@@ -6,7 +6,21 @@ This document describes the development workflow, coding standards, and release 
 
 ---
 
-# Development Setup
+## Development Setup
+
+Choose the development environment that best fits your workflow.
+
+Vellira supports native development, Docker, and GitHub Codespaces.
+
+---
+
+## Development Environments
+
+Vellira supports multiple development environments depending on your workflow.
+
+### Native
+
+Run the project directly on your machine.
 
 Install dependencies:
 
@@ -26,9 +40,54 @@ Run the Native Playground:
 pnpm native
 ```
 
+Recommended for contributors already familiar with the project.
+
+### Docker
+
+Run the development environment in Docker.
+
+```bash
+pnpm docker:install
+pnpm docker:storybook
+pnpm docker:shell
+```
+
+Provides a consistent environment across macOS, Windows, and Linux.
+
+### Visual Regression Tests
+
+Run Playwright visual tests inside the Linux container:
+
+```bash
+pnpm docker:e2e
+```
+
+Update snapshots:
+
+```bash
+pnpm docker:e2e:update
+```
+
+### Updating Playwright
+
+When upgrading `@playwright/test`, keep the Docker image in `compose.yaml` synchronized.
+
+For example:
+
+- `@playwright/test@1.61.1`
+- `mcr.microsoft.com/playwright:v1.61.1-noble`
+
+Using matching versions helps keep local Docker and CI visual regression environments consistent.
+
+### GitHub Codespaces
+
+Open the repository in GitHub Codespaces to start contributing without installing Node.js, pnpm, or project dependencies locally.
+
+The Dev Container configuration is applied automatically.
+
 ---
 
-# Branch Naming
+## Branch Naming
 
 Use descriptive branch names.
 
@@ -44,7 +103,7 @@ Use descriptive branch names.
 
 ---
 
-# Commit Messages
+## Commit Messages
 
 Vellira follows the Conventional Commits specification.
 
@@ -71,7 +130,7 @@ Release types:
 
 ---
 
-# Development Workflow
+## Development Workflow
 
 1. Create a branch from `main`.
 2. Implement your changes.
@@ -85,21 +144,40 @@ Release types:
 
 ---
 
-# Quality Checks
+## Quality Checks
 
 Before opening a Pull Request, all commands below must succeed:
 
 ```bash
-pnpm ci
+pnpm validate
 ```
 
-`pnpm ci` expands to `ci:quality`, `ci:build`, `ci:typecheck`, `ci:playwright`, `ci:test`, and `ci:smoke`. For focused local checks, run the narrower scripts directly: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:coverage`, `pnpm build`, `pnpm smoke:packages`, `pnpm check:public-api`, or `pnpm docs:api:check`.
+`pnpm ci` runs:
+
+- ci:quality
+- ci:build
+- ci:typecheck
+- ci:playwright
+- ci:test
+- ci:smoke
+
+For individual checks, you can also run:
+
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm test:coverage`
+- `pnpm build`
+- `pnpm smoke:web`
+- `pnpm smoke:native`
+- `pnpm check:public-api`
+- `pnpm docs:api:check`
 
 Do not open a Pull Request if any of these checks fail.
 
 ---
 
-# Pull Requests
+## Pull Requests
 
 Pull Requests should:
 
@@ -113,7 +191,7 @@ Keep Pull Requests as small as reasonably possible.
 
 ---
 
-# Project Architecture
+## Project Architecture
 
 The repository is organized as a modular monorepo.
 
@@ -138,7 +216,9 @@ Each package has a clearly defined responsibility.
 - `icons` — Cross-platform icon library
 - `assets` — Fonts and design assets
 
-# Component Development
+---
+
+## Component Development
 
 All public components must follow the project conventions described in:
 
@@ -158,7 +238,7 @@ This includes:
 
 ---
 
-# Public API
+## Public API
 
 Public package exports are considered part of the stable API.
 
@@ -179,7 +259,7 @@ This check validates package export keys and public symbol snapshots. Intentiona
 
 ---
 
-# Documentation
+## Documentation
 
 Whenever a public component changes:
 
@@ -191,15 +271,15 @@ Documentation is expected to evolve together with the implementation.
 
 ---
 
-# Release Process
+## Release Process
 
 Vellira uses Semantic Release.
 
-The release pipeline automatically performs:
+During every release, the pipeline automatically performs:
 
 1. Lint
 2. Build
-3. Tests
+3. Automated tests
 4. Coverage
 5. Package Smoke Tests
 6. Public API Validation
@@ -212,12 +292,12 @@ Package versions are managed automatically during the release process.
 
 ---
 
-# Code Style
+## Code Style
 
 General principles:
 
 - Keep components focused.
-- Prefer composition over configuration.
+- Favor composition over configuration.
 - Keep APIs predictable.
 - Reuse shared logic from `@vellira-ui/core`.
 - Reuse shared types from `@vellira-ui/types`.
@@ -227,17 +307,20 @@ General principles:
 
 ---
 
-# Good First Issues
+## Good First Issues
 
 If you're contributing for the first time, consider looking for issues labeled:
 
-- good first issue
-- help wanted
-- documentation
+- `good first issue`
+- `help wanted`
+- `documentation`
 
 These are intended to help new contributors get started with the project.
 
-# Thank You
+---
+
+## Thank You
 
 Thank you for helping improve Vellira.
+
 Every contribution—whether it's code, documentation, testing, or feedback—helps make the project better.

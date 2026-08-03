@@ -13,15 +13,15 @@
 
 <p align="center">
   <strong>Build once. Stay consistent everywhere.</strong><br/>
-  Build consistent interfaces across <strong>React</strong> and <strong>React Native</strong> with shared design tokens, reusable logic and platform-specific components.
+  Build consistent interfaces for <strong>React</strong> and <strong>React Native</strong> with shared design tokens, reusable interaction logic, and platform-native components.
 </p>
 
 <p align="center">
-MIT Licensed • TypeScript First • Open Source
+MIT Licensed • TypeScript-first • Open Source
 </p>
 
 <p align="center">
-Accessibility Minded • Cross Platform • Modular
+Accessibility-minded • Cross-platform • Modular
 </p>
 
 <p align="center">
@@ -46,6 +46,14 @@ Accessibility Minded • Cross Platform • Modular
 
 ---
 
+## What is Vellira?
+
+Vellira is an open-source cross-platform design system for React and React Native.
+
+It combines shared design tokens, reusable interaction logic and platform-native components into a consistent developer experience.
+
+---
+
 ## Why Vellira?
 
 Most design systems stop at components.
@@ -65,19 +73,13 @@ Each platform still gets its own native implementation, ensuring familiar behavi
 
 ## Why developers choose Vellira
 
-✔ Shared design tokens across Web and React Native
-
-✔ Consistent APIs on both platforms
-
-✔ Accessibility-minded component APIs
-
-✔ Modern TypeScript-first developer experience
-
-✔ Modular packages with tree-shaking support
-
-✔ Interactive documentation and Storybook
-
-✔ Automated testing and release pipeline
+- Shared design tokens across Web and React Native
+- Consistent APIs on both platforms
+- Accessibility-minded component APIs
+- TypeScript-first developer experience
+- Modular packages with tree-shaking support
+- Interactive documentation and Storybook
+- Automated testing and release pipeline
 
 ---
 
@@ -153,6 +155,8 @@ pnpm add @vellira-ui/tokens
 
 ## Quick Example
 
+A complete example using the React Select component:
+
 ```tsx
 import '@vellira-ui/react/styles';
 import { Select } from '@vellira-ui/react';
@@ -200,16 +204,76 @@ export function ReleaseTeamSelect() {
 
 ---
 
+## Docker Development
+
+Install dependencies:
+
+```bash
+pnpm docker:install
+```
+
+Start the website:
+
+```bash
+pnpm docker:website
+```
+
+Start Storybook:
+
+```bash
+pnpm docker:storybook
+```
+
+Start the documentation:
+
+```bash
+pnpm docker:docs
+```
+
+Run Playwright:
+
+```bash
+pnpm docker:test
+```
+
+Open a shell:
+
+```bash
+pnpm docker:shell
+```
+
+Stop everything:
+
+```bash
+pnpm docker:down
+```
+
+### Visual Regression Tests
+
+Run Playwright visual tests inside the Linux container:
+
+```bash
+pnpm docker:e2e
+```
+
+Update snapshots:
+
+```bash
+pnpm docker:e2e:update
+```
+
+---
+
 ## Packages
 
-| Package                    | Platform     | Purpose                            |
-| -------------------------- | ------------ | ---------------------------------- |
-| `@vellira-ui/react`        | Web          | UI components for React            |
-| `@vellira-ui/react-native` | React Native | UI components for React Native     |
-| `@vellira-ui/tokens`       | Shared       | Design tokens                      |
-| `@vellira-ui/core`         | Shared       | Shared hooks and interaction logic |
-| `@vellira-ui/icons`        | Shared       | SVG icon library                   |
-| `@vellira-ui/types`        | Shared       | Shared TypeScript definitions      |
+| Package                    | Purpose                            |
+| -------------------------- | ---------------------------------- |
+| `@vellira-ui/react`        | UI components for React            |
+| `@vellira-ui/react-native` | UI components for React Native     |
+| `@vellira-ui/tokens`       | Design tokens                      |
+| `@vellira-ui/core`         | Shared hooks and interaction logic |
+| `@vellira-ui/icons`        | SVG icon library                   |
+| `@vellira-ui/types`        | Shared TypeScript definitions      |
 
 ---
 
@@ -289,12 +353,12 @@ The first public release is just the beginning.
 Upcoming work includes:
 
 - More components
-- Advanced data entry components
 - React Native expansion
-- More design tokens
+- Advanced data entry components
 - Starter templates
-- AI-powered developer tools
 - Figma resources
+- More design tokens
+- AI-powered developer tools
 - Performance optimizations
 
 ---
@@ -309,19 +373,19 @@ If you'd like to improve Vellira, feel free to open an issue or submit a pull re
 
 ## Community
 
+- 🌐 **[Website](https://vellira.dev)**
 - 📚 **[Documentation](https://docs.vellira.dev)**
 - 📖 **[Storybook](https://storybook.vellira.dev)**
 - 🐞 **[Report an Issue](https://github.com/vellira-dev/vellira/issues)**
 - 💬 **[Join Discussions](https://github.com/vellira-dev/vellira/discussions)**
 - 🤝 **[Contributing Guide](./CONTRIBUTING.md)**
 - ⭐ **[Star on GitHub](https://github.com/vellira-dev/vellira)**
-- 🌐 **[Website](https://vellira.dev)**
 
 ---
 
 ## Browser Support
 
-Vellira supports all modern evergreen browsers and actively maintained versions of React and React Native.
+Vellira supports modern evergreen browsers and actively maintained versions of React and React Native.
 
 See the documentation for compatibility details.
 
@@ -332,6 +396,8 @@ Built by Roman Bakurov.
 If Vellira helps you build better interfaces, consider starring the repository on GitHub.
 
 Every star helps the project reach more developers.
+
+---
 
 ## License
 

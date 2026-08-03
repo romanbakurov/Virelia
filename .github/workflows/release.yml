@@ -47,11 +47,11 @@ jobs:
       - name: Typecheck & API validation
         run: pnpm ci:typecheck
 
-      - name: Install Playwright browsers
-        run: pnpm ci:playwright
+      - name: Unit and Storybook tests
+        run: pnpm test:unit && pnpm test:storybook
 
-      - name: Tests and coverage
-        run: pnpm ci:test
+      - name: Coverage
+        run: pnpm test:coverage
 
       - name: Smoke packages
         run: pnpm ci:smoke
