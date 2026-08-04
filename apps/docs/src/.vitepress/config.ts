@@ -85,7 +85,7 @@ export default defineConfig({
       'link',
       {
         rel: 'apple-touch-icon',
-        href: '/brand/icons/apple-touch-icon.png',
+        href: '/brand/app-icons/vellira-apple-touch-icon.png',
       },
     ],
     ['meta', { property: 'og:type', content: 'website' }],
