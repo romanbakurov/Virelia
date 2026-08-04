@@ -154,6 +154,12 @@ function Demo({
           </Popover.Description>
 
           {children}
+
+          <Popover.Close asChild>
+            <Button size='sm' appearance='ghost'>
+              Close
+            </Button>
+          </Popover.Close>
         </div>
       </Popover.Content>
     </Popover>
