@@ -1,21 +1,22 @@
+x-vellira: &vellira
+  build:
+    context: .
+    dockerfile: docker/Dockerfile
+  working_dir: /workspace
+  environment:
+    NODE_ENV: development
+
 services:
   workspace:
-    image: vellira-dev
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    working_dir: /workspace
+    <<: *vellira
     command: sleep infinity
     volumes:
       - .:/workspace
       - vellira_node_modules:/workspace/node_modules
+      - vellira_pnpm_store:/pnpm/store
 
   install:
-    image: vellira-dev
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-    working_dir: /workspace
+    <<: *vellira
     command:
       - pnpm
       - install
@@ -32,8 +33,7 @@ services:
     restart: "no"
 
   website:
-    image: vellira-dev
-    working_dir: /workspace
+    <<: *vellira
     command:
       - pnpm
       - --filter
@@ -53,12 +53,9 @@ services:
       - vellira_node_modules:/workspace/node_modules
       - vellira_pnpm_store:/pnpm/store
       - website_next:/workspace/apps/website/.next
-    environment:
-      NODE_ENV: development
 
   docs:
-    image: vellira-dev
-    working_dir: /workspace
+    <<: *vellira
     command:
       - pnpm
       - --filter
@@ -78,12 +75,9 @@ services:
       - vellira_node_modules:/workspace/node_modules
       - vellira_pnpm_store:/pnpm/store
       - docs_cache:/workspace/apps/docs/src/.vitepress/cache
-    environment:
-      NODE_ENV: development
 
   storybook:
-    image: vellira-dev
-    working_dir: /workspace
+    <<: *vellira
     command:
       - pnpm
       - --filter
@@ -102,8 +96,6 @@ services:
       - .:/workspace
       - vellira_node_modules:/workspace/node_modules
       - vellira_pnpm_store:/pnpm/store
-    environment:
-      NODE_ENV: development
 
   playwright:
     # Keep this image version in sync with @playwright/test.
