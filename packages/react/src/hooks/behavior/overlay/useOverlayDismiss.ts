@@ -28,7 +28,7 @@ export const useOverlayDismiss = ({
 
       if (event.defaultPrevented || !closeOnEscape) return;
 
-      requestClose();
+      requestClose('escape-key', event);
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -58,7 +58,7 @@ export const useOverlayDismiss = ({
 
       if (outsideEvent.defaultPrevented || !closeOnOutsidePress) return;
 
-      requestClose();
+      requestClose('outside-press', event);
     };
 
     document.addEventListener('pointerdown', handlePointerDown);

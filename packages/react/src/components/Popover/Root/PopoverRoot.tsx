@@ -1,11 +1,29 @@
 import { useCallback, useId, useRef } from 'react';
 
-import type { PopoverOpenChangeDetails } from '@vellira-ui/types';
+import type { Placement } from '@floating-ui/react';
+import type {
+  PopoverAlign,
+  PopoverOpenChangeDetails,
+  PopoverSide,
+} from '@vellira-ui/types';
 
-import { useControllableState } from '../../../hooks/useControllableState';
+import { useControllableState } from '@/hooks/useControllableState';
+import { useFloatingPosition } from '@/managers/FloatingManager';
+
 import { PopoverProvider } from '../Context';
 
 import type { PopoverRootProps } from './types';
+
+function getPopoverPlacement(
+  side: PopoverSide,
+  align: PopoverAlign
+): Placement {
+  if (align === 'center') {
+    return side;
+  }
+
+  return `${side}-${align}` as Placement;
+}
 
 export function PopoverRoot({
   children,
@@ -13,6 +31,14 @@ export function PopoverRoot({
   defaultOpen = false,
   modal = false,
   onOpenChange,
+  side = 'bottom',
+  align = 'center',
+  sideOffset = 8,
+  alignOffset: _alignOffset = 0,
+  collisionPadding = 8,
+  avoidCollisions = true,
+  portal = true,
+  strategy,
 }: PopoverRootProps) {
   const triggerRef = useRef<HTMLElement | null>(null);
   const anchorRef = useRef<HTMLElement | null>(null);
@@ -45,11 +71,38 @@ export function PopoverRoot({
     [setOpenState]
   );
 
+  const { floatingStyles, isPositioned, placement, setFloatingRef, setRef } =
+    useFloatingPosition({
+      open,
+      placement: getPopoverPlacement(side, align),
+      strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
+      offset: sideOffset,
+      collisionPadding,
+      avoidCollisions,
+    });
+
+  const setReferenceRef = useCallback(
+    (node: HTMLElement | null) => {
+      triggerRef.current = node;
+      setRef(node);
+    },
+    [setRef]
+  );
+
+  const setContentRef = useCallback(
+    (node: HTMLElement | null) => {
+      contentRef.current = node;
+      setFloatingRef(node);
+    },
+    [setFloatingRef]
+  );
+
   return (
     <PopoverProvider
       value={{
         open,
         modal,
+        portal,
         triggerRef,
         anchorRef,
         contentRef,
@@ -57,6 +110,11 @@ export function PopoverRoot({
         contentId,
         titleId,
         descriptionId,
+        placement,
+        floatingStyles,
+        isPositioned,
+        setReferenceRef,
+        setContentRef,
         setOpen,
       }}
     >

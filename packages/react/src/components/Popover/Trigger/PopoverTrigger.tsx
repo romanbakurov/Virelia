@@ -66,7 +66,7 @@ export function PopoverTrigger({
           childRef.current = node;
         }
 
-        context.triggerRef.current = node;
+        context.setReferenceRef(node);
       },
     });
   }
@@ -75,9 +75,7 @@ export function PopoverTrigger({
     <button
       {...triggerProps}
       {...sharedProps}
-      ref={(node) => {
-        context.triggerRef.current = node;
-      }}
+      ref={context.setReferenceRef}
       type='button'
       disabled={isDisabled}
       className={className}
