@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react';
 
-//Сделать одинаковую работу для:
-// controlled (value + onChange)
-// uncontrolled (internal state)
+// Provides a shared API for controlled and uncontrolled state.
 interface UseControllableStateProps<T> {
   value?: T;
   defaultValue: T;
