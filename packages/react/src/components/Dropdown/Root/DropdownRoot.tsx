@@ -285,7 +285,7 @@ export const DropdownRoot = ({
     contentRef,
     ignoreRefs: [triggerRef],
     isTopOverlay,
-    requestClose: closeDropdown,
+    requestClose: () => closeDropdown(),
   });
 
   const surfaceStyle = {

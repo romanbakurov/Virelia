@@ -15,12 +15,14 @@ export type FocusScopeOptions = {
   active: boolean;
   contentRef: RefObject<HTMLElement | null>;
   enabled: boolean;
-  initialFocus?: RefObject<HTMLElement>;
-  finalFocus?: RefObject<HTMLElement>;
+  initialFocus?: RefObject<HTMLElement | null>;
+  finalFocus?: RefObject<HTMLElement | null>;
   restoreFocus: boolean;
   onOpenAutoFocus?: (event: OverlayAutoFocusEvent) => void;
   onCloseAutoFocus?: (event: OverlayAutoFocusEvent) => void;
 };
+
+export type OverlayDismissReason = 'escape-key' | 'outside-press';
 
 export type OverlayDismissOptions = {
   active: boolean;
@@ -32,7 +34,10 @@ export type OverlayDismissOptions = {
   onEscapeKeyDown?: (event: KeyboardEvent) => void;
   onPointerDownOutside?: (event: OverlayOutsideEvent) => void;
   onInteractOutside?: (event: OverlayOutsideEvent) => void;
-  requestClose: () => void;
+  requestClose: (
+    reason: OverlayDismissReason,
+    event: KeyboardEvent | PointerEvent
+  ) => void;
 };
 
 export type AriaIsolationOptions = {
