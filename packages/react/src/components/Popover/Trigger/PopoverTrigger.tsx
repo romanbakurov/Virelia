@@ -18,7 +18,8 @@ export function PopoverTrigger({
   onClick,
   ...triggerProps
 }: PopoverTriggerProps) {
-  const context = usePopoverContext('Popover.Trigger');
+  const { open, triggerId, contentId, setOpen, setTriggerRef } =
+    usePopoverContext('Popover.Trigger');
 
   const child =
     asChild && isValidElement<PopoverTriggerChildProps>(children)
@@ -35,19 +36,19 @@ export function PopoverTrigger({
       return;
     }
 
-    context.setOpen(!context.open, {
+    setOpen(!open, {
       reason: 'trigger',
       event: event.nativeEvent,
     });
   };
 
   const sharedProps = {
-    id: context.triggerId,
-    'aria-controls': context.open ? context.contentId : undefined,
-    'aria-expanded': context.open,
+    id: triggerId,
+    'aria-controls': open ? contentId : undefined,
+    'aria-expanded': open,
     'aria-haspopup': 'dialog' as const,
     'aria-disabled': isDisabled || undefined,
-    'data-state': context.open ? 'open' : 'closed',
+    'data-state': open ? 'open' : 'closed',
     onClick: handleClick,
   };
 
@@ -66,7 +67,7 @@ export function PopoverTrigger({
           childRef.current = node;
         }
 
-        context.setReferenceRef(node);
+        setTriggerRef(node);
       },
     });
   }
@@ -75,7 +76,7 @@ export function PopoverTrigger({
     <button
       {...triggerProps}
       {...sharedProps}
-      ref={context.setReferenceRef}
+      ref={setTriggerRef}
       type='button'
       disabled={isDisabled}
       className={className}

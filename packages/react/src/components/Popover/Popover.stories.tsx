@@ -340,3 +340,52 @@ export const ArrowAlignment: Story = {
     </Section>
   ),
 };
+
+export const SeparateAnchor: Story = {
+  render: () => (
+    <Section title='Separate anchor'>
+      <Popover>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+          }}
+        >
+          <Popover.Anchor asChild>
+            <div
+              style={{
+                padding: 16,
+                border: '1px dashed var(--border-muted)',
+                borderRadius: 'var(--radius-lg)',
+              }}
+            >
+              Position relative to me
+            </div>
+          </Popover.Anchor>
+
+          <Popover.Trigger asChild>
+            <Button>Toggle popover</Button>
+          </Popover.Trigger>
+        </div>
+
+        <Popover.Content>
+          <Popover.Arrow />
+          <div style={contentStackStyle}>
+            <Popover.Title>Separate anchor</Popover.Title>
+            <Popover.Description>
+              The trigger controls the state, but the content is positioned
+              relative to the anchor.
+            </Popover.Description>
+
+            <Popover.Close asChild>
+              <Button size='sm' appearance='ghost'>
+                Close
+              </Button>
+            </Popover.Close>
+          </div>
+        </Popover.Content>
+      </Popover>
+    </Section>
+  ),
+};
