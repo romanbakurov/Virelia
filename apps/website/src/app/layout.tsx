@@ -10,11 +10,10 @@ import { WebsiteProviders } from '@/providers/WebsiteProviders';
 
 import '../styles/globals.css';
 
-const siteDescription =
-  'Production-ready React and React Native design system with accessible UI components, shared design tokens, theming, and TypeScript-first APIs.';
+const siteTitle = 'Vellira — React & React Native Design System';
 
-const siteTitle =
-  'Vellira — React & React Native Design System for Modern Applications';
+const siteDescription =
+  'Accessible React and React Native design system with shared tokens, theming, TypeScript APIs, and Storybook.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://vellira.dev'),
