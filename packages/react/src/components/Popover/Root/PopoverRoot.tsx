@@ -1,6 +1,7 @@
-import { useCallback, useId, useRef } from 'react';
+import { useCallback, useId, useMemo, useRef } from 'react';
 
-import type { Placement } from '@floating-ui/react';
+import type { Middleware, Placement } from '@floating-ui/react';
+import { arrow as floatingArrow } from '@floating-ui/react';
 import type {
   PopoverAlign,
   PopoverOpenChangeDetails,
@@ -71,15 +72,34 @@ export function PopoverRoot({
     [setOpenState]
   );
 
-  const { floatingStyles, isPositioned, placement, setFloatingRef, setRef } =
-    useFloatingPosition({
-      open,
-      placement: getPopoverPlacement(side, align),
-      strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
-      offset: sideOffset,
-      collisionPadding,
-      avoidCollisions,
-    });
+  const arrowRef = useRef<SVGSVGElement | null>(null);
+
+  const arrowMiddleware = useMemo<Middleware[]>(
+    () => [
+      floatingArrow({
+        element: arrowRef,
+        padding: 8,
+      }),
+    ],
+    []
+  );
+
+  const {
+    context: floatingContext,
+    floatingStyles,
+    isPositioned,
+    placement,
+    setFloatingRef,
+    setRef,
+  } = useFloatingPosition({
+    open,
+    placement: getPopoverPlacement(side, align),
+    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
+    offset: sideOffset + 7,
+    collisionPadding,
+    avoidCollisions,
+    middleware: arrowMiddleware,
+  });
 
   const setReferenceRef = useCallback(
     (node: HTMLElement | null) => {
@@ -113,6 +133,8 @@ export function PopoverRoot({
         placement,
         floatingStyles,
         isPositioned,
+        floatingContext,
+        arrowRef,
         setReferenceRef,
         setContentRef,
         setOpen,

@@ -146,6 +146,8 @@ function Demo({
       </Popover.Trigger>
 
       <Popover.Content>
+        <Popover.Arrow />
+
         <div style={contentStackStyle}>
           <Popover.Title>Workspace settings</Popover.Title>
 
@@ -258,7 +260,7 @@ export const Positioning: Story = {
             transform: 'translateX(-50%)',
           })}
         >
-          <Demo side='top' trigger='Top' />
+          <Demo side='bottom' avoidCollisions={false} trigger='Bottom' />
         </div>
 
         <div
@@ -268,7 +270,7 @@ export const Positioning: Story = {
             transform: 'translateY(-50%)',
           })}
         >
-          <Demo side='left' trigger='Left' />
+          <Demo side='right' avoidCollisions={false} trigger='Right' />
         </div>
 
         <div
@@ -278,7 +280,7 @@ export const Positioning: Story = {
             transform: 'translateY(-50%)',
           })}
         >
-          <Demo side='right' trigger='Right' />
+          <Demo side='left' avoidCollisions={false} trigger='Left' />
         </div>
 
         <div
@@ -288,7 +290,7 @@ export const Positioning: Story = {
             transform: 'translateX(-50%)',
           })}
         >
-          <Demo side='bottom' trigger='Bottom' />
+          <Demo side='top' avoidCollisions={false} trigger='Top' />
         </div>
       </div>
     </Section>
@@ -302,6 +304,39 @@ export const WithoutPortal: Story = {
   render: (args) => (
     <Section title='Without portal'>
       <Demo {...args} />
+    </Section>
+  ),
+};
+
+export const ArrowAlignment: Story = {
+  render: () => (
+    <Section title='Arrow alignment'>
+      <div
+        style={{
+          display: 'flex',
+          gap: 48,
+          padding: 120,
+        }}
+      >
+        {(['start', 'center', 'end'] as const).map((align) => (
+          <Popover key={align} defaultOpen side='top'>
+            <Popover.Trigger asChild>
+              <Button>{align}</Button>
+            </Popover.Trigger>
+
+            <Popover.Content>
+              <Popover.Arrow align={align} />
+
+              <div style={contentStackStyle}>
+                <Popover.Title>{align} arrow</Popover.Title>
+                <Popover.Description>
+                  Arrow aligned to {align}.
+                </Popover.Description>
+              </div>
+            </Popover.Content>
+          </Popover>
+        ))}
+      </div>
     </Section>
   ),
 };
