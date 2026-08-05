@@ -1,4 +1,4 @@
-import type { Placement } from '@floating-ui/react';
+import type { FloatingContext, Placement } from '@floating-ui/react';
 import type { PopoverOpenChangeDetails } from '@vellira-ui/types';
 import type { CSSProperties, MutableRefObject } from 'react';
 
@@ -18,6 +18,9 @@ export interface PopoverContextValue {
   placement: Placement;
   floatingStyles: CSSProperties;
   isPositioned: boolean;
+
+  floatingContext: FloatingContext;
+  arrowRef: MutableRefObject<SVGSVGElement | null>;
 
   setReferenceRef: (node: HTMLElement | null) => void;
   setContentRef: (node: HTMLElement | null) => void;
