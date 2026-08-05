@@ -101,10 +101,21 @@ export function PopoverRoot({
     middleware: arrowMiddleware,
   });
 
-  const setReferenceRef = useCallback(
+  const setTriggerRef = useCallback(
     (node: HTMLElement | null) => {
       triggerRef.current = node;
-      setRef(node);
+
+      if (!anchorRef.current) {
+        setRef(node);
+      }
+    },
+    [setRef]
+  );
+
+  const setAnchorRef = useCallback(
+    (node: HTMLElement | null) => {
+      anchorRef.current = node;
+      setRef(node ?? triggerRef.current);
     },
     [setRef]
   );
@@ -135,7 +146,8 @@ export function PopoverRoot({
         isPositioned,
         floatingContext,
         arrowRef,
-        setReferenceRef,
+        setTriggerRef,
+        setAnchorRef,
         setContentRef,
         setOpen,
       }}

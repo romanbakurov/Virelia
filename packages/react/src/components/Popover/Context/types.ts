@@ -22,7 +22,8 @@ export interface PopoverContextValue {
   floatingContext: FloatingContext;
   arrowRef: MutableRefObject<SVGSVGElement | null>;
 
-  setReferenceRef: (node: HTMLElement | null) => void;
+  setTriggerRef: (node: HTMLElement | null) => void;
+  setAnchorRef: (node: HTMLElement | null) => void;
   setContentRef: (node: HTMLElement | null) => void;
 
   portal: boolean;
