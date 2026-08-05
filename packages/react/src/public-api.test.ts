@@ -11,6 +11,7 @@ describe('public API', () => {
       'FormField',
       'Input',
       'Modal',
+      'Popover',
       'Portal',
       'PortalProvider',
       'Radio',

@@ -1,2 +1,2 @@
 export { PopoverArrow } from './PopoverArrow';
-export type { PopoverArrowProps } from './types';
+export type { PopoverArrowAlign, PopoverArrowProps } from './types';
