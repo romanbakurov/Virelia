@@ -10,6 +10,8 @@ import { nativeThemes } from './theme';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const webOnlyRuntimeExports = new Set(['Popover']);
+
 const getRuntimeExports = (source: string) => {
   const exports = new Set<string>();
   const exportPattern = /^export\s+\{\s*([^}]+)\s*\}/gm;
@@ -63,14 +65,18 @@ describe('public API', () => {
     ]);
   });
 
-  it('contains every web runtime export', () => {
+  it('contains every shared web runtime export', () => {
     const webIndex = readFileSync(
       path.resolve(dirname, '../../react/src/index.ts'),
       'utf8'
     );
 
+    const sharedWebRuntimeExports = getRuntimeExports(webIndex).filter(
+      (runtimeExport) => !webOnlyRuntimeExports.has(runtimeExport)
+    );
+
     expect(Object.keys(api)).toEqual(
-      expect.arrayContaining(getRuntimeExports(webIndex))
+      expect.arrayContaining(sharedWebRuntimeExports)
     );
   });
 

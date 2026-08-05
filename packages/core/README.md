@@ -1,49 +1,45 @@
-# @vellira-ui/core
+## @vellira-ui/core
 
-Shared interaction and state logic for Vellira.
+Platform-neutral behavior contracts and utilities for Vellira.
 
-This package contains hooks that can be reused by web and native packages when the behavior is platform-neutral.
+This internal package contains shared types and helper functions used by
+`@vellira-ui/react` and `@vellira-ui/react-native`. Platform-specific hooks,
+DOM behavior, CSS, accessibility handling, and native interactions remain in
+the corresponding renderer packages.
 
-## Exports
+## Responsibilities
 
-- `useControllableState`
-- `useKeyboardNavigation`
-- `useOverlayStack`
-- `useOverlayDismiss`
-- `useScrollLock`
-- `useAriaIsolation`
-- `useFocusScope`
-- `usePortal`
+- Focus behavior contracts and utilities
+- Overlay behavior contracts
+- Portal behavior contracts
+- Shared event utilities
+- Platform-neutral behavior types
 
-Behavior hooks live under `src/behavior` internally and are exported from the package root when they are platform-neutral.
+## Package structure
 
 ```text
-behavior/
-  overlay/
-    useOverlayStack
-    useOverlayDismiss
-    useScrollLock
-  focus/
-    useFocusScope
-    useAriaIsolation
-  portal/
-    usePortal
-  utils/
-    events
-    focusUtils
+src/
+└── behavior/
+    ├── focus/
+    │   ├── focusUtils.ts
+    │   └── types.ts
+    ├── overlay/
+    │   └── types.ts
+    ├── portal/
+    │   └── types.ts
+    └── utils/
+        ├── events.ts
+        └── types.ts
 ```
 
 ## Usage
 
-```ts
-import { useControllableState } from '@vellira-ui/core';
+This package is primarily consumed internally by the Vellira renderer packages.
 
-const [value, setValue] = useControllableState({
-  value,
-  defaultValue: '',
-  onChange,
-});
-```
+Application code should normally import components and public APIs from:
+
+- @vellira-ui/react
+- @vellira-ui/react-native
 
 ## Development
 

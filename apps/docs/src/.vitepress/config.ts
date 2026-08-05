@@ -141,6 +141,7 @@ export default defineConfig({
           { text: 'FormField', link: '/components/form-field' },
           { text: 'Dropdown', link: '/components/dropdown' },
           { text: 'Tabs', link: '/components/tabs' },
+          { text: 'Popover', link: '/components/popover' },
           { text: 'Tooltip', link: '/components/tooltip' },
           { text: 'Modal', link: '/components/modal' },
           { text: 'ThemeProvider', link: '/components/theme-provider' },

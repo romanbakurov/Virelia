@@ -10,6 +10,7 @@ export const STORYBOOK_STORIES = {
   'radioGroup.states': 'components-radiogroup--states',
   'select.selection': 'components-select--simple-usage',
   'tabs.controlled': 'components-tabs--controlled',
+  'popover.basic': 'components-popover--basic',
   'tooltip.triggers': 'components-tooltip--triggers',
 } as const;
 
