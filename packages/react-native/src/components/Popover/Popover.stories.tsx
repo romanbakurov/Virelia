@@ -437,10 +437,6 @@ function CustomStylesDemo() {
   );
 }
 
-export const CustomStyles: Story = {
-  render: () => <CustomStylesDemo />,
-};
-
 export const Basic: Story = {
   render: (args) => (
     <Section title='Basic'>
