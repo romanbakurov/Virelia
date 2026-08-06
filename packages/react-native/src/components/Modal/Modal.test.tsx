@@ -117,7 +117,7 @@ describe('Native Modal', () => {
     const { container, unmount } = render(<NativeModal open={false} />);
 
     expect(container.textContent).not.toContain('Native modal');
-    expect(container.querySelector('[data-testid="native-modal"]')).toBeNull();
+    expect(container.textContent).not.toContain('Body content');
 
     unmount();
   });

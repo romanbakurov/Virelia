@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import type React from 'react';
+import { Modal, StyleSheet, View } from 'react-native';
 
 import type { PortalProps, PortalProviderProps } from './types';
 
@@ -11,6 +12,12 @@ type PortalComponent = ((props: PortalProps) => React.ReactElement | null) & {
   displayName?: string;
 };
 
+const styles = StyleSheet.create({
+  host: {
+    flex: 1,
+  },
+});
+
 export const PortalProvider = ({
   children,
   container = null,
@@ -18,10 +25,39 @@ export const PortalProvider = ({
   <PortalContext.Provider value={container}>{children}</PortalContext.Provider>
 );
 
-export const Portal: PortalComponent = ({ children }) => {
+export const Portal: PortalComponent = ({
+  children,
+  visible = true,
+  animationType = 'none',
+  hardwareAccelerated = true,
+  navigationBarTranslucent = true,
+  statusBarTranslucent = true,
+  onDismiss,
+  onRequestClose,
+}) => {
   useContext(PortalContext);
 
-  return <>{children}</>;
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <Modal
+      animationType={animationType}
+      hardwareAccelerated={hardwareAccelerated}
+      navigationBarTranslucent={navigationBarTranslucent}
+      onDismiss={onDismiss}
+      onRequestClose={onRequestClose}
+      presentationStyle='overFullScreen'
+      statusBarTranslucent={statusBarTranslucent}
+      transparent
+      visible
+    >
+      <View pointerEvents='box-none' style={styles.host}>
+        {children}
+      </View>
+    </Modal>
+  );
 };
 
 Portal.__velliraPortal = true;

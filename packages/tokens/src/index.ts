@@ -35,7 +35,8 @@ export {
   themeNames,
   tokenPaths,
 } from './generated/token-types.js';
-export { overlay } from './semantic/overlay.js';
+export { overlay } from './primitives/overlay.js';
+export * from './tokens/index.js';
 
 export const theme = {
   semantic: darkTheme.semantic,

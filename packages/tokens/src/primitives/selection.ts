@@ -1,4 +1,4 @@
-import { colors } from '../primitives/colors.js';
+import { colors } from './colors.js';
 
 export const selection = {
   background: colors.primary[700],
