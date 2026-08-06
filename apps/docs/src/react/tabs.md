@@ -178,6 +178,6 @@ export function AccountSettings() {
 
 ## See Also
 
-- [Button](/components/button) for actions inside tab panels.
-- [Select](/components/select) when mobile space requires compact section
+- [Button](/react/button) for actions inside tab panels.
+- [Select](/react/select) when mobile space requires compact section
   switching.

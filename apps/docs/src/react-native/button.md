@@ -1,0 +1,160 @@
+---
+title: React Native Button
+description: Build native actions with Vellira Button using appearances, semantic colors, loading states, icons, badges, shortcuts, and accessible labels.
+---
+
+# Button
+
+Button is the native action primitive for saving, submitting, confirming, opening menus, and triggering commands.
+
+## When To Use
+
+| Pattern | Recommended API |
+| --- | --- |
+| Primary action | `appearance="solid" color="primary"` |
+| Secondary action | `appearance="outline" color="neutral"` |
+| Toolbar action | `appearance="ghost"` with an icon |
+| Success state | `appearance="soft" color="success"` |
+| Destructive action | `color="danger"` with confirmation |
+| Icon-only action | `iconOnly` and `accessibilityLabel` |
+
+## Basic Usage
+
+```tsx
+import { Button } from '@vellira-ui/react-native';
+
+<Button onPress={handleSave}>Save</Button>
+```
+
+## Appearance And Color
+
+```tsx
+<Button appearance='solid' color='primary'>Save</Button>
+<Button appearance='outline' color='neutral'>Cancel</Button>
+<Button appearance='ghost' color='danger'>Delete</Button>
+<Button appearance='soft' color='success'>Published</Button>
+<Button appearance='link' color='primary'>Open details</Button>
+```
+
+Use `appearance` for visual hierarchy and `color` for semantic intent.
+
+## Loading
+
+```tsx
+<Button
+  loading={isSaving}
+  loadingText='Saving changes...'
+  onPress={handleSave}
+>
+  Save
+</Button>
+```
+
+Loading disables interaction and may replace the visible label.
+
+## Icons
+
+```tsx
+import { Search } from '@vellira-ui/icons';
+import { Button } from '@vellira-ui/react-native';
+
+<Button iconStart={<Search />} onPress={openSearch}>
+  Search
+</Button>
+```
+
+Button injects the current icon color and size. Use `iconSize` only for an intentional override.
+
+## Icon-Only Actions
+
+```tsx
+<Button
+  accessibilityLabel='Open search'
+  iconOnly
+  iconStart={<Search />}
+  onPress={openSearch}
+/>
+```
+
+When `iconOnly` is enabled, visible children are not rendered. The accessible action name must come from `accessibilityLabel`.
+
+## Badge And Shortcut
+
+```tsx
+<Button
+  badge='12'
+  shortcut='⌘K'
+  iconStart={<Search />}
+  onPress={openSearch}
+>
+  Search
+</Button>
+```
+
+Shortcut hints are visual content; they do not define keyboard handling by themselves.
+
+## Full Width And Styling
+
+```tsx
+<Button
+  fullWidth
+  style={{ marginTop: 16 }}
+  textStyle={{ letterSpacing: 0.2 }}
+  onPress={continueFlow}
+>
+  Continue
+</Button>
+```
+
+## Destructive Confirmation
+
+```tsx
+import { Button, Modal, Portal } from '@vellira-ui/react-native';
+
+<Button
+  appearance='soft'
+  color='danger'
+  onPress={() => setConfirmingDelete(true)}
+>
+  Delete workspace
+</Button>
+
+<Modal open={confirmingDelete} onOpenChange={setConfirmingDelete}>
+  <Portal>
+    <Modal.Overlay>
+      <Modal.Content>
+        <Modal.Header>Delete workspace?</Modal.Header>
+        <Modal.Body>This action cannot be undone.</Modal.Body>
+        <Modal.Footer>
+          <Modal.Close>
+            <Button appearance='ghost' color='neutral'>
+              Cancel
+            </Button>
+          </Modal.Close>
+          <Button
+            color='danger'
+            loading={isDeleting}
+            loadingText='Deleting...'
+            onPress={deleteWorkspace}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal.Overlay>
+  </Portal>
+</Modal>
+```
+
+## Accessibility
+
+- Use `accessibilityLabel` for icon-only buttons.
+- Keep destructive intent understandable without relying on color alone.
+- Loading actions should communicate progress with useful text.
+- Keep touch targets comfortable on both iOS and Android.
+
+## See Also
+
+- [Dropdown](/react-native/dropdown)
+- [Modal](/react-native/modal)
+- [Tooltip](/react-native/tooltip)

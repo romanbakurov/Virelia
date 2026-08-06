@@ -264,5 +264,5 @@ with web.
 
 ## See Also
 
-- [Input](/components/input), [Select](/components/select), and
-  [RadioGroup](/components/radio-group) for built-in field components.
+- [Input](/react/input), [Select](/react/select), and
+  [RadioGroup](/react/radio-group) for built-in field components.

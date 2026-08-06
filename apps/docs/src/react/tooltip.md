@@ -65,7 +65,7 @@ press instead of hover. Keep the trigger accessible on its own and put short
 helper copy inside `Tooltip.Content`.
 
 ```tsx
-import { Info } from '@vellira-ui/icons/native';
+import { Info } from '@vellira-ui/icons/react-native/';
 import { Button, Tooltip } from '@vellira-ui/react-native';
 
 export function WorkspaceInfo() {
@@ -224,5 +224,5 @@ export function InvoiceToolbar() {
 
 ## See Also
 
-- [Button](/components/button) for icon-only trigger requirements.
-- [FormField](/components/form-field) for persistent helper text.
+- [Button](/react/button) for icon-only trigger requirements.
+- [FormField](/react/form-field) for persistent helper text.

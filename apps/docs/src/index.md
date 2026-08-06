@@ -10,10 +10,10 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /getting-started
+      link: /start/getting-started
     - theme: alt
       text: Components
-      link: /components/
+      link: /react/
     - theme: alt
       text: GitHub
       link: https://github.com/vellira-dev/vellira
@@ -28,23 +28,23 @@ Tokens, interaction logic, and public APIs are shared. Rendering stays
 platform-specific.
 
 <div class="docs-card-grid docs-card-grid-three">
-  <a class="docs-card" href="/theme-architecture">
+  <a class="docs-card" href="/design-system/theme-architecture">
     <strong>Token architecture</strong>
     <span>Primitive colors flow into semantic tokens, component states, and renderer packages.</span>
   </a>
-  <a class="docs-card" href="/component-examples">
+  <a class="docs-card" href="/start/component-overview">
     <strong>Component coverage</strong>
     <span>Button, Input, Checkbox, RadioGroup, Select, Dropdown, Tabs, Tooltip, and Modal.</span>
   </a>
-  <a class="docs-card" href="/components/">
+  <a class="docs-card" href="/react/">
     <strong>Premium component docs</strong>
     <span>Usage guidance, accessibility contracts, platform notes, and production patterns for every component.</span>
   </a>
-  <a class="docs-card" href="/getting-started">
+  <a class="docs-card" href="/start/getting-started">
     <strong>Fast adoption</strong>
     <span>Install a renderer, import styles where needed, and render your first component.</span>
   </a>
-  <a class="docs-card" href="/production">
+  <a class="docs-card" href="/start/production">
     <strong>Production path</strong>
     <span>Use the install, theming, accessibility, quality, and deploy guidance before shipping.</span>
   </a>
@@ -76,23 +76,23 @@ For icon-only web actions, use the standard `aria-label` attribute. Native
 actions use `accessibilityLabel`.
 
 <p>
-  <a class="docs-cta" href="/getting-started">Get Started</a>
+  <a class="docs-cta" href="/start/getting-started">Get Started</a>
 </p>
 
-## Packages
+## Packages & Libraries
 
 <div class="docs-card-grid docs-card-grid-three">
-  <a class="docs-package-card" href="/web">
+  <a class="docs-package-card" href="/react/">
     <strong>Web</strong>
     <span>React</span>
     <code>@vellira-ui/react</code>
   </a>
-  <a class="docs-package-card" href="/native">
+  <a class="docs-package-card" href="/react-native/">
     <strong>Native</strong>
     <span>React Native</span>
     <code>@vellira-ui/react-native</code>
   </a>
-  <a class="docs-package-card" href="/tokens">
+  <a class="docs-package-card" href="/design-system/tokens">
     <strong>Tokens</strong>
     <span>Design Tokens</span>
     <code>@vellira-ui/tokens</code>
@@ -102,6 +102,16 @@ actions use `accessibilityLabel`.
     <span>Cross-platform Icons</span>
     <code>@vellira-ui/icons</code>
   </a>
+<a class="docs-package-card" href="https://vellira.dev">
+  <strong>Website</strong>
+  <span>Documentation & Showcase</span>
+  <code>vellira.dev</code>
+</a>
+<a class="docs-package-card" href="https://storybook.vellira.dev">
+  <strong>Storybook</strong>
+  <span>Interactive Component Explorer</span>
+<code>storybook.vellira.dev</code>
+</a>
 </div>
 
 ## Features
@@ -121,13 +131,13 @@ Use the docs as the main path through the system.
 
 | Goal                           | Page                                      |
 | ------------------------------ | ----------------------------------------- |
-| Install and render a component | [Quick Start](/getting-started)           |
-| Browse component               | [Components](/components/)                |
-| Compare visual states          | [Component Overview](/component-examples) |
-| Understand tokens              | [Theme Architecture](/theme-architecture) |
-| Prepare for production         | [Production](/production)                 |
-| Use React DOM                  | [Web](/web)                               |
-| Use React Native               | [Native](/native)                         |
+| Install and render a component | [Quick Start](/start/getting-started)           |
+| Browse component               | [Components](/react/)                |
+| Compare visual states          | [Component Overview](/start/component-overview) |
+| Understand tokens              | [Theme Architecture](/design-system/theme-architecture) |
+| Prepare for production         | [Production](/start/production)                 |
+| Use React DOM                  | [Web](/react/)                               |
+| Use React Native               | [Native](/react-native/)                         |
 
 ## GitHub
 

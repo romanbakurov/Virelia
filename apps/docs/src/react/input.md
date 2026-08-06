@@ -418,5 +418,5 @@ value should differ from the stored value.
 
 ## See Also
 
-- [FormField](/components/form-field) for wrapping custom controls.
-- [Select](/components/select) and [RadioGroup](/components/radio-group) for fixed choices.
+- [FormField](/react/form-field) for wrapping custom controls.
+- [Select](/react/select) and [RadioGroup](/react/radio-group) for fixed choices.
