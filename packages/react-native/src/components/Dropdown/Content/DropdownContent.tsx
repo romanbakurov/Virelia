@@ -30,6 +30,8 @@ export function DropdownContent({
   contentStyle,
   accessibilityLabel,
   presentation,
+  position,
+  onFloatingLayout,
   searchable = false,
   searchValue = '',
   searchPlaceholder = 'Search actions...',
@@ -40,6 +42,7 @@ export function DropdownContent({
   const styles = useThemeStyles(createStyles);
   const colorPalette = theme.components.dropdown[color];
   const isSheet = presentation === 'sheet';
+  const isPopover = presentation === 'popover';
   const animation = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -136,9 +139,15 @@ export function DropdownContent({
             {
               borderColor: colorPalette.content.border,
             },
+            isPopover && {
+              position: 'absolute',
+              top: position.top,
+              left: position.left,
+            },
             contentStyle,
             menuAnimatedStyle,
           ]}
+          onLayout={isPopover ? onFloatingLayout : undefined}
         >
           {searchable && (
             <View style={styles.searchWrap}>
