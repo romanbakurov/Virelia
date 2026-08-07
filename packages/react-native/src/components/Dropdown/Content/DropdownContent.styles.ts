@@ -19,9 +19,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     popover: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: theme.tokens.spacing[4],
+      flex: 1,
     },
 
     backdrop: {
