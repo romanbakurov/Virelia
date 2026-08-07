@@ -142,6 +142,14 @@ export const Platform = {
   },
 };
 
+export const BackHandler = {
+  addEventListener() {
+    return {
+      remove() {},
+    };
+  },
+};
+
 export const AccessibilityInfo = {
   announceForAccessibility() {},
   setAccessibilityFocus() {},
