@@ -5,16 +5,15 @@ description: Learn how to install Vellira, set up React or React Native, import 
 
 # Quick Start
 
-This guide gets you from installation to a working Vellira component in a few
-minutes.
+Get from installation to your first Vellira component in a few minutes.
 
 ## 1. Install a Renderer
 
-Use the package that matches your application.
+Choose the package for your application.
 
 ::: code-group
 
-```bash [Web]
+```bash [React]
 pnpm add @vellira-ui/react
 ```
 
@@ -24,7 +23,7 @@ pnpm add @vellira-ui/react-native
 
 :::
 
-Optional packages are available when you need icons or direct token access.
+Add optional packages when you need icons or direct access to design tokens.
 
 ::: code-group
 
@@ -38,9 +37,10 @@ pnpm add @vellira-ui/tokens
 
 :::
 
-## 2. Add Web Styles
+## 2. Add React Styles
 
-Web apps should import Vellira styles once in the application entry point.
+React web applications should import the Vellira stylesheet once in the
+application entry point.
 
 ```tsx
 import '@vellira-ui/react/styles';
@@ -51,7 +51,7 @@ Native styles and shared theme values internally.
 
 ## 3. Render Your First Component
 
-### React Web
+### React
 
 ```tsx
 import '@vellira-ui/react/styles';
@@ -113,25 +113,26 @@ export function SignInScreen() {
 }
 ```
 
-## 4. Choose the Next Page
+## 4. Continue Exploring
 
-| Goal                      | Next page                                               |
-| ------------------------- | ------------------------------------------------------- |
-| See component patterns    | [Component Examples](/start/component-overview)         |
-| Use the Web package       | [Web](/react/)                                          |
-| Use the Native package    | [Native](/react-native/)                                |
-| Understand theming        | [Theme Architecture](/design-system/theme-architecture) |
-| Work with tokens directly | [Tokens](/design-system/tokens)                         |
+| Goal                       | Next page                                               |
+| -------------------------- | ------------------------------------------------------- |
+| Explore component patterns | [Component Overview](/start/component-overview)         |
+| Build with React           | [React](/react/)                                        |
+| Build with React Native    | [React Native](/react-native/)                          |
+| Use icons                  | [Icons](/icons/)                                        |
+| Understand theming         | [Theme Architecture](/design-system/theme-architecture) |
+| Work with tokens directly  | [Design Tokens](/design-system/tokens)                  |
 
-## Local Development
+## Repository Development
 
-Run the documentation site from the repository root.
+Run the documentation site from the repository root:
 
 ```bash
 pnpm docs:dev
 ```
 
-Build it the same way CI does.
+Build it the same way CI does:
 
 ```bash
 pnpm docs:build

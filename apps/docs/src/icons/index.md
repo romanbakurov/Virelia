@@ -33,7 +33,7 @@ Typical examples include:
 - settings
 - administration panels
 
-➡️ Continue to **Static Icons** for usage examples and the complete gallery.
+Continue to [Static Icons](/icons/static) for usage examples and the complete gallery.
 
 ### Animated Icons
 
@@ -47,7 +47,7 @@ Typical examples include:
 - status transitions
 - interactive controls
 
-➡️ Continue to **Animated Icons** for animation examples and supported icons.
+Continue to [Animated Icons](/icons/animated) for animation examples and supported icons.
 
 ## Storybook Gallery
 
@@ -65,8 +65,8 @@ pnpm add @vellira-ui/icons
 
 ## Next Steps
 
-| Goal                   | Page     |
-| ---------------------- | -------- |
-| Browse static icons    | Static   |
-| Browse animated icons  | Animated |
-| Learn how to use icons | Usage    |
+| Goal                   | Page                              |
+| ---------------------- | --------------------------------- |
+| Browse static icons    | [Static Icons](/icons/static)     |
+| Browse animated icons  | [Animated Icons](/icons/animated) |
+| Learn how to use icons | [Icon Usage](/icons/usage)        |

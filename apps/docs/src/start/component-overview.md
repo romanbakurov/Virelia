@@ -68,6 +68,11 @@ Components share a consistent API, design tokens, accessibility patterns, and Ty
 <span>Dialogs and confirmation flows.</span>
 </a>
 
+<a class="docs-card" href="/react/portal">
+<strong>Portal</strong>
+<span>Render overlays outside the normal DOM hierarchy.</span>
+</a>
+
 <a class="docs-card" href="/react/theme-provider">
 <strong>ThemeProvider</strong>
 <span>Application-wide theming.</span>

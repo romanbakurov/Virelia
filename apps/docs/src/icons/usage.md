@@ -1,6 +1,6 @@
 ---
 title: Icon Usage
-description: Learn how to use Vellira Icons in React and React Native.
+description: Learn how to install and use Vellira icons in React and React Native, including sizing, color, accessibility, tree shaking, and icon-only controls.
 ---
 
 # Icon Usage

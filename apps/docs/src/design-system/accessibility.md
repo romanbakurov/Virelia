@@ -76,6 +76,6 @@ Vellira aims to align with:
 
 ## Related Pages
 
-- [Web](/react/)
-- [Native](/react-native/)
+- [React](/react/)
+- [React Native](/react-native/)
 - [Component Gallery](/start/component-overview)
