@@ -161,6 +161,6 @@ Radio items store their value inside `Dropdown.RadioGroup`, not on the root.
 
 ## See Also
 
-- [Button](/components/button) for triggers and command buttons.
-- [Select](/components/select) for value selection.
-- [Modal](/components/modal) for confirmation flows.
+- [Button](/react/button) for triggers and command buttons.
+- [Select](/react/select) for value selection.
+- [Modal](/react/modal) for confirmation flows.

@@ -1,5 +1,6 @@
 export * from './Dropdown';
 export * from './Modal';
+export * from './Popover';
 export * from './RadioGroup';
 export * from './Select';
 export * from './Tabs';

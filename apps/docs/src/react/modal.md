@@ -198,5 +198,5 @@ different motion profile. `duration` accepts either a number or
 
 ## See Also
 
-- [Button](/components/button) for loading and danger actions.
-- [FormField](/components/form-field) for modal forms.
+- [Button](/react/button) for loading and danger actions.
+- [FormField](/react/form-field) for modal forms.

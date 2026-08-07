@@ -152,5 +152,5 @@ export function BillingIntervalForm() {
 
 ## See Also
 
-- [Select](/components/select) for compact or longer lists.
-- [Checkbox](/components/checkbox) for independent boolean choices.
+- [Select](/react/select) for compact or longer lists.
+- [Checkbox](/react/checkbox) for independent boolean choices.

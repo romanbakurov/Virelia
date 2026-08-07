@@ -180,5 +180,5 @@ export function MemberRoleForm() {
 
 ## See Also
 
-- [Dropdown](/components/dropdown) for action menus.
-- [RadioGroup](/components/radio-group) for short visible choice sets.
+- [Dropdown](/react/dropdown) for action menus.
+- [RadioGroup](/react/radio-group) for short visible choice sets.

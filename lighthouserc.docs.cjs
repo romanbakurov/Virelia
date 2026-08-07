@@ -4,7 +4,7 @@ module.exports = {
     collect: {
       staticDistDir: './apps/docs/src/.vitepress/dist',
       numberOfRuns: 3,
-      url: ['http://localhost/', 'http://localhost/components/'],
+      url: ['http://localhost/', 'http://localhost/react/'],
       settings: {
         chromeFlags: '--headless --no-sandbox --disable-dev-shm-usage',
       },

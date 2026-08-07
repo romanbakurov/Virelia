@@ -119,5 +119,5 @@ export function AppShell() {
 
 ## See Also
 
-- [Theme Architecture](/theme-architecture)
-- [Tokens](/tokens)
+- [Theme Architecture](/design-system/theme-architecture)
+- [Tokens](/design-system/tokens)

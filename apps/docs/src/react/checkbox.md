@@ -168,5 +168,5 @@ export function NotificationPreferences() {
 
 ## See Also
 
-- [RadioGroup](/components/radio-group) for mutually exclusive choices.
-- [FormField](/components/form-field) for custom field layout.
+- [RadioGroup](/react/radio-group) for mutually exclusive choices.
+- [FormField](/react/form-field) for custom field layout.

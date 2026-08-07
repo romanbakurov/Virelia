@@ -411,7 +411,7 @@ Inline content may be clipped by parent elements using `overflow: hidden`.
 
 ## See Also
 
-- [Tooltip](/components/tooltip) for short, non-interactive helper text.
-- [Dropdown](/components/dropdown) for menu actions and selection semantics.
-- [Modal](/components/modal) for blocking workflows and larger dialogs.
-- [Button](/components/button) for accessible trigger controls.
+- [Tooltip](/react/tooltip) for short, non-interactive helper text.
+- [Dropdown](/react/dropdown) for menu actions and selection semantics.
+- [Modal](/react/modal) for blocking workflows and larger dialogs.
+- [Button](/react/button) for accessible trigger controls.

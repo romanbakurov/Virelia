@@ -263,7 +263,7 @@ When link buttons are disabled or loading, Button removes navigation, sets
 
 ## See Also
 
-- [Modal](/components/modal) for confirmation flows.
-- [Dropdown](/components/dropdown) for grouped actions.
+- [Modal](/react/modal) for confirmation flows.
+- [Dropdown](/react/dropdown) for grouped actions.
 - [Web API](https://github.com/vellira-dev/vellira/blob/main/packages/react/API.md#button)
 - [Native API](https://github.com/vellira-dev/vellira/blob/main/packages/react-native/API.md#button)
