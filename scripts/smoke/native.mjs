@@ -285,6 +285,7 @@ const expectedNativeApi = [
   'FormField',
   'Input',
   'Modal',
+  'Popover',
   'Portal',
   'PortalProvider',
   'Radio',
