@@ -1,2 +1,2 @@
 export * from './FloatingManager';
-export * from './OverlayStack';
+export * from './OverlayManager';

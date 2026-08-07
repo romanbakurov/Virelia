@@ -7,18 +7,12 @@ import {
   useState,
 } from 'react';
 
-import {
-  AccessibilityInfo,
-  findNodeHandle,
-  FlatList,
-  Platform,
-  Text,
-  View,
-} from 'react-native';
+import { AccessibilityInfo, FlatList, Text, View } from 'react-native';
 
 import {
   useDropdown,
   useOverlayDismiss,
+  useOverlayFocusRestore,
   useOverlayPresentation,
 } from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers';
@@ -156,35 +150,15 @@ export function DropdownRoot({
     );
   }, [isOpen, menuAccessibilityLabel]);
 
-  const focusTrigger = useCallback(() => {
-    if (Platform.OS === 'web') {
-      const triggerNode = triggerRef.current;
-
-      if (
-        triggerNode &&
-        typeof triggerNode === 'object' &&
-        'focus' in triggerNode &&
-        typeof triggerNode.focus === 'function'
-      ) {
-        triggerNode.focus();
-      }
-
-      return;
-    }
-
-    if (typeof findNodeHandle !== 'function') return;
-
-    const handle = findNodeHandle(triggerRef.current);
-
-    if (handle && AccessibilityInfo.setAccessibilityFocus) {
-      AccessibilityInfo.setAccessibilityFocus(handle);
-    }
-  }, []);
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    triggerRef,
+  });
 
   const closeAndFocusTrigger = useCallback(() => {
     closeDropdown();
-    requestAnimationFrame(focusTrigger);
-  }, [closeDropdown, focusTrigger]);
+    restoreFocusAfterClose();
+  }, [closeDropdown, restoreFocusAfterClose]);
+
   const dismiss = useOverlayDismiss({
     id: overlayId,
     active: isOpen,
