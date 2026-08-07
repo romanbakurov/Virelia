@@ -5,6 +5,7 @@ export { dropdown } from './dropdown.js';
 export { formField } from './formField.js';
 export { input } from './input.js';
 export { modal } from './modal.js';
+export { popover } from './popover.js';
 export { radio } from './radio.js';
 export { radioGroup } from './radioGroup.js';
 export { select } from './select.js';

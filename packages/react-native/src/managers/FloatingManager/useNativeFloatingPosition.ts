@@ -5,107 +5,103 @@ import type { RefObject } from 'react';
 import type { LayoutChangeEvent, View } from 'react-native';
 import { Dimensions } from 'react-native';
 
-interface Position {
-  top: number;
-  left: number;
-}
-
-interface Size {
-  width: number;
-  height: number;
-}
-
-interface TriggerRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-const safePadding = 12;
+import { computeFloatingPosition } from './computeFloatingPosition';
+import type { FloatingPositionResult, FloatingSize } from './types';
 
 export function useNativeFloatingPosition(
   placement: FloatingPlacement = 'top',
   offset = 8
 ) {
-  const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
-  const floatingSizeRef = useRef<Size>({
+  const [result, setResult] = useState<FloatingPositionResult>({
+    position: {
+      top: 0,
+      left: 0,
+    },
+    arrowPosition: {},
+    placement,
+  });
+
+  const floatingSizeRef = useRef<FloatingSize>({
     width: 0,
     height: 0,
   });
+
   const lastTriggerRef = useRef<RefObject<View | null> | null>(null);
-
-  const clamp = useCallback((value: number, min: number, max: number) => {
-    return Math.min(Math.max(value, min), Math.max(min, max));
-  }, []);
-
-  const calculatePosition = useCallback(
-    (triggerRect: TriggerRect, size: Size): Position => {
-      const { width: screenWidth, height: screenHeight } =
-        Dimensions.get('window');
-      const [side, align = 'center'] = placement.split('-');
-
-      const horizontalTop =
-        side === 'bottom'
-          ? triggerRect.y + triggerRect.height + offset
-          : triggerRect.y - size.height - offset;
-      const verticalTop =
-        align === 'start'
-          ? triggerRect.y
-          : align === 'end'
-            ? triggerRect.y + triggerRect.height - size.height
-            : triggerRect.y + triggerRect.height / 2 - size.height / 2;
-
-      const horizontalLeft =
-        align === 'start'
-          ? triggerRect.x
-          : align === 'end'
-            ? triggerRect.x + triggerRect.width - size.width
-            : triggerRect.x + triggerRect.width / 2 - size.width / 2;
-      const verticalLeft =
-        side === 'right'
-          ? triggerRect.x + triggerRect.width + offset
-          : triggerRect.x - size.width - offset;
-
-      const rawPosition =
-        side === 'left' || side === 'right'
-          ? { top: verticalTop, left: verticalLeft }
-          : { top: horizontalTop, left: horizontalLeft };
-
-      return {
-        top: clamp(
-          rawPosition.top,
-          safePadding,
-          screenHeight - size.height - safePadding
-        ),
-        left: clamp(
-          rawPosition.left,
-          safePadding,
-          screenWidth - size.width - safePadding
-        ),
-      };
-    },
-    [placement, offset, clamp]
-  );
+  const lastContainerRef = useRef<RefObject<View | null> | null>(null);
 
   const updatePosition = useCallback(
     (
       triggerRef: RefObject<View | null>,
+      containerRef?: RefObject<View | null>,
       measuredSize = floatingSizeRef.current
     ) => {
       lastTriggerRef.current = triggerRef;
-      const node = triggerRef.current;
+      lastContainerRef.current = containerRef ?? null;
 
-      if (!node || typeof node.measureInWindow !== 'function') {
-        setPosition({ top: 0, left: 0 });
+      const triggerNode = triggerRef.current;
+      const containerNode = containerRef?.current;
+
+      if (!triggerNode || typeof triggerNode.measureInWindow !== 'function') {
+        setResult((current) => ({
+          ...current,
+          position: {
+            top: 0,
+            left: 0,
+          },
+        }));
+
         return;
       }
 
-      node.measureInWindow((x, y, width, height) => {
-        setPosition(calculatePosition({ x, y, width, height }, measuredSize));
+      triggerNode.measureInWindow((x, y, width, height) => {
+        const commitPosition = (
+          containerX: number,
+          containerY: number,
+          containerWidth: number,
+          containerHeight: number
+        ) => {
+          const nextResult = computeFloatingPosition({
+            reference: {
+              x: x - containerX,
+              y: y - containerY,
+              width,
+              height,
+            },
+            floating: measuredSize,
+            boundary: {
+              width: containerWidth,
+              height: containerHeight,
+            },
+            placement,
+            offset,
+          });
+
+          setResult(nextResult);
+        };
+
+        if (
+          !containerNode ||
+          typeof containerNode.measureInWindow !== 'function'
+        ) {
+          const window = Dimensions.get('window');
+
+          commitPosition(0, 0, window.width, window.height);
+          return;
+        }
+
+        containerNode.measureInWindow(
+          (containerX, containerY, containerWidth, containerHeight) => {
+            commitPosition(
+              containerX,
+              containerY,
+              containerWidth,
+              containerHeight
+            );
+          }
+        );
       });
     },
-    [calculatePosition]
+    [placement, offset]
   );
 
   const onFloatingLayout = useCallback(
@@ -116,11 +112,21 @@ export function useNativeFloatingPosition(
       floatingSizeRef.current = nextSize;
 
       if (lastTriggerRef.current) {
-        updatePosition(lastTriggerRef.current, nextSize);
+        updatePosition(
+          lastTriggerRef.current,
+          lastContainerRef.current ?? undefined,
+          nextSize
+        );
       }
     },
     [updatePosition]
   );
 
-  return { position, updatePosition, onFloatingLayout };
+  return {
+    position: result.position,
+    arrowPosition: result.arrowPosition,
+    placement: result.placement,
+    updatePosition,
+    onFloatingLayout,
+  };
 }

@@ -1,10 +1,11 @@
 import { colors } from '../../primitives/colors.js';
+import { overlay as primitiveOverlay } from '../../primitives/overlay.js';
 
 import { border } from './border.js';
 import { surface } from './surface.js';
 
 export const overlay = {
-  backdrop: 'rgba(0,0,0,.72)',
+  backdrop: primitiveOverlay.backdrop,
 
   tooltip: {
     bg: surface.elevated,

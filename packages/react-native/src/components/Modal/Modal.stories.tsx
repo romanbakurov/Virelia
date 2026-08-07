@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Text, TextInput, View } from 'react-native';
 
 import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
 import { useTheme } from '../../theme';
 
 import { Modal } from '.';
@@ -51,7 +50,6 @@ layer composition.
     <Button>Open modal</Button>
   </Modal.Trigger>
 
-  <Portal>
     <Modal.Overlay>
       <Modal.Content>
         <Modal.Header>Delete file</Modal.Header>
@@ -60,7 +58,6 @@ layer composition.
         </Modal.Body>
       </Modal.Content>
     </Modal.Overlay>
-  </Portal>
 </Modal>
 \`\`\`
 `,
@@ -151,28 +148,26 @@ function NativeModalDemo({
       <Modal.Trigger asChild>
         <Button>Open Modal</Button>
       </Modal.Trigger>
-      <Portal>
-        <Modal.Overlay>
-          <Modal.Content>
-            <Modal.Header>{title}</Modal.Header>
-            <Modal.Body>
-              <Text>Are you sure you want to continue?</Text>
-            </Modal.Body>
-            <Modal.Footer>
-              <Modal.Close>
-                <Button color='neutral' appearance='solid'>
-                  Cancel
-                </Button>
-              </Modal.Close>
-              <Modal.Close>
-                <Button color='danger' appearance='solid'>
-                  Delete
-                </Button>
-              </Modal.Close>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal.Overlay>
-      </Portal>
+      <Modal.Overlay>
+        <Modal.Content>
+          <Modal.Header>{title}</Modal.Header>
+          <Modal.Body>
+            <Text>Are you sure you want to continue?</Text>
+          </Modal.Body>
+          <Modal.Footer>
+            <Modal.Close>
+              <Button color='neutral' appearance='solid'>
+                Cancel
+              </Button>
+            </Modal.Close>
+            <Modal.Close>
+              <Button color='danger' appearance='solid'>
+                Delete
+              </Button>
+            </Modal.Close>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal.Overlay>
     </Modal>
   );
 }
@@ -186,39 +181,37 @@ function NativeFormModal() {
       <Modal.Trigger asChild>
         <Button>Edit preferences</Button>
       </Modal.Trigger>
-      <Portal>
-        <Modal.Overlay>
-          <Modal.Content>
-            <Modal.Header>Workspace preferences</Modal.Header>
-            <Modal.Body>
-              <View style={{ gap: 12 }}>
-                <TextInput
-                  accessibilityLabel='Workspace email'
-                  defaultValue='team@vellira.dev'
-                  style={{
-                    backgroundColor: theme.semantic.surface.default,
-                    borderWidth: 1,
-                    borderColor: theme.semantic.border.muted,
-                    borderRadius: theme.tokens.radius.md,
-                    color: theme.semantic.text.primary,
-                    padding: theme.tokens.spacing[3],
-                  }}
-                />
-                {(['comfortable', 'compact', 'dense'] as const).map((value) => (
-                  <Button
-                    key={value}
-                    appearance={density === value ? 'solid' : 'outline'}
-                    color='neutral'
-                    onPress={() => setDensity(value)}
-                  >
-                    {value}
-                  </Button>
-                ))}
-              </View>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal.Overlay>
-      </Portal>
+      <Modal.Overlay>
+        <Modal.Content>
+          <Modal.Header>Workspace preferences</Modal.Header>
+          <Modal.Body>
+            <View style={{ gap: 12 }}>
+              <TextInput
+                accessibilityLabel='Workspace email'
+                defaultValue='team@vellira.dev'
+                style={{
+                  backgroundColor: theme.semantic.surface.default,
+                  borderWidth: 1,
+                  borderColor: theme.semantic.border.muted,
+                  borderRadius: theme.tokens.radius.md,
+                  color: theme.semantic.text.primary,
+                  padding: theme.tokens.spacing[3],
+                }}
+              />
+              {(['comfortable', 'compact', 'dense'] as const).map((value) => (
+                <Button
+                  key={value}
+                  appearance={density === value ? 'solid' : 'outline'}
+                  color='neutral'
+                  onPress={() => setDensity(value)}
+                >
+                  {value}
+                </Button>
+              ))}
+            </View>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Overlay>
     </Modal>
   );
 }
@@ -236,16 +229,14 @@ export const Uncontrolled: Story = {
       <Modal.Trigger asChild>
         <Button>Open Modal</Button>
       </Modal.Trigger>
-      <Portal>
-        <Modal.Overlay>
-          <Modal.Content>
-            <Modal.Header>Uncontrolled modal</Modal.Header>
-            <Modal.Body>
-              <Text>This modal starts open from defaultOpen.</Text>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal.Overlay>
-      </Portal>
+      <Modal.Overlay>
+        <Modal.Content>
+          <Modal.Header>Uncontrolled modal</Modal.Header>
+          <Modal.Body>
+            <Text>This modal starts open from defaultOpen.</Text>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Overlay>
     </Modal>
   ),
 };

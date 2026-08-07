@@ -1,40 +1,23 @@
 # @vellira-ui/react-native
 
-React Native component package for Vellira.
+React Native implementation of the Vellira design system.
 
-This package contains iOS-inspired native components built with React Native `StyleSheet`. Components use shared colors, typography, spacing, and radius from `@vellira-ui/tokens`, shared behavior from `@vellira-ui/core`, and renderer-neutral contracts from `@vellira-ui/types`.
-
-## Components
-
-- Button
-- Checkbox
-- Input
-- FormField
-- Radio
-- RadioGroup
-- Select
-- Dropdown
-- Tabs
-- Tooltip
-- Modal
-
-Each public native component has React Native Storybook coverage and Vitest unit coverage.
-
-For detailed props, shared types, examples, and compound component APIs, see
-[Native Component API](./API.md).
+It extends shared contracts from `@vellira-ui/types`, uses shared tokens from
+`@vellira-ui/tokens`, shares renderer-neutral behavior through
+`@vellira-ui/core`, and keeps native rendering, accessibility, layout, and
+interaction behavior inside the React Native layer.
 
 ## Installation
+
+Requires React and React Native.
 
 ```bash
 pnpm add @vellira-ui/react-native
 ```
 
-Peer dependencies:
-
-- `react`
-- `react-native`
-
 ## Usage
+
+Use the components directly in your React Native application:
 
 ```tsx
 import { Button, Checkbox, Input } from '@vellira-ui/react-native';
@@ -47,7 +30,12 @@ export function Example() {
 
   return (
     <View style={{ gap: 16 }}>
-      <Input label='Email' value={email} onValueChange={setEmail} />
+      <Input
+        label='Email'
+        value={email}
+        onValueChange={setEmail}
+        placeholder='name@example.com'
+      />
       <Checkbox
         label='Accept terms'
         description='Required to create an account.'
@@ -62,105 +50,56 @@ export function Example() {
 }
 ```
 
-### Button Notes
+## Components
 
-Use `accessibilityLabel` for icon-only native buttons:
+### Inputs
 
-```tsx
-import { Search } from '@vellira-ui/icons';
+- Button
+- Checkbox
+- Input
+- Radio
+- RadioGroup
+- Select
 
-<Button accessibilityLabel='Search' iconOnly iconStart={<Search />} />;
-```
+### Overlays
 
-Button icons are React elements from `@vellira-ui/icons`; the component injects
-the current icon color and size. `loading` disables interaction and can replace
-the visible label with `loadingText`.
+- Dropdown
+- Tooltip
+- Popover
+- Modal
 
-### Checkbox Notes
+### Forms
 
-Use `description` for settings-style helper text when the checkbox is not
-wrapped in `FormField`. For checkbox rows without a visible label, provide
-`accessibilityLabel`.
+- FormField
+- Tabs
 
-### Select Notes
+Every public component includes React Native Storybook stories and Vitest unit
+tests.
 
-Use `Select` for one form value from a compact list, `RadioGroup` for a few
-visible choices, and `Dropdown` for action menus. Native `Select` opens a
-sheet, modal, or popover and renders options with a FlatList-backed native
-content surface.
+For detailed props, shared types, examples, and compound component APIs, see
+[Native Component API](./API.md).
 
-```tsx
-import { Select } from '@vellira-ui/react-native';
-import { useState } from 'react';
+## Infrastructure
 
-export function RoleSelect() {
-  const [role, setRole] = useState('editor');
+The package also exports native infrastructure used by components and
+applications:
 
-  return (
-    <Select
-      label='Role'
-      value={role}
-      onValueChange={(nextRole) => setRole(nextRole ?? '')}
-      searchable
-      clearable
-    >
-      <Select.Item value='admin' label='Admin' />
-      <Select.Item value='editor' label='Editor' />
-      <Select.Item value='viewer' label='Viewer' />
-    </Select>
-  );
-}
-```
+- `Portal`
+- `PortalProvider`
+- `ThemeProvider`
+- `useTheme`
+- `nativeThemes`
 
-### Dropdown Notes
+## Documentation
 
-Use `Dropdown` for contextual actions, not saved form values. Compose native
-menus with `Dropdown.Trigger`, `Dropdown.Content`, `Dropdown.Item`, groups,
-labels, and separators. Use `open`, `defaultOpen`, and `onOpenChange` for menu
-state. Use root `color` for the semantic trigger and menu palette, and
-`Dropdown.Item danger` for destructive commands.
-
-```tsx
-import { Dropdown } from '@vellira-ui/react-native';
-
-<Dropdown color='primary' label='Actions'>
-  <Dropdown.Content>
-    <Dropdown.Label>File</Dropdown.Label>
-    <Dropdown.Item value='duplicate' onSelect={duplicate}>
-      Duplicate
-    </Dropdown.Item>
-    <Dropdown.Separator />
-    <Dropdown.Item value='delete' danger onSelect={deleteFile}>
-      Delete
-    </Dropdown.Item>
-  </Dropdown.Content>
-</Dropdown>;
-```
-
-### FormField Notes
-
-`FormField` is a presentational wrapper for custom native controls. Do not wrap
-components that already render their own field chrome, such as `Input`, `Select`
-or `RadioGroup`. The wrapped control should provide its own
-`accessibilityLabel`, role, disabled/editable state and interaction behavior.
-`FormField` only provides layout, text styling, required mark, disabled root
-state and polite error announcement.
-
-## Testing
-
-Run only native tests:
-
-```bash
-pnpm --filter @vellira-ui/react-native test
-```
-
-The native package uses Vitest with a lightweight local `react-native` mock. These tests validate component state, callbacks, accessibility props, and conditional rendering without requiring an iOS or Android simulator.
-
-Native tests and test utilities are excluded from the package build through `tsconfig.json`.
+- [Getting Started](https://docs.vellira.dev/start/getting-started)
+- [React Native](https://docs.vellira.dev/react-native/)
+- [Native Component API](./API.md)
 
 ## Storybook
 
-Native stories live next to components as `*.stories.tsx` and are consumed by `apps/native-storybook`.
+Native stories live next to components as `*.stories.tsx` and are consumed by
+`apps/native-storybook`.
 
 Run on-device Storybook from the workspace root:
 

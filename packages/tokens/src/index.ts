@@ -35,7 +35,9 @@ export {
   themeNames,
   tokenPaths,
 } from './generated/token-types.js';
-export { overlay } from './semantic/overlay.js';
+export { overlay } from './primitives/overlay.js';
+export type { FontWeight } from './tokens/typography.js';
+export { fontWeights } from './tokens/typography.js';
 
 export const theme = {
   semantic: darkTheme.semantic,
