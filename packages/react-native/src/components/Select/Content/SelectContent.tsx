@@ -33,7 +33,8 @@ export const SelectContentSurface = () => {
   const {
     isOpen,
     resolvedPresentation,
-    placement,
+    position,
+    onFloatingLayout,
     dismissOnBackdropPress,
     contentStyle,
     matchTriggerWidth,
@@ -198,7 +199,8 @@ export const SelectContentSurface = () => {
         visible={isOpen}
         onClose={closeContent}
         dismissOnBackdropPress={dismissOnBackdropPress}
-        placement={placement}
+        position={position}
+        onFloatingLayout={onFloatingLayout}
         matchTriggerWidth={matchTriggerWidth}
         triggerWidth={triggerWidth}
         contentStyle={contentStyle}

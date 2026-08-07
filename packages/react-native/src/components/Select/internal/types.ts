@@ -1,5 +1,5 @@
 import type { ReactNode, RefObject } from 'react';
-import type { TextInput } from 'react-native';
+import type { LayoutChangeEvent, TextInput } from 'react-native';
 
 import type { SelectOption, SelectPresentation, SelectProps } from '../types';
 
@@ -66,6 +66,11 @@ export type SelectContextValue = {
   resolvedHint?: string;
   resolvedPresentation: Exclude<SelectPresentation, 'auto'>;
   placement: NonNullable<SelectProps['placement']>;
+  position: {
+    top: number;
+    left: number;
+  };
+  onFloatingLayout: (event: LayoutChangeEvent) => void;
   dismissOnBackdropPress: boolean;
   matchTriggerWidth: boolean;
   triggerWidth?: number;

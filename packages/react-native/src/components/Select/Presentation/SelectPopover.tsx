@@ -10,7 +10,8 @@ export const SelectPopover = ({
   visible,
   onClose,
   dismissOnBackdropPress,
-  placement,
+  position,
+  onFloatingLayout,
   matchTriggerWidth,
   triggerWidth,
   contentStyle,
@@ -25,25 +26,22 @@ export const SelectPopover = ({
       animationType='fade'
       onRequestClose={onClose}
     >
-      <View
-        style={[
-          styles.modalRoot,
-          styles.popoverRoot,
-          placement === 'top'
-            ? styles.popoverRootTop
-            : styles.popoverRootBottom,
-        ]}
-        testID='select-content-root'
-      >
+      <View style={styles.modalRoot} testID='select-content-root'>
         <SelectBackdrop
           onClose={onClose}
           dismissOnBackdropPress={dismissOnBackdropPress}
         />
+
         <View
+          onLayout={onFloatingLayout}
           style={[
             styles.content,
             styles.popover,
-            placement === 'top' ? styles.popoverTop : styles.popoverBottom,
+            {
+              position: 'absolute',
+              top: position.top,
+              left: position.left,
+            },
             matchTriggerWidth && triggerWidth ? { width: triggerWidth } : null,
             contentStyle,
           ]}

@@ -4,6 +4,7 @@ import type { TextInput } from 'react-native';
 import { View } from 'react-native';
 
 import { useOverlayDismiss, useSelect } from '../../../hooks';
+import { useNativeFloatingPosition } from '../../../managers';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';
 import { SelectContext } from '../internal/SelectContext';
@@ -52,7 +53,8 @@ export function SelectRoot(props: SelectProps) {
     closeOnSelect,
     maxSelected,
     presentation = 'auto',
-    placement = 'bottom',
+    placement = 'bottom-start',
+    offset = 8,
     matchTriggerWidth = false,
     dismissOnBackdropPress = true,
     virtual,
@@ -73,6 +75,16 @@ export function SelectRoot(props: SelectProps) {
   const overlayId = useId();
   const hasOwnField = Boolean(label || description || error);
   const [triggerWidth, setTriggerWidth] = useState<number | undefined>();
+
+  const triggerRef = useRef<View | null>(null);
+
+  const {
+    position,
+    placement: resolvedPlacement,
+    updatePosition,
+    onFloatingLayout,
+  } = useNativeFloatingPosition(placement, offset);
+
   const searchInputRef = useRef<TextInput>(null);
   const selectedFocusValueRef = useRef<string | undefined>(undefined);
   const resolvedPresentation = useSelectPresentation(presentation);
@@ -308,6 +320,11 @@ export function SelectRoot(props: SelectProps) {
     }
   };
 
+  const openContent = () => {
+    updatePosition(triggerRef);
+    openDropdown();
+  };
+
   const contextValue = {
     label,
     description,
@@ -327,7 +344,9 @@ export function SelectRoot(props: SelectProps) {
     resolvedLabel,
     resolvedHint,
     resolvedPresentation,
-    placement,
+    placement: resolvedPlacement,
+    position,
+    onFloatingLayout,
     dismissOnBackdropPress,
     matchTriggerWidth,
     triggerWidth,
@@ -345,7 +364,7 @@ export function SelectRoot(props: SelectProps) {
     empty: empty ?? emptyFromChildren ?? 'Nothing found',
     loadingContent: loadingFromChildren ?? loadingText,
     closeContent: dismiss.requestClose,
-    openContent: openDropdown,
+    openContent,
     clearValue,
     selectOption,
     selectGroup,
@@ -369,6 +388,7 @@ export function SelectRoot(props: SelectProps) {
   const control = (
     <SelectContext.Provider value={contextValue}>
       <View
+        ref={triggerRef}
         testID={testID}
         onLayout={(event) => setTriggerWidth(event.nativeEvent.layout.width)}
       >

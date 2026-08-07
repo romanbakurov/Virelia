@@ -794,11 +794,12 @@ describe('Native Select', () => {
       />
     );
 
-    expect(
-      document.body.querySelector<HTMLElement>(
-        '[data-testid="select-content-root"]'
-      )?.style.justifyContent
-    ).toBe('flex-start');
+    const popover = container.querySelector<HTMLElement>(
+      '[data-testid="select-popover"]'
+    );
+
+    expect(popover).not.toBeNull();
+    expect(popover?.style.position).toBe('absolute');
 
     unmount();
   });
