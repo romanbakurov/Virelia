@@ -13,11 +13,14 @@ import {
   FlatList,
   Platform,
   Text,
-  useWindowDimensions,
   View,
 } from 'react-native';
 
-import { useDropdown, useOverlayDismiss } from '../../../hooks';
+import {
+  useDropdown,
+  useOverlayDismiss,
+  useOverlayPresentation,
+} from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers';
 import { useThemeStyles } from '../../../theme';
 import { DropdownContent } from '../Content/DropdownContent';
@@ -73,7 +76,6 @@ export function DropdownRoot({
   const [uncontrolledSearchValue, setUncontrolledSearchValue] =
     useState(defaultSearchValue);
   const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
-  const { width } = useWindowDimensions();
   const triggerRef = useRef<View | null>(null);
 
   const setTriggerRef = useCallback((node: unknown) => {
@@ -94,12 +96,7 @@ export function DropdownRoot({
   const contentCommand = parsed.contentProps?.command ?? false;
   const isSearchable =
     searchable || command || contentCommand || !!parsed.searchProps;
-  const resolvedPresentation =
-    presentation === 'auto'
-      ? width < 768
-        ? 'sheet'
-        : 'popover'
-      : presentation;
+  const resolvedPresentation = useOverlayPresentation(presentation);
 
   const contentStyleFromSlot = parsed.contentProps?.style;
 
