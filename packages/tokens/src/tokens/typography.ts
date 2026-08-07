@@ -1,3 +1,12 @@
+export const fontWeights = {
+  light: '200',
+  regular: '400',
+  medium: '500',
+  semibold: '600',
+} as const;
+
+export type FontWeight = (typeof fontWeights)[keyof typeof fontWeights];
+
 export const typography = {
   family: {
     base: "'Vellira Sans', Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -19,12 +28,7 @@ export const typography = {
     xxl: 32,
   },
 
-  weight: {
-    light: '200',
-    regular: '400',
-    medium: '500',
-    semibold: '600',
-  },
+  weight: fontWeights,
 
   lineHeight: {
     xs: 16,

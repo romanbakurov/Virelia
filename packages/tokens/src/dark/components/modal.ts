@@ -1,18 +1,17 @@
 import { createModalTokens } from '../../factories/createModalTokens.js';
-import { overlay } from '../../semantic/overlay.js';
 import { radius } from '../../tokens/radius.js';
 import { spacing } from '../../tokens/spacing.js';
-import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
+import { overlay } from '../semantic/overlay.js';
 import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 export const modal = createModalTokens({
   overlayBg: overlay.backdrop,
-  contentBg: surface.subtle,
+  contentBg: overlay.modal.bg,
   contentFg: text.primary,
-  contentBorder: border.muted,
+  contentBorder: overlay.modal.border,
   contentShadow: shadow.xl,
   titleFg: text.primary,
   descriptionFg: text.secondary,
