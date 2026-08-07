@@ -2,6 +2,15 @@
   "name": "@vellira-ui/core",
   "version": "2.52.0",
   "description": "Shared logic and hooks for Vellira Design System",
+  "keywords": [
+    "vellira",
+    "design-system",
+    "ui",
+    "typescript",
+    "react",
+    "react-native",
+    "accessibility"
+  ],
   "author": "Roman Bakurov",
   "license": "MIT",
   "repository": {

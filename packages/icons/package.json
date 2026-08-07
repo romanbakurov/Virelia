@@ -2,6 +2,16 @@
   "name": "@vellira-ui/icons",
   "version": "2.52.0",
   "description": "Cross-platform icon package for Vellira Design System",
+  "keywords": [
+    "vellira",
+    "icons",
+    "react",
+    "react-native",
+    "svg",
+    "lottie",
+    "design-system",
+    "typescript"
+  ],
   "author": "Roman Bakurov",
   "license": "MIT",
   "repository": {

@@ -2,6 +2,15 @@
   "name": "@vellira-ui/react-native",
   "version": "2.52.0",
   "description": "React Native components for Vellira Design System",
+  "keywords": [
+    "vellira",
+    "react-native",
+    "ui",
+    "components",
+    "design-system",
+    "typescript",
+    "mobile"
+  ],
   "author": "Roman Bakurov",
   "license": "MIT",
   "repository": {

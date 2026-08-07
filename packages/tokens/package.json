@@ -2,6 +2,16 @@
   "name": "@vellira-ui/tokens",
   "version": "2.52.0",
   "description": "Design tokens for Vellira Design System",
+  "keywords": [
+    "vellira",
+    "design-tokens",
+    "design-system",
+    "theming",
+    "css-variables",
+    "typescript",
+    "react",
+    "react-native"
+  ],
   "author": "Roman Bakurov",
   "license": "MIT",
   "repository": {
