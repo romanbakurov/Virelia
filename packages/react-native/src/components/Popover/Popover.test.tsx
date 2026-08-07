@@ -16,6 +16,10 @@ vi.mock('../../managers/FloatingManager', () => ({
       top: 120,
       left: 48,
     },
+    arrowPosition: {
+      left: 24,
+    },
+    placement: 'top',
     updatePosition: vi.fn(),
     onFloatingLayout: vi.fn(),
   }),
@@ -410,6 +414,25 @@ describe('Native Popover', () => {
     ).not.toBeNull();
 
     expect(container.textContent).toContain('Anchored content');
+
+    unmount();
+  });
+
+  it('renders Popover.Arrow', () => {
+    const { container, unmount } = render(
+      <Popover defaultOpen>
+        <Popover.Trigger asChild>
+          <Button>Open popover</Button>
+        </Popover.Trigger>
+
+        <Popover.Content>
+          <Popover.Arrow />
+          <Text>Popover content</Text>
+        </Popover.Content>
+      </Popover>
+    );
+
+    expect(container.textContent).toContain('Popover content');
 
     unmount();
   });
