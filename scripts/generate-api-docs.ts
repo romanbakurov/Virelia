@@ -120,6 +120,8 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
     size: 'Select size.',
   },
   'native.SelectProps.SelectProps': {
+    offset: 'Distance between the trigger and popover content in pixels.',
+    placement: 'Preferred popover placement relative to the trigger.',
     size: 'Select size.',
   },
   'web.DropdownProps.DropdownProps': {

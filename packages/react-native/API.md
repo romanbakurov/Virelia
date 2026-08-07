@@ -480,7 +480,7 @@ only the values that still fit are added.
 | `maxSelected`            | `number`                                                         | No       | Maximum selected values in multiple mode.                             |
 | `closeOnSelect`          | `boolean`                                                        | No       | Controls whether content closes after item selection.                 |
 | `presentation`           | `SelectPresentation`                                             | No       | Native content presentation.                                          |
-| `placement`              | `'top' \| 'bottom'`                                              | No       | Reserved for popover placement.                                       |
+| `placement`              | `FloatingPlacement`                                              | No       | Preferred popover placement relative to the trigger.                  |
 | `matchTriggerWidth`      | `boolean`                                                        | No       | Matches popover width to trigger width.                               |
 | `dismissOnBackdropPress` | `boolean`                                                        | No       | Enables backdrop dismissal.                                           |
 | `virtual`                | `boolean \| SelectVirtualConfig`                                 | No       | FlatList virtualization settings.                                     |
@@ -500,6 +500,7 @@ only the values that still fit are added.
 | `optionStyle`            | `StyleProp<ViewStyle>`                                           | No       | Extra option style.                                                   |
 | `searchStyle`            | `StyleProp<TextStyle>`                                           | No       | —                                                                     |
 | `testID`                 | `string`                                                         | No       | —                                                                     |
+| `offset`                 | `number`                                                         | No       | Distance between the trigger and popover content in pixels.           |
 
 <!-- api-docgen:end native.SelectProps.SelectProps -->
 

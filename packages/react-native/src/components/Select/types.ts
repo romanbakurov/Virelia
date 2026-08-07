@@ -1,4 +1,9 @@
-import type { SelectColor, SelectSize, SelectVariant } from '@vellira-ui/types';
+import type {
+  FloatingPlacement,
+  SelectColor,
+  SelectSize,
+  SelectVariant,
+} from '@vellira-ui/types';
 import type { ReactElement, ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
@@ -93,7 +98,8 @@ type SelectSharedProps = {
   closeOnSelect?: boolean;
   maxSelected?: number;
   presentation?: SelectPresentation;
-  placement?: 'top' | 'bottom';
+  placement?: FloatingPlacement;
+  offset?: number;
   matchTriggerWidth?: boolean;
   dismissOnBackdropPress?: boolean;
   virtual?: boolean | SelectVirtualConfig;

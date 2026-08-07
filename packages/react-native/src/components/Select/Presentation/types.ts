@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 
 export type SelectPresentationProps = {
   visible: boolean;
@@ -10,7 +10,11 @@ export type SelectPresentationProps = {
 };
 
 export type SelectPopoverProps = SelectPresentationProps & {
-  placement: 'top' | 'bottom';
+  position: {
+    top: number;
+    left: number;
+  };
+  onFloatingLayout: (event: LayoutChangeEvent) => void;
   matchTriggerWidth: boolean;
   triggerWidth?: number;
 };

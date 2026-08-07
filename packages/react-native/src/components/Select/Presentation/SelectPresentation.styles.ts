@@ -18,18 +18,6 @@ export const createPresentationStyles = (theme: NativeTheme) =>
       padding: theme.tokens.spacing[4],
     },
 
-    popoverRoot: {
-      padding: theme.tokens.spacing[4],
-    },
-
-    popoverRootTop: {
-      justifyContent: 'flex-start',
-    },
-
-    popoverRootBottom: {
-      justifyContent: 'flex-end',
-    },
-
     backdrop: {
       ...StyleSheet.absoluteFill,
       backgroundColor: theme.semantic.overlay.backdrop,
@@ -60,18 +48,7 @@ export const createPresentationStyles = (theme: NativeTheme) =>
       width: '100%',
       maxWidth: 420,
       maxHeight: '60%',
-      alignSelf: 'center',
       borderRadius: theme.tokens.radius.lg,
-    },
-
-    popoverTop: {
-      marginBottom: theme.tokens.spacing[8],
-      alignSelf: 'center',
-    },
-
-    popoverBottom: {
-      marginTop: theme.tokens.spacing[8],
-      alignSelf: 'center',
     },
 
     handleWrap: {
