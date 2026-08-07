@@ -3,8 +3,9 @@
 React implementation of the Vellira design system.
 
 It extends shared contracts from `@vellira-ui/types`, uses shared tokens from
-`@vellira-ui/tokens`, and keeps DOM, CSS, accessibility ids, and browser
-events inside the web layer.
+`@vellira-ui/tokens`, shares renderer-neutral behavior through
+`@vellira-ui/core`, and keeps DOM rendering, CSS, accessibility, and browser
+interaction behavior inside the web layer.
 
 ## Installation
 
@@ -82,10 +83,20 @@ Every public component includes Storybook stories and Vitest unit tests.
 For detailed props, shared types, examples, and compound component APIs, see
 [Web Component API](./API.md).
 
+## Infrastructure
+
+The package also exports web infrastructure used by components and
+applications:
+
+- `Portal`
+- `PortalProvider`
+- `ThemeProvider`
+- `useTheme`
+
 ## Documentation
 
-- [Getting Started](https://docs.vellira.dev/getting-started)
-- [Components](https://docs.vellira.dev/components)
+- [Getting Started](https://docs.vellira.dev/start/getting-started)
+- [React](https://docs.vellira.dev/react/)
 - [Web Component API](./API.md)
 
 ## Storybook
