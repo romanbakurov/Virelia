@@ -1,4 +1,4 @@
-import type { TextWrap } from '@vellira-ui/types';
+import type { FloatingPlacement, TextWrap } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
@@ -24,6 +24,8 @@ export interface DropdownProps {
   showArrow?: boolean;
 
   presentation?: DropdownPresentation;
+  placement?: FloatingPlacement;
+  offset?: number;
   closeOnSelect?: boolean;
   /** Semantic palette for trigger, content, focus, and pressed item states. */
   color?: DropdownColor;

@@ -3,6 +3,7 @@ import { act } from 'react';
 import type { ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as managers from '../../managers';
 import { Button } from '../../primitives/Button';
 import { Portal } from '../../primitives/Portal';
 import { render } from '../../test-utils/render';
@@ -32,6 +33,7 @@ function renderActionContent({
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
   document.body.innerHTML = '';
 });
 
@@ -833,6 +835,41 @@ describe('Native Dropdown', () => {
     expect(menu?.style.borderColor).toBe(
       toCssColor(nativeThemes.light.components.dropdown.success.content.border)
     );
+
+    unmount();
+  });
+
+  it('positions popover content using FloatingManager', () => {
+    const updatePosition = vi.fn();
+    const onFloatingLayout = vi.fn();
+
+    vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      position: {
+        top: 120,
+        left: 80,
+      },
+      arrowPosition: {},
+      placement: 'bottom-start',
+      updatePosition,
+      onFloatingLayout,
+    });
+
+    const { container, unmount } = render(
+      <Dropdown defaultOpen presentation='popover'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item value='edit'>Edit</Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    const menu = container.querySelector<HTMLElement>('[role="menu"]');
+
+    expect(menu?.style.position).toBe('absolute');
+    expect(menu?.style.top).toBe('120px');
+    expect(menu?.style.left).toBe('80px');
+
+    expect(updatePosition).toHaveBeenCalled();
 
     unmount();
   });
