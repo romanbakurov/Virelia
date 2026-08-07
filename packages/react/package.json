@@ -2,6 +2,15 @@
   "name": "@vellira-ui/react",
   "version": "2.52.0",
   "description": "Web components for Vellira Design System",
+  "keywords": [
+    "vellira",
+    "react",
+    "ui",
+    "components",
+    "design-system",
+    "typescript",
+    "accessibility"
+  ],
   "author": "Roman Bakurov",
   "license": "MIT",
   "repository": {
