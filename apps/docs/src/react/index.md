@@ -1,5 +1,5 @@
 ---
-title: React Web Components
+title: React Components
 description: Learn how to use Vellira in React applications with installation, theming, accessibility, browser behavior, and production-ready components.
 ---
 

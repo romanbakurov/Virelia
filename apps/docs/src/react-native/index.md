@@ -26,6 +26,7 @@ The package expects `react` and `react-native` as peer dependencies.
   <a class="docs-card" href="/react-native/form-field"><strong>FormField</strong><span>Presentational field layout for custom native controls.</span></a>
   <a class="docs-card" href="/react-native/dropdown"><strong>Dropdown</strong><span>Contextual native action menus.</span></a>
   <a class="docs-card" href="/react-native/tabs"><strong>Tabs</strong><span>Compound tab navigation for native screens.</span></a>
+  <a class="docs-card" href="/react-native/popover"><strong>Popover</strong><span>Anchored interactive content with native positioning and compound sections.</span></a>
   <a class="docs-card" href="/react-native/tooltip"><strong>Tooltip</strong><span>Floating helper text around native targets.</span></a>
   <a class="docs-card" href="/react-native/portal"><strong>Portal</strong><span>Shared primitive for explicit overlay composition.</span></a>
   <a class="docs-card" href="/react-native/modal"><strong>Modal</strong><span>Compound native dialogs with overlays and actions.</span></a>

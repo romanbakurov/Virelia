@@ -34,7 +34,7 @@ platform-specific.
   </a>
   <a class="docs-card" href="/start/component-overview">
     <strong>Component coverage</strong>
-    <span>Button, Input, Checkbox, RadioGroup, Select, Dropdown, Tabs, Tooltip, and Modal.</span>
+    <span>Button, Input, Checkbox, RadioGroup, Select, FormField, Dropdown, Tabs, Popover, Tooltip, and Modal.</span>
   </a>
   <a class="docs-card" href="/react/">
     <strong>Premium component docs</strong>
@@ -52,7 +52,7 @@ platform-specific.
 
 ## Quick Start
 
-Install the Web renderer and import styles once in your app entry.
+Install the React renderer and import styles once in your app entry.
 
 ```bash
 pnpm add @vellira-ui/react
@@ -83,13 +83,13 @@ actions use `accessibilityLabel`.
 
 <div class="docs-card-grid docs-card-grid-three">
   <a class="docs-package-card" href="/react/">
-    <strong>Web</strong>
-    <span>React</span>
+    <strong>React</strong>
+    <span>Web components</span>
     <code>@vellira-ui/react</code>
   </a>
   <a class="docs-package-card" href="/react-native/">
-    <strong>Native</strong>
-    <span>React Native</span>
+    <strong>React Native</strong>
+    <span>Native components</span>
     <code>@vellira-ui/react-native</code>
   </a>
   <a class="docs-package-card" href="/design-system/tokens">
@@ -136,8 +136,8 @@ Use the docs as the main path through the system.
 | Compare visual states          | [Component Overview](/start/component-overview)         |
 | Understand tokens              | [Theme Architecture](/design-system/theme-architecture) |
 | Prepare for production         | [Production](/start/production)                         |
-| Use React DOM                  | [Web](/react/)                                          |
-| Use React Native               | [Native](/react-native/)                                |
+| Use React DOM                  | [React](/react/)                                        |
+| Use React Native               | [React Native](/react-native/)                          |
 
 ## GitHub
 

@@ -1,6 +1,6 @@
 ---
 title: Static Icons
-description: Static SVG icons for React and React Native.
+description: Explore static Vellira icons for React and React Native with configurable sizing, color, consistent styling, and production-ready interface usage.
 ---
 
 # Static Icons
@@ -39,5 +39,5 @@ Browse Static Icons
 
 ## See Also
 
-- Animated Icons
-- Icon Usage
+- [Animated Icons](/icons/animated)
+- [Icon Usage](/icons/usage)

@@ -1,6 +1,6 @@
 ---
 title: Animated Icons
-description: Animated icons for interactive interfaces.
+description: Explore animated Vellira icons for React and React Native, designed for interactive feedback, state transitions, navigation, and motion-aware interfaces.
 ---
 
 # Animated Icons
@@ -35,5 +35,5 @@ Browse Animated Icons
 
 ## See Also
 
-- Static Icons
-- Icon Usage
+- [Static Icons](/icons/static)
+- [Icon Usage](/icons/usage)
