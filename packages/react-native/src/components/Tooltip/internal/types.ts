@@ -13,6 +13,10 @@ export type TooltipContextValue = {
     top: number;
     left: number;
   };
+  arrowPosition: {
+    top?: number;
+    left?: number;
+  };
   triggerRef: RefObject<View | null>;
   setOpen: (open: boolean) => void;
   show: () => void;

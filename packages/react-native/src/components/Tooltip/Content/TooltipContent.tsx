@@ -91,11 +91,11 @@ function InternalArrow() {
   const crossAxisStyle =
     side === 'left' || side === 'right'
       ? {
-          top: '50%' as const,
+          top: tooltip.arrowPosition.top ?? 0,
           marginTop: -size / 2,
         }
       : {
-          left: '50%' as const,
+          left: tooltip.arrowPosition.left ?? 0,
           marginLeft: -size / 2,
         };
 
