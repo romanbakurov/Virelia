@@ -31,8 +31,13 @@ export const TooltipRoot = ({
     defaultValue: defaultOpen,
     onChange: onOpenChange,
   });
-  const { position, updatePosition, onFloatingLayout } =
-    useNativeFloatingPosition(placement, offset);
+  const {
+    position,
+    arrowPosition,
+    placement: resolvedPlacement,
+    updatePosition,
+    onFloatingLayout,
+  } = useNativeFloatingPosition(placement, offset);
 
   const clearCloseTimer = useCallback(() => {
     if (closeTimerRef.current) {
@@ -100,8 +105,9 @@ export const TooltipRoot = ({
       contentId,
       open,
       disabled,
-      placement,
+      placement: resolvedPlacement,
       position,
+      arrowPosition,
       triggerRef,
       setOpen,
       show,
@@ -111,13 +117,14 @@ export const TooltipRoot = ({
       onFloatingLayout,
     }),
     [
+      arrowPosition,
       contentId,
       disabled,
       dismiss.requestClose,
       dismiss.requestOutsideClose,
       hide,
       open,
-      placement,
+      resolvedPlacement,
       position,
       setOpen,
       show,

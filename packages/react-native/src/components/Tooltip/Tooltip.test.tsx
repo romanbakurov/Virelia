@@ -2,12 +2,14 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as managers from '../../managers';
 import { render } from '../../test-utils/render';
 
 import { Tooltip } from './Tooltip';
 
 afterEach(() => {
   document.body.innerHTML = '';
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
@@ -268,6 +270,73 @@ describe('Native Tooltip', () => {
     expect(tooltip?.textContent).toContain('Force mounted tooltip');
     expect(tooltip?.style.display).toBe('none');
     expect(document.querySelector('[data-testid="native-modal"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('uses the resolved placement from FloatingManager', () => {
+    vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      position: {
+        top: 120,
+        left: 80,
+      },
+      arrowPosition: {
+        left: 32,
+      },
+      placement: 'bottom',
+      updatePosition: vi.fn(),
+      onFloatingLayout: vi.fn(),
+    });
+
+    const { unmount } = render(
+      <Tooltip defaultOpen placement='top'>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content withArrow>Flipped tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector<HTMLDivElement>('[id$="-content"]');
+    const arrow = tooltip?.querySelector<HTMLDivElement>('div');
+
+    expect(tooltip?.textContent).toContain('Flipped tooltip');
+
+    // Requested placement is top, but FloatingManager resolved it to bottom.
+    // The arrow therefore belongs on the top edge of the bubble.
+    expect(arrow?.style.top).not.toBe('');
+    expect(arrow?.style.bottom).toBe('');
+
+    unmount();
+  });
+
+  it('uses the arrow position from FloatingManager', () => {
+    vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      position: {
+        top: 120,
+        left: 12,
+      },
+      arrowPosition: {
+        left: 24,
+      },
+      placement: 'top',
+      updatePosition: vi.fn(),
+      onFloatingLayout: vi.fn(),
+    });
+
+    const { unmount } = render(
+      <Tooltip defaultOpen placement='top'>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content withArrow>Shifted tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const tooltip = document.querySelector<HTMLDivElement>('[id$="-content"]');
+    const arrow = tooltip?.querySelector<HTMLDivElement>('div');
+
+    expect(arrow?.style.left).toBe('24px');
 
     unmount();
   });
