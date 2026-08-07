@@ -3,14 +3,17 @@ import { useId, useMemo, useRef, useState } from 'react';
 import type { TextInput } from 'react-native';
 import { View } from 'react-native';
 
-import { useOverlayDismiss, useSelect } from '../../../hooks';
+import {
+  useOverlayDismiss,
+  useOverlayPresentation,
+  useSelect,
+} from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';
 import { SelectContext } from '../internal/SelectContext';
 import { useSelectAccessibility } from '../internal/useSelectAccessibility';
 import { useSelectCollection } from '../internal/useSelectCollection';
-import { useSelectPresentation } from '../internal/useSelectPresentation';
 import { useSelectSearch } from '../internal/useSelectSearch';
 import { SelectTrigger } from '../Trigger';
 import type {
@@ -87,7 +90,7 @@ export function SelectRoot(props: SelectProps) {
 
   const searchInputRef = useRef<TextInput>(null);
   const selectedFocusValueRef = useRef<string | undefined>(undefined);
-  const resolvedPresentation = useSelectPresentation(presentation);
+  const resolvedPresentation = useOverlayPresentation(presentation);
 
   const {
     options,
