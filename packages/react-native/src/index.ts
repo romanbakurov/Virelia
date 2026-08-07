@@ -13,6 +13,17 @@ export type {
 } from './components/Dropdown/types';
 export type { ModalProps } from './components/Modal';
 export { Modal } from './components/Modal';
+export type {
+  PopoverAnchorProps,
+  PopoverArrowProps,
+  PopoverCloseProps,
+  PopoverContentProps,
+  PopoverDescriptionProps,
+  PopoverProps,
+  PopoverTitleProps,
+  PopoverTriggerProps,
+} from './components/Popover';
+export { Popover } from './components/Popover';
 export type { RadioGroupProps } from './components/RadioGroup';
 export { RadioGroup } from './components/RadioGroup';
 export type { SelectOption, SelectProps } from './components/Select';
