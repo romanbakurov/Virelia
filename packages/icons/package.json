@@ -9,6 +9,10 @@
     "url": "git+https://github.com/vellira-dev/vellira.git",
     "directory": "packages/icons"
   },
+  "homepage": "https://vellira.dev",
+  "bugs": {
+    "url": "https://github.com/vellira-dev/vellira/issues"
+  },
   "private": false,
   "type": "module",
   "sideEffects": false,
