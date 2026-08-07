@@ -1,4 +1,4 @@
-import { useNativeOverlayStack } from '../../../managers';
+import { useNativeOverlayRegistration } from '../../../managers';
 
 export type OverlayStackOptions = {
   active: boolean;
@@ -6,4 +6,4 @@ export type OverlayStackOptions = {
 };
 
 export const useOverlayStack = ({ active, id }: OverlayStackOptions) =>
-  useNativeOverlayStack({ id, visible: active });
+  useNativeOverlayRegistration({ id, visible: active });
