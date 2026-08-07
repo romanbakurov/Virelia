@@ -15,10 +15,8 @@ Use it for overlays such as modals, popovers, dropdowns, and tooltips when the f
 import { Portal } from '@vellira-ui/react';
 
 <Portal>
-  <div role='dialog'>
-    Portal content
-  </div>
-</Portal>
+  <div role='dialog'>Portal content</div>
+</Portal>;
 ```
 
 Portal preserves the same React tree even though the DOM node is rendered elsewhere.
@@ -26,11 +24,7 @@ Portal preserves the same React tree even though the DOM node is rendered elsewh
 ## With Modal
 
 ```tsx
-import {
-  Button,
-  Modal,
-  Portal,
-} from '@vellira-ui/react';
+import { Button, Modal, Portal } from '@vellira-ui/react';
 
 <Modal open={open} onOpenChange={setOpen}>
   <Modal.Trigger asChild>
@@ -43,9 +37,7 @@ import {
     <Modal.Content>
       <Modal.Header>
         <Modal.Title>Delete project?</Modal.Title>
-        <Modal.Description>
-          This action cannot be undone.
-        </Modal.Description>
+        <Modal.Description>This action cannot be undone.</Modal.Description>
       </Modal.Header>
 
       <Modal.Footer>
@@ -61,7 +53,7 @@ import {
       </Modal.Footer>
     </Modal.Content>
   </Portal>
-</Modal>
+</Modal>;
 ```
 
 Use the overlay component to provide dialog semantics, focus management, dismissal behavior, and accessible labels. Portal only controls where the content is mounted.
@@ -98,10 +90,7 @@ Portal returns `null` until a valid target is available, so container refs shoul
 PortalProvider supplies a default container to every nested Portal.
 
 ```tsx
-import {
-  Portal,
-  PortalProvider,
-} from '@vellira-ui/react';
+import { Portal, PortalProvider } from '@vellira-ui/react';
 import { useRef } from 'react';
 
 export function EmbeddedApp() {
@@ -160,22 +149,14 @@ Avoid accessing `document` while rendering server components. Resolve custom con
 import { Portal } from '@vellira-ui/react';
 import { useEffect, useState } from 'react';
 
-export function ClientPortal({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function ClientPortal({ children }: { children: React.ReactNode }) {
   const [container, setContainer] = useState<Element | null>(null);
 
   useEffect(() => {
     setContainer(document.querySelector('#overlay-root'));
   }, []);
 
-  return (
-    <Portal container={container}>
-      {children}
-    </Portal>
-  );
+  return <Portal container={container}>{children}</Portal>;
 }
 ```
 
@@ -213,17 +194,17 @@ DOM position may differ from the visual trigger position, so verify screen-reade
 
 ### Portal
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | Yes | Content rendered through the portal. |
-| `container` | `Element \| DocumentFragment \| null` | No | Explicit portal target. |
+| Prop        | Type                                  | Required | Description                          |
+| ----------- | ------------------------------------- | -------- | ------------------------------------ |
+| `children`  | `ReactNode`                           | Yes      | Content rendered through the portal. |
+| `container` | `Element \| DocumentFragment \| null` | No       | Explicit portal target.              |
 
 ### PortalProvider
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | Yes | Application content that can use the provider target. |
-| `container` | `Element \| DocumentFragment \| null` | No | Default target for nested Portal instances. |
+| Prop        | Type                                  | Required | Description                                           |
+| ----------- | ------------------------------------- | -------- | ----------------------------------------------------- |
+| `children`  | `ReactNode`                           | Yes      | Application content that can use the provider target. |
+| `container` | `Element \| DocumentFragment \| null` | No       | Default target for nested Portal instances.           |
 
 ## See Also
 

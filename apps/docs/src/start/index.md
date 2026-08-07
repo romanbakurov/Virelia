@@ -49,14 +49,14 @@ Whether you're building for React or React Native, this guide helps you quickly 
 
 ## Recommended Learning Path
 
-| Goal | Page |
-|------|------|
-| Install Vellira | [Getting Started](/start/getting-started) |
-| Explore every component | [Component Overview](/start/component-overview) |
-| Build React applications | [React](/react/) |
-| Build React Native applications | [React Native](/react-native/) |
-| Customize themes | [Theme Architecture](/design-system/theme-architecture) |
-| Learn production deployment | [Production](/start/production) |
+| Goal                            | Page                                                    |
+| ------------------------------- | ------------------------------------------------------- |
+| Install Vellira                 | [Getting Started](/start/getting-started)               |
+| Explore every component         | [Component Overview](/start/component-overview)         |
+| Build React applications        | [React](/react/)                                        |
+| Build React Native applications | [React Native](/react-native/)                          |
+| Customize themes                | [Theme Architecture](/design-system/theme-architecture) |
+| Learn production deployment     | [Production](/start/production)                         |
 
 ---
 

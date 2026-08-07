@@ -14,14 +14,10 @@ Use it when there are only a few options and keeping all choices visible helps c
 ```tsx
 import { Radio, RadioGroup } from '@vellira-ui/react-native';
 
-<RadioGroup
-  label='Plan'
-  defaultValue='basic'
-  orientation='vertical'
->
+<RadioGroup label='Plan' defaultValue='basic' orientation='vertical'>
   <Radio value='basic' label='Basic' />
   <Radio value='pro' label='Pro' />
-</RadioGroup>
+</RadioGroup>;
 ```
 
 ## Controlled Usage
@@ -70,11 +66,7 @@ Group `color` and `size` provide defaults for child radios. An individual Radio 
 ## Custom Indicator
 
 ```tsx
-<Radio
-  value='recommended'
-  label='Recommended'
-  icon={<CustomSelectedIcon />}
-/>
+<Radio value='recommended' label='Recommended' icon={<CustomSelectedIcon />} />
 ```
 
 Use a custom icon only when the default selected dot does not fit the product language.

@@ -17,7 +17,7 @@ import { Checkbox } from '@vellira-ui/react-native';
   onCheckedChange={setAccepted}
   label='Accept terms'
   description='Required to continue.'
-/>
+/>;
 ```
 
 ## Controlled And Uncontrolled

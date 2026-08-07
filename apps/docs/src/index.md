@@ -129,15 +129,15 @@ actions use `accessibilityLabel`.
 
 Use the docs as the main path through the system.
 
-| Goal                           | Page                                      |
-| ------------------------------ | ----------------------------------------- |
-| Install and render a component | [Quick Start](/start/getting-started)           |
-| Browse component               | [Components](/react/)                |
-| Compare visual states          | [Component Overview](/start/component-overview) |
+| Goal                           | Page                                                    |
+| ------------------------------ | ------------------------------------------------------- |
+| Install and render a component | [Quick Start](/start/getting-started)                   |
+| Browse component               | [Components](/react/)                                   |
+| Compare visual states          | [Component Overview](/start/component-overview)         |
 | Understand tokens              | [Theme Architecture](/design-system/theme-architecture) |
-| Prepare for production         | [Production](/start/production)                 |
-| Use React DOM                  | [Web](/react/)                               |
-| Use React Native               | [Native](/react-native/)                         |
+| Prepare for production         | [Production](/start/production)                         |
+| Use React DOM                  | [Web](/react/)                                          |
+| Use React Native               | [Native](/react-native/)                                |
 
 ## GitHub
 

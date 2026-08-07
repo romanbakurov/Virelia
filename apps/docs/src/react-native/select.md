@@ -26,7 +26,7 @@ import { Select } from '@vellira-ui/react-native';
 >
   <Select.Item value='fr' label='France' />
   <Select.Item value='us' label='United States' />
-</Select>
+</Select>;
 ```
 
 ## Presentation
@@ -48,18 +48,8 @@ import { Select } from '@vellira-ui/react-native';
   <Select.Content>
     <Select.Search placeholder='Search country...' />
     <Select.Group label='Europe'>
-      <Select.Item
-        value='fr'
-        label='France'
-        description='Paris'
-        badge='EU'
-      />
-      <Select.Item
-        value='de'
-        label='Germany'
-        description='Berlin'
-        badge='EU'
-      />
+      <Select.Item value='fr' label='France' description='Paris' badge='EU' />
+      <Select.Item value='de' label='Germany' description='Berlin' badge='EU' />
     </Select.Group>
     <Select.Separator />
     <Select.Empty>No countries found</Select.Empty>

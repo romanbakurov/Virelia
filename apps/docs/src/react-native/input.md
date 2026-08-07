@@ -18,7 +18,7 @@ import { Input } from '@vellira-ui/react-native';
   value={email}
   onValueChange={setEmail}
   placeholder='name@example.com'
-/>
+/>;
 ```
 
 Input accepts native `TextInputProps` except `value`, `onChange`, `onChangeText`, and `editable`, which are managed by the Vellira API.
@@ -47,9 +47,7 @@ Input accepts native `TextInputProps` except `value`, `onChange`, `onChangeText`
 Validation remains in the app.
 
 ```tsx
-const emailError = email.includes('@')
-  ? undefined
-  : 'Enter a valid email.';
+const emailError = email.includes('@') ? undefined : 'Enter a valid email.';
 ```
 
 ## Clearable Input
@@ -79,7 +77,7 @@ import { Search } from '@vellira-ui/icons';
   placeholder='Search projects'
   startIcon={<Search />}
   clearable
-/>
+/>;
 ```
 
 Use `startIconTone`, `endIconTone`, and `clearIconTone` for semantic adornment colors.
@@ -141,10 +139,7 @@ Use `startIconTone`, `endIconTone`, and `clearIconTone` for semantic adornment c
 ## Styling
 
 ```tsx
-<Input
-  containerStyle={{ marginBottom: 16 }}
-  inputStyle={{ fontSize: 16 }}
-/>
+<Input containerStyle={{ marginBottom: 16 }} inputStyle={{ fontSize: 16 }} />
 ```
 
 ## Accessibility

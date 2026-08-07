@@ -14,24 +14,21 @@ import { ThemeProvider } from '@vellira-ui/react-native';
 
 <ThemeProvider defaultTheme='dark'>
   <App />
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Supported Themes
 
-| Theme | Purpose |
-| --- | --- |
-| `light` | Default light interface |
-| `dark` | Dark interface |
+| Theme          | Purpose                      |
+| -------------- | ---------------------------- |
+| `light`        | Default light interface      |
+| `dark`         | Dark interface               |
 | `highContrast` | Higher-contrast native theme |
 
 ## Controlled Theme
 
 ```tsx
-<ThemeProvider
-  theme={themeName}
-  onThemeChange={setThemeName}
->
+<ThemeProvider theme={themeName} onThemeChange={setThemeName}>
   <App />
 </ThemeProvider>
 ```
@@ -60,19 +57,16 @@ function ThemeReader() {
 
 `useTheme` returns:
 
-| Property | Purpose |
-| --- | --- |
-| `themeName` | Current theme name |
-| `theme` | Current native token object |
-| `setTheme` | Updates the active theme |
+| Property    | Purpose                     |
+| ----------- | --------------------------- |
+| `themeName` | Current theme name          |
+| `theme`     | Current native token object |
+| `setTheme`  | Updates the active theme    |
 
 ## Theme Switcher
 
 ```tsx
-import {
-  Button,
-  useTheme,
-} from '@vellira-ui/react-native';
+import { Button, useTheme } from '@vellira-ui/react-native';
 import { View } from 'react-native';
 
 export function ThemeSwitcher() {
@@ -121,9 +115,7 @@ function Card() {
         padding: theme.spacing.md,
       }}
     >
-      <Text style={{ color: theme.colors.text }}>
-        Themed content
-      </Text>
+      <Text style={{ color: theme.colors.text }}>Themed content</Text>
     </View>
   );
 }

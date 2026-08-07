@@ -21,12 +21,8 @@ import { TextInput } from 'react-native';
   error={error}
   required
 >
-  <TextInput
-    accessibilityLabel='Email'
-    value={email}
-    onChangeText={setEmail}
-  />
-</FormField>
+  <TextInput accessibilityLabel='Email' value={email} onChangeText={setEmail} />
+</FormField>;
 ```
 
 The wrapped control remains responsible for its accessibility label, role, disabled or editable state, and interactions.
@@ -47,11 +43,7 @@ The wrapped control remains responsible for its accessibility label, role, disab
 For compact settings rows:
 
 ```tsx
-<FormField
-  label='Notifications'
-  labelPosition='start'
-  orientation='horizontal'
->
+<FormField label='Notifications' labelPosition='start' orientation='horizontal'>
   <CustomSwitch />
 </FormField>
 ```

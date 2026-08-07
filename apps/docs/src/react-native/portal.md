@@ -16,7 +16,7 @@ import { Modal, Portal } from '@vellira-ui/react-native';
 
 <Portal>
   <Modal.Content>Content</Modal.Content>
-</Portal>
+</Portal>;
 ```
 
 ## With Modal
@@ -39,16 +39,13 @@ import { Modal, Portal } from '@vellira-ui/react-native';
 PortalProvider supplies a default container or host value to nested Portal instances.
 
 ```tsx
-import {
-  PortalProvider,
-  ThemeProvider,
-} from '@vellira-ui/react-native';
+import { PortalProvider, ThemeProvider } from '@vellira-ui/react-native';
 
 <ThemeProvider>
   <PortalProvider>
     <App />
   </PortalProvider>
-</ThemeProvider>
+</ThemeProvider>;
 ```
 
 ## Container

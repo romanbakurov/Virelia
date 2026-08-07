@@ -115,11 +115,11 @@ export function SignInScreen() {
 
 ## 4. Choose the Next Page
 
-| Goal                      | Next page                                 |
-| ------------------------- | ----------------------------------------- |
-| See component patterns    | [Component Examples](/start/component-overview) |
-| Use the Web package       | [Web](/react/)                               |
-| Use the Native package    | [Native](/react-native/)                         |
+| Goal                      | Next page                                               |
+| ------------------------- | ------------------------------------------------------- |
+| See component patterns    | [Component Examples](/start/component-overview)         |
+| Use the Web package       | [Web](/react/)                                          |
+| Use the Native package    | [Native](/react-native/)                                |
 | Understand theming        | [Theme Architecture](/design-system/theme-architecture) |
 | Work with tokens directly | [Tokens](/design-system/tokens)                         |
 

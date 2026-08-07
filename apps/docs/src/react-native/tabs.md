@@ -18,13 +18,9 @@ import { Tabs } from '@vellira-ui/react-native';
     <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
   </Tabs.List>
 
-  <Tabs.Content value='overview'>
-    Overview content
-  </Tabs.Content>
-  <Tabs.Content value='settings'>
-    Settings content
-  </Tabs.Content>
-</Tabs>
+  <Tabs.Content value='overview'>Overview content</Tabs.Content>
+  <Tabs.Content value='settings'>Settings content</Tabs.Content>
+</Tabs>;
 ```
 
 Trigger and content values must match. Selection does not depend on render order.
@@ -78,7 +74,9 @@ For custom ordering:
 
 ```tsx
 <Tabs.Trigger value='inbox'>
-  <Tabs.Icon><Inbox /></Tabs.Icon>
+  <Tabs.Icon>
+    <Inbox />
+  </Tabs.Icon>
   Inbox
   <Tabs.Badge>12</Tabs.Badge>
 </Tabs.Trigger>
@@ -91,17 +89,13 @@ Explicit compound slots take precedence over the `icon` prop.
 By default, only the active panel is mounted.
 
 ```tsx
-<Tabs keepMounted>
-  ...
-</Tabs>
+<Tabs keepMounted>...</Tabs>
 ```
 
 Use `keepMounted` when inactive panels must preserve local state.
 
 ```tsx
-<Tabs lazyMount>
-  ...
-</Tabs>
+<Tabs lazyMount>...</Tabs>
 ```
 
 Use `lazyMount` to defer a panel until it is activated for the first time.

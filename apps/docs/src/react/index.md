@@ -66,9 +66,7 @@ export function AccountPanel() {
         </Button>
       </Tabs.Content>
 
-      <Tabs.Content value='security'>
-        Security settings
-      </Tabs.Content>
+      <Tabs.Content value='security'>Security settings</Tabs.Content>
     </Tabs>
   );
 }
@@ -147,22 +145,22 @@ export function AccountPanel() {
 
 Every public component exports TypeScript props from the package root. The generated reference lives in [`packages/react/API.md`](https://github.com/vellira-dev/vellira/blob/main/packages/react/API.md).
 
-| Component | Core API | State model |
-| --- | --- | --- |
-| `Button` | `appearance`, `color`, `shape`, icons, loading, links, DOM props | disabled or loading |
-| `Checkbox` | `checked`, `defaultChecked`, `onCheckedChange`, label, description, error, indeterminate | controlled or uncontrolled |
-| `Input` | label, value, type, size, variant, validation, masks, formatting | controlled or uncontrolled |
-| `FormField` | label, description, messages, error, required, disabled, children | field composition |
-| `Radio` | value, label, checked state, size, color, error, custom icon | controlled or uncontrolled |
-| `RadioGroup` | name, value, orientation, size, color, children | controlled or uncontrolled |
-| `Select` | value, options, compound items, search, multiple selection, open state | controlled or uncontrolled |
-| `Dropdown` | compound menu sections, open state, placement, color, command behavior | controlled or uncontrolled |
-| `Tabs` | stable values, orientation, variants, mounting policy | controlled or uncontrolled |
-| `Popover` | open state, positioning, alignment, offsets, compound sections | controlled or uncontrolled |
-| `Tooltip` | open state, placement, delay, trigger and content | controlled or uncontrolled |
-| `Portal` | children, direct container, `PortalProvider` | render target |
-| `Modal` | open state, outside and Escape dismissal, compound dialog sections | controlled or uncontrolled |
-| `ThemeProvider` | active theme, default theme, theme updates | controlled or uncontrolled |
+| Component       | Core API                                                                                 | State model                |
+| --------------- | ---------------------------------------------------------------------------------------- | -------------------------- |
+| `Button`        | `appearance`, `color`, `shape`, icons, loading, links, DOM props                         | disabled or loading        |
+| `Checkbox`      | `checked`, `defaultChecked`, `onCheckedChange`, label, description, error, indeterminate | controlled or uncontrolled |
+| `Input`         | label, value, type, size, variant, validation, masks, formatting                         | controlled or uncontrolled |
+| `FormField`     | label, description, messages, error, required, disabled, children                        | field composition          |
+| `Radio`         | value, label, checked state, size, color, error, custom icon                             | controlled or uncontrolled |
+| `RadioGroup`    | name, value, orientation, size, color, children                                          | controlled or uncontrolled |
+| `Select`        | value, options, compound items, search, multiple selection, open state                   | controlled or uncontrolled |
+| `Dropdown`      | compound menu sections, open state, placement, color, command behavior                   | controlled or uncontrolled |
+| `Tabs`          | stable values, orientation, variants, mounting policy                                    | controlled or uncontrolled |
+| `Popover`       | open state, positioning, alignment, offsets, compound sections                           | controlled or uncontrolled |
+| `Tooltip`       | open state, placement, delay, trigger and content                                        | controlled or uncontrolled |
+| `Portal`        | children, direct container, `PortalProvider`                                             | render target              |
+| `Modal`         | open state, outside and Escape dismissal, compound dialog sections                       | controlled or uncontrolled |
+| `ThemeProvider` | active theme, default theme, theme updates                                               | controlled or uncontrolled |
 
 ## API Conventions
 
@@ -186,11 +184,7 @@ export function ControlledSettings() {
         label='Enable notifications'
       />
 
-      <Select
-        label='Role'
-        value={role}
-        onValueChange={setRole}
-      >
+      <Select label='Role' value={role} onValueChange={setRole}>
         <Select.Item value='admin' label='Admin' />
         <Select.Item value='editor' label='Editor' />
         <Select.Item value='viewer' label='Viewer' />
@@ -203,26 +197,14 @@ export function ControlledSettings() {
 Use default props when the component can own its initial state.
 
 ```tsx
-import {
-  Checkbox,
-  Radio,
-  RadioGroup,
-  Tabs,
-} from '@vellira-ui/react';
+import { Checkbox, Radio, RadioGroup, Tabs } from '@vellira-ui/react';
 
 export function UncontrolledPreferences() {
   return (
     <>
-      <Checkbox
-        defaultChecked
-        label='Remember this device'
-      />
+      <Checkbox defaultChecked label='Remember this device' />
 
-      <RadioGroup
-        name='theme'
-        label='Theme'
-        defaultValue='system'
-      >
+      <RadioGroup name='theme' label='Theme' defaultValue='system'>
         <Radio value='system' label='System' />
         <Radio value='light' label='Light' />
         <Radio value='dark' label='Dark' />
@@ -234,13 +216,9 @@ export function UncontrolledPreferences() {
           <Tabs.Trigger value='security'>Security</Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value='profile'>
-          Profile settings
-        </Tabs.Content>
+        <Tabs.Content value='profile'>Profile settings</Tabs.Content>
 
-        <Tabs.Content value='security'>
-          Security settings
-        </Tabs.Content>
+        <Tabs.Content value='security'>Security settings</Tabs.Content>
       </Tabs>
     </>
   );
@@ -252,11 +230,7 @@ export function UncontrolledPreferences() {
 Web components use browser-native props and events.
 
 ```tsx
-<Button
-  className='save-button'
-  aria-label='Save project'
-  onClick={saveProject}
->
+<Button className='save-button' aria-label='Save project' onClick={saveProject}>
   Save
 </Button>
 ```
@@ -292,9 +266,7 @@ Compound APIs keep semantic structure explicit while allowing custom layout and 
 Validation rules remain in the application.
 
 ```tsx
-const emailError = email.includes('@')
-  ? undefined
-  : 'Enter a valid email.';
+const emailError = email.includes('@') ? undefined : 'Enter a valid email.';
 
 <Input
   label='Work email'
@@ -302,7 +274,7 @@ const emailError = email.includes('@')
   value={email}
   onValueChange={setEmail}
   error={emailError}
-/>
+/>;
 ```
 
 Components render invalid state and connect supporting text, but they do not decide whether application data is valid.

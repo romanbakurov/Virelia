@@ -115,10 +115,10 @@ Open Storybook
 
 ## Next Steps
 
-| Goal | Page |
-|------|------|
-| Install Vellira | [Getting Started](/start/getting-started) |
-| Learn React | [React](/react/) |
-| Learn React Native | [React Native](/react-native/) |
-| Explore Icons | [Icons](/icons/) |
-| Understand Tokens | [Design Tokens](/design-system/tokens) |
+| Goal               | Page                                      |
+| ------------------ | ----------------------------------------- |
+| Install Vellira    | [Getting Started](/start/getting-started) |
+| Learn React        | [React](/react/)                          |
+| Learn React Native | [React Native](/react-native/)            |
+| Explore Icons      | [Icons](/icons/)                          |
+| Understand Tokens  | [Design Tokens](/design-system/tokens)    |

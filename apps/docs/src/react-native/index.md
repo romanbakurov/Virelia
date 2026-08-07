@@ -54,9 +54,7 @@ export function Example() {
         onCheckedChange={setAccepted}
       />
 
-      <Button onPress={() => submit({ email, accepted })}>
-        Continue
-      </Button>
+      <Button onPress={() => submit({ email, accepted })}>Continue</Button>
     </View>
   );
 }

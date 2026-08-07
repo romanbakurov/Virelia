@@ -9,21 +9,21 @@ Button is the native action primitive for saving, submitting, confirming, openin
 
 ## When To Use
 
-| Pattern | Recommended API |
-| --- | --- |
-| Primary action | `appearance="solid" color="primary"` |
-| Secondary action | `appearance="outline" color="neutral"` |
-| Toolbar action | `appearance="ghost"` with an icon |
-| Success state | `appearance="soft" color="success"` |
-| Destructive action | `color="danger"` with confirmation |
-| Icon-only action | `iconOnly` and `accessibilityLabel` |
+| Pattern            | Recommended API                        |
+| ------------------ | -------------------------------------- |
+| Primary action     | `appearance="solid" color="primary"`   |
+| Secondary action   | `appearance="outline" color="neutral"` |
+| Toolbar action     | `appearance="ghost"` with an icon      |
+| Success state      | `appearance="soft" color="success"`    |
+| Destructive action | `color="danger"` with confirmation     |
+| Icon-only action   | `iconOnly` and `accessibilityLabel`    |
 
 ## Basic Usage
 
 ```tsx
 import { Button } from '@vellira-ui/react-native';
 
-<Button onPress={handleSave}>Save</Button>
+<Button onPress={handleSave}>Save</Button>;
 ```
 
 ## Appearance And Color
@@ -41,11 +41,7 @@ Use `appearance` for visual hierarchy and `color` for semantic intent.
 ## Loading
 
 ```tsx
-<Button
-  loading={isSaving}
-  loadingText='Saving changes...'
-  onPress={handleSave}
->
+<Button loading={isSaving} loadingText='Saving changes...' onPress={handleSave}>
   Save
 </Button>
 ```
@@ -60,7 +56,7 @@ import { Button } from '@vellira-ui/react-native';
 
 <Button iconStart={<Search />} onPress={openSearch}>
   Search
-</Button>
+</Button>;
 ```
 
 Button injects the current icon color and size. Use `iconSize` only for an intentional override.
@@ -81,12 +77,7 @@ When `iconOnly` is enabled, visible children are not rendered. The accessible ac
 ## Badge And Shortcut
 
 ```tsx
-<Button
-  badge='12'
-  shortcut='⌘K'
-  iconStart={<Search />}
-  onPress={openSearch}
->
+<Button badge='12' shortcut='⌘K' iconStart={<Search />} onPress={openSearch}>
   Search
 </Button>
 ```

@@ -16,7 +16,7 @@ pnpm add @vellira-ui/icons
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Search />
+<Search />;
 ```
 
 ## React Native
@@ -24,7 +24,7 @@ import { Search } from '@vellira-ui/icons';
 ```tsx
 import { Search } from '@vellira-ui/icons';
 
-<Search />
+<Search />;
 ```
 
 ## Size
@@ -52,10 +52,7 @@ Decorative icons should be hidden from assistive technologies.
 Icons that communicate meaning should have an accessible label through the parent control.
 
 ```tsx
-<Button
-  aria-label='Search'
-  iconStart={<Search />}
-/>
+<Button aria-label='Search' iconStart={<Search />} />
 ```
 
 ## Tree Shaking

@@ -65,8 +65,8 @@ pnpm add @vellira-ui/icons
 
 ## Next Steps
 
-| Goal | Page |
-|------|------|
-| Browse static icons | Static |
-| Browse animated icons | Animated |
-| Learn how to use icons | Usage |
+| Goal                   | Page     |
+| ---------------------- | -------- |
+| Browse static icons    | Static   |
+| Browse animated icons  | Animated |
+| Learn how to use icons | Usage    |

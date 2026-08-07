@@ -19,10 +19,8 @@ import { Button, Tooltip } from '@vellira-ui/react-native';
     <Button>More</Button>
   </Tooltip.Trigger>
 
-  <Tooltip.Content withArrow>
-    More actions
-  </Tooltip.Content>
-</Tooltip>
+  <Tooltip.Content withArrow>More actions</Tooltip.Content>
+</Tooltip>;
 ```
 
 ## Controlled State
@@ -48,33 +46,25 @@ Available placements are `top`, `bottom`, `left`, and `right`.
 ## Delay
 
 ```tsx
-<Tooltip delay={500}>
-  ...
-</Tooltip>
+<Tooltip delay={500}>...</Tooltip>
 ```
 
 Or configure open and close independently:
 
 ```tsx
-<Tooltip delay={{ open: 500, close: 150 }}>
-  ...
-</Tooltip>
+<Tooltip delay={{ open: 500, close: 150 }}>...</Tooltip>
 ```
 
 ## Outside Dismissal
 
 ```tsx
-<Tooltip closeOnOutsidePress>
-  ...
-</Tooltip>
+<Tooltip closeOnOutsidePress>...</Tooltip>
 ```
 
 ## Disabled Tooltip
 
 ```tsx
-<Tooltip disabled>
-  ...
-</Tooltip>
+<Tooltip disabled>...</Tooltip>
 ```
 
 The trigger may also be disabled independently.
@@ -82,9 +72,7 @@ The trigger may also be disabled independently.
 ## Force Mount
 
 ```tsx
-<Tooltip.Content forceMount>
-  Helper text
-</Tooltip.Content>
+<Tooltip.Content forceMount>Helper text</Tooltip.Content>
 ```
 
 Use this for measurement or animation needs, not as a default.

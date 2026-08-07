@@ -21,9 +21,7 @@ import { Button, Modal, Portal } from '@vellira-ui/react-native';
     <Modal.Overlay>
       <Modal.Content>
         <Modal.Header>Delete file</Modal.Header>
-        <Modal.Body>
-          Are you sure you want to delete this file?
-        </Modal.Body>
+        <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
         <Modal.Footer>
           <Modal.Close>
             <Button color='neutral' appearance='solid'>
@@ -34,7 +32,7 @@ import { Button, Modal, Portal } from '@vellira-ui/react-native';
       </Modal.Content>
     </Modal.Overlay>
   </Portal>
-</Modal>
+</Modal>;
 ```
 
 ## Controlled And Uncontrolled
@@ -52,9 +50,7 @@ import { Button, Modal, Portal } from '@vellira-ui/react-native';
 ## Outside Dismissal
 
 ```tsx
-<Modal closeOnOutsidePress={false}>
-  ...
-</Modal>
+<Modal closeOnOutsidePress={false}>...</Modal>
 ```
 
 Disable backdrop dismissal for destructive confirmation or required decisions.
@@ -64,11 +60,7 @@ Disable backdrop dismissal for destructive confirmation or required decisions.
 ## Animation
 
 ```tsx
-<Modal
-  animation='fade'
-  duration={200}
-  easing='ease-out'
->
+<Modal animation='fade' duration={200} easing='ease-out'>
   ...
 </Modal>
 ```
@@ -108,15 +100,15 @@ Choose motion that is short and appropriate for the surface. Ensure the dialog r
 
 ## Compound Components
 
-| Component | Purpose |
-| --- | --- |
-| `Modal.Trigger` | Opens the modal |
-| `Modal.Overlay` | Native backdrop |
-| `Modal.Content` | Dialog surface |
-| `Modal.Header` | Header or title section |
-| `Modal.Body` | Main content |
-| `Modal.Footer` | Actions |
-| `Modal.Close` | Closes the modal |
+| Component       | Purpose                 |
+| --------------- | ----------------------- |
+| `Modal.Trigger` | Opens the modal         |
+| `Modal.Overlay` | Native backdrop         |
+| `Modal.Content` | Dialog surface          |
+| `Modal.Header`  | Header or title section |
+| `Modal.Body`    | Main content            |
+| `Modal.Footer`  | Actions                 |
+| `Modal.Close`   | Closes the modal        |
 
 ## Accessibility
 

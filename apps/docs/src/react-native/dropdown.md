@@ -25,15 +25,11 @@ import { Button, Dropdown } from '@vellira-ui/react-native';
       Edit
     </Dropdown.Item>
     <Dropdown.Separator />
-    <Dropdown.Item
-      value='delete'
-      color='danger'
-      onSelect={handleDelete}
-    >
+    <Dropdown.Item value='delete' color='danger' onSelect={handleDelete}>
       Delete
     </Dropdown.Item>
   </Dropdown.Content>
-</Dropdown>
+</Dropdown>;
 ```
 
 ## Controlled Open State
@@ -47,9 +43,7 @@ import { Button, Dropdown } from '@vellira-ui/react-native';
 Or initialize uncontrolled state:
 
 ```tsx
-<Dropdown defaultOpen>
-  ...
-</Dropdown>
+<Dropdown defaultOpen>...</Dropdown>
 ```
 
 ## Custom Trigger
