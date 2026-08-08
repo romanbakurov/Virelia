@@ -5,6 +5,7 @@ import { View } from 'react-native';
 
 import {
   useOverlayDismiss,
+  useOverlayFocusRestore,
   useOverlayPresentation,
   useSelect,
 } from '../../../hooks';
@@ -157,6 +158,15 @@ export function SelectRoot(props: SelectProps) {
     selectValue: (value: string) => void;
   };
 
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    triggerRef,
+  });
+
+  const closeAndFocusTrigger = () => {
+    closeDropdown();
+    restoreFocusAfterClose();
+  };
+
   const selectedValues = Array.isArray(selectedValue)
     ? selectedValue
     : selectedValue
@@ -247,7 +257,7 @@ export function SelectRoot(props: SelectProps) {
     id: overlayId,
     active: isOpen,
     closeOnOutsidePress: dismissOnBackdropPress,
-    requestClose: closeDropdown,
+    requestClose: closeAndFocusTrigger,
   });
 
   const clearValue = () => {
@@ -319,7 +329,7 @@ export function SelectRoot(props: SelectProps) {
     announce('Group selected');
 
     if (closeOnSelect) {
-      closeDropdown();
+      closeAndFocusTrigger();
     }
   };
 
