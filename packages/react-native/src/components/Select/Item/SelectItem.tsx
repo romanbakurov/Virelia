@@ -39,6 +39,9 @@ export const SelectItemRow = ({
   option,
   isSelected,
   isDisabled,
+  itemIndex,
+  selectedValues,
+  multiple,
   optionStyle,
   onSelect,
 }: SelectItemRowProps) => {
@@ -102,9 +105,15 @@ export const SelectItemRow = ({
 
         return renderOption ? (
           renderNodeOrText(
-            renderOption(option, {
+            renderOption({
+              option,
               selected: isSelected,
               disabled: isDisabled,
+              active: isHovered,
+              index: itemIndex,
+              values: selectedValues,
+              multiple,
+              pressed,
             }),
             [styles.optionLabel, { color: optionFg }]
           )

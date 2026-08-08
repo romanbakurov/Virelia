@@ -24,6 +24,17 @@ export interface SelectRenderValueContext {
   multiple: boolean;
 }
 
+export interface SelectRenderOptionContext {
+  option: SelectOption;
+  selected: boolean;
+  disabled: boolean;
+  active: boolean;
+  index: number;
+  values: string[];
+  multiple: boolean;
+  pressed: boolean;
+}
+
 interface SelectOwnProps {
   children?: ReactNode;
   label?: ReactNode;
@@ -52,7 +63,7 @@ interface SelectOwnProps {
   prefix?: ReactNode;
   suffix?: ReactNode;
   renderValue?: (context: SelectRenderValueContext) => ReactNode;
-  renderOption?: (option: SelectOption) => ReactNode;
+  renderOption?: (context: SelectRenderOptionContext) => ReactNode;
   onBlur?: FocusEventHandler<HTMLButtonElement>;
   onFocus?: FocusEventHandler<HTMLButtonElement>;
   className?: string;

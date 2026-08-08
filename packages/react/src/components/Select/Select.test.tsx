@@ -8,7 +8,10 @@ import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 
 import { Select } from './Select';
-import type { SelectRenderValueContext } from './types';
+import type {
+  SelectRenderOptionContext,
+  SelectRenderValueContext,
+} from './types';
 
 const options = [
   { label: 'France', value: 'fr', disabled: true },
@@ -1328,6 +1331,7 @@ describe('Select', () => {
   it('supports multiple values, maxSelected, and closeOnSelect', () => {
     const onValueChange = vi.fn();
     let lastRenderValueContext: SelectRenderValueContext | undefined;
+    const renderOptionContexts: SelectRenderOptionContext[] = [];
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -1348,6 +1352,13 @@ describe('Select', () => {
             lastRenderValueContext = context;
 
             return `${context.options.length} selected`;
+          }}
+          renderOption={(context) => {
+            renderOptionContexts.push(context);
+
+            return context.selected
+              ? `Selected ${context.option.label}`
+              : context.option.label;
           }}
         >
           {renderSelectItems([
@@ -1379,6 +1390,16 @@ describe('Select', () => {
 
     expect(listbox?.getAttribute('aria-multiselectable')).toBe('true');
     expect(germany?.getAttribute('aria-selected')).toBe('true');
+    expect(renderOptionContexts[0]).toMatchObject({
+      selected: true,
+      disabled: false,
+      index: 0,
+      values: ['de'],
+      multiple: true,
+      pressed: false,
+    });
+    expect(typeof renderOptionContexts[0]?.active).toBe('boolean');
+    expect(renderOptionContexts[0]?.option.value).toBe('de');
 
     act(() => {
       spain?.click();

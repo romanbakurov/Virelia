@@ -39,6 +39,7 @@ export const SelectContentSurface = () => {
     triggerWidth,
     resolvedLabel,
     closeContent,
+    requestOutsideClose,
     searchable,
     loading,
     filteredRows,
@@ -66,7 +67,13 @@ export const SelectContentSurface = () => {
     wasOpenRef.current = isOpen;
   }, [isOpen]);
 
-  const renderRow = ({ item }: { item: SelectCollectionRow }) => {
+  const renderRow = ({
+    item,
+    index,
+  }: {
+    item: SelectCollectionRow;
+    index: number;
+  }) => {
     if (item.type === 'group') {
       if (item.selectable && context.multiple) {
         const enabledGroupValues = item.itemValues.filter((value) =>
@@ -105,6 +112,9 @@ export const SelectContentSurface = () => {
         option={item.option}
         isSelected={isSelected}
         isDisabled={Boolean(item.option.disabled || maxReached)}
+        itemIndex={index}
+        selectedValues={selectedValues}
+        multiple={context.multiple}
         optionStyle={optionStyle}
         onSelect={selectOption}
       />
@@ -183,6 +193,7 @@ export const SelectContentSurface = () => {
       <SelectSheet
         visible={isOpen}
         onClose={closeContent}
+        onOutsideClose={requestOutsideClose}
         dismissOnBackdropPress={dismissOnBackdropPress}
         zIndex={zIndex}
         contentStyle={contentStyle}
@@ -197,6 +208,7 @@ export const SelectContentSurface = () => {
       <SelectPopover
         visible={isOpen}
         onClose={closeContent}
+        onOutsideClose={requestOutsideClose}
         dismissOnBackdropPress={dismissOnBackdropPress}
         position={position}
         zIndex={zIndex}
@@ -214,6 +226,7 @@ export const SelectContentSurface = () => {
     <SelectModal
       visible={isOpen}
       onClose={closeContent}
+      onOutsideClose={requestOutsideClose}
       dismissOnBackdropPress={dismissOnBackdropPress}
       zIndex={zIndex}
       contentStyle={contentStyle}

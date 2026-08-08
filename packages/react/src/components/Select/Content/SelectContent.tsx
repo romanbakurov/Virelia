@@ -384,6 +384,9 @@ export const SelectContentSurface = ({
                   }
                   isActive={optionIndex === visualActiveIndex}
                   optionId={`${listboxId}-option-${optionIndex}`}
+                  optionIndex={optionIndex}
+                  selectedValues={selectedValues ?? []}
+                  multiple={Boolean(multiple)}
                   renderOption={renderOption}
                   onSelect={onSelect}
                   onMouseEnter={() => onMouseEnter(optionIndex)}

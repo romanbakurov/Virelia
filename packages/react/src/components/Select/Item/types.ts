@@ -1,7 +1,7 @@
 import type { BaseSelectOptionProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
-import type { SelectOption } from '../types';
+import type { SelectOption, SelectRenderOptionContext } from '../types';
 
 export interface SelectItemProps {
   value: string;
@@ -21,6 +21,9 @@ export interface SelectItemRowProps extends Omit<
 > {
   option: SelectOption;
   optionId: string;
-  renderOption?: (option: SelectOption) => ReactNode;
+  optionIndex: number;
+  selectedValues: string[];
+  multiple: boolean;
+  renderOption?: (context: SelectRenderOptionContext) => ReactNode;
   onMouseEnter: () => void;
 }

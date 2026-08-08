@@ -566,7 +566,7 @@ shows the first 10 labels and a `+N` overflow count.
 | `prefix`            | `ReactNode`                                                              | No       | —                                                |
 | `suffix`            | `ReactNode`                                                              | No       | —                                                |
 | `renderValue`       | `(context: SelectRenderValueContext) => ReactNode`                       | No       | —                                                |
-| `renderOption`      | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
+| `renderOption`      | `(context: SelectRenderOptionContext) => ReactNode`                      | No       | —                                                |
 | `color`             | `SelectColor`                                                            | No       | —                                                |
 | `invalid`           | `boolean`                                                                | No       | —                                                |
 | `onValueChange`     | `(value: SelectValue) => void) \| ((value: SelectMultipleValue) => void` | No       | Called when the selected value changes.          |

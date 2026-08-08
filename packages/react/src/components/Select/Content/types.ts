@@ -7,7 +7,7 @@ import type {
 import type { CSSProperties, ReactNode } from 'react';
 
 import type { SelectRenderEntry } from '../internal/types';
-import type { SelectOption } from '../types';
+import type { SelectOption, SelectRenderOptionContext } from '../types';
 
 export interface SelectContentProps extends Omit<
   BaseSelectDropdownProps,
@@ -34,7 +34,7 @@ export interface SelectContentProps extends Omit<
   headerSlot?: ReactNode;
   emptySlot?: ReactNode;
   loadingSlot?: ReactNode;
-  renderOption?: (option: SelectOption) => ReactNode;
+  renderOption?: (context: SelectRenderOptionContext) => ReactNode;
   className?: string;
   visualActiveIndex?: number;
   onSelectGroup: (values: string[]) => void;

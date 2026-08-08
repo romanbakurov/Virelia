@@ -17,6 +17,9 @@ export const SelectItemRow = ({
   isSelected,
   isActive,
   optionId,
+  optionIndex,
+  selectedValues,
+  multiple,
   renderOption,
   onSelect,
   onMouseEnter,
@@ -49,7 +52,18 @@ export const SelectItemRow = ({
       }}
     >
       {renderOption ? (
-        <span className={styles.custom}>{renderOption(option)}</span>
+        <span className={styles.custom}>
+          {renderOption({
+            option,
+            selected: isSelected,
+            disabled: isDisabled,
+            active: isActive,
+            index: optionIndex,
+            values: selectedValues,
+            multiple,
+            pressed: false,
+          })}
+        </span>
       ) : (
         <>
           {option.icon && <span className={styles.icon}>{option.icon}</span>}

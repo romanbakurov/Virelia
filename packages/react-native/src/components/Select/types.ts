@@ -44,24 +44,32 @@ export type SelectIconElement = ReactElement<{
   size?: number;
 }>;
 
-export type SelectRenderOptionState = {
+export type SelectRenderOptionContext = {
+  option: SelectOption;
   selected: boolean;
   disabled: boolean;
+  active: boolean;
+  index: number;
+  values: string[];
+  multiple: boolean;
+  pressed: boolean;
 };
 
-export type SelectRenderValueState = {
+export type SelectRenderValueContext = {
+  option: SelectOption | undefined;
+  options: SelectOption[];
+  value: string;
+  values: string[];
   placeholder: string;
   multiple: boolean;
 };
 
 export type SelectRenderOption = (
-  option: SelectOption,
-  state: SelectRenderOptionState
+  context: SelectRenderOptionContext
 ) => ReactNode;
 
 export type SelectRenderValue = (
-  option: SelectOption | SelectOption[] | null,
-  state: SelectRenderValueState
+  context: SelectRenderValueContext
 ) => ReactNode;
 
 type SelectSharedBaseProps = Pick<

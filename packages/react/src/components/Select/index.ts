@@ -16,6 +16,7 @@ export { SelectTrigger } from './Trigger';
 export type {
   SelectOption,
   SelectProps,
+  SelectRenderOptionContext,
   SelectRenderValueContext,
 } from './types';
 export { SelectValue } from './Value';
