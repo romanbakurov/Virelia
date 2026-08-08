@@ -15,8 +15,11 @@ import { Close } from '@vellira-ui/icons';
 
 import { useSelectContext } from '../internal/SelectContext';
 import { resolveSelectVirtualization } from '../internal/SelectVirtualization';
-import type { SelectSlotComponent } from '../internal/types';
-import { getSelectSlotPart } from '../internal/types';
+import {
+  getSelectSlotPart,
+  markSelectSlot,
+  type SelectSlotComponent,
+} from '../internal/types';
 import { SelectItemRow } from '../Item/SelectItem';
 
 import type { SelectContentProps } from './types';
@@ -44,7 +47,7 @@ export const SelectContent: SelectSlotComponent<SelectContentSlotProps> = ({
   );
 };
 
-SelectContent.__velliraSelectPart = 'content';
+markSelectSlot(SelectContent, 'content');
 SelectContent.displayName = 'Select.Content';
 
 export const SelectContentSurface = ({

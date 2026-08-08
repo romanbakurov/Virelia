@@ -3,7 +3,7 @@ import { ChevronDown, Close } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
 import type { SelectTriggerProps } from './types';
 
@@ -30,7 +30,7 @@ export const SelectTrigger: SelectSlotComponent<SelectTriggerSlotProps> = ({
   );
 };
 
-SelectTrigger.__velliraSelectPart = 'trigger';
+markSelectSlot(SelectTrigger, 'trigger');
 SelectTrigger.displayName = 'Select.Trigger';
 
 export const SelectTriggerSurface = ({

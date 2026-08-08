@@ -1,8 +1,8 @@
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
 import type { SelectGroupProps } from './types';
 
 export const SelectGroup: SelectSlotComponent<SelectGroupProps> = () => null;
 
-SelectGroup.__velliraSelectPart = 'group';
+markSelectSlot(SelectGroup, 'group');
 SelectGroup.displayName = 'Select.Group';

@@ -23,6 +23,15 @@ export type SelectSlotComponent<P> = ((props: P) => ReactElement | null) & {
   displayName?: string;
 };
 
+export function markSelectSlot<P>(
+  component: SelectSlotComponent<P>,
+  part: SelectSlot
+) {
+  component.__velliraSelectPart = part;
+
+  return component;
+}
+
 type WrappedSelectSlotComponent = {
   __velliraSelectPart?: SelectSlot;
   render?: WrappedSelectSlotComponent;

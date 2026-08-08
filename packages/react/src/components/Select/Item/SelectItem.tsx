@@ -1,7 +1,7 @@
 import { cn } from '@utils/cn';
 import { Check } from '@vellira-ui/icons';
 
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
 import type { SelectItemProps, SelectItemRowProps } from './types';
 
@@ -9,7 +9,7 @@ import styles from './SelectItem.module.scss';
 
 export const SelectItem: SelectSlotComponent<SelectItemProps> = () => null;
 
-SelectItem.__velliraSelectPart = 'item';
+markSelectSlot(SelectItem, 'item');
 SelectItem.displayName = 'Select.Item';
 
 export const SelectItemRow = ({
