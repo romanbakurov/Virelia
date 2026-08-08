@@ -4,9 +4,10 @@ import { cn } from '@utils/cn';
 import { lightTheme } from '@vellira-ui/tokens';
 import type { CSSProperties } from 'react';
 
-import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
+import { useModal, useOverlayPresentation, useScrollLock } from '@/hooks';
 
 import { ModalProvider } from '../internal/ModalContext';
+import { useModalDismiss } from '../internal/useModalDismiss';
 import type { ModalProps } from '../types';
 
 const easingMap = {
@@ -113,25 +114,48 @@ export const ModalRoot = ({
     contentRef.current = node;
   }, []);
 
-  const { isTopOverlay } = useOverlayStack({
-    active: isOpen,
-    id: contentId,
-  });
-
   useScrollLock({
     active: isOpen,
     enabled: preventScroll,
   });
 
-  const animationStyle = useMemo(
+  const modalDismiss = useModalDismiss({
+    active: isOpen,
+    registrationActive: shouldRender,
+    id: contentId,
+    contentRef,
+    closeOnEscape,
+    closeOnOutsidePress,
+    onEscapeKeyDown,
+    onInteractOutside,
+    onPointerDownOutside,
+    requestClose,
+  });
+
+  const modalAnimationStyle = useMemo(
     () =>
       ({
         '--modal-animation-close-duration': `${animationDuration.close}ms`,
         '--modal-animation-easing': easingMap[easing],
         '--modal-animation-open-duration': `${animationDuration.open}ms`,
+        '--z-index-modal':
+          modalDismiss.zIndex !== undefined
+            ? `${modalDismiss.zIndex}`
+            : undefined,
       }) as CSSProperties,
-    [animationDuration.close, animationDuration.open, easing]
+    [
+      animationDuration.close,
+      animationDuration.open,
+      easing,
+      modalDismiss.zIndex,
+    ]
   );
+  const modalPresentation = useOverlayPresentation({
+    presentation: 'modal',
+    animationStyle: modalAnimationStyle,
+  });
+  const animationStyle =
+    modalPresentation.animationStyle ?? modalAnimationStyle;
 
   useEffect(() => {
     if (
@@ -170,7 +194,7 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
-      isTopModal: isTopOverlay,
+      zIndex: modalDismiss.zIndex,
       modal,
       onCloseAutoFocus,
       onEscapeKeyDown,
@@ -199,7 +223,7 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
-      isTopOverlay,
+      modalDismiss.zIndex,
       isOpen,
       modal,
       onCloseAutoFocus,

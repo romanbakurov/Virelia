@@ -6,31 +6,35 @@ import type { ModalOutsideEvent } from '../types';
 
 export const useModalDismiss = ({
   active,
+  registrationActive = active,
+  id,
   contentRef,
   closeOnEscape,
   closeOnOutsidePress,
-  isTopModal,
   onEscapeKeyDown,
   onPointerDownOutside,
   onInteractOutside,
   requestClose,
 }: {
   active: boolean;
+  registrationActive?: boolean;
+  id: string;
   contentRef: RefObject<HTMLElement | null>;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
-  isTopModal: () => boolean;
   onEscapeKeyDown?: (event: KeyboardEvent) => void;
   onPointerDownOutside?: (event: ModalOutsideEvent) => void;
   onInteractOutside?: (event: ModalOutsideEvent) => void;
   requestClose: () => void;
 }) => {
-  useOverlayDismiss({
+  return useOverlayDismiss({
     active,
+    registrationActive,
+    id,
+    zIndexLevel: 'modal',
     closeOnOutsidePress,
     closeOnEscape,
     contentRef,
-    isTopOverlay: isTopModal,
     onEscapeKeyDown: onEscapeKeyDown
       ? (event) => onEscapeKeyDown(event as unknown as KeyboardEvent)
       : undefined,

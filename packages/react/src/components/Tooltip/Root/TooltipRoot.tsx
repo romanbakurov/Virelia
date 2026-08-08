@@ -1,10 +1,6 @@
 import { useId, useRef } from 'react';
 
-import {
-  useControllableState,
-  useOverlayDismiss,
-  useOverlayStack,
-} from '@/hooks';
+import { useControllableState, useOverlayDismiss } from '@/hooks';
 
 import { composeRefs } from '../internal/composeEventHandlers';
 import { TooltipRootProvider } from '../internal/TooltipContext';
@@ -59,18 +55,14 @@ export const TooltipRoot = ({
     disabled,
     interactive,
   });
-  const { isTopOverlay } = useOverlayStack({
+  const dismiss = useOverlayDismiss({
     active: open,
     id: contentId,
-  });
-
-  useOverlayDismiss({
-    active: open,
+    zIndexLevel: 'tooltip',
     contentRef,
     ignoreRefs: [triggerRef],
     closeOnEscape: true,
     closeOnOutsidePress: !interactive,
-    isTopOverlay,
     requestClose: () => setOpen(false),
   });
 
@@ -86,7 +78,10 @@ export const TooltipRoot = ({
         arrowX: position.arrowX,
         arrowY: position.arrowY,
         placement: position.placement,
-        floatingStyles: position.floatingStyles,
+        floatingStyles: {
+          ...position.floatingStyles,
+          zIndex: dismiss.zIndex,
+        },
         setOpen,
         setTriggerRef: composeRefs(triggerRef, position.setRef),
         setContentRef: composeRefs(contentRef, position.setFloatingRef),

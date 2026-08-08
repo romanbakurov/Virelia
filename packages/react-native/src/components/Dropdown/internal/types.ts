@@ -32,7 +32,7 @@ export interface DropdownContextValue {
     top: number;
     left: number;
   };
-  layer: number;
+  zIndex: number;
 
   searchable: boolean;
   searchValue: string;

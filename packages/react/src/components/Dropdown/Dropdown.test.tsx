@@ -55,6 +55,9 @@ describe('Dropdown', () => {
     expect(trigger?.getAttribute('aria-haspopup')).toBe('menu');
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(
+      document.querySelector<HTMLElement>('[role="menu"]')?.style.zIndex
+    ).toBe('100');
     expect(document.querySelector('[role="option"]')).toBeNull();
 
     act(() => {

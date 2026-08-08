@@ -11,7 +11,7 @@ export const SelectSheet = ({
   visible,
   onClose,
   dismissOnBackdropPress,
-  layer,
+  zIndex,
   contentStyle,
   children,
 }: SelectPresentationProps) => {
@@ -28,7 +28,7 @@ export const SelectSheet = ({
         style={[
           styles.modalRoot,
           styles.sheetRoot,
-          Platform.OS === 'web' && { zIndex: layer },
+          Platform.OS === 'web' && { zIndex },
         ]}
         testID='select-content-root'
       >

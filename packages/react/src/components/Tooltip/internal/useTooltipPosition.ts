@@ -2,7 +2,7 @@ import { useRef } from 'react';
 
 import { arrow } from '@floating-ui/react';
 
-import { useFloatingPosition } from '@/managers/FloatingManager';
+import { useOverlayPresentation } from '@/hooks';
 
 import type { TooltipRootProps } from '../Root/types';
 
@@ -21,7 +21,7 @@ export function useTooltipPosition({
   onOpenChange: (open: boolean) => void;
 }) {
   const arrowRef = useRef<HTMLDivElement | null>(null);
-  const floating = useFloatingPosition({
+  const floating = useOverlayPresentation({
     open,
     onOpenChange,
     placement,

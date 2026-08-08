@@ -42,10 +42,6 @@ export function PopoverRoot({
   const anchorRef = useRef<View | null>(null);
   const overlayId = useId();
 
-  const { restoreFocusAfterClose } = useOverlayFocusRestore({
-    triggerRef,
-  });
-
   const getReferenceRef = useCallback(
     () => (anchorRef.current ? anchorRef : triggerRef),
     []
@@ -61,6 +57,11 @@ export function PopoverRoot({
     onChange: (nextOpen: boolean) => {
       onOpenChange?.(nextOpen, openChangeDetailsRef.current);
     },
+  });
+
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    active: open,
+    triggerRef,
   });
 
   const {
@@ -116,7 +117,7 @@ export function PopoverRoot({
         side,
         align,
         placement,
-        layer: dismiss.layer,
+        zIndex: dismiss.zIndex,
         position,
         arrowPosition,
         requestClose: dismiss.requestClose,

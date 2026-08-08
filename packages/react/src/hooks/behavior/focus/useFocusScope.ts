@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useOverlayFocusRestore } from '../overlay/useOverlayFocusRestore.js';
 import type { FocusScopeOptions } from '../types.js';
 import { createAutoFocusEvent } from '../utils/events.js';
 import {
@@ -17,11 +18,16 @@ export const useFocusScope = ({
   onOpenAutoFocus,
   onCloseAutoFocus,
 }: FocusScopeOptions) => {
+  useOverlayFocusRestore({
+    active,
+    enabled: restoreFocus,
+    finalFocus,
+    onCloseAutoFocus,
+  });
+
   useEffect(() => {
     if (!active) return;
 
-    const previouslyFocused = document.activeElement;
-    const finalFocusElement = finalFocus?.current;
     const openEvent = createAutoFocusEvent();
 
     onOpenAutoFocus?.(openEvent);
@@ -35,34 +41,7 @@ export const useFocusScope = ({
         }
       });
     }
-
-    return () => {
-      const closeEvent = createAutoFocusEvent();
-
-      onCloseAutoFocus?.(closeEvent);
-
-      if (closeEvent.defaultPrevented || !restoreFocus) return;
-
-      queueMicrotask(() => {
-        if (finalFocusElement) {
-          finalFocusElement.focus();
-          return;
-        }
-
-        if (previouslyFocused instanceof HTMLElement) {
-          previouslyFocused.focus();
-        }
-      });
-    };
-  }, [
-    active,
-    contentRef,
-    finalFocus,
-    initialFocus,
-    onCloseAutoFocus,
-    onOpenAutoFocus,
-    restoreFocus,
-  ]);
+  }, [active, contentRef, initialFocus, onOpenAutoFocus]);
 
   useEffect(() => {
     if (!active || !enabled) return;

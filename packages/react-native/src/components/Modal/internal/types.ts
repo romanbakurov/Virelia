@@ -7,7 +7,7 @@ export interface ModalContextValue {
   animation: ModalAnimation;
   animationProgress: Animated.Value;
   closeOnOutsidePress: boolean;
-  layer: number;
+  zIndex: number;
   onClose: () => void;
   onOutsideClose: () => void;
   open: boolean;

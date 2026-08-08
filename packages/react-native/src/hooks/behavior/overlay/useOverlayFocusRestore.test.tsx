@@ -9,18 +9,24 @@ import { render } from '../../../test-utils/render';
 import { useOverlayFocusRestore } from './useOverlayFocusRestore';
 
 type TestOverlayProps = {
+  active?: boolean;
   enabled?: boolean;
+  finalFocus?: React.RefObject<View | null>;
   triggerRef: React.RefObject<View | null>;
   onReady: (controls: ReturnType<typeof useOverlayFocusRestore>) => void;
 };
 
 function TestOverlay({
+  active,
   enabled = true,
+  finalFocus,
   triggerRef,
   onReady,
 }: TestOverlayProps) {
   const controls = useOverlayFocusRestore({
+    active,
     enabled,
+    finalFocus,
     triggerRef,
   });
 
@@ -200,6 +206,95 @@ describe('useOverlayFocusRestore', () => {
     );
 
     expect(() => controls?.restoreFocus()).not.toThrow();
+
+    unmount();
+
+    Object.defineProperty(Platform, 'OS', {
+      configurable: true,
+      value: originalOS,
+    });
+  });
+
+  it('restores focus to the saved focused element on web when trigger is empty', () => {
+    const originalOS = Platform.OS;
+
+    Object.defineProperty(Platform, 'OS', {
+      configurable: true,
+      value: 'web',
+    });
+
+    const triggerRef = createRef<View>();
+    const trigger = document.createElement('button');
+    const contentButton = document.createElement('button');
+
+    trigger.type = 'button';
+    contentButton.type = 'button';
+    document.body.append(trigger, contentButton);
+    trigger.focus();
+
+    let controls: ReturnType<typeof useOverlayFocusRestore> | undefined;
+
+    const { unmount } = render(
+      <TestOverlay
+        active
+        triggerRef={triggerRef}
+        onReady={(value) => {
+          controls = value;
+        }}
+      />
+    );
+
+    contentButton.focus();
+    controls?.restoreFocus();
+
+    expect(document.activeElement).toBe(trigger);
+
+    unmount();
+    trigger.remove();
+    contentButton.remove();
+
+    Object.defineProperty(Platform, 'OS', {
+      configurable: true,
+      value: originalOS,
+    });
+  });
+
+  it('prefers finalFocus over trigger focus on web', () => {
+    const originalOS = Platform.OS;
+
+    Object.defineProperty(Platform, 'OS', {
+      configurable: true,
+      value: 'web',
+    });
+
+    const triggerFocus = vi.fn();
+    const finalFocusHandler = vi.fn();
+    const triggerRef = createRef<View>();
+    const finalFocus = createRef<View>();
+
+    triggerRef.current = {
+      focus: triggerFocus,
+    } as unknown as View;
+    finalFocus.current = {
+      focus: finalFocusHandler,
+    } as unknown as View;
+
+    let controls: ReturnType<typeof useOverlayFocusRestore> | undefined;
+
+    const { unmount } = render(
+      <TestOverlay
+        finalFocus={finalFocus}
+        triggerRef={triggerRef}
+        onReady={(value) => {
+          controls = value;
+        }}
+      />
+    );
+
+    controls?.restoreFocus();
+
+    expect(finalFocusHandler).toHaveBeenCalledTimes(1);
+    expect(triggerFocus).not.toHaveBeenCalled();
 
     unmount();
 

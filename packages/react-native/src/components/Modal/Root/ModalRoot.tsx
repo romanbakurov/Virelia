@@ -57,10 +57,6 @@ export const ModalRoot = ({
   const animationProgress = useRef(new Animated.Value(initialOpen ? 1 : 0));
   const triggerRef = useRef<View | null>(null);
 
-  const { restoreFocusAfterClose } = useOverlayFocusRestore({
-    triggerRef,
-  });
-
   const [shouldRender, setShouldRender] = useState(initialOpen);
   const [reduceMotion, setReduceMotion] = useState(false);
   const modal = useModal({
@@ -68,6 +64,11 @@ export const ModalRoot = ({
     defaultOpen,
     onOpenChange,
     closeOnOutsidePress,
+  });
+
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    active: modal.open,
+    triggerRef,
   });
 
   const previousOpenRef = useRef(modal.open);
@@ -157,7 +158,7 @@ export const ModalRoot = ({
         animation,
         animationProgress: animationProgress.current,
         closeOnOutsidePress: modal.closeOnOutsidePress,
-        layer: dismiss.layer,
+        zIndex: dismiss.zIndex,
         onClose: dismiss.requestClose,
         onOutsideClose: dismiss.requestOutsideClose,
         open: modal.open,

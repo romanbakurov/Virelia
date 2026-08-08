@@ -22,7 +22,7 @@ export type ModalContextValue = {
   descriptionId: string;
   finalFocus?: RefObject<HTMLElement>;
   initialFocus?: RefObject<HTMLElement>;
-  isTopModal: () => boolean;
+  zIndex?: number;
   modal: boolean;
   onCloseAutoFocus?: (event: ModalAutoFocusEvent) => void;
   onEscapeKeyDown?: (event: KeyboardEvent) => void;

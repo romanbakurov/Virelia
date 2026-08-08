@@ -158,6 +158,7 @@ export function SelectRoot(props: SelectProps) {
   };
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    active: isOpen,
     triggerRef,
   });
 
@@ -381,7 +382,7 @@ export function SelectRoot(props: SelectProps) {
       virtual,
       resolvedLabel,
       resolvedPresentation,
-      layer: dismiss.layer,
+      zIndex: dismiss.zIndex,
       position,
       onFloatingLayout,
       dismissOnBackdropPress,
@@ -418,7 +419,7 @@ export function SelectRoot(props: SelectProps) {
       virtual,
       resolvedLabel,
       resolvedPresentation,
-      dismiss.layer,
+      dismiss.zIndex,
       position,
       onFloatingLayout,
       dismissOnBackdropPress,

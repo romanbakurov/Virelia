@@ -8,7 +8,6 @@ import {
   useModalContext,
 } from '../internal/ModalContext';
 import { useModalAccessibility } from '../internal/useModalAccessibility';
-import { useModalDismiss } from '../internal/useModalDismiss';
 import { useModalFocusTrap } from '../internal/useModalFocusTrap';
 
 import type { ModalContentProps } from './types';
@@ -40,17 +39,6 @@ export const ModalContent = ({
     [root]
   );
 
-  useModalDismiss({
-    active,
-    contentRef: root.contentRef,
-    closeOnEscape: root.closeOnEscape,
-    closeOnOutsidePress: root.closeOnOutsidePress,
-    isTopModal: root.isTopModal,
-    onEscapeKeyDown: root.onEscapeKeyDown,
-    onInteractOutside: root.onInteractOutside,
-    onPointerDownOutside: root.onPointerDownOutside,
-    requestClose: root.requestClose,
-  });
   useModalFocusTrap({
     active: focusScopeActive,
     contentRef: root.contentRef,

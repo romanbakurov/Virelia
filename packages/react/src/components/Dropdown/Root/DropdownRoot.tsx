@@ -13,10 +13,9 @@ import type { KeyboardEvent, MouseEvent } from 'react';
 import {
   useDropdown,
   useOverlayDismiss,
-  useOverlayStack,
+  useOverlayPresentation,
   useScrollLock,
 } from '@/hooks';
-import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { DropdownContent } from '../Content';
 import { toCssSize } from '../internal/composeEventHandlers';
@@ -148,10 +147,11 @@ export const DropdownRoot = ({
     isPositioned,
     setRef,
     setFloatingRef,
-  } = useFloatingPosition({
+  } = useOverlayPresentation({
     open: isOpen,
     placement,
-    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
+    strategy,
+    portal,
     matchTriggerWidth,
     avoidCollisions,
     offset,
@@ -170,11 +170,6 @@ export const DropdownRoot = ({
     },
     [onSearch, searchValue, setActiveIndex]
   );
-
-  const { isTopOverlay } = useOverlayStack({
-    active: isOpen,
-    id: contentId,
-  });
 
   useScrollLock({
     active: isOpen,
@@ -278,18 +273,20 @@ export const DropdownRoot = ({
     [isMobileSheet, setFloatingRef]
   );
 
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: isOpen,
+    id: contentId,
+    zIndexLevel: 'dropdown',
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef,
     ignoreRefs: [triggerRef],
-    isTopOverlay,
     requestClose: () => closeDropdown(),
   });
 
   const surfaceStyle = {
     ...floatingStyles,
+    zIndex: dismiss.zIndex,
     minWidth: toCssSize(minWidth),
     maxWidth: toCssSize(maxWidth),
   };

@@ -62,6 +62,9 @@ describe('Modal', () => {
     expect(dialog).not.toBeNull();
     expect(dialog?.getAttribute('aria-modal')).toBe('true');
     expect(dialog?.textContent).toContain('Cancel');
+    expect(
+      (dialog as HTMLElement).style.getPropertyValue('--z-index-modal')
+    ).toBe('1000');
 
     act(() => closeButton?.click());
     expect(onOpenChange).toHaveBeenCalledWith(false);

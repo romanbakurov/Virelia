@@ -5,6 +5,8 @@ const { getDefaultConfig } = require('expo/metro-config');
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
+const workspaceNodeModules = path.resolve(workspaceRoot, 'node_modules');
+const projectNodeModules = path.resolve(projectRoot, 'node_modules');
 
 const velliraNativeEntry = path.resolve(
   workspaceRoot,
@@ -14,6 +16,7 @@ const velliraNativeEntry = path.resolve(
 const config = getDefaultConfig(projectRoot);
 
 config.watchFolders = [workspaceRoot];
+config.resolver.nodeModulesPaths = [projectNodeModules, workspaceNodeModules];
 
 const defaultResolveRequest = config.resolver.resolveRequest;
 

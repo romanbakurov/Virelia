@@ -1,31 +1,61 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import type { RefObject } from 'react';
 import type { View } from 'react-native';
 import { AccessibilityInfo, findNodeHandle, Platform } from 'react-native';
 
 export type OverlayFocusRestoreOptions = {
+  active?: boolean;
   enabled?: boolean;
+  finalFocus?: RefObject<View | null>;
   triggerRef: RefObject<View | null>;
 };
 
+type FocusableWebNode = {
+  focus: () => void;
+};
+
+function isFocusableWebNode(node: unknown): node is FocusableWebNode {
+  return (
+    typeof node === 'object' &&
+    node !== null &&
+    'focus' in node &&
+    typeof node.focus === 'function'
+  );
+}
+
 export const useOverlayFocusRestore = ({
+  active = false,
   enabled = true,
+  finalFocus,
   triggerRef,
 }: OverlayFocusRestoreOptions) => {
+  const previouslyFocusedRef = useRef<Element | null>(null);
+
+  const saveFocusSnapshot = useCallback(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+
+    previouslyFocusedRef.current = document.activeElement;
+  }, []);
+
   const restoreFocus = useCallback(() => {
     if (!enabled) return;
 
     if (Platform.OS === 'web') {
-      const triggerNode = triggerRef.current;
+      const preferredNode = finalFocus?.current ?? triggerRef.current;
+
+      if (isFocusableWebNode(preferredNode)) {
+        preferredNode.focus();
+        return;
+      }
+
+      const previouslyFocused = previouslyFocusedRef.current;
 
       if (
-        triggerNode &&
-        typeof triggerNode === 'object' &&
-        'focus' in triggerNode &&
-        typeof triggerNode.focus === 'function'
+        previouslyFocused instanceof HTMLElement &&
+        previouslyFocused.isConnected
       ) {
-        triggerNode.focus();
+        previouslyFocused.focus();
       }
 
       return;
@@ -33,12 +63,12 @@ export const useOverlayFocusRestore = ({
 
     if (typeof findNodeHandle !== 'function') return;
 
-    const handle = findNodeHandle(triggerRef.current);
+    const handle = findNodeHandle(finalFocus?.current ?? triggerRef.current);
 
     if (handle && AccessibilityInfo.setAccessibilityFocus) {
       AccessibilityInfo.setAccessibilityFocus(handle);
     }
-  }, [enabled, triggerRef]);
+  }, [enabled, finalFocus, triggerRef]);
 
   const restoreFocusAfterClose = useCallback(() => {
     if (!enabled) return;
@@ -46,8 +76,15 @@ export const useOverlayFocusRestore = ({
     requestAnimationFrame(restoreFocus);
   }, [enabled, restoreFocus]);
 
+  useEffect(() => {
+    if (!active) return;
+
+    saveFocusSnapshot();
+  }, [active, saveFocusSnapshot]);
+
   return {
     restoreFocus,
     restoreFocusAfterClose,
+    saveFocusSnapshot,
   };
 };

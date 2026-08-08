@@ -16,7 +16,6 @@ import {
   useAriaIsolation,
   useFocusScope,
   useOverlayDismiss,
-  useOverlayStack,
   useScrollLock,
 } from '@/hooks';
 
@@ -53,6 +52,7 @@ export function PopoverContent({
     modal,
     portal,
     triggerRef,
+    anchorRef,
     contentRef,
     contentId,
     titleId,
@@ -67,11 +67,6 @@ export function PopoverContent({
     null
   );
 
-  const { isTopOverlay } = useOverlayStack({
-    active: open,
-    id: contentId,
-  });
-
   const requestClose = useCallback(
     (reason: OverlayDismissReason, event: KeyboardEvent | PointerEvent) => {
       setOpen(false, {
@@ -82,13 +77,14 @@ export function PopoverContent({
     [setOpen]
   );
 
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: open,
+    id: contentId,
+    zIndexLevel: 'popover',
     contentRef: contentRef,
-    ignoreRefs: [triggerRef],
+    ignoreRefs: [triggerRef, anchorRef],
     closeOnEscape,
     closeOnOutsidePress,
-    isTopOverlay,
     onEscapeKeyDown,
     onPointerDownOutside,
     onInteractOutside,
@@ -156,6 +152,7 @@ export function PopoverContent({
     className: cn(styles.content, className),
     style: {
       ...floatingStyles,
+      zIndex: dismiss.zIndex,
       ...style,
     },
   };
@@ -172,6 +169,7 @@ export function PopoverContent({
       className: cn(child.props.className, styles.content, className),
       style: {
         ...floatingStyles,
+        zIndex: dismiss.zIndex,
         ...child.props.style,
         ...style,
       },

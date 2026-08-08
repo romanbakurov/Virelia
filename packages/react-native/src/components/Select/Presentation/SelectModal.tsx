@@ -10,7 +10,7 @@ export const SelectModal = ({
   visible,
   onClose,
   dismissOnBackdropPress,
-  layer,
+  zIndex,
   contentStyle,
   children,
 }: SelectPresentationProps) => {
@@ -27,7 +27,7 @@ export const SelectModal = ({
         style={[
           styles.modalRoot,
           styles.modalPresentationRoot,
-          Platform.OS === 'web' && { zIndex: layer },
+          Platform.OS === 'web' && { zIndex },
         ]}
         testID='select-content-root'
       >

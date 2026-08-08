@@ -59,6 +59,7 @@ describe('Popover', () => {
 
     expect(dialog).not.toBeNull();
     expect(dialog?.textContent).toContain('Workspace settings');
+    expect((dialog as HTMLElement).style.zIndex).toBe('200');
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
 
     const closeButton = Array.from(
@@ -261,6 +262,50 @@ describe('Popover', () => {
     unmount();
   });
 
+  it('closes only the topmost popover on outside press', () => {
+    const onOuterOpenChange = vi.fn();
+    const onInnerOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <>
+        <Popover defaultOpen onOpenChange={onOuterOpenChange}>
+          <Popover.Trigger>Open outer popover</Popover.Trigger>
+
+          <Popover.Content>
+            <Popover.Title>Outer settings</Popover.Title>
+            <Popover.Description>Configure outer scope.</Popover.Description>
+          </Popover.Content>
+        </Popover>
+
+        <Popover defaultOpen onOpenChange={onInnerOpenChange}>
+          <Popover.Trigger>Open inner popover</Popover.Trigger>
+
+          <Popover.Content>
+            <Popover.Title>Inner settings</Popover.Title>
+            <Popover.Description>Configure inner scope.</Popover.Description>
+          </Popover.Content>
+        </Popover>
+      </>
+    );
+
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(2);
+
+    pressOutside();
+
+    expect(onInnerOpenChange).toHaveBeenCalledWith(
+      false,
+      expect.objectContaining({
+        reason: 'outside-press',
+        event: expect.any(PointerEvent),
+      })
+    );
+    expect(onOuterOpenChange).not.toHaveBeenCalled();
+    expect(document.body.textContent).toContain('Outer settings');
+    expect(document.body.textContent).not.toContain('Inner settings');
+
+    unmount();
+  });
+
   it('keeps the popover open when outside press is prevented', () => {
     const onOpenChange = vi.fn();
     const onPointerDownOutside = vi.fn((event) => {
@@ -281,6 +326,44 @@ describe('Popover', () => {
     pressOutside();
 
     expect(onPointerDownOutside).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('does not close from outside press on trigger or anchor refs', () => {
+    const onOpenChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Popover defaultOpen onOpenChange={onOpenChange}>
+        <Popover.Anchor asChild>
+          <button type='button'>Anchor target</button>
+        </Popover.Anchor>
+
+        <Popover.Trigger>Open popover</Popover.Trigger>
+
+        <Popover.Content>
+          <Popover.Title>Workspace settings</Popover.Title>
+          <Popover.Description>Configure your workspace.</Popover.Description>
+        </Popover.Content>
+      </Popover>
+    );
+
+    const anchor = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Anchor target');
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open popover');
+
+    act(() => {
+      anchor?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      trigger?.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+      );
+    });
+
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(document.querySelector('[role="dialog"]')).not.toBeNull();
 

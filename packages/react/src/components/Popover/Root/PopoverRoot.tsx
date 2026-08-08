@@ -8,8 +8,8 @@ import type {
   PopoverSide,
 } from '@vellira-ui/types';
 
+import { useOverlayPresentation } from '@/hooks';
 import { useControllableState } from '@/hooks/useControllableState';
-import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { PopoverProvider } from '../Context';
 
@@ -91,10 +91,11 @@ export function PopoverRoot({
     placement,
     setFloatingRef,
     setRef,
-  } = useFloatingPosition({
+  } = useOverlayPresentation({
     open,
     placement: getPopoverPlacement(side, align),
-    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
+    strategy,
+    portal,
     offset: sideOffset + 7,
     collisionPadding,
     avoidCollisions,
