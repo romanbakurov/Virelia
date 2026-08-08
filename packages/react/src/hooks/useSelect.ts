@@ -22,8 +22,6 @@ export interface UseSelectParams<TOption extends SelectOptionLike> {
   value?: SelectStateValue;
   defaultValue?: SelectStateValue;
   onValueChange?: SelectValueChangeHandler;
-  /** @deprecated Use onValueChange. */
-  onChange?: SelectValueChangeHandler;
   options: TOption[];
   multiple?: boolean;
   maxSelected?: number;
@@ -38,7 +36,6 @@ export const useSelect = <TOption extends SelectOptionLike>({
   value,
   defaultValue,
   onValueChange,
-  onChange,
   options,
   multiple = false,
   maxSelected,
@@ -50,23 +47,23 @@ export const useSelect = <TOption extends SelectOptionLike>({
 }: UseSelectParams<TOption>) => {
   const handleValueChange = useCallback(
     (nextValue: SelectStateValue) => {
-      const valueChange = onValueChange ?? onChange;
-
-      if (!valueChange) return;
+      if (!onValueChange) return;
 
       if (multiple) {
         if (Array.isArray(nextValue)) {
-          valueChange(nextValue);
+          onValueChange(nextValue);
           return;
         }
 
-        valueChange(nextValue ? [nextValue] : []);
+        onValueChange(nextValue ? [nextValue] : []);
         return;
       }
 
-      valueChange(Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue);
+      onValueChange(
+        Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue
+      );
     },
-    [multiple, onChange, onValueChange]
+    [multiple, onValueChange]
   );
 
   const [selectedValue, setSelectedValue] = useControllableState({
