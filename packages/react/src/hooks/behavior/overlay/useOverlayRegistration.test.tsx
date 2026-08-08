@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { overlayManager } from '@/managers';
+import {
+  createOverlayManager,
+  overlayManager,
+  OverlayManagerProvider,
+} from '@/managers';
 
 import { render } from '../../../test-utils/render';
 
@@ -55,8 +59,6 @@ describe('useOverlayRegistration', () => {
     expect(second?.isTopOverlay()).toBe(true);
     expect(first?.zIndex).toBeGreaterThan(0);
     expect(second?.zIndex).toBeGreaterThan(first?.zIndex ?? 0);
-    expect(first?.layer).toBe(first?.zIndex);
-    expect(second?.layer).toBe(second?.zIndex);
 
     unmount();
   });
@@ -104,6 +106,28 @@ describe('useOverlayRegistration', () => {
 
     expect(first?.isTopOverlay()).toBe(true);
     expect(second?.isTopOverlay()).toBe(false);
+
+    unmount();
+  });
+
+  it('uses the nearest scoped overlay manager provider', () => {
+    const scopedManager = createOverlayManager();
+    let registration: ReturnType<typeof useOverlayRegistration> | undefined;
+
+    const { unmount } = render(
+      <OverlayManagerProvider manager={scopedManager}>
+        <TestOverlay
+          id='scoped'
+          onReady={(nextRegistration) => {
+            registration = nextRegistration;
+          }}
+        />
+      </OverlayManagerProvider>
+    );
+
+    expect(registration?.isTopOverlay()).toBe(true);
+    expect(scopedManager.getTopmost()?.id).toBe('scoped');
+    expect(overlayManager.getTopmost()).toBeNull();
 
     unmount();
   });

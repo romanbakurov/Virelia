@@ -276,7 +276,7 @@ export const SelectRoot = ({
   const dismiss = useOverlayDismiss({
     active: isOpen,
     id: listboxId,
-    layer: 'dropdown',
+    zIndexLevel: 'dropdown',
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef: listRef,

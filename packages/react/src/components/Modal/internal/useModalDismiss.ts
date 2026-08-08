@@ -31,7 +31,7 @@ export const useModalDismiss = ({
     active,
     registrationActive,
     id,
-    layer: 'modal',
+    zIndexLevel: 'modal',
     closeOnOutsidePress,
     closeOnEscape,
     contentRef,

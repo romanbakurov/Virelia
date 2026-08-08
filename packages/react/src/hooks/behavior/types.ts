@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 
-import type { OverlayLayer } from '@/managers';
+import type { OverlayZIndexLevel } from '@/managers';
 
 export type OverlayAutoFocusEvent = {
   preventDefault: () => void;
@@ -29,7 +29,7 @@ export type OverlayDismissReason = 'escape-key' | 'outside-press';
 export type OverlayDismissOptions = {
   active: boolean;
   id: string;
-  layer?: OverlayLayer;
+  zIndexLevel?: OverlayZIndexLevel;
   registrationActive?: boolean;
   registered?: boolean;
   zIndex?: number;

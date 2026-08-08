@@ -276,7 +276,7 @@ export const DropdownRoot = ({
   const dismiss = useOverlayDismiss({
     active: isOpen,
     id: contentId,
-    layer: 'dropdown',
+    zIndexLevel: 'dropdown',
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef,

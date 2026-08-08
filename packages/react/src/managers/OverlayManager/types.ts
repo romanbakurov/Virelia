@@ -1,17 +1,17 @@
 import type { lightTheme } from '@vellira-ui/tokens';
 
-export type OverlayLayer = keyof typeof lightTheme.tokens.zIndex;
+export type OverlayZIndexLevel = keyof typeof lightTheme.tokens.zIndex;
 
 export type OverlayEntry = {
   id: string;
-  layer: OverlayLayer;
+  zIndexLevel: OverlayZIndexLevel;
   order: number;
   zIndex?: number;
 };
 
 export type OverlayRegistration = {
   id: string;
-  layer?: OverlayLayer;
+  zIndexLevel?: OverlayZIndexLevel;
   zIndex?: number;
 };
 

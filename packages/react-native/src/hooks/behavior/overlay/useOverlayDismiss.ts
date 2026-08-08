@@ -2,7 +2,10 @@ import { useCallback, useEffect } from 'react';
 
 import { BackHandler, Platform } from 'react-native';
 
-import { nativeOverlayManager } from '../../../managers/OverlayManager';
+import {
+  type NativeOverlayManager,
+  useNativeOverlayManager,
+} from '../../../managers/OverlayManager';
 
 import { useOverlayRegistration } from './useOverlayRegistration';
 
@@ -15,49 +18,64 @@ export type OverlayDismissOptions = {
   requestOutsideClose?: () => void;
 };
 
-let activeDismissHandlers = 0;
-let detachDismissListener: (() => void) | undefined;
+const dismissListeners = new Map<
+  NativeOverlayManager,
+  { count: number; detach: () => void }
+>();
 
-function attachDismissListener() {
-  if (detachDismissListener) return;
+function attachDismissListener(manager: NativeOverlayManager) {
+  if (dismissListeners.has(manager)) return;
 
   if (Platform.OS === 'web') {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
 
-      nativeOverlayManager.dispatchTopDismiss();
+      manager.dispatchTopDismiss();
     };
 
     document.addEventListener('keydown', handleKeyDown);
 
-    detachDismissListener = () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      detachDismissListener = undefined;
-    };
+    dismissListeners.set(manager, {
+      count: 0,
+      detach: () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        dismissListeners.delete(manager);
+      },
+    });
 
     return;
   }
 
   const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
-    nativeOverlayManager.dispatchTopDismiss()
+    manager.dispatchTopDismiss()
   );
 
-  detachDismissListener = () => {
-    subscription.remove();
-    detachDismissListener = undefined;
-  };
+  dismissListeners.set(manager, {
+    count: 0,
+    detach: () => {
+      subscription.remove();
+      dismissListeners.delete(manager);
+    },
+  });
 }
 
-function retainDismissListener() {
-  activeDismissHandlers += 1;
-  attachDismissListener();
+function retainDismissListener(manager: NativeOverlayManager) {
+  attachDismissListener(manager);
+
+  const retained = dismissListeners.get(manager);
+  if (!retained) return () => undefined;
+
+  retained.count += 1;
 
   return () => {
-    activeDismissHandlers = Math.max(0, activeDismissHandlers - 1);
+    const current = dismissListeners.get(manager);
+    if (!current) return;
 
-    if (activeDismissHandlers > 0) return;
+    current.count = Math.max(0, current.count - 1);
 
-    detachDismissListener?.();
+    if (current.count > 0) return;
+
+    current.detach();
   };
 }
 
@@ -69,6 +87,7 @@ export const useOverlayDismiss = ({
   requestClose,
   requestOutsideClose,
 }: OverlayDismissOptions) => {
+  const nativeOverlayManager = useNativeOverlayManager();
   const registration = useOverlayRegistration({ active, id });
   const { isTopOverlay } = registration;
 
@@ -80,7 +99,7 @@ export const useOverlayDismiss = ({
 
   const requestOutsideTopClose = useCallback(() => {
     nativeOverlayManager.dispatchTopOutsidePress();
-  }, []);
+  }, [nativeOverlayManager]);
 
   useEffect(() => {
     if (!active) return;
@@ -103,6 +122,7 @@ export const useOverlayDismiss = ({
     closeOnOutsidePress,
     id,
     isTopOverlay,
+    nativeOverlayManager,
     requestClose,
     requestOutsideClose,
   ]);
@@ -110,7 +130,7 @@ export const useOverlayDismiss = ({
   useEffect(() => {
     if (!active) return;
 
-    const releaseDismissListener = retainDismissListener();
+    const releaseDismissListener = retainDismissListener(nativeOverlayManager);
     const unregisterDismissHandler =
       nativeOverlayManager.registerDismissHandler(id, () => {
         if (!closeOnEscape) return false;
@@ -124,7 +144,7 @@ export const useOverlayDismiss = ({
       unregisterDismissHandler();
       releaseDismissListener();
     };
-  }, [active, closeOnEscape, id, requestTopClose]);
+  }, [active, closeOnEscape, id, nativeOverlayManager, requestTopClose]);
 
   return {
     zIndex: registration.zIndex,

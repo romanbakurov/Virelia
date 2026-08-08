@@ -6,8 +6,8 @@ describe('WebOverlayManager', () => {
   it('registers overlays in stable stack order and exposes the topmost entry', () => {
     const manager = createOverlayManager();
 
-    manager.register({ id: 'popover', layer: 'popover' });
-    manager.register({ id: 'dropdown', layer: 'dropdown' });
+    manager.register({ id: 'popover', zIndexLevel: 'popover' });
+    manager.register({ id: 'dropdown', zIndexLevel: 'dropdown' });
 
     expect(manager.getStack().map((entry) => entry.id)).toEqual([
       'popover',
@@ -88,12 +88,12 @@ describe('WebOverlayManager', () => {
     expect(manager.getTopmost()?.id).toBe('third');
   });
 
-  it('calculates z-index from layer base and stack order unless explicitly set', () => {
+  it('calculates z-index from level base and stack order unless explicitly set', () => {
     const manager = createOverlayManager();
 
-    manager.register({ id: 'dropdown', layer: 'dropdown' });
-    manager.register({ id: 'popover', layer: 'popover' });
-    manager.register({ id: 'custom', layer: 'tooltip', zIndex: 5000 });
+    manager.register({ id: 'dropdown', zIndexLevel: 'dropdown' });
+    manager.register({ id: 'popover', zIndexLevel: 'popover' });
+    manager.register({ id: 'custom', zIndexLevel: 'tooltip', zIndex: 5000 });
 
     expect(manager.getZIndex('dropdown')).toBe(100);
     expect(manager.getZIndex('popover')).toBe(210);

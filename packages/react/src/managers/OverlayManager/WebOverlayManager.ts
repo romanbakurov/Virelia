@@ -10,14 +10,14 @@ import { lightTheme } from '@vellira-ui/tokens';
 import type {
   OverlayEntry,
   OverlayEscapeHandler,
-  OverlayLayer,
   OverlayManager,
   OverlayPointerDownOutsideHandler,
   OverlayRegistration,
   OverlaySnapshot,
+  OverlayZIndexLevel,
 } from './types';
 
-const overlayZIndexPolicy = createOverlayZIndexPolicy<OverlayLayer>({
+const overlayZIndexPolicy = createOverlayZIndexPolicy<OverlayZIndexLevel>({
   defaultLevel: 'popover',
   levels: lightTheme.tokens.zIndex,
 });
@@ -58,7 +58,7 @@ export function createOverlayManager(): OverlayManager {
   const resolveZIndex = (entry: OverlayEntry) => {
     return resolveOverlayZIndex({
       explicitZIndex: entry.zIndex,
-      level: entry.layer,
+      level: entry.zIndexLevel,
       order: entry.order,
       policy: overlayZIndexPolicy,
     });
@@ -74,7 +74,8 @@ export function createOverlayManager(): OverlayManager {
 
       const entry = {
         id: registration.id,
-        layer: registration.layer ?? overlayZIndexPolicy.defaultLevel,
+        zIndexLevel:
+          registration.zIndexLevel ?? overlayZIndexPolicy.defaultLevel,
         order: orderSeed++,
         zIndex: registration.zIndex,
       };
@@ -108,7 +109,7 @@ export function createOverlayManager(): OverlayManager {
 
       const next = {
         ...current,
-        layer: registration.layer ?? current.layer,
+        zIndexLevel: registration.zIndexLevel ?? current.zIndexLevel,
         zIndex: registration.zIndex,
       };
 

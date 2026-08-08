@@ -80,7 +80,7 @@ export function PopoverContent({
   const dismiss = useOverlayDismiss({
     active: open,
     id: contentId,
-    layer: 'popover',
+    zIndexLevel: 'popover',
     contentRef: contentRef,
     ignoreRefs: [triggerRef, anchorRef],
     closeOnEscape,

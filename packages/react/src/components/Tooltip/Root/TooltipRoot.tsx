@@ -58,7 +58,7 @@ export const TooltipRoot = ({
   const dismiss = useOverlayDismiss({
     active: open,
     id: contentId,
-    layer: 'tooltip',
+    zIndexLevel: 'tooltip',
     contentRef,
     ignoreRefs: [triggerRef],
     closeOnEscape: true,

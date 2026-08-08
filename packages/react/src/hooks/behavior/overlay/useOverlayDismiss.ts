@@ -1,82 +1,105 @@
 import { useEffect, useRef } from 'react';
 
-import { overlayManager } from '@/managers';
+import { type OverlayManager, useOverlayManager } from '@/managers';
 
 import type { OverlayDismissOptions } from '../types.js';
 import { createOutsideEvent } from '../utils/events.js';
 
 import { useOverlayRegistration } from './useOverlayRegistration.js';
 
-let activeEscapeHandlers = 0;
-let detachEscapeKeyDown: (() => void) | undefined;
-let activePointerDownOutsideHandlers = 0;
-let detachPointerDownOutside: (() => void) | undefined;
+const escapeListeners = new Map<
+  OverlayManager,
+  { count: number; detach: () => void }
+>();
+const pointerDownOutsideListeners = new Map<
+  OverlayManager,
+  { count: number; detach: () => void }
+>();
 
-function attachEscapeKeyDown() {
-  if (detachEscapeKeyDown || typeof document === 'undefined') return;
+function attachEscapeKeyDown(manager: OverlayManager) {
+  if (typeof document === 'undefined') return;
+  if (escapeListeners.has(manager)) return;
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Escape') return;
 
-    overlayManager.dispatchEscapeKeyDown(event);
+    manager.dispatchEscapeKeyDown(event);
   };
 
   document.addEventListener('keydown', handleKeyDown);
 
-  detachEscapeKeyDown = () => {
-    document.removeEventListener('keydown', handleKeyDown);
-    detachEscapeKeyDown = undefined;
-  };
+  escapeListeners.set(manager, {
+    count: 0,
+    detach: () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      escapeListeners.delete(manager);
+    },
+  });
 }
 
-function retainEscapeKeyDown() {
-  activeEscapeHandlers += 1;
-  attachEscapeKeyDown();
+function retainEscapeKeyDown(manager: OverlayManager) {
+  attachEscapeKeyDown(manager);
+
+  const retained = escapeListeners.get(manager);
+  if (!retained) return () => undefined;
+
+  retained.count += 1;
 
   return () => {
-    activeEscapeHandlers = Math.max(0, activeEscapeHandlers - 1);
+    const current = escapeListeners.get(manager);
+    if (!current) return;
 
-    if (activeEscapeHandlers > 0) return;
+    current.count = Math.max(0, current.count - 1);
 
-    detachEscapeKeyDown?.();
+    if (current.count > 0) return;
+
+    current.detach();
   };
 }
 
-function attachPointerDownOutside() {
-  if (detachPointerDownOutside || typeof document === 'undefined') return;
+function attachPointerDownOutside(manager: OverlayManager) {
+  if (typeof document === 'undefined') return;
+  if (pointerDownOutsideListeners.has(manager)) return;
 
   const handlePointerDown = (event: PointerEvent) => {
-    overlayManager.dispatchPointerDownOutside(event);
+    manager.dispatchPointerDownOutside(event);
   };
 
   document.addEventListener('pointerdown', handlePointerDown);
 
-  detachPointerDownOutside = () => {
-    document.removeEventListener('pointerdown', handlePointerDown);
-    detachPointerDownOutside = undefined;
-  };
+  pointerDownOutsideListeners.set(manager, {
+    count: 0,
+    detach: () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      pointerDownOutsideListeners.delete(manager);
+    },
+  });
 }
 
-function retainPointerDownOutside() {
-  activePointerDownOutsideHandlers += 1;
-  attachPointerDownOutside();
+function retainPointerDownOutside(manager: OverlayManager) {
+  attachPointerDownOutside(manager);
+
+  const retained = pointerDownOutsideListeners.get(manager);
+  if (!retained) return () => undefined;
+
+  retained.count += 1;
 
   return () => {
-    activePointerDownOutsideHandlers = Math.max(
-      0,
-      activePointerDownOutsideHandlers - 1
-    );
+    const current = pointerDownOutsideListeners.get(manager);
+    if (!current) return;
 
-    if (activePointerDownOutsideHandlers > 0) return;
+    current.count = Math.max(0, current.count - 1);
 
-    detachPointerDownOutside?.();
+    if (current.count > 0) return;
+
+    current.detach();
   };
 }
 
 export const useOverlayDismiss = ({
   active,
   id,
-  layer,
+  zIndexLevel,
   registrationActive = active,
   registered = false,
   zIndex,
@@ -89,10 +112,11 @@ export const useOverlayDismiss = ({
   onInteractOutside,
   requestClose,
 }: OverlayDismissOptions) => {
+  const overlayManager = useOverlayManager();
   const registration = useOverlayRegistration({
     active: registrationActive && !registered,
     id,
-    layer,
+    zIndexLevel,
     zIndex,
   });
 
@@ -102,7 +126,7 @@ export const useOverlayDismiss = ({
   useEffect(() => {
     if (!active) return;
 
-    const releaseEscapeKeyDown = retainEscapeKeyDown();
+    const releaseEscapeKeyDown = retainEscapeKeyDown(overlayManager);
     const unregisterEscapeHandler = overlayManager.registerEscapeHandler(
       id,
       (event) => {
@@ -118,12 +142,19 @@ export const useOverlayDismiss = ({
       unregisterEscapeHandler();
       releaseEscapeKeyDown();
     };
-  }, [active, closeOnEscape, id, onEscapeKeyDown, requestClose]);
+  }, [
+    active,
+    closeOnEscape,
+    id,
+    overlayManager,
+    onEscapeKeyDown,
+    requestClose,
+  ]);
 
   useEffect(() => {
     if (!active) return;
 
-    const releasePointerDownOutside = retainPointerDownOutside();
+    const releasePointerDownOutside = retainPointerDownOutside(overlayManager);
     const unregisterPointerDownOutsideHandler =
       overlayManager.registerPointerDownOutsideHandler(id, (event) => {
         if (
@@ -153,6 +184,7 @@ export const useOverlayDismiss = ({
     closeOnOutsidePress,
     contentRef,
     id,
+    overlayManager,
     onInteractOutside,
     onPointerDownOutside,
     requestClose,

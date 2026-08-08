@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { nativeOverlayManager } from '../../../managers/OverlayManager';
+import { useNativeOverlayManager } from '../../../managers/OverlayManager';
 
 export type OverlayRegistrationOptions = {
   active: boolean;
@@ -11,6 +11,7 @@ export const useOverlayRegistration = ({
   active,
   id,
 }: OverlayRegistrationOptions) => {
+  const nativeOverlayManager = useNativeOverlayManager();
   const [zIndex, setZIndex] = useState(() =>
     nativeOverlayManager.getZIndex(id)
   );
@@ -25,9 +26,12 @@ export const useOverlayRegistration = ({
     return () => {
       nativeOverlayManager.unregister(id);
     };
-  }, [active, id]);
+  }, [active, id, nativeOverlayManager]);
 
-  const isTopOverlay = useCallback(() => nativeOverlayManager.isTop(id), [id]);
+  const isTopOverlay = useCallback(
+    () => nativeOverlayManager.isTop(id),
+    [id, nativeOverlayManager]
+  );
 
   return {
     zIndex,

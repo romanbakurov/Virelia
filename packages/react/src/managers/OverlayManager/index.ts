@@ -1,8 +1,12 @@
+export {
+  OverlayManagerProvider,
+  useOverlayManager,
+} from './OverlayManagerProvider';
 export type {
   OverlayEntry,
-  OverlayLayer,
   OverlayManager,
   OverlayRegistration,
   OverlaySnapshot,
+  OverlayZIndexLevel,
 } from './types';
 export { createOverlayManager, overlayManager } from './WebOverlayManager';

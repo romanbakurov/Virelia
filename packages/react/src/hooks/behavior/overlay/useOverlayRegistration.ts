@@ -1,45 +1,46 @@
 import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
-import { type OverlayLayer, overlayManager } from '@/managers';
+import { type OverlayZIndexLevel, useOverlayManager } from '@/managers';
 
 export type OverlayRegistrationOptions = {
   active: boolean;
   id: string;
-  layer?: OverlayLayer;
+  zIndexLevel?: OverlayZIndexLevel;
   zIndex?: number;
 };
-
-const getOverlaySnapshot = () => overlayManager.getSnapshot();
 
 export const useOverlayRegistration = ({
   active,
   id,
-  layer,
+  zIndexLevel,
   zIndex: explicitZIndex,
 }: OverlayRegistrationOptions) => {
+  const overlayManager = useOverlayManager();
   const snapshot = useSyncExternalStore(
     overlayManager.subscribe,
-    getOverlaySnapshot,
-    getOverlaySnapshot
+    overlayManager.getSnapshot,
+    overlayManager.getSnapshot
   );
 
   useEffect(() => {
     if (!active) return;
 
-    overlayManager.register({ id, layer, zIndex: explicitZIndex });
+    overlayManager.register({ id, zIndexLevel, zIndex: explicitZIndex });
 
     return () => {
       overlayManager.unregister(id);
     };
-  }, [active, id, layer, explicitZIndex]);
+  }, [active, id, overlayManager, zIndexLevel, explicitZIndex]);
 
-  const isTopOverlay = useCallback(() => overlayManager.isTopmost(id), [id]);
+  const isTopOverlay = useCallback(
+    () => overlayManager.isTopmost(id),
+    [id, overlayManager]
+  );
   const entry = snapshot.registry.get(id);
 
   return {
     isTopOverlay,
     isTopmost: snapshot.topmost?.id === id,
-    layer: overlayManager.getZIndex(id),
     order: entry?.order,
     zIndex: overlayManager.getZIndex(id),
   };
