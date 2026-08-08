@@ -63,7 +63,7 @@ export const useOverlayDismiss = ({
       () => {
         if (!isTopOverlay()) return false;
 
-        requestClose();
+        requestTopClose();
 
         return true;
       }
@@ -72,7 +72,7 @@ export const useOverlayDismiss = ({
     return () => {
       subscription.remove();
     };
-  }, [active, closeOnEscape, isTopOverlay, requestClose, requestTopClose]);
+  }, [active, closeOnEscape, isTopOverlay, requestTopClose]);
 
   return {
     isTopOverlay,
