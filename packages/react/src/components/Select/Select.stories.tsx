@@ -762,7 +762,7 @@ const AdvancedUsageSelect = () => {
             <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
           </span>
         )}
-        renderValue={(option) =>
+        renderValue={({ option }) =>
           option ? `${option.icon ?? ''} ${option.label}` : 'Country'
         }
       >
@@ -1036,7 +1036,7 @@ export const CustomRender: Story = {
         <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
       </span>
     ),
-    renderValue: (option) =>
+    renderValue: ({ option }) =>
       option ? `${option.icon ?? ''} ${option.label}` : 'Choose country',
   },
   render: (args) => (
@@ -1055,7 +1055,7 @@ export const CountrySelector: Story = {
         searchable
         clearable
         startIcon={<Search />}
-        renderValue={(option) =>
+        renderValue={({ option }) =>
           option ? `${option.icon ?? ''} ${option.label}` : 'Choose country'
         }
       >

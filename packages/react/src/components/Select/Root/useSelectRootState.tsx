@@ -328,11 +328,25 @@ export function useSelectRootState({
   const selectedDisplay = useMemo(
     () =>
       renderValue
-        ? renderValue(selectedOption)
+        ? renderValue({
+            multiple,
+            option: selectedOption,
+            options: selectedOptions,
+            value: singleSelectedValue,
+            values: selectedValues,
+          })
         : multiple && selectedOptions.length
           ? selectedOptions.map((option) => option.label).join(', ')
           : (selectedOption?.label ?? placeholder),
-    [multiple, placeholder, renderValue, selectedOption, selectedOptions]
+    [
+      multiple,
+      placeholder,
+      renderValue,
+      selectedOption,
+      selectedOptions,
+      selectedValues,
+      singleSelectedValue,
+    ]
   );
   const emptyText = empty ?? 'No options available';
   const showClear =

@@ -13,5 +13,9 @@ export { SelectSearch } from './Search';
 export { Select } from './Select';
 export { SelectSeparator } from './Separator';
 export { SelectTrigger } from './Trigger';
-export type { SelectOption, SelectProps } from './types';
+export type {
+  SelectOption,
+  SelectProps,
+  SelectRenderValueContext,
+} from './types';
 export { SelectValue } from './Value';

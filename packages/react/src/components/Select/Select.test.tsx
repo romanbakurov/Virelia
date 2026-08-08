@@ -8,6 +8,7 @@ import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 
 import { Select } from './Select';
+import type { SelectRenderValueContext } from './types';
 
 const options = [
   { label: 'France', value: 'fr', disabled: true },
@@ -1269,6 +1270,7 @@ describe('Select', () => {
 
   it('supports multiple values, maxSelected, and closeOnSelect', () => {
     const onValueChange = vi.fn();
+    let lastRenderValueContext: SelectRenderValueContext | undefined;
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -1285,6 +1287,11 @@ describe('Select', () => {
           maxSelected={2}
           closeOnSelect={false}
           onValueChange={onValueChange}
+          renderValue={(context) => {
+            lastRenderValueContext = context;
+
+            return `${context.options.length} selected`;
+          }}
         >
           {renderSelectItems([
             { label: 'Germany', value: 'de' },
@@ -1296,6 +1303,13 @@ describe('Select', () => {
     });
 
     const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.textContent).toContain('1 selected');
+    expect(lastRenderValueContext?.multiple).toBe(true);
+    expect(lastRenderValueContext?.values).toEqual(['de']);
+    expect(
+      lastRenderValueContext?.options.map((option) => option.value)
+    ).toEqual(['de']);
 
     act(() => {
       trigger?.click();
@@ -1316,6 +1330,11 @@ describe('Select', () => {
     expect(onValueChange).toHaveBeenLastCalledWith(['de', 'es']);
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(new FormData(form).getAll('countries')).toEqual(['de', 'es']);
+    expect(trigger?.textContent).toContain('2 selected');
+    expect(lastRenderValueContext?.values).toEqual(['de', 'es']);
+    expect(
+      lastRenderValueContext?.options.map((option) => option.value)
+    ).toEqual(['de', 'es']);
 
     act(() => {
       portugal?.click();
