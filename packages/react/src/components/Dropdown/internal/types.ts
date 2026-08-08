@@ -45,6 +45,22 @@ export type DropdownSlotComponent<P> = ((props: P) => ReactElement | null) & {
   displayName?: string;
 };
 
+type WrappedDropdownSlotComponent = {
+  __velliraDropdownPart?: DropdownSlot;
+  render?: WrappedDropdownSlotComponent;
+  type?: WrappedDropdownSlotComponent;
+};
+
+export function getDropdownSlotPart(type: unknown): DropdownSlot | undefined {
+  const slotType = type as WrappedDropdownSlotComponent | undefined;
+
+  return (
+    slotType?.__velliraDropdownPart ??
+    slotType?.type?.__velliraDropdownPart ??
+    slotType?.render?.__velliraDropdownPart
+  );
+}
+
 export type DropdownCollectionItem =
   | {
       type: 'item';

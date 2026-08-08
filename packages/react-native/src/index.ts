@@ -26,7 +26,11 @@ export type {
 export { Popover } from './components/Popover';
 export type { RadioGroupProps } from './components/RadioGroup';
 export { RadioGroup } from './components/RadioGroup';
-export type { SelectOption, SelectProps } from './components/Select';
+export type {
+  SelectOption,
+  SelectProps,
+  SelectRenderValueContext,
+} from './components/Select';
 export { Select } from './components/Select';
 export type {
   TabsContentProps,

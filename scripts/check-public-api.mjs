@@ -328,6 +328,7 @@ const publicSymbolContracts = {
     'Select',
     'SelectOption',
     'SelectProps',
+    'SelectRenderValueContext',
     'Tabs',
     'TabsContentProps',
     'TabsListProps',

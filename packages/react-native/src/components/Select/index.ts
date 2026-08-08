@@ -15,6 +15,7 @@ export type {
   SelectProps,
   SelectRenderOption,
   SelectRenderValue,
+  SelectRenderValueContext,
   SelectSearchProps,
   SelectSeparatorProps,
   SelectTriggerSlotProps,

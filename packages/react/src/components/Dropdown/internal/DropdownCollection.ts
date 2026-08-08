@@ -30,6 +30,7 @@ import type {
   DropdownSlotComponent,
   ParsedDropdownChildren,
 } from './types';
+import { getDropdownSlotPart } from './types';
 
 type PortalElementType = {
   __velliraPortal?: true;
@@ -67,6 +68,7 @@ export function parseDropdownChildren(
     Children.forEach(node, (child) => {
       if (!isValidElement(child)) return;
 
+      const part = getDropdownSlotPart(child.type);
       const type = child.type as DropdownSlotComponent<unknown>;
 
       if ((type as PortalElementType).__velliraPortal) {
@@ -75,7 +77,7 @@ export function parseDropdownChildren(
         return;
       }
 
-      switch (type.__velliraDropdownPart) {
+      switch (part) {
         case 'trigger':
           trigger = child as ParsedDropdownChildren['trigger'];
           return;
@@ -243,24 +245,24 @@ export function getItemCompoundSlots(children: ReactNode) {
       return;
     }
 
-    const type = child.type as DropdownSlotComponent<unknown>;
+    const part = getDropdownSlotPart(child.type);
 
-    if (type.__velliraDropdownPart === 'itemIcon') {
+    if (part === 'itemIcon') {
       icon = (child.props as DropdownItemIconProps).children;
       return;
     }
 
-    if (type.__velliraDropdownPart === 'itemDescription') {
+    if (part === 'itemDescription') {
       description = (child.props as DropdownItemDescriptionProps).children;
       return;
     }
 
-    if (type.__velliraDropdownPart === 'itemBadge') {
+    if (part === 'itemBadge') {
       badge = (child.props as DropdownItemBadgeProps).children;
       return;
     }
 
-    if (type.__velliraDropdownPart === 'itemShortcut') {
+    if (part === 'itemShortcut') {
       shortcut = (child.props as DropdownItemShortcutProps).children;
       return;
     }
@@ -284,13 +286,13 @@ function collectSubParts(children: ReactNode) {
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return;
 
-    const type = child.type as DropdownSlotComponent<unknown>;
+    const part = getDropdownSlotPart(child.type);
 
-    if (type.__velliraDropdownPart === 'subTrigger') {
+    if (part === 'subTrigger') {
       trigger = child as ReactElement<DropdownSubTriggerProps>;
     }
 
-    if (type.__velliraDropdownPart === 'subContent') {
+    if (part === 'subContent') {
       content = child as ReactElement<DropdownSubContentProps>;
     }
   });
@@ -310,13 +312,13 @@ function getItemLabel(children: ReactNode) {
 
       if (!isValidElement(child)) return;
 
-      const type = child.type as DropdownSlotComponent<unknown>;
+      const part = getDropdownSlotPart(child.type);
 
       if (
-        type.__velliraDropdownPart === 'itemBadge' ||
-        type.__velliraDropdownPart === 'itemDescription' ||
-        type.__velliraDropdownPart === 'itemIcon' ||
-        type.__velliraDropdownPart === 'itemShortcut'
+        part === 'itemBadge' ||
+        part === 'itemDescription' ||
+        part === 'itemIcon' ||
+        part === 'itemShortcut'
       ) {
         return;
       }

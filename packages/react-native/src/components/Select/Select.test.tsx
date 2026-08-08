@@ -706,10 +706,8 @@ describe('Native Select', () => {
         label='Country'
         defaultValue='fr'
         options={options}
-        renderValue={(option) =>
-          option && !Array.isArray(option) ? (
-            <Text>Selected: {option.label}</Text>
-          ) : null
+        renderValue={({ option }) =>
+          option ? <Text>Selected: {option.label}</Text> : null
         }
         renderOption={(option, state) => (
           <Text>

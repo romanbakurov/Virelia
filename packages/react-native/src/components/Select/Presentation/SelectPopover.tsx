@@ -9,6 +9,7 @@ import type { SelectPopoverProps } from './types';
 export const SelectPopover = ({
   visible,
   onClose,
+  onOutsideClose,
   dismissOnBackdropPress,
   zIndex,
   position,
@@ -32,7 +33,7 @@ export const SelectPopover = ({
         testID='select-content-root'
       >
         <SelectBackdrop
-          onClose={onClose}
+          onOutsideClose={onOutsideClose}
           dismissOnBackdropPress={dismissOnBackdropPress}
         />
 

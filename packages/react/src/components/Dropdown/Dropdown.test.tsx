@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, memo } from 'react';
 
 import { waitFor } from '@testing-library/react';
 import type { ComponentProps } from 'react';
@@ -103,6 +103,37 @@ describe('Dropdown', () => {
 
     expect(document.body.style.overflow).toBe('');
     expect(document.activeElement).toBe(trigger);
+
+    unmount();
+  });
+
+  it('recognizes wrapped compound slots', () => {
+    const MemoTrigger = memo(Dropdown.Trigger);
+    const MemoContent = memo(Dropdown.Content);
+    const MemoItem = memo(Dropdown.Item);
+    const MemoItemDescription = memo(Dropdown.ItemDescription);
+
+    const { container, unmount } = render(
+      <Dropdown>
+        <MemoTrigger>Actions</MemoTrigger>
+        <MemoContent>
+          <MemoItem>
+            Edit
+            <MemoItemDescription>Update workspace details</MemoItemDescription>
+          </MemoItem>
+        </MemoContent>
+      </Dropdown>
+    );
+
+    act(() => container.querySelector<HTMLButtonElement>('button')?.click());
+
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Edit'
+    );
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Update workspace details'
+    );
 
     unmount();
   });

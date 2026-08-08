@@ -49,7 +49,11 @@ export type SelectRenderOptionState = {
   disabled: boolean;
 };
 
-export type SelectRenderValueState = {
+export type SelectRenderValueContext = {
+  option: SelectOption | undefined;
+  options: SelectOption[];
+  value: string;
+  values: string[];
   placeholder: string;
   multiple: boolean;
 };
@@ -60,8 +64,7 @@ export type SelectRenderOption = (
 ) => ReactNode;
 
 export type SelectRenderValue = (
-  option: SelectOption | SelectOption[] | null,
-  state: SelectRenderValueState
+  context: SelectRenderValueContext
 ) => ReactNode;
 
 type SelectSharedBaseProps = Pick<

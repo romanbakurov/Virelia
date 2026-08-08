@@ -4,6 +4,7 @@ import type { LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native';
 export type SelectPresentationProps = {
   visible: boolean;
   onClose: () => void;
+  onOutsideClose: () => void;
   dismissOnBackdropPress: boolean;
   zIndex: number;
   contentStyle?: StyleProp<ViewStyle>;
@@ -21,6 +22,6 @@ export type SelectPopoverProps = SelectPresentationProps & {
 };
 
 export type SelectBackdropProps = {
-  onClose: () => void;
+  onOutsideClose: () => void;
   dismissOnBackdropPress: boolean;
 };

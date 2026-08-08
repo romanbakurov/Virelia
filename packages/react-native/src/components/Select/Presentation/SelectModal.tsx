@@ -9,6 +9,7 @@ import type { SelectPresentationProps } from './types';
 export const SelectModal = ({
   visible,
   onClose,
+  onOutsideClose,
   dismissOnBackdropPress,
   zIndex,
   contentStyle,
@@ -32,7 +33,7 @@ export const SelectModal = ({
         testID='select-content-root'
       >
         <SelectBackdrop
-          onClose={onClose}
+          onOutsideClose={onOutsideClose}
           dismissOnBackdropPress={dismissOnBackdropPress}
         />
         <View

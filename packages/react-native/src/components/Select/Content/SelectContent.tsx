@@ -39,6 +39,7 @@ export const SelectContentSurface = () => {
     triggerWidth,
     resolvedLabel,
     closeContent,
+    requestOutsideClose,
     searchable,
     loading,
     filteredRows,
@@ -183,6 +184,7 @@ export const SelectContentSurface = () => {
       <SelectSheet
         visible={isOpen}
         onClose={closeContent}
+        onOutsideClose={requestOutsideClose}
         dismissOnBackdropPress={dismissOnBackdropPress}
         zIndex={zIndex}
         contentStyle={contentStyle}
@@ -197,6 +199,7 @@ export const SelectContentSurface = () => {
       <SelectPopover
         visible={isOpen}
         onClose={closeContent}
+        onOutsideClose={requestOutsideClose}
         dismissOnBackdropPress={dismissOnBackdropPress}
         position={position}
         zIndex={zIndex}
@@ -214,6 +217,7 @@ export const SelectContentSurface = () => {
     <SelectModal
       visible={isOpen}
       onClose={closeContent}
+      onOutsideClose={requestOutsideClose}
       dismissOnBackdropPress={dismissOnBackdropPress}
       zIndex={zIndex}
       contentStyle={contentStyle}

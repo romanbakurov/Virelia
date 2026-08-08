@@ -275,10 +275,8 @@ function CustomRenderSelect() {
       label='Assignee'
       defaultValue='alex'
       startIcon={<User />}
-      renderValue={(option) =>
-        option && !Array.isArray(option) ? (
-          <Text>Assigned to {option.label}</Text>
-        ) : null
+      renderValue={({ option }) =>
+        option ? <Text>Assigned to {option.label}</Text> : null
       }
       renderOption={(option, state) => (
         <Text>

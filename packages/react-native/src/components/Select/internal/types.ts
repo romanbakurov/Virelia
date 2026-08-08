@@ -91,6 +91,7 @@ export type SelectContextValue = {
   empty: ReactNode;
   loadingContent: ReactNode;
   closeContent: () => void;
+  requestOutsideClose: () => void;
   selectOption: (option: SelectOption) => void;
   selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;
