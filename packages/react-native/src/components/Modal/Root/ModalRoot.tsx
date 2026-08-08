@@ -70,16 +70,23 @@ export const ModalRoot = ({
     closeOnOutsidePress,
   });
 
-  const closeAndRestoreFocus = () => {
-    modal.requestClose();
-    restoreFocusAfterClose();
-  };
+  const previousOpenRef = useRef(modal.open);
+
+  useEffect(() => {
+    const wasOpen = previousOpenRef.current;
+
+    if (wasOpen && !modal.open) {
+      restoreFocusAfterClose();
+    }
+
+    previousOpenRef.current = modal.open;
+  }, [modal.open, restoreFocusAfterClose]);
 
   const dismiss = useOverlayDismiss({
     id: modal.contentId,
     active: modal.open,
     closeOnOutsidePress: modal.closeOnOutsidePress,
-    requestClose: closeAndRestoreFocus,
+    requestClose: modal.requestClose,
   });
   const animationDuration = resolveDuration(duration);
   const shouldAnimate = animation !== 'none' && !reduceMotion;

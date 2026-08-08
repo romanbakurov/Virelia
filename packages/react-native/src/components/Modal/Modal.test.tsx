@@ -333,4 +333,63 @@ describe('Native Modal', () => {
     unmount();
     animationFrame.mockRestore();
   });
+
+  it('does not restore focus until a controlled modal actually closes', () => {
+    const onOpenChange = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Modal open onOpenChange={onOpenChange}>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    const doneButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Done');
+
+    act(() => {
+      doneButton?.click();
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(document.activeElement).not.toBe(trigger);
+
+    rerender(
+      <Modal open={false} onOpenChange={onOpenChange}>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.activeElement).toBe(trigger);
+
+    unmount();
+  });
 });
