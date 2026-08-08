@@ -1389,6 +1389,41 @@ describe('Select', () => {
     });
   });
 
+  it('applies configured virtualized dropdown height', () => {
+    const longItems = Array.from({ length: 100 }, (_, index) => ({
+      label: `Country ${index + 1}`,
+      value: `country-${index + 1}`,
+    }));
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultOpen
+          virtual={{ itemHeight: 40, maxHeight: 240, overscan: 0 }}
+        >
+          {renderSelectItems(longItems)}
+        </Select>
+      );
+    });
+
+    const listbox = document.querySelector('[role="listbox"]');
+    const dropdown = listbox?.parentElement as HTMLElement | undefined;
+
+    expect(
+      dropdown?.style.getPropertyValue('--select-dropdown-max-height')
+    ).toBe('240px');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('scrolls the selected option into view when reopening a long list', () => {
     const longItems = Array.from({ length: 100 }, (_, index) => ({
       label: `Country ${index + 1}`,

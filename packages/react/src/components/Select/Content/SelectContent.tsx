@@ -1,6 +1,8 @@
 import {
   Children,
+  type CSSProperties,
   isValidElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -10,7 +12,6 @@ import {
 
 import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
-import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
 import { resolveSelectVirtualization } from '../internal/SelectVirtualization';
@@ -84,23 +85,36 @@ export const SelectContentSurface = ({
   const didPositionOnOpenRef = useRef(false);
   const [dropdownNode, setDropdownNode] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<number>();
   const {
     bottomSpacerHeight,
     isVirtual,
     itemHeight,
+    maxHeight,
     startIndex,
     topSpacerHeight,
-    viewportHeight,
+    viewportHeight: resolvedViewportHeight,
     visibleOptions,
   } = useMemo(
-    () => resolveSelectVirtualization({ loading, options, scrollTop, virtual }),
-    [loading, options, scrollTop, virtual]
+    () =>
+      resolveSelectVirtualization({
+        loading,
+        options,
+        scrollTop,
+        virtual,
+        viewportHeight,
+      }),
+    [loading, options, scrollTop, viewportHeight, virtual]
   );
 
   const handleDropdownRef = useCallback(
     (node: HTMLDivElement | null) => {
       setDropdownNode(node);
       setDropdownRef(node);
+
+      if (node) {
+        setViewportHeight(node.clientHeight || undefined);
+      }
     },
     [setDropdownRef]
   );
@@ -109,8 +123,25 @@ export const SelectContentSurface = ({
     if (!isOpen) {
       didPositionOnOpenRef.current = false;
       setScrollTop(0);
+      setViewportHeight(undefined);
     }
   }, [isOpen, searchValue]);
+
+  useEffect(() => {
+    if (!isOpen || !dropdownNode) return;
+
+    setViewportHeight(dropdownNode.clientHeight || undefined);
+
+    if (!('ResizeObserver' in window)) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setViewportHeight(entry?.contentRect.height || undefined);
+    });
+
+    observer.observe(dropdownNode);
+
+    return () => observer.disconnect();
+  }, [dropdownNode, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !searchable) return;
@@ -144,7 +175,7 @@ export const SelectContentSurface = ({
     if (isVirtual) {
       const nextScrollTop = Math.max(
         0,
-        targetIndex * itemHeight - (viewportHeight - itemHeight) / 2
+        targetIndex * itemHeight - (resolvedViewportHeight - itemHeight) / 2
       );
 
       setScrollTop(nextScrollTop);
@@ -170,8 +201,18 @@ export const SelectContentSurface = ({
     options,
     selectedValue,
     selectedValues,
-    viewportHeight,
+    resolvedViewportHeight,
   ]);
+
+  const dropdownStyle = useMemo(
+    () =>
+      ({
+        ...style,
+        '--select-dropdown-max-height':
+          typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+      }) as CSSProperties,
+    [maxHeight, style]
+  );
 
   if (!isOpen) return null;
 
@@ -197,7 +238,7 @@ export const SelectContentSurface = ({
       ]
         .filter(Boolean)
         .join(' ')}
-      style={style}
+      style={dropdownStyle}
       onScroll={(event) => {
         if (!isVirtual) return;
 

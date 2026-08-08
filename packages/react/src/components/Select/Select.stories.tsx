@@ -514,7 +514,10 @@ Single-value or multiple-value select control for choosing from a predefined lis
       description: 'Virtualizes long option lists.',
       control: 'object',
       table: {
-        type: { summary: 'boolean | { itemHeight?: number }' },
+        type: {
+          summary:
+            'boolean | { itemHeight?: number; maxHeight?: number | string; overscan?: number; viewportHeight?: number }',
+        },
         defaultValue: { summary: 'false' },
       },
     },
@@ -1010,7 +1013,7 @@ export const LongList: Story = {
 
 export const VirtualizedList: Story = {
   args: {
-    virtual: { itemHeight: 40 },
+    virtual: { itemHeight: 40, maxHeight: 360, overscan: 3 },
     placeholder: 'Choose workspace',
   },
   render: (args) => (
