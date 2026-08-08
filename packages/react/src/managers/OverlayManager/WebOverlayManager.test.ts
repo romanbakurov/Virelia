@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { createOverlayManager } from './WebOverlayManager';
 
-describe('OverlayManager', () => {
+describe('WebOverlayManager', () => {
   it('registers overlays in stable stack order and exposes the topmost entry', () => {
     const manager = createOverlayManager();
 
