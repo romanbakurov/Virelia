@@ -12,13 +12,16 @@ export interface SelectOptionLike extends NavigableItem {
 }
 
 export type SelectStateValue = string | string[];
+type SelectValueChangeHandler<
+  TValue extends SelectStateValue = SelectStateValue,
+> = {
+  onValueChange(value: TValue): void;
+}['onValueChange'];
 
 export interface UseSelectParams<TOption extends SelectOptionLike> {
   value?: SelectStateValue;
   defaultValue?: SelectStateValue;
-  onValueChange?: (value: SelectStateValue) => void;
-  /** @deprecated Use onValueChange. */
-  onChange?: (value: SelectStateValue) => void;
+  onValueChange?: SelectValueChangeHandler;
   options: TOption[];
   multiple?: boolean;
   maxSelected?: number;
@@ -33,7 +36,6 @@ export const useSelect = <TOption extends SelectOptionLike>({
   value,
   defaultValue,
   onValueChange,
-  onChange,
   options,
   multiple = false,
   maxSelected,
@@ -43,10 +45,31 @@ export const useSelect = <TOption extends SelectOptionLike>({
   defaultOpen = false,
   onOpenChange,
 }: UseSelectParams<TOption>) => {
+  const handleValueChange = useCallback(
+    (nextValue: SelectStateValue) => {
+      if (!onValueChange) return;
+
+      if (multiple) {
+        if (Array.isArray(nextValue)) {
+          onValueChange(nextValue);
+          return;
+        }
+
+        onValueChange(nextValue ? [nextValue] : []);
+        return;
+      }
+
+      onValueChange(
+        Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue
+      );
+    },
+    [multiple, onValueChange]
+  );
+
   const [selectedValue, setSelectedValue] = useControllableState({
     value,
     defaultValue: defaultValue ?? (multiple ? [] : ''),
-    onChange: onValueChange ?? onChange,
+    onChange: handleValueChange,
   });
 
   const [isOpen, setIsOpen] = useControllableState({

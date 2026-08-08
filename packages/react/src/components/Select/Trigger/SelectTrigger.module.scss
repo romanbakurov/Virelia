@@ -3,6 +3,13 @@
 $select-colors: primary, neutral, success, warning, danger;
 $select-variants: outline, filled, soft;
 
+.root {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
 .control {
   --select-current-default-bg: var(--select-primary-outline-default-bg);
   --select-current-default-fg: var(--select-primary-outline-default-fg);
@@ -77,6 +84,10 @@ $select-variants: outline, filled, soft;
   &:active:not(.disabled) {
     transform: scale(0.985);
   }
+}
+
+.withClear {
+  padding-right: calc(var(--space-4) + var(--space-6) + var(--space-2));
 }
 
 @each $color in $select-colors {
@@ -160,7 +171,6 @@ $select-variants: outline, filled, soft;
 }
 
 .adornment,
-.clear,
 .affix {
   display: inline-flex;
   flex: 0 0 auto;
@@ -168,8 +178,7 @@ $select-variants: outline, filled, soft;
   color: var(--text-secondary);
 }
 
-.adornment,
-.clear {
+.adornment {
   justify-content: center;
 
   svg {
@@ -179,14 +188,29 @@ $select-variants: outline, filled, soft;
 }
 
 .clear {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--space-4) + 16px + var(--space-2));
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   width: var(--space-6);
   height: var(--space-6);
+  padding: 0;
   color: var(--select-clear-button-fg);
+  background: transparent;
+  border: 0;
   border-radius: var(--radius-full);
+  transform: translateY(-50%);
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
   cursor: pointer;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 
   &:hover {
     color: var(--select-clear-button-hover-fg);

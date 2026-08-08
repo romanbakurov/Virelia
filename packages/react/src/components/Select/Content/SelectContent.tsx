@@ -1,19 +1,25 @@
 import {
   Children,
+  type CSSProperties,
   isValidElement,
+  type ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 
 import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
-import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
-import type { SelectSlotComponent } from '../internal/types';
-import { useSelectVirtualization } from '../internal/useSelectVirtualization';
+import { resolveSelectVirtualization } from '../internal/SelectVirtualization';
+import {
+  getSelectSlotPart,
+  markSelectSlot,
+  type SelectSlotComponent,
+} from '../internal/types';
 import { SelectItemRow } from '../Item/SelectItem';
 
 import type { SelectContentProps } from './types';
@@ -41,7 +47,7 @@ export const SelectContent: SelectSlotComponent<SelectContentSlotProps> = ({
   );
 };
 
-SelectContent.__velliraSelectPart = 'content';
+markSelectSlot(SelectContent, 'content');
 SelectContent.displayName = 'Select.Content';
 
 export const SelectContentSurface = ({
@@ -83,25 +89,36 @@ export const SelectContentSurface = ({
   const didPositionOnOpenRef = useRef(false);
   const [dropdownNode, setDropdownNode] = useState<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<number>();
   const {
     bottomSpacerHeight,
     isVirtual,
     itemHeight,
+    maxHeight,
     startIndex,
     topSpacerHeight,
-    viewportHeight,
+    viewportHeight: resolvedViewportHeight,
     visibleOptions,
-  } = useSelectVirtualization({
-    loading,
-    options,
-    scrollTop,
-    virtual,
-  });
+  } = useMemo(
+    () =>
+      resolveSelectVirtualization({
+        loading,
+        options,
+        scrollTop,
+        virtual,
+        viewportHeight,
+      }),
+    [loading, options, scrollTop, viewportHeight, virtual]
+  );
 
   const handleDropdownRef = useCallback(
     (node: HTMLDivElement | null) => {
       setDropdownNode(node);
       setDropdownRef(node);
+
+      if (node) {
+        setViewportHeight(node.clientHeight || undefined);
+      }
     },
     [setDropdownRef]
   );
@@ -110,8 +127,25 @@ export const SelectContentSurface = ({
     if (!isOpen) {
       didPositionOnOpenRef.current = false;
       setScrollTop(0);
+      setViewportHeight(undefined);
     }
   }, [isOpen, searchValue]);
+
+  useEffect(() => {
+    if (!isOpen || !dropdownNode) return;
+
+    setViewportHeight(dropdownNode.clientHeight || undefined);
+
+    if (!('ResizeObserver' in window)) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setViewportHeight(entry?.contentRect.height || undefined);
+    });
+
+    observer.observe(dropdownNode);
+
+    return () => observer.disconnect();
+  }, [dropdownNode, isOpen]);
 
   useEffect(() => {
     if (!isOpen || !searchable) return;
@@ -145,7 +179,7 @@ export const SelectContentSurface = ({
     if (isVirtual) {
       const nextScrollTop = Math.max(
         0,
-        targetIndex * itemHeight - (viewportHeight - itemHeight) / 2
+        targetIndex * itemHeight - (resolvedViewportHeight - itemHeight) / 2
       );
 
       setScrollTop(nextScrollTop);
@@ -171,8 +205,18 @@ export const SelectContentSurface = ({
     options,
     selectedValue,
     selectedValues,
-    viewportHeight,
+    resolvedViewportHeight,
   ]);
+
+  const dropdownStyle = useMemo(
+    () =>
+      ({
+        ...style,
+        '--select-dropdown-max-height':
+          typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+      }) as CSSProperties,
+    [maxHeight, style]
+  );
 
   if (!isOpen) return null;
 
@@ -198,7 +242,7 @@ export const SelectContentSurface = ({
       ]
         .filter(Boolean)
         .join(' ')}
-      style={style}
+      style={dropdownStyle}
       onScroll={(event) => {
         if (!isVirtual) return;
 
@@ -382,21 +426,21 @@ function collectSelectContentSlots(children: ReactNode) {
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return;
 
-    const type = child.type as SelectSlotComponent<unknown>;
+    const part = getSelectSlotPart(child.type);
 
-    if (type.__velliraSelectPart === 'label') {
+    if (part === 'label') {
       headerSlot = child;
     }
 
-    if (type.__velliraSelectPart === 'search') {
+    if (part === 'search') {
       searchSlot = child;
     }
 
-    if (type.__velliraSelectPart === 'empty') {
+    if (part === 'empty') {
       emptySlot = child;
     }
 
-    if (type.__velliraSelectPart === 'loading') {
+    if (part === 'loading') {
       loadingSlot = child;
     }
   });

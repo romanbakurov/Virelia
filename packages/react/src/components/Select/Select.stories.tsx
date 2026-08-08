@@ -514,7 +514,10 @@ Single-value or multiple-value select control for choosing from a predefined lis
       description: 'Virtualizes long option lists.',
       control: 'object',
       table: {
-        type: { summary: 'boolean | { itemHeight?: number }' },
+        type: {
+          summary:
+            'boolean | { itemHeight?: number; maxHeight?: number | string; overscan?: number; viewportHeight?: number }',
+        },
         defaultValue: { summary: 'false' },
       },
     },
@@ -762,7 +765,7 @@ const AdvancedUsageSelect = () => {
             <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
           </span>
         )}
-        renderValue={(option) =>
+        renderValue={({ option }) =>
           option ? `${option.icon ?? ''} ${option.label}` : 'Country'
         }
       >
@@ -1010,7 +1013,7 @@ export const LongList: Story = {
 
 export const VirtualizedList: Story = {
   args: {
-    virtual: { itemHeight: 40 },
+    virtual: { itemHeight: 40, maxHeight: 360, overscan: 3 },
     placeholder: 'Choose workspace',
   },
   render: (args) => (
@@ -1036,7 +1039,7 @@ export const CustomRender: Story = {
         <span style={{ flex: 1, minWidth: 0 }}>{option.label}</span>
       </span>
     ),
-    renderValue: (option) =>
+    renderValue: ({ option }) =>
       option ? `${option.icon ?? ''} ${option.label}` : 'Choose country',
   },
   render: (args) => (
@@ -1055,7 +1058,7 @@ export const CountrySelector: Story = {
         searchable
         clearable
         startIcon={<Search />}
-        renderValue={(option) =>
+        renderValue={({ option }) =>
           option ? `${option.icon ?? ''} ${option.label}` : 'Choose country'
         }
       >

@@ -2,9 +2,9 @@ import { cn } from '@utils/cn';
 import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from './SelectTrigger.module.scss';
+import styles from '../Trigger/SelectTrigger.module.scss';
 
 export interface SelectValueProps {
   children?: ReactNode;
@@ -30,5 +30,5 @@ export const SelectValue: SelectSlotComponent<SelectValueProps> = ({
   );
 };
 
-SelectValue.__velliraSelectPart = 'value';
+markSelectSlot(SelectValue, 'value');
 SelectValue.displayName = 'Select.Value';

@@ -3,9 +3,9 @@ import { ChevronDown } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from './SelectTrigger.module.scss';
+import styles from '../Trigger/SelectTrigger.module.scss';
 
 export interface SelectIconProps {
   children?: ReactNode;
@@ -38,5 +38,5 @@ export const SelectIcon: SelectSlotComponent<SelectIconProps> = ({
   );
 };
 
-SelectIcon.__velliraSelectPart = 'icon';
+markSelectSlot(SelectIcon, 'icon');
 SelectIcon.displayName = 'Select.Icon';

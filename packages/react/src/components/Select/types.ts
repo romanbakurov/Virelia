@@ -16,6 +16,14 @@ export interface SelectOption extends Omit<
   icon?: ReactNode;
 }
 
+export interface SelectRenderValueContext {
+  option: SelectOption | undefined;
+  options: SelectOption[];
+  value: string;
+  values: string[];
+  multiple: boolean;
+}
+
 interface SelectOwnProps {
   children?: ReactNode;
   label?: ReactNode;
@@ -43,7 +51,7 @@ interface SelectOwnProps {
   endIcon?: ReactNode;
   prefix?: ReactNode;
   suffix?: ReactNode;
-  renderValue?: (option: SelectOption | undefined) => ReactNode;
+  renderValue?: (context: SelectRenderValueContext) => ReactNode;
   renderOption?: (option: SelectOption) => ReactNode;
   onBlur?: FocusEventHandler<HTMLButtonElement>;
   onFocus?: FocusEventHandler<HTMLButtonElement>;
@@ -54,13 +62,13 @@ interface SelectOwnProps {
 
 export type SelectSingleProps = Omit<
   BaseSelectSingleProps,
-  'options' | 'label' | 'description' | 'error' | 'onChange'
+  'options' | 'label' | 'description' | 'error'
 > &
   SelectOwnProps;
 
 export type SelectMultipleProps = Omit<
   BaseSelectMultipleProps,
-  'options' | 'label' | 'description' | 'error' | 'onChange'
+  'options' | 'label' | 'description' | 'error'
 > &
   SelectOwnProps;
 

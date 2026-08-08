@@ -1,8 +1,7 @@
 import type {
+  BaseSelectOption,
+  BaseSelectSharedProps,
   FloatingPlacement,
-  SelectColor,
-  SelectSize,
-  SelectVariant,
 } from '@vellira-ui/types';
 import type { ReactElement, ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
@@ -15,14 +14,13 @@ export type SelectVirtualConfig = {
   windowSize?: number;
 };
 
-export type SelectItemProps = {
-  value: string;
-  label: string;
+export type SelectItemProps = Omit<
+  BaseSelectOption,
+  'badge' | 'icon' | 'shortcut'
+> & {
   disabled?: boolean;
-  description?: string;
   icon?: ReactNode;
   badge?: ReactNode;
-  color?: SelectColor;
   accessibilityLabel?: string;
   accessibilityHint?: string;
 };
@@ -66,24 +64,30 @@ export type SelectRenderValue = (
   state: SelectRenderValueState
 ) => ReactNode;
 
-type SelectSharedProps = {
+type SelectSharedBaseProps = Pick<
+  BaseSelectSharedProps,
+  | 'placeholder'
+  | 'size'
+  | 'color'
+  | 'variant'
+  | 'invalid'
+  | 'required'
+  | 'disabled'
+  | 'loading'
+  | 'clearable'
+  | 'searchable'
+  | 'maxSelected'
+  | 'closeOnSelect'
+>;
+
+type SelectSharedProps = SelectSharedBaseProps & {
   label?: string;
   description?: string;
   error?: ReactNode;
-  invalid?: boolean;
-  required?: boolean;
-  disabled?: boolean;
-  placeholder?: string;
-  color?: SelectColor;
-  variant?: SelectVariant;
-  size?: SelectSize;
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  clearable?: boolean;
-  searchable?: boolean;
   searchPlaceholder?: string;
-  loading?: boolean;
   loadingText?: string;
   onSearch?: (value: string) => void;
   filterOptions?: boolean;
@@ -95,8 +99,6 @@ type SelectSharedProps = {
   suffix?: ReactNode;
   renderValue?: SelectRenderValue;
   renderOption?: SelectRenderOption;
-  closeOnSelect?: boolean;
-  maxSelected?: number;
   presentation?: SelectPresentation;
   placement?: FloatingPlacement;
   offset?: number;

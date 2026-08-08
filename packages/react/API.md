@@ -565,7 +565,7 @@ shows the first 10 labels and a `+N` overflow count.
 | `endIcon`           | `ReactNode`                                                              | No       | —                                                |
 | `prefix`            | `ReactNode`                                                              | No       | —                                                |
 | `suffix`            | `ReactNode`                                                              | No       | —                                                |
-| `renderValue`       | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
+| `renderValue`       | `(context: SelectRenderValueContext) => ReactNode`                       | No       | —                                                |
 | `renderOption`      | `(option: SelectOption) => ReactNode`                                    | No       | —                                                |
 | `color`             | `SelectColor`                                                            | No       | —                                                |
 | `invalid`           | `boolean`                                                                | No       | —                                                |

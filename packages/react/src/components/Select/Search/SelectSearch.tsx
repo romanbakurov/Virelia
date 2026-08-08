@@ -4,9 +4,9 @@ import { cn } from '@utils/cn';
 import { Close } from '@vellira-ui/icons';
 
 import { useSelectContext } from '../internal/SelectContext';
-import type { SelectSlotComponent } from '../internal/types';
+import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from './SelectContent.module.scss';
+import styles from '../Content/SelectContent.module.scss';
 
 export interface SelectSearchProps {
   placeholder?: string;
@@ -64,5 +64,5 @@ export const SelectSearch: SelectSlotComponent<SelectSearchProps> = ({
   );
 };
 
-SelectSearch.__velliraSelectPart = 'search';
+markSelectSlot(SelectSearch, 'search');
 SelectSearch.displayName = 'Select.Search';

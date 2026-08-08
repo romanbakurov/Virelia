@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, memo } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import type { ReactNode } from 'react';
@@ -8,6 +8,7 @@ import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 
 import { Select } from './Select';
+import type { SelectRenderValueContext } from './types';
 
 const options = [
   { label: 'France', value: 'fr', disabled: true },
@@ -303,6 +304,63 @@ describe('Select', () => {
     expect(
       document.getElementById('country-listbox-option-0')?.textContent
     ).toContain('Paris');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('recognizes memoized compound slots during collection', () => {
+    const MemoTrigger = memo(Select.Trigger);
+    const MemoContent = memo(Select.Content);
+    const MemoItem = memo(Select.Item);
+    const MemoLabel = memo(Select.Label);
+    const MemoItemDescription = memo(Select.ItemDescription);
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultOpen
+          onValueChange={onValueChange}
+        >
+          <MemoTrigger className='memo-trigger'>
+            <Select.Value />
+            <Select.Icon />
+          </MemoTrigger>
+          <MemoContent className='memo-content'>
+            <MemoLabel>Europe</MemoLabel>
+            <MemoItem value='fr'>
+              France
+              <MemoItemDescription>Paris</MemoItemDescription>
+            </MemoItem>
+          </MemoContent>
+        </Select>
+      );
+    });
+
+    expect(form.querySelector('[role="combobox"]')?.className).toContain(
+      'memo-trigger'
+    );
+    expect(
+      document.querySelector('[role="listbox"]')?.parentElement?.className
+    ).toContain('memo-content');
+    expect(document.body.textContent).toContain('Europe');
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('Paris');
+
+    act(() => {
+      document.getElementById('country-listbox-option-0')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('fr');
 
     act(() => {
       root.unmount();
@@ -1269,6 +1327,7 @@ describe('Select', () => {
 
   it('supports multiple values, maxSelected, and closeOnSelect', () => {
     const onValueChange = vi.fn();
+    let lastRenderValueContext: SelectRenderValueContext | undefined;
     const form = document.createElement('form');
     document.body.append(form);
 
@@ -1285,6 +1344,11 @@ describe('Select', () => {
           maxSelected={2}
           closeOnSelect={false}
           onValueChange={onValueChange}
+          renderValue={(context) => {
+            lastRenderValueContext = context;
+
+            return `${context.options.length} selected`;
+          }}
         >
           {renderSelectItems([
             { label: 'Germany', value: 'de' },
@@ -1296,6 +1360,13 @@ describe('Select', () => {
     });
 
     const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(trigger?.textContent).toContain('1 selected');
+    expect(lastRenderValueContext?.multiple).toBe(true);
+    expect(lastRenderValueContext?.values).toEqual(['de']);
+    expect(
+      lastRenderValueContext?.options.map((option) => option.value)
+    ).toEqual(['de']);
 
     act(() => {
       trigger?.click();
@@ -1316,6 +1387,11 @@ describe('Select', () => {
     expect(onValueChange).toHaveBeenLastCalledWith(['de', 'es']);
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
     expect(new FormData(form).getAll('countries')).toEqual(['de', 'es']);
+    expect(trigger?.textContent).toContain('2 selected');
+    expect(lastRenderValueContext?.values).toEqual(['de', 'es']);
+    expect(
+      lastRenderValueContext?.options.map((option) => option.value)
+    ).toEqual(['de', 'es']);
 
     act(() => {
       portugal?.click();
@@ -1364,6 +1440,41 @@ describe('Select', () => {
     });
 
     expect(document.getElementById('country-listbox-option-50')).not.toBeNull();
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('applies configured virtualized dropdown height', () => {
+    const longItems = Array.from({ length: 100 }, (_, index) => ({
+      label: `Country ${index + 1}`,
+      value: `country-${index + 1}`,
+    }));
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultOpen
+          virtual={{ itemHeight: 40, maxHeight: 240, overscan: 0 }}
+        >
+          {renderSelectItems(longItems)}
+        </Select>
+      );
+    });
+
+    const listbox = document.querySelector('[role="listbox"]');
+    const dropdown = listbox?.parentElement as HTMLElement | undefined;
+
+    expect(
+      dropdown?.style.getPropertyValue('--select-dropdown-max-height')
+    ).toBe('240px');
 
     act(() => {
       root.unmount();

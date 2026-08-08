@@ -8,6 +8,9 @@ export type SelectValue = string;
 export type SelectMultipleValue = string[];
 export type SelectVirtualConfig = {
   itemHeight?: number;
+  maxHeight?: number | string;
+  overscan?: number;
+  viewportHeight?: number;
 };
 
 export interface BaseSelectOption {
