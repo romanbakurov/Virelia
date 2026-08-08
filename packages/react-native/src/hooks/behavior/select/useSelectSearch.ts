@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import type { SelectOption } from '../types';
-
-import { defaultSelectFilter } from './SelectCollection';
-import type { SelectCollectionRow } from './types';
+import { defaultSelectFilter } from '../../../components/Select/internal/SelectCollection';
+import type { SelectCollectionRow } from '../../../components/Select/internal/types';
+import type { SelectOption } from '../../../components/Select/types';
 
 type UseSelectSearchParams = {
   rows: SelectCollectionRow[];
