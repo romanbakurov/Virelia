@@ -15,6 +15,8 @@ export type OverlayRegistration = {
   zIndex?: number;
 };
 
+export type OverlayEscapeHandler = (event: KeyboardEvent) => void;
+
 export type OverlaySnapshot = {
   registry: ReadonlyMap<string, OverlayEntry>;
   stack: readonly OverlayEntry[];
@@ -31,6 +33,11 @@ export type OverlayManager = {
   getTopmost: () => OverlayEntry | null;
   isTopmost: (id: string) => boolean;
   getZIndex: (id: string) => number | undefined;
+  registerEscapeHandler: (
+    id: string,
+    handler: OverlayEscapeHandler
+  ) => () => void;
+  dispatchEscapeKeyDown: (event: KeyboardEvent) => boolean;
   subscribe: (listener: () => void) => () => void;
   clear: () => void;
 };

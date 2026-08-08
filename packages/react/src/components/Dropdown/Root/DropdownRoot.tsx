@@ -280,6 +280,7 @@ export const DropdownRoot = ({
 
   useOverlayDismiss({
     active: isOpen,
+    id: contentId,
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef,

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { createOverlayManager } from './OverlayManager';
 
@@ -72,5 +72,51 @@ describe('OverlayManager', () => {
     manager.register({ id: 'second' });
 
     expect(calls).toBe(2);
+  });
+
+  it('dispatches Escape only to the topmost overlay handler', () => {
+    const manager = createOverlayManager();
+    const first = vi.fn();
+    const second = vi.fn();
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+
+    manager.register({ id: 'first' });
+    manager.registerEscapeHandler('first', first);
+    manager.register({ id: 'second' });
+    manager.registerEscapeHandler('second', second);
+
+    expect(manager.dispatchEscapeKeyDown(event)).toBe(true);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledWith(event);
+  });
+
+  it('dispatches Escape to the next overlay after the topmost unregisters', () => {
+    const manager = createOverlayManager();
+    const first = vi.fn();
+    const second = vi.fn();
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+
+    manager.register({ id: 'first' });
+    manager.registerEscapeHandler('first', first);
+    manager.register({ id: 'second' });
+    manager.registerEscapeHandler('second', second);
+    manager.unregister('second');
+
+    expect(manager.dispatchEscapeKeyDown(event)).toBe(true);
+    expect(first).toHaveBeenCalledWith(event);
+    expect(second).not.toHaveBeenCalled();
+  });
+
+  it('does not dispatch Escape to lower overlays when the topmost has no handler', () => {
+    const manager = createOverlayManager();
+    const first = vi.fn();
+    const event = new KeyboardEvent('keydown', { key: 'Escape' });
+
+    manager.register({ id: 'first' });
+    manager.registerEscapeHandler('first', first);
+    manager.register({ id: 'second' });
+
+    expect(manager.dispatchEscapeKeyDown(event)).toBe(false);
+    expect(first).not.toHaveBeenCalled();
   });
 });

@@ -26,6 +26,7 @@ export type OverlayDismissReason = 'escape-key' | 'outside-press';
 
 export type OverlayDismissOptions = {
   active: boolean;
+  id: string;
   contentRef: RefObject<HTMLElement | null>;
   ignoreRefs?: Array<RefObject<HTMLElement | null>>;
   closeOnEscape: boolean;

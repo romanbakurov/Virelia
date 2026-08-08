@@ -6,6 +6,7 @@ import type { ModalOutsideEvent } from '../types';
 
 export const useModalDismiss = ({
   active,
+  id,
   contentRef,
   closeOnEscape,
   closeOnOutsidePress,
@@ -16,6 +17,7 @@ export const useModalDismiss = ({
   requestClose,
 }: {
   active: boolean;
+  id: string;
   contentRef: RefObject<HTMLElement | null>;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
@@ -27,6 +29,7 @@ export const useModalDismiss = ({
 }) => {
   useOverlayDismiss({
     active,
+    id,
     closeOnOutsidePress,
     closeOnEscape,
     contentRef,

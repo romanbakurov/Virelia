@@ -2,6 +2,7 @@ import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
   OverlayEntry,
+  OverlayEscapeHandler,
   OverlayLayer,
   OverlayManager,
   OverlayRegistration,
@@ -31,6 +32,7 @@ function createSnapshot(registry: Map<string, OverlayEntry>): OverlaySnapshot {
 
 export function createOverlayManager(): OverlayManager {
   const registry = new Map<string, OverlayEntry>();
+  const escapeHandlers = new Map<string, OverlayEscapeHandler>();
   const listeners = new Set<() => void>();
   let orderSeed = 0;
   let snapshot = createSnapshot(registry);
@@ -66,6 +68,8 @@ export function createOverlayManager(): OverlayManager {
     },
 
     unregister(id: string) {
+      escapeHandlers.delete(id);
+
       if (!registry.delete(id)) return;
 
       emit();
@@ -114,6 +118,30 @@ export function createOverlayManager(): OverlayManager {
       return entry ? resolveZIndex(entry) : undefined;
     },
 
+    registerEscapeHandler(id: string, handler: OverlayEscapeHandler) {
+      escapeHandlers.set(id, handler);
+
+      return () => {
+        if (escapeHandlers.get(id) !== handler) return;
+
+        escapeHandlers.delete(id);
+      };
+    },
+
+    dispatchEscapeKeyDown(event: KeyboardEvent) {
+      const topmost = snapshot.topmost;
+
+      if (!topmost) return false;
+
+      const handler = escapeHandlers.get(topmost.id);
+
+      if (!handler) return false;
+
+      handler(event);
+
+      return true;
+    },
+
     subscribe(listener: () => void) {
       listeners.add(listener);
 
@@ -126,6 +154,7 @@ export function createOverlayManager(): OverlayManager {
       if (registry.size === 0) return;
 
       registry.clear();
+      escapeHandlers.clear();
       emit();
     },
   };

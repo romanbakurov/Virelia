@@ -2,6 +2,8 @@ import { useCallback, useEffect } from 'react';
 
 import { BackHandler, Platform } from 'react-native';
 
+import { nativeOverlayManager } from '../../../managers/OverlayManager';
+
 import { useOverlayStack } from './useOverlayStack';
 
 export type OverlayDismissOptions = {
@@ -12,6 +14,52 @@ export type OverlayDismissOptions = {
   requestClose: () => void;
   requestOutsideClose?: () => void;
 };
+
+let activeDismissHandlers = 0;
+let detachDismissListener: (() => void) | undefined;
+
+function attachDismissListener() {
+  if (detachDismissListener) return;
+
+  if (Platform.OS === 'web') {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+
+      nativeOverlayManager.dispatchTopDismiss();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    detachDismissListener = () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      detachDismissListener = undefined;
+    };
+
+    return;
+  }
+
+  const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
+    nativeOverlayManager.dispatchTopDismiss()
+  );
+
+  detachDismissListener = () => {
+    subscription.remove();
+    detachDismissListener = undefined;
+  };
+}
+
+function retainDismissListener() {
+  activeDismissHandlers += 1;
+  attachDismissListener();
+
+  return () => {
+    activeDismissHandlers = Math.max(0, activeDismissHandlers - 1);
+
+    if (activeDismissHandlers > 0) return;
+
+    detachDismissListener?.();
+  };
+}
 
 export const useOverlayDismiss = ({
   active,
@@ -42,37 +90,23 @@ export const useOverlayDismiss = ({
   }, [closeOnOutsidePress, isTopOverlay, requestClose, requestOutsideClose]);
 
   useEffect(() => {
-    if (!active || !closeOnEscape) return;
+    if (!active) return;
 
-    if (Platform.OS === 'web') {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key !== 'Escape') return;
-
-        requestTopClose();
-      };
-
-      document.addEventListener('keydown', handleKeyDown);
-
-      return () => {
-        document.removeEventListener('keydown', handleKeyDown);
-      };
-    }
-
-    const subscription = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        if (!isTopOverlay()) return false;
+    const releaseDismissListener = retainDismissListener();
+    const unregisterDismissHandler =
+      nativeOverlayManager.registerDismissHandler(id, () => {
+        if (!closeOnEscape) return false;
 
         requestTopClose();
 
         return true;
-      }
-    );
+      });
 
     return () => {
-      subscription.remove();
+      unregisterDismissHandler();
+      releaseDismissListener();
     };
-  }, [active, closeOnEscape, isTopOverlay, requestTopClose]);
+  }, [active, closeOnEscape, id, requestTopClose]);
 
   return {
     layer,

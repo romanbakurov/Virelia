@@ -1,11 +1,9 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { nativeOverlayManager } from './NativeOverlayManager';
 
 afterEach(() => {
-  nativeOverlayManager.unregister('first');
-  nativeOverlayManager.unregister('second');
-  nativeOverlayManager.unregister('third');
+  nativeOverlayManager.clear();
 });
 
 describe('nativeOverlayManager', () => {
@@ -46,5 +44,33 @@ describe('nativeOverlayManager', () => {
     const entry = nativeOverlayManager.register('first');
 
     expect(nativeOverlayManager.getLayer('first')).toBe(entry.layer);
+  });
+
+  it('dispatches dismissal only to the topmost overlay handler', () => {
+    const first = vi.fn(() => true);
+    const second = vi.fn(() => true);
+
+    nativeOverlayManager.register('first');
+    nativeOverlayManager.registerDismissHandler('first', first);
+    nativeOverlayManager.register('second');
+    nativeOverlayManager.registerDismissHandler('second', second);
+
+    expect(nativeOverlayManager.dispatchTopDismiss()).toBe(true);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not dispatch dismissal to lower overlays when the topmost returns false', () => {
+    const first = vi.fn(() => true);
+    const second = vi.fn(() => false);
+
+    nativeOverlayManager.register('first');
+    nativeOverlayManager.registerDismissHandler('first', first);
+    nativeOverlayManager.register('second');
+    nativeOverlayManager.registerDismissHandler('second', second);
+
+    expect(nativeOverlayManager.dispatchTopDismiss()).toBe(false);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
   });
 });

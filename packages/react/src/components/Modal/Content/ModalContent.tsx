@@ -42,6 +42,7 @@ export const ModalContent = ({
 
   useModalDismiss({
     active,
+    id: root.contentId,
     contentRef: root.contentRef,
     closeOnEscape: root.closeOnEscape,
     closeOnOutsidePress: root.closeOnOutsidePress,

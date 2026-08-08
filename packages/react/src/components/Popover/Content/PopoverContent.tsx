@@ -84,6 +84,7 @@ export function PopoverContent({
 
   useOverlayDismiss({
     active: open,
+    id: contentId,
     contentRef: contentRef,
     ignoreRefs: [triggerRef],
     closeOnEscape,
