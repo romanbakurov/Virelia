@@ -19,10 +19,15 @@ import {
 } from '@/hooks';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
+import type { SelectContentProps } from '../Content/types';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
-import { SelectProvider } from '../internal/SelectContext';
+import {
+  type SelectContextValue,
+  SelectProvider,
+} from '../internal/SelectContext';
 import { useSelectCollection } from '../internal/useSelectCollection';
 import { SelectTrigger, SelectTriggerSurface } from '../Trigger/SelectTrigger';
+import type { SelectTriggerProps } from '../Trigger/types';
 import type { SelectProps } from '../types';
 
 export const SelectRoot = ({
@@ -321,133 +326,227 @@ export const SelectRoot = ({
     [setFloatingRef]
   );
 
-  const selectedDisplay = renderValue
-    ? renderValue(selectedOption)
-    : multiple && selectedOptions.length
-      ? selectedOptions.map((option) => option.label).join(', ')
-      : (selectedOption?.label ?? placeholder);
+  const selectedDisplay = useMemo(
+    () =>
+      renderValue
+        ? renderValue(selectedOption)
+        : multiple && selectedOptions.length
+          ? selectedOptions.map((option) => option.label).join(', ')
+          : (selectedOption?.label ?? placeholder),
+    [multiple, placeholder, renderValue, selectedOption, selectedOptions]
+  );
   const emptyText = empty ?? 'No options available';
   const showClear =
     clearable && selectedValues.length > 0 && !isDisabled && !loading;
 
-  const triggerProps = {
-    id: triggerId,
-    describedBy: describedBy || undefined,
-    labelledBy: !ariaLabel ? ariaLabelledBy : undefined,
-    isOpen,
-    disabled: isDisabled,
-    required: isRequired,
-    listboxId,
-    activeIndex,
-    ariaLabel:
-      ariaLabel ??
-      (!label && !field?.labelId
-        ? selectedOption?.label || placeholder
-        : undefined),
-    error: isInvalid,
-    loading,
-    displayText: selectedDisplay,
-    isPlaceholder: !hasSelectedOption,
-    size: resolvedSize,
-    color,
-    variant,
-    startIcon,
-    endIcon,
-    prefix,
-    suffix,
-    clearable: showClear,
-    className: triggerClassName,
-    buttonRef: setTriggerRef,
-    onClear: handleClear,
-    onClick: handleTriggerClick,
-    onKeyDown: handleTriggerKeyDown,
-    onBlur,
-    onFocus,
-  };
-
-  const contentProps = {
-    isOpen,
-    listboxId,
-    labelledById: triggerId,
-    style: {
+  const contentStyle = useMemo(
+    () => ({
       ...floatingStyles,
       zIndex: dismiss.zIndex,
-    },
-    options: filteredOptions,
-    entries: isSearchable || searchValue ? undefined : resolvedEntries,
-    multiple,
-    color,
-    variant,
-    searchable: isSearchable,
-    command,
-    virtual,
-    portal,
-    searchValue,
-    loading,
-    loadingText,
-    emptyText,
-    renderOption,
-    selectedValue: singleSelectedValue,
-    selectedValues,
-    activeIndex,
-    visualActiveIndex: isActiveOptionVisible ? activeIndex : -1,
-    className: dropdownClassName,
-    setDropdownRef,
-    onSelect: handleSelect,
-    onSelectGroup: handleSelectGroup,
-    onMouseEnter: handleOptionMouseEnter,
-    onSearchChange: handleSearchChange,
-  };
-
-  const hiddenInputs = (
-    <>
-      {name && multiple && selectedValues.length > 0 && (
-        <>
-          {selectedValues.map((value) => (
-            <input
-              key={value}
-              type='hidden'
-              name={name}
-              value={value}
-              disabled={isDisabled}
-            />
-          ))}
-        </>
-      )}
-
-      {name && !multiple && (
-        <input
-          type='hidden'
-          name={name}
-          value={singleSelectedValue}
-          disabled={isDisabled}
-        />
-      )}
-    </>
+    }),
+    [dismiss.zIndex, floatingStyles]
   );
 
-  const hasCompoundLayout = hasSelectLayoutChildren(children);
-
-  const control = (
-    <SelectProvider value={{ triggerProps, contentProps }}>
-      {hiddenInputs}
-      {hasCompoundLayout ? (
-        children
-      ) : (
-        <>
-          <SelectTrigger />
-          <SelectContent>{children}</SelectContent>
-        </>
-      )}
-    </SelectProvider>
+  const triggerProps = useMemo<SelectTriggerProps>(
+    () => ({
+      id: triggerId,
+      describedBy: describedBy || undefined,
+      labelledBy: !ariaLabel ? ariaLabelledBy : undefined,
+      isOpen,
+      disabled: isDisabled,
+      required: isRequired,
+      listboxId,
+      activeIndex,
+      ariaLabel:
+        ariaLabel ??
+        (!label && !field?.labelId
+          ? selectedOption?.label || placeholder
+          : undefined),
+      error: isInvalid,
+      loading,
+      displayText: selectedDisplay,
+      isPlaceholder: !hasSelectedOption,
+      size: resolvedSize,
+      color,
+      variant,
+      startIcon,
+      endIcon,
+      prefix,
+      suffix,
+      clearable: showClear,
+      className: triggerClassName,
+      buttonRef: setTriggerRef,
+      onClear: handleClear,
+      onClick: handleTriggerClick,
+      onKeyDown: handleTriggerKeyDown,
+      onBlur,
+      onFocus,
+    }),
+    [
+      activeIndex,
+      ariaLabel,
+      ariaLabelledBy,
+      color,
+      describedBy,
+      endIcon,
+      field?.labelId,
+      handleClear,
+      handleTriggerClick,
+      handleTriggerKeyDown,
+      hasSelectedOption,
+      isDisabled,
+      isInvalid,
+      isOpen,
+      isRequired,
+      label,
+      listboxId,
+      loading,
+      onBlur,
+      onFocus,
+      placeholder,
+      prefix,
+      resolvedSize,
+      selectedDisplay,
+      selectedOption?.label,
+      setTriggerRef,
+      showClear,
+      startIcon,
+      suffix,
+      triggerClassName,
+      triggerId,
+      variant,
+    ]
   );
 
-  const defaultControl = (
-    <SelectProvider value={{ triggerProps, contentProps }}>
-      {hiddenInputs}
-      <SelectTriggerSurface {...triggerProps} />
-      <SelectContentSurface {...contentProps} />
-    </SelectProvider>
+  const contentProps = useMemo<SelectContentProps>(
+    () => ({
+      isOpen,
+      listboxId,
+      labelledById: triggerId,
+      style: contentStyle,
+      options: filteredOptions,
+      entries: isSearchable || searchValue ? undefined : resolvedEntries,
+      multiple,
+      color,
+      variant,
+      searchable: isSearchable,
+      command,
+      virtual,
+      portal,
+      searchValue,
+      loading,
+      loadingText,
+      emptyText,
+      renderOption,
+      selectedValue: singleSelectedValue,
+      selectedValues,
+      activeIndex,
+      visualActiveIndex: isActiveOptionVisible ? activeIndex : -1,
+      className: dropdownClassName,
+      setDropdownRef,
+      onSelect: handleSelect,
+      onSelectGroup: handleSelectGroup,
+      onMouseEnter: handleOptionMouseEnter,
+      onSearchChange: handleSearchChange,
+    }),
+    [
+      activeIndex,
+      color,
+      command,
+      contentStyle,
+      dropdownClassName,
+      emptyText,
+      filteredOptions,
+      handleOptionMouseEnter,
+      handleSearchChange,
+      handleSelect,
+      handleSelectGroup,
+      isActiveOptionVisible,
+      isOpen,
+      isSearchable,
+      listboxId,
+      loading,
+      loadingText,
+      multiple,
+      portal,
+      renderOption,
+      resolvedEntries,
+      searchValue,
+      selectedValues,
+      setDropdownRef,
+      singleSelectedValue,
+      triggerId,
+      variant,
+      virtual,
+    ]
+  );
+
+  const contextValue = useMemo<SelectContextValue>(
+    () => ({ triggerProps, contentProps }),
+    [contentProps, triggerProps]
+  );
+
+  const hiddenInputs = useMemo(
+    () => (
+      <>
+        {name && multiple && selectedValues.length > 0 && (
+          <>
+            {selectedValues.map((value) => (
+              <input
+                key={value}
+                type='hidden'
+                name={name}
+                value={value}
+                disabled={isDisabled}
+              />
+            ))}
+          </>
+        )}
+
+        {name && !multiple && (
+          <input
+            type='hidden'
+            name={name}
+            value={singleSelectedValue}
+            disabled={isDisabled}
+          />
+        )}
+      </>
+    ),
+    [isDisabled, multiple, name, selectedValues, singleSelectedValue]
+  );
+
+  const hasCompoundLayout = useMemo(
+    () => hasSelectLayoutChildren(children),
+    [children]
+  );
+
+  const control = useMemo(
+    () => (
+      <SelectProvider value={contextValue}>
+        {hiddenInputs}
+        {hasCompoundLayout ? (
+          children
+        ) : (
+          <>
+            <SelectTrigger />
+            <SelectContent>{children}</SelectContent>
+          </>
+        )}
+      </SelectProvider>
+    ),
+    [children, contextValue, hasCompoundLayout, hiddenInputs]
+  );
+
+  const defaultControl = useMemo(
+    () => (
+      <SelectProvider value={contextValue}>
+        {hiddenInputs}
+        <SelectTriggerSurface {...triggerProps} />
+        <SelectContentSurface {...contentProps} />
+      </SelectProvider>
+    ),
+    [contentProps, contextValue, hiddenInputs, triggerProps]
   );
 
   if (!hasOwnField && field) {
