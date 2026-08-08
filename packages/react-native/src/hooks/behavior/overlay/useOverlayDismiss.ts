@@ -69,7 +69,8 @@ export const useOverlayDismiss = ({
   requestClose,
   requestOutsideClose,
 }: OverlayDismissOptions) => {
-  const { isTopOverlay, layer } = useOverlayRegistration({ active, id });
+  const registration = useOverlayRegistration({ active, id });
+  const { isTopOverlay, layer } = registration;
 
   const requestTopClose = useCallback(() => {
     if (!isTopOverlay()) return;
@@ -110,6 +111,7 @@ export const useOverlayDismiss = ({
 
   return {
     layer,
+    zIndex: registration.zIndex,
     isTopOverlay,
     requestClose: requestTopClose,
     requestOutsideClose: requestOutsideTopClose,

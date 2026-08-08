@@ -76,6 +76,9 @@ function retainPointerDownOutside() {
 export const useOverlayDismiss = ({
   active,
   id,
+  layer,
+  registered = false,
+  zIndex,
   contentRef,
   ignoreRefs = [],
   closeOnEscape,
@@ -85,9 +88,11 @@ export const useOverlayDismiss = ({
   onInteractOutside,
   requestClose,
 }: OverlayDismissOptions) => {
-  useOverlayRegistration({
-    active,
+  const registration = useOverlayRegistration({
+    active: active && !registered,
     id,
+    layer,
+    zIndex,
   });
 
   const ignoreRefsRef = useRef(ignoreRefs);
@@ -151,4 +156,6 @@ export const useOverlayDismiss = ({
     onPointerDownOutside,
     requestClose,
   ]);
+
+  return registration;
 };

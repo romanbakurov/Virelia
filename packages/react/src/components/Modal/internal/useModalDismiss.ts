@@ -28,6 +28,7 @@ export const useModalDismiss = ({
   useOverlayDismiss({
     active,
     id,
+    registered: true,
     closeOnOutsidePress,
     closeOnEscape,
     contentRef,

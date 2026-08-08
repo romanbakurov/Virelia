@@ -268,9 +268,10 @@ export const DropdownRoot = ({
     [isMobileSheet, setFloatingRef]
   );
 
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: isOpen,
     id: contentId,
+    layer: 'dropdown',
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef,
@@ -280,6 +281,7 @@ export const DropdownRoot = ({
 
   const surfaceStyle = {
     ...floatingStyles,
+    zIndex: dismiss.zIndex,
     minWidth: toCssSize(minWidth),
     maxWidth: toCssSize(maxWidth),
   };

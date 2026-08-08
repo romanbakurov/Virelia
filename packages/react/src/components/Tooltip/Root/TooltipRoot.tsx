@@ -55,9 +55,10 @@ export const TooltipRoot = ({
     disabled,
     interactive,
   });
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: open,
     id: contentId,
+    layer: 'tooltip',
     contentRef,
     ignoreRefs: [triggerRef],
     closeOnEscape: true,
@@ -77,7 +78,10 @@ export const TooltipRoot = ({
         arrowX: position.arrowX,
         arrowY: position.arrowY,
         placement: position.placement,
-        floatingStyles: position.floatingStyles,
+        floatingStyles: {
+          ...position.floatingStyles,
+          zIndex: dismiss.zIndex,
+        },
         setOpen,
         setTriggerRef: composeRefs(triggerRef, position.setRef),
         setContentRef: composeRefs(contentRef, position.setFloatingRef),

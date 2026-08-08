@@ -59,6 +59,7 @@ describe('Popover', () => {
 
     expect(dialog).not.toBeNull();
     expect(dialog?.textContent).toContain('Workspace settings');
+    expect((dialog as HTMLElement).style.zIndex).toBe('200');
     expect(trigger?.getAttribute('aria-expanded')).toBe('true');
 
     const closeButton = Array.from(

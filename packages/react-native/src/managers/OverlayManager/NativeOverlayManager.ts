@@ -1,6 +1,8 @@
+import { lightTheme } from '@vellira-ui/tokens';
+
 import type { NativeOverlayDismissHandler, NativeOverlayEntry } from './types';
 
-const BASE_LAYER = 1000;
+const BASE_LAYER = lightTheme.tokens.zIndex.modal;
 const LAYER_STEP = 10;
 
 let stack: NativeOverlayEntry[] = [];
@@ -10,9 +12,11 @@ export const nativeOverlayManager = {
   register(id: string) {
     stack = stack.filter((item) => item.id !== id);
 
+    const layer = BASE_LAYER + stack.length * LAYER_STEP;
     const entry: NativeOverlayEntry = {
       id,
-      layer: BASE_LAYER + stack.length * LAYER_STEP,
+      layer,
+      zIndex: layer,
     };
 
     stack.push(entry);

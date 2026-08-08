@@ -44,6 +44,7 @@ describe('nativeOverlayManager', () => {
     const entry = nativeOverlayManager.register('first');
 
     expect(nativeOverlayManager.getLayer('first')).toBe(entry.layer);
+    expect(entry.zIndex).toBe(entry.layer);
   });
 
   it('dispatches dismissal only to the topmost overlay handler', () => {

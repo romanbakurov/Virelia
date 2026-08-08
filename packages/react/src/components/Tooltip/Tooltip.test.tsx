@@ -41,6 +41,7 @@ describe('Tooltip', () => {
     expect(tooltip?.getAttribute('data-placement')).toBe('top-start');
     expect(tooltip?.getAttribute('data-state')).toBe('open');
     expect(tooltip?.textContent).toContain('Helpful text');
+    expect((tooltip as HTMLElement).style.zIndex).toBe('300');
     expect(tooltip?.style.maxWidth).toBe('18rem');
     expect(arrow?.style.bottom).toBe('calc(var(--tooltip-arrow-size) / -2)');
 

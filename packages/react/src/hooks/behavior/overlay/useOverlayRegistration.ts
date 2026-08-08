@@ -39,6 +39,7 @@ export const useOverlayRegistration = ({
   return {
     isTopOverlay,
     isTopmost: snapshot.topmost?.id === id,
+    layer: overlayManager.getZIndex(id),
     order: entry?.order,
     zIndex: overlayManager.getZIndex(id),
   };

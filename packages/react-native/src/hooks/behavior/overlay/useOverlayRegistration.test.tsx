@@ -54,6 +54,8 @@ describe('useOverlayRegistration', () => {
     expect(second?.isTopOverlay()).toBe(true);
     expect(first?.layer).toBeGreaterThanOrEqual(1000);
     expect(second?.layer).toBeGreaterThan(first?.layer ?? 0);
+    expect(first?.zIndex).toBe(first?.layer);
+    expect(second?.zIndex).toBe(second?.layer);
 
     unmount();
   });

@@ -273,9 +273,10 @@ export const SelectRoot = ({
     [onSearch]
   );
 
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: isOpen,
     id: listboxId,
+    layer: 'dropdown',
     closeOnEscape: true,
     closeOnOutsidePress: true,
     contentRef: listRef,
@@ -364,7 +365,10 @@ export const SelectRoot = ({
     isOpen,
     listboxId,
     labelledById: triggerId,
-    style: floatingStyles,
+    style: {
+      ...floatingStyles,
+      zIndex: dismiss.zIndex,
+    },
     options: filteredOptions,
     entries: isSearchable || searchValue ? undefined : resolvedEntries,
     multiple,

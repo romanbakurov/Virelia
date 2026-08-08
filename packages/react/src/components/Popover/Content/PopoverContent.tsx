@@ -77,9 +77,10 @@ export function PopoverContent({
     [setOpen]
   );
 
-  useOverlayDismiss({
+  const dismiss = useOverlayDismiss({
     active: open,
     id: contentId,
+    layer: 'popover',
     contentRef: contentRef,
     ignoreRefs: [triggerRef, anchorRef],
     closeOnEscape,
@@ -151,6 +152,7 @@ export function PopoverContent({
     className: cn(styles.content, className),
     style: {
       ...floatingStyles,
+      zIndex: dismiss.zIndex,
       ...style,
     },
   };
@@ -167,6 +169,7 @@ export function PopoverContent({
       className: cn(child.props.className, styles.content, className),
       style: {
         ...floatingStyles,
+        zIndex: dismiss.zIndex,
         ...child.props.style,
         ...style,
       },

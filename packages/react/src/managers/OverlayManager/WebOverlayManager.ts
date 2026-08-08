@@ -78,6 +78,10 @@ export function createOverlayManager(): OverlayManager {
 
       if (!registry.delete(id)) return;
 
+      if (registry.size === 0) {
+        orderSeed = 0;
+      }
+
       emit();
     },
 
@@ -189,6 +193,7 @@ export function createOverlayManager(): OverlayManager {
       registry.clear();
       escapeHandlers.clear();
       pointerDownOutsideHandlers.clear();
+      orderSeed = 0;
       emit();
     },
   };

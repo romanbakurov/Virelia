@@ -29,6 +29,7 @@ export const useOverlayRegistration = ({
 
   return {
     layer,
+    zIndex: layer,
     isTopOverlay,
   };
 };
