@@ -154,6 +154,73 @@ describe('nested overlays', () => {
     unmount();
   });
 
+  it('closes only a tooltip nested in a dropdown on Escape', () => {
+    const onDropdownOpenChange = vi.fn();
+    const onTooltipOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Dropdown open onOpenChange={onDropdownOpenChange}>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item>
+            <Tooltip open onOpenChange={onTooltipOpenChange}>
+              <Tooltip.Trigger>Archive</Tooltip.Trigger>
+              <Tooltip.Content>Moves this item to archive</Tooltip.Content>
+            </Tooltip>
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    expect(document.querySelector('[role="tooltip"]')).not.toBeNull();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    pressDocumentKey('Escape');
+
+    expect(onTooltipOpenChange).toHaveBeenCalledWith(false);
+    expect(onDropdownOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('keeps modal open when select inside modal closes from outside press', () => {
+    const onModalOpenChange = vi.fn();
+    const onSelectOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Modal open onOpenChange={onModalOpenChange}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Profile settings'>
+            <Select
+              open
+              id='country'
+              onOpenChange={onSelectOpenChange}
+              options={[
+                { label: 'France', value: 'fr' },
+                { label: 'Germany', value: 'de' },
+              ]}
+            />
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+    expect(document.querySelector('[role="listbox"]')).not.toBeNull();
+
+    act(() => {
+      document.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+      );
+    });
+
+    expect(onSelectOpenChange).toHaveBeenCalledWith(false);
+    expect(onModalOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
   it('keeps modal open when dropdown inside modal closes from outside press', () => {
     const onModalOpenChange = vi.fn();
     const onDropdownOpenChange = vi.fn();
