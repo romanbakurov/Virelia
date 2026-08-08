@@ -65,90 +65,92 @@ export const SelectTriggerSurface = ({
   onFocus,
 }: SelectTriggerProps) => {
   return (
-    <button
-      id={id}
-      ref={buttonRef}
-      type='button'
-      role='combobox'
-      disabled={disabled}
-      aria-disabled={disabled || undefined}
-      aria-required={required || undefined}
-      aria-expanded={isOpen}
-      aria-haspopup='listbox'
-      aria-label={ariaLabel}
-      aria-labelledby={labelledBy}
-      aria-invalid={error || undefined}
-      aria-controls={isOpen ? listboxId : undefined}
-      aria-describedby={describedBy}
-      aria-activedescendant={
-        isOpen && activeIndex >= 0
-          ? `${listboxId}-option-${activeIndex}`
-          : undefined
-      }
-      className={cn(
-        styles.control,
-        styles[size],
-        styles[variant],
-        styles[color],
-        {
-          [styles.error]: !!error,
-          [styles.disabled]: disabled,
-          [styles.loading]: loading,
-        },
-        className
-      )}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      onBlur={onBlur}
-      onFocus={onFocus}
-    >
-      {children ?? (
-        <>
-          {startIcon && <span className={styles.adornment}>{startIcon}</span>}
-          {prefix && <span className={styles.affix}>{prefix}</span>}
+    <span className={styles.root}>
+      <button
+        id={id}
+        ref={buttonRef}
+        type='button'
+        role='combobox'
+        disabled={disabled}
+        aria-disabled={disabled || undefined}
+        aria-required={required || undefined}
+        aria-expanded={isOpen}
+        aria-haspopup='listbox'
+        aria-label={ariaLabel}
+        aria-labelledby={labelledBy}
+        aria-invalid={error || undefined}
+        aria-controls={isOpen ? listboxId : undefined}
+        aria-describedby={describedBy}
+        aria-activedescendant={
+          isOpen && activeIndex >= 0
+            ? `${listboxId}-option-${activeIndex}`
+            : undefined
+        }
+        className={cn(
+          styles.control,
+          styles[size],
+          styles[variant],
+          styles[color],
+          {
+            [styles.error]: !!error,
+            [styles.disabled]: disabled,
+            [styles.loading]: loading,
+            [styles.withClear]: clearable,
+          },
+          className
+        )}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        onFocus={onFocus}
+      >
+        {children ?? (
+          <>
+            {startIcon && <span className={styles.adornment}>{startIcon}</span>}
+            {prefix && <span className={styles.affix}>{prefix}</span>}
 
-          <span className={styles.valueWrap}>
+            <span className={styles.valueWrap}>
+              <span
+                className={cn(styles.value, {
+                  [styles.placeholder]: isPlaceholder,
+                })}
+              >
+                {displayText}
+              </span>
+            </span>
+
+            {suffix && <span className={styles.affix}>{suffix}</span>}
+
             <span
-              className={cn(styles.value, {
-                [styles.placeholder]: isPlaceholder,
+              className={cn(styles.arrow, {
+                [styles.open]: isOpen,
               })}
+              aria-hidden='true'
             >
-              {displayText}
+              {loading ? (
+                <span className={styles.spinner} />
+              ) : (
+                (endIcon ?? <ChevronDown />)
+              )}
             </span>
-          </span>
+          </>
+        )}
+      </button>
 
-          {suffix && <span className={styles.affix}>{suffix}</span>}
-
-          {clearable && (
-            <span
-              role='button'
-              aria-label='Clear selection'
-              tabIndex={-1}
-              className={styles.clear}
-              onClick={(event) => {
-                event.stopPropagation();
-                onClear?.();
-              }}
-            >
-              <Close />
-            </span>
-          )}
-
-          <span
-            className={cn(styles.arrow, {
-              [styles.open]: isOpen,
-            })}
-            aria-hidden='true'
-          >
-            {loading ? (
-              <span className={styles.spinner} />
-            ) : (
-              (endIcon ?? <ChevronDown />)
-            )}
-          </span>
-        </>
+      {clearable && !children && (
+        <button
+          type='button'
+          aria-label='Clear selection'
+          className={styles.clear}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClear?.();
+          }}
+        >
+          <Close />
+        </button>
       )}
-    </button>
+    </span>
   );
 };
 
