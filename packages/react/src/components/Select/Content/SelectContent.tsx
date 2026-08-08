@@ -3,6 +3,7 @@ import {
   isValidElement,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -11,9 +12,8 @@ import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 
-import { useSelectVirtualization } from '@/hooks';
-
 import { useSelectContext } from '../internal/SelectContext';
+import { resolveSelectVirtualization } from '../internal/SelectVirtualization';
 import type { SelectSlotComponent } from '../internal/types';
 import { SelectItemRow } from '../Item/SelectItem';
 
@@ -92,12 +92,10 @@ export const SelectContentSurface = ({
     topSpacerHeight,
     viewportHeight,
     visibleOptions,
-  } = useSelectVirtualization({
-    loading,
-    options,
-    scrollTop,
-    virtual,
-  });
+  } = useMemo(
+    () => resolveSelectVirtualization({ loading, options, scrollTop, virtual }),
+    [loading, options, scrollTop, virtual]
+  );
 
   const handleDropdownRef = useCallback(
     (node: HTMLDivElement | null) => {

@@ -15,7 +15,6 @@ import {
   useScrollLock,
   useSelect,
   useSelectPosition,
-  useSelectSearch,
 } from '@/hooks';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
@@ -25,6 +24,7 @@ import {
   type SelectContextValue,
   SelectProvider,
 } from '../internal/SelectContext';
+import { filterSelectOptions } from '../internal/SelectSearch';
 import { useSelectCollection } from '../internal/useSelectCollection';
 import { SelectTrigger, SelectTriggerSurface } from '../Trigger/SelectTrigger';
 import type { SelectTriggerProps } from '../Trigger/types';
@@ -112,11 +112,15 @@ export const SelectRoot = ({
   const isSearchable = searchable || command;
   const { entries: resolvedEntries, options: resolvedOptions } =
     useSelectCollection(children);
-  const filteredOptions = useSelectSearch({
-    options: resolvedOptions,
-    searchable: isSearchable,
-    searchValue,
-  });
+  const filteredOptions = useMemo(
+    () =>
+      filterSelectOptions({
+        options: resolvedOptions,
+        searchable: isSearchable,
+        searchValue,
+      }),
+    [isSearchable, resolvedOptions, searchValue]
+  );
 
   const {
     selectedValue,
