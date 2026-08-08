@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import type { NativeTheme } from '../../../theme';
 
 export const styles = StyleSheet.create({
-  layer: {
+  root: {
     flex: 1,
   },
 

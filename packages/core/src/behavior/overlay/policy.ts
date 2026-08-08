@@ -1,8 +1,8 @@
 export const OVERLAY_STACK_ORDER_STEP = 10;
 
-export type OverlayLayerPolicy<TLayer extends string = string> = {
-  defaultLayer: TLayer;
-  layers: Record<TLayer, number>;
+export type OverlayZIndexPolicy<TLevel extends string = string> = {
+  defaultLevel: TLevel;
+  levels: Record<TLevel, number>;
   orderStep: number;
 };
 
@@ -16,31 +16,31 @@ export type OverlayDiagnostics = {
   unknownUnregister?: (id: string) => void;
 };
 
-export const createOverlayLayerPolicy = <TLayer extends string>({
-  defaultLayer,
-  layers,
+export const createOverlayZIndexPolicy = <TLevel extends string>({
+  defaultLevel,
+  levels,
   orderStep = OVERLAY_STACK_ORDER_STEP,
 }: {
-  defaultLayer: TLayer;
-  layers: Record<TLayer, number>;
+  defaultLevel: TLevel;
+  levels: Record<TLevel, number>;
   orderStep?: number;
-}): OverlayLayerPolicy<TLayer> => ({
-  defaultLayer,
-  layers,
+}): OverlayZIndexPolicy<TLevel> => ({
+  defaultLevel,
+  levels,
   orderStep,
 });
 
-export const resolveOverlayZIndex = <TLayer extends string>({
+export const resolveOverlayZIndex = <TLevel extends string>({
   explicitZIndex,
-  layer,
+  level,
   order,
   policy,
 }: {
   explicitZIndex?: number;
-  layer: TLayer;
+  level: TLevel;
   order: number;
-  policy: OverlayLayerPolicy<TLayer>;
-}) => explicitZIndex ?? policy.layers[layer] + order * policy.orderStep;
+  policy: OverlayZIndexPolicy<TLevel>;
+}) => explicitZIndex ?? policy.levels[level] + order * policy.orderStep;
 
 export const createOverlayStack = <TEntry extends OverlayStackEntry>(
   entries: Iterable<TEntry>

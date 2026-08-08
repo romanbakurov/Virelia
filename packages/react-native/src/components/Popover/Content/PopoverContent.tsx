@@ -49,7 +49,7 @@ export function PopoverContent({
       <View
         ref={layerRef}
         pointerEvents='box-none'
-        style={[styles.layer, { zIndex }]}
+        style={[styles.root, { zIndex }]}
       >
         <Pressable
           testID='popover-backdrop'

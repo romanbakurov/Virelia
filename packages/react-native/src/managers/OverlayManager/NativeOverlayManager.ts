@@ -1,6 +1,6 @@
 import {
   createConsoleOverlayDiagnostics,
-  createOverlayLayerPolicy,
+  createOverlayZIndexPolicy,
   resolveOverlayZIndex,
 } from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
@@ -12,9 +12,9 @@ import type {
   NativeOverlayOutsidePressHandler,
 } from './types';
 
-const nativeOverlayLayerPolicy = createOverlayLayerPolicy({
-  defaultLayer: 'modal',
-  layers: {
+const nativeOverlayZIndexPolicy = createOverlayZIndexPolicy({
+  defaultLevel: 'modal',
+  levels: {
     modal: lightTheme.tokens.zIndex.modal,
   },
 });
@@ -39,9 +39,9 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
       stack = stack.filter((item) => item.id !== id);
 
       const zIndex = resolveOverlayZIndex({
-        layer: nativeOverlayLayerPolicy.defaultLayer,
+        level: nativeOverlayZIndexPolicy.defaultLevel,
         order: stack.length,
-        policy: nativeOverlayLayerPolicy,
+        policy: nativeOverlayZIndexPolicy,
       });
       const entry: NativeOverlayEntry = {
         id,
@@ -74,7 +74,7 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     getZIndex(id: string) {
       return (
         stack.find((item) => item.id === id)?.zIndex ??
-        nativeOverlayLayerPolicy.layers[nativeOverlayLayerPolicy.defaultLayer]
+        nativeOverlayZIndexPolicy.levels[nativeOverlayZIndexPolicy.defaultLevel]
       );
     },
 

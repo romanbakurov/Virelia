@@ -1,7 +1,7 @@
 import {
   createConsoleOverlayDiagnostics,
-  createOverlayLayerPolicy,
   createOverlayStack,
+  createOverlayZIndexPolicy,
   getTopOverlay,
   resolveOverlayZIndex,
 } from '@vellira-ui/core';
@@ -17,9 +17,9 @@ import type {
   OverlaySnapshot,
 } from './types';
 
-const overlayLayerPolicy = createOverlayLayerPolicy<OverlayLayer>({
-  defaultLayer: 'popover',
-  layers: lightTheme.tokens.zIndex,
+const overlayZIndexPolicy = createOverlayZIndexPolicy<OverlayLayer>({
+  defaultLevel: 'popover',
+  levels: lightTheme.tokens.zIndex,
 });
 const overlayDiagnostics = createConsoleOverlayDiagnostics('WebOverlayManager');
 
@@ -58,9 +58,9 @@ export function createOverlayManager(): OverlayManager {
   const resolveZIndex = (entry: OverlayEntry) => {
     return resolveOverlayZIndex({
       explicitZIndex: entry.zIndex,
-      layer: entry.layer,
+      level: entry.layer,
       order: entry.order,
-      policy: overlayLayerPolicy,
+      policy: overlayZIndexPolicy,
     });
   };
 
@@ -74,7 +74,7 @@ export function createOverlayManager(): OverlayManager {
 
       const entry = {
         id: registration.id,
-        layer: registration.layer ?? overlayLayerPolicy.defaultLayer,
+        layer: registration.layer ?? overlayZIndexPolicy.defaultLevel,
         order: orderSeed++,
         zIndex: registration.zIndex,
       };

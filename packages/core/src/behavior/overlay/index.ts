@@ -1,12 +1,12 @@
 export type {
   OverlayDiagnostics,
-  OverlayLayerPolicy,
   OverlayStackEntry,
+  OverlayZIndexPolicy,
 } from './policy.js';
 export {
   createConsoleOverlayDiagnostics,
-  createOverlayLayerPolicy,
   createOverlayStack,
+  createOverlayZIndexPolicy,
   getTopOverlay,
   OVERLAY_STACK_ORDER_STEP,
   resolveOverlayZIndex,
