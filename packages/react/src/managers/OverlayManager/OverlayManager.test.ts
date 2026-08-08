@@ -119,4 +119,33 @@ describe('OverlayManager', () => {
     expect(manager.dispatchEscapeKeyDown(event)).toBe(false);
     expect(first).not.toHaveBeenCalled();
   });
+
+  it('dispatches pointer down outside only to the topmost overlay handler', () => {
+    const manager = createOverlayManager();
+    const first = vi.fn();
+    const second = vi.fn();
+    const event = new PointerEvent('pointerdown', { bubbles: true });
+
+    manager.register({ id: 'first' });
+    manager.registerPointerDownOutsideHandler('first', first);
+    manager.register({ id: 'second' });
+    manager.registerPointerDownOutsideHandler('second', second);
+
+    expect(manager.dispatchPointerDownOutside(event)).toBe(true);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledWith(event);
+  });
+
+  it('does not dispatch pointer down outside to lower overlays when the topmost has no handler', () => {
+    const manager = createOverlayManager();
+    const first = vi.fn();
+    const event = new PointerEvent('pointerdown', { bubbles: true });
+
+    manager.register({ id: 'first' });
+    manager.registerPointerDownOutsideHandler('first', first);
+    manager.register({ id: 'second' });
+
+    expect(manager.dispatchPointerDownOutside(event)).toBe(false);
+    expect(first).not.toHaveBeenCalled();
+  });
 });

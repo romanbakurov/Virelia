@@ -7,6 +7,8 @@ import { createOutsideEvent } from '../utils/events.js';
 
 let activeEscapeHandlers = 0;
 let detachEscapeKeyDown: (() => void) | undefined;
+let activePointerDownOutsideHandlers = 0;
+let detachPointerDownOutside: (() => void) | undefined;
 
 function attachEscapeKeyDown() {
   if (detachEscapeKeyDown || typeof document === 'undefined') return;
@@ -38,6 +40,37 @@ function retainEscapeKeyDown() {
   };
 }
 
+function attachPointerDownOutside() {
+  if (detachPointerDownOutside || typeof document === 'undefined') return;
+
+  const handlePointerDown = (event: PointerEvent) => {
+    overlayManager.dispatchPointerDownOutside(event);
+  };
+
+  document.addEventListener('pointerdown', handlePointerDown);
+
+  detachPointerDownOutside = () => {
+    document.removeEventListener('pointerdown', handlePointerDown);
+    detachPointerDownOutside = undefined;
+  };
+}
+
+function retainPointerDownOutside() {
+  activePointerDownOutsideHandlers += 1;
+  attachPointerDownOutside();
+
+  return () => {
+    activePointerDownOutsideHandlers = Math.max(
+      0,
+      activePointerDownOutsideHandlers - 1
+    );
+
+    if (activePointerDownOutsideHandlers > 0) return;
+
+    detachPointerDownOutside?.();
+  };
+}
+
 export const useOverlayDismiss = ({
   active,
   id,
@@ -45,7 +78,6 @@ export const useOverlayDismiss = ({
   ignoreRefs = [],
   closeOnEscape,
   closeOnOutsidePress,
-  isTopOverlay,
   onEscapeKeyDown,
   onPointerDownOutside,
   onInteractOutside,
@@ -78,36 +110,36 @@ export const useOverlayDismiss = ({
   useEffect(() => {
     if (!active) return;
 
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!isTopOverlay()) return;
-      if (
-        event.target instanceof Node &&
-        [contentRef, ...ignoreRefsRef.current].some((ref) =>
-          ref.current?.contains(event.target as Node)
-        )
-      ) {
-        return;
-      }
+    const releasePointerDownOutside = retainPointerDownOutside();
+    const unregisterPointerDownOutsideHandler =
+      overlayManager.registerPointerDownOutsideHandler(id, (event) => {
+        if (
+          event.target instanceof Node &&
+          [contentRef, ...ignoreRefsRef.current].some((ref) =>
+            ref.current?.contains(event.target as Node)
+          )
+        ) {
+          return;
+        }
 
-      const outsideEvent = createOutsideEvent(event);
-      onPointerDownOutside?.(outsideEvent);
-      onInteractOutside?.(outsideEvent);
+        const outsideEvent = createOutsideEvent(event);
+        onPointerDownOutside?.(outsideEvent);
+        onInteractOutside?.(outsideEvent);
 
-      if (outsideEvent.defaultPrevented || !closeOnOutsidePress) return;
+        if (outsideEvent.defaultPrevented || !closeOnOutsidePress) return;
 
-      requestClose('outside-press', event);
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
+        requestClose('outside-press', event);
+      });
 
     return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
+      unregisterPointerDownOutsideHandler();
+      releasePointerDownOutside();
     };
   }, [
     active,
     closeOnOutsidePress,
     contentRef,
-    isTopOverlay,
+    id,
     onInteractOutside,
     onPointerDownOutside,
     requestClose,

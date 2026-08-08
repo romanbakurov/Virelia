@@ -261,6 +261,50 @@ describe('Popover', () => {
     unmount();
   });
 
+  it('closes only the topmost popover on outside press', () => {
+    const onOuterOpenChange = vi.fn();
+    const onInnerOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <>
+        <Popover defaultOpen onOpenChange={onOuterOpenChange}>
+          <Popover.Trigger>Open outer popover</Popover.Trigger>
+
+          <Popover.Content>
+            <Popover.Title>Outer settings</Popover.Title>
+            <Popover.Description>Configure outer scope.</Popover.Description>
+          </Popover.Content>
+        </Popover>
+
+        <Popover defaultOpen onOpenChange={onInnerOpenChange}>
+          <Popover.Trigger>Open inner popover</Popover.Trigger>
+
+          <Popover.Content>
+            <Popover.Title>Inner settings</Popover.Title>
+            <Popover.Description>Configure inner scope.</Popover.Description>
+          </Popover.Content>
+        </Popover>
+      </>
+    );
+
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(2);
+
+    pressOutside();
+
+    expect(onInnerOpenChange).toHaveBeenCalledWith(
+      false,
+      expect.objectContaining({
+        reason: 'outside-press',
+        event: expect.any(PointerEvent),
+      })
+    );
+    expect(onOuterOpenChange).not.toHaveBeenCalled();
+    expect(document.body.textContent).toContain('Outer settings');
+    expect(document.body.textContent).not.toContain('Inner settings');
+
+    unmount();
+  });
+
   it('keeps the popover open when outside press is prevented', () => {
     const onOpenChange = vi.fn();
     const onPointerDownOutside = vi.fn((event) => {

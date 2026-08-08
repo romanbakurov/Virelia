@@ -16,6 +16,7 @@ export type OverlayRegistration = {
 };
 
 export type OverlayEscapeHandler = (event: KeyboardEvent) => void;
+export type OverlayPointerDownOutsideHandler = (event: PointerEvent) => void;
 
 export type OverlaySnapshot = {
   registry: ReadonlyMap<string, OverlayEntry>;
@@ -38,6 +39,11 @@ export type OverlayManager = {
     handler: OverlayEscapeHandler
   ) => () => void;
   dispatchEscapeKeyDown: (event: KeyboardEvent) => boolean;
+  registerPointerDownOutsideHandler: (
+    id: string,
+    handler: OverlayPointerDownOutsideHandler
+  ) => () => void;
+  dispatchPointerDownOutside: (event: PointerEvent) => boolean;
   subscribe: (listener: () => void) => () => void;
   clear: () => void;
 };

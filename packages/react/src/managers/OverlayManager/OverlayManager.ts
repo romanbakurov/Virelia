@@ -5,6 +5,7 @@ import type {
   OverlayEscapeHandler,
   OverlayLayer,
   OverlayManager,
+  OverlayPointerDownOutsideHandler,
   OverlayRegistration,
   OverlaySnapshot,
 } from './types';
@@ -33,6 +34,10 @@ function createSnapshot(registry: Map<string, OverlayEntry>): OverlaySnapshot {
 export function createOverlayManager(): OverlayManager {
   const registry = new Map<string, OverlayEntry>();
   const escapeHandlers = new Map<string, OverlayEscapeHandler>();
+  const pointerDownOutsideHandlers = new Map<
+    string,
+    OverlayPointerDownOutsideHandler
+  >();
   const listeners = new Set<() => void>();
   let orderSeed = 0;
   let snapshot = createSnapshot(registry);
@@ -69,6 +74,7 @@ export function createOverlayManager(): OverlayManager {
 
     unregister(id: string) {
       escapeHandlers.delete(id);
+      pointerDownOutsideHandlers.delete(id);
 
       if (!registry.delete(id)) return;
 
@@ -142,6 +148,33 @@ export function createOverlayManager(): OverlayManager {
       return true;
     },
 
+    registerPointerDownOutsideHandler(
+      id: string,
+      handler: OverlayPointerDownOutsideHandler
+    ) {
+      pointerDownOutsideHandlers.set(id, handler);
+
+      return () => {
+        if (pointerDownOutsideHandlers.get(id) !== handler) return;
+
+        pointerDownOutsideHandlers.delete(id);
+      };
+    },
+
+    dispatchPointerDownOutside(event: PointerEvent) {
+      const topmost = snapshot.topmost;
+
+      if (!topmost) return false;
+
+      const handler = pointerDownOutsideHandlers.get(topmost.id);
+
+      if (!handler) return false;
+
+      handler(event);
+
+      return true;
+    },
+
     subscribe(listener: () => void) {
       listeners.add(listener);
 
@@ -155,6 +188,7 @@ export function createOverlayManager(): OverlayManager {
 
       registry.clear();
       escapeHandlers.clear();
+      pointerDownOutsideHandlers.clear();
       emit();
     },
   };
