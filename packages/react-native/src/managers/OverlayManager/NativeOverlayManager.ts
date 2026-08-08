@@ -1,3 +1,8 @@
+import {
+  createConsoleOverlayDiagnostics,
+  createOverlayLayerPolicy,
+  resolveOverlayZIndex,
+} from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
@@ -7,8 +12,15 @@ import type {
   NativeOverlayOutsidePressHandler,
 } from './types';
 
-const BASE_LAYER = lightTheme.tokens.zIndex.modal;
-const LAYER_STEP = 10;
+const nativeOverlayLayerPolicy = createOverlayLayerPolicy({
+  defaultLayer: 'modal',
+  layers: {
+    modal: lightTheme.tokens.zIndex.modal,
+  },
+});
+const nativeOverlayDiagnostics = createConsoleOverlayDiagnostics(
+  'NativeOverlayManager'
+);
 
 export const createNativeOverlayManager = (): NativeOverlayManager => {
   let stack: NativeOverlayEntry[] = [];
@@ -20,13 +32,21 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
 
   return {
     register(id: string) {
+      if (stack.some((item) => item.id === id)) {
+        nativeOverlayDiagnostics.duplicateRegistration?.(id);
+      }
+
       stack = stack.filter((item) => item.id !== id);
 
-      const layer = BASE_LAYER + stack.length * LAYER_STEP;
+      const zIndex = resolveOverlayZIndex({
+        layer: nativeOverlayLayerPolicy.defaultLayer,
+        order: stack.length,
+        policy: nativeOverlayLayerPolicy,
+      });
       const entry: NativeOverlayEntry = {
         id,
-        layer,
-        zIndex: layer,
+        layer: zIndex,
+        zIndex,
       };
 
       stack.push(entry);
@@ -35,6 +55,10 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     },
 
     unregister(id: string) {
+      if (!stack.some((item) => item.id === id)) {
+        nativeOverlayDiagnostics.unknownUnregister?.(id);
+      }
+
       dismissHandlers.delete(id);
       outsidePressHandlers.delete(id);
       stack = stack.filter((item) => item.id !== id);
@@ -49,7 +73,10 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     },
 
     getLayer(id: string) {
-      return stack.find((item) => item.id === id)?.layer ?? BASE_LAYER;
+      return (
+        stack.find((item) => item.id === id)?.layer ??
+        nativeOverlayLayerPolicy.layers[nativeOverlayLayerPolicy.defaultLayer]
+      );
     },
 
     registerDismissHandler(id: string, handler: NativeOverlayDismissHandler) {

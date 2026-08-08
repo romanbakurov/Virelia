@@ -30,6 +30,43 @@ describe('nativeOverlayManager', () => {
     expect(secondManager.getTop()?.id).toBe('second');
   });
 
+  it('warns in development when an overlay registers with a duplicate id', () => {
+    const environment = process.env.NODE_ENV;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      process.env.NODE_ENV = 'development';
+
+      nativeOverlayManager.register('overlay');
+      nativeOverlayManager.register('overlay');
+
+      expect(warn).toHaveBeenCalledWith(
+        'NativeOverlayManager: duplicate overlay registration for "overlay".'
+      );
+    } finally {
+      process.env.NODE_ENV = environment;
+      warn.mockRestore();
+    }
+  });
+
+  it('warns in development when unregistering an unknown overlay', () => {
+    const environment = process.env.NODE_ENV;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      process.env.NODE_ENV = 'development';
+
+      nativeOverlayManager.unregister('missing');
+
+      expect(warn).toHaveBeenCalledWith(
+        'NativeOverlayManager: attempted to unregister unknown overlay "missing".'
+      );
+    } finally {
+      process.env.NODE_ENV = environment;
+      warn.mockRestore();
+    }
+  });
+
   it('moves an existing overlay to the top when re-registered', () => {
     nativeOverlayManager.register('first');
     nativeOverlayManager.register('second');

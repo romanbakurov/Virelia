@@ -1,3 +1,10 @@
+import {
+  createConsoleOverlayDiagnostics,
+  createOverlayLayerPolicy,
+  createOverlayStack,
+  getTopOverlay,
+  resolveOverlayZIndex,
+} from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
@@ -10,8 +17,11 @@ import type {
   OverlaySnapshot,
 } from './types';
 
-const DEFAULT_LAYER: OverlayLayer = 'popover';
-const STACK_Z_INDEX_STEP = 10;
+const overlayLayerPolicy = createOverlayLayerPolicy<OverlayLayer>({
+  defaultLayer: 'popover',
+  layers: lightTheme.tokens.zIndex,
+});
+const overlayDiagnostics = createConsoleOverlayDiagnostics('WebOverlayManager');
 
 function cloneRegistry(registry: Map<string, OverlayEntry>) {
   return new Map(
@@ -20,14 +30,12 @@ function cloneRegistry(registry: Map<string, OverlayEntry>) {
 }
 
 function createSnapshot(registry: Map<string, OverlayEntry>): OverlaySnapshot {
-  const stack = Array.from(registry.values())
-    .sort((left, right) => left.order - right.order)
-    .map((entry) => ({ ...entry }));
+  const stack = createOverlayStack(registry.values());
 
   return {
     registry: cloneRegistry(registry),
     stack,
-    topmost: stack[stack.length - 1] ?? null,
+    topmost: getTopOverlay(stack),
   };
 }
 
@@ -48,20 +56,25 @@ export function createOverlayManager(): OverlayManager {
   };
 
   const resolveZIndex = (entry: OverlayEntry) => {
-    if (entry.zIndex !== undefined) return entry.zIndex;
-
-    return (
-      lightTheme.tokens.zIndex[entry.layer] + entry.order * STACK_Z_INDEX_STEP
-    );
+    return resolveOverlayZIndex({
+      explicitZIndex: entry.zIndex,
+      layer: entry.layer,
+      order: entry.order,
+      policy: overlayLayerPolicy,
+    });
   };
 
   return {
     register(registration: OverlayRegistration) {
+      if (registry.has(registration.id)) {
+        overlayDiagnostics.duplicateRegistration?.(registration.id);
+      }
+
       registry.delete(registration.id);
 
       const entry = {
         id: registration.id,
-        layer: registration.layer ?? DEFAULT_LAYER,
+        layer: registration.layer ?? overlayLayerPolicy.defaultLayer,
         order: orderSeed++,
         zIndex: registration.zIndex,
       };
@@ -76,7 +89,10 @@ export function createOverlayManager(): OverlayManager {
       escapeHandlers.delete(id);
       pointerDownOutsideHandlers.delete(id);
 
-      if (!registry.delete(id)) return;
+      if (!registry.delete(id)) {
+        overlayDiagnostics.unknownUnregister?.(id);
+        return;
+      }
 
       if (registry.size === 0) {
         orderSeed = 0;

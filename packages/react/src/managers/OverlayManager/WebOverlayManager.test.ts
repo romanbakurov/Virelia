@@ -32,6 +32,47 @@ describe('WebOverlayManager', () => {
     expect(manager.getTopmost()?.id).toBe('first');
   });
 
+  it('warns in development when an overlay registers with a duplicate id', () => {
+    const environment = process.env.NODE_ENV;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      process.env.NODE_ENV = 'development';
+
+      const manager = createOverlayManager();
+
+      manager.register({ id: 'overlay' });
+      manager.register({ id: 'overlay' });
+
+      expect(warn).toHaveBeenCalledWith(
+        'WebOverlayManager: duplicate overlay registration for "overlay".'
+      );
+    } finally {
+      process.env.NODE_ENV = environment;
+      warn.mockRestore();
+    }
+  });
+
+  it('warns in development when unregistering an unknown overlay', () => {
+    const environment = process.env.NODE_ENV;
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      process.env.NODE_ENV = 'development';
+
+      const manager = createOverlayManager();
+
+      manager.unregister('missing');
+
+      expect(warn).toHaveBeenCalledWith(
+        'WebOverlayManager: attempted to unregister unknown overlay "missing".'
+      );
+    } finally {
+      process.env.NODE_ENV = environment;
+      warn.mockRestore();
+    }
+  });
+
   it('removes overlays without disturbing the remaining order', () => {
     const manager = createOverlayManager();
 
