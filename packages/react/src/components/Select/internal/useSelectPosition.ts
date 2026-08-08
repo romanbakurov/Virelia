@@ -1,4 +1,4 @@
-import { useFloatingPosition } from '@/managers/FloatingManager';
+import { useOverlayPresentation } from '@/hooks';
 
 import type { SelectProps } from '../types';
 
@@ -17,7 +17,7 @@ export function useSelectPosition({
   onOpenChange,
   placement,
 }: UseSelectPositionParams) {
-  return useFloatingPosition({
+  return useOverlayPresentation({
     open: isOpen,
     onOpenChange,
     placement:

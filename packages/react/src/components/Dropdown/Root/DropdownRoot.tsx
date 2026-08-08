@@ -10,8 +10,12 @@ import {
 import { cn } from '@utils/cn';
 import type { KeyboardEvent, MouseEvent } from 'react';
 
-import { useDropdown, useOverlayDismiss, useScrollLock } from '@/hooks';
-import { useFloatingPosition } from '@/managers/FloatingManager';
+import {
+  useDropdown,
+  useOverlayDismiss,
+  useOverlayPresentation,
+  useScrollLock,
+} from '@/hooks';
 
 import { DropdownContent } from '../Content';
 import { toCssSize } from '../internal/composeEventHandlers';
@@ -143,10 +147,11 @@ export const DropdownRoot = ({
     isPositioned,
     setRef,
     setFloatingRef,
-  } = useFloatingPosition({
+  } = useOverlayPresentation({
     open: isOpen,
     placement,
-    strategy: strategy ?? (portal ? 'fixed' : 'absolute'),
+    strategy,
+    portal,
     matchTriggerWidth,
     avoidCollisions,
     offset,

@@ -4,7 +4,12 @@ import { cn } from '@utils/cn';
 import { lightTheme } from '@vellira-ui/tokens';
 import type { CSSProperties } from 'react';
 
-import { useModal, useOverlayRegistration, useScrollLock } from '@/hooks';
+import {
+  useModal,
+  useOverlayPresentation,
+  useOverlayRegistration,
+  useScrollLock,
+} from '@/hooks';
 
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
@@ -124,7 +129,7 @@ export const ModalRoot = ({
     layer: 'modal',
   });
 
-  const animationStyle = useMemo(
+  const modalAnimationStyle = useMemo(
     () =>
       ({
         '--modal-animation-close-duration': `${animationDuration.close}ms`,
@@ -142,6 +147,12 @@ export const ModalRoot = ({
       overlayRegistration.zIndex,
     ]
   );
+  const modalPresentation = useOverlayPresentation({
+    presentation: 'modal',
+    animationStyle: modalAnimationStyle,
+  });
+  const animationStyle =
+    modalPresentation.animationStyle ?? modalAnimationStyle;
 
   useEffect(() => {
     if (
