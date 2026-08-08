@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
-import { useTabs } from '../TabsContext';
+import { useTabs } from '../internal/TabsContext';
 
 import { createStyles } from './TabsTrigger.styles';
 import type { TabsSlotProps } from './types';

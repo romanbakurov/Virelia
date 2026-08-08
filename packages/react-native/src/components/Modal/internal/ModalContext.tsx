@@ -1,27 +1,12 @@
 import { createContext, useContext } from 'react';
 
-import type { MutableRefObject } from 'react';
-import type { Animated, View } from 'react-native';
+import type { ModalContextValue } from './types';
 
-import type { ModalAnimation } from '../types';
+const ModalContext = createContext<ModalContextValue | null>(null);
 
-interface ModalContextType {
-  animation: ModalAnimation;
-  animationProgress: Animated.Value;
-  closeOnOutsidePress: boolean;
-  onClose?: () => void;
-  onOutsideClose?: () => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  shouldRender: boolean;
-  triggerRef: MutableRefObject<View | null>;
-}
+export const ModalProvider = ModalContext.Provider;
 
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
-
-ModalContext.displayName = 'ModalContext';
-
-export const useModalContext = () => {
+export const useModalContext = (): ModalContextValue => {
   const context = useContext(ModalContext);
 
   if (!context) {
@@ -31,4 +16,4 @@ export const useModalContext = () => {
   return context;
 };
 
-export default ModalContext;
+ModalContext.displayName = 'ModalContext';

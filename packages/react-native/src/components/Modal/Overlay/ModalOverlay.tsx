@@ -1,6 +1,7 @@
 import {
   Animated,
   Modal as RNModal,
+  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -17,6 +18,7 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
     animation,
     animationProgress,
     closeOnOutsidePress,
+    layer,
     onClose,
     onOutsideClose,
     shouldRender,
@@ -35,7 +37,13 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
       animationType='none'
       onRequestClose={onClose}
     >
-      <View style={[styles.overlay, overlayStyle]}>
+      <View
+        style={[
+          styles.overlay,
+          Platform.OS === 'web' && { zIndex: layer },
+          overlayStyle,
+        ]}
+      >
         <Animated.View style={[styles.backdrop, backdropStyle]}>
           <Pressable
             testID='modal-backdrop'

@@ -21,7 +21,7 @@ export const useOverlayDismiss = ({
   requestClose,
   requestOutsideClose,
 }: OverlayDismissOptions) => {
-  const { isTopOverlay } = useOverlayStack({ active, id });
+  const { isTopOverlay, layer } = useOverlayStack({ active, id });
 
   const requestTopClose = useCallback(() => {
     if (!isTopOverlay()) return;
@@ -75,6 +75,7 @@ export const useOverlayDismiss = ({
   }, [active, closeOnEscape, isTopOverlay, requestTopClose]);
 
   return {
+    layer,
     isTopOverlay,
     requestClose: requestTopClose,
     requestOutsideClose: requestOutsideTopClose,

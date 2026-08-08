@@ -33,6 +33,7 @@ export const SelectContentSurface = () => {
   const {
     isOpen,
     resolvedPresentation,
+    layer,
     position,
     onFloatingLayout,
     dismissOnBackdropPress,
@@ -186,6 +187,7 @@ export const SelectContentSurface = () => {
         visible={isOpen}
         onClose={closeContent}
         dismissOnBackdropPress={dismissOnBackdropPress}
+        layer={layer}
         contentStyle={contentStyle}
       >
         {body}
@@ -200,6 +202,7 @@ export const SelectContentSurface = () => {
         onClose={closeContent}
         dismissOnBackdropPress={dismissOnBackdropPress}
         position={position}
+        layer={layer}
         onFloatingLayout={onFloatingLayout}
         matchTriggerWidth={matchTriggerWidth}
         triggerWidth={triggerWidth}
@@ -215,6 +218,7 @@ export const SelectContentSurface = () => {
       visible={isOpen}
       onClose={closeContent}
       dismissOnBackdropPress={dismissOnBackdropPress}
+      layer={layer}
       contentStyle={contentStyle}
     >
       {body}

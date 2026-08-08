@@ -218,4 +218,26 @@ describe('useOverlayDismiss', () => {
 
     unmount();
   });
+
+  it('exposes the registered overlay layer', () => {
+    let layer: number | undefined;
+
+    function TestOverlay() {
+      const dismiss = useOverlayDismiss({
+        active: true,
+        id: 'layered-overlay',
+        requestClose: vi.fn(),
+      });
+
+      layer = dismiss.layer;
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+
+    expect(layer).toBeGreaterThanOrEqual(1000);
+
+    unmount();
+  });
 });

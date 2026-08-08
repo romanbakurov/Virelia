@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
-import { useTabs } from '../TabsContext';
+import { useTabs } from '../internal/TabsContext';
 
 import { createStyles } from './TabsContent.styles';
 import type { TabsContentProps } from './types';

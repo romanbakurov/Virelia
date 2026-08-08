@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import type { TabsContextValue } from './types';
+import type { TabsContextValue } from '../types';
 
 const TabsContext = createContext<TabsContextValue | null>(null);
 

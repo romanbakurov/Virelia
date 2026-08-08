@@ -1,7 +1,7 @@
 import { ScrollView, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
-import { useTabs } from '../TabsContext';
+import { useTabs } from '../internal/TabsContext';
 
 import { createStyles } from './TabsList.styles';
 import type { TabsListProps } from './types';

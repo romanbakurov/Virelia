@@ -5,6 +5,7 @@ export type SelectPresentationProps = {
   visible: boolean;
   onClose: () => void;
   dismissOnBackdropPress: boolean;
+  layer: number;
   contentStyle?: StyleProp<ViewStyle>;
   children: ReactNode;
 };

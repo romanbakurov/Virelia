@@ -5,7 +5,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
 import { useTheme } from '../../../theme';
-import { useTabs } from '../TabsContext';
+import { useTabs } from '../internal/TabsContext';
 import type { TabsTriggerLayout } from '../types';
 
 export interface TabsIndicatorProps {

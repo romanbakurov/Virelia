@@ -21,4 +21,5 @@ export interface DropdownContentProps {
   searchPlaceholder?: string;
   searchAccessibilityLabel?: string;
   onSearchChange?: (value: string) => void;
+  layer: number;
 }

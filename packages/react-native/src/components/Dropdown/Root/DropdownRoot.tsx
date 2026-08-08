@@ -277,6 +277,7 @@ export function DropdownRoot({
         contentStyle={[contentStyle, contentStyleFromSlot]}
         accessibilityLabel={menuAccessibilityLabel}
         presentation={contentPresentation}
+        layer={dismiss.layer}
         position={position}
         onFloatingLayout={onFloatingLayout}
         searchable={isSearchable}

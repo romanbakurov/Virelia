@@ -1,18 +1,13 @@
 import { Children } from 'react';
 
-import { Modal, Platform, Pressable, Text, View } from 'react-native';
+import { Modal, Pressable, Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
-import { useTheme } from '../../../theme/useTheme';
+import { TooltipArrow } from '../Arrow';
 import { useTooltipContext } from '../internal/TooltipContext';
 import { createStyles } from '../Tooltip.styles';
 
 import type { TooltipContentProps } from './types';
-
-const nativePointerEventsNone =
-  Platform.OS === 'web' ? undefined : ({ pointerEvents: 'none' } as const);
-const webPointerEventsNone =
-  Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 
 export const TooltipContent = ({
   children,
@@ -32,13 +27,13 @@ export const TooltipContent = ({
   const bubble = (
     <View
       nativeID={tooltip.contentId}
-      {...nativePointerEventsNone}
+      pointerEvents='none'
       style={[
         styles.bubble,
-        webPointerEventsNone,
         {
           top: tooltip.position.top,
           left: tooltip.position.left,
+          zIndex: tooltip.layer,
         },
         !visible && { display: 'none' },
         style,
@@ -52,7 +47,7 @@ export const TooltipContent = ({
           child
         )
       )}
-      {withArrow && <InternalArrow />}
+      {withArrow && <TooltipArrow />}
     </View>
   );
 
@@ -75,45 +70,3 @@ export const TooltipContent = ({
 };
 
 TooltipContent.displayName = 'Tooltip.Content';
-
-function InternalArrow() {
-  const { theme } = useTheme();
-  const tooltip = useTooltipContext();
-  const size = theme.components.tooltip.arrow.size;
-  const side = tooltip.placement.split('-')[0] as
-    'top' | 'right' | 'bottom' | 'left';
-  const staticSide = {
-    top: 'bottom',
-    right: 'left',
-    bottom: 'top',
-    left: 'right',
-  }[side];
-  const crossAxisStyle =
-    side === 'left' || side === 'right'
-      ? {
-          top: tooltip.arrowPosition.top ?? 0,
-          marginTop: -size / 2,
-        }
-      : {
-          left: tooltip.arrowPosition.left ?? 0,
-          marginLeft: -size / 2,
-        };
-
-  return (
-    <View
-      {...nativePointerEventsNone}
-      style={[
-        {
-          position: 'absolute',
-          width: size,
-          height: size,
-          backgroundColor: theme.components.tooltip.arrow.bg,
-          transform: [{ rotate: '45deg' }],
-          [staticSide]: -size / 2,
-          ...crossAxisStyle,
-        },
-        webPointerEventsNone,
-      ]}
-    />
-  );
-}
