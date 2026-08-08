@@ -30,7 +30,6 @@ const publicSymbolContracts = {
     'OverlayAutoFocusEvent',
     'OverlayDismissOptions',
     'OverlayOutsideEvent',
-    'OverlayStackOptions',
     'PortalOptions',
     'RefObjectLike',
     'ScrollLockOptions',

@@ -1,5 +1,1 @@
-export type {
-  OverlayDismissOptions,
-  OverlayStackOptions,
-  ScrollLockOptions,
-} from './types.js';
+export type { OverlayDismissOptions, ScrollLockOptions } from './types.js';

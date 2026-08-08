@@ -14,11 +14,6 @@ export type OverlayDismissOptions = {
   requestClose: () => void;
 };
 
-export type OverlayStackOptions = {
-  active: boolean;
-  id: string;
-};
-
 export type ScrollLockOptions = {
   active: boolean;
   enabled?: boolean;
