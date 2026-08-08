@@ -44,9 +44,15 @@ export type SelectIconElement = ReactElement<{
   size?: number;
 }>;
 
-export type SelectRenderOptionState = {
+export type SelectRenderOptionContext = {
+  option: SelectOption;
   selected: boolean;
   disabled: boolean;
+  active: boolean;
+  index: number;
+  values: string[];
+  multiple: boolean;
+  pressed: boolean;
 };
 
 export type SelectRenderValueContext = {
@@ -59,8 +65,7 @@ export type SelectRenderValueContext = {
 };
 
 export type SelectRenderOption = (
-  option: SelectOption,
-  state: SelectRenderOptionState
+  context: SelectRenderOptionContext
 ) => ReactNode;
 
 export type SelectRenderValue = (

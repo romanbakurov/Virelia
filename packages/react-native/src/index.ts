@@ -29,6 +29,7 @@ export { RadioGroup } from './components/RadioGroup';
 export type {
   SelectOption,
   SelectProps,
+  SelectRenderOptionContext,
   SelectRenderValueContext,
 } from './components/Select';
 export { Select } from './components/Select';

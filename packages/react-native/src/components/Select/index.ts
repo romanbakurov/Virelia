@@ -14,6 +14,7 @@ export type {
   SelectPresentation,
   SelectProps,
   SelectRenderOption,
+  SelectRenderOptionContext,
   SelectRenderValue,
   SelectRenderValueContext,
   SelectSearchProps,

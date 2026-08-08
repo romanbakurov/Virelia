@@ -278,9 +278,9 @@ function CustomRenderSelect() {
       renderValue={({ option }) =>
         option ? <Text>Assigned to {option.label}</Text> : null
       }
-      renderOption={(option, state) => (
+      renderOption={({ option, selected }) => (
         <Text>
-          {state.selected ? 'Selected ' : ''}
+          {selected ? 'Selected ' : ''}
           {option.label}
         </Text>
       )}

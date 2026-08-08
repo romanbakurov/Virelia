@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 
+import { resolveCompoundSlotPart } from '../../internal/compoundSlots';
 import type { SelectOption } from '../types';
 
 export type SelectSlot =
@@ -32,20 +33,8 @@ export function markSelectSlot<P>(
   return component;
 }
 
-type WrappedSelectSlotComponent = {
-  __velliraSelectPart?: SelectSlot;
-  render?: WrappedSelectSlotComponent;
-  type?: WrappedSelectSlotComponent;
-};
-
 export function getSelectSlotPart(type: unknown): SelectSlot | undefined {
-  const slotType = type as WrappedSelectSlotComponent | undefined;
-
-  return (
-    slotType?.__velliraSelectPart ??
-    slotType?.type?.__velliraSelectPart ??
-    slotType?.render?.__velliraSelectPart
-  );
+  return resolveCompoundSlotPart<SelectSlot>(type, '__velliraSelectPart');
 }
 
 export type SelectRenderEntry =

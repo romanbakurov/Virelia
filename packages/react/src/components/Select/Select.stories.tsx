@@ -752,7 +752,7 @@ const AdvancedUsageSelect = () => {
         onValueChange={(nextValue) => {
           setValue(Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue);
         }}
-        renderOption={(option) => (
+        renderOption={({ option }) => (
           <span
             style={{
               display: 'inline-flex',
@@ -1026,7 +1026,7 @@ export const VirtualizedList: Story = {
 export const CustomRender: Story = {
   args: {
     defaultOpen: true,
-    renderOption: (option) => (
+    renderOption: ({ option }) => (
       <span
         style={{
           display: 'inline-flex',

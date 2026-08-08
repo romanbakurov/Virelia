@@ -6,6 +6,9 @@ export type SelectItemRowProps = {
   option: SelectOption;
   isSelected: boolean;
   isDisabled: boolean;
+  itemIndex: number;
+  selectedValues: string[];
+  multiple: boolean;
   optionStyle: StyleProp<ViewStyle>;
   onSelect: (option: SelectOption) => void;
 };

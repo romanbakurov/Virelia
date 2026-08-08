@@ -67,7 +67,13 @@ export const SelectContentSurface = () => {
     wasOpenRef.current = isOpen;
   }, [isOpen]);
 
-  const renderRow = ({ item }: { item: SelectCollectionRow }) => {
+  const renderRow = ({
+    item,
+    index,
+  }: {
+    item: SelectCollectionRow;
+    index: number;
+  }) => {
     if (item.type === 'group') {
       if (item.selectable && context.multiple) {
         const enabledGroupValues = item.itemValues.filter((value) =>
@@ -106,6 +112,9 @@ export const SelectContentSurface = () => {
         option={item.option}
         isSelected={isSelected}
         isDisabled={Boolean(item.option.disabled || maxReached)}
+        itemIndex={index}
+        selectedValues={selectedValues}
+        multiple={context.multiple}
         optionStyle={optionStyle}
         onSelect={selectOption}
       />

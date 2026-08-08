@@ -1,6 +1,7 @@
 import type { PortalProps } from '@primitives/Portal';
 import type { ReactElement, ReactNode } from 'react';
 
+import { resolveCompoundSlotPart } from '../../internal/compoundSlots';
 import type {
   DropdownArrowProps,
   DropdownCheckboxItemProps,
@@ -45,20 +46,8 @@ export type DropdownSlotComponent<P> = ((props: P) => ReactElement | null) & {
   displayName?: string;
 };
 
-type WrappedDropdownSlotComponent = {
-  __velliraDropdownPart?: DropdownSlot;
-  render?: WrappedDropdownSlotComponent;
-  type?: WrappedDropdownSlotComponent;
-};
-
 export function getDropdownSlotPart(type: unknown): DropdownSlot | undefined {
-  const slotType = type as WrappedDropdownSlotComponent | undefined;
-
-  return (
-    slotType?.__velliraDropdownPart ??
-    slotType?.type?.__velliraDropdownPart ??
-    slotType?.render?.__velliraDropdownPart
-  );
+  return resolveCompoundSlotPart<DropdownSlot>(type, '__velliraDropdownPart');
 }
 
 export type DropdownCollectionItem =

@@ -9,6 +9,7 @@ import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
 import { Select } from './Select';
+import type { SelectRenderOptionContext } from './types';
 
 const options = [
   { label: 'France', value: 'fr' },
@@ -701,6 +702,7 @@ describe('Native Select', () => {
   });
 
   it('supports custom renderValue and renderOption', () => {
+    const renderOptionContexts: SelectRenderOptionContext[] = [];
     const { container, unmount } = render(
       <Select
         label='Country'
@@ -709,12 +711,16 @@ describe('Native Select', () => {
         renderValue={({ option }) =>
           option ? <Text>Selected: {option.label}</Text> : null
         }
-        renderOption={(option, state) => (
-          <Text>
-            {state.selected ? 'Selected ' : ''}
-            {option.label}
-          </Text>
-        )}
+        renderOption={(context) => {
+          renderOptionContexts.push(context);
+
+          return (
+            <Text>
+              {context.selected ? 'Selected ' : ''}
+              {context.option.label}
+            </Text>
+          );
+        }}
       />
     );
 
@@ -723,6 +729,15 @@ describe('Native Select', () => {
     openSelect(container);
 
     expect(document.body.textContent).toContain('Selected France');
+    expect(renderOptionContexts[0]).toMatchObject({
+      selected: true,
+      disabled: false,
+      active: false,
+      index: 0,
+      values: ['fr'],
+      multiple: false,
+    });
+    expect(renderOptionContexts[0]?.option.value).toBe('fr');
 
     unmount();
   });
