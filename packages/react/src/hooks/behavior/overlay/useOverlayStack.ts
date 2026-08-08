@@ -1,37 +1,45 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
-let stack: string[] = [];
-
-const overlayStackStore = {
-  add(id: string) {
-    stack = stack.filter((item) => item !== id);
-    stack.push(id);
-  },
-  remove(id: string) {
-    stack = stack.filter((item) => item !== id);
-  },
-  isTop(id: string) {
-    return stack[stack.length - 1] === id;
-  },
-};
+import { type OverlayLayer, overlayManager } from '@/managers';
 
 export type OverlayStackOptions = {
   active: boolean;
   id: string;
+  layer?: OverlayLayer;
+  zIndex?: number;
 };
 
-export const useOverlayStack = ({ active, id }: OverlayStackOptions) => {
+const getOverlaySnapshot = () => overlayManager.getSnapshot();
+
+export const useOverlayStack = ({
+  active,
+  id,
+  layer,
+  zIndex: explicitZIndex,
+}: OverlayStackOptions) => {
+  const snapshot = useSyncExternalStore(
+    overlayManager.subscribe,
+    getOverlaySnapshot,
+    getOverlaySnapshot
+  );
+
   useEffect(() => {
     if (!active) return;
 
-    overlayStackStore.add(id);
+    overlayManager.register({ id, layer, zIndex: explicitZIndex });
 
     return () => {
-      overlayStackStore.remove(id);
+      overlayManager.unregister(id);
     };
-  }, [active, id]);
+  }, [active, id, layer, explicitZIndex]);
 
-  const isTopOverlay = useCallback(() => overlayStackStore.isTop(id), [id]);
+  const isTopOverlay = useCallback(() => overlayManager.isTopmost(id), [id]);
+  const entry = snapshot.registry.get(id);
 
-  return { isTopOverlay };
+  return {
+    isTopOverlay,
+    isTopmost: snapshot.topmost?.id === id,
+    order: entry?.order,
+    zIndex: overlayManager.getZIndex(id),
+  };
 };
