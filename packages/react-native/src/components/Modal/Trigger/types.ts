@@ -1,5 +1,5 @@
-import type { ReactElement, ReactNode } from 'react';
-import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
+import type { ReactElement, ReactNode, Ref } from 'react';
+import type { PressableProps, StyleProp, View, ViewStyle } from 'react-native';
 
 export type ModalTriggerProps = {
   children: ReactNode;
@@ -9,6 +9,7 @@ export type ModalTriggerProps = {
 } & Pick<PressableProps, 'accessibilityLabel' | 'testID'>;
 
 export type ModalTriggerChildProps = {
+  ref?: Ref<View>;
   onPress?: PressableProps['onPress'];
   disabled?: boolean;
   accessibilityRole?: PressableProps['accessibilityRole'];

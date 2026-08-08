@@ -1,7 +1,7 @@
 import { act } from 'react';
 
 import { Text } from 'react-native';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Button } from '../../primitives/Button';
 import { Portal } from '../../primitives/Portal';
@@ -58,6 +58,19 @@ function NativeModal({
 }
 
 describe('Native Modal', () => {
+  beforeEach(() => {
+    vi.spyOn(globalThis, 'requestAnimationFrame').mockImplementation(
+      (callback) => {
+        callback(0);
+        return 1;
+      }
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('renders modal content when open', () => {
     const { container, unmount } = render(<NativeModal />);
 
@@ -223,5 +236,101 @@ describe('Native Modal', () => {
     expect(onOpenChange).not.toHaveBeenCalled();
 
     unmount();
+  });
+
+  it('restores focus to the trigger after Modal.Close', () => {
+    const animationFrame = vi
+      .spyOn(globalThis, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        callback(0);
+        return 1;
+      });
+
+    const { container, unmount } = render(
+      <Modal>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const doneButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Done');
+
+    act(() => {
+      doneButton?.click();
+    });
+
+    expect(animationFrame).toHaveBeenCalled();
+    expect(document.activeElement).toBe(trigger);
+
+    unmount();
+    animationFrame.mockRestore();
+  });
+
+  it('restores focus to the trigger after backdrop dismissal', () => {
+    const animationFrame = vi
+      .spyOn(globalThis, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        callback(0);
+        return 1;
+      });
+
+    const { container, unmount } = render(
+      <Modal>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Text>Modal content</Text>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const backdrop = container.querySelector<HTMLButtonElement>(
+      '[data-testid="modal-backdrop"]'
+    );
+
+    act(() => {
+      backdrop?.click();
+    });
+
+    expect(animationFrame).toHaveBeenCalled();
+    expect(document.activeElement).toBe(trigger);
+
+    unmount();
+    animationFrame.mockRestore();
   });
 });

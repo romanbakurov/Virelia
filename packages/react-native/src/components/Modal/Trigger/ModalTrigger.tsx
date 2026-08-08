@@ -1,11 +1,27 @@
 import { cloneElement, isValidElement } from 'react';
 
-import type { GestureResponderEvent } from 'react-native';
+import type { Ref } from 'react';
+import type { GestureResponderEvent, View } from 'react-native';
 import { Pressable, Text } from 'react-native';
 
 import { useModalContext } from '../internal/ModalContext';
 
 import type { ModalTriggerChild, ModalTriggerProps } from './types';
+
+const composeRefs =
+  <T,>(...refs: Array<Ref<T> | undefined>) =>
+  (node: T | null) => {
+    for (const ref of refs) {
+      if (typeof ref === 'function') {
+        ref(node);
+        continue;
+      }
+
+      if (ref) {
+        ref.current = node;
+      }
+    }
+  };
 
 export const ModalTrigger = ({
   children,
@@ -21,6 +37,10 @@ export const ModalTrigger = ({
       ? (children as ModalTriggerChild)
       : undefined;
 
+  const composedTriggerRef = child
+    ? composeRefs<View>(root.triggerRef, child.props.ref)
+    : root.triggerRef;
+
   const handlePress = (event: GestureResponderEvent) => {
     if (disabled || child?.props.disabled) return;
 
@@ -30,6 +50,7 @@ export const ModalTrigger = ({
 
   if (child) {
     return cloneElement(child, {
+      ref: composedTriggerRef,
       onPress: handlePress,
       accessibilityRole: child.props.accessibilityRole ?? 'button',
       accessibilityState: {
@@ -45,6 +66,7 @@ export const ModalTrigger = ({
 
   return (
     <Pressable
+      ref={root.triggerRef}
       accessibilityRole='button'
       accessibilityState={{ expanded: root.open, disabled }}
       accessibilityLabel={accessibilityLabel}

@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import type { Animated } from 'react-native';
+import type { MutableRefObject } from 'react';
+import type { Animated, View } from 'react-native';
 
 import type { ModalAnimation } from '../types';
 
@@ -13,6 +14,7 @@ interface ModalContextType {
   open: boolean;
   setOpen: (open: boolean) => void;
   shouldRender: boolean;
+  triggerRef: MutableRefObject<View | null>;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
