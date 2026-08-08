@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useMemo, useRef, useState } from 'react';
 
 import type { TextInput } from 'react-native';
 import { View } from 'react-native';
@@ -9,13 +9,13 @@ import {
   useOverlayPresentation,
   useSelect,
 } from '../../../hooks';
+import { useSelectCollection } from '../../../hooks/behavior/select/useSelectCollection';
+import { useSelectSearch } from '../../../hooks/behavior/select/useSelectSearch';
 import { useNativeFloatingPosition } from '../../../managers';
 import { FormField, useFormFieldContext } from '../../../patterns/FormField';
 import { SelectContentSurface } from '../Content';
+import { resolveSelectAccessibility } from '../internal/resolveSelectAccessibility';
 import { SelectContext } from '../internal/SelectContext';
-import { useSelectAccessibility } from '../internal/useSelectAccessibility';
-import { useSelectCollection } from '../internal/useSelectCollection';
-import { useSelectSearch } from '../internal/useSelectSearch';
 import { SelectTrigger } from '../Trigger';
 import type {
   SelectMultipleProps,
@@ -82,12 +82,10 @@ export function SelectRoot(props: SelectProps) {
 
   const triggerRef = useRef<View | null>(null);
 
-  const {
-    position,
-    placement: resolvedPlacement,
-    updatePosition,
-    onFloatingLayout,
-  } = useNativeFloatingPosition(placement, offset);
+  const { position, onFloatingLayout } = useNativeFloatingPosition(
+    placement,
+    offset
+  );
 
   const searchInputRef = useRef<TextInput>(null);
   const selectedFocusValueRef = useRef<string | undefined>(undefined);
@@ -113,6 +111,7 @@ export function SelectRoot(props: SelectProps) {
     : props.value === null
       ? ''
       : props.value;
+
   const controlledDefaultValue = props.multiple
     ? props.defaultValue
     : props.defaultValue === null
@@ -162,22 +161,29 @@ export function SelectRoot(props: SelectProps) {
     triggerRef,
   });
 
-  const closeAndFocusTrigger = () => {
+  const closeAndFocusTrigger = useCallback(() => {
     closeDropdown();
     restoreFocusAfterClose();
-  };
+  }, [closeDropdown, restoreFocusAfterClose]);
 
-  const selectedValues = Array.isArray(selectedValue)
-    ? selectedValue
-    : selectedValue
+  const selectedValues = useMemo<string[]>(() => {
+    if (props.multiple) {
+      return Array.isArray(selectedValue) ? selectedValue : [];
+    }
+
+    return typeof selectedValue === 'string' && selectedValue
       ? [selectedValue]
       : [];
+  }, [props.multiple, selectedValue]);
+
   const selectedOption = options.find((option: SelectOption) =>
     selectedValues.includes(option.value)
   );
+
   const selectedOptions = options.filter((option: SelectOption) =>
     selectedValues.includes(option.value)
   );
+
   const optionsByValue = useMemo(
     () =>
       new Map(
@@ -239,7 +245,7 @@ export function SelectRoot(props: SelectProps) {
     selectedOptions,
   ]);
 
-  const { resolvedLabel, resolvedHint, announce } = useSelectAccessibility({
+  const { resolvedLabel, resolvedHint, announce } = resolveSelectAccessibility({
     accessibilityLabel,
     accessibilityHint,
     label: !hasOwnField ? undefined : label,
@@ -266,138 +272,179 @@ export function SelectRoot(props: SelectProps) {
     announce('Selection cleared');
   };
 
-  const selectOption = (option: SelectOption) => {
-    if (option.disabled) return;
+  const selectOption = useCallback(
+    (option: SelectOption) => {
+      if (option.disabled) return;
 
-    const selectedBefore = selectedValues.includes(option.value);
-    const maxReached =
-      Boolean(props.multiple) &&
-      !selectedBefore &&
-      typeof maxSelected === 'number' &&
-      selectedValues.length >= maxSelected;
+      const selectedBefore = selectedValues.includes(option.value);
+      const maxReached =
+        Boolean(props.multiple) &&
+        !selectedBefore &&
+        typeof maxSelected === 'number' &&
+        selectedValues.length >= maxSelected;
 
-    if (maxReached) return;
+      if (maxReached) return;
 
-    selectedFocusValueRef.current = option.value;
-    selectValue(option.value);
-    announce(`${option.label} selected`);
-  };
+      selectedFocusValueRef.current = option.value;
+      selectValue(option.value);
+      announce(`${option.label} selected`);
+    },
+    [announce, maxSelected, props.multiple, selectValue, selectedValues]
+  );
 
-  const selectGroup = (values: string[]) => {
-    if (!props.multiple || values.length === 0) return;
+  const selectGroup = useCallback(
+    (values: string[]) => {
+      if (!props.multiple || values.length === 0) return;
 
-    const enabledValues = values.filter((value) => optionsByValue.has(value));
-    const selectedGroupValues = enabledValues.filter((value) =>
-      selectedValues.includes(value)
-    );
-    const outsideSelectedCount = selectedValues.filter(
-      (value) => !enabledValues.includes(value)
-    ).length;
-    const maxSelectableGroupCount =
-      typeof maxSelected === 'number'
-        ? Math.max(
-            0,
-            Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
-          )
-        : enabledValues.length;
-    const shouldClearGroup =
-      selectedGroupValues.length > 0 &&
-      selectedGroupValues.length >= maxSelectableGroupCount;
-
-    if (shouldClearGroup) {
-      selectedFocusValueRef.current = undefined;
-      setSelectedValue(
-        selectedValues.filter((value) => !enabledValues.includes(value))
+      const enabledValues = values.filter((value) => optionsByValue.has(value));
+      const selectedGroupValues = enabledValues.filter((value) =>
+        selectedValues.includes(value)
       );
-      announce('Group selection cleared');
-      return;
-    }
+      const outsideSelectedCount = selectedValues.filter(
+        (value) => !enabledValues.includes(value)
+      ).length;
+      const maxSelectableGroupCount =
+        typeof maxSelected === 'number'
+          ? Math.max(
+              0,
+              Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
+            )
+          : enabledValues.length;
 
-    const nextValues = [...selectedValues];
+      const shouldClearGroup =
+        selectedGroupValues.length > 0 &&
+        selectedGroupValues.length >= maxSelectableGroupCount;
 
-    for (const value of enabledValues) {
-      if (nextValues.includes(value)) continue;
-      if (typeof maxSelected === 'number' && nextValues.length >= maxSelected) {
-        break;
+      if (shouldClearGroup) {
+        selectedFocusValueRef.current = undefined;
+
+        setSelectedValue(
+          selectedValues.filter((value) => !enabledValues.includes(value))
+        );
+
+        announce('Group selection cleared');
+
+        return;
       }
 
-      nextValues.push(value);
-    }
+      const nextValues = [...selectedValues];
 
-    setSelectedValue(nextValues);
-    selectedFocusValueRef.current = nextValues.at(-1);
-    announce('Group selected');
+      for (const value of enabledValues) {
+        if (nextValues.includes(value)) continue;
 
-    if (closeOnSelect) {
-      closeAndFocusTrigger();
-    }
-  };
+        if (
+          typeof maxSelected === 'number' &&
+          nextValues.length >= maxSelected
+        ) {
+          break;
+        }
 
-  const openContent = () => {
-    updatePosition(triggerRef);
-    openDropdown();
-  };
+        nextValues.push(value);
+      }
 
-  const contextValue = {
-    label,
-    description,
-    error,
-    placeholder,
-    color,
-    variant,
-    size: resolvedSize,
-    isOpen,
-    hasValue,
-    loading,
-    clearable,
-    searchable: shouldSearch,
-    multiple: Boolean(props.multiple),
-    maxSelected,
-    virtual,
-    resolvedLabel,
-    resolvedHint,
-    resolvedPresentation,
-    placement: resolvedPlacement,
-    layer: dismiss.layer,
-    position,
-    onFloatingLayout,
-    dismissOnBackdropPress,
-    matchTriggerWidth,
-    triggerWidth,
-    selectedValues,
-    selectedOptions,
-    optionsByValue,
-    rows,
-    filteredRows,
-    selectedRowIndex,
-    itemHeight,
-    query,
-    searchPlaceholder:
-      searchPlaceholder ?? searchPlaceholderFromChildren ?? 'Search...',
-    searchInputRef,
-    empty: empty ?? emptyFromChildren ?? 'Nothing found',
-    loadingContent: loadingFromChildren ?? loadingText,
-    closeContent: dismiss.requestClose,
-    openContent,
-    clearValue,
-    selectOption,
-    selectGroup,
-    setQuery,
-    renderValue,
-    renderOption,
-    startIcon,
-    endIcon,
-    prefix,
-    suffix,
-    triggerStyle,
-    textStyle,
-    contentStyle,
-    optionStyle,
-    searchStyle,
-    fieldControlId: !hasOwnField ? field?.controlId : undefined,
-    fieldLabelId: !hasOwnField ? field?.labelId : undefined,
-    fieldDescribedBy: !hasOwnField ? field?.ariaDescribedBy : undefined,
-  };
+      setSelectedValue(nextValues);
+      selectedFocusValueRef.current = nextValues.at(-1);
+      announce('Group selected');
+
+      if (closeOnSelect) {
+        closeAndFocusTrigger();
+      }
+    },
+    [
+      announce,
+      closeAndFocusTrigger,
+      closeOnSelect,
+      maxSelected,
+      optionsByValue,
+      props.multiple,
+      selectedValues,
+      setSelectedValue,
+    ]
+  );
+
+  const resolvedSearchPlaceholder =
+    searchPlaceholder ?? searchPlaceholderFromChildren ?? 'Search...';
+
+  const resolvedEmpty = empty ?? emptyFromChildren ?? 'Nothing found';
+
+  const resolvedLoadingContent = loadingFromChildren ?? loadingText;
+
+  const contextValue = useMemo(
+    () => ({
+      color,
+      variant,
+      isOpen,
+      loading,
+      searchable: shouldSearch,
+      multiple: Boolean(props.multiple),
+      maxSelected,
+      virtual,
+      resolvedLabel,
+      resolvedPresentation,
+      layer: dismiss.layer,
+      position,
+      onFloatingLayout,
+      dismissOnBackdropPress,
+      matchTriggerWidth,
+      triggerWidth,
+      selectedValues,
+      selectedOptions,
+      optionsByValue,
+      filteredRows,
+      selectedRowIndex,
+      itemHeight,
+      query,
+      searchPlaceholder: resolvedSearchPlaceholder,
+      searchInputRef,
+      empty: resolvedEmpty,
+      loadingContent: resolvedLoadingContent,
+      closeContent: dismiss.requestClose,
+      selectOption,
+      selectGroup,
+      setQuery,
+      renderOption,
+      contentStyle,
+      optionStyle,
+      searchStyle,
+    }),
+    [
+      color,
+      variant,
+      isOpen,
+      loading,
+      shouldSearch,
+      props.multiple,
+      maxSelected,
+      virtual,
+      resolvedLabel,
+      resolvedPresentation,
+      dismiss.layer,
+      position,
+      onFloatingLayout,
+      dismissOnBackdropPress,
+      matchTriggerWidth,
+      triggerWidth,
+      selectedValues,
+      selectedOptions,
+      optionsByValue,
+      filteredRows,
+      selectedRowIndex,
+      itemHeight,
+      query,
+      resolvedSearchPlaceholder,
+      searchInputRef,
+      resolvedEmpty,
+      resolvedLoadingContent,
+      dismiss.requestClose,
+      selectOption,
+      selectGroup,
+      setQuery,
+      renderOption,
+      contentStyle,
+      optionStyle,
+      searchStyle,
+    ]
+  );
 
   const control = (
     <SelectContext.Provider value={contextValue}>

@@ -44,28 +44,32 @@ export type ParsedSelectChildren = {
   loading?: ReactNode;
 };
 
+export type ResolveSelectAccessibilityParams = {
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
+  label?: string;
+  description?: ReactNode;
+  error?: ReactNode;
+  invalid: boolean;
+  placeholder: string;
+  selectedLabel?: string;
+  hasFieldContext: boolean;
+  fieldDescribedBy?: string;
+};
+
 export const selectSlotName = Symbol('VelliraNativeSelectSlot');
 
 export type SelectContextValue = {
-  label?: string;
-  description?: string;
-  error?: ReactNode;
-  placeholder: string;
   color: NonNullable<SelectProps['color']>;
   variant: NonNullable<SelectProps['variant']>;
-  size: NonNullable<SelectProps['size']>;
   isOpen: boolean;
-  hasValue: boolean;
   loading: boolean;
-  clearable: boolean;
   searchable: boolean;
   multiple: boolean;
   maxSelected?: number;
   virtual: SelectProps['virtual'];
   resolvedLabel: string;
-  resolvedHint?: string;
   resolvedPresentation: Exclude<SelectPresentation, 'auto'>;
-  placement: NonNullable<SelectProps['placement']>;
   layer: number;
   position: {
     top: number;
@@ -78,7 +82,6 @@ export type SelectContextValue = {
   selectedValues: string[];
   selectedOptions: SelectOption[];
   optionsByValue: Map<string, SelectOption>;
-  rows: SelectCollectionRow[];
   filteredRows: SelectCollectionRow[];
   selectedRowIndex: number;
   itemHeight: number;
@@ -88,23 +91,11 @@ export type SelectContextValue = {
   empty: ReactNode;
   loadingContent: ReactNode;
   closeContent: () => void;
-  openContent: () => void;
-  clearValue: () => void;
   selectOption: (option: SelectOption) => void;
   selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;
-  renderValue: NonNullable<SelectProps['renderValue']> | undefined;
   renderOption: NonNullable<SelectProps['renderOption']> | undefined;
-  startIcon: SelectProps['startIcon'];
-  endIcon: SelectProps['endIcon'];
-  prefix: SelectProps['prefix'];
-  suffix: SelectProps['suffix'];
-  triggerStyle: SelectProps['triggerStyle'];
-  textStyle: SelectProps['textStyle'];
   contentStyle: SelectProps['contentStyle'];
   optionStyle: SelectProps['optionStyle'];
   searchStyle: SelectProps['searchStyle'];
-  fieldControlId?: string;
-  fieldLabelId?: string;
-  fieldDescribedBy?: string;
 };

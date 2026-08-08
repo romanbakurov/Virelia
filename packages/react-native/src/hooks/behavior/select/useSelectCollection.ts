@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 
 import type { ReactNode } from 'react';
 
-import type { SelectOption } from '../types';
-
-import { parseSelectChildren } from './SelectCollection';
-import type { SelectCollectionRow } from './types';
+import { parseSelectChildren } from '../../../components/Select/internal/SelectCollection';
+import type { SelectCollectionRow } from '../../../components/Select/internal/types';
+import type { SelectOption } from '../../../components/Select/types';
 
 export const useSelectCollection = (
   children: ReactNode,

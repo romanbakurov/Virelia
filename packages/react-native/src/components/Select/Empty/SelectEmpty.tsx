@@ -2,11 +2,10 @@ import type { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
+import { createContentStyles } from '../Content/SelectContent.styles';
 import { createSelectSlot } from '../internal/SelectCollection';
 import { useSelectContext } from '../internal/SelectContext';
 import type { SelectEmptyProps } from '../types';
-
-import { createContentStyles } from './SelectContent.styles';
 
 const renderText = (node: ReactNode, style: object) => {
   if (typeof node === 'string' || typeof node === 'number') {

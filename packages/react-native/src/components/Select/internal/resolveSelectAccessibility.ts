@@ -1,20 +1,8 @@
-import type { ReactNode } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
-type UseSelectAccessibilityParams = {
-  accessibilityLabel?: string;
-  accessibilityHint?: string;
-  label?: string;
-  description?: ReactNode;
-  error?: ReactNode;
-  invalid: boolean;
-  placeholder: string;
-  selectedLabel?: string;
-  hasFieldContext: boolean;
-  fieldDescribedBy?: string;
-};
+import type { ResolveSelectAccessibilityParams } from './types';
 
-export const useSelectAccessibility = ({
+export const resolveSelectAccessibility = ({
   accessibilityLabel,
   accessibilityHint,
   label,
@@ -25,7 +13,7 @@ export const useSelectAccessibility = ({
   selectedLabel,
   hasFieldContext,
   fieldDescribedBy,
-}: UseSelectAccessibilityParams) => {
+}: ResolveSelectAccessibilityParams) => {
   const descriptionText =
     typeof description === 'string' || typeof description === 'number'
       ? String(description)

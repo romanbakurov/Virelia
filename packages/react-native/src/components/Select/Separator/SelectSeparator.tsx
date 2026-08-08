@@ -1,10 +1,9 @@
 import { View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
+import { createGroupStyles } from '../Group/SelectGroup.styles';
 import { createSelectSlot } from '../internal/SelectCollection';
 import type { SelectSeparatorProps } from '../types';
-
-import { createGroupStyles } from './SelectGroup.styles';
 
 export const SelectSeparator = createSelectSlot<SelectSeparatorProps>(
   'separator',
