@@ -5,6 +5,8 @@ import { overlayManager } from '@/managers';
 import type { OverlayDismissOptions } from '../types.js';
 import { createOutsideEvent } from '../utils/events.js';
 
+import { useOverlayRegistration } from './useOverlayRegistration.js';
+
 let activeEscapeHandlers = 0;
 let detachEscapeKeyDown: (() => void) | undefined;
 let activePointerDownOutsideHandlers = 0;
@@ -83,6 +85,11 @@ export const useOverlayDismiss = ({
   onInteractOutside,
   requestClose,
 }: OverlayDismissOptions) => {
+  useOverlayRegistration({
+    active,
+    id,
+  });
+
   const ignoreRefsRef = useRef(ignoreRefs);
   ignoreRefsRef.current = ignoreRefs;
 

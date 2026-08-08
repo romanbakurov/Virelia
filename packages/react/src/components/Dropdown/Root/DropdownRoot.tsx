@@ -10,12 +10,7 @@ import {
 import { cn } from '@utils/cn';
 import type { KeyboardEvent, MouseEvent } from 'react';
 
-import {
-  useDropdown,
-  useOverlayDismiss,
-  useOverlayStack,
-  useScrollLock,
-} from '@/hooks';
+import { useDropdown, useOverlayDismiss, useScrollLock } from '@/hooks';
 import { useFloatingPosition } from '@/managers/FloatingManager';
 
 import { DropdownContent } from '../Content';
@@ -171,11 +166,6 @@ export const DropdownRoot = ({
     [onSearch, searchValue, setActiveIndex]
   );
 
-  const { isTopOverlay } = useOverlayStack({
-    active: isOpen,
-    id: contentId,
-  });
-
   useScrollLock({
     active: isOpen,
     enabled: modal,
@@ -285,7 +275,6 @@ export const DropdownRoot = ({
     closeOnOutsidePress: true,
     contentRef,
     ignoreRefs: [triggerRef],
-    isTopOverlay,
     requestClose: () => closeDropdown(),
   });
 

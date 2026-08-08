@@ -1,4 +1,3 @@
-export { createOverlayManager, overlayManager } from './OverlayManager';
 export type {
   OverlayEntry,
   OverlayLayer,
@@ -6,3 +5,4 @@ export type {
   OverlayRegistration,
   OverlaySnapshot,
 } from './types';
+export { createOverlayManager, overlayManager } from './WebOverlayManager';

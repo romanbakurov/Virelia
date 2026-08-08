@@ -31,7 +31,6 @@ export type OverlayDismissOptions = {
   ignoreRefs?: Array<RefObject<HTMLElement | null>>;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
-  isTopOverlay: () => boolean;
   onEscapeKeyDown?: (event: KeyboardEvent) => void;
   onPointerDownOutside?: (event: OverlayOutsideEvent) => void;
   onInteractOutside?: (event: OverlayOutsideEvent) => void;

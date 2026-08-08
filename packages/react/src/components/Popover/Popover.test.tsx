@@ -331,6 +331,44 @@ describe('Popover', () => {
     unmount();
   });
 
+  it('does not close from outside press on trigger or anchor refs', () => {
+    const onOpenChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Popover defaultOpen onOpenChange={onOpenChange}>
+        <Popover.Anchor asChild>
+          <button type='button'>Anchor target</button>
+        </Popover.Anchor>
+
+        <Popover.Trigger>Open popover</Popover.Trigger>
+
+        <Popover.Content>
+          <Popover.Title>Workspace settings</Popover.Title>
+          <Popover.Description>Configure your workspace.</Popover.Description>
+        </Popover.Content>
+      </Popover>
+    );
+
+    const anchor = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Anchor target');
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open popover');
+
+    act(() => {
+      anchor?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+      trigger?.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+      );
+    });
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+
+    unmount();
+  });
+
   it('connects title and description for accessibility', async () => {
     const { unmount } = render(
       <Popover defaultOpen>

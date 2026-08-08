@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { nativeOverlayManager } from './NativeOverlayManager';
+import { nativeOverlayManager } from '../../../managers/OverlayManager';
 
-type UseNativeOverlayRegistrationParams = {
+export type OverlayRegistrationOptions = {
+  active: boolean;
   id: string;
-  visible: boolean;
 };
 
-export const useNativeOverlayRegistration = ({
+export const useOverlayRegistration = ({
+  active,
   id,
-  visible,
-}: UseNativeOverlayRegistrationParams) => {
+}: OverlayRegistrationOptions) => {
   const [layer, setLayer] = useState(() => nativeOverlayManager.getLayer(id));
 
   useEffect(() => {
-    if (!visible) return;
+    if (!active) return;
 
     const entry = nativeOverlayManager.register(id);
 
@@ -23,7 +23,7 @@ export const useNativeOverlayRegistration = ({
     return () => {
       nativeOverlayManager.unregister(id);
     };
-  }, [id, visible]);
+  }, [active, id]);
 
   const isTopOverlay = useCallback(() => nativeOverlayManager.isTop(id), [id]);
 

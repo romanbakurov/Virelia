@@ -46,7 +46,6 @@ export const ModalContent = ({
     contentRef: root.contentRef,
     closeOnEscape: root.closeOnEscape,
     closeOnOutsidePress: root.closeOnOutsidePress,
-    isTopModal: root.isTopModal,
     onEscapeKeyDown: root.onEscapeKeyDown,
     onInteractOutside: root.onInteractOutside,
     onPointerDownOutside: root.onPointerDownOutside,

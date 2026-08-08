@@ -1,10 +1,6 @@
 import { useId, useRef } from 'react';
 
-import {
-  useControllableState,
-  useOverlayDismiss,
-  useOverlayStack,
-} from '@/hooks';
+import { useControllableState, useOverlayDismiss } from '@/hooks';
 
 import { composeRefs } from '../internal/composeEventHandlers';
 import { TooltipRootProvider } from '../internal/TooltipContext';
@@ -59,11 +55,6 @@ export const TooltipRoot = ({
     disabled,
     interactive,
   });
-  const { isTopOverlay } = useOverlayStack({
-    active: open,
-    id: contentId,
-  });
-
   useOverlayDismiss({
     active: open,
     id: contentId,
@@ -71,7 +62,6 @@ export const TooltipRoot = ({
     ignoreRefs: [triggerRef],
     closeOnEscape: true,
     closeOnOutsidePress: !interactive,
-    isTopOverlay,
     requestClose: () => setOpen(false),
   });
 

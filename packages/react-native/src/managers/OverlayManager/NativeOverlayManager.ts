@@ -1,9 +1,4 @@
-export type NativeOverlayEntry = {
-  id: string;
-  layer: number;
-};
-
-export type NativeOverlayDismissHandler = () => boolean;
+import type { NativeOverlayDismissHandler, NativeOverlayEntry } from './types';
 
 const BASE_LAYER = 1000;
 const LAYER_STEP = 10;

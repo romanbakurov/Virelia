@@ -4,7 +4,7 @@ import { BackHandler, Platform } from 'react-native';
 
 import { nativeOverlayManager } from '../../../managers/OverlayManager';
 
-import { useOverlayStack } from './useOverlayStack';
+import { useOverlayRegistration } from './useOverlayRegistration';
 
 export type OverlayDismissOptions = {
   active: boolean;
@@ -69,7 +69,7 @@ export const useOverlayDismiss = ({
   requestClose,
   requestOutsideClose,
 }: OverlayDismissOptions) => {
-  const { isTopOverlay, layer } = useOverlayStack({ active, id });
+  const { isTopOverlay, layer } = useOverlayRegistration({ active, id });
 
   const requestTopClose = useCallback(() => {
     if (!isTopOverlay()) return;

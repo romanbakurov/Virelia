@@ -10,12 +10,7 @@ import {
 
 import { FormField, useFormFieldContext } from '@patterns/FormField';
 
-import {
-  useOverlayDismiss,
-  useOverlayStack,
-  useScrollLock,
-  useSelect,
-} from '@/hooks';
+import { useOverlayDismiss, useScrollLock, useSelect } from '@/hooks';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
@@ -278,11 +273,6 @@ export const SelectRoot = ({
     [onSearch]
   );
 
-  const { isTopOverlay } = useOverlayStack({
-    active: isOpen,
-    id: listboxId,
-  });
-
   useOverlayDismiss({
     active: isOpen,
     id: listboxId,
@@ -290,7 +280,6 @@ export const SelectRoot = ({
     closeOnOutsidePress: true,
     contentRef: listRef,
     ignoreRefs: [buttonRef],
-    isTopOverlay,
     requestClose: closeDropdown,
   });
 

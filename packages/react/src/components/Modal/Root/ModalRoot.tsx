@@ -4,7 +4,7 @@ import { cn } from '@utils/cn';
 import { lightTheme } from '@vellira-ui/tokens';
 import type { CSSProperties } from 'react';
 
-import { useModal, useOverlayStack, useScrollLock } from '@/hooks';
+import { useModal, useScrollLock } from '@/hooks';
 
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
@@ -113,11 +113,6 @@ export const ModalRoot = ({
     contentRef.current = node;
   }, []);
 
-  const { isTopOverlay } = useOverlayStack({
-    active: isOpen,
-    id: contentId,
-  });
-
   useScrollLock({
     active: isOpen,
     enabled: preventScroll,
@@ -170,7 +165,6 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
-      isTopModal: isTopOverlay,
       modal,
       onCloseAutoFocus,
       onEscapeKeyDown,
@@ -199,7 +193,6 @@ export const ModalRoot = ({
       descriptionId,
       finalFocus,
       initialFocus,
-      isTopOverlay,
       isOpen,
       modal,
       onCloseAutoFocus,

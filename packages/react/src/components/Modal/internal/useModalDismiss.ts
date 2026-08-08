@@ -10,7 +10,6 @@ export const useModalDismiss = ({
   contentRef,
   closeOnEscape,
   closeOnOutsidePress,
-  isTopModal,
   onEscapeKeyDown,
   onPointerDownOutside,
   onInteractOutside,
@@ -21,7 +20,6 @@ export const useModalDismiss = ({
   contentRef: RefObject<HTMLElement | null>;
   closeOnEscape: boolean;
   closeOnOutsidePress: boolean;
-  isTopModal: () => boolean;
   onEscapeKeyDown?: (event: KeyboardEvent) => void;
   onPointerDownOutside?: (event: ModalOutsideEvent) => void;
   onInteractOutside?: (event: ModalOutsideEvent) => void;
@@ -33,7 +31,6 @@ export const useModalDismiss = ({
     closeOnOutsidePress,
     closeOnEscape,
     contentRef,
-    isTopOverlay: isTopModal,
     onEscapeKeyDown: onEscapeKeyDown
       ? (event) => onEscapeKeyDown(event as unknown as KeyboardEvent)
       : undefined,

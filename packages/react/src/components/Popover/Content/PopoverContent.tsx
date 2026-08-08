@@ -16,7 +16,6 @@ import {
   useAriaIsolation,
   useFocusScope,
   useOverlayDismiss,
-  useOverlayStack,
   useScrollLock,
 } from '@/hooks';
 
@@ -53,6 +52,7 @@ export function PopoverContent({
     modal,
     portal,
     triggerRef,
+    anchorRef,
     contentRef,
     contentId,
     titleId,
@@ -66,11 +66,6 @@ export function PopoverContent({
   const [contentElement, setContentElement] = useState<HTMLElement | null>(
     null
   );
-
-  const { isTopOverlay } = useOverlayStack({
-    active: open,
-    id: contentId,
-  });
 
   const requestClose = useCallback(
     (reason: OverlayDismissReason, event: KeyboardEvent | PointerEvent) => {
@@ -86,10 +81,9 @@ export function PopoverContent({
     active: open,
     id: contentId,
     contentRef: contentRef,
-    ignoreRefs: [triggerRef],
+    ignoreRefs: [triggerRef, anchorRef],
     closeOnEscape,
     closeOnOutsidePress,
-    isTopOverlay,
     onEscapeKeyDown,
     onPointerDownOutside,
     onInteractOutside,
