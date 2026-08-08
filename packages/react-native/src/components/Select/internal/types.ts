@@ -70,7 +70,7 @@ export type SelectContextValue = {
   virtual: SelectProps['virtual'];
   resolvedLabel: string;
   resolvedPresentation: Exclude<SelectPresentation, 'auto'>;
-  layer: number;
+  zIndex: number;
   position: {
     top: number;
     left: number;

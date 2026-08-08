@@ -77,6 +77,7 @@ export const useOverlayDismiss = ({
   active,
   id,
   layer,
+  registrationActive = active,
   registered = false,
   zIndex,
   contentRef,
@@ -89,7 +90,7 @@ export const useOverlayDismiss = ({
   requestClose,
 }: OverlayDismissOptions) => {
   const registration = useOverlayRegistration({
-    active: active && !registered,
+    active: registrationActive && !registered,
     id,
     layer,
     zIndex,

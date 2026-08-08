@@ -10,7 +10,7 @@ export const SelectPopover = ({
   visible,
   onClose,
   dismissOnBackdropPress,
-  layer,
+  zIndex,
   position,
   onFloatingLayout,
   matchTriggerWidth,
@@ -28,7 +28,7 @@ export const SelectPopover = ({
       onRequestClose={onClose}
     >
       <View
-        style={[styles.modalRoot, Platform.OS === 'web' && { zIndex: layer }]}
+        style={[styles.modalRoot, Platform.OS === 'web' && { zIndex }]}
         testID='select-content-root'
       >
         <SelectBackdrop

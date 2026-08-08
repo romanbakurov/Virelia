@@ -21,7 +21,7 @@ export type TooltipContextValue = {
   setOpen: (open: boolean) => void;
   show: () => void;
   hide: () => void;
-  layer: number;
+  zIndex: number;
   requestClose: () => void;
   requestOutsideClose: () => void;
   onFloatingLayout: (event: LayoutChangeEvent) => void;

@@ -117,7 +117,7 @@ export function PopoverRoot({
         side,
         align,
         placement,
-        layer: dismiss.layer,
+        zIndex: dismiss.zIndex,
         position,
         arrowPosition,
         requestClose: dismiss.requestClose,

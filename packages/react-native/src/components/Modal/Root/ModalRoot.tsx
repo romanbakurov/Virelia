@@ -158,7 +158,7 @@ export const ModalRoot = ({
         animation,
         animationProgress: animationProgress.current,
         closeOnOutsidePress: modal.closeOnOutsidePress,
-        layer: dismiss.layer,
+        zIndex: dismiss.zIndex,
         onClose: dismiss.requestClose,
         onOutsideClose: dismiss.requestOutsideClose,
         open: modal.open,

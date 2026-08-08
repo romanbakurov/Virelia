@@ -30,6 +30,7 @@ export type OverlayDismissOptions = {
   active: boolean;
   id: string;
   layer?: OverlayLayer;
+  registrationActive?: boolean;
   registered?: boolean;
   zIndex?: number;
   contentRef: RefObject<HTMLElement | null>;

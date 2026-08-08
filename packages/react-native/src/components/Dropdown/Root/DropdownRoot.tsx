@@ -226,7 +226,7 @@ export function DropdownRoot({
       size,
       presentation: contentPresentation,
       position,
-      layer: dismiss.layer,
+      zIndex: dismiss.zIndex,
 
       searchable: isSearchable,
       searchValue: resolvedSearchValue,
@@ -246,7 +246,7 @@ export function DropdownRoot({
       color,
       contentPresentation,
       disabled,
-      dismiss.layer,
+      dismiss.zIndex,
       dismiss.requestClose,
       dismiss.requestOutsideClose,
       handleSearchChange,

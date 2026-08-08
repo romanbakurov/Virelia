@@ -126,7 +126,7 @@ settings, filters, and additional information.
 
     closeOnOutsidePress: {
       control: 'boolean',
-      description: 'Closes the Popover when the outside layer is pressed.',
+      description: 'Closes the Popover when the outside backdrop is pressed.',
       table: {
         defaultValue: { summary: 'true' },
       },

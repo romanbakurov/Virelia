@@ -33,7 +33,7 @@ export const TooltipContent = ({
         {
           top: tooltip.position.top,
           left: tooltip.position.left,
-          zIndex: tooltip.layer,
+          zIndex: tooltip.zIndex,
         },
         !visible && { display: 'none' },
         style,

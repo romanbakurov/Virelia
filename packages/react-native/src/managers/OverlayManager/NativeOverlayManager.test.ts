@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { nativeOverlayManager } from './NativeOverlayManager';
+import {
+  createNativeOverlayManager,
+  nativeOverlayManager,
+} from './NativeOverlayManager';
 
 afterEach(() => {
   nativeOverlayManager.clear();
@@ -14,6 +17,17 @@ describe('nativeOverlayManager', () => {
     expect(nativeOverlayManager.getTop()?.id).toBe('second');
     expect(nativeOverlayManager.isTop('second')).toBe(true);
     expect(nativeOverlayManager.isTop('first')).toBe(false);
+  });
+
+  it('creates isolated manager instances', () => {
+    const firstManager = createNativeOverlayManager();
+    const secondManager = createNativeOverlayManager();
+
+    firstManager.register('first');
+    secondManager.register('second');
+
+    expect(firstManager.getTop()?.id).toBe('first');
+    expect(secondManager.getTop()?.id).toBe('second');
   });
 
   it('moves an existing overlay to the top when re-registered', () => {
@@ -71,6 +85,34 @@ describe('nativeOverlayManager', () => {
     nativeOverlayManager.registerDismissHandler('second', second);
 
     expect(nativeOverlayManager.dispatchTopDismiss()).toBe(false);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it('dispatches outside press only to the topmost overlay handler', () => {
+    const first = vi.fn(() => true);
+    const second = vi.fn(() => true);
+
+    nativeOverlayManager.register('first');
+    nativeOverlayManager.registerOutsidePressHandler('first', first);
+    nativeOverlayManager.register('second');
+    nativeOverlayManager.registerOutsidePressHandler('second', second);
+
+    expect(nativeOverlayManager.dispatchTopOutsidePress()).toBe(true);
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not dispatch outside press to lower overlays when the topmost returns false', () => {
+    const first = vi.fn(() => true);
+    const second = vi.fn(() => false);
+
+    nativeOverlayManager.register('first');
+    nativeOverlayManager.registerOutsidePressHandler('first', first);
+    nativeOverlayManager.register('second');
+    nativeOverlayManager.registerOutsidePressHandler('second', second);
+
+    expect(nativeOverlayManager.dispatchTopOutsidePress()).toBe(false);
     expect(first).not.toHaveBeenCalled();
     expect(second).toHaveBeenCalledTimes(1);
   });

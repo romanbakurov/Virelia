@@ -25,7 +25,7 @@ export function PopoverContent({
 
   const {
     open,
-    layer,
+    zIndex,
     position,
     onFloatingLayout,
     updatePosition,
@@ -49,7 +49,7 @@ export function PopoverContent({
       <View
         ref={layerRef}
         pointerEvents='box-none'
-        style={[styles.layer, { zIndex: layer }]}
+        style={[styles.layer, { zIndex }]}
       >
         <Pressable
           testID='popover-backdrop'

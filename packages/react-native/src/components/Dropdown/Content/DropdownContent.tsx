@@ -32,7 +32,7 @@ export function DropdownContent({
     open,
     color,
     presentation,
-    layer,
+    zIndex,
     position,
     searchable,
     searchValue,
@@ -122,7 +122,7 @@ export function DropdownContent({
         style={[
           styles.modalRoot,
           styles[presentation],
-          Platform.OS === 'web' && { zIndex: layer },
+          Platform.OS === 'web' && { zIndex },
         ]}
       >
         <Animated.View

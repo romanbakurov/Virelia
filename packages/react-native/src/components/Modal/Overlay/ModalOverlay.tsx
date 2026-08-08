@@ -18,7 +18,7 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
     animation,
     animationProgress,
     closeOnOutsidePress,
-    layer,
+    zIndex,
     onClose,
     onOutsideClose,
     shouldRender,
@@ -40,7 +40,7 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
       <View
         style={[
           styles.overlay,
-          Platform.OS === 'web' && { zIndex: layer },
+          Platform.OS === 'web' && { zIndex },
           overlayStyle,
         ]}
       >

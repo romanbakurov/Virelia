@@ -79,16 +79,33 @@ export const useOverlayDismiss = ({
   }, [isTopOverlay, requestClose]);
 
   const requestOutsideTopClose = useCallback(() => {
-    if (!closeOnOutsidePress) return;
-    if (!isTopOverlay()) return;
+    nativeOverlayManager.dispatchTopOutsidePress();
+  }, []);
 
-    if (requestOutsideClose) {
-      requestOutsideClose();
-      return;
-    }
+  useEffect(() => {
+    if (!active) return;
 
-    requestClose();
-  }, [closeOnOutsidePress, isTopOverlay, requestClose, requestOutsideClose]);
+    return nativeOverlayManager.registerOutsidePressHandler(id, () => {
+      if (!closeOnOutsidePress) return false;
+      if (!isTopOverlay()) return false;
+
+      if (requestOutsideClose) {
+        requestOutsideClose();
+        return true;
+      }
+
+      requestClose();
+
+      return true;
+    });
+  }, [
+    active,
+    closeOnOutsidePress,
+    id,
+    isTopOverlay,
+    requestClose,
+    requestOutsideClose,
+  ]);
 
   useEffect(() => {
     if (!active) return;

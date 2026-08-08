@@ -33,7 +33,7 @@ const meta = {
 
 Compound-first native dialog with Root, Trigger, Overlay, Content, Header,
 Body, Footer, and Close parts. Use the shared Portal primitive for explicit
-layer composition.
+stacking composition.
 
 **Features**
 

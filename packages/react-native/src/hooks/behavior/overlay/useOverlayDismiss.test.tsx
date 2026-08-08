@@ -219,6 +219,53 @@ describe('useOverlayDismiss', () => {
     unmount();
   });
 
+  it('dispatches outside dismissal only to the topmost overlay', () => {
+    const closeFirst = vi.fn();
+    const closeSecond = vi.fn();
+
+    let firstControls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay({
+      id,
+      onClose,
+      onReady,
+    }: {
+      id: string;
+      onClose: () => void;
+      onReady?: (controls: ReturnType<typeof useOverlayDismiss>) => void;
+    }) {
+      const controls = useOverlayDismiss({
+        active: true,
+        id,
+        requestClose: onClose,
+      });
+
+      onReady?.(controls);
+
+      return null;
+    }
+
+    const { unmount } = render(
+      <>
+        <TestOverlay
+          id='first'
+          onClose={closeFirst}
+          onReady={(controls) => {
+            firstControls = controls;
+          }}
+        />
+        <TestOverlay id='second' onClose={closeSecond} />
+      </>
+    );
+
+    firstControls?.requestOutsideClose();
+
+    expect(closeFirst).not.toHaveBeenCalled();
+    expect(closeSecond).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
   it('exposes the registered overlay layer', () => {
     let layer: number | undefined;
 
