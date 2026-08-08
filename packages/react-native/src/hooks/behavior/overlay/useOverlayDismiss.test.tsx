@@ -167,4 +167,55 @@ describe('useOverlayDismiss', () => {
       value: originalOS,
     });
   });
+
+  it('uses a dedicated outside close callback when provided', () => {
+    const requestClose = vi.fn();
+    const requestOutsideClose = vi.fn();
+
+    let controls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay() {
+      controls = useOverlayDismiss({
+        active: true,
+        id: 'overlay',
+        requestClose,
+        requestOutsideClose,
+      });
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+
+    controls?.requestOutsideClose();
+
+    expect(requestOutsideClose).toHaveBeenCalledTimes(1);
+    expect(requestClose).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('falls back to requestClose for outside dismissal', () => {
+    const requestClose = vi.fn();
+
+    let controls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay() {
+      controls = useOverlayDismiss({
+        active: true,
+        id: 'overlay',
+        requestClose,
+      });
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+
+    controls?.requestOutsideClose();
+
+    expect(requestClose).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
 });

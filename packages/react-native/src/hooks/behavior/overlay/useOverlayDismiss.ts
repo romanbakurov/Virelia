@@ -10,6 +10,7 @@ export type OverlayDismissOptions = {
   closeOnOutsidePress?: boolean;
   id: string;
   requestClose: () => void;
+  requestOutsideClose?: () => void;
 };
 
 export const useOverlayDismiss = ({
@@ -18,6 +19,7 @@ export const useOverlayDismiss = ({
   closeOnOutsidePress = true,
   id,
   requestClose,
+  requestOutsideClose,
 }: OverlayDismissOptions) => {
   const { isTopOverlay } = useOverlayStack({ active, id });
 
@@ -27,11 +29,17 @@ export const useOverlayDismiss = ({
     requestClose();
   }, [isTopOverlay, requestClose]);
 
-  const requestOutsideClose = useCallback(() => {
+  const requestOutsideTopClose = useCallback(() => {
     if (!closeOnOutsidePress) return;
+    if (!isTopOverlay()) return;
 
-    requestTopClose();
-  }, [closeOnOutsidePress, requestTopClose]);
+    if (requestOutsideClose) {
+      requestOutsideClose();
+      return;
+    }
+
+    requestClose();
+  }, [closeOnOutsidePress, isTopOverlay, requestClose, requestOutsideClose]);
 
   useEffect(() => {
     if (!active || !closeOnEscape) return;
@@ -69,6 +77,6 @@ export const useOverlayDismiss = ({
   return {
     isTopOverlay,
     requestClose: requestTopClose,
-    requestOutsideClose,
+    requestOutsideClose: requestOutsideTopClose,
   };
 };

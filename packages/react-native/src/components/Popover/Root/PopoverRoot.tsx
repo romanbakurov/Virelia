@@ -1,10 +1,14 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import type { PopoverOpenChangeDetails } from '@vellira-ui/types';
 import type { MutableRefObject } from 'react';
 import type { View } from 'react-native';
 
-import { useControllableState, useOverlayFocusRestore } from '../../../hooks';
+import {
+  useControllableState,
+  useOverlayDismiss,
+  useOverlayFocusRestore,
+} from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers/FloatingManager';
 import { PopoverProvider } from '../internal';
 import type { PopoverProps } from '../types';
@@ -36,6 +40,7 @@ export function PopoverRoot({
 }: PopoverProps) {
   const triggerRef = useRef<View | null>(null);
   const anchorRef = useRef<View | null>(null);
+  const overlayId = useId();
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
     triggerRef,
@@ -78,6 +83,22 @@ export function PopoverRoot({
     [restoreFocusAfterClose, setOpenState]
   );
 
+  const dismiss = useOverlayDismiss({
+    id: overlayId,
+    active: open,
+    closeOnOutsidePress,
+    requestClose: () => {
+      setOpen(false, {
+        reason: 'escape-key',
+      });
+    },
+    requestOutsideClose: () => {
+      setOpen(false, {
+        reason: 'outside-press',
+      });
+    },
+  });
+
   const updatePosition = useCallback(
     (containerRef?: MutableRefObject<View | null>) => {
       updateFloatingPosition(getReferenceRef(), containerRef);
@@ -97,6 +118,8 @@ export function PopoverRoot({
         placement,
         position,
         arrowPosition,
+        requestClose: dismiss.requestClose,
+        requestOutsideClose: dismiss.requestOutsideClose,
         onFloatingLayout,
         updatePosition,
         setOpen,

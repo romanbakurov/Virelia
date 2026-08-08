@@ -28,7 +28,8 @@ export function PopoverContent({
     position,
     onFloatingLayout,
     updatePosition,
-    setOpen,
+    requestClose,
+    requestOutsideClose,
     closeOnOutsidePress,
   } = usePopoverContext('Popover.Content');
 
@@ -43,28 +44,13 @@ export function PopoverContent({
   }, [open, updatePosition]);
 
   return (
-    <Portal
-      visible={open}
-      onRequestClose={() => {
-        setOpen(false, {
-          reason: 'escape-key',
-        });
-      }}
-    >
+    <Portal visible={open} onRequestClose={requestClose}>
       <View ref={layerRef} pointerEvents='box-none' style={styles.layer}>
         <Pressable
           testID='popover-backdrop'
           accessibilityLabel={closeOnOutsidePress ? 'Close popover' : undefined}
           accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
-          onPress={
-            closeOnOutsidePress
-              ? () => {
-                  setOpen(false, {
-                    reason: 'outside-press',
-                  });
-                }
-              : undefined
-          }
+          onPress={closeOnOutsidePress ? requestOutsideClose : undefined}
           style={styles.backdrop}
         />
 

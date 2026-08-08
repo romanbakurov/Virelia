@@ -24,4 +24,7 @@ export interface PopoverContextValue {
   updatePosition: (containerRef?: MutableRefObject<View | null>) => void;
 
   setOpen: (open: boolean, details: PopoverOpenChangeDetails) => void;
+
+  requestClose: () => void;
+  requestOutsideClose: () => void;
 }
