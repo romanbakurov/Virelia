@@ -158,6 +158,7 @@ export function SelectRoot(props: SelectProps) {
   };
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    active: isOpen,
     triggerRef,
   });
 

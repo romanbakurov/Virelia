@@ -141,6 +141,7 @@ export function DropdownRoot({
   }, [isOpen, contentPresentation, updatePosition]);
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    active: isOpen,
     triggerRef,
   });
 
