@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { Pressable, Text } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
+import { useDropdownContext } from '../internal/DropdownContext';
 
 import { createStyles } from './DropdownItem.styles';
 import type { DropdownItemProps } from './types';
@@ -11,15 +12,13 @@ import type { DropdownItemProps } from './types';
 export function DropdownItem({
   label,
   value,
-  rootColor = 'primary',
   color = 'default',
   icon,
   disabled = false,
   textWrap = 'truncate',
-  itemStyle,
-  textStyle,
   onSelect,
 }: DropdownItemProps) {
+  const { color: rootColor, itemStyle, textStyle } = useDropdownContext();
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const rootColorPalette = theme.components.dropdown[rootColor];

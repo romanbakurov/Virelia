@@ -1,6 +1,6 @@
 import type { DropdownSelectEvent } from '../types';
 
-import type { parseDropdownChildren } from './DropdownCollection';
+import type { ParsedNativeDropdownChildren } from './types';
 
 export function createDropdownSelectEvent(): DropdownSelectEvent {
   let defaultPrevented = false;
@@ -16,7 +16,7 @@ export function createDropdownSelectEvent(): DropdownSelectEvent {
 }
 
 export function filterDropdownEntries(
-  parsed: ReturnType<typeof parseDropdownChildren>,
+  parsed: ParsedNativeDropdownChildren,
   searchValue: string
 ) {
   const normalizedSearch = searchValue.trim().toLocaleLowerCase();

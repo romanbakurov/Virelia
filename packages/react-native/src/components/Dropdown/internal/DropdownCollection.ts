@@ -14,6 +14,11 @@ import type {
   DropdownTriggerProps,
 } from '../types';
 
+import type {
+  NativeDropdownEntry,
+  ParsedNativeDropdownChildren,
+} from './types';
+
 type DropdownSlotComponent<TProps extends object> = {
   (props: TProps): null;
   __velliraDropdownPart?:
@@ -31,28 +36,6 @@ type DropdownSlotComponent<TProps extends object> = {
 
 type PortalElementType = {
   __velliraPortal?: true;
-};
-
-export type NativeDropdownEntry =
-  | { type: 'label'; id: string; props: DropdownLabelProps }
-  | { type: 'separator'; id: string; props: DropdownSeparatorProps }
-  | { type: 'empty'; id: string; props: DropdownEmptyProps }
-  | { type: 'loading'; id: string; props: DropdownLoadingProps }
-  | {
-      type: 'item';
-      id: string;
-      props: DropdownItemProps;
-      label: string;
-      disabled?: boolean;
-    };
-
-export type ParsedNativeDropdownChildren = {
-  trigger?: ReactNode;
-  triggerProps?: DropdownTriggerProps;
-  contentProps?: DropdownContentProps;
-  searchProps?: DropdownSearchProps;
-  entries: NativeDropdownEntry[];
-  items: Array<Extract<NativeDropdownEntry, { type: 'item' }>>;
 };
 
 export function createDropdownSlot<TProps extends object>(

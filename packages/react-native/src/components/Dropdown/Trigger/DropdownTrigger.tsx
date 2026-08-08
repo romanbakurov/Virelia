@@ -11,6 +11,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { Animated, Platform, Pressable, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
+import { useDropdownContext } from '../internal/DropdownContext';
 
 import { createStyles } from './DropdownTrigger.styles';
 import type { DropdownTriggerProps } from './types';
@@ -23,16 +24,12 @@ export function DropdownTrigger({
   icon,
   arrowIcon,
   showArrow = true,
-  color = 'primary',
-  size = 'md',
-  disabled = false,
-  isOpen,
   triggerStyle,
   triggerRef,
   accessibilityLabel,
   accessibilityHint,
-  onPress,
 }: DropdownTriggerProps) {
+  const { open, color, disabled, size, toggle } = useDropdownContext();
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const colorPalette = theme.components.dropdown[color];
@@ -49,15 +46,15 @@ export function DropdownTrigger({
   const hasIcon = Boolean(icon);
   const isIconOnly = !trigger && hasIcon && !showArrow;
   const [isPressed, setIsPressed] = useState(false);
-  const rotateAnim = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
+  const rotateAnim = useRef(new Animated.Value(open ? 1 : 0)).current;
 
   useEffect(() => {
     Animated.timing(rotateAnim, {
-      toValue: isOpen ? 1 : 0,
+      toValue: open ? 1 : 0,
       duration: 180,
       useNativeDriver: Platform.OS !== 'web',
     }).start();
-  }, [isOpen, rotateAnim]);
+  }, [open, rotateAnim]);
 
   const arrowRotate = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -118,12 +115,12 @@ export function DropdownTrigger({
       accessibilityLabel:
         accessibilityLabel ?? (typeof label === 'string' ? label : undefined),
       accessibilityHint,
-      accessibilityState: { expanded: isOpen, disabled: isChildDisabled },
+      accessibilityState: { expanded: open, disabled: isChildDisabled },
       onPress: () => {
         child.props.onPress?.();
 
         if (!isChildDisabled) {
-          onPress();
+          toggle();
         }
       },
     });
@@ -138,8 +135,8 @@ export function DropdownTrigger({
         accessibilityLabel ?? (typeof label === 'string' ? label : undefined)
       }
       accessibilityHint={accessibilityHint}
-      accessibilityState={{ expanded: isOpen, disabled }}
-      onPress={onPress}
+      accessibilityState={{ expanded: open, disabled }}
+      onPress={toggle}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       style={[
