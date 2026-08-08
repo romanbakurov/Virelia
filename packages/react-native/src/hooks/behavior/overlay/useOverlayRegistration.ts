@@ -11,14 +11,16 @@ export const useOverlayRegistration = ({
   active,
   id,
 }: OverlayRegistrationOptions) => {
-  const [layer, setLayer] = useState(() => nativeOverlayManager.getLayer(id));
+  const [zIndex, setZIndex] = useState(() =>
+    nativeOverlayManager.getZIndex(id)
+  );
 
   useEffect(() => {
     if (!active) return;
 
     const entry = nativeOverlayManager.register(id);
 
-    setLayer(entry.layer);
+    setZIndex(entry.zIndex);
 
     return () => {
       nativeOverlayManager.unregister(id);
@@ -28,8 +30,7 @@ export const useOverlayRegistration = ({
   const isTopOverlay = useCallback(() => nativeOverlayManager.isTop(id), [id]);
 
   return {
-    layer,
-    zIndex: layer,
+    zIndex,
     isTopOverlay,
   };
 };

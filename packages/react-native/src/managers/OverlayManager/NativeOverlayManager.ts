@@ -45,7 +45,6 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
       });
       const entry: NativeOverlayEntry = {
         id,
-        layer: zIndex,
         zIndex,
       };
 
@@ -72,9 +71,9 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
       return stack.at(-1);
     },
 
-    getLayer(id: string) {
+    getZIndex(id: string) {
       return (
-        stack.find((item) => item.id === id)?.layer ??
+        stack.find((item) => item.id === id)?.zIndex ??
         nativeOverlayLayerPolicy.layers[nativeOverlayLayerPolicy.defaultLayer]
       );
     },

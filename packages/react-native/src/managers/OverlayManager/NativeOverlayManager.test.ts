@@ -84,18 +84,17 @@ describe('nativeOverlayManager', () => {
     expect(nativeOverlayManager.getTop()?.id).toBe('first');
   });
 
-  it('assigns increasing layers', () => {
+  it('assigns increasing z-index values', () => {
     const first = nativeOverlayManager.register('first');
     const second = nativeOverlayManager.register('second');
 
-    expect(second.layer).toBeGreaterThan(first.layer);
+    expect(second.zIndex).toBeGreaterThan(first.zIndex);
   });
 
-  it('returns the registered layer', () => {
+  it('returns the registered z-index', () => {
     const entry = nativeOverlayManager.register('first');
 
-    expect(nativeOverlayManager.getLayer('first')).toBe(entry.layer);
-    expect(entry.zIndex).toBe(entry.layer);
+    expect(nativeOverlayManager.getZIndex('first')).toBe(entry.zIndex);
   });
 
   it('dispatches dismissal only to the topmost overlay handler', () => {

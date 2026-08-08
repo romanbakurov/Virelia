@@ -266,8 +266,8 @@ describe('useOverlayDismiss', () => {
     unmount();
   });
 
-  it('exposes the registered overlay layer', () => {
-    let layer: number | undefined;
+  it('exposes the registered overlay z-index', () => {
+    let zIndex: number | undefined;
 
     function TestOverlay() {
       const dismiss = useOverlayDismiss({
@@ -276,14 +276,14 @@ describe('useOverlayDismiss', () => {
         requestClose: vi.fn(),
       });
 
-      layer = dismiss.layer;
+      zIndex = dismiss.zIndex;
 
       return null;
     }
 
     const { unmount } = render(<TestOverlay />);
 
-    expect(layer).toBeGreaterThanOrEqual(1000);
+    expect(zIndex).toBeGreaterThanOrEqual(1000);
 
     unmount();
   });
