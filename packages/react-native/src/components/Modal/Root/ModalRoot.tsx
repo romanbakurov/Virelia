@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
+import type { View } from 'react-native';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
-import { useModal, useOverlayDismiss } from '../../../hooks';
+import {
+  useModal,
+  useOverlayDismiss,
+  useOverlayFocusRestore,
+} from '../../../hooks';
 import { nativeThemes } from '../../../theme';
 import ModalContext from '../internal/ModalContext';
 import type { ModalProps } from '../types';
@@ -50,6 +55,12 @@ export const ModalRoot = ({
 }: ModalProps) => {
   const initialOpen = open ?? defaultOpen;
   const animationProgress = useRef(new Animated.Value(initialOpen ? 1 : 0));
+  const triggerRef = useRef<View | null>(null);
+
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    triggerRef,
+  });
+
   const [shouldRender, setShouldRender] = useState(initialOpen);
   const [reduceMotion, setReduceMotion] = useState(false);
   const modal = useModal({
@@ -58,6 +69,19 @@ export const ModalRoot = ({
     onOpenChange,
     closeOnOutsidePress,
   });
+
+  const previousOpenRef = useRef(modal.open);
+
+  useEffect(() => {
+    const wasOpen = previousOpenRef.current;
+
+    if (wasOpen && !modal.open) {
+      restoreFocusAfterClose();
+    }
+
+    previousOpenRef.current = modal.open;
+  }, [modal.open, restoreFocusAfterClose]);
+
   const dismiss = useOverlayDismiss({
     id: modal.contentId,
     active: modal.open,
@@ -138,6 +162,7 @@ export const ModalRoot = ({
         open: modal.open,
         setOpen: modal.setOpen,
         shouldRender,
+        triggerRef,
       }}
     >
       {children}
