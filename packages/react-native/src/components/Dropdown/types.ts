@@ -1,20 +1,23 @@
-import type { FloatingPlacement, TextWrap } from '@vellira-ui/types';
+import type {
+  BaseDropdownContentProps,
+  BaseDropdownItemProps,
+  BaseDropdownProps,
+  BaseDropdownSearchProps,
+  BaseDropdownTriggerProps,
+  FloatingPlacement,
+  TextWrap,
+} from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 export type DropdownPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
-export type DropdownSize = 'sm' | 'md' | 'lg';
-export type DropdownColor =
-  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
-export type DropdownItemColor =
-  'default' | 'primary' | 'success' | 'warning' | 'danger';
 
 export type DropdownSelectEvent = {
   preventDefault: () => void;
   defaultPrevented: boolean;
 };
 
-export interface DropdownProps {
+export interface DropdownProps extends BaseDropdownProps {
   children?: ReactNode;
   label?: ReactNode;
 
@@ -26,22 +29,7 @@ export interface DropdownProps {
   presentation?: DropdownPresentation;
   placement?: FloatingPlacement;
   offset?: number;
-  closeOnSelect?: boolean;
-  /** Semantic palette for trigger, content, focus, and pressed item states. */
-  color?: DropdownColor;
-  disabled?: boolean;
-  loading?: boolean;
   loadingText?: ReactNode;
-  size?: DropdownSize;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  searchable?: boolean;
-  command?: boolean;
-  searchValue?: string;
-  defaultSearchValue?: string;
-  searchPlaceholder?: string;
-  onSearch?: (value: string) => void;
   empty?: ReactNode;
 
   style?: StyleProp<ViewStyle>;
@@ -54,34 +42,29 @@ export interface DropdownProps {
   accessibilityHint?: string;
 }
 
-export interface DropdownTriggerProps {
+export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
   children?: ReactNode;
-  disabled?: boolean;
 }
 
-export interface DropdownContentProps {
+export interface DropdownContentProps extends BaseDropdownContentProps {
   children?: ReactNode;
-  command?: boolean;
   style?: StyleProp<ViewStyle>;
   presentation?: DropdownPresentation;
 }
 
-export interface DropdownSearchProps {
-  placeholder?: string;
+export interface DropdownSearchProps extends BaseDropdownSearchProps {
   accessibilityLabel?: string;
 }
 
-export interface DropdownItemProps {
+export interface DropdownItemProps extends BaseDropdownItemProps {
   children: ReactNode;
   value?: string;
   icon?: ReactNode;
-  /** Semantic item color. Use `danger` for destructive actions. */
-  color?: DropdownItemColor;
-  disabled?: boolean;
-  closeOnSelect?: boolean;
   textWrap?: TextWrap;
   onSelect?: (event: DropdownSelectEvent) => void;
 }
+
+export type DropdownSeparatorProps = object;
 
 export interface DropdownGroupProps {
   children?: ReactNode;
@@ -90,8 +73,6 @@ export interface DropdownGroupProps {
 export interface DropdownLabelProps {
   children?: ReactNode;
 }
-
-export type DropdownSeparatorProps = object;
 
 export interface DropdownEmptyProps {
   children?: ReactNode;

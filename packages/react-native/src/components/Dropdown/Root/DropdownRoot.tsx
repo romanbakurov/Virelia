@@ -20,12 +20,13 @@ import { useThemeStyles } from '../../../theme';
 import { DropdownContent } from '../Content/DropdownContent';
 import { createStyles } from '../Dropdown.styles';
 import { DropdownGroup } from '../Group/DropdownGroup';
-import type { NativeDropdownEntry } from '../internal/DropdownCollection';
 import { parseDropdownChildren } from '../internal/DropdownCollection';
+import { DropdownProvider } from '../internal/DropdownContext';
 import {
   createDropdownSelectEvent,
   filterDropdownEntries,
 } from '../internal/DropdownUtils';
+import type { NativeDropdownEntry } from '../internal/types';
 import { DropdownItem } from '../Item/DropdownItem';
 import { DropdownSeparator } from '../Separator/DropdownSeparator';
 import { DropdownTrigger } from '../Trigger/DropdownTrigger';
@@ -218,18 +219,15 @@ export function DropdownRoot({
         <DropdownItem
           label={item.props.children}
           value={item.props.value ?? item.id}
-          rootColor={color}
           color={item.props.color}
           icon={item.props.icon}
           disabled={item.props.disabled}
           textWrap={item.props.textWrap}
-          itemStyle={itemStyle}
-          textStyle={textStyle}
           onSelect={() => handleSelect(item)}
         />
       );
     },
-    [color, handleSelect, itemStyle, styles.emptyText, textStyle]
+    [handleSelect, styles.emptyText]
   );
 
   const data: NativeDropdownEntry[] = loading
@@ -250,57 +248,65 @@ export function DropdownRoot({
         ]
       : filteredParsed.entries;
 
-  return (
-    <View style={[styles.root, style]}>
-      <DropdownTrigger
-        asChild={Boolean(parsed.trigger)}
-        label={label}
-        trigger={trigger ?? parsed.trigger}
-        icon={icon}
-        arrowIcon={arrowIcon}
-        showArrow={showArrow}
-        color={color}
-        disabled={disabled || parsed.triggerProps?.disabled}
-        isOpen={isOpen}
-        size={size}
-        triggerRef={setTriggerRef}
-        triggerStyle={triggerStyle}
-        accessibilityLabel={accessibilityLabel}
-        accessibilityHint={accessibilityHint}
-        onPress={handleTriggerPress}
-      />
+  const contextValue = {
+    open: isOpen,
+    disabled,
+    loading,
+    color,
+    size,
+    presentation: contentPresentation,
+    placement,
+    position,
+    layer: dismiss.layer,
 
-      <DropdownContent
-        isOpen={isOpen}
-        onClose={dismiss.requestClose}
-        color={color}
-        contentStyle={[contentStyle, contentStyleFromSlot]}
-        accessibilityLabel={menuAccessibilityLabel}
-        presentation={contentPresentation}
-        layer={dismiss.layer}
-        position={position}
-        onFloatingLayout={onFloatingLayout}
-        searchable={isSearchable}
-        searchValue={resolvedSearchValue}
-        searchPlaceholder={
-          parsed.searchProps?.placeholder ??
-          searchPlaceholder ??
-          (command || contentCommand
-            ? 'Type a command...'
-            : 'Search actions...')
-        }
-        searchAccessibilityLabel={parsed.searchProps?.accessibilityLabel}
-        onSearchChange={handleSearchChange}
-      >
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={renderEntry}
-          keyboardShouldPersistTaps='handled'
-          removeClippedSubviews={data.length > 24}
+    searchable: isSearchable,
+    searchValue: resolvedSearchValue,
+    searchPlaceholder:
+      parsed.searchProps?.placeholder ??
+      searchPlaceholder ??
+      (command || contentCommand ? 'Type a command...' : 'Search actions...'),
+    searchAccessibilityLabel: parsed.searchProps?.accessibilityLabel,
+
+    itemStyle,
+    textStyle,
+
+    requestClose: dismiss.requestClose,
+    requestOutsideClose: dismiss.requestOutsideClose,
+    toggle: handleTriggerPress,
+    onSearchChange: handleSearchChange,
+    onFloatingLayout,
+  };
+
+  return (
+    <DropdownProvider value={contextValue}>
+      <View style={[styles.root, style]}>
+        <DropdownTrigger
+          asChild={Boolean(parsed.trigger)}
+          label={label}
+          trigger={trigger ?? parsed.trigger}
+          icon={icon}
+          arrowIcon={arrowIcon}
+          showArrow={showArrow}
+          triggerRef={setTriggerRef}
+          triggerStyle={triggerStyle}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityHint={accessibilityHint}
         />
-      </DropdownContent>
-    </View>
+
+        <DropdownContent
+          contentStyle={[contentStyle, contentStyleFromSlot]}
+          accessibilityLabel={menuAccessibilityLabel}
+        >
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            renderItem={renderEntry}
+            keyboardShouldPersistTaps='handled'
+            removeClippedSubviews={data.length > 24}
+          />
+        </DropdownContent>
+      </View>
+    </DropdownProvider>
   );
 }
 

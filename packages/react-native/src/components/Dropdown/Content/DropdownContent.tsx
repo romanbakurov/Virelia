@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
+import { useDropdownContext } from '../internal/DropdownContext';
 
 import { createStyles } from './DropdownContent.styles';
 import type { DropdownContentProps } from './types';
@@ -23,28 +24,31 @@ const webPointerEventsBoxNone =
   Platform.OS === 'web' ? { pointerEvents: 'box-none' as const } : undefined;
 
 export function DropdownContent({
-  isOpen,
   children,
-  onClose,
-  color = 'primary',
   contentStyle,
   accessibilityLabel,
-  presentation,
-  layer,
-  position,
-  onFloatingLayout,
-  searchable = false,
-  searchValue = '',
-  searchPlaceholder = 'Search actions...',
-  searchAccessibilityLabel,
-  onSearchChange,
 }: DropdownContentProps) {
+  const {
+    open,
+    color,
+    presentation,
+    layer,
+    position,
+    searchable,
+    searchValue,
+    searchPlaceholder,
+    searchAccessibilityLabel,
+    requestClose,
+    requestOutsideClose,
+    onSearchChange,
+    onFloatingLayout,
+  } = useDropdownContext();
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const colorPalette = theme.components.dropdown[color];
   const isSheet = presentation === 'sheet';
   const isPopover = presentation === 'popover';
-  const animation = useRef(new Animated.Value(isOpen ? 1 : 0)).current;
+  const animation = useRef(new Animated.Value(open ? 1 : 0)).current;
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export function DropdownContent({
   }, []);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!open) {
       animation.setValue(0);
       return;
     }
@@ -78,7 +82,7 @@ export function DropdownContent({
       duration: isSheet ? 220 : 160,
       useNativeDriver: Platform.OS !== 'web',
     }).start();
-  }, [animation, isOpen, isSheet, reduceMotion]);
+  }, [animation, open, isSheet, reduceMotion]);
 
   const backdropAnimatedStyle = useMemo(
     () => ({
@@ -110,9 +114,9 @@ export function DropdownContent({
   return (
     <Modal
       transparent
-      visible={isOpen}
+      visible={open}
       animationType='none'
-      onRequestClose={onClose}
+      onRequestClose={requestClose}
     >
       <View
         style={[
@@ -133,7 +137,7 @@ export function DropdownContent({
             accessibilityRole='button'
             accessibilityLabel='Close menu'
             style={StyleSheet.absoluteFill}
-            onPress={onClose}
+            onPress={requestOutsideClose}
           />
         </Animated.View>
 

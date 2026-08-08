@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 
+import type { DropdownColor, DropdownSize } from '@vellira-ui/types';
 import type {
   CSSProperties,
   KeyboardEventHandler,
@@ -9,11 +10,9 @@ import type {
 } from 'react';
 
 import type {
-  DropdownColor,
   DropdownContentProps,
   DropdownSearchProps,
   DropdownSelectEvent,
-  DropdownSize,
 } from '../types';
 
 import type { DropdownCollectionItem, DropdownRenderEntry } from './types';
