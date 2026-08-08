@@ -4,7 +4,7 @@ import type { PopoverOpenChangeDetails } from '@vellira-ui/types';
 import type { MutableRefObject } from 'react';
 import type { View } from 'react-native';
 
-import { useControllableState } from '../../../hooks/useControllableState';
+import { useControllableState, useOverlayFocusRestore } from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers/FloatingManager';
 import { PopoverProvider } from '../internal';
 import type { PopoverProps } from '../types';
@@ -37,6 +37,10 @@ export function PopoverRoot({
   const triggerRef = useRef<View | null>(null);
   const anchorRef = useRef<View | null>(null);
 
+  const { restoreFocusAfterClose } = useOverlayFocusRestore({
+    triggerRef,
+  });
+
   const getReferenceRef = useCallback(
     () => (anchorRef.current ? anchorRef : triggerRef),
     []
@@ -66,8 +70,12 @@ export function PopoverRoot({
     (nextOpen: boolean, details: PopoverOpenChangeDetails) => {
       openChangeDetailsRef.current = details;
       setOpenState(nextOpen);
+
+      if (!nextOpen) {
+        restoreFocusAfterClose();
+      }
     },
-    [setOpenState]
+    [restoreFocusAfterClose, setOpenState]
   );
 
   const updatePosition = useCallback(
