@@ -1,0 +1,188 @@
+import { act } from 'react';
+
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { Portal } from '../primitives/Portal';
+import { render } from '../test-utils/render';
+
+import { Dropdown } from './Dropdown';
+import { Modal } from './Modal';
+import { Popover } from './Popover';
+import { Select } from './Select';
+import { Tooltip } from './Tooltip';
+
+function pressDocumentKey(key: string) {
+  act(() => {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key }));
+  });
+}
+
+afterEach(() => {
+  document.body.innerHTML = '';
+  document.body.style.overflow = '';
+  vi.useRealTimers();
+});
+
+describe('nested overlays', () => {
+  it('closes only a dropdown nested in a modal on Escape', () => {
+    const onModalOpenChange = vi.fn();
+    const onDropdownOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Modal open onOpenChange={onModalOpenChange}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Account settings'>
+            <Dropdown open onOpenChange={onDropdownOpenChange}>
+              <Dropdown.Trigger>Actions</Dropdown.Trigger>
+              <Dropdown.Content>
+                <Dropdown.Item>Edit</Dropdown.Item>
+              </Dropdown.Content>
+            </Dropdown>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    pressDocumentKey('Escape');
+
+    expect(onDropdownOpenChange).toHaveBeenCalledWith(false);
+    expect(onModalOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('closes only a select nested in a modal on Escape', () => {
+    const onModalOpenChange = vi.fn();
+    const onSelectOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Modal open onOpenChange={onModalOpenChange}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Profile settings'>
+            <Select
+              open
+              id='country'
+              onOpenChange={onSelectOpenChange}
+              options={[
+                { label: 'France', value: 'fr' },
+                { label: 'Germany', value: 'de' },
+              ]}
+            />
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+    expect(document.querySelector('[role="listbox"]')).not.toBeNull();
+
+    pressDocumentKey('Escape');
+
+    expect(onSelectOpenChange).toHaveBeenCalledWith(false);
+    expect(onModalOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('closes only a popover nested in a modal on Escape', () => {
+    const onModalOpenChange = vi.fn();
+    const onPopoverOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Modal open onOpenChange={onModalOpenChange}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Workspace settings'>
+            <Popover open onOpenChange={onPopoverOpenChange}>
+              <Popover.Trigger>Open help</Popover.Trigger>
+              <Popover.Content>
+                <Popover.Title>Help</Popover.Title>
+                <Popover.Description>Nested help content.</Popover.Description>
+              </Popover.Content>
+            </Popover>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(2);
+
+    pressDocumentKey('Escape');
+
+    expect(onPopoverOpenChange).toHaveBeenCalledWith(
+      false,
+      expect.objectContaining({ reason: 'escape-key' })
+    );
+    expect(onModalOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('closes only a tooltip nested in a popover on Escape', () => {
+    const onPopoverOpenChange = vi.fn();
+    const onTooltipOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Popover open onOpenChange={onPopoverOpenChange}>
+        <Popover.Trigger>Open popover</Popover.Trigger>
+        <Popover.Content>
+          <Popover.Title>Details</Popover.Title>
+          <Popover.Description>Nested tooltip host.</Popover.Description>
+          <Tooltip open onOpenChange={onTooltipOpenChange}>
+            <Tooltip.Trigger>Info</Tooltip.Trigger>
+            <Portal>
+              <Tooltip.Content>Helpful detail</Tooltip.Content>
+            </Portal>
+          </Tooltip>
+        </Popover.Content>
+      </Popover>
+    );
+
+    expect(document.querySelector('[role="tooltip"]')).not.toBeNull();
+    expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+
+    pressDocumentKey('Escape');
+
+    expect(onTooltipOpenChange).toHaveBeenCalledWith(false);
+    expect(onPopoverOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('keeps modal open when dropdown inside modal closes from outside press', () => {
+    const onModalOpenChange = vi.fn();
+    const onDropdownOpenChange = vi.fn();
+
+    const { unmount } = render(
+      <Modal open onOpenChange={onModalOpenChange}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Actions'>
+            <Dropdown open onOpenChange={onDropdownOpenChange}>
+              <Dropdown.Trigger>Actions</Dropdown.Trigger>
+              <Dropdown.Content>
+                <Dropdown.Item>Edit</Dropdown.Item>
+              </Dropdown.Content>
+            </Dropdown>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    act(() => {
+      document.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+      );
+    });
+
+    expect(onDropdownOpenChange).toHaveBeenCalledWith(false);
+    expect(onModalOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+});
