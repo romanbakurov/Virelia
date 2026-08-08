@@ -1,13 +1,6 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 
-import { AccessibilityInfo, FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import {
   useDropdown,
@@ -15,6 +8,9 @@ import {
   useOverlayFocusRestore,
   useOverlayPresentation,
 } from '../../../hooks';
+import { useDropdownAccessibility } from '../../../hooks/behavior/dropdown/useDropdownAccessibility';
+import { useDropdownEntries } from '../../../hooks/behavior/dropdown/useDropdownEntries';
+import { useDropdownSearch } from '../../../hooks/behavior/dropdown/useDropdownSearch';
 import { useNativeFloatingPosition } from '../../../managers';
 import { useThemeStyles } from '../../../theme';
 import { DropdownContent } from '../Content/DropdownContent';
@@ -22,10 +18,7 @@ import { createStyles } from '../Dropdown.styles';
 import { DropdownGroup } from '../Group/DropdownGroup';
 import { parseDropdownChildren } from '../internal/DropdownCollection';
 import { DropdownProvider } from '../internal/DropdownContext';
-import {
-  createDropdownSelectEvent,
-  filterDropdownEntries,
-} from '../internal/DropdownUtils';
+import { createDropdownSelectEvent } from '../internal/DropdownUtils';
 import type { NativeDropdownEntry } from '../internal/types';
 import { DropdownItem } from '../Item/DropdownItem';
 import { DropdownSeparator } from '../Separator/DropdownSeparator';
@@ -68,9 +61,6 @@ export function DropdownRoot({
 }: DropdownProps) {
   const styles = useThemeStyles(createStyles);
   const overlayId = useId();
-  const [uncontrolledSearchValue, setUncontrolledSearchValue] =
-    useState(defaultSearchValue);
-  const resolvedSearchValue = searchValue ?? uncontrolledSearchValue;
   const triggerRef = useRef<View | null>(null);
 
   const setTriggerRef = useCallback((node: unknown) => {
@@ -88,9 +78,31 @@ export function DropdownRoot({
   }, []);
 
   const parsed = useMemo(() => parseDropdownChildren(children), [children]);
-  const contentCommand = parsed.contentProps?.command ?? false;
-  const isSearchable =
-    searchable || command || contentCommand || !!parsed.searchProps;
+
+  const {
+    contentCommand,
+    filteredParsed,
+    handleSearchChange,
+    isSearchable,
+    resolvedSearchValue,
+  } = useDropdownSearch({
+    parsed,
+    searchable,
+    command,
+    searchValue,
+    defaultSearchValue,
+    onSearch,
+  });
+
+  const { navigableItems, data } = useDropdownEntries({
+    parsed,
+    filteredParsed,
+    loading,
+    loadingText,
+    isSearchable,
+    empty,
+  });
+
   const resolvedPresentation = useOverlayPresentation(presentation);
 
   const contentStyleFromSlot = parsed.contentProps?.style;
@@ -105,27 +117,6 @@ export function DropdownRoot({
   const { position, updatePosition, onFloatingLayout } =
     useNativeFloatingPosition(placement, offset);
 
-  const menuAccessibilityLabel = useMemo(() => {
-    if (accessibilityLabel) return accessibilityLabel;
-
-    return typeof label === 'string' ? label : 'Menu';
-  }, [accessibilityLabel, label]);
-
-  const navigableItems = useMemo(
-    () =>
-      parsed.items.map((item) => ({
-        disabled: item.disabled,
-        label: item.label,
-        value: item.id,
-      })),
-    [parsed.items]
-  );
-  const filteredParsed = useMemo(() => {
-    if (!isSearchable || !resolvedSearchValue.trim()) return parsed;
-
-    return filterDropdownEntries(parsed, resolvedSearchValue);
-  }, [isSearchable, parsed, resolvedSearchValue]);
-
   const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
     items: navigableItems,
     open,
@@ -137,19 +128,17 @@ export function DropdownRoot({
       typeof item.label === 'string' ? item.label : item.value,
   });
 
+  const { menuAccessibilityLabel } = useDropdownAccessibility({
+    accessibilityLabel,
+    label,
+    open: isOpen,
+  });
+
   useEffect(() => {
     if (!isOpen || contentPresentation !== 'popover') return;
 
     updatePosition(triggerRef);
   }, [isOpen, contentPresentation, updatePosition]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    AccessibilityInfo.announceForAccessibility(
-      `${menuAccessibilityLabel} opened`
-    );
-  }, [isOpen, menuAccessibilityLabel]);
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
     triggerRef,
@@ -186,16 +175,6 @@ export function DropdownRoot({
   const handleTriggerPress = useCallback(() => {
     toggleDropdown();
   }, [toggleDropdown]);
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      if (searchValue === undefined) {
-        setUncontrolledSearchValue(value);
-      }
-
-      onSearch?.(value);
-    },
-    [onSearch, searchValue]
-  );
 
   const renderEntry = useCallback(
     ({ item }: { item: NativeDropdownEntry }) => {
@@ -230,52 +209,60 @@ export function DropdownRoot({
     [handleSelect, styles.emptyText]
   );
 
-  const data: NativeDropdownEntry[] = loading
-    ? [
-        {
-          type: 'loading',
-          id: 'loading',
-          props: { children: loadingText },
-        },
-      ]
-    : isSearchable && filteredParsed.items.length === 0
-      ? [
-          {
-            type: 'empty',
-            id: 'empty',
-            props: { children: empty ?? 'No actions found' },
-          },
-        ]
-      : filteredParsed.entries;
+  const resolvedSearchPlaceholder =
+    parsed.searchProps?.placeholder ??
+    searchPlaceholder ??
+    (command || contentCommand ? 'Type a command...' : 'Search actions...');
 
-  const contextValue = {
-    open: isOpen,
-    disabled,
-    loading,
-    color,
-    size,
-    presentation: contentPresentation,
-    placement,
-    position,
-    layer: dismiss.layer,
+  const searchAccessibilityLabel = parsed.searchProps?.accessibilityLabel;
 
-    searchable: isSearchable,
-    searchValue: resolvedSearchValue,
-    searchPlaceholder:
-      parsed.searchProps?.placeholder ??
-      searchPlaceholder ??
-      (command || contentCommand ? 'Type a command...' : 'Search actions...'),
-    searchAccessibilityLabel: parsed.searchProps?.accessibilityLabel,
+  const contextValue = useMemo(
+    () => ({
+      open: isOpen,
+      disabled,
+      loading,
+      color,
+      size,
+      presentation: contentPresentation,
+      position,
+      layer: dismiss.layer,
 
-    itemStyle,
-    textStyle,
+      searchable: isSearchable,
+      searchValue: resolvedSearchValue,
+      searchPlaceholder: resolvedSearchPlaceholder,
+      searchAccessibilityLabel,
 
-    requestClose: dismiss.requestClose,
-    requestOutsideClose: dismiss.requestOutsideClose,
-    toggle: handleTriggerPress,
-    onSearchChange: handleSearchChange,
-    onFloatingLayout,
-  };
+      itemStyle,
+      textStyle,
+
+      requestClose: dismiss.requestClose,
+      requestOutsideClose: dismiss.requestOutsideClose,
+      toggle: handleTriggerPress,
+      onSearchChange: handleSearchChange,
+      onFloatingLayout,
+    }),
+    [
+      color,
+      contentPresentation,
+      disabled,
+      dismiss.layer,
+      dismiss.requestClose,
+      dismiss.requestOutsideClose,
+      handleSearchChange,
+      handleTriggerPress,
+      isOpen,
+      isSearchable,
+      itemStyle,
+      loading,
+      onFloatingLayout,
+      position,
+      resolvedSearchPlaceholder,
+      resolvedSearchValue,
+      searchAccessibilityLabel,
+      size,
+      textStyle,
+    ]
+  );
 
   return (
     <DropdownProvider value={contextValue}>
