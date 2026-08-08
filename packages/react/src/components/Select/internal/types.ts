@@ -23,6 +23,22 @@ export type SelectSlotComponent<P> = ((props: P) => ReactElement | null) & {
   displayName?: string;
 };
 
+type WrappedSelectSlotComponent = {
+  __velliraSelectPart?: SelectSlot;
+  render?: WrappedSelectSlotComponent;
+  type?: WrappedSelectSlotComponent;
+};
+
+export function getSelectSlotPart(type: unknown): SelectSlot | undefined {
+  const slotType = type as WrappedSelectSlotComponent | undefined;
+
+  return (
+    slotType?.__velliraSelectPart ??
+    slotType?.type?.__velliraSelectPart ??
+    slotType?.render?.__velliraSelectPart
+  );
+}
+
 export type SelectRenderEntry =
   | {
       type: 'group';

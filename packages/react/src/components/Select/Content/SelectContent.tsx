@@ -16,6 +16,7 @@ import { Close } from '@vellira-ui/icons';
 import { useSelectContext } from '../internal/SelectContext';
 import { resolveSelectVirtualization } from '../internal/SelectVirtualization';
 import type { SelectSlotComponent } from '../internal/types';
+import { getSelectSlotPart } from '../internal/types';
 import { SelectItemRow } from '../Item/SelectItem';
 
 import type { SelectContentProps } from './types';
@@ -422,21 +423,21 @@ function collectSelectContentSlots(children: ReactNode) {
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return;
 
-    const type = child.type as SelectSlotComponent<unknown>;
+    const part = getSelectSlotPart(child.type);
 
-    if (type.__velliraSelectPart === 'label') {
+    if (part === 'label') {
       headerSlot = child;
     }
 
-    if (type.__velliraSelectPart === 'search') {
+    if (part === 'search') {
       searchSlot = child;
     }
 
-    if (type.__velliraSelectPart === 'empty') {
+    if (part === 'empty') {
       emptySlot = child;
     }
 
-    if (type.__velliraSelectPart === 'loading') {
+    if (part === 'loading') {
       loadingSlot = child;
     }
   });

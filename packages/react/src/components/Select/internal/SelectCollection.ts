@@ -9,7 +9,8 @@ import type { SelectItemDescriptionProps } from '../ItemDescription';
 import type { SelectItemIconProps } from '../ItemIcon';
 import type { SelectOption } from '../types';
 
-import type { SelectRenderEntry, SelectSlotComponent } from './types';
+import type { SelectRenderEntry } from './types';
+import { getSelectSlotPart } from './types';
 
 export function collectSelectOptions(children: ReactNode) {
   return collectSelectStructure(children).options;
@@ -27,9 +28,9 @@ export function collectSelectStructure(children: ReactNode): {
     Children.forEach(node, (child) => {
       if (!isValidElement(child)) return;
 
-      const type = child.type as SelectSlotComponent<unknown>;
+      const part = getSelectSlotPart(child.type);
 
-      if (type.__velliraSelectPart === 'group') {
+      if (part === 'group') {
         const props = child.props as SelectGroupProps;
         const itemValues = getGroupItemValues(props.children);
 
@@ -45,7 +46,7 @@ export function collectSelectStructure(children: ReactNode): {
         return;
       }
 
-      if (type.__velliraSelectPart === 'item') {
+      if (part === 'item') {
         const props = child.props as SelectItemProps;
         const itemChildren = getItemChildren(props.children, props.value);
         const label = props.label ?? itemChildren.label;
@@ -66,7 +67,7 @@ export function collectSelectStructure(children: ReactNode): {
         return;
       }
 
-      if (type.__velliraSelectPart === 'separator') {
+      if (part === 'separator') {
         entries.push({
           type: 'separator',
           id: `separator-${generatedEntryId++}`,
@@ -75,15 +76,15 @@ export function collectSelectStructure(children: ReactNode): {
       }
 
       if (
-        type.__velliraSelectPart === 'empty' ||
-        type.__velliraSelectPart === 'icon' ||
-        type.__velliraSelectPart === 'itemBadge' ||
-        type.__velliraSelectPart === 'itemDescription' ||
-        type.__velliraSelectPart === 'itemIcon' ||
-        type.__velliraSelectPart === 'label' ||
-        type.__velliraSelectPart === 'loading' ||
-        type.__velliraSelectPart === 'search' ||
-        type.__velliraSelectPart === 'value'
+        part === 'empty' ||
+        part === 'icon' ||
+        part === 'itemBadge' ||
+        part === 'itemDescription' ||
+        part === 'itemIcon' ||
+        part === 'label' ||
+        part === 'loading' ||
+        part === 'search' ||
+        part === 'value'
       ) {
         return;
       }
@@ -104,12 +105,9 @@ export function hasSelectLayoutChildren(children: ReactNode) {
     Children.forEach(node, (child) => {
       if (!isValidElement(child) || hasLayout) return;
 
-      const type = child.type as SelectSlotComponent<unknown>;
+      const part = getSelectSlotPart(child.type);
 
-      if (
-        type.__velliraSelectPart === 'trigger' ||
-        type.__velliraSelectPart === 'content'
-      ) {
+      if (part === 'trigger' || part === 'content') {
         hasLayout = true;
         return;
       }
@@ -130,9 +128,9 @@ function getGroupItemValues(children: ReactNode) {
     Children.forEach(node, (child) => {
       if (!isValidElement(child)) return;
 
-      const type = child.type as SelectSlotComponent<unknown>;
+      const part = getSelectSlotPart(child.type);
 
-      if (type.__velliraSelectPart === 'item') {
+      if (part === 'item') {
         values.push((child.props as SelectItemProps).value);
         return;
       }
@@ -161,19 +159,19 @@ function getItemChildren(children: ReactNode, fallback: string) {
 
       if (!isValidElement(child)) return;
 
-      const type = child.type as SelectSlotComponent<unknown>;
+      const part = getSelectSlotPart(child.type);
 
-      if (type.__velliraSelectPart === 'itemBadge') {
+      if (part === 'itemBadge') {
         badge = (child.props as SelectItemBadgeProps).children;
         return;
       }
 
-      if (type.__velliraSelectPart === 'itemIcon') {
+      if (part === 'itemIcon') {
         icon = (child.props as SelectItemIconProps).children;
         return;
       }
 
-      if (type.__velliraSelectPart === 'itemDescription') {
+      if (part === 'itemDescription') {
         description = (child.props as SelectItemDescriptionProps).children;
         return;
       }

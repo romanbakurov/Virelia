@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act, memo } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import type { ReactNode } from 'react';
@@ -304,6 +304,63 @@ describe('Select', () => {
     expect(
       document.getElementById('country-listbox-option-0')?.textContent
     ).toContain('Paris');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('recognizes memoized compound slots during collection', () => {
+    const MemoTrigger = memo(Select.Trigger);
+    const MemoContent = memo(Select.Content);
+    const MemoItem = memo(Select.Item);
+    const MemoLabel = memo(Select.Label);
+    const MemoItemDescription = memo(Select.ItemDescription);
+    const onValueChange = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          label='Country'
+          defaultOpen
+          onValueChange={onValueChange}
+        >
+          <MemoTrigger className='memo-trigger'>
+            <Select.Value />
+            <Select.Icon />
+          </MemoTrigger>
+          <MemoContent className='memo-content'>
+            <MemoLabel>Europe</MemoLabel>
+            <MemoItem value='fr'>
+              France
+              <MemoItemDescription>Paris</MemoItemDescription>
+            </MemoItem>
+          </MemoContent>
+        </Select>
+      );
+    });
+
+    expect(form.querySelector('[role="combobox"]')?.className).toContain(
+      'memo-trigger'
+    );
+    expect(
+      document.querySelector('[role="listbox"]')?.parentElement?.className
+    ).toContain('memo-content');
+    expect(document.body.textContent).toContain('Europe');
+    expect(
+      document.getElementById('country-listbox-option-0')?.textContent
+    ).toContain('Paris');
+
+    act(() => {
+      document.getElementById('country-listbox-option-0')?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('fr');
 
     act(() => {
       root.unmount();
