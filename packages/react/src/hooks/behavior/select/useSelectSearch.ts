@@ -1,18 +1,21 @@
 import { useMemo } from 'react';
 
-import type { SelectOption } from '../types';
+interface SelectSearchOption {
+  label: string;
+  description?: unknown;
+}
 
-interface UseSelectSearchParams {
-  options: SelectOption[];
+interface UseSelectSearchParams<TOption extends SelectSearchOption> {
+  options: TOption[];
   searchable: boolean;
   searchValue: string;
 }
 
-export function useSelectSearch({
+export function useSelectSearch<TOption extends SelectSearchOption>({
   options,
   searchable,
   searchValue,
-}: UseSelectSearchParams) {
+}: UseSelectSearchParams<TOption>) {
   return useMemo(() => {
     if (!searchable || !searchValue) return options;
 

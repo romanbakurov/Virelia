@@ -1,17 +1,17 @@
-export {
-  SelectContent,
-  SelectEmpty,
-  SelectLoading,
-  SelectSearch,
-} from './Content';
-export { SelectGroup, SelectLabel, SelectSeparator } from './Group';
-export {
-  SelectItem,
-  SelectItemBadge,
-  SelectItemDescription,
-  SelectItemIcon,
-} from './Item';
+export { SelectContent } from './Content';
+export { SelectEmpty } from './Empty';
+export { SelectGroup } from './Group';
+export { SelectIcon } from './Icon';
+export { SelectItem } from './Item';
+export { SelectItemBadge } from './ItemBadge';
+export { SelectItemDescription } from './ItemDescription';
+export { SelectItemIcon } from './ItemIcon';
+export { SelectLabel } from './Label';
+export { SelectLoading } from './Loading';
 export { SelectRoot } from './Root';
+export { SelectSearch } from './Search';
 export { Select } from './Select';
-export { SelectIcon, SelectTrigger, SelectValue } from './Trigger';
+export { SelectSeparator } from './Separator';
+export { SelectTrigger } from './Trigger';
 export type { SelectOption, SelectProps } from './types';
+export { SelectValue } from './Value';

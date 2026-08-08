@@ -1,13 +1,25 @@
 import { useOverlayPresentation } from '@/hooks';
 
-import type { SelectProps } from '../types';
+type SelectFloatingPlacement =
+  | 'bottom'
+  | 'top'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'top-start'
+  | 'top-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end';
 
 interface UseSelectPositionParams {
   avoidCollisions: boolean;
   isOpen: boolean;
   matchTriggerWidth: boolean;
   onOpenChange: (open: boolean) => void;
-  placement: NonNullable<SelectProps['placement']>;
+  placement: SelectFloatingPlacement;
 }
 
 export function useSelectPosition({

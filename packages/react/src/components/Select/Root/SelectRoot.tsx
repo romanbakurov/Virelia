@@ -10,14 +10,18 @@ import {
 
 import { FormField, useFormFieldContext } from '@patterns/FormField';
 
-import { useOverlayDismiss, useScrollLock, useSelect } from '@/hooks';
+import {
+  useOverlayDismiss,
+  useScrollLock,
+  useSelect,
+  useSelectPosition,
+  useSelectSearch,
+} from '@/hooks';
 
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
 import { SelectProvider } from '../internal/SelectContext';
 import { useSelectCollection } from '../internal/useSelectCollection';
-import { useSelectPosition } from '../internal/useSelectPosition';
-import { useSelectSearch } from '../internal/useSelectSearch';
 import { SelectTrigger, SelectTriggerSurface } from '../Trigger/SelectTrigger';
 import type { SelectProps } from '../types';
 

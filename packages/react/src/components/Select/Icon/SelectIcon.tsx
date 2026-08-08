@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useSelectContext } from '../internal/SelectContext';
 import type { SelectSlotComponent } from '../internal/types';
 
-import styles from './SelectTrigger.module.scss';
+import styles from '../Trigger/SelectTrigger.module.scss';
 
 export interface SelectIconProps {
   children?: ReactNode;

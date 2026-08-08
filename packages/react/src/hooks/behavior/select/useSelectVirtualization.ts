@@ -1,20 +1,18 @@
 import { useMemo } from 'react';
 
-import type { SelectOption } from '../types';
-
-interface UseSelectVirtualizationParams {
+interface UseSelectVirtualizationParams<TOption> {
   loading?: boolean;
-  options: SelectOption[];
+  options: TOption[];
   scrollTop: number;
   virtual?: boolean | { itemHeight?: number };
 }
 
-export function useSelectVirtualization({
+export function useSelectVirtualization<TOption>({
   loading,
   options,
   scrollTop,
   virtual,
-}: UseSelectVirtualizationParams) {
+}: UseSelectVirtualizationParams<TOption>) {
   return useMemo(() => {
     const virtualConfig =
       typeof virtual === 'object' ? virtual : virtual ? {} : undefined;

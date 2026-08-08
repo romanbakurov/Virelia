@@ -3,10 +3,10 @@ import { Children, isValidElement } from 'react';
 import type { ReactNode } from 'react';
 
 import type { SelectGroupProps } from '../Group/types';
-import type { SelectItemBadgeProps } from '../Item/SelectItemBadge';
-import type { SelectItemDescriptionProps } from '../Item/SelectItemDescription';
-import type { SelectItemIconProps } from '../Item/SelectItemIcon';
 import type { SelectItemProps } from '../Item/types';
+import type { SelectItemBadgeProps } from '../ItemBadge';
+import type { SelectItemDescriptionProps } from '../ItemDescription';
+import type { SelectItemIconProps } from '../ItemIcon';
 import type { SelectOption } from '../types';
 
 import type { SelectRenderEntry, SelectSlotComponent } from './types';

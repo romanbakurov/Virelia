@@ -11,9 +11,10 @@ import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 
+import { useSelectVirtualization } from '@/hooks';
+
 import { useSelectContext } from '../internal/SelectContext';
 import type { SelectSlotComponent } from '../internal/types';
-import { useSelectVirtualization } from '../internal/useSelectVirtualization';
 import { SelectItemRow } from '../Item/SelectItem';
 
 import type { SelectContentProps } from './types';

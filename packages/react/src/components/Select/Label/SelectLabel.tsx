@@ -1,6 +1,5 @@
+import type { SelectLabelProps } from '../Group/types';
 import type { SelectSlotComponent } from '../internal/types';
-
-import type { SelectLabelProps } from './types';
 
 import styles from '../Content/SelectContent.module.scss';
 
