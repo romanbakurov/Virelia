@@ -30,6 +30,7 @@ export function DropdownContent({
   contentStyle,
   accessibilityLabel,
   presentation,
+  layer,
   position,
   onFloatingLayout,
   searchable = false,
@@ -113,7 +114,13 @@ export function DropdownContent({
       animationType='none'
       onRequestClose={onClose}
     >
-      <View style={[styles.modalRoot, styles[presentation]]}>
+      <View
+        style={[
+          styles.modalRoot,
+          styles[presentation],
+          Platform.OS === 'web' && { zIndex: layer },
+        ]}
+      >
         <Animated.View
           {...nativePointerEventsBoxNone}
           style={[

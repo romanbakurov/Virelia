@@ -17,6 +17,7 @@ export interface PopoverContextValue {
   align: NonNullable<BasePopoverPositioningProps['align']>;
 
   placement: FloatingPlacement;
+  layer: number;
   position: Pick<ViewStyle, 'top' | 'left'>;
   arrowPosition: Pick<ViewStyle, 'top' | 'left'>;
 

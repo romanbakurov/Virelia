@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { useTabs } from '../../../hooks';
 import { useThemeStyles } from '../../../theme';
+import { TabsProvider } from '../internal/TabsContext';
 import { createStyles } from '../Tabs.styles';
-import { TabsProvider } from '../TabsContext';
 import type { RegisteredTab, TabsProps, TabsTriggerLayout } from '../types';
 
 export const TabsRoot = ({

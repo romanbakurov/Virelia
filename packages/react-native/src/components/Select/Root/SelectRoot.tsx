@@ -358,6 +358,7 @@ export function SelectRoot(props: SelectProps) {
     resolvedHint,
     resolvedPresentation,
     placement: resolvedPlacement,
+    layer: dismiss.layer,
     position,
     onFloatingLayout,
     dismissOnBackdropPress,

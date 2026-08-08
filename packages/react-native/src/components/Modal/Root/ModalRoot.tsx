@@ -9,7 +9,7 @@ import {
   useOverlayFocusRestore,
 } from '../../../hooks';
 import { nativeThemes } from '../../../theme';
-import ModalContext from '../internal/ModalContext';
+import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
 const linearEasing = (value: number) => value;
@@ -152,11 +152,12 @@ export const ModalRoot = ({
   ]);
 
   return (
-    <ModalContext.Provider
+    <ModalProvider
       value={{
         animation,
         animationProgress: animationProgress.current,
         closeOnOutsidePress: modal.closeOnOutsidePress,
+        layer: dismiss.layer,
         onClose: dismiss.requestClose,
         onOutsideClose: dismiss.requestOutsideClose,
         open: modal.open,
@@ -166,7 +167,7 @@ export const ModalRoot = ({
       }}
     >
       {children}
-    </ModalContext.Provider>
+    </ModalProvider>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Modal, View } from 'react-native';
+import { Modal, Platform, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
 
@@ -10,6 +10,7 @@ export const SelectModal = ({
   visible,
   onClose,
   dismissOnBackdropPress,
+  layer,
   contentStyle,
   children,
 }: SelectPresentationProps) => {
@@ -23,7 +24,11 @@ export const SelectModal = ({
       onRequestClose={onClose}
     >
       <View
-        style={[styles.modalRoot, styles.modalPresentationRoot]}
+        style={[
+          styles.modalRoot,
+          styles.modalPresentationRoot,
+          Platform.OS === 'web' && { zIndex: layer },
+        ]}
         testID='select-content-root'
       >
         <SelectBackdrop

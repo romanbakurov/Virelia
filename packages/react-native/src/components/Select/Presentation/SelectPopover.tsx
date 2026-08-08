@@ -1,4 +1,4 @@
-import { Modal, View } from 'react-native';
+import { Modal, Platform, View } from 'react-native';
 
 import { useThemeStyles } from '../../../theme';
 
@@ -10,6 +10,7 @@ export const SelectPopover = ({
   visible,
   onClose,
   dismissOnBackdropPress,
+  layer,
   position,
   onFloatingLayout,
   matchTriggerWidth,
@@ -26,7 +27,10 @@ export const SelectPopover = ({
       animationType='fade'
       onRequestClose={onClose}
     >
-      <View style={styles.modalRoot} testID='select-content-root'>
+      <View
+        style={[styles.modalRoot, Platform.OS === 'web' && { zIndex: layer }]}
+        testID='select-content-root'
+      >
         <SelectBackdrop
           onClose={onClose}
           dismissOnBackdropPress={dismissOnBackdropPress}

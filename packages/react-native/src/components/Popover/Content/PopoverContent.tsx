@@ -25,6 +25,7 @@ export function PopoverContent({
 
   const {
     open,
+    layer,
     position,
     onFloatingLayout,
     updatePosition,
@@ -45,7 +46,11 @@ export function PopoverContent({
 
   return (
     <Portal visible={open} onRequestClose={requestClose}>
-      <View ref={layerRef} pointerEvents='box-none' style={styles.layer}>
+      <View
+        ref={layerRef}
+        pointerEvents='box-none'
+        style={[styles.layer, { zIndex: layer }]}
+      >
         <Pressable
           testID='popover-backdrop'
           accessibilityLabel={closeOnOutsidePress ? 'Close popover' : undefined}

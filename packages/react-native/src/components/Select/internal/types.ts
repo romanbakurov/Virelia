@@ -66,6 +66,7 @@ export type SelectContextValue = {
   resolvedHint?: string;
   resolvedPresentation: Exclude<SelectPresentation, 'auto'>;
   placement: NonNullable<SelectProps['placement']>;
+  layer: number;
   position: {
     top: number;
     left: number;

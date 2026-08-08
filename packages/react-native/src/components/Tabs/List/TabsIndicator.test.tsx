@@ -138,7 +138,7 @@ vi.mock('../../../theme', () => ({
   }),
 }));
 
-vi.mock('../TabsContext', () => ({
+vi.mock('../internal/TabsContext', () => ({
   useTabs: () => mocks.tabs,
 }));
 

@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { useControllableState, useOverlayDismiss } from '../../../hooks';
 import { useNativeFloatingPosition } from '../../../managers';
+import { resolveTooltipDelay } from '../internal/resolveTooltipDelay';
 import { TooltipProvider } from '../internal/TooltipContext';
-import { resolveTooltipDelay } from '../internal/useTooltipDelay';
 
 import type { TooltipRootProps } from './types';
 
@@ -112,6 +112,7 @@ export const TooltipRoot = ({
       setOpen,
       show,
       hide,
+      layer: dismiss.layer,
       requestClose: dismiss.requestClose,
       requestOutsideClose: dismiss.requestOutsideClose,
       onFloatingLayout,
@@ -120,6 +121,7 @@ export const TooltipRoot = ({
       arrowPosition,
       contentId,
       disabled,
+      dismiss.layer,
       dismiss.requestClose,
       dismiss.requestOutsideClose,
       hide,

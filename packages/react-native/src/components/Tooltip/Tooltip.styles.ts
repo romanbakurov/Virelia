@@ -14,7 +14,6 @@ export const createStyles = (theme: NativeTheme) =>
 
     bubble: {
       position: 'absolute',
-      zIndex: 1000,
       maxWidth: theme.components.tooltip.content.maxWidth,
 
       paddingHorizontal: theme.components.tooltip.content.paddingX,
