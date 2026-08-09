@@ -244,6 +244,86 @@ describe('Modal', () => {
     unmount();
   });
 
+  it('locks body scroll while open and restores the previous overflow', () => {
+    document.body.style.overflow = 'auto';
+
+    const { unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Locked'>
+            <Modal.Body>Locked body</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.body.style.overflow).toBe('hidden');
+
+    unmount();
+
+    expect(document.body.style.overflow).toBe('auto');
+  });
+
+  it('does not lock body scroll when preventScroll is disabled', () => {
+    document.body.style.overflow = 'auto';
+
+    const { unmount } = render(
+      <Modal open preventScroll={false}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Unlocked'>
+            <Modal.Body>Unlocked body</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    expect(document.body.style.overflow).toBe('auto');
+
+    unmount();
+  });
+
+  it('does not loop tab focus when trapFocus is disabled', async () => {
+    const { unmount } = render(
+      <Modal open trapFocus={false}>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Non modal focus'>
+            <button type='button'>First</button>
+            <button type='button'>Last</button>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    await new Promise((resolve) => queueMicrotask(resolve));
+
+    const buttons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('button')
+    );
+    const firstButton = buttons.find(
+      (button) => button.textContent === 'First'
+    );
+    const lastButton = buttons.find((button) => button.textContent === 'Last');
+    const tabEvent = new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      key: 'Tab',
+    });
+
+    act(() => {
+      lastButton?.focus();
+      document.dispatchEvent(tabEvent);
+    });
+
+    expect(tabEvent.defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(lastButton);
+    expect(document.activeElement).not.toBe(firstButton);
+
+    unmount();
+  });
+
   it('closes on Escape and outside press when enabled', () => {
     const onOpenChange = vi.fn();
     const { unmount } = render(
