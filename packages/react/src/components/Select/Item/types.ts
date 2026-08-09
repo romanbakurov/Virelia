@@ -1,11 +1,13 @@
 import type { BaseSelectOptionProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
+import type { SelectCollectionOption } from '../internal/types';
 import type { SelectOption, SelectRenderOptionContext } from '../types';
 
 export interface SelectItemProps {
   value: string;
   children?: ReactNode;
+  asChild?: boolean;
   label?: string;
   disabled?: boolean;
   description?: ReactNode;
@@ -19,7 +21,7 @@ export interface SelectItemRowProps extends Omit<
   BaseSelectOptionProps,
   'option'
 > {
-  option: SelectOption;
+  option: SelectCollectionOption;
   optionId: string;
   optionIndex: number;
   selectedValues: string[];

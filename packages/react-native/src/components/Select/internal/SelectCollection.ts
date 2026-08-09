@@ -159,6 +159,8 @@ export const parseSelectChildren = (
         const option = {
           value: props.value,
           label: props.label,
+          asChild: props.asChild,
+          children: props.children,
           disabled: props.disabled,
           description: props.description,
           icon: props.icon,

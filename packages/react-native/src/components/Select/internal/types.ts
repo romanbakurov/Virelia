@@ -29,6 +29,11 @@ export type SelectSlotComponent<TComponent = unknown> = CompoundSlotComponent<
   SelectSlot
 >;
 
+export type SelectCollectionOption = SelectOption & {
+  asChild?: boolean;
+  children?: ReactNode;
+};
+
 export type SelectCollectionRow =
   | {
       type: 'group';
@@ -39,10 +44,10 @@ export type SelectCollectionRow =
       itemValues: string[];
     }
   | { type: 'separator'; key: string }
-  | { type: 'item'; key: string; option: SelectOption };
+  | { type: 'item'; key: string; option: SelectCollectionOption };
 
 export type ParsedSelectChildren = {
-  options: SelectOption[];
+  options: SelectCollectionOption[];
   rows: SelectCollectionRow[];
   searchable: boolean;
   searchPlaceholder?: string;

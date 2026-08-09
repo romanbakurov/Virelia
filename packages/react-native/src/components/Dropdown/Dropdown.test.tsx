@@ -2,6 +2,7 @@ import { act } from 'react';
 
 import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps, ReactNode } from 'react';
+import { Pressable, Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as managers from '../../managers';
@@ -166,6 +167,38 @@ describe('Native Dropdown', () => {
 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(container.textContent).toContain('Advanced');
+
+    unmount();
+  });
+
+  it('supports Item asChild without rendering a second item surface', () => {
+    const onSelect = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown label='Actions'>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item value='edit' asChild onSelect={onSelect}>
+            <Pressable>
+              <Text>Custom edit</Text>
+            </Pressable>
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() =>
+      container.querySelector<HTMLButtonElement>('[role="button"]')?.click()
+    );
+
+    const item =
+      container.querySelector<HTMLButtonElement>('[role="menuitem"]');
+
+    expect(item?.textContent).toContain('Custom edit');
+
+    act(() => item?.click());
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(container.textContent).not.toContain('Custom edit');
 
     unmount();
   });

@@ -2,7 +2,7 @@ import { act } from 'react';
 
 import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps } from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { FormField } from '../../patterns/FormField';
@@ -100,6 +100,35 @@ describe('Native Select', () => {
     expect(onValueChange).toHaveBeenCalledWith('fr');
     expect(container.textContent).toContain('France');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+
+    unmount();
+  });
+
+  it('supports Item asChild without rendering a second option surface', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Select label='Country' onValueChange={onValueChange}>
+        <Select.Item value='fr' label='France' asChild>
+          <Pressable>
+            <Text>France custom</Text>
+          </Pressable>
+        </Select.Item>
+      </Select>
+    );
+
+    openSelect(container);
+
+    const option = getButtonByLabel('France');
+
+    expect(option?.textContent).toContain('France custom');
+
+    act(() => {
+      option?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('fr');
+    expect(container.textContent).toContain('France');
 
     unmount();
   });

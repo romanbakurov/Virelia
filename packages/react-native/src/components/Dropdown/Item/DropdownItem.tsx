@@ -1,17 +1,38 @@
 import { cloneElement, isValidElement } from 'react';
 
 import type { ReactElement, ReactNode } from 'react';
-import { Pressable, Text } from 'react-native';
+import {
+  type GestureResponderEvent,
+  Pressable,
+  type StyleProp,
+  Text,
+  type ViewStyle,
+} from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
+import { devWarning } from '../../../utils/devWarning';
 import { useDropdownContext } from '../internal/DropdownContext';
 
 import { createStyles } from './DropdownItem.styles';
 import type { DropdownItemProps } from './types';
 
+type DropdownItemChildProps = {
+  accessibilityLabel?: string;
+  accessibilityRole?: string;
+  accessibilityState?: {
+    disabled?: boolean;
+  };
+  children?: ReactNode;
+  disabled?: boolean;
+  onPress?: (event: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle>;
+};
+
 export function DropdownItem({
   label,
   value,
+  asChild = false,
+  children,
   color = 'default',
   icon,
   disabled = false,
@@ -78,6 +99,39 @@ export function DropdownItem({
   const accessibilityLabel = typeof label === 'string' ? label : value;
   const numberOfLines = textWrap === 'wrap' ? undefined : 1;
   const ellipsizeMode = textWrap === 'truncate' ? 'tail' : 'clip';
+  const child =
+    asChild && isValidElement<DropdownItemChildProps>(children)
+      ? (children as ReactElement<DropdownItemChildProps>)
+      : undefined;
+  const getItemStyle = (pressed: boolean) => [
+    styles.item,
+    {
+      backgroundColor: getBackgroundColor(pressed),
+    },
+    itemStyle,
+  ];
+
+  devWarning(
+    !asChild || Boolean(child),
+    'Dropdown.Item: asChild requires a single valid React element child.'
+  );
+
+  if (child) {
+    return cloneElement(child, {
+      accessibilityRole: 'menuitem',
+      accessibilityLabel,
+      accessibilityState: { disabled },
+      disabled,
+      onPress: (event) => {
+        child.props.onPress?.(event);
+
+        if (!event.defaultPrevented && !disabled) {
+          onSelect(value);
+        }
+      },
+      style: [getItemStyle(false), child.props.style],
+    });
+  }
 
   return (
     <Pressable
@@ -90,13 +144,7 @@ export function DropdownItem({
 
         onSelect(value);
       }}
-      style={({ pressed }) => [
-        styles.item,
-        {
-          backgroundColor: getBackgroundColor(pressed),
-        },
-        itemStyle,
-      ]}
+      style={({ pressed }) => getItemStyle(pressed)}
     >
       {({ pressed }) => {
         const contentColor = getContentColor(pressed);

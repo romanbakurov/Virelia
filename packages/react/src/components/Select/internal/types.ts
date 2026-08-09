@@ -34,6 +34,11 @@ export function getSelectSlotPart(type: unknown): SelectSlot | undefined {
   return getCompoundSlot<SelectSlot>(type);
 }
 
+export type SelectCollectionOption = SelectOption & {
+  asChild?: boolean;
+  children?: ReactNode;
+};
+
 export type SelectRenderEntry =
   | {
       type: 'group';
@@ -45,7 +50,7 @@ export type SelectRenderEntry =
     }
   | {
       type: 'option';
-      option: SelectOption;
+      option: SelectCollectionOption;
       optionIndex: number;
     }
   | {

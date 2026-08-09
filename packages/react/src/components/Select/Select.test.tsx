@@ -826,6 +826,74 @@ describe('Select', () => {
     });
   });
 
+  it('supports Item asChild and respects child preventDefault', () => {
+    const onValueChange = vi.fn();
+    const childClick = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          defaultOpen
+          onValueChange={onValueChange}
+        >
+          <Select.Item value='fr' label='France' asChild>
+            <button type='button' data-testid='fr-option'>
+              France custom
+            </button>
+          </Select.Item>
+          <Select.Item value='de' label='Germany' asChild>
+            <button
+              type='button'
+              data-testid='de-option'
+              onClick={(event) => {
+                childClick();
+                event.preventDefault();
+              }}
+            >
+              Germany custom
+            </button>
+          </Select.Item>
+        </Select>
+      );
+    });
+
+    const france = document.querySelector<HTMLButtonElement>(
+      '[data-testid="fr-option"]'
+    );
+    const germany = document.querySelector<HTMLButtonElement>(
+      '[data-testid="de-option"]'
+    );
+
+    expect(france?.getAttribute('role')).toBe('option');
+    expect(france?.id).toBe('country-listbox-option-0');
+
+    act(() => {
+      germany?.click();
+    });
+
+    expect(childClick).toHaveBeenCalledTimes(1);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="listbox"]')).not.toBeNull();
+
+    act(() => {
+      france?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('fr');
+    expect(new FormData(form).get('country')).toBe('fr');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('moves the active option to the selected option after single selection', () => {
     const form = document.createElement('form');
     document.body.append(form);
