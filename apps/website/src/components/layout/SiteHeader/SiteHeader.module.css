@@ -13,8 +13,10 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: var(--space-10);
   align-items: center;
-  width: min(1240px, calc(100% - var(--space-12)));
-  min-height: calc(var(--space-16) + var(--space-1));
+  width: 100%;
+  max-width: var(--site-max-width);
+  min-height: var(--site-header-height);
+  padding-inline: var(--site-gutter);
   margin: 0 auto;
 }
 

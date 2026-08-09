@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 import {
   ComponentCatalog,
@@ -25,6 +26,7 @@ export default function ComponentsPage() {
     <>
       <ComponentsPageHero />
       <ComponentCatalog />
+      <SiteFooter />
     </>
   );
 }

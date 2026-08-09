@@ -11,6 +11,7 @@ import { QuickStart } from '@/sections/home/QuickStart';
 import { Roadmap } from '@/sections/home/Roadmap';
 import { SocialProof } from '@/sections/home/SocialProof';
 import { ThemeStudio } from '@/sections/home/ThemeStudio';
+import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export default function HomePage() {
   return (
@@ -27,6 +28,7 @@ export default function HomePage() {
       <Roadmap />
       <Pro />
       <FinalCta />
+      <SiteFooter />
 
       <BackToTop />
     </>

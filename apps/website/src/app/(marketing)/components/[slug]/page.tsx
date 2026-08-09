@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { CompactFooter } from '@/components/layout/CompactFooter';
 
 import {
   ComponentExplorer,
@@ -56,7 +57,7 @@ export default async function ComponentPage({ params }: ComponentPageProps) {
   }
 
   return (
-    <ComponentExplorer activeSlug={component.slug}>
+    <ComponentExplorer activeSlug={component.slug} footer={<CompactFooter />}>
       <header>
         <p>{component.category}</p>
 
