@@ -1,0 +1,25 @@
+.container {
+  padding-block: 48px 96px;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.content {
+  width: 100%;
+  min-width: 0;
+  padding-left: clamp(32px, 5vw, 72px);
+}
+
+@media (width <= 900px) {
+  .container {
+    padding-block: 32px 72px;
+  }
+
+  .content {
+    padding-left: 0;
+  }
+}

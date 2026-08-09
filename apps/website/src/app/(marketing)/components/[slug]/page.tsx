@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import {
+  ComponentExplorer,
   getComponentBySlug,
   webComponents,
 } from '@/features/components-catalog';
@@ -55,7 +56,7 @@ export default async function ComponentPage({ params }: ComponentPageProps) {
   }
 
   return (
-    <div>
+    <ComponentExplorer activeSlug={component.slug}>
       <header>
         <p>{component.category}</p>
 
@@ -67,6 +68,6 @@ export default async function ComponentPage({ params }: ComponentPageProps) {
           View full documentation
         </a>
       </header>
-    </div>
+    </ComponentExplorer>
   );
 }
