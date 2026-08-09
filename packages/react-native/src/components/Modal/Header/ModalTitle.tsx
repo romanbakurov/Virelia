@@ -8,7 +8,11 @@ import type { ModalTitleProps } from './types';
 export const ModalTitle = ({ children, style }: ModalTitleProps) => {
   const styles = useThemeStyles(createStyles);
 
-  return <Text style={[styles.title, style]}>{children}</Text>;
+  return (
+    <Text accessibilityRole='header' style={[styles.title, style]}>
+      {children}
+    </Text>
+  );
 };
 
 ModalTitle.displayName = 'Modal.Title';
