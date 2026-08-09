@@ -1,3 +1,5 @@
+import type { ComponentCatalogEntry } from '../types';
+
 export type WebsiteComponentCategory =
   'forms' | 'overlays' | 'navigation' | 'primitives';
 
@@ -109,4 +111,4 @@ export const webComponents = [
     docsUrl: 'https://docs.vellira.dev/components/web/form-field',
     status: 'stable',
   },
-] as const satisfies readonly WebsiteComponentEntry[];
+] as const satisfies readonly ComponentCatalogEntry[];
