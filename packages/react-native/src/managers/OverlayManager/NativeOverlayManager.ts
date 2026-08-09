@@ -1,13 +1,12 @@
 import {
   createConsoleOverlayDiagnostics,
+  createOverlayManagerStore,
   createOverlayZIndexPolicy,
-  resolveOverlayZIndex,
 } from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
   NativeOverlayDismissHandler,
-  NativeOverlayEntry,
   NativeOverlayManager,
   NativeOverlayOutsidePressHandler,
 } from './types';
@@ -23,7 +22,10 @@ const nativeOverlayDiagnostics = createConsoleOverlayDiagnostics(
 );
 
 export const createNativeOverlayManager = (): NativeOverlayManager => {
-  let stack: NativeOverlayEntry[] = [];
+  const store = createOverlayManagerStore({
+    diagnostics: nativeOverlayDiagnostics,
+    policy: nativeOverlayZIndexPolicy,
+  });
   const dismissHandlers = new Map<string, NativeOverlayDismissHandler>();
   const outsidePressHandlers = new Map<
     string,
@@ -32,48 +34,39 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
 
   return {
     register(id: string) {
-      if (stack.some((item) => item.id === id)) {
-        nativeOverlayDiagnostics.duplicateRegistration?.(id);
-      }
+      const entry = store.register({ id });
 
-      stack = stack.filter((item) => item.id !== id);
-
-      const zIndex = resolveOverlayZIndex({
-        level: nativeOverlayZIndexPolicy.defaultLevel,
-        order: stack.length,
-        policy: nativeOverlayZIndexPolicy,
-      });
-      const entry: NativeOverlayEntry = {
-        id,
-        zIndex,
+      return {
+        id: entry.id,
+        zIndex: store.getZIndex(id) ?? nativeOverlayZIndexPolicy.levels.modal,
       };
-
-      stack.push(entry);
-
-      return entry;
     },
 
     unregister(id: string) {
-      if (!stack.some((item) => item.id === id)) {
-        nativeOverlayDiagnostics.unknownUnregister?.(id);
-      }
-
       dismissHandlers.delete(id);
       outsidePressHandlers.delete(id);
-      stack = stack.filter((item) => item.id !== id);
+      store.unregister(id);
     },
 
     isTop(id: string) {
-      return stack.at(-1)?.id === id;
+      return store.isTopmost(id);
     },
 
     getTop() {
-      return stack.at(-1);
+      const topmost = store.getTopmost();
+
+      if (!topmost) return undefined;
+
+      return {
+        id: topmost.id,
+        zIndex:
+          store.getZIndex(topmost.id) ?? nativeOverlayZIndexPolicy.levels.modal,
+      };
     },
 
     getZIndex(id: string) {
       return (
-        stack.find((item) => item.id === id)?.zIndex ??
+        store.getZIndex(id) ??
         nativeOverlayZIndexPolicy.levels[nativeOverlayZIndexPolicy.defaultLevel]
       );
     },
@@ -126,9 +119,9 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     },
 
     clear() {
-      stack = [];
       dismissHandlers.clear();
       outsidePressHandlers.clear();
+      store.clear();
     },
   };
 };
