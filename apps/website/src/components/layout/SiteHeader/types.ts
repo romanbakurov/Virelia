@@ -5,4 +5,5 @@ export type SiteHeaderVariant = 'marketing' | 'portal';
 export interface SiteHeaderProps {
   variant?: SiteHeaderVariant;
   mobileAction?: ReactNode;
+  navigationOpen?: boolean;
 }

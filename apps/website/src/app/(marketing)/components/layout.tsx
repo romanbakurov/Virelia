@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { SiteHeader } from '@/components/layout/SiteHeader';
 import {
   ComponentNavigationProvider,
-  ComponentNavigationTrigger,
+  ComponentsHeader,
 } from '@/features/components-catalog';
 
 interface ComponentsLayoutProps {
@@ -13,11 +12,7 @@ interface ComponentsLayoutProps {
 export default function ComponentsLayout({ children }: ComponentsLayoutProps) {
   return (
     <ComponentNavigationProvider>
-      <SiteHeader
-        variant='portal'
-        mobileAction={<ComponentNavigationTrigger />}
-      />
-
+      <ComponentsHeader />
       {children}
     </ComponentNavigationProvider>
   );

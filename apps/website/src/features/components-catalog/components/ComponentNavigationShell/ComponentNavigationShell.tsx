@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect } from 'react';
 
 import { ComponentSidebar } from '../ComponentSidebar';
@@ -42,14 +44,37 @@ export function ComponentNavigationShell({
         <ComponentSidebar activeSlug={activeSlug} />
       </div>
 
-      {open && (
-        <div className={styles.mobileLayer}>
-          <button
-            type='button'
-            className={styles.backdrop}
-            aria-label='Close component navigation'
-            onClick={closeNavigation}
-          />
+      <div
+        className={[styles.mobileLayer, open ? styles.mobileLayerOpen : null]
+          .filter(Boolean)
+          .join(' ')}
+        aria-hidden={!open}
+      >
+        <button
+          type='button'
+          className={styles.backdrop}
+          aria-label='Close component navigation'
+          tabIndex={open ? 0 : -1}
+          onClick={closeNavigation}
+        />
+
+        <div className={styles.mobileSurface}>
+          <div className={styles.mobileHeader}>
+            <Link
+              href='/'
+              className={styles.mobileBrand}
+              onClick={closeNavigation}
+            >
+              <Image
+                src='/brand/logos/logo-gradient.svg'
+                alt='Vellira'
+                width={100}
+                height={32}
+                preload
+                fetchPriority='high'
+              />
+            </Link>
+          </div>
 
           <aside
             id='component-navigation'
@@ -59,7 +84,7 @@ export function ComponentNavigationShell({
             <ComponentSidebar activeSlug={activeSlug} />
           </aside>
         </div>
-      )}
+      </div>
     </>
   );
 }

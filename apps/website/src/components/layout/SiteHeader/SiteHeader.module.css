@@ -149,8 +149,14 @@
   transform: translateY(-1px);
 }
 
-.mobileAction {
-  display: none;
+.themeAction {
+  display: flex;
+  align-items: center;
+}
+
+.themeAction {
+  display: flex;
+  align-items: center;
 }
 
 .mobileAction {
@@ -168,7 +174,7 @@
 }
 
 @media (width <= 900px) {
-  .portal .mobileAction {
+  .mobileAction {
     display: flex;
     align-items: center;
   }
@@ -179,7 +185,7 @@
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-3);
     width: 100%;
-    min-height: calc(var(--space-12) + var(--space-3));
+    min-height: var(--site-header-height);
     padding-inline: var(--site-gutter);
   }
 

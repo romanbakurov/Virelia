@@ -3,6 +3,8 @@
   --site-gutter: clamp(24px, 3vw, 32px);
   --site-max-width: 1440px;
   --explorer-sidebar-width: 280px;
+  --portal-navigation-duration: 240ms;
+  --portal-navigation-easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {

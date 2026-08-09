@@ -76,6 +76,7 @@ function getNavigationSections() {
 export function SiteHeader({
   variant = 'marketing',
   mobileAction,
+  navigationOpen = false,
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState<string | null>(null);
@@ -128,7 +129,7 @@ export function SiteHeader({
 
   return (
     <header
-      className={[styles.header, variant === 'portal' ? styles.portal : null]
+      className={[styles.header, navigationOpen ? styles.navigationOpen : null]
         .filter(Boolean)
         .join(' ')}
     >
@@ -171,7 +172,9 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions}>
-          <ThemeSwitcher />
+          <div className={styles.themeAction}>
+            <ThemeSwitcher />
+          </div>
 
           <div className={styles.externalActions}>
             {externalNavigation.map((link) => (
