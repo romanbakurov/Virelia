@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Container } from '@/components/layout/Container';
 
-import { ComponentSidebar } from '../ComponentSidebar';
+import { ComponentNavigationShell } from '../ComponentNavigationShell';
 
 import styles from './ComponentExplorer.module.css';
 
@@ -21,7 +21,7 @@ export function ComponentExplorer({
     <Container size='wide' className={styles.container}>
       <div className={styles.layout}>
         <div className={styles.sidebarColumn}>
-          <ComponentSidebar activeSlug={activeSlug} />
+          <ComponentNavigationShell activeSlug={activeSlug} />
         </div>
 
         <div className={styles.mainColumn}>

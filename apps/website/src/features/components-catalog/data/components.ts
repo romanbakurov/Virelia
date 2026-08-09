@@ -7,9 +7,13 @@ export const webComponents = [
     description:
       'Accessible actions with multiple appearances, colors, sizes, and composition support.',
     category: 'general',
-    docsUrl: 'https://docs.vellira.dev/components/web/button',
     status: 'stable',
     order: 10,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/button',
+      'react-native': 'https://docs.vellira.dev/react-native/button',
+    },
   },
 
   {
@@ -18,18 +22,26 @@ export const webComponents = [
     description:
       'Flexible text input with adornments, validation states, and form integration.',
     category: 'forms',
-    docsUrl: 'https://docs.vellira.dev/components/web/input',
     status: 'stable',
     order: 10,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/input',
+      'react-native': 'https://docs.vellira.dev/react-native/input',
+    },
   },
   {
     slug: 'checkbox',
     name: 'Checkbox',
     description: 'Accessible binary and indeterminate selection control.',
     category: 'forms',
-    docsUrl: 'https://docs.vellira.dev/components/web/checkbox',
     status: 'stable',
     order: 20,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/checkbox',
+      'react-native': 'https://docs.vellira.dev/react-native/checkbox',
+    },
   },
   {
     slug: 'radio-group',
@@ -37,9 +49,13 @@ export const webComponents = [
     description:
       'Single-choice selection with keyboard navigation and shared group state.',
     category: 'forms',
-    docsUrl: 'https://docs.vellira.dev/components/web/radio',
     status: 'stable',
     order: 30,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/radio',
+      'react-native': 'https://docs.vellira.dev/react-native/radio',
+    },
   },
   {
     slug: 'select',
@@ -47,9 +63,13 @@ export const webComponents = [
     description:
       'Composable single and multiple selection with search, groups, and virtualization.',
     category: 'forms',
-    docsUrl: 'https://docs.vellira.dev/components/web/select',
     status: 'stable',
     order: 40,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/select',
+      'react-native': 'https://docs.vellira.dev/react-native/select',
+    },
   },
   {
     slug: 'form-field',
@@ -57,9 +77,13 @@ export const webComponents = [
     description:
       'Composable labels, descriptions, controls, and validation messages for forms.',
     category: 'forms',
-    docsUrl: 'https://docs.vellira.dev/components/web/form-field',
     status: 'stable',
     order: 50,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/form-field',
+      'react-native': 'https://docs.vellira.dev/react-native/form-field',
+    },
   },
 
   {
@@ -68,9 +92,13 @@ export const webComponents = [
     description:
       'Keyboard-accessible tab navigation with controlled activation and indicators.',
     category: 'navigation',
-    docsUrl: 'https://docs.vellira.dev/components/web/tabs',
     status: 'stable',
     order: 10,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/tabs',
+      'react-native': 'https://docs.vellira.dev/react-native/tabs',
+    },
   },
 
   {
@@ -79,9 +107,13 @@ export const webComponents = [
     description:
       'Composable action menus with nested content, selection states, and rich items.',
     category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/dropdown',
     status: 'stable',
     order: 10,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/dropdown',
+      'react-native': 'https://docs.vellira.dev/react-native/dropdown',
+    },
   },
   {
     slug: 'modal',
@@ -89,9 +121,13 @@ export const webComponents = [
     description:
       'Accessible modal dialogs with focus management, dismissal, and compound structure.',
     category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/modal',
     status: 'stable',
     order: 20,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/modal',
+      'react-native': 'https://docs.vellira.dev/react-native/modal',
+    },
   },
   {
     slug: 'popover',
@@ -99,9 +135,13 @@ export const webComponents = [
     description:
       'Floating contextual content with collision handling and flexible positioning.',
     category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/popover',
     status: 'stable',
     order: 30,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/popover',
+      'react-native': 'https://docs.vellira.dev/react-native/popover',
+    },
   },
   {
     slug: 'tooltip',
@@ -109,8 +149,12 @@ export const webComponents = [
     description:
       'Contextual labels with managed delay, positioning, and accessibility.',
     category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/tooltip',
     status: 'stable',
     order: 40,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/tooltip',
+      'react-native': 'https://docs.vellira.dev/react-native/tooltip',
+    },
   },
 ] as const satisfies readonly ComponentCatalogEntry[];

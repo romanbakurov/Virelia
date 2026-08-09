@@ -28,13 +28,15 @@ export const componentCategoryLabels: Record<ComponentCategory, string> = {
 };
 
 export type ComponentStatus = 'stable' | 'beta';
+export type ComponentPlatform = 'react' | 'react-native';
 
 export type ComponentCatalogEntry = {
   slug: string;
   name: string;
   description: string;
-  category: ComponentCategory;
-  docsUrl: string;
   status: ComponentStatus;
   order: number;
+  category: ComponentCategory;
+  platforms: readonly ComponentPlatform[];
+  docs: Partial<Record<ComponentPlatform, string>>;
 };

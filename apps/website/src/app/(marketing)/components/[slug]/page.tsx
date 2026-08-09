@@ -6,6 +6,7 @@ import {
   ComponentExplorer,
   getComponentBySlug,
   webComponents,
+  ComponentHeader,
 } from '@/features/components-catalog';
 
 interface ComponentPageProps {
@@ -58,17 +59,7 @@ export default async function ComponentPage({ params }: ComponentPageProps) {
 
   return (
     <ComponentExplorer activeSlug={component.slug} footer={<CompactFooter />}>
-      <header>
-        <p>{component.category}</p>
-
-        <h1>{component.name}</h1>
-
-        <p>{component.description}</p>
-
-        <a href={component.docsUrl} target='_blank' rel='noreferrer noopener'>
-          View full documentation
-        </a>
-      </header>
+      <ComponentHeader component={component} />
     </ComponentExplorer>
   );
 }

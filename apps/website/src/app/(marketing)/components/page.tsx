@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
-import {
-  ComponentCatalog,
-  ComponentsPageHero,
-} from '@/features/components-catalog';
+import { ComponentsPageHero } from '@/features/components-catalog';
 
 export const metadata: Metadata = {
   title: 'React Components',
@@ -25,7 +22,6 @@ export default function ComponentsPage() {
   return (
     <>
       <ComponentsPageHero />
-      <ComponentCatalog />
       <SiteFooter />
     </>
   );

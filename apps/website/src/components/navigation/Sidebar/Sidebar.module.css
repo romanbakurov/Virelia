@@ -60,9 +60,3 @@
 .activeItem > a:hover {
   background: color-mix(in srgb, var(--text-brand) 12%, transparent);
 }
-
-@media (width <= 900px) {
-  .sidebar {
-    display: none;
-  }
-}

@@ -1,6 +1,6 @@
 :root {
   --site-header-height: 68px;
-  --site-gutter: clamp(16px, 2vw, 24px);
+  --site-gutter: clamp(24px, 3vw, 32px);
   --site-max-width: 1440px;
   --explorer-sidebar-width: 280px;
 }

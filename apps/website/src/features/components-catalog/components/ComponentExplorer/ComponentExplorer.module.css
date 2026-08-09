@@ -1,8 +1,8 @@
 .container {
   width: 100%;
-  max-width: var(--site-max-width);
-  padding-inline: var(--site-gutter);
-  margin-inline: auto;
+  max-width: none;
+  padding-left: var(--site-gutter);
+  padding-right: 0;
 }
 
 .layout {
@@ -47,12 +47,18 @@
 .content {
   flex: 1;
   width: 100%;
-  padding: 56px var(--space-16) 96px;
-  max-width: 1120px;
+  min-width: 0;
+  padding: 56px clamp(32px, 3vw, 64px) 96px clamp(40px, 4vw, 72px);
   margin-inline: auto;
 }
 
 @media (width <= 900px) {
+  .container {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
   .layout {
     display: block;
     height: auto;
@@ -69,5 +75,21 @@
 
   .content {
     padding: 32px clamp(20px, 5vw, 40px) 72px;
+  }
+}
+
+@media (width <= 768px) {
+  .sidebarColumn {
+    display: none;
+  }
+
+  .layout {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .mainColumn {
+    overflow: visible;
   }
 }

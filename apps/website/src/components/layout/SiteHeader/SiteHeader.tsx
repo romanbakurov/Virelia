@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { externalNavigation, marketingNavigation } from '@/config/navigation';
+import type { SiteHeaderProps } from './types';
 
 import { Button } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
@@ -72,7 +73,10 @@ function getNavigationSections() {
     );
 }
 
-export function SiteHeader() {
+export function SiteHeader({
+  variant = 'marketing',
+  mobileAction,
+}: SiteHeaderProps) {
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState<string | null>(null);
 
@@ -123,7 +127,11 @@ export function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className={styles.header}>
+    <header
+      className={[styles.header, variant === 'portal' ? styles.portal : null]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <div className={styles.container}>
         <Link href='/' className={styles.brand}>
           <Image
@@ -199,9 +207,15 @@ export function SiteHeader() {
             ))}
           </div>
 
-          <Button asChild size='sm' className={styles.ctaButton}>
-            <a href='https://docs.vellira.dev/getting-started'>Get started</a>
-          </Button>
+          {mobileAction && (
+            <div className={styles.mobileAction}>{mobileAction}</div>
+          )}
+
+          {variant === 'marketing' && (
+            <Button asChild size='sm' className={styles.ctaButton}>
+              <a href='https://docs.vellira.dev/getting-started'>Get started</a>
+            </Button>
+          )}
         </div>
       </div>
     </header>
