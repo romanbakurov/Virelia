@@ -45,6 +45,8 @@
   "scripts": {
     "clean": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', { recursive: true, force: true })\"",
     "build": "pnpm run clean && tsdown && tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
     "test": "vitest run --config vitest.config.ts",
     "test:coverage": "vitest run --config vitest.config.ts --coverage"
