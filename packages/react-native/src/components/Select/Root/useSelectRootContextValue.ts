@@ -4,6 +4,10 @@ import type { RefObject } from 'react';
 import type { LayoutChangeEvent, TextInput } from 'react-native';
 
 import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
+import type {
   SelectCollectionRow,
   SelectContextValue,
 } from '../internal/types';
@@ -23,7 +27,6 @@ type UseSelectRootContextValueParams = {
   zIndex: number;
   position: SelectContextValue['position'];
   onFloatingLayout: (event: LayoutChangeEvent) => void;
-  dismissOnBackdropPress: boolean;
   matchTriggerWidth: boolean;
   triggerWidth: number | undefined;
   selectedValues: string[];
@@ -38,7 +41,9 @@ type UseSelectRootContextValueParams = {
   empty: SelectContextValue['empty'];
   loadingContent: SelectContextValue['loadingContent'];
   closeContent: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   selectOption: (option: SelectOption) => void;
   selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;
@@ -62,7 +67,6 @@ export function useSelectRootContextValue({
   zIndex,
   position,
   onFloatingLayout,
-  dismissOnBackdropPress,
   matchTriggerWidth,
   triggerWidth,
   selectedValues,
@@ -77,7 +81,7 @@ export function useSelectRootContextValue({
   empty,
   loadingContent,
   closeContent,
-  requestOutsideClose,
+  getOutsidePressProps,
   selectOption,
   selectGroup,
   setQuery,
@@ -101,7 +105,6 @@ export function useSelectRootContextValue({
       zIndex,
       position,
       onFloatingLayout,
-      dismissOnBackdropPress,
       matchTriggerWidth,
       triggerWidth,
       selectedValues,
@@ -116,7 +119,7 @@ export function useSelectRootContextValue({
       empty,
       loadingContent,
       closeContent,
-      requestOutsideClose,
+      getOutsidePressProps,
       selectOption,
       selectGroup,
       setQuery,
@@ -139,7 +142,6 @@ export function useSelectRootContextValue({
       zIndex,
       position,
       onFloatingLayout,
-      dismissOnBackdropPress,
       matchTriggerWidth,
       triggerWidth,
       selectedValues,
@@ -154,7 +156,7 @@ export function useSelectRootContextValue({
       empty,
       loadingContent,
       closeContent,
-      requestOutsideClose,
+      getOutsidePressProps,
       selectOption,
       selectGroup,
       setQuery,

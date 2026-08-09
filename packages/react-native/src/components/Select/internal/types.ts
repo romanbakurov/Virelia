@@ -1,6 +1,10 @@
 import type { ReactNode, RefObject } from 'react';
 import type { LayoutChangeEvent, TextInput } from 'react-native';
 
+import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
 import type { SelectOption, SelectPresentation, SelectProps } from '../types';
 
 export type SelectSlot =
@@ -76,7 +80,6 @@ export type SelectContextValue = {
     left: number;
   };
   onFloatingLayout: (event: LayoutChangeEvent) => void;
-  dismissOnBackdropPress: boolean;
   matchTriggerWidth: boolean;
   triggerWidth?: number;
   selectedValues: string[];
@@ -91,7 +94,9 @@ export type SelectContextValue = {
   empty: ReactNode;
   loadingContent: ReactNode;
   closeContent: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   selectOption: (option: SelectOption) => void;
   selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;

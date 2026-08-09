@@ -1,15 +1,20 @@
 import type { MutableRefObject } from 'react';
 import type { Animated, View } from 'react-native';
 
+import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
 import type { ModalAnimation } from '../types';
 
 export interface ModalContextValue {
   animation: ModalAnimation;
   animationProgress: Animated.Value;
-  closeOnOutsidePress: boolean;
   zIndex: number;
   onClose: () => void;
-  onOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   open: boolean;
   setOpen: (open: boolean) => void;
   shouldRender: boolean;

@@ -237,7 +237,7 @@ export function DropdownRoot({
       textStyle,
 
       requestClose: dismiss.requestClose,
-      requestOutsideClose: dismiss.requestOutsideClose,
+      getOutsidePressProps: dismiss.getOutsidePressProps,
       toggle: handleTriggerPress,
       onSearchChange: handleSearchChange,
       onFloatingLayout,
@@ -247,8 +247,8 @@ export function DropdownRoot({
       contentPresentation,
       disabled,
       dismiss.zIndex,
+      dismiss.getOutsidePressProps,
       dismiss.requestClose,
-      dismiss.requestOutsideClose,
       handleSearchChange,
       handleTriggerPress,
       isOpen,

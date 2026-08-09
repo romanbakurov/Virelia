@@ -266,6 +266,97 @@ describe('useOverlayDismiss', () => {
     unmount();
   });
 
+  it('returns press props that dispatch outside dismissal', () => {
+    const requestClose = vi.fn();
+
+    let controls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay() {
+      controls = useOverlayDismiss({
+        active: true,
+        id: 'overlay',
+        requestClose,
+      });
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+    const outsidePressProps = controls?.getOutsidePressProps({
+      accessibilityLabel: 'Close test overlay',
+    });
+
+    expect(outsidePressProps).toMatchObject({
+      accessibilityLabel: 'Close test overlay',
+      accessibilityRole: 'button',
+    });
+
+    outsidePressProps?.onPress?.({} as never);
+
+    expect(requestClose).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  it('returns inert outside press props when outside dismissal is disabled', () => {
+    const requestClose = vi.fn();
+
+    let controls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay() {
+      controls = useOverlayDismiss({
+        active: true,
+        closeOnOutsidePress: false,
+        id: 'overlay',
+        requestClose,
+      });
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+    const outsidePressProps = controls?.getOutsidePressProps({
+      accessibilityLabel: 'Close test overlay',
+    });
+
+    expect(outsidePressProps).toEqual({
+      accessibilityLabel: undefined,
+      accessibilityRole: undefined,
+      onPress: undefined,
+    });
+
+    unmount();
+  });
+
+  it('returns inert outside press props when inactive', () => {
+    const requestClose = vi.fn();
+
+    let controls: ReturnType<typeof useOverlayDismiss> | undefined;
+
+    function TestOverlay() {
+      controls = useOverlayDismiss({
+        active: false,
+        id: 'overlay',
+        requestClose,
+      });
+
+      return null;
+    }
+
+    const { unmount } = render(<TestOverlay />);
+    const outsidePressProps = controls?.getOutsidePressProps({
+      accessibilityLabel: 'Close test overlay',
+    });
+
+    expect(outsidePressProps).toEqual({
+      accessibilityLabel: undefined,
+      accessibilityRole: undefined,
+      onPress: undefined,
+    });
+
+    unmount();
+  });
+
   it('exposes the registered overlay z-index', () => {
     let zIndex: number | undefined;
 

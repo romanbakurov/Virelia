@@ -8,6 +8,10 @@ import type {
 } from 'react-native';
 
 import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
+import type {
   DropdownContentProps,
   DropdownEmptyProps,
   DropdownItemProps,
@@ -43,7 +47,9 @@ export interface DropdownContextValue {
   textStyle?: StyleProp<TextStyle>;
 
   requestClose: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   toggle: () => void;
   onSearchChange: (value: string) => void;
   onFloatingLayout: (event: LayoutChangeEvent) => void;

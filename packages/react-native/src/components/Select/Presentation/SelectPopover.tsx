@@ -9,8 +9,7 @@ import type { SelectPopoverProps } from './types';
 export const SelectPopover = ({
   visible,
   onClose,
-  onOutsideClose,
-  dismissOnBackdropPress,
+  outsidePressProps,
   zIndex,
   position,
   onFloatingLayout,
@@ -32,10 +31,7 @@ export const SelectPopover = ({
         style={[styles.modalRoot, Platform.OS === 'web' && { zIndex }]}
         testID='select-content-root'
       >
-        <SelectBackdrop
-          onOutsideClose={onOutsideClose}
-          dismissOnBackdropPress={dismissOnBackdropPress}
-        />
+        <SelectBackdrop outsidePressProps={outsidePressProps} />
 
         <View
           onLayout={onFloatingLayout}

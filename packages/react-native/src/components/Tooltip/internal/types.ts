@@ -2,6 +2,11 @@ import type { FloatingPlacement, TooltipDelay } from '@vellira-ui/types';
 import type { RefObject } from 'react';
 import type { LayoutChangeEvent, View } from 'react-native';
 
+import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
+
 export type NativeTooltipDelay = Partial<TooltipDelay>;
 
 export type TooltipContextValue = {
@@ -23,6 +28,8 @@ export type TooltipContextValue = {
   hide: () => void;
   zIndex: number;
   requestClose: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   onFloatingLayout: (event: LayoutChangeEvent) => void;
 };

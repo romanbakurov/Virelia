@@ -111,7 +111,6 @@ export function PopoverRoot({
     <PopoverProvider
       value={{
         open,
-        closeOnOutsidePress,
         triggerRef,
         anchorRef,
         side,
@@ -121,7 +120,7 @@ export function PopoverRoot({
         position,
         arrowPosition,
         requestClose: dismiss.requestClose,
-        requestOutsideClose: dismiss.requestOutsideClose,
+        getOutsidePressProps: dismiss.getOutsidePressProps,
         onFloatingLayout,
         updatePosition,
         setOpen,

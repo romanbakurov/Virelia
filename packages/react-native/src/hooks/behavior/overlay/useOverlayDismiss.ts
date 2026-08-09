@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import type { PressableProps } from 'react-native';
 import { BackHandler, Platform } from 'react-native';
 
 import {
@@ -16,6 +17,15 @@ export type OverlayDismissOptions = {
   id: string;
   requestClose: () => void;
   requestOutsideClose?: () => void;
+};
+
+export type OverlayOutsidePressProps = Pick<
+  PressableProps,
+  'accessibilityLabel' | 'accessibilityRole' | 'onPress'
+>;
+
+export type OverlayOutsidePressPropsOptions = {
+  accessibilityLabel?: string;
 };
 
 const dismissListeners = new Map<
@@ -101,6 +111,27 @@ export const useOverlayDismiss = ({
     nativeOverlayManager.dispatchTopOutsidePress();
   }, [nativeOverlayManager]);
 
+  const getOutsidePressProps = useCallback(
+    ({
+      accessibilityLabel = 'Dismiss overlay',
+    }: OverlayOutsidePressPropsOptions = {}): OverlayOutsidePressProps => {
+      if (!active || !closeOnOutsidePress) {
+        return {
+          accessibilityLabel: undefined,
+          accessibilityRole: undefined,
+          onPress: undefined,
+        };
+      }
+
+      return {
+        accessibilityLabel,
+        accessibilityRole: 'button',
+        onPress: requestOutsideTopClose,
+      };
+    },
+    [active, closeOnOutsidePress, requestOutsideTopClose]
+  );
+
   useEffect(() => {
     if (!active) return;
 
@@ -149,6 +180,7 @@ export const useOverlayDismiss = ({
   return {
     zIndex: registration.zIndex,
     isTopOverlay,
+    getOutsidePressProps,
     requestClose: requestTopClose,
     requestOutsideClose: requestOutsideTopClose,
   };
