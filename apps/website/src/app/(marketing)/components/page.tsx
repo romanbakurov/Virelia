@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
 import { ComponentsPageHero } from '@/features/components-catalog';
+import { componentsPortalEnabled } from '@/config/features';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'React Components',
@@ -19,6 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function ComponentsPage() {
+  if (!componentsPortalEnabled) {
+    notFound();
+  }
+
   return (
     <>
       <ComponentsPageHero />

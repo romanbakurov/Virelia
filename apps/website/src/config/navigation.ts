@@ -1,3 +1,5 @@
+import { componentsPortalEnabled } from './features';
+
 export type MarketingNavigationItem =
   | {
       label: string;
@@ -13,12 +15,18 @@ export type MarketingNavigationItem =
       badge?: string;
     };
 
-export const marketingNavigation = [
-  {
-    label: 'Components',
-    href: '/components',
-    type: 'page',
-  },
+const componentNavigation: readonly MarketingNavigationItem[] =
+  componentsPortalEnabled
+    ? [
+        {
+          label: 'Components',
+          href: '/components',
+          type: 'page',
+        },
+      ]
+    : [];
+
+const sectionNavigation = [
   {
     label: 'Themes',
     href: '/#themes',
@@ -45,6 +53,11 @@ export const marketingNavigation = [
     badge: 'NEW',
   },
 ] as const satisfies readonly MarketingNavigationItem[];
+
+export const marketingNavigation: readonly MarketingNavigationItem[] = [
+  ...componentNavigation,
+  ...sectionNavigation,
+];
 
 export const externalNavigation = [
   {
