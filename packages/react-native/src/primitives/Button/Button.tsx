@@ -20,24 +20,24 @@ const sizeMap: Record<
   }
 > = {
   sm: {
-    px: 12,
-    py: 8,
+    px: 16,
+    py: 6,
     height: 36,
     fontSize: 12,
     iconSize: 16,
   },
 
   md: {
-    px: 16,
-    py: 12,
+    px: 24,
+    py: 8,
     height: 44,
     fontSize: 14,
     iconSize: 20,
   },
 
   lg: {
-    px: 20,
-    py: 16,
+    px: 32,
+    py: 10,
     height: 52,
     fontSize: 16,
     iconSize: 24,
@@ -196,12 +196,16 @@ export function Button({
             {!loading && iconStart && renderIcon(iconStart, contentColor)}
 
             {content && !iconOnly && (
-              <View style={styles.labelSlot}>
+              <View
+                style={[
+                  styles.labelSlot,
+                  labelWidth > 0 && { minWidth: labelWidth },
+                ]}
+              >
                 <Text
                   onLayout={handleLabelLayout}
                   style={[
                     styles.text,
-                    labelWidth > 0 && { minWidth: labelWidth },
                     {
                       fontSize: config.fontSize,
                       color: contentColor,

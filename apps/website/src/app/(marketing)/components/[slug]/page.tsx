@@ -4,9 +4,9 @@ import { CompactFooter } from '@/components/layout/CompactFooter';
 
 import {
   ComponentExplorer,
+  ComponentPlatformView,
   getComponentBySlug,
   webComponents,
-  ComponentHeader,
 } from '@/features/components-catalog';
 
 interface ComponentPageProps {
@@ -59,7 +59,7 @@ export default async function ComponentPage({ params }: ComponentPageProps) {
 
   return (
     <ComponentExplorer activeSlug={component.slug} footer={<CompactFooter />}>
-      <ComponentHeader component={component} />
+      <ComponentPlatformView component={component} />
     </ComponentExplorer>
   );
 }

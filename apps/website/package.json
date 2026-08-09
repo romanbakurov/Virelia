@@ -17,13 +17,15 @@
     "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/icons": "workspace:*",
     "@vellira-ui/react": "workspace:*",
+    "@vellira-ui/react-native": "workspace:*",
     "@vellira-ui/tokens": "workspace:*",
     "@vercel/analytics": "^2.0.1",
     "lottie-web": "^5.13.0",
     "motion": "^12.42.2",
     "next": "16.2.11",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@types/node": "^20",

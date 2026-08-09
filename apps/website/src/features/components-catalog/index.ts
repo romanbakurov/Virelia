@@ -3,6 +3,8 @@ export { ComponentSidebar } from './components/ComponentSidebar';
 export { ComponentExplorer } from './components/ComponentExplorer';
 export { ComponentHeader } from './components/ComponentHeader';
 export { ComponentsHeader } from './components/ComponentsHeader';
+export { ComponentPlayground } from './components/ComponentPlayground';
+export { ComponentPlatformView } from './components/ComponentPlatformView';
 
 export { componentGroups } from './data/componentGroups';
 export { webComponents } from './data/components';

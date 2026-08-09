@@ -1,0 +1,1 @@
+export { ComponentPlatformView } from './ComponentPlatformView';

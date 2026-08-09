@@ -1,13 +1,20 @@
-import type { ComponentCatalogEntry } from '../../types';
+import type { ComponentCatalogEntry, ComponentPlatform } from '../../types';
+
 import { ComponentHeaderActions } from '../ComponentHeaderActions';
 
 import styles from './ComponentHeader.module.css';
 
 type ComponentHeaderProps = {
   component: ComponentCatalogEntry;
+  platform: ComponentPlatform;
+  onPlatformChange: (platform: ComponentPlatform) => void;
 };
 
-export function ComponentHeader({ component }: ComponentHeaderProps) {
+export function ComponentHeader({
+  component,
+  platform,
+  onPlatformChange,
+}: ComponentHeaderProps) {
   return (
     <header className={styles.root}>
       <div className={styles.eyebrow}>
@@ -19,7 +26,11 @@ export function ComponentHeader({ component }: ComponentHeaderProps) {
 
       <p className={styles.description}>{component.description}</p>
 
-      <ComponentHeaderActions component={component} />
+      <ComponentHeaderActions
+        component={component}
+        platform={platform}
+        onPlatformChange={onPlatformChange}
+      />
     </header>
   );
 }

@@ -1,0 +1,108 @@
+.root {
+  width: 100%;
+  margin-top: var(--space-8);
+  overflow: hidden;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 52px;
+  padding-inline: var(--space-5);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.label {
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(40px, 5vw, 64px);
+  background-color: var(--surface-subtle);
+  min-height: clamp(180px, 20vw, 240px);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--text-secondary) 15%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}
+
+.controls {
+  padding: var(--space-5);
+  background: var(--surface-default);
+  border-top: 1px solid var(--border-muted);
+}
+
+.liveStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.liveStatus span {
+  width: 7px;
+  height: 7px;
+  background: var(--color-success-500);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-success-500) 12%, transparent);
+  animation: live-status-pulse 2200ms ease-in-out infinite;
+}
+
+@keyframes live-status-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveStatus span {
+    animation: none;
+  }
+}
+
+@media (width <= 640px) {
+  .root {
+    margin-top: var(--space-6);
+  }
+
+  .toolbar {
+    min-height: 48px;
+    padding-inline: var(--space-4);
+  }
+
+  .preview {
+    min-height: 200px;
+    padding: var(--space-10) var(--space-5);
+  }
+
+  .controls {
+    padding: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .livePulse::before {
+    animation: none;
+  }
+}

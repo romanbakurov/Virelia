@@ -24,6 +24,7 @@ export const createStyles = (theme: NativeTheme) =>
       fontFamily: theme.tokens.typography.family.regular,
       fontWeight: fontWeight(theme.tokens.typography.weight.regular),
       lineHeight: theme.tokens.typography.lineHeight.md,
+      textAlign: 'center',
 
       // Fallback color.
       color: theme.components.button.primary.solid.default.fg,
@@ -31,6 +32,8 @@ export const createStyles = (theme: NativeTheme) =>
 
     labelSlot: {
       position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
 
     labelMeasure: {

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
 
 import type { ComponentCatalogEntry, ComponentPlatform } from '../../types';
 
@@ -9,7 +8,8 @@ import styles from './ComponentHeaderActions.module.css';
 
 type ComponentHeaderActionsProps = {
   component: ComponentCatalogEntry;
-  defaultPlatform?: ComponentPlatform;
+  platform: ComponentPlatform;
+  onPlatformChange: (platform: ComponentPlatform) => void;
 };
 
 const platformLabels: Record<ComponentPlatform, string> = {
@@ -19,29 +19,20 @@ const platformLabels: Record<ComponentPlatform, string> = {
 
 export function ComponentHeaderActions({
   component,
-  defaultPlatform = 'react',
+  platform,
+  onPlatformChange,
 }: ComponentHeaderActionsProps) {
-  const initialPlatform = component.platforms.includes(defaultPlatform)
-    ? defaultPlatform
-    : component.platforms[0];
-
-  const [activePlatform, setActivePlatform] =
-    useState<ComponentPlatform>(initialPlatform);
-
-  const documentationUrl = useMemo(
-    () => component.docs[activePlatform],
-    [activePlatform, component.docs]
-  );
+  const documentationUrl = component.docs[platform];
 
   return (
     <div className={styles.root}>
       <div className={styles.switcher} role='group' aria-label='Platform'>
-        {component.platforms.map((platform) => {
-          const isActive = platform === activePlatform;
+        {component.platforms.map((item) => {
+          const isActive = item === platform;
 
           return (
             <button
-              key={platform}
+              key={item}
               type='button'
               className={[
                 styles.platformButton,
@@ -50,9 +41,9 @@ export function ComponentHeaderActions({
                 .filter(Boolean)
                 .join(' ')}
               aria-pressed={isActive}
-              onClick={() => setActivePlatform(platform)}
+              onClick={() => onPlatformChange(item)}
             >
-              {platformLabels[platform]}
+              {platformLabels[item]}
             </button>
           );
         })}
