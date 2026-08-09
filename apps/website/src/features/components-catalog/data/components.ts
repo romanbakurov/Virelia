@@ -1,27 +1,17 @@
 import type { ComponentCatalogEntry } from '../types';
 
-export type WebsiteComponentCategory =
-  'forms' | 'overlays' | 'navigation' | 'primitives';
-
-export type WebsiteComponentEntry = {
-  slug: string;
-  name: string;
-  description: string;
-  category: WebsiteComponentCategory;
-  docsUrl: string;
-  status: 'stable' | 'beta';
-};
-
 export const webComponents = [
   {
     slug: 'button',
     name: 'Button',
     description:
       'Accessible actions with multiple appearances, colors, sizes, and composition support.',
-    category: 'primitives',
+    category: 'general',
     docsUrl: 'https://docs.vellira.dev/components/web/button',
     status: 'stable',
+    order: 10,
   },
+
   {
     slug: 'input',
     name: 'Input',
@@ -30,6 +20,7 @@ export const webComponents = [
     category: 'forms',
     docsUrl: 'https://docs.vellira.dev/components/web/input',
     status: 'stable',
+    order: 10,
   },
   {
     slug: 'checkbox',
@@ -38,6 +29,7 @@ export const webComponents = [
     category: 'forms',
     docsUrl: 'https://docs.vellira.dev/components/web/checkbox',
     status: 'stable',
+    order: 20,
   },
   {
     slug: 'radio-group',
@@ -47,6 +39,7 @@ export const webComponents = [
     category: 'forms',
     docsUrl: 'https://docs.vellira.dev/components/web/radio',
     status: 'stable',
+    order: 30,
   },
   {
     slug: 'select',
@@ -56,51 +49,7 @@ export const webComponents = [
     category: 'forms',
     docsUrl: 'https://docs.vellira.dev/components/web/select',
     status: 'stable',
-  },
-  {
-    slug: 'dropdown',
-    name: 'Dropdown',
-    description:
-      'Composable action menus with nested content, selection states, and rich items.',
-    category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/dropdown',
-    status: 'stable',
-  },
-  {
-    slug: 'modal',
-    name: 'Modal',
-    description:
-      'Accessible modal dialogs with focus management, dismissal, and compound structure.',
-    category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/modal',
-    status: 'stable',
-  },
-  {
-    slug: 'popover',
-    name: 'Popover',
-    description:
-      'Floating contextual content with collision handling and flexible positioning.',
-    category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/popover',
-    status: 'stable',
-  },
-  {
-    slug: 'tooltip',
-    name: 'Tooltip',
-    description:
-      'Contextual labels with managed delay, positioning, and accessibility.',
-    category: 'overlays',
-    docsUrl: 'https://docs.vellira.dev/components/web/tooltip',
-    status: 'stable',
-  },
-  {
-    slug: 'tabs',
-    name: 'Tabs',
-    description:
-      'Keyboard-accessible tab navigation with controlled activation and indicators.',
-    category: 'navigation',
-    docsUrl: 'https://docs.vellira.dev/components/web/tabs',
-    status: 'stable',
+    order: 40,
   },
   {
     slug: 'form-field',
@@ -110,5 +59,58 @@ export const webComponents = [
     category: 'forms',
     docsUrl: 'https://docs.vellira.dev/components/web/form-field',
     status: 'stable',
+    order: 50,
+  },
+
+  {
+    slug: 'tabs',
+    name: 'Tabs',
+    description:
+      'Keyboard-accessible tab navigation with controlled activation and indicators.',
+    category: 'navigation',
+    docsUrl: 'https://docs.vellira.dev/components/web/tabs',
+    status: 'stable',
+    order: 10,
+  },
+
+  {
+    slug: 'dropdown',
+    name: 'Dropdown',
+    description:
+      'Composable action menus with nested content, selection states, and rich items.',
+    category: 'overlays',
+    docsUrl: 'https://docs.vellira.dev/components/web/dropdown',
+    status: 'stable',
+    order: 10,
+  },
+  {
+    slug: 'modal',
+    name: 'Modal',
+    description:
+      'Accessible modal dialogs with focus management, dismissal, and compound structure.',
+    category: 'overlays',
+    docsUrl: 'https://docs.vellira.dev/components/web/modal',
+    status: 'stable',
+    order: 20,
+  },
+  {
+    slug: 'popover',
+    name: 'Popover',
+    description:
+      'Floating contextual content with collision handling and flexible positioning.',
+    category: 'overlays',
+    docsUrl: 'https://docs.vellira.dev/components/web/popover',
+    status: 'stable',
+    order: 30,
+  },
+  {
+    slug: 'tooltip',
+    name: 'Tooltip',
+    description:
+      'Contextual labels with managed delay, positioning, and accessibility.',
+    category: 'overlays',
+    docsUrl: 'https://docs.vellira.dev/components/web/tooltip',
+    status: 'stable',
+    order: 40,
   },
 ] as const satisfies readonly ComponentCatalogEntry[];
