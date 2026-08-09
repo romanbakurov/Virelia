@@ -18,6 +18,7 @@ import {
   Checkbox,
   Dropdown,
   Input,
+  Modal,
   Radio,
   RadioGroup,
   Select,
@@ -98,7 +99,7 @@ const isPreviewMessage = (value: unknown): value is WebsitePreviewMessage => {
 };
 
 export default function App() {
-  const [loaded] = useFonts({
+  const [loaded, fontError] = useFonts({
     'VelliraSans-Regular': require('@vellira-ui/assets/fonts/VelliraSans-Regular.ttf'),
     'VelliraSans-Medium': require('@vellira-ui/assets/fonts/VelliraSans-Medium.ttf'),
     'VelliraSans-SemiBold': require('@vellira-ui/assets/fonts/VelliraSans-SemiBold.ttf'),
@@ -143,7 +144,13 @@ export default function App() {
   }, []);
 
   if (!loaded) {
-    return null;
+    return (
+      <View style={fallbackStyles.screen}>
+        <Text style={fallbackStyles.text}>
+          {fontError ? 'Unable to load Vellira fonts' : 'Loading Vellira fonts'}
+        </Text>
+      </View>
+    );
   }
 
   const nativeTheme =
@@ -181,6 +188,7 @@ function PreviewContent({
 }: PreviewContentProps) {
   const { theme, themeName } = useTheme();
   const styles = createStyles(theme);
+  const [lastModalClose, setLastModalClose] = useState('None');
   const headerIconColor =
     themeName === 'light'
       ? theme.semantic.text.brand
@@ -357,12 +365,162 @@ function PreviewContent({
         <Button fullWidth iconStart={<Check />}>
           Sync native changes
         </Button>
+
+        <View style={styles.card}>
+          <View style={styles.modalQaHeader}>
+            <Text style={styles.panelLabel}>Modal QA</Text>
+            <Text
+              accessibilityLabel={`Last modal close method: ${lastModalClose}`}
+              style={styles.modalQaStatus}
+            >
+              Last close: {lastModalClose}
+            </Text>
+          </View>
+
+          <Modal
+            onOpenChange={(open) => {
+              if (!open) {
+                setLastModalClose('default modal');
+              }
+            }}
+          >
+            <Modal.Trigger asChild>
+              <Button accessibilityLabel='Open default modal' fullWidth>
+                Open default modal
+              </Button>
+            </Modal.Trigger>
+            <Modal.Overlay>
+              <Modal.Content>
+                <Modal.Header>
+                  <Modal.Title>Default modal</Modal.Title>
+                  <Modal.Description>
+                    Close with the backdrop, the close icon, a footer action, or
+                    Android hardware back.
+                  </Modal.Description>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text style={styles.modalQaBody}>
+                    Verify that focus returns to Open default modal after close.
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Modal.Close asChild>
+                    <Button color='neutral' appearance='outline'>
+                      Cancel
+                    </Button>
+                  </Modal.Close>
+                  <Modal.Close asChild>
+                    <Button>Confirm</Button>
+                  </Modal.Close>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal.Overlay>
+          </Modal>
+
+          <Modal
+            closeOnOutsidePress={false}
+            onOpenChange={(open) => {
+              if (!open) {
+                setLastModalClose('explicit close only');
+              }
+            }}
+          >
+            <Modal.Trigger asChild>
+              <Button
+                accessibilityLabel='Open modal with disabled backdrop close'
+                appearance='outline'
+                color='neutral'
+                fullWidth
+              >
+                Backdrop disabled
+              </Button>
+            </Modal.Trigger>
+            <Modal.Overlay>
+              <Modal.Content>
+                <Modal.Header>
+                  <Modal.Title>Explicit close only</Modal.Title>
+                  <Modal.Description>
+                    Backdrop press should not close this dialog.
+                  </Modal.Description>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text style={styles.modalQaBody}>
+                    Use the close icon or the Done action to dismiss.
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Modal.Close asChild>
+                    <Button>Done</Button>
+                  </Modal.Close>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal.Overlay>
+          </Modal>
+
+          <Modal
+            animation='none'
+            onOpenChange={(open) => {
+              if (!open) {
+                setLastModalClose('reduced motion modal');
+              }
+            }}
+          >
+            <Modal.Trigger asChild>
+              <Button
+                accessibilityLabel='Open reduced motion modal'
+                appearance='outline'
+                color='neutral'
+                fullWidth
+              >
+                Reduced motion path
+              </Button>
+            </Modal.Trigger>
+            <Modal.Overlay>
+              <Modal.Content>
+                <Modal.Header>
+                  <Modal.Title>Reduced motion path</Modal.Title>
+                  <Modal.Description>
+                    This modal uses animation none for device reduced-motion
+                    comparison.
+                  </Modal.Description>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text style={styles.modalQaBody}>
+                    Open and close should happen without animated transition.
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Modal.Close asChild>
+                    <Button>Close</Button>
+                  </Modal.Close>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal.Overlay>
+          </Modal>
+        </View>
       </ScrollView>
     </View>
   );
 }
 
 type ResolvedNativeTheme = ReturnType<typeof useTheme>['theme'];
+
+const fallbackStyles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    backgroundColor: '#ffffff',
+  },
+
+  text: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+});
 
 const createStyles = (theme: ResolvedNativeTheme) =>
   StyleSheet.create({
@@ -541,5 +699,22 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       color: theme.semantic.text.primary,
       fontSize: 15,
       fontWeight: '700',
+    },
+
+    modalQaHeader: {
+      gap: 4,
+    },
+
+    modalQaStatus: {
+      color: theme.semantic.text.primary,
+      fontSize: 13,
+      fontWeight: '600',
+      lineHeight: 18,
+    },
+
+    modalQaBody: {
+      color: theme.semantic.text.primary,
+      fontSize: 14,
+      lineHeight: 20,
     },
   });
