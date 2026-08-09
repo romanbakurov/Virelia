@@ -1,0 +1,62 @@
+.sidebar {
+  width: 100%;
+}
+
+.inner {
+  padding: 32px 28px 48px 0;
+}
+
+.group + .group {
+  margin-top: 32px;
+}
+
+.groupLabel {
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  min-height: 36px;
+  border-radius: 8px;
+}
+
+.item > a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  border-radius: inherit;
+  transition:
+    color 140ms ease,
+    background 140ms ease;
+  gap: 12px;
+  min-height: 36px;
+  padding-inline: 10px;
+  text-decoration: none;
+}
+
+.item > a:hover {
+  color: var(--text-primary);
+  background: var(--surface-subtle);
+}
+
+.activeItem > a {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--text-brand) 10%, transparent);
+}
+
+.activeItem > a:hover {
+  background: color-mix(in srgb, var(--text-brand) 12%, transparent);
+}

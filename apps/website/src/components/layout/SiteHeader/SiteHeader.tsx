@@ -3,40 +3,15 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+import { externalNavigation, marketingNavigation } from '@/config/navigation';
+import type { SiteHeaderProps } from './types';
 
 import { Button } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
 import styles from './SiteHeader.module.css';
-
-const navigation = [
-  { label: 'Components', href: '#components' },
-  { label: 'Themes', href: '#themes' },
-  { label: 'Platforms', href: '#platforms' },
-  { label: 'Roadmap', href: '#roadmap' },
-  { label: 'Pro', href: '#pro', badge: 'NEW' },
-] as const;
-
-const externalLinks = [
-  {
-    label: 'Documentation',
-    href: 'https://docs.vellira.dev',
-    icon: '/brand/navigation/documentation.svg',
-    iconSize: 21,
-  },
-  {
-    label: 'Storybook',
-    href: 'https://storybook.vellira.dev',
-    icon: '/brand/navigation/storybook.svg',
-    iconSize: 21,
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/vellira-dev/vellira',
-    icon: '/brand/navigation/github.svg',
-    iconSize: 20,
-  },
-] as const;
 
 let pendingAnchorScrollTimers: number[] = [];
 
@@ -76,16 +51,17 @@ function scrollToAnchor(hash: string) {
 }
 
 function getNavigationSections() {
-  return navigation
+  return marketingNavigation
+    .filter((item) => item.type === 'section')
     .map((item) => ({
       href: item.href,
-      element: document.getElementById(item.href.slice(1)),
+      hash: item.hash,
+      element: document.getElementById(item.hash.slice(1)),
     }))
     .filter(
       (
         item
-      ): item is {
-        href: (typeof navigation)[number]['href'];
+      ): item is typeof item & {
         element: HTMLElement;
       } => Boolean(item.element)
     )
@@ -97,31 +73,43 @@ function getNavigationSections() {
     );
 }
 
-export function SiteHeader() {
-  const [activeHash, setActiveHash] = useState<
-    (typeof navigation)[number]['href']
-  >(navigation[0].href);
+export function SiteHeader({
+  variant = 'marketing',
+  mobileAction,
+  navigationOpen = false,
+}: SiteHeaderProps) {
+  const pathname = usePathname();
+  const [activeHref, setActiveHref] = useState<string | null>(null);
 
   useEffect(() => {
-    const updateActiveHash = () => {
+    if (pathname !== '/') {
+      setActiveHref(pathname);
+      return;
+    }
+
+    const updateActiveHref = () => {
       const sections = getNavigationSections();
 
-      if (sections.length === 0) return;
+      if (sections.length === 0) {
+        setActiveHref(null);
+        return;
+      }
 
       const activationY =
         window.scrollY + Math.min(window.innerHeight * 0.45, 460);
+
       const activeSection =
         sections.findLast(({ element }) => element.offsetTop <= activationY) ??
         sections[0];
 
-      setActiveHash(activeSection.href);
+      setActiveHref(activeSection.href);
     };
 
-    updateActiveHash();
+    updateActiveHref();
 
-    window.addEventListener('scroll', updateActiveHash, { passive: true });
-    window.addEventListener('resize', updateActiveHash);
-    window.addEventListener('hashchange', updateActiveHash);
+    window.addEventListener('scroll', updateActiveHref, { passive: true });
+    window.addEventListener('resize', updateActiveHref);
+    window.addEventListener('hashchange', updateActiveHref);
     window.addEventListener('wheel', cancelPendingAnchorScroll, {
       passive: true,
     });
@@ -130,17 +118,21 @@ export function SiteHeader() {
     });
 
     return () => {
-      window.removeEventListener('scroll', updateActiveHash);
-      window.removeEventListener('resize', updateActiveHash);
-      window.removeEventListener('hashchange', updateActiveHash);
+      window.removeEventListener('scroll', updateActiveHref);
+      window.removeEventListener('resize', updateActiveHref);
+      window.removeEventListener('hashchange', updateActiveHref);
       window.removeEventListener('wheel', cancelPendingAnchorScroll);
       window.removeEventListener('touchstart', cancelPendingAnchorScroll);
       cancelPendingAnchorScroll();
     };
-  }, []);
+  }, [pathname]);
 
   return (
-    <header className={styles.header}>
+    <header
+      className={[styles.header, navigationOpen ? styles.navigationOpen : null]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <div className={styles.container}>
         <Link href='/' className={styles.brand}>
           <Image
@@ -154,31 +146,38 @@ export function SiteHeader() {
         </Link>
 
         <nav className={styles.navigation} aria-label='Primary navigation'>
-          {navigation.map((item) => (
-            <a
+          {marketingNavigation.map((item) => (
+            <Link
               key={item.label}
               className={styles.navigationLink}
               href={item.href}
-              aria-current={activeHash === item.href ? 'page' : undefined}
+              aria-current={activeHref === item.href ? 'page' : undefined}
               onClick={(event) => {
+                if (item.type !== 'section' || pathname !== '/') {
+                  return;
+                }
+
                 event.preventDefault();
-                setActiveHash(item.href);
-                scrollToAnchor(item.href);
+                setActiveHref(item.href);
+                scrollToAnchor(item.hash);
               }}
             >
               <span>{item.label}</span>
+
               {'badge' in item && (
                 <span className={styles.navigationBadge}>{item.badge}</span>
               )}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className={styles.actions}>
-          <ThemeSwitcher />
+          <div className={styles.themeAction}>
+            <ThemeSwitcher />
+          </div>
 
           <div className={styles.externalActions}>
-            {externalLinks.map((link) => (
+            {externalNavigation.map((link) => (
               <Button
                 key={link.label}
                 asChild
@@ -211,9 +210,15 @@ export function SiteHeader() {
             ))}
           </div>
 
-          <Button asChild size='sm' className={styles.ctaButton}>
-            <a href='https://docs.vellira.dev/getting-started'>Get started</a>
-          </Button>
+          {mobileAction && (
+            <div className={styles.mobileAction}>{mobileAction}</div>
+          )}
+
+          {variant === 'marketing' && (
+            <Button asChild size='sm' className={styles.ctaButton}>
+              <a href='https://docs.vellira.dev/getting-started'>Get started</a>
+            </Button>
+          )}
         </div>
       </div>
     </header>

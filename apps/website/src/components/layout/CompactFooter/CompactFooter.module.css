@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px clamp(32px, 5vw, 72px);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  gap: 24px;
+  border-top: 1px solid var(--border-muted);
+}
+
+.navigation {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.navigation a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.navigation a:hover {
+  color: var(--text-primary);
+}
+
+@media (width <= 640px) {
+  .root {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

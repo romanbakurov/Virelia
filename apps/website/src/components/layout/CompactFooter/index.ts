@@ -1,0 +1,1 @@
+export { CompactFooter } from './CompactFooter';
