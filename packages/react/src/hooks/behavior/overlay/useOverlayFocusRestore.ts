@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import {
+  deferOverlayFocusRestore,
+  runOverlayCloseAutoFocus,
+} from '@vellira-ui/core';
 import type { RefObject } from 'react';
 
 import type { OverlayAutoFocusEvent } from '../types.js';
-import { createAutoFocusEvent } from '../utils/events.js';
 
 export type OverlayFocusRestoreOptions = {
   active: boolean;
@@ -52,13 +55,17 @@ export const useOverlayFocusRestore = ({
 
   const restoreFocusAfterClose = useCallback(
     (event?: OverlayAutoFocusEvent) => {
-      const closeEvent = event ?? createAutoFocusEvent();
+      if (
+        !runOverlayCloseAutoFocus({
+          enabled: enabledRef.current,
+          event,
+          onCloseAutoFocus: onCloseAutoFocusRef.current,
+        })
+      ) {
+        return;
+      }
 
-      onCloseAutoFocusRef.current?.(closeEvent);
-
-      if (closeEvent.defaultPrevented || !enabledRef.current) return;
-
-      queueMicrotask(restoreFocus);
+      deferOverlayFocusRestore(restoreFocus);
     },
     [restoreFocus]
   );

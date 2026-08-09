@@ -1,3 +1,4 @@
+import { resolveOverlayPresentation } from '@vellira-ui/core';
 import { useWindowDimensions } from 'react-native';
 
 export type OverlayPresentation = 'auto' | 'sheet' | 'modal' | 'popover';
@@ -8,9 +9,9 @@ export function useOverlayPresentation(
 ): Exclude<OverlayPresentation, 'auto'> {
   const { width } = useWindowDimensions();
 
-  if (presentation === 'auto') {
-    return width >= breakpoint ? 'popover' : 'sheet';
-  }
-
-  return presentation;
+  return resolveOverlayPresentation({
+    presentation,
+    defaultPresentation: 'sheet',
+    autoPresentation: width >= breakpoint ? 'popover' : 'sheet',
+  });
 }

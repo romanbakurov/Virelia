@@ -1,19 +1,15 @@
 import {
   createConsoleOverlayDiagnostics,
-  createOverlayStack,
+  createOverlayManagerStore,
   createOverlayZIndexPolicy,
-  getTopOverlay,
-  resolveOverlayZIndex,
 } from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
-  OverlayEntry,
   OverlayEscapeHandler,
   OverlayManager,
   OverlayPointerDownOutsideHandler,
   OverlayRegistration,
-  OverlaySnapshot,
   OverlayZIndexLevel,
 } from './types';
 
@@ -23,126 +19,54 @@ const overlayZIndexPolicy = createOverlayZIndexPolicy<OverlayZIndexLevel>({
 });
 const overlayDiagnostics = createConsoleOverlayDiagnostics('WebOverlayManager');
 
-function cloneRegistry(registry: Map<string, OverlayEntry>) {
-  return new Map(
-    Array.from(registry.entries()).map(([id, entry]) => [id, { ...entry }])
-  );
-}
-
-function createSnapshot(registry: Map<string, OverlayEntry>): OverlaySnapshot {
-  const stack = createOverlayStack(registry.values());
-
-  return {
-    registry: cloneRegistry(registry),
-    stack,
-    topmost: getTopOverlay(stack),
-  };
-}
-
 export function createOverlayManager(): OverlayManager {
-  const registry = new Map<string, OverlayEntry>();
+  const store = createOverlayManagerStore({
+    diagnostics: overlayDiagnostics,
+    policy: overlayZIndexPolicy,
+  });
   const escapeHandlers = new Map<string, OverlayEscapeHandler>();
   const pointerDownOutsideHandlers = new Map<
     string,
     OverlayPointerDownOutsideHandler
   >();
-  const listeners = new Set<() => void>();
-  let orderSeed = 0;
-  let snapshot = createSnapshot(registry);
-
-  const emit = () => {
-    snapshot = createSnapshot(registry);
-    listeners.forEach((listener) => listener());
-  };
-
-  const resolveZIndex = (entry: OverlayEntry) => {
-    return resolveOverlayZIndex({
-      explicitZIndex: entry.zIndex,
-      level: entry.zIndexLevel,
-      order: entry.order,
-      policy: overlayZIndexPolicy,
-    });
-  };
 
   return {
     register(registration: OverlayRegistration) {
-      if (registry.has(registration.id)) {
-        overlayDiagnostics.duplicateRegistration?.(registration.id);
-      }
-
-      registry.delete(registration.id);
-
-      const entry = {
-        id: registration.id,
-        zIndexLevel:
-          registration.zIndexLevel ?? overlayZIndexPolicy.defaultLevel,
-        order: orderSeed++,
-        zIndex: registration.zIndex,
-      };
-
-      registry.set(registration.id, entry);
-      emit();
-
-      return entry;
+      return store.register(registration);
     },
 
     unregister(id: string) {
       escapeHandlers.delete(id);
       pointerDownOutsideHandlers.delete(id);
-
-      if (!registry.delete(id)) {
-        overlayDiagnostics.unknownUnregister?.(id);
-        return;
-      }
-
-      if (registry.size === 0) {
-        orderSeed = 0;
-      }
-
-      emit();
+      store.unregister(id);
     },
 
     update(registration: OverlayRegistration) {
-      const current = registry.get(registration.id);
-
-      if (!current) return null;
-
-      const next = {
-        ...current,
-        zIndexLevel: registration.zIndexLevel ?? current.zIndexLevel,
-        zIndex: registration.zIndex,
-      };
-
-      registry.set(registration.id, next);
-      emit();
-
-      return next;
+      return store.update(registration);
     },
 
     getSnapshot() {
-      return snapshot;
+      return store.getSnapshot();
     },
 
     getEntry(id: string) {
-      return registry.get(id) ?? null;
+      return store.getEntry(id);
     },
 
     getStack() {
-      return snapshot.stack;
+      return store.getStack();
     },
 
     getTopmost() {
-      return snapshot.topmost;
+      return store.getTopmost();
     },
 
     isTopmost(id: string) {
-      return snapshot.topmost?.id === id;
+      return store.isTopmost(id);
     },
 
     getZIndex(id: string) {
-      const entry = registry.get(id);
-
-      return entry ? resolveZIndex(entry) : undefined;
+      return store.getZIndex(id);
     },
 
     registerEscapeHandler(id: string, handler: OverlayEscapeHandler) {
@@ -156,7 +80,7 @@ export function createOverlayManager(): OverlayManager {
     },
 
     dispatchEscapeKeyDown(event: KeyboardEvent) {
-      const topmost = snapshot.topmost;
+      const topmost = store.getTopmost();
 
       if (!topmost) return false;
 
@@ -183,7 +107,7 @@ export function createOverlayManager(): OverlayManager {
     },
 
     dispatchPointerDownOutside(event: PointerEvent) {
-      const topmost = snapshot.topmost;
+      const topmost = store.getTopmost();
 
       if (!topmost) return false;
 
@@ -197,21 +121,13 @@ export function createOverlayManager(): OverlayManager {
     },
 
     subscribe(listener: () => void) {
-      listeners.add(listener);
-
-      return () => {
-        listeners.delete(listener);
-      };
+      return store.subscribe(listener);
     },
 
     clear() {
-      if (registry.size === 0) return;
-
-      registry.clear();
       escapeHandlers.clear();
       pointerDownOutsideHandlers.clear();
-      orderSeed = 0;
-      emit();
+      store.clear();
     },
   };
 }

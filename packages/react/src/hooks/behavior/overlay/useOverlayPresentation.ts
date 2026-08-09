@@ -1,4 +1,5 @@
 import type { Middleware, Placement, Strategy } from '@floating-ui/react';
+import { resolveOverlayPresentation } from '@vellira-ui/core';
 import type { CSSProperties } from 'react';
 
 import { useFloatingPosition } from '@/managers/FloatingManager';
@@ -58,6 +59,9 @@ export const useOverlayPresentation = ({
   return {
     ...floating,
     animationStyle,
-    presentation: presentation ?? (portal ? 'floating' : 'inline'),
+    presentation: resolveOverlayPresentation({
+      presentation,
+      defaultPresentation: portal ? 'floating' : 'inline',
+    }),
   } satisfies OverlayPresentationResult;
 };

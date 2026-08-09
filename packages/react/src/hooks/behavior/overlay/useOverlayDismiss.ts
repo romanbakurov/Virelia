@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+import { createRetainedResourceRegistry } from '@vellira-ui/core';
+
 import { type OverlayManager, useOverlayManager } from '@/managers';
 
 import type { OverlayDismissOptions } from '../types.js';
@@ -7,93 +9,45 @@ import { createOutsideEvent } from '../utils/events.js';
 
 import { useOverlayRegistration } from './useOverlayRegistration.js';
 
-const escapeListeners = new Map<
-  OverlayManager,
-  { count: number; detach: () => void }
->();
-const pointerDownOutsideListeners = new Map<
-  OverlayManager,
-  { count: number; detach: () => void }
->();
+const escapeKeyDownListeners = createRetainedResourceRegistry<OverlayManager>(
+  (manager) => {
+    if (typeof document === 'undefined') return undefined;
 
-function attachEscapeKeyDown(manager: OverlayManager) {
-  if (typeof document === 'undefined') return;
-  if (escapeListeners.has(manager)) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key !== 'Escape') return;
+      manager.dispatchEscapeKeyDown(event);
+    };
 
-    manager.dispatchEscapeKeyDown(event);
-  };
+    document.addEventListener('keydown', handleKeyDown);
 
-  document.addEventListener('keydown', handleKeyDown);
-
-  escapeListeners.set(manager, {
-    count: 0,
-    detach: () => {
+    return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      escapeListeners.delete(manager);
-    },
+    };
+  }
+);
+
+const pointerDownOutsideListeners =
+  createRetainedResourceRegistry<OverlayManager>((manager) => {
+    if (typeof document === 'undefined') return undefined;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      manager.dispatchPointerDownOutside(event);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
   });
-}
 
 function retainEscapeKeyDown(manager: OverlayManager) {
-  attachEscapeKeyDown(manager);
-
-  const retained = escapeListeners.get(manager);
-  if (!retained) return () => undefined;
-
-  retained.count += 1;
-
-  return () => {
-    const current = escapeListeners.get(manager);
-    if (!current) return;
-
-    current.count = Math.max(0, current.count - 1);
-
-    if (current.count > 0) return;
-
-    current.detach();
-  };
-}
-
-function attachPointerDownOutside(manager: OverlayManager) {
-  if (typeof document === 'undefined') return;
-  if (pointerDownOutsideListeners.has(manager)) return;
-
-  const handlePointerDown = (event: PointerEvent) => {
-    manager.dispatchPointerDownOutside(event);
-  };
-
-  document.addEventListener('pointerdown', handlePointerDown);
-
-  pointerDownOutsideListeners.set(manager, {
-    count: 0,
-    detach: () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      pointerDownOutsideListeners.delete(manager);
-    },
-  });
+  return escapeKeyDownListeners.retain(manager);
 }
 
 function retainPointerDownOutside(manager: OverlayManager) {
-  attachPointerDownOutside(manager);
-
-  const retained = pointerDownOutsideListeners.get(manager);
-  if (!retained) return () => undefined;
-
-  retained.count += 1;
-
-  return () => {
-    const current = pointerDownOutsideListeners.get(manager);
-    if (!current) return;
-
-    current.count = Math.max(0, current.count - 1);
-
-    if (current.count > 0) return;
-
-    current.detach();
-  };
+  return pointerDownOutsideListeners.retain(manager);
 }
 
 export const useOverlayDismiss = ({

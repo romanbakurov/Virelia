@@ -1,15 +1,16 @@
+import type { OverlayManagerStoreSnapshot } from '@vellira-ui/core';
 import {
   createConsoleOverlayDiagnostics,
+  createOverlayManagerStore,
   createOverlayZIndexPolicy,
-  resolveOverlayZIndex,
 } from '@vellira-ui/core';
 import { lightTheme } from '@vellira-ui/tokens';
 
 import type {
   NativeOverlayDismissHandler,
-  NativeOverlayEntry,
   NativeOverlayManager,
   NativeOverlayOutsidePressHandler,
+  NativeOverlaySnapshot,
 } from './types';
 
 const nativeOverlayZIndexPolicy = createOverlayZIndexPolicy({
@@ -23,59 +24,80 @@ const nativeOverlayDiagnostics = createConsoleOverlayDiagnostics(
 );
 
 export const createNativeOverlayManager = (): NativeOverlayManager => {
-  let stack: NativeOverlayEntry[] = [];
+  const store = createOverlayManagerStore({
+    diagnostics: nativeOverlayDiagnostics,
+    policy: nativeOverlayZIndexPolicy,
+  });
   const dismissHandlers = new Map<string, NativeOverlayDismissHandler>();
   const outsidePressHandlers = new Map<
     string,
     NativeOverlayOutsidePressHandler
   >();
 
+  const toNativeEntry = (id: string) => ({
+    id,
+    zIndex: store.getZIndex(id) ?? nativeOverlayZIndexPolicy.levels.modal,
+  });
+  let cachedStoreSnapshot:
+    | OverlayManagerStoreSnapshot<keyof typeof nativeOverlayZIndexPolicy.levels>
+    | undefined;
+  let cachedNativeSnapshot: NativeOverlaySnapshot | undefined;
+
+  const getNativeSnapshot = (): NativeOverlaySnapshot => {
+    const snapshot = store.getSnapshot();
+
+    if (cachedStoreSnapshot === snapshot && cachedNativeSnapshot) {
+      return cachedNativeSnapshot;
+    }
+
+    const stack = snapshot.stack.map((entry) => toNativeEntry(entry.id));
+
+    cachedStoreSnapshot = snapshot;
+    cachedNativeSnapshot = {
+      registry: new Map(stack.map((entry) => [entry.id, entry])),
+      stack,
+      topmost: snapshot.topmost
+        ? toNativeEntry(snapshot.topmost.id)
+        : undefined,
+    };
+
+    return cachedNativeSnapshot;
+  };
+
   return {
     register(id: string) {
-      if (stack.some((item) => item.id === id)) {
-        nativeOverlayDiagnostics.duplicateRegistration?.(id);
-      }
+      const entry = store.register({ id });
 
-      stack = stack.filter((item) => item.id !== id);
-
-      const zIndex = resolveOverlayZIndex({
-        level: nativeOverlayZIndexPolicy.defaultLevel,
-        order: stack.length,
-        policy: nativeOverlayZIndexPolicy,
-      });
-      const entry: NativeOverlayEntry = {
-        id,
-        zIndex,
-      };
-
-      stack.push(entry);
-
-      return entry;
+      return toNativeEntry(entry.id);
     },
 
     unregister(id: string) {
-      if (!stack.some((item) => item.id === id)) {
-        nativeOverlayDiagnostics.unknownUnregister?.(id);
-      }
-
       dismissHandlers.delete(id);
       outsidePressHandlers.delete(id);
-      stack = stack.filter((item) => item.id !== id);
+      store.unregister(id);
+    },
+
+    getSnapshot() {
+      return getNativeSnapshot();
     },
 
     isTop(id: string) {
-      return stack.at(-1)?.id === id;
+      return store.isTopmost(id);
     },
 
     getTop() {
-      return stack.at(-1);
+      return getNativeSnapshot().topmost;
     },
 
     getZIndex(id: string) {
       return (
-        stack.find((item) => item.id === id)?.zIndex ??
+        store.getZIndex(id) ??
         nativeOverlayZIndexPolicy.levels[nativeOverlayZIndexPolicy.defaultLevel]
       );
+    },
+
+    subscribe(listener: () => void) {
+      return store.subscribe(listener);
     },
 
     registerDismissHandler(id: string, handler: NativeOverlayDismissHandler) {
@@ -126,9 +148,9 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     },
 
     clear() {
-      stack = [];
       dismissHandlers.clear();
       outsidePressHandlers.clear();
+      store.clear();
     },
   };
 };
