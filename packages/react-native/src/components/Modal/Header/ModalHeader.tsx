@@ -18,7 +18,9 @@ export const ModalHeader = ({
   return (
     <View style={[styles.header, style]}>
       {isPlainTitle ? (
-        <Text style={[styles.title, textStyle]}>{children}</Text>
+        <Text style={[styles.title, styles.plainTitle, textStyle]}>
+          {children}
+        </Text>
       ) : (
         <View style={styles.headerContent}>{children}</View>
       )}

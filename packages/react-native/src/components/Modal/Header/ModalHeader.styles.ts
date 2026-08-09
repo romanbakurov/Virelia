@@ -18,11 +18,14 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     title: {
-      flex: 1,
       color: theme.components.modal.title.fg,
       fontFamily: theme.tokens.typography.family.semibold,
       fontSize: theme.tokens.typography.size.lg,
       lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    plainTitle: {
+      flex: 1,
     },
 
     description: {
