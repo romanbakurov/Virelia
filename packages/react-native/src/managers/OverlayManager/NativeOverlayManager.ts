@@ -1,3 +1,4 @@
+import type { OverlayManagerStoreSnapshot } from '@vellira-ui/core';
 import {
   createConsoleOverlayDiagnostics,
   createOverlayManagerStore,
@@ -9,6 +10,7 @@ import type {
   NativeOverlayDismissHandler,
   NativeOverlayManager,
   NativeOverlayOutsidePressHandler,
+  NativeOverlaySnapshot,
 } from './types';
 
 const nativeOverlayZIndexPolicy = createOverlayZIndexPolicy({
@@ -32,14 +34,41 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
     NativeOverlayOutsidePressHandler
   >();
 
+  const toNativeEntry = (id: string) => ({
+    id,
+    zIndex: store.getZIndex(id) ?? nativeOverlayZIndexPolicy.levels.modal,
+  });
+  let cachedStoreSnapshot:
+    | OverlayManagerStoreSnapshot<keyof typeof nativeOverlayZIndexPolicy.levels>
+    | undefined;
+  let cachedNativeSnapshot: NativeOverlaySnapshot | undefined;
+
+  const getNativeSnapshot = (): NativeOverlaySnapshot => {
+    const snapshot = store.getSnapshot();
+
+    if (cachedStoreSnapshot === snapshot && cachedNativeSnapshot) {
+      return cachedNativeSnapshot;
+    }
+
+    const stack = snapshot.stack.map((entry) => toNativeEntry(entry.id));
+
+    cachedStoreSnapshot = snapshot;
+    cachedNativeSnapshot = {
+      registry: new Map(stack.map((entry) => [entry.id, entry])),
+      stack,
+      topmost: snapshot.topmost
+        ? toNativeEntry(snapshot.topmost.id)
+        : undefined,
+    };
+
+    return cachedNativeSnapshot;
+  };
+
   return {
     register(id: string) {
       const entry = store.register({ id });
 
-      return {
-        id: entry.id,
-        zIndex: store.getZIndex(id) ?? nativeOverlayZIndexPolicy.levels.modal,
-      };
+      return toNativeEntry(entry.id);
     },
 
     unregister(id: string) {
@@ -48,20 +77,16 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
       store.unregister(id);
     },
 
+    getSnapshot() {
+      return getNativeSnapshot();
+    },
+
     isTop(id: string) {
       return store.isTopmost(id);
     },
 
     getTop() {
-      const topmost = store.getTopmost();
-
-      if (!topmost) return undefined;
-
-      return {
-        id: topmost.id,
-        zIndex:
-          store.getZIndex(topmost.id) ?? nativeOverlayZIndexPolicy.levels.modal,
-      };
+      return getNativeSnapshot().topmost;
     },
 
     getZIndex(id: string) {
@@ -69,6 +94,10 @@ export const createNativeOverlayManager = (): NativeOverlayManager => {
         store.getZIndex(id) ??
         nativeOverlayZIndexPolicy.levels[nativeOverlayZIndexPolicy.defaultLevel]
       );
+    },
+
+    subscribe(listener: () => void) {
+      return store.subscribe(listener);
     },
 
     registerDismissHandler(id: string, handler: NativeOverlayDismissHandler) {

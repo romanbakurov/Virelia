@@ -97,6 +97,34 @@ describe('nativeOverlayManager', () => {
     expect(nativeOverlayManager.getZIndex('first')).toBe(entry.zIndex);
   });
 
+  it('exposes a cached snapshot until the stack changes', () => {
+    nativeOverlayManager.register('first');
+
+    const snapshot = nativeOverlayManager.getSnapshot();
+
+    expect(nativeOverlayManager.getSnapshot()).toBe(snapshot);
+    expect(snapshot.registry.get('first')?.id).toBe('first');
+    expect(snapshot.stack.map((entry) => entry.id)).toEqual(['first']);
+    expect(snapshot.topmost?.id).toBe('first');
+
+    nativeOverlayManager.register('second');
+
+    expect(nativeOverlayManager.getSnapshot()).not.toBe(snapshot);
+    expect(nativeOverlayManager.getSnapshot().topmost?.id).toBe('second');
+  });
+
+  it('notifies subscribers after stack changes', () => {
+    const listener = vi.fn();
+    const unsubscribe = nativeOverlayManager.subscribe(listener);
+
+    nativeOverlayManager.register('first');
+    nativeOverlayManager.unregister('first');
+    unsubscribe();
+    nativeOverlayManager.register('second');
+
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
   it('dispatches dismissal only to the topmost overlay handler', () => {
     const first = vi.fn(() => true);
     const second = vi.fn(() => true);

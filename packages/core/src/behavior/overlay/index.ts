@@ -1,3 +1,8 @@
+export type { RunOverlayCloseAutoFocusOptions } from './focusRestore.js';
+export {
+  deferOverlayFocusRestore,
+  runOverlayCloseAutoFocus,
+} from './focusRestore.js';
 export type {
   OverlayDiagnostics,
   OverlayStackEntry,
@@ -11,6 +16,8 @@ export {
   OVERLAY_STACK_ORDER_STEP,
   resolveOverlayZIndex,
 } from './policy.js';
+export type { ResolveOverlayPresentationOptions } from './presentation.js';
+export { resolveOverlayPresentation } from './presentation.js';
 export type {
   CreateOverlayManagerStoreOptions,
   OverlayManagerStore,

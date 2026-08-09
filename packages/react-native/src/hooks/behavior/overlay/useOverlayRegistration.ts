@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
 import { useNativeOverlayManager } from '../../../managers/OverlayManager';
 
@@ -12,16 +12,16 @@ export const useOverlayRegistration = ({
   id,
 }: OverlayRegistrationOptions) => {
   const nativeOverlayManager = useNativeOverlayManager();
-  const [zIndex, setZIndex] = useState(() =>
-    nativeOverlayManager.getZIndex(id)
+  const snapshot = useSyncExternalStore(
+    nativeOverlayManager.subscribe,
+    nativeOverlayManager.getSnapshot,
+    nativeOverlayManager.getSnapshot
   );
 
   useEffect(() => {
     if (!active) return;
 
-    const entry = nativeOverlayManager.register(id);
-
-    setZIndex(entry.zIndex);
+    nativeOverlayManager.register(id);
 
     return () => {
       nativeOverlayManager.unregister(id);
@@ -32,9 +32,11 @@ export const useOverlayRegistration = ({
     () => nativeOverlayManager.isTop(id),
     [id, nativeOverlayManager]
   );
+  const entry = snapshot.registry.get(id);
 
   return {
-    zIndex,
+    zIndex: entry?.zIndex ?? nativeOverlayManager.getZIndex(id),
+    isTopmost: snapshot.topmost?.id === id,
     isTopOverlay,
   };
 };

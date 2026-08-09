@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import { deferOverlayFocusRestore } from '@vellira-ui/core';
 import type { RefObject } from 'react';
 import type { View } from 'react-native';
 import { AccessibilityInfo, findNodeHandle, Platform } from 'react-native';
@@ -73,7 +74,7 @@ export const useOverlayFocusRestore = ({
   const restoreFocusAfterClose = useCallback(() => {
     if (!enabled) return;
 
-    requestAnimationFrame(restoreFocus);
+    deferOverlayFocusRestore(restoreFocus, requestAnimationFrame);
   }, [enabled, restoreFocus]);
 
   useEffect(() => {
