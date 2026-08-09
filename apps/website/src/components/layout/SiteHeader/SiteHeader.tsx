@@ -5,64 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { externalNavigation, marketingNavigation } from '@/config/navigation';
+
 import { Button } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
 import styles from './SiteHeader.module.css';
-
-const navigation = [
-  {
-    label: 'Components',
-    href: '/components',
-    type: 'page',
-  },
-  {
-    label: 'Themes',
-    href: '/#themes',
-    hash: '#themes',
-    type: 'section',
-  },
-  {
-    label: 'Platforms',
-    href: '/#platforms',
-    hash: '#platforms',
-    type: 'section',
-  },
-  {
-    label: 'Roadmap',
-    href: '/#roadmap',
-    hash: '#roadmap',
-    type: 'section',
-  },
-  {
-    label: 'Pro',
-    href: '/#pro',
-    hash: '#pro',
-    type: 'section',
-    badge: 'NEW',
-  },
-] as const;
-
-const externalLinks = [
-  {
-    label: 'Documentation',
-    href: 'https://docs.vellira.dev',
-    icon: '/brand/navigation/documentation.svg',
-    iconSize: 21,
-  },
-  {
-    label: 'Storybook',
-    href: 'https://storybook.vellira.dev',
-    icon: '/brand/navigation/storybook.svg',
-    iconSize: 21,
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/vellira-dev/vellira',
-    icon: '/brand/navigation/github.svg',
-    iconSize: 20,
-  },
-] as const;
 
 let pendingAnchorScrollTimers: number[] = [];
 
@@ -102,7 +50,7 @@ function scrollToAnchor(hash: string) {
 }
 
 function getNavigationSections() {
-  return navigation
+  return marketingNavigation
     .filter((item) => item.type === 'section')
     .map((item) => ({
       href: item.href,
@@ -126,7 +74,6 @@ function getNavigationSections() {
 
 export function SiteHeader() {
   const pathname = usePathname();
-
   const [activeHref, setActiveHref] = useState<string | null>(null);
 
   useEffect(() => {
@@ -171,7 +118,6 @@ export function SiteHeader() {
       window.removeEventListener('hashchange', updateActiveHref);
       window.removeEventListener('wheel', cancelPendingAnchorScroll);
       window.removeEventListener('touchstart', cancelPendingAnchorScroll);
-
       cancelPendingAnchorScroll();
     };
   }, [pathname]);
@@ -191,23 +137,28 @@ export function SiteHeader() {
         </Link>
 
         <nav className={styles.navigation} aria-label='Primary navigation'>
-          {navigation.map((item) => (
-            <a
+          {marketingNavigation.map((item) => (
+            <Link
               key={item.label}
               className={styles.navigationLink}
               href={item.href}
               aria-current={activeHref === item.href ? 'page' : undefined}
               onClick={(event) => {
+                if (item.type !== 'section' || pathname !== '/') {
+                  return;
+                }
+
                 event.preventDefault();
                 setActiveHref(item.href);
-                scrollToAnchor(item.href);
+                scrollToAnchor(item.hash);
               }}
             >
               <span>{item.label}</span>
+
               {'badge' in item && (
                 <span className={styles.navigationBadge}>{item.badge}</span>
               )}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -215,7 +166,7 @@ export function SiteHeader() {
           <ThemeSwitcher />
 
           <div className={styles.externalActions}>
-            {externalLinks.map((link) => (
+            {externalNavigation.map((link) => (
               <Button
                 key={link.label}
                 asChild
