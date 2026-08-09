@@ -12,12 +12,27 @@ export const createStyles = (theme: NativeTheme) =>
       paddingBottom: theme.components.modal.header.paddingBottom,
     },
 
-    title: {
+    headerContent: {
       flex: 1,
+      gap: theme.tokens.spacing['1'],
+    },
+
+    title: {
       color: theme.components.modal.title.fg,
       fontFamily: theme.tokens.typography.family.semibold,
       fontSize: theme.tokens.typography.size.lg,
       lineHeight: theme.tokens.typography.lineHeight.md,
+    },
+
+    plainTitle: {
+      flex: 1,
+    },
+
+    description: {
+      color: theme.components.modal.description.fg,
+      fontFamily: theme.tokens.typography.family.regular,
+      fontSize: theme.tokens.typography.size.sm,
+      lineHeight: theme.tokens.typography.lineHeight.sm,
     },
 
     closeButton: {

@@ -16,13 +16,15 @@ const meta = {
   tags: ['autodocs'],
   args: {
     animation: 'scale',
+    closeOnEscape: true,
+    closeOnOutsidePress: true,
     defaultOpen: false,
     duration: {
       close: 150,
       open: 180,
     },
     easing: 'standard',
-    closeOnOutsidePress: true,
+    restoreFocus: true,
     onOpenChange: noop,
   },
   parameters: {
@@ -32,8 +34,8 @@ const meta = {
 ### Modal Component
 
 Compound-first native dialog with Root, Trigger, Overlay, Content, Header,
-Body, Footer, and Close parts. Use the shared Portal primitive for explicit
-stacking composition.
+Title, Description, Body, Footer, and Close parts. Use the shared Portal
+primitive for explicit stacking composition.
 
 **Features**
 
@@ -41,6 +43,7 @@ stacking composition.
 - Configurable animations: scale, slide, fade, or none
 - Controlled and uncontrolled open state
 - Trigger and Close composition through asChild
+- Overlay stack dismissal through the shared OverlayManager
 
 ### Usage
 
@@ -52,7 +55,10 @@ stacking composition.
 
     <Modal.Overlay>
       <Modal.Content>
-        <Modal.Header>Delete file</Modal.Header>
+        <Modal.Header>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </Modal.Header>
         <Modal.Body>
           <Text>Are you sure?</Text>
         </Modal.Body>
@@ -85,6 +91,20 @@ stacking composition.
       },
     },
     closeOnOutsidePress: {
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    closeOnEscape: {
+      control: 'boolean',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+      },
+    },
+    restoreFocus: {
       control: 'boolean',
       table: {
         type: { summary: 'boolean' },
@@ -150,7 +170,12 @@ function NativeModalDemo({
       </Modal.Trigger>
       <Modal.Overlay>
         <Modal.Content>
-          <Modal.Header>{title}</Modal.Header>
+          <Modal.Header>
+            <Modal.Title>{title}</Modal.Title>
+            <Modal.Description>
+              This action uses the native overlay stack and focus restore.
+            </Modal.Description>
+          </Modal.Header>
           <Modal.Body>
             <Text>Are you sure you want to continue?</Text>
           </Modal.Body>
@@ -183,7 +208,12 @@ function NativeFormModal() {
       </Modal.Trigger>
       <Modal.Overlay>
         <Modal.Content>
-          <Modal.Header>Workspace preferences</Modal.Header>
+          <Modal.Header>
+            <Modal.Title>Workspace preferences</Modal.Title>
+            <Modal.Description>
+              Update display density for this workspace.
+            </Modal.Description>
+          </Modal.Header>
           <Modal.Body>
             <View style={{ gap: 12 }}>
               <TextInput
@@ -231,7 +261,12 @@ export const Uncontrolled: Story = {
       </Modal.Trigger>
       <Modal.Overlay>
         <Modal.Content>
-          <Modal.Header>Uncontrolled modal</Modal.Header>
+          <Modal.Header>
+            <Modal.Title>Uncontrolled modal</Modal.Title>
+            <Modal.Description>
+              This modal starts from defaultOpen.
+            </Modal.Description>
+          </Modal.Header>
           <Modal.Body>
             <Text>This modal starts open from defaultOpen.</Text>
           </Modal.Body>

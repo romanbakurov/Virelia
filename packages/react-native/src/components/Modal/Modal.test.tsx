@@ -26,15 +26,18 @@ const toCssRgb = (hex: string) => {
 function NativeModal({
   open = true,
   onOpenChange = () => undefined,
+  closeOnEscape,
   closeOnOutsidePress,
 }: {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  closeOnEscape?: boolean;
   closeOnOutsidePress?: boolean;
 }) {
   return (
     <Modal
       open={open}
+      closeOnEscape={closeOnEscape}
       closeOnOutsidePress={closeOnOutsidePress}
       onOpenChange={onOpenChange}
     >
@@ -164,6 +167,33 @@ describe('Native Modal', () => {
     unmount();
   });
 
+  it('renders compound title and description in Header', () => {
+    const { container, unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Header>
+                <Modal.Title>Native modal title</Modal.Title>
+                <Modal.Description>Native modal description</Modal.Description>
+              </Modal.Header>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    expect(container.textContent).toContain('Native modal title');
+    expect(container.textContent).toContain('Native modal description');
+    expect(
+      container.querySelector<HTMLButtonElement>(
+        'button[aria-label="Close modal"]'
+      )
+    ).not.toBeNull();
+
+    unmount();
+  });
+
   it('calls onOpenChange when backdrop is pressed', () => {
     const onOpenChange = vi.fn();
     const { container, unmount } = render(
@@ -215,6 +245,35 @@ describe('Native Modal', () => {
     unmount();
   });
 
+  it('calls onOpenChange from Modal.Close asChild', () => {
+    const onOpenChange = vi.fn();
+    const { container, unmount } = render(
+      <Modal open onOpenChange={onOpenChange}>
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close asChild>
+                <Button>Dismiss</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const closeButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Dismiss');
+
+    act(() => {
+      closeButton?.click();
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    unmount();
+  });
+
   it('does not expose backdrop as close button when outside close is disabled', () => {
     const onOpenChange = vi.fn();
     const { container, unmount } = render(
@@ -231,6 +290,21 @@ describe('Native Modal', () => {
 
     act(() => {
       backdrop?.click();
+    });
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
+  it('does not close on Escape when escape close is disabled', () => {
+    const onOpenChange = vi.fn();
+    const { unmount } = render(
+      <NativeModal closeOnEscape={false} onOpenChange={onOpenChange} />
+    );
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     });
 
     expect(onOpenChange).not.toHaveBeenCalled();
@@ -282,6 +356,56 @@ describe('Native Modal', () => {
 
     expect(animationFrame).toHaveBeenCalled();
     expect(document.activeElement).toBe(trigger);
+
+    unmount();
+    animationFrame.mockRestore();
+  });
+
+  it('does not restore focus when restoreFocus is disabled', () => {
+    const animationFrame = vi
+      .spyOn(globalThis, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        callback(0);
+        return 1;
+      });
+
+    const { container, unmount } = render(
+      <Modal restoreFocus={false}>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const doneButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Done');
+
+    act(() => {
+      doneButton?.focus();
+      doneButton?.click();
+    });
+
+    expect(animationFrame).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(doneButton);
 
     unmount();
     animationFrame.mockRestore();

@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native';
 
 export type ModalCloseProps = {
+  asChild?: boolean;
   children?: ReactElement<{
     onPress?: PressableProps['onPress'];
     accessibilityLabel?: string;

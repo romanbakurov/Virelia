@@ -838,6 +838,7 @@ import { Button, Modal, Portal } from '@vellira-ui/react-native';
 | `animation`           | `ModalAnimation`          | No       | —                                    |
 | `duration`            | `ModalAnimationDuration`  | No       | —                                    |
 | `easing`              | `ModalAnimationEasing`    | No       | —                                    |
+| `restoreFocus`        | `boolean`                 | No       | —                                    |
 
 <!-- api-docgen:end native.ModalProps.ModalProps -->
 

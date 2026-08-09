@@ -6,8 +6,12 @@ export type { ModalContentProps } from './Content';
 export { ModalContent } from './Content';
 export type { ModalFooterProps } from './Footer';
 export { ModalFooter } from './Footer';
-export type { ModalHeaderProps } from './Header';
-export { ModalHeader } from './Header';
+export type {
+  ModalDescriptionProps,
+  ModalHeaderProps,
+  ModalTitleProps,
+} from './Header';
+export { ModalDescription, ModalHeader, ModalTitle } from './Header';
 export { Modal } from './Modal';
 export type { ModalOverlayProps } from './Overlay';
 export { ModalOverlay } from './Overlay';

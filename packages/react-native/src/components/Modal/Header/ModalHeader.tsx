@@ -12,10 +12,18 @@ export const ModalHeader = ({
   textStyle,
 }: ModalHeaderProps) => {
   const styles = useThemeStyles(createStyles);
+  const isPlainTitle =
+    typeof children === 'string' || typeof children === 'number';
 
   return (
     <View style={[styles.header, style]}>
-      <Text style={[styles.title, textStyle]}>{children}</Text>
+      {isPlainTitle ? (
+        <Text style={[styles.title, styles.plainTitle, textStyle]}>
+          {children}
+        </Text>
+      ) : (
+        <View style={styles.headerContent}>{children}</View>
+      )}
 
       <ModalClose />
     </View>
