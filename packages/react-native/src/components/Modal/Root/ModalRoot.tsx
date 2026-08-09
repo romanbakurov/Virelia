@@ -50,7 +50,9 @@ export const ModalRoot = ({
   animation = 'scale',
   duration,
   easing = 'standard',
+  closeOnEscape = true,
   closeOnOutsidePress = true,
+  restoreFocus = true,
   children,
 }: ModalProps) => {
   const initialOpen = open ?? defaultOpen;
@@ -63,11 +65,13 @@ export const ModalRoot = ({
     open,
     defaultOpen,
     onOpenChange,
+    closeOnEscape,
     closeOnOutsidePress,
   });
 
   const { restoreFocusAfterClose } = useOverlayFocusRestore({
     active: modal.open,
+    enabled: restoreFocus,
     triggerRef,
   });
 
@@ -86,6 +90,7 @@ export const ModalRoot = ({
   const dismiss = useOverlayDismiss({
     id: modal.contentId,
     active: modal.open,
+    closeOnEscape: modal.closeOnEscape,
     closeOnOutsidePress: modal.closeOnOutsidePress,
     requestClose: modal.requestClose,
   });

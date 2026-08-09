@@ -26,15 +26,18 @@ const toCssRgb = (hex: string) => {
 function NativeModal({
   open = true,
   onOpenChange = () => undefined,
+  closeOnEscape,
   closeOnOutsidePress,
 }: {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  closeOnEscape?: boolean;
   closeOnOutsidePress?: boolean;
 }) {
   return (
     <Modal
       open={open}
+      closeOnEscape={closeOnEscape}
       closeOnOutsidePress={closeOnOutsidePress}
       onOpenChange={onOpenChange}
     >
@@ -238,6 +241,21 @@ describe('Native Modal', () => {
     unmount();
   });
 
+  it('does not close on Escape when escape close is disabled', () => {
+    const onOpenChange = vi.fn();
+    const { unmount } = render(
+      <NativeModal closeOnEscape={false} onOpenChange={onOpenChange} />
+    );
+
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    unmount();
+  });
+
   it('restores focus to the trigger after Modal.Close', () => {
     const animationFrame = vi
       .spyOn(globalThis, 'requestAnimationFrame')
@@ -282,6 +300,56 @@ describe('Native Modal', () => {
 
     expect(animationFrame).toHaveBeenCalled();
     expect(document.activeElement).toBe(trigger);
+
+    unmount();
+    animationFrame.mockRestore();
+  });
+
+  it('does not restore focus when restoreFocus is disabled', () => {
+    const animationFrame = vi
+      .spyOn(globalThis, 'requestAnimationFrame')
+      .mockImplementation((callback) => {
+        callback(0);
+        return 1;
+      });
+
+    const { container, unmount } = render(
+      <Modal restoreFocus={false}>
+        <Modal.Trigger asChild>
+          <Button>Open modal</Button>
+        </Modal.Trigger>
+
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close>
+                <Button>Done</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const trigger = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Open modal');
+
+    act(() => {
+      trigger?.click();
+    });
+
+    const doneButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Done');
+
+    act(() => {
+      doneButton?.focus();
+      doneButton?.click();
+    });
+
+    expect(animationFrame).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(doneButton);
 
     unmount();
     animationFrame.mockRestore();
