@@ -17,10 +17,9 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
   const {
     animation,
     animationProgress,
-    closeOnOutsidePress,
     zIndex,
     onClose,
-    onOutsideClose,
+    getOutsidePressProps,
     shouldRender,
   } = useModalContext();
   const backdropStyle =
@@ -47,10 +46,8 @@ export const ModalOverlay = ({ children, overlayStyle }: ModalOverlayProps) => {
         <Animated.View style={[styles.backdrop, backdropStyle]}>
           <Pressable
             testID='modal-backdrop'
-            accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
-            accessibilityLabel={closeOnOutsidePress ? 'Close modal' : undefined}
+            {...getOutsidePressProps({ accessibilityLabel: 'Close modal' })}
             style={StyleSheet.absoluteFill}
-            onPress={closeOnOutsidePress ? onOutsideClose : undefined}
           />
         </Animated.View>
 

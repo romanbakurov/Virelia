@@ -1,4 +1,8 @@
-export type { OverlayDismissOptions } from './useOverlayDismiss';
+export type {
+  OverlayDismissOptions,
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from './useOverlayDismiss';
 export { useOverlayDismiss } from './useOverlayDismiss';
 export type { OverlayFocusRestoreOptions } from './useOverlayFocusRestore';
 export { useOverlayFocusRestore } from './useOverlayFocusRestore';

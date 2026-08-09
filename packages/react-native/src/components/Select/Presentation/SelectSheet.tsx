@@ -10,8 +10,7 @@ import type { SelectPresentationProps } from './types';
 export const SelectSheet = ({
   visible,
   onClose,
-  onOutsideClose,
-  dismissOnBackdropPress,
+  outsidePressProps,
   zIndex,
   contentStyle,
   children,
@@ -33,10 +32,7 @@ export const SelectSheet = ({
         ]}
         testID='select-content-root'
       >
-        <SelectBackdrop
-          onOutsideClose={onOutsideClose}
-          dismissOnBackdropPress={dismissOnBackdropPress}
-        />
+        <SelectBackdrop outsidePressProps={outsidePressProps} />
         <View
           style={[styles.content, styles.sheet, contentStyle]}
           testID='select-sheet'

@@ -114,7 +114,7 @@ export const TooltipRoot = ({
       hide,
       zIndex: dismiss.zIndex,
       requestClose: dismiss.requestClose,
-      requestOutsideClose: dismiss.requestOutsideClose,
+      getOutsidePressProps: dismiss.getOutsidePressProps,
       onFloatingLayout,
     }),
     [
@@ -122,8 +122,8 @@ export const TooltipRoot = ({
       contentId,
       disabled,
       dismiss.zIndex,
+      dismiss.getOutsidePressProps,
       dismiss.requestClose,
-      dismiss.requestOutsideClose,
       hide,
       open,
       resolvedPlacement,

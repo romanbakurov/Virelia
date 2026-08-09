@@ -157,10 +157,9 @@ export const ModalRoot = ({
       value={{
         animation,
         animationProgress: animationProgress.current,
-        closeOnOutsidePress: modal.closeOnOutsidePress,
         zIndex: dismiss.zIndex,
         onClose: dismiss.requestClose,
-        onOutsideClose: dismiss.requestOutsideClose,
+        getOutsidePressProps: dismiss.getOutsidePressProps,
         open: modal.open,
         setOpen: modal.setOpen,
         shouldRender,

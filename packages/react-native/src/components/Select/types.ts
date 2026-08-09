@@ -18,6 +18,8 @@ export type SelectItemProps = Omit<
   BaseSelectOption,
   'badge' | 'icon' | 'shortcut'
 > & {
+  asChild?: boolean;
+  children?: ReactNode;
   disabled?: boolean;
   icon?: ReactNode;
   badge?: ReactNode;
@@ -37,7 +39,7 @@ export type SelectItemBadgeProps = {
   children?: ReactNode;
 };
 
-export type SelectOption = SelectItemProps;
+export type SelectOption = Omit<SelectItemProps, 'asChild' | 'children'>;
 
 export type SelectIconElement = ReactElement<{
   color?: string;

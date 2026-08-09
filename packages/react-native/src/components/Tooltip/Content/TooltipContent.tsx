@@ -62,7 +62,12 @@ export const TooltipContent = ({
       animationType='fade'
       onRequestClose={tooltip.requestClose}
     >
-      <Pressable style={styles.overlay} onPress={tooltip.requestOutsideClose}>
+      <Pressable
+        {...tooltip.getOutsidePressProps({
+          accessibilityLabel: 'Close tooltip',
+        })}
+        style={styles.overlay}
+      >
         {bubble}
       </Pressable>
     </Modal>

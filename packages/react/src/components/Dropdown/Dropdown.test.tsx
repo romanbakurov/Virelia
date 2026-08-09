@@ -1,6 +1,7 @@
 import { act, memo } from 'react';
 
 import { waitFor } from '@testing-library/react';
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -138,6 +139,44 @@ describe('Dropdown', () => {
     unmount();
   });
 
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedItem = copyCompoundSlotMetadata(
+      Dropdown.Item,
+      (props: ComponentProps<typeof Dropdown.Item>) => (
+        <Dropdown.Item {...props} />
+      )
+    );
+    const WrappedDescription = copyCompoundSlotMetadata(
+      Dropdown.ItemDescription,
+      (props: ComponentProps<typeof Dropdown.ItemDescription>) => (
+        <Dropdown.ItemDescription {...props} />
+      )
+    );
+
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <WrappedItem>
+            Edit
+            <WrappedDescription>Update workspace details</WrappedDescription>
+          </WrappedItem>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => container.querySelector<HTMLButtonElement>('button')?.click());
+
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Edit'
+    );
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Update workspace details'
+    );
+
+    unmount();
+  });
+
   it('opens and selects the active item from keyboard', async () => {
     const { container, onDelete, unmount } = renderActions();
     const trigger = container.querySelector<HTMLButtonElement>('button');
@@ -189,6 +228,66 @@ describe('Dropdown', () => {
 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    unmount();
+  });
+
+  it('supports Item asChild and respects child preventDefault', () => {
+    const onEdit = vi.fn();
+    const onArchive = vi.fn();
+    const childClick = vi.fn();
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <Dropdown.Item asChild onSelect={onEdit}>
+            <button type='button' data-testid='edit-action'>
+              Custom edit
+            </button>
+          </Dropdown.Item>
+          <Dropdown.Item asChild onSelect={onArchive}>
+            <button
+              type='button'
+              data-testid='archive-action'
+              onClick={(event) => {
+                childClick();
+                event.preventDefault();
+              }}
+            >
+              Custom archive
+            </button>
+          </Dropdown.Item>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+    const trigger = container.querySelector<HTMLButtonElement>('button');
+
+    act(() => trigger?.click());
+
+    const edit = document.querySelector<HTMLButtonElement>(
+      '[data-testid="edit-action"]'
+    );
+    const archive = document.querySelector<HTMLButtonElement>(
+      '[data-testid="archive-action"]'
+    );
+
+    expect(edit?.getAttribute('role')).toBe('menuitem');
+    expect(edit?.tabIndex).toBe(0);
+
+    act(() => {
+      archive?.click();
+    });
+
+    expect(childClick).toHaveBeenCalledTimes(1);
+    expect(onArchive).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+    act(() => {
+      edit?.click();
+    });
+
+    expect(onEdit).toHaveBeenCalledTimes(1);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
 
     unmount();
   });

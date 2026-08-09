@@ -33,13 +33,12 @@ export const SelectContentSurface = () => {
     zIndex,
     position,
     onFloatingLayout,
-    dismissOnBackdropPress,
     contentStyle,
     matchTriggerWidth,
     triggerWidth,
     resolvedLabel,
     closeContent,
-    requestOutsideClose,
+    getOutsidePressProps,
     searchable,
     loading,
     filteredRows,
@@ -193,8 +192,9 @@ export const SelectContentSurface = () => {
       <SelectSheet
         visible={isOpen}
         onClose={closeContent}
-        onOutsideClose={requestOutsideClose}
-        dismissOnBackdropPress={dismissOnBackdropPress}
+        outsidePressProps={getOutsidePressProps({
+          accessibilityLabel: 'Dismiss select',
+        })}
         zIndex={zIndex}
         contentStyle={contentStyle}
       >
@@ -208,8 +208,9 @@ export const SelectContentSurface = () => {
       <SelectPopover
         visible={isOpen}
         onClose={closeContent}
-        onOutsideClose={requestOutsideClose}
-        dismissOnBackdropPress={dismissOnBackdropPress}
+        outsidePressProps={getOutsidePressProps({
+          accessibilityLabel: 'Dismiss select',
+        })}
         position={position}
         zIndex={zIndex}
         onFloatingLayout={onFloatingLayout}
@@ -226,8 +227,9 @@ export const SelectContentSurface = () => {
     <SelectModal
       visible={isOpen}
       onClose={closeContent}
-      onOutsideClose={requestOutsideClose}
-      dismissOnBackdropPress={dismissOnBackdropPress}
+      outsidePressProps={getOutsidePressProps({
+        accessibilityLabel: 'Dismiss select',
+      })}
       zIndex={zIndex}
       contentStyle={contentStyle}
     >

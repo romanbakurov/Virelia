@@ -1,5 +1,6 @@
 import { Children, isValidElement } from 'react';
 
+import { markCompoundSlot } from '@vellira-ui/core';
 import type { ReactElement, ReactNode } from 'react';
 
 import type {
@@ -27,6 +28,7 @@ import type {
   DropdownCollectionItem,
   DropdownParseContext,
   DropdownRenderEntry,
+  DropdownSlot,
   DropdownSlotComponent,
   ParsedDropdownChildren,
 } from './types';
@@ -37,11 +39,11 @@ type PortalElementType = {
 };
 
 export function createDropdownSlot<TProps extends object>(
-  name: NonNullable<DropdownSlotComponent<TProps>['__velliraDropdownPart']>,
+  name: DropdownSlot,
   displayName: string
 ) {
   const Slot: DropdownSlotComponent<TProps> = () => null;
-  Slot.__velliraDropdownPart = name;
+  markCompoundSlot(Slot, name);
   Slot.displayName = displayName;
   return Slot;
 }

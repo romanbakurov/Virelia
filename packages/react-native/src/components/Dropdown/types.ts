@@ -58,6 +58,7 @@ export interface DropdownSearchProps extends BaseDropdownSearchProps {
 
 export interface DropdownItemProps extends BaseDropdownItemProps {
   children: ReactNode;
+  asChild?: boolean;
   value?: string;
   icon?: ReactNode;
   textWrap?: TextWrap;

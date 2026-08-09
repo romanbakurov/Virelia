@@ -5,20 +5,10 @@ import { useThemeStyles } from '../../../theme';
 import { createPresentationStyles } from './SelectPresentation.styles';
 import type { SelectBackdropProps } from './types';
 
-export const SelectBackdrop = ({
-  onOutsideClose,
-  dismissOnBackdropPress,
-}: SelectBackdropProps) => {
+export const SelectBackdrop = ({ outsidePressProps }: SelectBackdropProps) => {
   const styles = useThemeStyles(createPresentationStyles);
 
-  return (
-    <Pressable
-      style={styles.backdrop}
-      onPress={dismissOnBackdropPress ? onOutsideClose : undefined}
-      accessibilityRole='button'
-      accessibilityLabel='Dismiss select'
-    />
-  );
+  return <Pressable {...outsidePressProps} style={styles.backdrop} />;
 };
 
 SelectBackdrop.displayName = 'Select.Backdrop';

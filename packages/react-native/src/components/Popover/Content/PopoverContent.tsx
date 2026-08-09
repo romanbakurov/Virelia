@@ -30,8 +30,7 @@ export function PopoverContent({
     onFloatingLayout,
     updatePosition,
     requestClose,
-    requestOutsideClose,
-    closeOnOutsidePress,
+    getOutsidePressProps,
   } = usePopoverContext('Popover.Content');
 
   useEffect(() => {
@@ -53,9 +52,7 @@ export function PopoverContent({
       >
         <Pressable
           testID='popover-backdrop'
-          accessibilityLabel={closeOnOutsidePress ? 'Close popover' : undefined}
-          accessibilityRole={closeOnOutsidePress ? 'button' : undefined}
-          onPress={closeOnOutsidePress ? requestOutsideClose : undefined}
+          {...getOutsidePressProps({ accessibilityLabel: 'Close popover' })}
           style={styles.backdrop}
         />
 

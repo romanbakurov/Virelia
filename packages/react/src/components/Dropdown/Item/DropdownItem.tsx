@@ -1,8 +1,17 @@
-import { useRef, useState } from 'react';
+import {
+  cloneElement,
+  isValidElement,
+  type MouseEvent,
+  type MouseEventHandler,
+  type ReactElement,
+  type ReactNode,
+  useRef,
+  useState,
+} from 'react';
 
 import { cn } from '@utils/cn';
+import { devWarning } from '@utils/devWarning';
 import { Check, ChevronRight } from '@vellira-ui/icons';
-import type { MouseEvent } from 'react';
 
 import {
   createDropdownSlot,
@@ -22,6 +31,23 @@ export const DropdownItem = createDropdownSlot<DropdownItemProps>(
 type DropdownItemRowProps = {
   item: DropdownCollectionItem;
   itemIndex: number;
+};
+
+type DropdownItemChildProps = {
+  'aria-checked'?: boolean;
+  'aria-disabled'?: boolean;
+  'aria-expanded'?: boolean;
+  'aria-haspopup'?: string;
+  'data-active'?: boolean;
+  'data-state'?: string;
+  children?: ReactNode;
+  className?: string;
+  id?: string;
+  onClick?: MouseEventHandler<HTMLElement>;
+  onMouseEnter?: MouseEventHandler<HTMLElement>;
+  onMouseLeave?: MouseEventHandler<HTMLElement>;
+  role?: string;
+  tabIndex?: number;
 };
 
 export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
@@ -69,6 +95,26 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
         : undefined;
   const Component = href ? 'a' : 'li';
   const hasIndicator = isCheckbox || isRadio;
+  const child =
+    props.asChild && isValidElement<DropdownItemChildProps>(props.children)
+      ? (props.children as ReactElement<DropdownItemChildProps>)
+      : undefined;
+  const itemClassName = cn(
+    styles.item,
+    styles[context.size],
+    {
+      [styles.active]: isActive,
+      [styles.disabled]: disabled,
+      [styles.checked]: isChecked,
+    },
+    itemColor && itemColor !== 'default' ? styles[itemColor] : undefined,
+    props.className
+  );
+
+  devWarning(
+    !props.asChild || Boolean(child),
+    'Dropdown.Item: asChild requires a single valid React element child.'
+  );
 
   const handleSelect = (event: MouseEvent<HTMLElement>) => {
     if (disabled) {
@@ -84,6 +130,71 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
 
     context.selectItem(item, createDropdownSelectEvent(event));
   };
+
+  const handleMouseEnter: MouseEventHandler<HTMLElement> = () => {
+    if (disabled) return;
+
+    context.setActiveIndex(itemIndex);
+
+    if (isSubTrigger) {
+      window.clearTimeout(subOpenTimerRef.current);
+      subOpenTimerRef.current = window.setTimeout(
+        () => context.setOpenSubId(item.id),
+        120
+      );
+    } else {
+      window.clearTimeout(subOpenTimerRef.current);
+      context.setOpenSubId(undefined);
+    }
+  };
+
+  const handleMouseLeave: MouseEventHandler<HTMLElement> = () => {
+    window.clearTimeout(subOpenTimerRef.current);
+  };
+
+  if (child) {
+    return (
+      <>
+        {cloneElement(child, {
+          id: itemId,
+          role,
+          tabIndex: disabled ? -1 : 0,
+          'aria-disabled': disabled || undefined,
+          'aria-checked': isCheckbox || isRadio ? isChecked : undefined,
+          'aria-haspopup': isSubTrigger ? 'menu' : undefined,
+          'aria-expanded': isSubTrigger ? isSubOpen : undefined,
+          'data-active': isActive || undefined,
+          'data-state': isSubOpen ? 'open' : undefined,
+          className: cn(child.props.className, itemClassName),
+          onClick: (event) => {
+            child.props.onClick?.(event);
+
+            if (!event.defaultPrevented) {
+              handleSelect(event);
+            }
+          },
+          onMouseEnter: (event) => {
+            child.props.onMouseEnter?.(event);
+
+            if (!event.defaultPrevented) {
+              handleMouseEnter(event);
+            }
+          },
+          onMouseLeave: (event) => {
+            child.props.onMouseLeave?.(event);
+
+            if (!event.defaultPrevented) {
+              handleMouseLeave(event);
+            }
+          },
+        })}
+
+        {renderSubMenu(item, itemId, isSubTrigger, isSubOpen, () =>
+          context.setOpenSubId(item.id)
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -101,37 +212,10 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
         aria-expanded={isSubTrigger ? isSubOpen : undefined}
         data-active={isActive || undefined}
         data-state={isSubOpen ? 'open' : undefined}
-        className={cn(
-          styles.item,
-          styles[context.size],
-          {
-            [styles.active]: isActive,
-            [styles.disabled]: disabled,
-            [styles.checked]: isChecked,
-          },
-          itemColor && itemColor !== 'default' ? styles[itemColor] : undefined,
-          props.className
-        )}
+        className={itemClassName}
         onClick={handleSelect}
-        onMouseEnter={() => {
-          if (disabled) return;
-
-          context.setActiveIndex(itemIndex);
-
-          if (isSubTrigger) {
-            window.clearTimeout(subOpenTimerRef.current);
-            subOpenTimerRef.current = window.setTimeout(
-              () => context.setOpenSubId(item.id),
-              120
-            );
-          } else {
-            window.clearTimeout(subOpenTimerRef.current);
-            context.setOpenSubId(undefined);
-          }
-        }}
-        onMouseLeave={() => {
-          window.clearTimeout(subOpenTimerRef.current);
-        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         {icon && <span className={styles.itemIcon}>{icon}</span>}
 
@@ -159,47 +243,8 @@ export const DropdownItemRow = ({ item, itemIndex }: DropdownItemRowProps) => {
         )}
       </Component>
 
-      {isSubTrigger && isSubOpen && item.subEntries.length > 0 && (
-        <ul
-          role='menu'
-          className={styles.subContent}
-          onMouseEnter={() => context.setOpenSubId(item.id)}
-        >
-          {item.subEntries.map((entry) => {
-            if (entry.type === 'label') {
-              return (
-                <li
-                  key={entry.id}
-                  role='presentation'
-                  className={styles.subLabel}
-                >
-                  {entry.props.children}
-                </li>
-              );
-            }
-
-            if (entry.type === 'separator') {
-              return (
-                <li
-                  key={entry.id}
-                  role='separator'
-                  className={styles.subSeparator}
-                  aria-hidden='true'
-                />
-              );
-            }
-
-            if (entry.type !== 'item') return null;
-
-            return (
-              <SubMenuItemRow
-                key={entry.item.id}
-                item={entry.item}
-                id={`${itemId}-${entry.itemIndex}`}
-              />
-            );
-          })}
-        </ul>
+      {renderSubMenu(item, itemId, isSubTrigger, isSubOpen, () =>
+        context.setOpenSubId(item.id)
       )}
     </>
   );
@@ -221,6 +266,52 @@ function createDropdownSelectEvent(
       return defaultPrevented;
     },
   };
+}
+
+function renderSubMenu(
+  item: DropdownCollectionItem,
+  itemId: string,
+  isSubTrigger: boolean,
+  isSubOpen: boolean,
+  onMouseEnter: () => void
+) {
+  if (!isSubTrigger || !isSubOpen || item.type !== 'subTrigger') return null;
+  if (item.subEntries.length === 0) return null;
+
+  return (
+    <ul role='menu' className={styles.subContent} onMouseEnter={onMouseEnter}>
+      {item.subEntries.map((entry) => {
+        if (entry.type === 'label') {
+          return (
+            <li key={entry.id} role='presentation' className={styles.subLabel}>
+              {entry.props.children}
+            </li>
+          );
+        }
+
+        if (entry.type === 'separator') {
+          return (
+            <li
+              key={entry.id}
+              role='separator'
+              className={styles.subSeparator}
+              aria-hidden='true'
+            />
+          );
+        }
+
+        if (entry.type !== 'item') return null;
+
+        return (
+          <SubMenuItemRow
+            key={entry.item.id}
+            item={entry.item}
+            id={`${itemId}-${entry.itemIndex}`}
+          />
+        );
+      })}
+    </ul>
+  );
 }
 
 function SubMenuItemRow({

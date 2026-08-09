@@ -6,9 +6,13 @@ import type {
 import type { MutableRefObject } from 'react';
 import type { LayoutChangeEvent, View, ViewStyle } from 'react-native';
 
+import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
+
 export interface PopoverContextValue {
   open: boolean;
-  closeOnOutsidePress: boolean;
 
   triggerRef: MutableRefObject<View | null>;
   anchorRef: MutableRefObject<View | null>;
@@ -27,5 +31,7 @@ export interface PopoverContextValue {
   setOpen: (open: boolean, details: PopoverOpenChangeDetails) => void;
 
   requestClose: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
 }

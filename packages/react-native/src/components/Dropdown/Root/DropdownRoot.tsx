@@ -197,6 +197,7 @@ export function DropdownRoot({
 
       return (
         <DropdownItem
+          asChild={item.props.asChild}
           label={item.props.children}
           value={item.props.value ?? item.id}
           color={item.props.color}
@@ -204,7 +205,9 @@ export function DropdownRoot({
           disabled={item.props.disabled}
           textWrap={item.props.textWrap}
           onSelect={() => handleSelect(item)}
-        />
+        >
+          {item.props.children}
+        </DropdownItem>
       );
     },
     [handleSelect, styles.emptyText]
@@ -237,7 +240,7 @@ export function DropdownRoot({
       textStyle,
 
       requestClose: dismiss.requestClose,
-      requestOutsideClose: dismiss.requestOutsideClose,
+      getOutsidePressProps: dismiss.getOutsidePressProps,
       toggle: handleTriggerPress,
       onSearchChange: handleSearchChange,
       onFloatingLayout,
@@ -247,8 +250,8 @@ export function DropdownRoot({
       contentPresentation,
       disabled,
       dismiss.zIndex,
+      dismiss.getOutsidePressProps,
       dismiss.requestClose,
-      dismiss.requestOutsideClose,
       handleSearchChange,
       handleTriggerPress,
       isOpen,

@@ -2,9 +2,17 @@ import { cloneElement, isValidElement, useState } from 'react';
 
 import { Check } from '@vellira-ui/icons';
 import type { ReactElement, ReactNode } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import {
+  type GestureResponderEvent,
+  Pressable,
+  type StyleProp,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../../theme';
+import { devWarning } from '../../../utils/devWarning';
 import { createSelectSlot } from '../internal/SelectCollection';
 import { useSelectContext } from '../internal/SelectContext';
 import type { SelectItemProps } from '../types';
@@ -35,6 +43,22 @@ export const SelectItem = createSelectSlot<SelectItemProps>(
   'Select.Item'
 );
 
+type SelectItemChildProps = {
+  accessibilityHint?: string;
+  accessibilityLabel?: string;
+  accessibilityRole?: string;
+  accessibilityState?: {
+    selected?: boolean;
+    disabled?: boolean;
+  };
+  children?: ReactNode;
+  disabled?: boolean;
+  onHoverIn?: () => void;
+  onHoverOut?: () => void;
+  onPress?: (event: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle>;
+};
+
 export const SelectItemRow = ({
   option,
   isSelected,
@@ -49,6 +73,10 @@ export const SelectItemRow = ({
   const styles = useThemeStyles(createItemStyles);
   const { color, variant, renderOption } = useSelectContext();
   const [isHovered, setIsHovered] = useState(false);
+  const child =
+    option.asChild && isValidElement<SelectItemChildProps>(option.children)
+      ? (option.children as ReactElement<SelectItemChildProps>)
+      : undefined;
   const optionPalette =
     theme.components.select[option.color ?? color][variant].option;
   const getOptionState = (pressed: boolean) => {
@@ -67,6 +95,53 @@ export const SelectItemRow = ({
         ? optionPalette.hover
         : theme.components.select.option.default;
   };
+  const getOptionStyle = (pressed: boolean) => {
+    const optionState = getOptionState(pressed);
+
+    return [
+      styles.option,
+      {
+        backgroundColor: optionState.bg,
+        borderColor: optionState.border,
+      },
+      isDisabled && styles.optionDisabled,
+      optionStyle,
+    ];
+  };
+
+  devWarning(
+    !option.asChild || Boolean(child),
+    'Select.Item: asChild requires a single valid React element child.'
+  );
+
+  if (child) {
+    return cloneElement(child, {
+      accessibilityRole: 'button',
+      accessibilityLabel: option.accessibilityLabel ?? option.label,
+      accessibilityHint: option.accessibilityHint,
+      accessibilityState: {
+        selected: isSelected,
+        disabled: isDisabled,
+      },
+      disabled: isDisabled,
+      onPress: (event) => {
+        child.props.onPress?.(event);
+
+        if (!event.defaultPrevented && !isDisabled) {
+          onSelect(option);
+        }
+      },
+      onHoverIn: () => {
+        child.props.onHoverIn?.();
+        setIsHovered(true);
+      },
+      onHoverOut: () => {
+        child.props.onHoverOut?.();
+        setIsHovered(false);
+      },
+      style: [getOptionStyle(false), child.props.style],
+    });
+  }
 
   return (
     <Pressable
@@ -81,19 +156,7 @@ export const SelectItemRow = ({
       onPress={() => onSelect(option)}
       onHoverIn={() => setIsHovered(true)}
       onHoverOut={() => setIsHovered(false)}
-      style={({ pressed }) => {
-        const optionState = getOptionState(pressed);
-
-        return [
-          styles.option,
-          {
-            backgroundColor: optionState.bg,
-            borderColor: optionState.border,
-          },
-          isDisabled && styles.optionDisabled,
-          optionStyle,
-        ];
-      }}
+      style={({ pressed }) => getOptionStyle(pressed)}
     >
       {({ pressed }) => {
         const optionState = getOptionState(pressed);

@@ -63,6 +63,7 @@ export type DropdownArrowProps = {
 
 export type DropdownItemProps = BaseDropdownItemProps & {
   children: ReactNode;
+  asChild?: boolean;
   icon?: ReactNode;
   description?: ReactNode;
   badge?: ReactNode;
@@ -76,6 +77,7 @@ export type DropdownItemProps = BaseDropdownItemProps & {
 };
 
 export type DropdownCheckboxItemProps = BaseDropdownSelectableItemProps & {
+  asChild?: boolean;
   checked?: boolean;
   defaultChecked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -94,6 +96,7 @@ export type DropdownRadioGroupProps = {
 
 export type DropdownRadioItemProps = BaseDropdownSelectableItemProps & {
   children: ReactNode;
+  asChild?: boolean;
   value: string;
   icon?: ReactNode;
   shortcut?: ReactNode;

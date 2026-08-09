@@ -39,7 +39,7 @@ export function DropdownContent({
     searchPlaceholder,
     searchAccessibilityLabel,
     requestClose,
-    requestOutsideClose,
+    getOutsidePressProps,
     onSearchChange,
     onFloatingLayout,
   } = useDropdownContext();
@@ -134,10 +134,8 @@ export function DropdownContent({
           ]}
         >
           <Pressable
-            accessibilityRole='button'
-            accessibilityLabel='Close menu'
+            {...getOutsidePressProps({ accessibilityLabel: 'Close menu' })}
             style={StyleSheet.absoluteFill}
-            onPress={requestOutsideClose}
           />
         </Animated.View>
 

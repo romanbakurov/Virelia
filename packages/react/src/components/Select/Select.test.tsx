@@ -1,7 +1,8 @@
 import { act, memo } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import type { ReactNode } from 'react';
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
+import type { ComponentProps, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { FormField } from '../../patterns/FormField';
@@ -364,6 +365,45 @@ describe('Select', () => {
     });
 
     expect(onValueChange).toHaveBeenCalledWith('fr');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedItem = copyCompoundSlotMetadata(
+      Select.Item,
+      (props: ComponentProps<typeof Select.Item>) => <Select.Item {...props} />
+    );
+    const WrappedDescription = copyCompoundSlotMetadata(
+      Select.ItemDescription,
+      (props: ComponentProps<typeof Select.ItemDescription>) => (
+        <Select.ItemDescription {...props} />
+      )
+    );
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultOpen>
+          <Select.Content>
+            <WrappedItem value='fr'>
+              France
+              <WrappedDescription>Paris</WrappedDescription>
+            </WrappedItem>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    const option = document.getElementById('country-listbox-option-0');
+
+    expect(option?.textContent).toContain('France');
+    expect(option?.textContent).toContain('Paris');
 
     act(() => {
       root.unmount();
@@ -780,6 +820,74 @@ describe('Select', () => {
 
     expect(onValueChange).toHaveBeenCalledWith('de');
     expect(trigger?.getAttribute('aria-expanded')).toBe('false');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('supports Item asChild and respects child preventDefault', () => {
+    const onValueChange = vi.fn();
+    const childClick = vi.fn();
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select
+          id='country'
+          name='country'
+          label='Country'
+          defaultOpen
+          onValueChange={onValueChange}
+        >
+          <Select.Item value='fr' label='France' asChild>
+            <button type='button' data-testid='fr-option'>
+              France custom
+            </button>
+          </Select.Item>
+          <Select.Item value='de' label='Germany' asChild>
+            <button
+              type='button'
+              data-testid='de-option'
+              onClick={(event) => {
+                childClick();
+                event.preventDefault();
+              }}
+            >
+              Germany custom
+            </button>
+          </Select.Item>
+        </Select>
+      );
+    });
+
+    const france = document.querySelector<HTMLButtonElement>(
+      '[data-testid="fr-option"]'
+    );
+    const germany = document.querySelector<HTMLButtonElement>(
+      '[data-testid="de-option"]'
+    );
+
+    expect(france?.getAttribute('role')).toBe('option');
+    expect(france?.id).toBe('country-listbox-option-0');
+
+    act(() => {
+      germany?.click();
+    });
+
+    expect(childClick).toHaveBeenCalledTimes(1);
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(document.querySelector('[role="listbox"]')).not.toBeNull();
+
+    act(() => {
+      france?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('fr');
+    expect(new FormData(form).get('country')).toBe('fr');
 
     act(() => {
       root.unmount();

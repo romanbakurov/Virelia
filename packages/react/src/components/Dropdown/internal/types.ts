@@ -1,7 +1,7 @@
 import type { PortalProps } from '@primitives/Portal';
+import { getCompoundSlot } from '@vellira-ui/core';
 import type { ReactElement, ReactNode } from 'react';
 
-import { resolveCompoundSlotPart } from '../../internal/compoundSlots';
 import type {
   DropdownArrowProps,
   DropdownCheckboxItemProps,
@@ -42,12 +42,11 @@ export type DropdownSlot =
   | 'trigger';
 
 export type DropdownSlotComponent<P> = ((props: P) => ReactElement | null) & {
-  __velliraDropdownPart?: DropdownSlot;
   displayName?: string;
 };
 
 export function getDropdownSlotPart(type: unknown): DropdownSlot | undefined {
-  return resolveCompoundSlotPart<DropdownSlot>(type, '__velliraDropdownPart');
+  return getCompoundSlot<DropdownSlot>(type);
 }
 
 export type DropdownCollectionItem =

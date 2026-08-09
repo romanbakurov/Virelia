@@ -7,9 +7,8 @@ import type { SelectItemProps } from '../Item/types';
 import type { SelectItemBadgeProps } from '../ItemBadge';
 import type { SelectItemDescriptionProps } from '../ItemDescription';
 import type { SelectItemIconProps } from '../ItemIcon';
-import type { SelectOption } from '../types';
 
-import type { SelectRenderEntry } from './types';
+import type { SelectCollectionOption, SelectRenderEntry } from './types';
 import { getSelectSlotPart } from './types';
 
 export function collectSelectOptions(children: ReactNode) {
@@ -18,10 +17,10 @@ export function collectSelectOptions(children: ReactNode) {
 
 export function collectSelectStructure(children: ReactNode): {
   entries: SelectRenderEntry[];
-  options: SelectOption[];
+  options: SelectCollectionOption[];
 } {
   const entries: SelectRenderEntry[] = [];
-  const options: SelectOption[] = [];
+  const options: SelectCollectionOption[] = [];
   let generatedEntryId = 0;
 
   function visit(node: ReactNode) {
@@ -52,6 +51,8 @@ export function collectSelectStructure(children: ReactNode): {
         const label = props.label ?? itemChildren.label;
         const optionIndex = options.length;
         const option = {
+          asChild: props.asChild,
+          children: props.children,
           label,
           value: props.value,
           disabled: props.disabled,

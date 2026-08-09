@@ -1,6 +1,11 @@
+import type { CompoundSlotComponent } from '@vellira-ui/core';
 import type { ReactNode, RefObject } from 'react';
 import type { LayoutChangeEvent, TextInput } from 'react-native';
 
+import type {
+  OverlayOutsidePressProps,
+  OverlayOutsidePressPropsOptions,
+} from '../../../hooks';
 import type { SelectOption, SelectPresentation, SelectProps } from '../types';
 
 export type SelectSlot =
@@ -19,8 +24,14 @@ export type SelectSlot =
   | 'empty'
   | 'loading';
 
-export type SelectSlotComponent = {
-  [selectSlotName]?: SelectSlot;
+export type SelectSlotComponent<TComponent = unknown> = CompoundSlotComponent<
+  TComponent,
+  SelectSlot
+>;
+
+export type SelectCollectionOption = SelectOption & {
+  asChild?: boolean;
+  children?: ReactNode;
 };
 
 export type SelectCollectionRow =
@@ -33,10 +44,10 @@ export type SelectCollectionRow =
       itemValues: string[];
     }
   | { type: 'separator'; key: string }
-  | { type: 'item'; key: string; option: SelectOption };
+  | { type: 'item'; key: string; option: SelectCollectionOption };
 
 export type ParsedSelectChildren = {
-  options: SelectOption[];
+  options: SelectCollectionOption[];
   rows: SelectCollectionRow[];
   searchable: boolean;
   searchPlaceholder?: string;
@@ -57,8 +68,6 @@ export type ResolveSelectAccessibilityParams = {
   fieldDescribedBy?: string;
 };
 
-export const selectSlotName = Symbol('VelliraNativeSelectSlot');
-
 export type SelectContextValue = {
   color: NonNullable<SelectProps['color']>;
   variant: NonNullable<SelectProps['variant']>;
@@ -76,7 +85,6 @@ export type SelectContextValue = {
     left: number;
   };
   onFloatingLayout: (event: LayoutChangeEvent) => void;
-  dismissOnBackdropPress: boolean;
   matchTriggerWidth: boolean;
   triggerWidth?: number;
   selectedValues: string[];
@@ -91,7 +99,9 @@ export type SelectContextValue = {
   empty: ReactNode;
   loadingContent: ReactNode;
   closeContent: () => void;
-  requestOutsideClose: () => void;
+  getOutsidePressProps: (
+    options?: OverlayOutsidePressPropsOptions
+  ) => OverlayOutsidePressProps;
   selectOption: (option: SelectOption) => void;
   selectGroup: (values: string[]) => void;
   setQuery: (query: string) => void;
