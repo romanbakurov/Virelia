@@ -1,16 +1,16 @@
-import { BackToTop } from '@/components/BackToTop';
-import { Hero } from '@/sections/Hero';
-import { PlatformParity } from '@/sections/PlatformParity';
-import { CodeShowcase } from '@/sections/CodeShowcase';
-import { ComponentShowcase } from '@/sections/ComponentShowcase';
-import { ProductInterfaceDemo } from '@/sections/ProductInterfaceDemo';
-import { ThemeStudio } from '@/sections/ThemeStudio';
-import { ProductionWorkflow } from '@/sections/ProductionWorkflow';
-import { QuickStart } from '@/sections/QuickStart';
-import { SocialProof } from '@/sections/SocialProof';
-import { Pro } from '@/sections/Pro';
-import { Roadmap } from '@/sections/Roadmap';
-import { FinalCta } from '@/sections/FinalCta';
+import { BackToTop } from '@/components/navigation/BackToTop';
+import { CodeShowcase } from '@/sections/home/CodeShowcase';
+import { ComponentShowcase } from '@/sections/home/ComponentShowcase';
+import { FinalCta } from '@/sections/home/FinalCta';
+import { Hero } from '@/sections/home/Hero';
+import { PlatformParity } from '@/sections/home/PlatformParity';
+import { Pro } from '@/sections/home/Pro';
+import { ProductInterfaceDemo } from '@/sections/home/ProductInterfaceDemo';
+import { ProductionWorkflow } from '@/sections/home/ProductionWorkflow';
+import { QuickStart } from '@/sections/home/QuickStart';
+import { Roadmap } from '@/sections/home/Roadmap';
+import { SocialProof } from '@/sections/home/SocialProof';
+import { ThemeStudio } from '@/sections/home/ThemeStudio';
 
 export default function HomePage() {
   return (
