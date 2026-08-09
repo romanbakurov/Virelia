@@ -1,6 +1,7 @@
 import { act } from 'react';
 
-import type { ReactNode } from 'react';
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
+import type { ComponentProps, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as managers from '../../managers';
@@ -103,6 +104,38 @@ describe('Native Dropdown', () => {
 
     expect(onSelect).toHaveBeenCalledTimes(1);
     expect(container.textContent).not.toContain('Edit');
+
+    unmount();
+  });
+
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedContent = copyCompoundSlotMetadata(
+      Dropdown.Content,
+      (props: ComponentProps<typeof Dropdown.Content>) => (
+        <Dropdown.Content {...props} />
+      )
+    );
+    const WrappedItem = copyCompoundSlotMetadata(
+      Dropdown.Item,
+      (props: ComponentProps<typeof Dropdown.Item>) => (
+        <Dropdown.Item {...props} />
+      )
+    );
+
+    const { container, unmount } = render(
+      <Dropdown label='Actions'>
+        <WrappedContent>
+          <WrappedItem value='edit'>Edit</WrappedItem>
+        </WrappedContent>
+      </Dropdown>
+    );
+
+    act(() =>
+      container.querySelector<HTMLButtonElement>('[role="button"]')?.click()
+    );
+
+    expect(container.textContent).toContain('Edit');
+    expect(container.querySelector('[role="menuitem"]')).not.toBeNull();
 
     unmount();
   });

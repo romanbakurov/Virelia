@@ -1,3 +1,4 @@
+import type { CompoundSlotComponent } from '@vellira-ui/core';
 import type { ReactNode, RefObject } from 'react';
 import type { LayoutChangeEvent, TextInput } from 'react-native';
 
@@ -23,9 +24,10 @@ export type SelectSlot =
   | 'empty'
   | 'loading';
 
-export type SelectSlotComponent = {
-  [selectSlotName]?: SelectSlot;
-};
+export type SelectSlotComponent<TComponent = unknown> = CompoundSlotComponent<
+  TComponent,
+  SelectSlot
+>;
 
 export type SelectCollectionRow =
   | {
@@ -60,8 +62,6 @@ export type ResolveSelectAccessibilityParams = {
   hasFieldContext: boolean;
   fieldDescribedBy?: string;
 };
-
-export const selectSlotName = Symbol('VelliraNativeSelectSlot');
 
 export type SelectContextValue = {
   color: NonNullable<SelectProps['color']>;

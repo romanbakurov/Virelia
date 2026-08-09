@@ -1,6 +1,6 @@
+import { getCompoundSlot, markCompoundSlot } from '@vellira-ui/core';
 import type { ReactElement, ReactNode } from 'react';
 
-import { resolveCompoundSlotPart } from '../../internal/compoundSlots';
 import type { SelectOption } from '../types';
 
 export type SelectSlot =
@@ -20,7 +20,6 @@ export type SelectSlot =
   | 'value';
 
 export type SelectSlotComponent<P> = ((props: P) => ReactElement | null) & {
-  __velliraSelectPart?: SelectSlot;
   displayName?: string;
 };
 
@@ -28,13 +27,11 @@ export function markSelectSlot<P>(
   component: SelectSlotComponent<P>,
   part: SelectSlot
 ) {
-  component.__velliraSelectPart = part;
-
-  return component;
+  return markCompoundSlot(component, part);
 }
 
 export function getSelectSlotPart(type: unknown): SelectSlot | undefined {
-  return resolveCompoundSlotPart<SelectSlot>(type, '__velliraSelectPart');
+  return getCompoundSlot<SelectSlot>(type);
 }
 
 export type SelectRenderEntry =

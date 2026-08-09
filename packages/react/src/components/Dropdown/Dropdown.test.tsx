@@ -1,6 +1,7 @@
 import { act, memo } from 'react';
 
 import { waitFor } from '@testing-library/react';
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -128,6 +129,44 @@ describe('Dropdown', () => {
     act(() => container.querySelector<HTMLButtonElement>('button')?.click());
 
     expect(document.querySelector('[role="menu"]')).not.toBeNull();
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Edit'
+    );
+    expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
+      'Update workspace details'
+    );
+
+    unmount();
+  });
+
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedItem = copyCompoundSlotMetadata(
+      Dropdown.Item,
+      (props: ComponentProps<typeof Dropdown.Item>) => (
+        <Dropdown.Item {...props} />
+      )
+    );
+    const WrappedDescription = copyCompoundSlotMetadata(
+      Dropdown.ItemDescription,
+      (props: ComponentProps<typeof Dropdown.ItemDescription>) => (
+        <Dropdown.ItemDescription {...props} />
+      )
+    );
+
+    const { container, unmount } = render(
+      <Dropdown>
+        <Dropdown.Trigger>Actions</Dropdown.Trigger>
+        <Dropdown.Content>
+          <WrappedItem>
+            Edit
+            <WrappedDescription>Update workspace details</WrappedDescription>
+          </WrappedItem>
+        </Dropdown.Content>
+      </Dropdown>
+    );
+
+    act(() => container.querySelector<HTMLButtonElement>('button')?.click());
+
     expect(document.querySelector('[role="menuitem"]')?.textContent).toContain(
       'Edit'
     );

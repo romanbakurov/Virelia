@@ -1,6 +1,7 @@
 import { cloneElement, isValidElement } from 'react';
 
 import { cn } from '@utils/cn';
+import { markCompoundSlot } from '@vellira-ui/core';
 import { ChevronDown } from '@vellira-ui/icons';
 import type {
   HTMLAttributes,
@@ -32,7 +33,7 @@ export const DropdownTrigger: DropdownSlotComponent<DropdownTriggerProps> = (
   props
 ) => <DropdownTriggerSurface {...props} />;
 
-DropdownTrigger.__velliraDropdownPart = 'trigger';
+markCompoundSlot(DropdownTrigger, 'trigger');
 DropdownTrigger.displayName = 'Dropdown.Trigger';
 
 export const DropdownTriggerSurface = ({

@@ -1,7 +1,8 @@
 import { act, memo } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import type { ReactNode } from 'react';
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
+import type { ComponentProps, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { FormField } from '../../patterns/FormField';
@@ -364,6 +365,45 @@ describe('Select', () => {
     });
 
     expect(onValueChange).toHaveBeenCalledWith('fr');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedItem = copyCompoundSlotMetadata(
+      Select.Item,
+      (props: ComponentProps<typeof Select.Item>) => <Select.Item {...props} />
+    );
+    const WrappedDescription = copyCompoundSlotMetadata(
+      Select.ItemDescription,
+      (props: ComponentProps<typeof Select.ItemDescription>) => (
+        <Select.ItemDescription {...props} />
+      )
+    );
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(
+        <Select id='country' label='Country' defaultOpen>
+          <Select.Content>
+            <WrappedItem value='fr'>
+              France
+              <WrappedDescription>Paris</WrappedDescription>
+            </WrappedItem>
+          </Select.Content>
+        </Select>
+      );
+    });
+
+    const option = document.getElementById('country-listbox-option-0');
+
+    expect(option?.textContent).toContain('France');
+    expect(option?.textContent).toContain('Paris');
 
     act(() => {
       root.unmount();

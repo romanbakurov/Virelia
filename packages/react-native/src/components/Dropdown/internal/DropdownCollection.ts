@@ -1,5 +1,6 @@
 import { Children, isValidElement } from 'react';
 
+import { getCompoundSlot, markCompoundSlot } from '@vellira-ui/core';
 import type { ReactNode } from 'react';
 
 import type {
@@ -19,18 +20,19 @@ import type {
   ParsedNativeDropdownChildren,
 } from './types';
 
+type DropdownSlot =
+  | 'trigger'
+  | 'content'
+  | 'group'
+  | 'label'
+  | 'separator'
+  | 'item'
+  | 'empty'
+  | 'loading'
+  | 'search';
+
 type DropdownSlotComponent<TProps extends object> = {
   (props: TProps): null;
-  __velliraDropdownPart?:
-    | 'trigger'
-    | 'content'
-    | 'group'
-    | 'label'
-    | 'separator'
-    | 'item'
-    | 'empty'
-    | 'loading'
-    | 'search';
   displayName?: string;
 };
 
@@ -39,11 +41,11 @@ type PortalElementType = {
 };
 
 export function createDropdownSlot<TProps extends object>(
-  name: NonNullable<DropdownSlotComponent<TProps>['__velliraDropdownPart']>,
+  name: DropdownSlot,
   displayName: string
 ) {
   const Slot: DropdownSlotComponent<TProps> = () => null;
-  Slot.__velliraDropdownPart = name;
+  markCompoundSlot(Slot, name);
   Slot.displayName = displayName;
   return Slot;
 }
@@ -79,13 +81,14 @@ export function parseDropdownChildren(
       if (!isValidElement(child)) return;
 
       const type = child.type as DropdownSlotComponent<object>;
+      const slot = getCompoundSlot<DropdownSlot>(type);
 
       if ((type as PortalElementType).__velliraPortal) {
         visit((child.props as { children?: ReactNode }).children);
         return;
       }
 
-      switch (type.__velliraDropdownPart) {
+      switch (slot) {
         case 'trigger':
           triggerProps = child.props as DropdownTriggerProps;
           trigger = triggerProps.children;

@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps } from 'react';
 import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -697,6 +698,34 @@ describe('Native Select', () => {
     expect(document.body.textContent).toContain('FR');
     expect(document.body.textContent).toContain('EU');
     expect(document.body.textContent).toContain('Spain');
+
+    unmount();
+  });
+
+  it('recognizes copied compound slot metadata on wrapper components', () => {
+    const WrappedContent = copyCompoundSlotMetadata(
+      Select.Content,
+      (props: ComponentProps<typeof Select.Content>) => (
+        <Select.Content {...props} />
+      )
+    );
+    const WrappedItem = copyCompoundSlotMetadata(
+      Select.Item,
+      (props: ComponentProps<typeof Select.Item>) => <Select.Item {...props} />
+    );
+
+    const { container, unmount } = render(
+      <Select label='Country'>
+        <WrappedContent>
+          <WrappedItem value='fr' label='France' description='Paris' />
+        </WrappedContent>
+      </Select>
+    );
+
+    openSelect(container);
+
+    expect(document.body.textContent).toContain('France');
+    expect(document.body.textContent).toContain('Paris');
 
     unmount();
   });

@@ -1,5 +1,6 @@
 import { Children, isValidElement } from 'react';
 
+import { getCompoundSlot, markCompoundSlot } from '@vellira-ui/core';
 import type { ReactNode } from 'react';
 
 import type {
@@ -16,22 +17,20 @@ import type {
   ParsedSelectChildren,
   SelectCollectionRow,
   SelectSlot,
-  SelectSlotComponent,
 } from './types';
-import { selectSlotName } from './types';
 
 export const createSelectSlot = <TProps extends object>(
   name: SelectSlot,
   displayName: string
 ) => {
   const Slot = (_props: TProps) => null;
-  (Slot as SelectSlotComponent)[selectSlotName] = name;
+  markCompoundSlot(Slot, name);
   Slot.displayName = displayName;
   return Slot;
 };
 
 export const getSelectSlot = (type: unknown) =>
-  (type as SelectSlotComponent)?.[selectSlotName];
+  getCompoundSlot<SelectSlot>(type);
 
 export const defaultSelectFilter = (option: SelectItemProps, query: string) =>
   option.label.toLowerCase().includes(query.trim().toLowerCase());
