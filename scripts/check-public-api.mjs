@@ -48,6 +48,7 @@ const publicSymbolContracts = {
     'createOverlayManagerStore',
     'createOverlayStack',
     'createOverlayZIndexPolicy',
+    'createRetainedResourceRegistry',
     'focusFirstElement',
     'focusableSelector',
     'getFocusableElements',
@@ -58,6 +59,8 @@ const publicSymbolContracts = {
     'OverlayManagerStoreEntry',
     'OverlayManagerStoreRegistration',
     'OverlayManagerStoreSnapshot',
+    'RetainedResourceDetach',
+    'RetainedResourceRegistry',
     'resolveOverlayZIndex',
   ],
   'packages/icons/src/native.ts': [

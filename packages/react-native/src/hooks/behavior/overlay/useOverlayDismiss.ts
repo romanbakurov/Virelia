@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { createRetainedResourceRegistry } from '@vellira-ui/core';
 import type { PressableProps } from 'react-native';
 import { BackHandler, Platform } from 'react-native';
 
@@ -28,65 +29,34 @@ export type OverlayOutsidePressPropsOptions = {
   accessibilityLabel?: string;
 };
 
-const dismissListeners = new Map<
-  NativeOverlayManager,
-  { count: number; detach: () => void }
->();
+const dismissListeners = createRetainedResourceRegistry<NativeOverlayManager>(
+  (manager) => {
+    if (Platform.OS === 'web') {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key !== 'Escape') return;
 
-function attachDismissListener(manager: NativeOverlayManager) {
-  if (dismissListeners.has(manager)) return;
+        manager.dispatchTopDismiss();
+      };
 
-  if (Platform.OS === 'web') {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
+      document.addEventListener('keydown', handleKeyDown);
 
-      manager.dispatchTopDismiss();
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    dismissListeners.set(manager, {
-      count: 0,
-      detach: () => {
+      return () => {
         document.removeEventListener('keydown', handleKeyDown);
-        dismissListeners.delete(manager);
-      },
-    });
+      };
+    }
 
-    return;
-  }
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
+      manager.dispatchTopDismiss()
+    );
 
-  const subscription = BackHandler.addEventListener('hardwareBackPress', () =>
-    manager.dispatchTopDismiss()
-  );
-
-  dismissListeners.set(manager, {
-    count: 0,
-    detach: () => {
+    return () => {
       subscription.remove();
-      dismissListeners.delete(manager);
-    },
-  });
-}
+    };
+  }
+);
 
 function retainDismissListener(manager: NativeOverlayManager) {
-  attachDismissListener(manager);
-
-  const retained = dismissListeners.get(manager);
-  if (!retained) return () => undefined;
-
-  retained.count += 1;
-
-  return () => {
-    const current = dismissListeners.get(manager);
-    if (!current) return;
-
-    current.count = Math.max(0, current.count - 1);
-
-    if (current.count > 0) return;
-
-    current.detach();
-  };
+  return dismissListeners.retain(manager);
 }
 
 export const useOverlayDismiss = ({
