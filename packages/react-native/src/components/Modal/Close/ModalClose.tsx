@@ -10,6 +10,7 @@ import { useModalContext } from '../internal/ModalContext';
 import type { ModalCloseProps } from './types';
 
 export const ModalClose = ({
+  asChild = false,
   children,
   accessibilityLabel,
   style,
@@ -17,8 +18,9 @@ export const ModalClose = ({
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
   const { onClose } = useModalContext();
+  const shouldRenderChild = asChild || children !== undefined;
 
-  if (isValidElement(children)) {
+  if (shouldRenderChild && isValidElement(children)) {
     return cloneElement(children, {
       accessibilityLabel:
         children.props.accessibilityLabel ?? accessibilityLabel,

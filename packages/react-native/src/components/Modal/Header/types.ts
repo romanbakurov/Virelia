@@ -7,3 +7,13 @@ export interface ModalHeaderProps extends BaseModalHeaderProps {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }
+
+export interface ModalTitleProps {
+  children: ReactNode;
+  style?: StyleProp<TextStyle>;
+}
+
+export interface ModalDescriptionProps {
+  children: ReactNode;
+  style?: StyleProp<TextStyle>;
+}

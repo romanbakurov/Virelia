@@ -1,2 +1,8 @@
+export { ModalDescription } from './ModalDescription';
 export { ModalHeader } from './ModalHeader';
-export type { ModalHeaderProps } from './types';
+export { ModalTitle } from './ModalTitle';
+export type {
+  ModalDescriptionProps,
+  ModalHeaderProps,
+  ModalTitleProps,
+} from './types';

@@ -2,7 +2,6 @@ import type {
   CSSProperties,
   KeyboardEvent,
   MutableRefObject,
-  ReactElement,
   RefObject,
 } from 'react';
 
@@ -41,10 +40,6 @@ export type ModalContextValue = {
   shouldRender: boolean;
   titleId: string;
   trapFocus: boolean;
-};
-
-export type ModalSlotComponent<TProps> = ((props: TProps) => ReactElement) & {
-  __velliraModalPart?: string;
 };
 
 export type ModalContentContextValue = {

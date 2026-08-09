@@ -167,6 +167,33 @@ describe('Native Modal', () => {
     unmount();
   });
 
+  it('renders compound title and description in Header', () => {
+    const { container, unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Header>
+                <Modal.Title>Native modal title</Modal.Title>
+                <Modal.Description>Native modal description</Modal.Description>
+              </Modal.Header>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    expect(container.textContent).toContain('Native modal title');
+    expect(container.textContent).toContain('Native modal description');
+    expect(
+      container.querySelector<HTMLButtonElement>(
+        'button[aria-label="Close modal"]'
+      )
+    ).not.toBeNull();
+
+    unmount();
+  });
+
   it('calls onOpenChange when backdrop is pressed', () => {
     const onOpenChange = vi.fn();
     const { container, unmount } = render(
@@ -208,6 +235,35 @@ describe('Native Modal', () => {
     });
 
     expect(document.activeElement).toBe(doneButton);
+
+    act(() => {
+      closeButton?.click();
+    });
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    unmount();
+  });
+
+  it('calls onOpenChange from Modal.Close asChild', () => {
+    const onOpenChange = vi.fn();
+    const { container, unmount } = render(
+      <Modal open onOpenChange={onOpenChange}>
+        <Portal>
+          <Modal.Overlay>
+            <Modal.Content>
+              <Modal.Close asChild>
+                <Button>Dismiss</Button>
+              </Modal.Close>
+            </Modal.Content>
+          </Modal.Overlay>
+        </Portal>
+      </Modal>
+    );
+
+    const closeButton = Array.from(
+      container.querySelectorAll<HTMLButtonElement>('button')
+    ).find((button) => button.textContent === 'Dismiss');
 
     act(() => {
       closeButton?.click();
