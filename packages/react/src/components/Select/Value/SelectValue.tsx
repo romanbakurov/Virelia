@@ -1,17 +1,11 @@
 import { cn } from '@utils/cn';
-import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from '../Trigger/SelectTrigger.module.scss';
+import type { SelectValueProps } from './types';
 
-export interface SelectValueProps {
-  /** Custom value content; defaults to the current selected value text. */
-  children?: ReactNode;
-  /** Class name applied to the value wrapper. */
-  className?: string;
-}
+import styles from '../Trigger/SelectTrigger.module.scss';
 
 export const SelectValue: SelectSlotComponent<SelectValueProps> = ({
   children,

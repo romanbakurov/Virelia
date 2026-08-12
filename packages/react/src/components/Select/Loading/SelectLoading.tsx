@@ -1,11 +1,6 @@
-import type { ReactNode } from 'react';
-
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-export interface SelectLoadingProps {
-  /** Loading state content shown while options are loading. */
-  children?: ReactNode;
-}
+import type { SelectLoadingProps } from './types';
 
 export const SelectLoading: SelectSlotComponent<SelectLoadingProps> = ({
   children,

@@ -21,17 +21,14 @@ import { useDropdownContext } from '../internal/DropdownContext';
 import type { DropdownCollectionItem } from '../internal/types';
 import type { DropdownItemProps, DropdownSelectEvent } from '../types';
 
+import type { DropdownItemRowProps } from './types';
+
 import styles from './DropdownItem.module.scss';
 
 export const DropdownItem = createDropdownSlot<DropdownItemProps>(
   'item',
   'Dropdown.Item'
 );
-
-type DropdownItemRowProps = {
-  item: DropdownCollectionItem;
-  itemIndex: number;
-};
 
 type DropdownItemChildProps = {
   'aria-checked'?: boolean;

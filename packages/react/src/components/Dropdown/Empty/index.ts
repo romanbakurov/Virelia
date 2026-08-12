@@ -1,2 +1,2 @@
-export type { DropdownEmptyProps } from './DropdownEmpty';
 export { DropdownEmpty, DropdownEmptySurface } from './DropdownEmpty';
+export type { DropdownEmptyProps } from './types';

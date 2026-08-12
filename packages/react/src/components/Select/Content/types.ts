@@ -9,6 +9,13 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { SelectRenderEntry } from '../internal/types';
 import type { SelectOption, SelectRenderOptionContext } from '../types';
 
+export interface SelectContentSlotProps {
+  /** Custom dropdown content slots. */
+  children?: ReactNode;
+  /** Class name applied to the dropdown content. */
+  className?: string;
+}
+
 export interface SelectContentProps extends Omit<
   BaseSelectDropdownProps,
   'options'

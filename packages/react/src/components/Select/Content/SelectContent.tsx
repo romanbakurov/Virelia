@@ -22,16 +22,9 @@ import {
 } from '../internal/types';
 import { SelectItemRow } from '../Item/SelectItem';
 
-import type { SelectContentProps } from './types';
+import type { SelectContentProps, SelectContentSlotProps } from './types';
 
 import styles from './SelectContent.module.scss';
-
-export interface SelectContentSlotProps {
-  /** Custom dropdown content slots. */
-  children?: ReactNode;
-  /** Class name applied to the dropdown content. */
-  className?: string;
-}
 
 export const SelectContent: SelectSlotComponent<SelectContentSlotProps> = ({
   children,

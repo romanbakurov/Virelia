@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export type NativeOverlayEntry = {
   id: string;
   zIndex: number;
@@ -31,4 +33,9 @@ export type NativeOverlayManager = {
   dispatchTopDismiss: () => boolean;
   dispatchTopOutsidePress: () => boolean;
   clear: () => void;
+};
+
+export type NativeOverlayManagerProviderProps = {
+  children: ReactNode;
+  manager?: NativeOverlayManager;
 };

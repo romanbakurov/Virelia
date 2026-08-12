@@ -1,20 +1,9 @@
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useMemo,
-  useRef,
-} from 'react';
+import { createContext, useContext, useMemo, useRef } from 'react';
 
-import type { OverlayManager } from './types';
+import type { OverlayManager, OverlayManagerProviderProps } from './types';
 import { createOverlayManager, overlayManager } from './WebOverlayManager';
 
 const OverlayManagerContext = createContext<OverlayManager | null>(null);
-
-export type OverlayManagerProviderProps = {
-  children: ReactNode;
-  manager?: OverlayManager;
-};
 
 export const OverlayManagerProvider = ({
   children,

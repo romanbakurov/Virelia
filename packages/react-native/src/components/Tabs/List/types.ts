@@ -9,4 +9,9 @@ export interface TabsListProps extends BaseTabsListProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export type { TabsIndicatorProps } from './TabsIndicator';
+export interface TabsIndicatorProps {
+  /** Custom indicator content. */
+  children?: ReactNode;
+  /** Style applied to the indicator container. */
+  style?: StyleProp<ViewStyle>;
+}
