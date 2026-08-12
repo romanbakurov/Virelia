@@ -80,7 +80,7 @@ export const componentPages = {
     Examples: RadioExamples,
     Accessibility: RadioAccessibility,
     api: radioApi,
-    related: [],
+    related: ['radio-group', 'checkbox', 'select'],
   },
   checkbox: {
     name: 'Checkbox',

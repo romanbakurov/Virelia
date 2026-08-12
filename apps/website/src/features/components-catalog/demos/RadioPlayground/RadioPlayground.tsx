@@ -51,6 +51,7 @@ export function RadioPlayground({ renderRadio }: RadioPlaygroundProps) {
 
   return (
     <ComponentPlayground
+      previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
           value={value}

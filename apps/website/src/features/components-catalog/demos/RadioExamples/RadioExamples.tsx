@@ -22,7 +22,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           description='Receive updates by email.'
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n/>',
+      code: "import { Radio } from '@vellira-ui/react';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n/>",
     },
     {
       title: 'Disabled',
@@ -35,7 +35,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           disabled
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  disabled\n/>',
+      code: "import { Radio } from '@vellira-ui/react';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  disabled\n/>",
     },
     {
       title: 'Selected',
@@ -48,7 +48,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           checked
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  checked\n/>',
+      code: "import { Radio } from '@vellira-ui/react';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  checked\n/>",
     },
     {
       title: 'Error',
@@ -61,7 +61,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           error='Please review this option.'
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  error=\'Please review this option.\'\n/>',
+      code: "import { Radio } from '@vellira-ui/react';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  error='Please review this option.'\n/>",
     },
   ] as const;
 
@@ -76,7 +76,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           description='Receive updates by email.'
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react-native\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n/>',
+      code: "import { Radio } from '@vellira-ui/react-native';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n/>",
     },
     {
       title: 'Disabled',
@@ -89,7 +89,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           disabled
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react-native\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  disabled\n/>',
+      code: "import { Radio } from '@vellira-ui/react-native';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  disabled\n/>",
     },
     {
       title: 'Selected',
@@ -102,7 +102,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           checked
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react-native\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  checked\n/>',
+      code: "import { Radio } from '@vellira-ui/react-native';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  checked\n/>",
     },
     {
       title: 'Error',
@@ -115,7 +115,7 @@ export function RadioExamples({ platform }: RadioExamplesProps) {
           error='Please review this option.'
         />
       ),
-      code: 'import { Radio } from \'@vellira-ui/react-native\';\n\n<Radio\n  value="option"\n  label="Email notifications"\n  description="Receive updates by email."\n  error=\'Please review this option.\'\n/>',
+      code: "import { Radio } from '@vellira-ui/react-native';\n\n<Radio\n  value=\"option\"\n  label='Email notifications'\n  description='Receive updates by email.'\n  error='Please review this option.'\n/>",
     },
   ] as const;
 
