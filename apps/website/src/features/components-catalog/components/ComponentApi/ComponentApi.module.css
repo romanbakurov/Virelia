@@ -246,8 +246,8 @@
 }
 
 .typeDetails summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: inline-grid;
+  grid-template-columns: minmax(0, auto) auto;
   align-items: center;
   gap: var(--space-2);
   max-width: 100%;
@@ -255,15 +255,23 @@
 }
 
 .typeDetails summary .type {
+  width: fit-content;
+  max-width: min(100%, 28ch);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.typePreview {
+  width: fit-content;
+  max-width: min(100%, 28ch);
 }
 
 .typeDetails summary span {
   color: var(--text-tertiary);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  white-space: nowrap;
 }
 
 .typeDetails > .type {
@@ -298,13 +306,13 @@
 
   .table tbody {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .table tr {
     display: grid;
-    gap: var(--space-3);
-    padding: var(--space-4);
+    gap: var(--space-2);
+    padding: var(--space-3);
     background: var(--surface-default);
     border: 1px solid var(--border-muted);
     border-radius: var(--radius-md);
@@ -313,7 +321,7 @@
   .table td {
     display: grid;
     grid-template-columns: 112px minmax(0, 1fr);
-    gap: var(--space-3);
+    gap: var(--space-2);
     align-items: start;
     min-width: 0;
     padding: 0;
@@ -325,6 +333,7 @@
     color: var(--text-tertiary);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
   }
 
   .table tbody tr:hover {
@@ -337,7 +346,7 @@
       minmax(180px, 1.2fr)
       minmax(0, 1fr);
     gap: var(--space-3);
-    padding: var(--space-3);
+    padding: var(--space-2) var(--space-3);
     background: var(--surface-subtle);
   }
 
@@ -364,7 +373,7 @@
 
   .table td {
     grid-template-columns: 1fr;
-    gap: var(--space-1);
+    gap: 2px;
   }
 
   .inheritedSummary {

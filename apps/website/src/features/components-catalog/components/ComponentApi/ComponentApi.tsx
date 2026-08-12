@@ -197,7 +197,9 @@ function TypeValue({
     return (
       <details className={styles.typeDetails}>
         <summary>
-          <code className={styles.type}>{shortenType(type)}</code>
+          <code className={`${styles.type} ${styles.typePreview}`}>
+            {shortenType(type)}
+          </code>
           <span>Full type</span>
         </summary>
 
