@@ -1562,10 +1562,10 @@ const nativeDemoChildren = componentConfig.native?.children ?? '';
 
 const demoPresentationProps = [
   componentConfig.demo?.label
-    ? `label=${JSON.stringify(componentConfig.demo.label)}`
+    ? `label=${toTsString(componentConfig.demo.label)}`
     : null,
   componentConfig.demo?.description
-    ? `description=${JSON.stringify(componentConfig.demo.description)}`
+    ? `description=${toTsString(componentConfig.demo.description)}`
     : null,
 ]
   .filter(Boolean)
