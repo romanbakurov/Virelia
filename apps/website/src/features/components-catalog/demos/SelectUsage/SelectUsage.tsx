@@ -70,27 +70,9 @@ function createSelectCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  const children =
-    platform === 'react'
-      ? "<Select.Item value='react'>React</Select.Item>\n<Select.Item value='vue'>Vue</Select.Item>\n<Select.Item value='svelte'>Svelte</Select.Item>"
-      : "<Select.Item value='react' label='React' />\n<Select.Item value='vue' label='Vue' />\n<Select.Item value='svelte' label='Svelte' />";
-
-  if (!children) {
-    return `import { Select } from '${packageName}';
-
-<Select${propsText}/>`;
-  }
-
-  const formattedChildren = children
-    .split('\n')
-    .map((line) => '  ' + line)
-    .join('\n');
-
   return `import { Select } from '${packageName}';
 
-<Select${propsText}>
-${formattedChildren}
-</Select>`;
+<Select${propsText}/>`;
 }
 
 export function SelectUsage({ platform }: SelectUsageProps) {

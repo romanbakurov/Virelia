@@ -68,7 +68,7 @@ export const componentPages = {
     Examples: SelectExamples,
     Accessibility: SelectAccessibility,
     api: selectApi,
-    related: [],
+    related: ['input', 'dropdown', 'radio-group'],
   },
   radio: {
     name: 'Radio',

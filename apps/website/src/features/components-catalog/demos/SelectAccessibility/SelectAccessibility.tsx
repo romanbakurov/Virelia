@@ -13,22 +13,26 @@ export function SelectAccessibility({ platform }: SelectAccessibilityProps) {
     {
       title: 'Accessible naming',
       description:
-        'Provide a visible label or another accessible name that clearly identifies the control.',
+        'Provide a visible label or another accessible name for the select trigger.',
+      props: ['label', 'description'],
     },
     {
-      title: 'Disabled state',
+      title: 'Keyboard interaction',
       description:
-        'Disabled controls should remain identifiable while preventing interaction.',
+        'Preserve expected keyboard navigation, focus management, and option selection behavior.',
+      props: ['open', 'defaultOpen', 'searchable'],
+    },
+    {
+      title: 'Selection state',
+      description:
+        'Keep selected values and expanded state synchronized with the visual interface.',
+      props: ['value', 'defaultValue', 'multiple'],
     },
     {
       title: 'Validation feedback',
       description:
-        'Associate validation feedback with the control and expose its invalid state to assistive technologies.',
-    },
-    {
-      title: 'Required fields',
-      description:
-        'Required state should be communicated semantically and not rely only on visual styling.',
+        'Associate validation feedback with the control and expose invalid and required state.',
+      props: ['error', 'invalid', 'required', 'disabled'],
     },
   ] as const;
 
@@ -37,21 +41,25 @@ export function SelectAccessibility({ platform }: SelectAccessibilityProps) {
       title: 'Accessible naming',
       description:
         'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
+      props: ['label', 'accessibilityLabel', 'accessibilityHint'],
     },
     {
-      title: 'Disabled state',
+      title: 'Screen reader interaction',
       description:
-        'Disabled controls should remain identifiable while preventing interaction.',
+        'Expose expanded, selected, disabled, and busy state through React Native accessibility semantics.',
+      props: ['value', 'multiple', 'disabled', 'loading'],
+    },
+    {
+      title: 'Search and selection',
+      description:
+        'Keep search, active option, and selected values understandable when using assistive technologies.',
+      props: ['searchable', 'searchPlaceholder', 'multiple'],
     },
     {
       title: 'Validation feedback',
       description:
-        'Expose validation feedback through accessible text or hints and preserve the invalid state for assistive technologies.',
-    },
-    {
-      title: 'Required fields',
-      description:
-        'Required state should be communicated semantically and not rely only on visual styling.',
+        'Expose validation errors and required state without relying only on visual styling.',
+      props: ['error', 'invalid', 'required'],
     },
   ] as const;
 

@@ -37,11 +37,30 @@ type ComponentGeneratorConfig = {
     satisfiedRequiredProps?: readonly string[];
     previewWidth?: 'auto' | 'field' | 'full';
   };
+  defaults?: {
+    shared?: Record<string, string | boolean | number>;
+    react?: Record<string, string | boolean | number>;
+    native?: Record<string, string | boolean | number>;
+  };
   examples?: readonly {
     title: string;
     description: string;
     props: readonly string[];
   }[];
+  apiDescriptions?: Record<string, string>;
+  accessibility?: {
+    react?: readonly {
+      title: string;
+      description: string;
+      props?: readonly string[];
+    }[];
+
+    native?: readonly {
+      title: string;
+      description: string;
+      props?: readonly string[];
+    }[];
+  };
   related?: readonly string[];
 };
 
@@ -66,7 +85,8 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
       },
       previewWidth: 'field',
     },
-    related: ['RadioGroup', 'Checkbox', 'Select'],
+
+    related: ['radio-group', 'checkbox', 'select'],
   },
 
   Select: {
@@ -112,6 +132,43 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
         error: '',
       },
     },
+
+    defaults: {
+      shared: {
+        multiple: false,
+        placeholder: 'Select...',
+        size: 'md',
+        color: 'primary',
+        variant: 'outline',
+        invalid: false,
+        loading: false,
+        clearable: false,
+        searchable: false,
+        closeOnSelect: false,
+        required: false,
+        disabled: false,
+      },
+
+      react: {
+        modal: false,
+        command: false,
+        matchTriggerWidth: true,
+        avoidCollisions: true,
+        portal: true,
+        defaultOpen: false,
+        placement: 'bottom',
+      },
+
+      native: {
+        presentation: 'auto',
+        placement: 'bottom-start',
+        offset: 8,
+        matchTriggerWidth: false,
+        dismissOnBackdropPress: true,
+        defaultOpen: false,
+      },
+    },
+
     examples: [
       {
         title: 'Basic',
@@ -134,6 +191,71 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
         props: [`error='Please review this option.'`],
       },
     ],
+
+    apiDescriptions: {
+      multiple: 'Enables multiple selection when true.',
+      value: 'Controlled selected value or values.',
+      defaultValue: 'Initial selected value or values for uncontrolled usage.',
+      onValueChange: 'Called when the selected value or values change.',
+    },
+
+    accessibility: {
+      react: [
+        {
+          title: 'Accessible naming',
+          description:
+            'Provide a visible label or another accessible name for the select trigger.',
+          props: ['label', 'description'],
+        },
+        {
+          title: 'Keyboard interaction',
+          description:
+            'Preserve expected keyboard navigation, focus management, and option selection behavior.',
+          props: ['open', 'defaultOpen', 'searchable'],
+        },
+        {
+          title: 'Selection state',
+          description:
+            'Keep selected values and expanded state synchronized with the visual interface.',
+          props: ['value', 'defaultValue', 'multiple'],
+        },
+        {
+          title: 'Validation feedback',
+          description:
+            'Associate validation feedback with the control and expose invalid and required state.',
+          props: ['error', 'invalid', 'required', 'disabled'],
+        },
+      ],
+
+      native: [
+        {
+          title: 'Accessible naming',
+          description:
+            'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
+          props: ['label', 'accessibilityLabel', 'accessibilityHint'],
+        },
+        {
+          title: 'Screen reader interaction',
+          description:
+            'Expose expanded, selected, disabled, and busy state through React Native accessibility semantics.',
+          props: ['value', 'multiple', 'disabled', 'loading'],
+        },
+        {
+          title: 'Search and selection',
+          description:
+            'Keep search, active option, and selected values understandable when using assistive technologies.',
+          props: ['searchable', 'searchPlaceholder', 'multiple'],
+        },
+        {
+          title: 'Validation feedback',
+          description:
+            'Expose validation errors and required state without relying only on visual styling.',
+          props: ['error', 'invalid', 'required'],
+        },
+      ],
+    },
+
+    related: ['input', 'dropdown', 'radio-group'],
   },
 };
 
@@ -167,8 +289,75 @@ function findTypeSourceFile(name: string) {
   return candidates.find((filePath) => fs.existsSync(filePath));
 }
 
+function findPlatformTypeSourceFile(
+  platform: Platform,
+  name: string
+): string | undefined {
+  const packageName = platform === 'react' ? 'react' : 'react-native';
+
+  const packageRoot = path.join(root, 'packages', packageName, 'src');
+  const stack = [packageRoot];
+
+  while (stack.length > 0) {
+    const current = stack.pop();
+
+    if (!current) continue;
+
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const fullPath = path.join(current, entry.name);
+
+      if (entry.isDirectory()) {
+        stack.push(fullPath);
+        continue;
+      }
+
+      if (
+        entry.name === 'types.ts' &&
+        path.basename(path.dirname(fullPath)) === name
+      ) {
+        return fullPath;
+      }
+    }
+  }
+
+  return undefined;
+}
+
 function createTypesProgram() {
   const tsconfigPath = path.join(root, 'packages', 'types', 'tsconfig.json');
+
+  const configFile = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+
+  if (configFile.error) {
+    const message = ts.flattenDiagnosticMessageText(
+      configFile.error.messageText,
+      '\n'
+    );
+
+    throw new Error(`Failed to read ${tsconfigPath}: ${message}`);
+  }
+
+  const parsedConfig = ts.parseJsonConfigFileContent(
+    configFile.config,
+    ts.sys,
+    path.dirname(tsconfigPath)
+  );
+
+  return ts.createProgram({
+    rootNames: parsedConfig.fileNames,
+    options: parsedConfig.options,
+  });
+}
+
+function createPackageProgram(platform: Platform) {
+  const packageName = platform === 'react' ? 'react' : 'react-native';
+
+  const tsconfigPath = path.join(
+    root,
+    'packages',
+    packageName,
+    'tsconfig.json'
+  );
 
   const configFile = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 
@@ -353,6 +542,92 @@ function extractComponentProps(name: string): ExtractedProp[] {
   return extracted;
 }
 
+function extractExportedProps(params: {
+  sourceFilePath: string;
+  exportName: string;
+  program: ts.Program;
+}): ExtractedProp[] {
+  const { sourceFilePath, exportName, program } = params;
+
+  const checker = program.getTypeChecker();
+  const sourceFile = program.getSourceFile(sourceFilePath);
+
+  if (!sourceFile) {
+    return [];
+  }
+
+  const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
+
+  if (!moduleSymbol) {
+    return [];
+  }
+
+  const exportedSymbol = checker
+    .getExportsOfModule(moduleSymbol)
+    .find((symbol) => symbol.name === exportName);
+
+  if (!exportedSymbol) {
+    console.log(`⚠️ Export ${exportName} not found in ${sourceFilePath}`);
+    return [];
+  }
+
+  const declaredType = checker.getDeclaredTypeOfSymbol(exportedSymbol);
+  const propSymbols = checker.getPropertiesOfType(declaredType);
+
+  const extracted: ExtractedProp[] = [];
+
+  for (const propSymbol of propSymbols) {
+    const declaration =
+      propSymbol.valueDeclaration ?? propSymbol.declarations?.[0];
+
+    if (!declaration) continue;
+
+    const type = checker.getTypeOfSymbolAtLocation(propSymbol, declaration);
+
+    const typeText = checker.typeToString(
+      type,
+      declaration,
+      ts.TypeFormatFlags.NoTruncation
+    );
+
+    const description = ts.displayPartsToString(
+      propSymbol.getDocumentationComment(checker)
+    );
+
+    const unionOptions = getLiteralUnionOptions(type);
+    const nonNullableType = checker.getNonNullableType(type);
+
+    let kind: ExtractedProp['kind'] = 'other';
+
+    if (unionOptions) {
+      kind = 'select';
+    } else if (nonNullableType.flags & ts.TypeFlags.Boolean) {
+      kind = 'boolean';
+    } else if (
+      nonNullableType.flags & ts.TypeFlags.String ||
+      nonNullableType.flags & ts.TypeFlags.StringLiteral
+    ) {
+      kind = 'string';
+    } else if (
+      nonNullableType.flags & ts.TypeFlags.Number ||
+      nonNullableType.flags & ts.TypeFlags.NumberLiteral
+    ) {
+      kind = 'number';
+    }
+
+    extracted.push({
+      name: propSymbol.name,
+      kind,
+      required: (propSymbol.flags & ts.SymbolFlags.Optional) === 0,
+      type: typeText,
+      description,
+      ...(unionOptions ? { options: unionOptions } : {}),
+    });
+  }
+
+  return extracted;
+}
+
 const extractedProps = extractComponentProps(componentName);
 
 const excludedControls = new Set(componentConfig.demo?.excludeControls ?? []);
@@ -459,6 +734,29 @@ if (platforms.length === 0) {
   process.exit(1);
 }
 
+function extractPlatformProps(platform: Platform) {
+  const sourceFilePath = findPlatformTypeSourceFile(platform, componentName);
+
+  if (!sourceFilePath) {
+    console.log(`⚠️ Platform types not found for ${platform}/${componentName}`);
+    return [];
+  }
+
+  return extractExportedProps({
+    sourceFilePath,
+    exportName: `${componentName}Props`,
+    program: createPackageProgram(platform),
+  });
+}
+
+const reactApiProps = platforms.includes('react')
+  ? extractPlatformProps('react')
+  : [];
+
+const nativeApiProps = platforms.includes('react-native')
+  ? extractPlatformProps('react-native')
+  : [];
+
 function writeIfMissing(filePath: string, content: string) {
   const exists = fs.existsSync(filePath);
 
@@ -489,7 +787,7 @@ const usageStaticProps = [
     : null,
 ]
   .filter((prop): prop is string => Boolean(prop))
-  .map((prop) => `    ${toTsString(prop)},`)
+  .map((prop) => `    ${JSON.stringify(prop)},`)
   .join('\n');
 
 const usageContent = `'use client';
@@ -545,38 +843,20 @@ ${playgroundProps
   }`;
     }
 
-    return `  if (value.${prop.name} !== ${toTsString(
-      String(initialValue ?? prop.options[0] ?? '')
+    return `  if (value.${prop.name} !== ${JSON.stringify(
+      initialValue ?? prop.options[0] ?? ''
     )}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);
   }`;
   })
   .join('\n\n')}
 
-const propsText =
-  props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
+  const propsText =
+    props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
 
-const children =
-  platform === 'react'
-    ? ${JSON.stringify(componentConfig.react?.children ?? '')}
-    : ${JSON.stringify(componentConfig.native?.children ?? '')};
-
-if (!children) {
   return \`import { ${componentName} } from '\${packageName}';
 
 <${componentName}\${propsText}/>\`;
-}
-
-const formattedChildren = children
-  .split('\\n')
-  .map((line) => '  ' + line)
-  .join('\\n');
-
-return \`import { ${componentName} } from '\${packageName}';
-
-<${componentName}\${propsText}>
-\${formattedChildren}
-</${componentName}>\`;
 }
 
 export function ${componentName}Usage({
@@ -622,7 +902,7 @@ const examplesIndexFile = path.join(examplesDir, 'index.ts');
 type GeneratedExample = {
   title: string;
   description: string;
-  props: readonly string[];
+  props: string[];
 };
 
 function hasExtractedProp(name: string) {
@@ -808,8 +1088,8 @@ ${formattedChildren}
 const reactGeneratedExamples = generatedExamples
   .map(
     (example) => `    {
-      title: ${JSON.stringify(example.title)},
-      description: ${JSON.stringify(example.description)},
+      title: ${toTsString(example.title)},
+      description: ${toTsString(example.description)},
       preview: (
         ${createExampleJsx('react', example)}
       ),
@@ -821,8 +1101,8 @@ const reactGeneratedExamples = generatedExamples
 const nativeGeneratedExamples = generatedExamples
   .map(
     (example) => `    {
-      title: ${JSON.stringify(example.title)},
-      description: ${JSON.stringify(example.description)},
+      title: ${toTsString(example.title)},
+      description: ${toTsString(example.description)},
       preview: (
         ${createExampleJsx('react-native', example)}
       ),
@@ -892,9 +1172,19 @@ function toTsString(value: string) {
 type AccessibilityItem = {
   title: string;
   description: string;
+  props?: readonly string[];
 };
 
 function createAccessibilityItems(platform: Platform): AccessibilityItem[] {
+  const configuredItems =
+    platform === 'react'
+      ? componentConfig.accessibility?.react
+      : componentConfig.accessibility?.native;
+
+  if (configuredItems) {
+    return [...configuredItems];
+  }
+
   const items: AccessibilityItem[] = [];
 
   const hasProp = (name: string) =>
@@ -991,7 +1281,11 @@ const reactAccessibilityItems = createAccessibilityItems('react')
   .map(
     (item) => `    {
       title: ${toTsString(item.title)},
-      description: ${toTsString(item.description)},
+      description: ${toTsString(item.description)},${
+        item.props?.length
+          ? `\n      props: [${item.props.map(toTsString).join(', ')}],`
+          : ''
+      }
     },`
   )
   .join('\n');
@@ -1000,7 +1294,11 @@ const nativeAccessibilityItems = createAccessibilityItems('react-native')
   .map(
     (item) => `    {
       title: ${toTsString(item.title)},
-      description: ${toTsString(item.description)},
+      description: ${toTsString(item.description)},${
+        item.props?.length
+          ? `\n      props: [${item.props.map(toTsString).join(', ')}],`
+          : ''
+      }
     },`
   )
   .join('\n');
@@ -1043,38 +1341,85 @@ writeIfMissing(
 
 const apiFile = path.join(websiteRoot, 'data', `${slug}Api.ts`);
 
+function cleanApiType(type: string) {
+  return type
+    .replace(/\s*\|\s*undefined\b/g, '')
+    .replace(/\bundefined\s*\|\s*/g, '')
+    .trim();
+}
+
 function getApiType(prop: ExtractedProp) {
   if (prop.kind === 'select' && prop.options?.length) {
     return prop.options.map((option) => `'${option}'`).join(' | ');
   }
 
-  return prop.type;
+  return cleanApiType(prop.type);
 }
 
-const sharedApiEntries = extractedProps
-  .map((prop) => {
-    return `  {
-    name: ${JSON.stringify(prop.name)},
-    type: ${JSON.stringify(getApiType(prop))},
-    description: ${JSON.stringify(
-      prop.description || `Prop for ${componentName}.`
-    )},${prop.required ? '\n    required: true,' : ''}
+function getApiDefaultValue(prop: ExtractedProp, platform: Platform) {
+  const sharedValue = componentConfig.defaults?.shared?.[prop.name];
+
+  const platformValue =
+    platform === 'react'
+      ? componentConfig.defaults?.react?.[prop.name]
+      : componentConfig.defaults?.native?.[prop.name];
+
+  const value = platformValue ?? sharedValue;
+
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    return `'${value}'`;
+  }
+
+  return String(value);
+}
+
+function createApiEntries(props: readonly ExtractedProp[], platform: Platform) {
+  return props
+    .map((prop) => {
+      const defaultValue = getApiDefaultValue(prop, platform);
+      const sharedProp = extractedProps.find((item) => item.name === prop.name);
+
+      const description =
+        componentConfig.apiDescriptions?.[prop.name] ||
+        prop.description ||
+        sharedProp?.description ||
+        `Prop for ${componentName}.`;
+
+      return `  {
+    name: ${toTsString(prop.name)},
+    type: ${toTsString(getApiType(prop))},${
+      defaultValue ? `\n    defaultValue: ${toTsString(defaultValue)},` : ''
+    }
+    description: ${toTsString(description)},${
+      prop.required ? '\n    required: true,' : ''
+    }
   },`;
-  })
-  .join('\n');
+    })
+    .join('\n');
+}
+
+const reactApiEntries = createApiEntries(
+  reactApiProps.length > 0 ? reactApiProps : extractedProps,
+  'react'
+);
+
+const nativeApiEntries = createApiEntries(
+  nativeApiProps.length > 0 ? nativeApiProps : extractedProps,
+  'react-native'
+);
 
 const apiContent = `import type { ComponentApiProp } from '../components/ComponentApi';
 
-const shared${componentName}Api: readonly ComponentApiProp[] = [
-${sharedApiEntries}
-];
-
 const react${componentName}Api: readonly ComponentApiProp[] = [
-  ...shared${componentName}Api,
+${reactApiEntries}
 ];
 
 const native${componentName}Api: readonly ComponentApiProp[] = [
-  ...shared${componentName}Api,
+${nativeApiEntries}
 ];
 
 export const ${slug}Api = {
@@ -1096,7 +1441,45 @@ function insertAfterMarker(params: {
   const source = fs.readFileSync(filePath, 'utf8');
 
   if (source.includes(existsCheck)) {
-    console.log(`⏭ Skipped registry update: ${existsCheck}`);
+    if (!force) {
+      console.log(`⏭ Skipped registry update: ${existsCheck}`);
+      return;
+    }
+
+    const entryStart = source.indexOf(`  ${slug}: {`);
+
+    if (entryStart === -1) {
+      console.error(`Existing registry entry not found for ${slug}`);
+      process.exit(1);
+    }
+
+    const nextEntryMatch = source
+      .slice(entryStart + 1)
+      .match(/\n {2}[a-z0-9-]+: \{/);
+
+    const entryEnd =
+      nextEntryMatch?.index !== undefined
+        ? entryStart + 1 + nextEntryMatch.index
+        : source.indexOf('\n};', entryStart);
+
+    if (entryEnd === -1) {
+      console.error(`Could not determine registry entry boundary for ${slug}`);
+      process.exit(1);
+    }
+
+    const existingEntry = source.slice(entryStart, entryEnd);
+
+    const updatedEntry = existingEntry.replace(
+      /related: \[[^\]]*\],/,
+      `related: ${relatedSnippet},`
+    );
+
+    const nextSource =
+      source.slice(0, entryStart) + updatedEntry + source.slice(entryEnd);
+
+    fs.writeFileSync(filePath, nextSource);
+
+    console.log(`♻️ Updated registry: ${existsCheck}`);
     return;
   }
 
@@ -1179,10 +1562,10 @@ const nativeDemoChildren = componentConfig.native?.children ?? '';
 
 const demoPresentationProps = [
   componentConfig.demo?.label
-    ? `label=${toTsString(componentConfig.demo.label)}`
+    ? `label=${JSON.stringify(componentConfig.demo.label)}`
     : null,
   componentConfig.demo?.description
-    ? `description=${toTsString(componentConfig.demo.description)}`
+    ? `description=${JSON.stringify(componentConfig.demo.description)}`
     : null,
 ]
   .filter(Boolean)
@@ -1415,11 +1798,6 @@ function createDemoElement(params: {
   const children =
     platform === 'react' ? reactDemoChildren : nativeDemoChildren;
 
-  const formattedChildren = children
-    .split('\n')
-    .map((line) => `          ${line}`)
-    .join('\n');
-
   const staticProps =
     platform === 'react' ? reactStaticDemoProps : nativeStaticDemoProps;
 
@@ -1440,6 +1818,11 @@ function createDemoElement(params: {
           ${props}
         />`;
   }
+
+  const formattedChildren = children
+    .split('\n')
+    .map((line) => `          ${line}`)
+    .join('\n');
 
   return `<${componentName}
           ${props}

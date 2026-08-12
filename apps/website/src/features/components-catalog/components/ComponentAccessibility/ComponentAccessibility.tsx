@@ -5,6 +5,7 @@ import styles from './ComponentAccessibility.module.css';
 export type AccessibilityItem = {
   title: string;
   description: ReactNode;
+  props?: readonly string[];
 };
 
 type ComponentAccessibilityProps = {
@@ -34,7 +35,17 @@ export function ComponentAccessibility({
             <div>
               <h3 className={styles.itemTitle}>{item.title}</h3>
 
-              <div className={styles.itemDescription}>{item.description}</div>
+              <div className={styles.itemDescription}>
+                <div>{item.description}</div>
+
+                {item.props && item.props.length > 0 && (
+                  <div className={styles.props}>
+                    {item.props.map((prop) => (
+                      <code key={prop}>{prop}</code>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </article>
         ))}
