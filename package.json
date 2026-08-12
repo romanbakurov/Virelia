@@ -48,6 +48,7 @@
     "check:package-boundaries": "node scripts/check-package-boundaries.mjs",
     "check:public-api": "node scripts/check-public-api.mjs",
     "create:component": "tsx scripts/generators/create-component.ts",
+    "create:component-page": "tsx scripts/generators/create-component-page.ts",
     "prepare": "husky",
     "smoke:web": "node scripts/smoke/web.mjs --skip-build",
     "smoke:native": "node scripts/smoke/native.mjs --skip-build",
