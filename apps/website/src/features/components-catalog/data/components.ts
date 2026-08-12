@@ -44,13 +44,27 @@ export const webComponents = [
     },
   },
   {
+    slug: 'radio',
+    name: 'Radio',
+    description:
+      'Accessible single-choice selection control with labels, descriptions, and validation states.',
+    category: 'forms',
+    status: 'stable',
+    order: 30,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/radio',
+      'react-native': 'https://docs.vellira.dev/react-native/radio',
+    },
+  },
+  {
     slug: 'radio-group',
     name: 'Radio Group',
     description:
       'Single-choice selection with keyboard navigation and shared group state.',
     category: 'forms',
     status: 'stable',
-    order: 30,
+    order: 40,
     platforms: ['react', 'react-native'],
     docs: {
       react: 'https://docs.vellira.dev/react/radio',
@@ -64,7 +78,7 @@ export const webComponents = [
       'Composable single and multiple selection with search, groups, and virtualization.',
     category: 'forms',
     status: 'stable',
-    order: 40,
+    order: 50,
     platforms: ['react', 'react-native'],
     docs: {
       react: 'https://docs.vellira.dev/react/select',
@@ -78,7 +92,7 @@ export const webComponents = [
       'Composable labels, descriptions, controls, and validation messages for forms.',
     category: 'forms',
     status: 'stable',
-    order: 50,
+    order: 60,
     platforms: ['react', 'react-native'],
     docs: {
       react: 'https://docs.vellira.dev/react/form-field',

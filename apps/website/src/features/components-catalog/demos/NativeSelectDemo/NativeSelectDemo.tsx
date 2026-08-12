@@ -1,0 +1,34 @@
+'use client';
+
+import { Select } from '@vellira-ui/react-native';
+
+import { SelectPlayground } from '../SelectPlayground';
+
+export function NativeSelectDemo() {
+  return (
+    <SelectPlayground
+      renderSelect={(value) => (
+        <Select
+          placeholder={value.placeholder || undefined}
+          size={value.size}
+          color={value.color}
+          variant={value.variant}
+          invalid={value.invalid}
+          loading={value.loading}
+          clearable={value.clearable}
+          searchable={value.searchable}
+          error={value.error || undefined}
+          disabled={value.disabled}
+          label='Favorite framework'
+          description='Choose one option.'
+        >
+          <>
+            <Select.Item value='react' label='React' />
+            <Select.Item value='vue' label='Vue' />
+            <Select.Item value='svelte' label='Svelte' />
+          </>
+        </Select>
+      )}
+    />
+  );
+}

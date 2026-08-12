@@ -1,0 +1,80 @@
+'use client';
+
+import type { ComponentPlatform } from '../../types';
+
+import { ComponentCodeBlock } from '../../components/ComponentCodeBlock';
+import { useComponentDemoState } from '../../components/ComponentDemoStateProvider';
+
+import {
+  initialRadioPlaygroundValue,
+  type RadioPlaygroundValue,
+} from '../RadioPlayground';
+
+import styles from '../ButtonUsage/ButtonUsage.module.css';
+
+type RadioUsageProps = {
+  platform: ComponentPlatform;
+};
+
+function createRadioCode(
+  platform: ComponentPlatform,
+  value: RadioPlaygroundValue
+) {
+  const packageName =
+    platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
+
+  const props: string[] = [
+    'value="option"',
+    "label='Email notifications'",
+    "description='Receive updates by email.'",
+  ];
+
+  if (value.checked) {
+    props.push('checked');
+  }
+
+  if (value.disabled) {
+    props.push('disabled');
+  }
+
+  if (value.error) {
+    props.push(`error='${value.error}'`);
+  }
+
+  if (value.size !== 'md') {
+    props.push(`size='${value.size}'`);
+  }
+
+  if (value.color !== 'primary') {
+    props.push(`color='${value.color}'`);
+  }
+
+  const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
+
+  return `import { Radio } from '${packageName}';
+
+<Radio${propsText}/>`;
+}
+
+export function RadioUsage({ platform }: RadioUsageProps) {
+  const [value] = useComponentDemoState<RadioPlaygroundValue>(
+    initialRadioPlaygroundValue
+  );
+
+  const code = createRadioCode(platform, value);
+
+  return (
+    <section className={styles.root}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Usage</h2>
+
+        <p className={styles.description}>
+          Import the component and configure it with the same props used in the
+          playground.
+        </p>
+      </div>
+
+      <ComponentCodeBlock code={code} />
+    </section>
+  );
+}

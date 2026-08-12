@@ -1,0 +1,25 @@
+'use client';
+
+import { Radio } from '@vellira-ui/react';
+
+import { RadioPlayground } from '../RadioPlayground';
+
+export function RadioDemo() {
+  return (
+    <RadioPlayground
+      renderRadio={(value, onChange) => (
+        <Radio
+          value='option'
+          checked={value.checked}
+          onCheckedChange={(nextValue) => onChange('checked', nextValue)}
+          disabled={value.disabled}
+          error={value.error || undefined}
+          size={value.size}
+          color={value.color}
+          label='Email notifications'
+          description='Receive updates by email.'
+        />
+      )}
+    />
+  );
+}

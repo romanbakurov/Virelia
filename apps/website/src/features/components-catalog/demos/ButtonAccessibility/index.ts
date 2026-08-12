@@ -1,0 +1,1 @@
+export { ButtonAccessibility } from './ButtonAccessibility';
