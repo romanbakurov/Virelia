@@ -37,6 +37,36 @@
   background-size: 16px 16px;
 }
 
+.previewContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 96px;
+}
+
+.previewItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.preview[data-align='start'] .previewContent {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.preview[data-align='start'] .previewItem {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.preview[data-align='start'] {
+  align-items: flex-start;
+}
+
 .controls {
   padding: var(--space-5);
   background: var(--surface-default);

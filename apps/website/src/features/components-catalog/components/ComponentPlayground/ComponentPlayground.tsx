@@ -7,11 +7,13 @@ import styles from './ComponentPlayground.module.css';
 type ComponentPlaygroundProps = {
   children: ReactNode;
   controls?: ReactNode;
+  previewAlign?: 'center' | 'start';
 };
 
 export function ComponentPlayground({
   children,
   controls,
+  previewAlign = 'center',
 }: ComponentPlaygroundProps) {
   return (
     <section className={styles.root} aria-label='Component playground'>
@@ -24,7 +26,11 @@ export function ComponentPlayground({
         </div>
       </div>
 
-      <div className={styles.preview}>{children}</div>
+      <div className={styles.preview} data-align={previewAlign}>
+        <div className={styles.previewContent}>
+          <div className={styles.previewItem}>{children}</div>
+        </div>
+      </div>
 
       {controls && <div className={styles.controls}>{controls}</div>}
     </section>
