@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
 export interface SelectEmptyProps {
+  /** Empty state content shown when no options match. */
   children?: ReactNode;
 }
 

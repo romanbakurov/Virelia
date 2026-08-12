@@ -9,7 +9,9 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import styles from '../Content/SelectContent.module.scss';
 
 export interface SelectSearchProps {
+  /** Placeholder shown in the search input. */
   placeholder?: string;
+  /** Class name applied to the search input. */
   className?: string;
 }
 

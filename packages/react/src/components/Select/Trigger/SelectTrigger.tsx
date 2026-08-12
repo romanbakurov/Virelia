@@ -10,7 +10,9 @@ import type { SelectTriggerProps } from './types';
 import styles from './SelectTrigger.module.scss';
 
 export interface SelectTriggerSlotProps {
+  /** Custom trigger content. */
   children?: ReactNode;
+  /** Class name applied to the trigger element. */
   className?: string;
 }
 

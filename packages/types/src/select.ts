@@ -7,20 +7,32 @@ export type SelectVariant = 'outline' | 'filled' | 'soft';
 export type SelectValue = string;
 export type SelectMultipleValue = string[];
 export type SelectVirtualConfig = {
+  /** Estimated row height used for virtualized option measurement. */
   itemHeight?: number;
+  /** Maximum height for the virtualized option viewport. */
   maxHeight?: number | string;
+  /** Number of offscreen items rendered before and after the viewport. */
   overscan?: number;
+  /** Explicit viewport height used by virtualized rendering. */
   viewportHeight?: number;
 };
 
 export interface BaseSelectOption {
+  /** Human-readable option label. */
   label: string;
+  /** Submitted option value. */
   value: string;
+  /** Disables selection for this option. */
   disabled?: boolean;
+  /** Supporting text shown with the option. */
   description?: string;
+  /** Icon shown with the option. */
   icon?: unknown;
+  /** Badge content shown with the option. */
   badge?: string;
+  /** Keyboard shortcut hint shown with the option. */
   shortcut?: string;
+  /** Semantic color palette for the option. */
   color?: SelectColor;
 }
 
@@ -105,22 +117,34 @@ export interface BaseSelectMultipleProps extends BaseSelectSharedProps {
 export type BaseSelectProps = BaseSelectSingleProps | BaseSelectMultipleProps;
 
 export interface BaseSelectDropdownProps {
+  /** Whether the dropdown is currently open. */
   isOpen: boolean;
+  /** Options rendered in the dropdown. */
   options: BaseSelectOption[];
+  /** Currently selected value. */
   selectedValue: string;
+  /** Index of the active option. */
   activeIndex: number;
+  /** Called when an option value is selected. */
   onSelect: (value: string) => void;
 }
 
 export interface BaseSelectOptionProps {
+  /** Option rendered by this row. */
   option: BaseSelectOption;
+  /** Whether the option is selected. */
   isSelected: boolean;
+  /** Whether the option is active for keyboard navigation. */
   isActive: boolean;
+  /** Called when this option value is selected. */
   onSelect: (value: string) => void;
 }
 
 export interface BaseSelectTriggerProps {
+  /** Whether the select overlay is currently open. */
   isOpen: boolean;
+  /** Disables trigger interaction. */
   disabled?: boolean;
+  /** Marks the trigger as required for accessibility and form semantics. */
   required?: boolean;
 }

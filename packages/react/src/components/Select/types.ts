@@ -11,27 +11,43 @@ export interface SelectOption extends Omit<
   BaseSelectOption,
   'badge' | 'description' | 'icon'
 > {
+  /** Badge content shown with the option. */
   badge?: ReactNode;
+  /** Supporting content shown with the option. */
   description?: ReactNode;
+  /** Icon shown with the option. */
   icon?: ReactNode;
 }
 
 export interface SelectRenderValueContext {
+  /** Selected option for single selection, or the first selected option for multiple selection. */
   option: SelectOption | undefined;
+  /** All options available to the select. */
   options: SelectOption[];
+  /** Current selected value for single selection. */
   value: string;
+  /** Current selected values. */
   values: string[];
+  /** Whether multiple selection is enabled. */
   multiple: boolean;
 }
 
 export interface SelectRenderOptionContext {
+  /** Option being rendered. */
   option: SelectOption;
+  /** Whether the option is selected. */
   selected: boolean;
+  /** Whether the option is disabled. */
   disabled: boolean;
+  /** Whether the option is the active keyboard item. */
   active: boolean;
+  /** Zero-based option index. */
   index: number;
+  /** Current selected values. */
   values: string[];
+  /** Whether multiple selection is enabled. */
   multiple: boolean;
+  /** Whether the option is currently pressed. */
   pressed: boolean;
 }
 

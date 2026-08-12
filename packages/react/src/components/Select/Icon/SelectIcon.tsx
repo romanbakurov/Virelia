@@ -8,7 +8,9 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import styles from '../Trigger/SelectTrigger.module.scss';
 
 export interface SelectIconProps {
+  /** Custom trigger icon content. */
   children?: ReactNode;
+  /** Class name applied to the icon wrapper. */
   className?: string;
 }
 

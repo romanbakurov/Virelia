@@ -275,6 +275,7 @@ type ExtractedProp = {
   required: boolean;
   type: string;
   description: string;
+  sourceFilePath?: string;
   options?: string[];
 };
 
@@ -480,6 +481,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
         required,
         type: typeText,
         description,
+        sourceFilePath: declaration.getSourceFile().fileName,
         options: unionOptions,
       });
 
@@ -495,6 +497,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
         required,
         type: typeText,
         description,
+        sourceFilePath: declaration.getSourceFile().fileName,
       });
 
       continue;
@@ -510,6 +513,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
         required,
         type: typeText,
         description,
+        sourceFilePath: declaration.getSourceFile().fileName,
       });
 
       continue;
@@ -525,6 +529,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
         required,
         type: typeText,
         description,
+        sourceFilePath: declaration.getSourceFile().fileName,
       });
 
       continue;
@@ -536,6 +541,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
       required,
       type: typeText,
       description,
+      sourceFilePath: declaration.getSourceFile().fileName,
     });
   }
 
@@ -621,6 +627,7 @@ function extractExportedProps(params: {
       required: (propSymbol.flags & ts.SymbolFlags.Optional) === 0,
       type: typeText,
       description,
+      sourceFilePath: declaration.getSourceFile().fileName,
       ...(unionOptions ? { options: unionOptions } : {}),
     });
   }
@@ -1377,6 +1384,35 @@ function getApiDefaultValue(prop: ExtractedProp, platform: Platform) {
   return String(value);
 }
 
+function isExternalProp(prop: ExtractedProp) {
+  if (!prop.sourceFilePath) {
+    return false;
+  }
+
+  const normalizedSource = path.normalize(prop.sourceFilePath);
+  const sourceRoots = [
+    path.join(root, 'packages', 'types', 'src'),
+    path.join(root, 'packages', 'react', 'src'),
+    path.join(root, 'packages', 'react-native', 'src'),
+  ].map((sourceRoot) => path.normalize(sourceRoot));
+
+  return !sourceRoots.some((sourceRoot) =>
+    normalizedSource.startsWith(sourceRoot)
+  );
+}
+
+function getFallbackApiDescription(prop: ExtractedProp, platform: Platform) {
+  if (!isExternalProp(prop)) {
+    return `Prop for ${componentName}.`;
+  }
+
+  if (platform === 'react') {
+    return `Forwarded React DOM prop for ${componentName}.`;
+  }
+
+  return `Forwarded React Native prop for ${componentName}.`;
+}
+
 function createApiEntries(props: readonly ExtractedProp[], platform: Platform) {
   return props
     .map((prop) => {
@@ -1387,7 +1423,7 @@ function createApiEntries(props: readonly ExtractedProp[], platform: Platform) {
         componentConfig.apiDescriptions?.[prop.name] ||
         prop.description ||
         sharedProp?.description ||
-        `Prop for ${componentName}.`;
+        getFallbackApiDescription(prop, platform);
 
       return `  {
     name: ${toTsString(prop.name)},

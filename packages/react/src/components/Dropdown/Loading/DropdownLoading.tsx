@@ -5,6 +5,7 @@ import { createDropdownSlot } from '../internal/DropdownCollection';
 import styles from '../Content/DropdownContent.module.scss';
 
 export type DropdownLoadingProps = {
+  /** Loading state content shown while items are loading. */
   children?: ReactNode;
 };
 

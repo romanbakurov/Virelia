@@ -5,6 +5,7 @@ import { createDropdownSlot } from '../internal/DropdownCollection';
 import styles from '../Content/DropdownContent.module.scss';
 
 export type DropdownEmptyProps = {
+  /** Empty state content shown when no items match. */
   children?: ReactNode;
 };
 

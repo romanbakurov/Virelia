@@ -10,13 +10,13 @@ export interface BaseRadioProps {
   checked?: boolean;
   /** Initial checked state for uncontrolled standalone usage. */
   defaultChecked?: boolean;
-  /** Disables interaction. */
+  /** Disables interaction and applies disabled styling. */
   disabled?: boolean;
   /** Marks the radio as required. */
   required?: boolean;
   /** Validation error rendered for invalid state. */
   error?: string;
-  /** Radio control size. */
+  /** Controls radio indicator and label sizing. */
   size?: RadioSize;
   /** Selected radio color. */
   color?: RadioColor;

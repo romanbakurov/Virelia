@@ -7,6 +7,8 @@ export interface PopoverArrowProps extends Omit<
   ComponentPropsWithoutRef<typeof FloatingArrow>,
   'context' | 'staticOffset'
 > {
+  /** Arrow alignment along the popover edge. */
   align?: PopoverArrowAlign;
+  /** Arrow offset from the aligned edge. */
   offset?: number | string;
 }

@@ -5,5 +5,6 @@ export interface TabsContentProps
   extends
     BaseTabsContentProps,
     Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'value'> {
+  /** Tab panel content. */
   children: ReactNode;
 }

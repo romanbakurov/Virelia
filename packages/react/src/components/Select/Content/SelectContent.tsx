@@ -27,7 +27,9 @@ import type { SelectContentProps } from './types';
 import styles from './SelectContent.module.scss';
 
 export interface SelectContentSlotProps {
+  /** Custom dropdown content slots. */
   children?: ReactNode;
+  /** Class name applied to the dropdown content. */
   className?: string;
 }
 

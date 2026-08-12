@@ -9,7 +9,7 @@ export interface BaseButtonProps {
   color?: ButtonColor;
   /** Visual style for the button surface. */
   appearance?: ButtonAppearance;
-  /** Button size. */
+  /** Controls button height, padding, and typography scale. */
   size?: ButtonSize;
   /** Corner shape for the button. */
   shape?: ButtonShape;
@@ -19,7 +19,7 @@ export interface BaseButtonProps {
   loading?: boolean;
   /** Replaces visible content while loading. */
   loadingText?: string;
-  /** Disables interaction. */
+  /** Disables interaction and applies disabled styling. */
   disabled?: boolean;
   /** Renders the button as an icon-only action. */
   iconOnly?: boolean;

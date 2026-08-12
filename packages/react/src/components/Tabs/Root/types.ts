@@ -7,5 +7,6 @@ type DivProps = Omit<
 >;
 
 export interface TabsProps extends BaseTabsProps, DivProps {
+  /** Tab list and tab panel content. */
   children: ReactNode;
 }

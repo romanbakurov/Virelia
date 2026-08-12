@@ -7,7 +7,9 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import styles from '../Trigger/SelectTrigger.module.scss';
 
 export interface SelectValueProps {
+  /** Custom value content; defaults to the current selected value text. */
   children?: ReactNode;
+  /** Class name applied to the value wrapper. */
   className?: string;
 }
 

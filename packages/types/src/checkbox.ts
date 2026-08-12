@@ -8,7 +8,7 @@ export interface BaseCheckboxProps {
   checked?: boolean;
   /** Initial checked state for uncontrolled usage. */
   defaultChecked?: boolean;
-  /** Disables interaction. */
+  /** Disables interaction and applies disabled styling. */
   disabled?: boolean;
   /** Marks the checkbox as required. */
   required?: boolean;
@@ -16,7 +16,7 @@ export interface BaseCheckboxProps {
   indeterminate?: boolean;
   /** Error message rendered for invalid state. */
   error?: string;
-  /** Checkbox size. */
+  /** Controls checkbox indicator and label sizing. */
   size?: CheckboxSize;
   /** Selected checkbox color. */
   color?: CheckboxColor;

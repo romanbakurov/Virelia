@@ -9,7 +9,9 @@ import type {
 } from 'react-native';
 
 export type ButtonIconElement = ReactElement<{
+  /** Color passed to icon elements by the button. */
   color?: string;
+  /** Size passed to icon elements by the button. */
   size?: number;
 }>;
 

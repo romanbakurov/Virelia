@@ -9,7 +9,9 @@ import { useTabs } from '../internal/TabsContext';
 import type { TabsTriggerLayout } from '../types';
 
 export interface TabsIndicatorProps {
+  /** Custom indicator content. */
   children?: ReactNode;
+  /** Style applied to the indicator container. */
   style?: StyleProp<ViewStyle>;
 }
 
