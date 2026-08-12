@@ -182,7 +182,7 @@ export const SelectItemRow = ({
           )
         ) : (
           <>
-            {option.icon && (
+            {Boolean(option.icon) && (
               <View style={styles.optionIcon}>
                 {isValidElement(option.icon)
                   ? cloneElement(
@@ -206,7 +206,7 @@ export const SelectItemRow = ({
               >
                 {option.label}
               </Text>
-              {option.description && (
+              {Boolean(option.description) && (
                 <Text
                   numberOfLines={2}
                   style={[styles.optionDescription, { color: descriptionFg }]}
@@ -216,7 +216,7 @@ export const SelectItemRow = ({
               )}
             </View>
 
-            {option.badge && (
+            {Boolean(option.badge) && (
               <View
                 style={[
                   styles.badge,

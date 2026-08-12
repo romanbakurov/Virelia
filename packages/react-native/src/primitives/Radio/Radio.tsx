@@ -248,7 +248,7 @@ export const Radio = forwardRef<View, RadioProps>(
           )}
         </Pressable>
 
-        {error && (
+        {Boolean(error) && (
           <Text
             accessibilityLiveRegion='polite'
             style={[
