@@ -1,10 +1,10 @@
 'use client';
 
+import type { CSSProperties } from 'react';
 import { Close, Menu } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react';
 
 import { useComponentNavigation } from '../ComponentNavigationProvider';
-import styles from './ComponentNavigationTrigger.module.css';
 
 export function ComponentNavigationTrigger() {
   const { open, toggleNavigation } = useComponentNavigation();
@@ -18,7 +18,11 @@ export function ComponentNavigationTrigger() {
       appearance='ghost'
       shape='square'
       iconOnly
-      className={styles.trigger}
+      style={
+        {
+          '--icon-size': '22px',
+        } as CSSProperties
+      }
       aria-label={
         open ? 'Close component navigation' : 'Open component navigation'
       }

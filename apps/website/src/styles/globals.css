@@ -7,6 +7,17 @@
   --portal-navigation-easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+html[data-vellira-theme='dark'] .shiki,
+html[data-vellira-theme='dark'] .shiki span,
+html[data-vellira-theme='high-contrast'] .shiki,
+html[data-vellira-theme='high-contrast'] .shiki span {
+  color: var(--shiki-dark) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
 html {
   scroll-behavior: smooth;
   font-family: var(--font-family-base);
