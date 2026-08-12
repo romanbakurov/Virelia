@@ -1,5 +1,6 @@
 .root {
   margin-top: var(--space-12);
+  container: component-api / inline-size;
 }
 
 .heading {
@@ -42,13 +43,14 @@
 
 .table {
   width: 100%;
+  min-width: 860px;
   border-collapse: collapse;
   text-align: left;
   table-layout: fixed;
 }
 
 .propColumn {
-  width: 18%;
+  width: 22%;
 }
 
 .typeColumn {
@@ -56,11 +58,27 @@
 }
 
 .defaultColumn {
-  width: 14%;
+  width: 12%;
 }
 
 .descriptionColumn {
-  width: 38%;
+  width: 36%;
+}
+
+.inheritedTable {
+  min-width: 720px;
+}
+
+.inheritedPropColumn {
+  width: 32%;
+}
+
+.inheritedTypeColumn {
+  width: 34%;
+}
+
+.inheritedDescriptionColumn {
+  width: 34%;
 }
 
 .table th {
@@ -95,20 +113,27 @@
 
 .propName {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: var(--space-2);
+  max-width: 100%;
 }
 
 .propName code {
+  min-width: 0;
+  max-width: 100%;
   color: var(--text-primary);
   font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .type,
 .defaultValue {
   display: inline-block;
+  max-width: 100%;
   padding: 2px 7px;
   color: var(--text-primary);
   font-family: var(--font-family-mono);
@@ -120,9 +145,8 @@
 }
 
 .type {
-  max-width: 360px;
   white-space: normal;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
   word-break: normal;
   color: var(--text-brand);
   background: color-mix(in srgb, var(--text-brand) 5%, transparent);
@@ -149,7 +173,14 @@
 }
 
 .propDescription {
-  min-width: 260px;
+  overflow-wrap: break-word;
+}
+
+.inheritedPropDescription {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  overflow-wrap: break-word;
 }
 
 .inherited {
@@ -187,9 +218,59 @@
 
 .tableWrapper[data-tone='muted'] {
   border-color: var(--border-muted);
+  background: var(--surface-subtle);
 }
 
-@media (width <= 760px) {
+.tableWrapper[data-tone='muted'] .table th {
+  background: color-mix(in srgb, var(--surface-subtle) 70%, white);
+}
+
+.tableWrapper[data-tone='muted'] .table td {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.descriptionDetails summary {
+  width: fit-content;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.descriptionDetails p {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}
+
+.typeDetails summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.typeDetails summary .type {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeDetails summary span {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.typeDetails > .type {
+  margin-top: var(--space-2);
+}
+
+@container component-api (width <= 980px) {
   .heading {
     align-items: flex-start;
   }
@@ -198,7 +279,103 @@
     display: none;
   }
 
+  .tableWrapper {
+    overflow-x: visible;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+
   .table {
-    min-width: 760px;
+    display: block;
+    min-width: 0;
+  }
+
+  .table colgroup,
+  .table thead {
+    display: none;
+  }
+
+  .table tbody {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .table tr {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--surface-default);
+    border: 1px solid var(--border-muted);
+    border-radius: var(--radius-md);
+  }
+
+  .table td {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+    min-width: 0;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .table tbody tr:hover {
+    background: var(--surface-default);
+  }
+
+  .inheritedTable tr {
+    grid-template-columns:
+      minmax(140px, 1fr)
+      minmax(180px, 1.2fr)
+      minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--surface-subtle);
+  }
+
+  .inheritedTable td {
+    display: block;
+    min-width: 0;
+  }
+
+  .inheritedTable td::before {
+    content: none;
+  }
+
+  .inheritedTable td[data-empty='true'] {
+    display: none;
+  }
+}
+
+@container component-api (width <= 520px) {
+  .heading {
+    display: block;
+  }
+
+  .table td {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .inheritedSummary {
+    align-items: flex-start;
+  }
+
+  .inheritedTable tr {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: var(--space-1);
+    padding: var(--space-2);
+  }
+
+  .inheritedPropDescription {
+    grid-column: 1 / -1;
   }
 }
