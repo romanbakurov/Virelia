@@ -1,65 +1,59 @@
 import type { PlaygroundControl } from '../../components/PlaygroundControls';
 
-import type {
-  ButtonPlaygroundAppearance,
-  ButtonPlaygroundColor,
-  ButtonPlaygroundShape,
-  ButtonPlaygroundSize,
-  ButtonPlaygroundState,
-  ButtonPlaygroundValue,
-} from './ButtonPlayground';
-
-const appearances: ButtonPlaygroundAppearance[] = [
-  'solid',
-  'outline',
-  'soft',
-  'ghost',
-  'link',
-];
-
-const colors: ButtonPlaygroundColor[] = [
-  'primary',
-  'neutral',
-  'success',
-  'warning',
-  'danger',
-];
-
-const sizes: ButtonPlaygroundSize[] = ['sm', 'md', 'lg'];
-
-const shapes: ButtonPlaygroundShape[] = ['square', 'rounded', 'pill'];
-
-const states: ButtonPlaygroundState[] = ['default', 'disabled', 'loading'];
+import type { ButtonPlaygroundValue } from './ButtonPlayground';
 
 export const buttonPlaygroundControls = [
   {
     type: 'select',
-    key: 'appearance',
-    label: 'Appearance',
-    options: appearances,
+    key: 'color',
+    label: 'Color',
+    options: ['primary', 'neutral', 'success', 'warning', 'danger'],
   },
   {
     type: 'select',
-    key: 'color',
-    label: 'Color',
-    options: colors,
+    key: 'appearance',
+    label: 'Appearance',
+    options: ['solid', 'outline', 'ghost', 'soft', 'link'],
   },
   {
     type: 'select',
     key: 'size',
     label: 'Size',
-    options: sizes,
+    options: ['sm', 'md', 'lg'],
   },
   {
     type: 'select',
     key: 'shape',
     label: 'Shape',
-    options: shapes,
+    options: ['square', 'rounded', 'pill'],
   },
   {
-    type: 'select',
-    key: 'state',
-    label: 'State',
-    options: states,
+    type: 'toggle',
+    key: 'fullWidth',
+    label: 'Full Width',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'loading',
+    label: 'Loading',
+    group: 'Options',
+  },
+  {
+    type: 'text',
+    key: 'loadingText',
+    label: 'Loading Text',
+  },
+  {
+    type: 'toggle',
+    key: 'disabled',
+    label: 'Disabled',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'iconOnly',
+    label: 'Icon Only',
+    group: 'Options',
   },
 ] as const satisfies readonly PlaygroundControl<ButtonPlaygroundValue>[];

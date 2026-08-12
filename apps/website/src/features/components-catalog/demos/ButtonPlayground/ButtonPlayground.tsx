@@ -1,48 +1,55 @@
 'use client';
 
 import type { ReactNode } from 'react';
+
 import { ComponentPlayground } from '../../components/ComponentPlayground';
 import { useComponentDemoState } from '../../components/ComponentDemoStateProvider';
 import { PlaygroundControlsFromSchema } from '../../components/PlaygroundControls';
+
 import { buttonPlaygroundControls } from './buttonPlaygroundSchema';
 
-export type ButtonPlaygroundAppearance =
-  'solid' | 'outline' | 'ghost' | 'soft' | 'link';
-
-export type ButtonPlaygroundColor =
-  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
-
-export type ButtonPlaygroundSize = 'sm' | 'md' | 'lg';
-export type ButtonPlaygroundShape = 'square' | 'rounded' | 'pill';
-export type ButtonPlaygroundState = 'default' | 'disabled' | 'loading';
-
 export type ButtonPlaygroundValue = {
-  appearance: ButtonPlaygroundAppearance;
-  color: ButtonPlaygroundColor;
-  size: ButtonPlaygroundSize;
-  shape: ButtonPlaygroundShape;
-  state: ButtonPlaygroundState;
+  color: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+  appearance: 'solid' | 'outline' | 'ghost' | 'soft' | 'link';
+  size: 'sm' | 'md' | 'lg';
+  shape: 'square' | 'rounded' | 'pill';
+  fullWidth: boolean;
+  loading: boolean;
+  loadingText: string;
+  disabled: boolean;
+  iconOnly: boolean;
 };
 
 type ButtonPlaygroundProps = {
-  renderButton: (value: ButtonPlaygroundValue) => ReactNode;
+  renderButton: (
+    value: ButtonPlaygroundValue,
+    onChange: <K extends keyof ButtonPlaygroundValue>(
+      key: K,
+      nextValue: ButtonPlaygroundValue[K]
+    ) => void
+  ) => ReactNode;
 };
 
-const initialValue: ButtonPlaygroundValue = {
-  appearance: 'solid',
+export const initialButtonPlaygroundValue: ButtonPlaygroundValue = {
   color: 'primary',
+  appearance: 'solid',
   size: 'md',
   shape: 'pill',
-  state: 'default',
+  fullWidth: false,
+  loading: false,
+  loadingText: '',
+  disabled: false,
+  iconOnly: false,
 };
 
 export function ButtonPlayground({ renderButton }: ButtonPlaygroundProps) {
-  const [value, setValue] =
-    useComponentDemoState<ButtonPlaygroundValue>(initialValue);
+  const [value, setValue] = useComponentDemoState<ButtonPlaygroundValue>(
+    initialButtonPlaygroundValue
+  );
 
-  const updateValue = <K extends keyof ButtonPlaygroundValue>(
-    key: K,
-    nextValue: ButtonPlaygroundValue[K]
+  const update = (
+    key: keyof ButtonPlaygroundValue,
+    nextValue: ButtonPlaygroundValue[keyof ButtonPlaygroundValue]
   ) => {
     setValue({
       ...value,
@@ -52,15 +59,16 @@ export function ButtonPlayground({ renderButton }: ButtonPlaygroundProps) {
 
   return (
     <ComponentPlayground
+      previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
           value={value}
           controls={buttonPlaygroundControls}
-          onChange={updateValue}
+          onChange={update}
         />
       }
     >
-      {renderButton(value)}
+      {renderButton(value, update)}
     </ComponentPlayground>
   );
 }

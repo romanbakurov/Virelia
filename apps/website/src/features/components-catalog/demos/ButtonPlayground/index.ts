@@ -1,10 +1,6 @@
-export { ButtonPlayground } from './ButtonPlayground';
-
-export type {
-  ButtonPlaygroundValue,
-  ButtonPlaygroundAppearance,
-  ButtonPlaygroundColor,
-  ButtonPlaygroundSize,
-  ButtonPlaygroundShape,
-  ButtonPlaygroundState,
+export {
+  ButtonPlayground,
+  initialButtonPlaygroundValue,
 } from './ButtonPlayground';
+
+export type { ButtonPlaygroundValue } from './ButtonPlayground';

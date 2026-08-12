@@ -2,20 +2,15 @@
 
 import type { ComponentPlatform } from '../../types';
 
-import { useComponentDemoState } from '../../components/ComponentDemoStateProvider';
 import { ComponentCodeBlock } from '../../components/ComponentCodeBlock';
+import { useComponentDemoState } from '../../components/ComponentDemoStateProvider';
 
-import type { ButtonPlaygroundValue } from '../ButtonPlayground';
+import {
+  initialButtonPlaygroundValue,
+  type ButtonPlaygroundValue,
+} from '../ButtonPlayground';
 
-import styles from './ButtonUsage.module.css';
-
-const initialValue: ButtonPlaygroundValue = {
-  appearance: 'solid',
-  color: 'primary',
-  size: 'md',
-  shape: 'pill',
-  state: 'default',
-};
+import styles from '../ButtonUsage/ButtonUsage.module.css';
 
 type ButtonUsageProps = {
   platform: ComponentPlatform;
@@ -28,14 +23,16 @@ function createButtonCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = [];
+  const props: string[] = platform === 'react' ? [] : [];
 
-  if (value.appearance !== 'solid') {
-    props.push(`appearance='${value.appearance}'`);
-  }
+  const children = platform === 'react' ? '  Button' : '  Button';
 
   if (value.color !== 'primary') {
     props.push(`color='${value.color}'`);
+  }
+
+  if (value.appearance !== 'solid') {
+    props.push(`appearance='${value.appearance}'`);
   }
 
   if (value.size !== 'md') {
@@ -46,32 +43,51 @@ function createButtonCode(
     props.push(`shape='${value.shape}'`);
   }
 
-  if (value.state === 'disabled') {
+  if (value.fullWidth) {
+    props.push('fullWidth');
+  }
+
+  if (value.loading) {
+    props.push('loading');
+  }
+
+  if (value.loadingText) {
+    props.push(`loadingText='${value.loadingText}'`);
+  }
+
+  if (value.disabled) {
     props.push('disabled');
   }
 
-  if (value.state === 'loading') {
-    props.push('loading');
-    props.push(`loadingText='Loading'`);
+  if (value.iconOnly) {
+    props.push('iconOnly');
   }
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
+  if (!children) {
+    return `import { Button } from '${packageName}';
+
+<Button${propsText}/>`;
+  }
+
   return `import { Button } from '${packageName}';
 
 <Button${propsText}>
-  Button
+${children}
 </Button>`;
 }
 
 export function ButtonUsage({ platform }: ButtonUsageProps) {
-  const [value] = useComponentDemoState<ButtonPlaygroundValue>(initialValue);
+  const [value] = useComponentDemoState<ButtonPlaygroundValue>(
+    initialButtonPlaygroundValue
+  );
 
   const code = createButtonCode(platform, value);
 
   return (
     <section className={styles.root}>
-      <div className={styles.heading}>
+      <div className={styles.header}>
         <h2 className={styles.title}>Usage</h2>
 
         <p className={styles.description}>

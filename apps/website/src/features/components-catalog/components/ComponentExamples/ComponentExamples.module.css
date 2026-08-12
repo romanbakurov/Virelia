@@ -29,6 +29,8 @@
 }
 
 .card {
+  display: grid;
+  grid-template-rows: auto minmax(180px, auto) auto;
   overflow: hidden;
   background: var(--surface-default);
   border: 1px solid var(--border-muted);
@@ -58,7 +60,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 160px;
+  min-height: 180px;
   padding: var(--space-8);
   background-color: var(--surface-subtle);
   background-image: radial-gradient(

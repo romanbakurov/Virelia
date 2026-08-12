@@ -5,43 +5,53 @@ import type { ReactNode } from 'react';
 import { ComponentPlayground } from '../../components/ComponentPlayground';
 import { useComponentDemoState } from '../../components/ComponentDemoStateProvider';
 import { PlaygroundControlsFromSchema } from '../../components/PlaygroundControls';
+
 import { inputPlaygroundControls } from './inputPlaygroundSchema';
 
-export type InputPlaygroundType =
-  'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
-
-export type InputPlaygroundSize = 'sm' | 'md' | 'lg';
-
-export type InputPlaygroundColor =
-  'primary' | 'neutral' | 'success' | 'warning' | 'danger';
-
-export type InputPlaygroundVariant = 'outline' | 'filled' | 'soft';
-
-export type InputPlaygroundState =
-  'default' | 'disabled' | 'loading' | 'invalid' | 'readOnly';
-
 export type InputPlaygroundValue = {
-  type: InputPlaygroundType;
-  size: InputPlaygroundSize;
-  color: InputPlaygroundColor;
-  variant: InputPlaygroundVariant;
-  state: InputPlaygroundState;
-  clearable: boolean;
+  label: string;
+  description: string;
+  placeholder: string;
+  size: 'sm' | 'md' | 'lg';
+  color: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
+  variant: 'outline' | 'filled' | 'soft';
+  disabled: boolean;
+  readOnly: boolean;
   required: boolean;
+  invalid: boolean;
+  loading: boolean;
+  clearable: boolean;
+  revealPassword: boolean;
+  showCounter: boolean;
+  error: string;
 };
 
 type InputPlaygroundProps = {
-  renderInput: (value: InputPlaygroundValue) => ReactNode;
+  renderInput: (
+    value: InputPlaygroundValue,
+    onChange: <K extends keyof InputPlaygroundValue>(
+      key: K,
+      nextValue: InputPlaygroundValue[K]
+    ) => void
+  ) => ReactNode;
 };
 
 export const initialInputPlaygroundValue: InputPlaygroundValue = {
-  type: 'text',
+  label: '',
+  description: '',
+  placeholder: 'name@example.com',
   size: 'md',
   color: 'primary',
   variant: 'outline',
-  state: 'default',
-  clearable: false,
+  disabled: false,
+  readOnly: false,
   required: false,
+  invalid: false,
+  loading: false,
+  clearable: false,
+  revealPassword: false,
+  showCounter: false,
+  error: '',
 };
 
 export function InputPlayground({ renderInput }: InputPlaygroundProps) {
@@ -49,9 +59,9 @@ export function InputPlayground({ renderInput }: InputPlaygroundProps) {
     initialInputPlaygroundValue
   );
 
-  const update = <K extends keyof InputPlaygroundValue>(
-    key: K,
-    nextValue: InputPlaygroundValue[K]
+  const update = (
+    key: keyof InputPlaygroundValue,
+    nextValue: InputPlaygroundValue[keyof InputPlaygroundValue]
   ) => {
     setValue({
       ...value,
@@ -61,7 +71,7 @@ export function InputPlayground({ renderInput }: InputPlaygroundProps) {
 
   return (
     <ComponentPlayground
-      previewAlign='start'
+      previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
           value={value}
@@ -70,7 +80,7 @@ export function InputPlayground({ renderInput }: InputPlaygroundProps) {
         />
       }
     >
-      {renderInput(value)}
+      {renderInput(value, update)}
     </ComponentPlayground>
   );
 }

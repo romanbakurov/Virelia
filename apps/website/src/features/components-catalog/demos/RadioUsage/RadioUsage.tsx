@@ -23,11 +23,20 @@ function createRadioCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = [
-    'value="option"',
-    "label='Email notifications'",
-    "description='Receive updates by email.'",
-  ];
+  const props: string[] =
+    platform === 'react'
+      ? [
+          'value="option"',
+          "label='Email notifications'",
+          "description='Receive updates by email.'",
+        ]
+      : [
+          'value="option"',
+          "label='Email notifications'",
+          "description='Receive updates by email.'",
+        ];
+
+  const children = platform === 'react' ? '' : '';
 
   if (value.checked) {
     props.push('checked');
@@ -51,9 +60,17 @@ function createRadioCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  return `import { Radio } from '${packageName}';
+  if (!children) {
+    return `import { Radio } from '${packageName}';
 
 <Radio${propsText}/>`;
+  }
+
+  return `import { Radio } from '${packageName}';
+
+<Radio${propsText}>
+${children}
+</Radio>`;
 }
 
 export function RadioUsage({ platform }: RadioUsageProps) {

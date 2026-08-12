@@ -84,6 +84,173 @@ type ComponentGeneratorConfig = {
 };
 
 const componentConfigs: Record<string, ComponentGeneratorConfig> = {
+  Button: {
+    react: {
+      children: 'Button',
+    },
+    native: {
+      children: 'Button',
+    },
+    demo: {
+      initialValues: {
+        color: 'primary',
+        appearance: 'solid',
+        size: 'md',
+        shape: 'pill',
+        fullWidth: false,
+        loading: false,
+        disabled: false,
+        iconOnly: false,
+      },
+    },
+
+    defaults: {
+      shared: {
+        color: 'primary',
+        appearance: 'solid',
+        size: 'md',
+        shape: 'pill',
+        fullWidth: false,
+        loading: false,
+        disabled: false,
+        iconOnly: false,
+      },
+
+      react: {
+        asChild: false,
+      },
+    },
+
+    examples: [
+      {
+        title: 'Basic',
+        description: 'Primary action button.',
+        props: [],
+      },
+      {
+        title: 'Appearance',
+        description: 'Alternative button surface.',
+        props: [`appearance='outline'`],
+      },
+      {
+        title: 'Semantic color',
+        description: 'Semantic tone for destructive or status actions.',
+        props: [`color='danger'`],
+      },
+      {
+        title: 'Loading',
+        description: 'Shows progress and prevents interaction.',
+        props: ['loading', `loadingText='Saving...'`],
+      },
+      {
+        title: 'Disabled',
+        description: 'Disabled action state.',
+        props: ['disabled'],
+      },
+      {
+        title: 'Full width',
+        description: 'Button expands to fill its container.',
+        props: ['fullWidth'],
+      },
+      {
+        title: 'Size and shape',
+        description: 'Large rounded button treatment.',
+        props: [`size='lg'`, `shape='rounded'`],
+      },
+    ],
+  },
+
+  Input: {
+    demo: {
+      label: 'Email',
+      description: 'Used for account notifications.',
+      initialValues: {
+        placeholder: 'name@example.com',
+        size: 'md',
+        color: 'primary',
+        variant: 'outline',
+        disabled: false,
+        readOnly: false,
+        required: false,
+        invalid: false,
+        loading: false,
+        clearable: false,
+        revealPassword: false,
+        showCounter: false,
+        error: '',
+      },
+      previewWidth: 'field',
+    },
+
+    defaults: {
+      shared: {
+        size: 'md',
+        color: 'primary',
+        variant: 'outline',
+        disabled: false,
+        readOnly: false,
+        required: false,
+        invalid: false,
+        loading: false,
+        clearable: false,
+        revealPassword: false,
+        showCounter: false,
+      },
+
+      react: {
+        type: 'text',
+        startIconTone: 'default',
+        endIconTone: 'default',
+        clearIconTone: 'danger',
+      },
+
+      native: {
+        type: 'text',
+        startIconTone: 'default',
+        endIconTone: 'default',
+        clearIconTone: 'danger',
+      },
+    },
+
+    examples: [
+      {
+        title: 'Basic',
+        description: 'Labeled text input.',
+        props: [],
+      },
+      {
+        title: 'Clearable',
+        description: 'Shows a clear action when a value is present.',
+        props: ['clearable', `defaultValue='Acme Inc.'`],
+      },
+      {
+        title: 'Loading',
+        description: 'Shows progress while the field is waiting on work.',
+        props: ['loading', `defaultValue='Checking...'`],
+      },
+      {
+        title: 'Error',
+        description: 'Validation feedback state.',
+        props: [`error='Enter a valid email.'`],
+      },
+      {
+        title: 'Read only',
+        description: 'Preserves value display without allowing edits.',
+        props: ['readOnly', `defaultValue='readonly@example.com'`],
+      },
+      {
+        title: 'Password',
+        description: 'Password input with reveal control.',
+        props: [`type='password'`, 'revealPassword'],
+      },
+      {
+        title: 'Counter',
+        description: 'Character count when maxLength is set.',
+        props: ['showCounter', 'maxLength={80}'],
+      },
+    ],
+  },
+
   Radio: {
     react: {
       demoProps: 'value="option"',
@@ -104,6 +271,49 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
       },
       previewWidth: 'field',
     },
+
+    defaults: {
+      shared: {
+        defaultChecked: false,
+        disabled: false,
+        required: false,
+        size: 'md',
+        color: 'primary',
+      },
+    },
+
+    examples: [
+      {
+        title: 'Basic',
+        description: 'Standalone radio option.',
+        props: [],
+      },
+      {
+        title: 'Selected',
+        description: 'Selected state.',
+        props: ['checked'],
+      },
+      {
+        title: 'Disabled',
+        description: 'Disabled state.',
+        props: ['disabled'],
+      },
+      {
+        title: 'Required',
+        description: 'Required form control.',
+        props: ['required'],
+      },
+      {
+        title: 'Error',
+        description: 'Validation error state.',
+        props: [`error='Please choose an option.'`],
+      },
+      {
+        title: 'Size and color',
+        description: 'Large semantic radio treatment.',
+        props: [`size='lg'`, `color='success'`],
+      },
+    ],
 
     related: ['radio-group', 'checkbox', 'select'],
   },
@@ -208,6 +418,16 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
         title: 'Error',
         description: 'Validation error state.',
         props: [`error='Please review this option.'`],
+      },
+      {
+        title: 'Disabled',
+        description: 'Disabled select state.',
+        props: ['disabled'],
+      },
+      {
+        title: 'Loading',
+        description: 'Loading state while options are being resolved.',
+        props: ['loading'],
       },
     ],
 
@@ -805,16 +1025,44 @@ const usageFile = path.join(usageDir, `${componentName}Usage.tsx`);
 
 const usageIndexFile = path.join(usageDir, 'index.ts');
 
-const usageStaticProps = [
-  getDemoProps('react') || null,
-  componentConfig.demo?.label ? `label='${componentConfig.demo.label}'` : null,
-  componentConfig.demo?.description
-    ? `description='${componentConfig.demo.description}'`
-    : null,
-]
-  .filter((prop): prop is string => Boolean(prop))
-  .map((prop) => `    ${JSON.stringify(prop)},`)
-  .join('\n');
+function createUsageStaticProps(platform: Platform) {
+  return [
+    getDemoProps(platform) || null,
+    componentConfig.demo?.label
+      ? `label='${componentConfig.demo.label}'`
+      : null,
+    componentConfig.demo?.description
+      ? `description='${componentConfig.demo.description}'`
+      : null,
+  ]
+    .filter((prop): prop is string => Boolean(prop))
+    .map((prop) => `        ${JSON.stringify(prop)},`)
+    .join('\n');
+}
+
+const reactUsageStaticProps = createUsageStaticProps('react');
+
+const nativeUsageStaticProps = createUsageStaticProps('react-native');
+
+function createUsageChildren(platform: Platform) {
+  const children =
+    platform === 'react'
+      ? (componentConfig.react?.children ?? '')
+      : (componentConfig.native?.children ?? '');
+
+  if (!children) {
+    return '';
+  }
+
+  return children
+    .split('\n')
+    .map((line) => `  ${line}`)
+    .join('\n');
+}
+
+const reactUsageChildren = createUsageChildren('react');
+
+const nativeUsageChildren = createUsageChildren('react-native');
 
 const usageContent = `'use client';
 
@@ -843,9 +1091,19 @@ function create${componentName}Code(
       ? '@vellira-ui/react'
       : '@vellira-ui/react-native';
 
-const props: string[] = [
-${usageStaticProps}
-];
+  const props: string[] =
+    platform === 'react'
+      ? [
+${reactUsageStaticProps}
+        ]
+      : [
+${nativeUsageStaticProps}
+        ];
+
+  const children =
+    platform === 'react'
+      ? ${JSON.stringify(reactUsageChildren)}
+      : ${JSON.stringify(nativeUsageChildren)};
 
 ${playgroundProps
   .map((prop) => {
@@ -880,9 +1138,17 @@ ${playgroundProps
   const propsText =
     props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
 
-  return \`import { ${componentName} } from '\${packageName}';
+  if (!children) {
+    return \`import { ${componentName} } from '\${packageName}';
 
 <${componentName}\${propsText}/>\`;
+  }
+
+  return \`import { ${componentName} } from '\${packageName}';
+
+<${componentName}\${propsText}>
+\${children}
+</${componentName}>\`;
 }
 
 export function ${componentName}Usage({
@@ -1023,7 +1289,7 @@ function createGeneratedExamples(): GeneratedExample[] {
     });
   }
 
-  return examples.slice(0, 4);
+  return examples;
 }
 
 const generatedExamples = createGeneratedExamples();
@@ -1670,11 +1936,15 @@ const nativeStaticDemoProps = getDemoProps('react-native');
 const reactDemoChildren = componentConfig.react?.children ?? '';
 const nativeDemoChildren = componentConfig.native?.children ?? '';
 
+function isPlaygroundProp(name: string) {
+  return playgroundProps.some((prop) => prop.name === name);
+}
+
 const demoPresentationProps = [
-  componentConfig.demo?.label
+  componentConfig.demo?.label && !isPlaygroundProp('label')
     ? `label=${toTsString(componentConfig.demo.label)}`
     : null,
-  componentConfig.demo?.description
+  componentConfig.demo?.description && !isPlaygroundProp('description')
     ? `description=${toTsString(componentConfig.demo.description)}`
     : null,
 ]

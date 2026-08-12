@@ -7,15 +7,17 @@ import { ButtonPlayground } from '../ButtonPlayground';
 export function ButtonDemo() {
   return (
     <ButtonPlayground
-      renderButton={({ appearance, color, size, shape, state }) => (
+      renderButton={(value) => (
         <Button
-          appearance={appearance}
-          color={color}
-          size={size}
-          shape={shape}
-          disabled={state === 'disabled'}
-          loading={state === 'loading'}
-          loadingText='Loading'
+          color={value.color}
+          appearance={value.appearance}
+          size={value.size}
+          shape={value.shape}
+          fullWidth={value.fullWidth}
+          loading={value.loading}
+          loadingText={value.loadingText || undefined}
+          disabled={value.disabled}
+          iconOnly={value.iconOnly}
         >
           Button
         </Button>

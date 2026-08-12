@@ -23,10 +23,15 @@ function createSelectCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = [
-    "label='Favorite framework'",
-    "description='Choose one option.'",
-  ];
+  const props: string[] =
+    platform === 'react'
+      ? ["label='Favorite framework'", "description='Choose one option.'"]
+      : ["label='Favorite framework'", "description='Choose one option.'"];
+
+  const children =
+    platform === 'react'
+      ? "  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>"
+      : "  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />";
 
   if (value.placeholder) {
     props.push(`placeholder='${value.placeholder}'`);
@@ -70,9 +75,17 @@ function createSelectCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  return `import { Select } from '${packageName}';
+  if (!children) {
+    return `import { Select } from '${packageName}';
 
 <Select${propsText}/>`;
+  }
+
+  return `import { Select } from '${packageName}';
+
+<Select${propsText}>
+${children}
+</Select>`;
 }
 
 export function SelectUsage({ platform }: SelectUsageProps) {

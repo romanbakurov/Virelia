@@ -13,147 +13,183 @@ type InputExamplesProps = {
 export function InputExamples({ platform }: InputExamplesProps) {
   const reactExamples = [
     {
-      title: 'Search',
-      description: 'Create a searchable field with a built-in clear action.',
+      title: 'Basic',
+      description: 'Labeled text input.',
       preview: (
         <ReactInput
-          type='search'
-          placeholder='Search components'
-          clearable
-          defaultValue='Button'
+          label='Email'
+          description='Used for account notifications.'
         />
       ),
-      code: `import { Input } from '@vellira-ui/react';
-
-<Input
-  type='search'
-  placeholder='Search components'
-  clearable
-  defaultValue='Button'
-/>`,
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n/>",
+    },
+    {
+      title: 'Clearable',
+      description: 'Shows a clear action when a value is present.',
+      preview: (
+        <ReactInput
+          label='Email'
+          description='Used for account notifications.'
+          clearable
+          defaultValue='Acme Inc.'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  clearable\n  defaultValue='Acme Inc.'\n/>",
+    },
+    {
+      title: 'Loading',
+      description: 'Shows progress while the field is waiting on work.',
+      preview: (
+        <ReactInput
+          label='Email'
+          description='Used for account notifications.'
+          loading
+          defaultValue='Checking...'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  loading\n  defaultValue='Checking...'\n/>",
+    },
+    {
+      title: 'Error',
+      description: 'Validation feedback state.',
+      preview: (
+        <ReactInput
+          label='Email'
+          description='Used for account notifications.'
+          error='Enter a valid email.'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  error='Enter a valid email.'\n/>",
+    },
+    {
+      title: 'Read only',
+      description: 'Preserves value display without allowing edits.',
+      preview: (
+        <ReactInput
+          label='Email'
+          description='Used for account notifications.'
+          readOnly
+          defaultValue='readonly@example.com'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  readOnly\n  defaultValue='readonly@example.com'\n/>",
     },
     {
       title: 'Password',
-      description: 'Let users reveal or hide sensitive input when needed.',
+      description: 'Password input with reveal control.',
       preview: (
         <ReactInput
+          label='Email'
+          description='Used for account notifications.'
           type='password'
-          placeholder='Enter password'
           revealPassword
         />
       ),
-      code: `import { Input } from '@vellira-ui/react';
-
-<Input
-  type='password'
-  placeholder='Enter password'
-  revealPassword
-/>`,
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  type='password'\n  revealPassword\n/>",
     },
     {
-      title: 'Validation',
-      description:
-        'Communicate invalid input with an accessible error message.',
+      title: 'Counter',
+      description: 'Character count when maxLength is set.',
       preview: (
         <ReactInput
-          type='email'
-          defaultValue='hello@'
-          invalid
-          error='Enter a valid email address.'
+          label='Email'
+          description='Used for account notifications.'
+          showCounter
+          maxLength={80}
         />
       ),
-      code: `import { Input } from '@vellira-ui/react';
-
-<Input
-  type='email'
-  defaultValue='hello@'
-  invalid
-  error='Enter a valid email address.'
-/>`,
-    },
-    {
-      title: 'Prefix and suffix',
-      description: 'Add contextual content inside the input chrome.',
-      preview: <ReactInput placeholder='0.00' prefix='$' suffix='USD' />,
-      code: `import { Input } from '@vellira-ui/react';
-
-<Input
-  placeholder='0.00'
-  prefix='$'
-  suffix='USD'
-/>`,
+      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  showCounter\n  maxLength={80}\n/>",
     },
   ] as const;
 
   const nativeExamples = [
     {
-      title: 'Search',
-      description: 'Create a native search field with a clear action.',
+      title: 'Basic',
+      description: 'Labeled text input.',
       preview: (
         <NativeInput
-          type='search'
-          placeholder='Search components'
-          clearable
-          defaultValue='Button'
+          label='Email'
+          description='Used for account notifications.'
         />
       ),
-      code: `import { Input } from '@vellira-ui/react-native';
-
-<Input
-  type='search'
-  placeholder='Search components'
-  clearable
-  defaultValue='Button'
-/>`,
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n/>",
+    },
+    {
+      title: 'Clearable',
+      description: 'Shows a clear action when a value is present.',
+      preview: (
+        <NativeInput
+          label='Email'
+          description='Used for account notifications.'
+          clearable
+          defaultValue='Acme Inc.'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  clearable\n  defaultValue='Acme Inc.'\n/>",
     },
     {
       title: 'Loading',
-      description: 'Communicate that the field is temporarily processing.',
+      description: 'Shows progress while the field is waiting on work.',
       preview: (
         <NativeInput
-          placeholder='Checking availability'
-          defaultValue='vellira'
+          label='Email'
+          description='Used for account notifications.'
           loading
+          defaultValue='Checking...'
         />
       ),
-      code: `import { Input } from '@vellira-ui/react-native';
-
-<Input
-  placeholder='Checking availability'
-  defaultValue='vellira'
-  loading
-/>`,
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  loading\n  defaultValue='Checking...'\n/>",
     },
     {
-      title: 'Validation',
-      description: 'Present an invalid native input with an error message.',
+      title: 'Error',
+      description: 'Validation feedback state.',
       preview: (
         <NativeInput
-          type='email'
-          defaultValue='hello@'
-          invalid
-          error='Enter a valid email address.'
+          label='Email'
+          description='Used for account notifications.'
+          error='Enter a valid email.'
         />
       ),
-      code: `import { Input } from '@vellira-ui/react-native';
-
-<Input
-  type='email'
-  defaultValue='hello@'
-  invalid
-  error='Enter a valid email address.'
-/>`,
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  error='Enter a valid email.'\n/>",
+    },
+    {
+      title: 'Read only',
+      description: 'Preserves value display without allowing edits.',
+      preview: (
+        <NativeInput
+          label='Email'
+          description='Used for account notifications.'
+          readOnly
+          defaultValue='readonly@example.com'
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  readOnly\n  defaultValue='readonly@example.com'\n/>",
     },
     {
       title: 'Password',
-      description: 'Configure secure text entry for sensitive values.',
-      preview: <NativeInput type='password' placeholder='Enter password' />,
-      code: `import { Input } from '@vellira-ui/react-native';
-
-<Input
-  type='password'
-  placeholder='Enter password'
-/>`,
+      description: 'Password input with reveal control.',
+      preview: (
+        <NativeInput
+          label='Email'
+          description='Used for account notifications.'
+          type='password'
+          revealPassword
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  type='password'\n  revealPassword\n/>",
+    },
+    {
+      title: 'Counter',
+      description: 'Character count when maxLength is set.',
+      preview: (
+        <NativeInput
+          label='Email'
+          description='Used for account notifications.'
+          showCounter
+          maxLength={80}
+        />
+      ),
+      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  showCounter\n  maxLength={80}\n/>",
     },
   ] as const;
 

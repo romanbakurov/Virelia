@@ -75,6 +75,38 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       ),
       code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
     },
+    {
+      title: 'Disabled',
+      description: 'Disabled select state.',
+      preview: (
+        <ReactSelect
+          label='Favorite framework'
+          description='Choose one option.'
+          disabled
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
+      ),
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  disabled\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+    },
+    {
+      title: 'Loading',
+      description: 'Loading state while options are being resolved.',
+      preview: (
+        <ReactSelect
+          label='Favorite framework'
+          description='Choose one option.'
+          loading
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
+      ),
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  loading\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+    },
   ] as const;
 
   const nativeExamples = [
@@ -140,6 +172,38 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
         </NativeSelect>
       ),
       code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+    },
+    {
+      title: 'Disabled',
+      description: 'Disabled select state.',
+      preview: (
+        <NativeSelect
+          label='Favorite framework'
+          description='Choose one option.'
+          disabled
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
+      ),
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  disabled\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+    },
+    {
+      title: 'Loading',
+      description: 'Loading state while options are being resolved.',
+      preview: (
+        <NativeSelect
+          label='Favorite framework'
+          description='Choose one option.'
+          loading
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
+      ),
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  loading\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
     },
   ] as const;
 

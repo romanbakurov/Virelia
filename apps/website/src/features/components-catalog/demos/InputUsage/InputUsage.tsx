@@ -23,10 +23,27 @@ function createInputCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = [];
+  const props: string[] =
+    platform === 'react'
+      ? ["label='Email'", "description='Used for account notifications.'"]
+      : ["label='Email'", "description='Used for account notifications.'"];
 
-  if (value.type !== 'text') {
-    props.push(`type='${value.type}'`);
+  const children = platform === 'react' ? '' : '';
+
+  if (value.label) {
+    props.push(`label='${value.label}'`);
+  }
+
+  if (value.description) {
+    props.push(`description='${value.description}'`);
+  }
+
+  if (value.placeholder) {
+    props.push(`placeholder='${value.placeholder}'`);
+  }
+
+  if (value.size !== 'md') {
+    props.push(`size='${value.size}'`);
   }
 
   if (value.color !== 'primary') {
@@ -37,39 +54,55 @@ function createInputCode(
     props.push(`variant='${value.variant}'`);
   }
 
-  if (value.size !== 'md') {
-    props.push(`size='${value.size}'`);
-  }
-
-  if (value.state === 'disabled') {
+  if (value.disabled) {
     props.push('disabled');
   }
 
-  if (value.state === 'loading') {
-    props.push('loading');
-  }
-
-  if (value.state === 'invalid') {
-    props.push('invalid');
-  }
-
-  if (value.state === 'readOnly') {
+  if (value.readOnly) {
     props.push('readOnly');
-  }
-
-  if (value.clearable) {
-    props.push('clearable');
   }
 
   if (value.required) {
     props.push('required');
   }
 
+  if (value.invalid) {
+    props.push('invalid');
+  }
+
+  if (value.loading) {
+    props.push('loading');
+  }
+
+  if (value.clearable) {
+    props.push('clearable');
+  }
+
+  if (value.revealPassword) {
+    props.push('revealPassword');
+  }
+
+  if (value.showCounter) {
+    props.push('showCounter');
+  }
+
+  if (value.error) {
+    props.push(`error='${value.error}'`);
+  }
+
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
+
+  if (!children) {
+    return `import { Input } from '${packageName}';
+
+<Input${propsText}/>`;
+  }
 
   return `import { Input } from '${packageName}';
 
-<Input${propsText} />`;
+<Input${propsText}>
+${children}
+</Input>`;
 }
 
 export function InputUsage({ platform }: InputUsageProps) {

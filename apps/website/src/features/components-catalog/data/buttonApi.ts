@@ -40,37 +40,44 @@ const reactButtonApi: readonly ComponentApiProp[] = [
   {
     name: 'asChild',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Composes Button behavior and styling onto a single child element.',
   },
   {
     name: 'color',
     type: "'primary' | 'neutral' | 'success' | 'warning' | 'danger'",
+    defaultValue: "'primary'",
     description: 'Visual tone for the button action.',
   },
   {
     name: 'appearance',
     type: "'solid' | 'outline' | 'ghost' | 'soft' | 'link'",
+    defaultValue: "'solid'",
     description: 'Visual style for the button surface.',
   },
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description: 'Controls button height, padding, and typography scale.',
   },
   {
     name: 'shape',
     type: "'square' | 'rounded' | 'pill'",
+    defaultValue: "'pill'",
     description: 'Corner shape for the button.',
   },
   {
     name: 'fullWidth',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Makes the button fill its container width.',
   },
   {
     name: 'loading',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a loading indicator and disables interaction.',
   },
   {
@@ -81,11 +88,13 @@ const reactButtonApi: readonly ComponentApiProp[] = [
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Disables interaction and applies disabled styling.',
   },
   {
     name: 'iconOnly',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Renders the button as an icon-only action.',
   },
 ];
@@ -150,31 +159,37 @@ const nativeButtonApi: readonly ComponentApiProp[] = [
   {
     name: 'color',
     type: "'primary' | 'neutral' | 'success' | 'warning' | 'danger'",
+    defaultValue: "'primary'",
     description: 'Visual tone for the button action.',
   },
   {
     name: 'appearance',
     type: "'solid' | 'outline' | 'ghost' | 'soft' | 'link'",
+    defaultValue: "'solid'",
     description: 'Visual style for the button surface.',
   },
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description: 'Controls button height, padding, and typography scale.',
   },
   {
     name: 'shape',
     type: "'square' | 'rounded' | 'pill'",
+    defaultValue: "'pill'",
     description: 'Corner shape for the button.',
   },
   {
     name: 'fullWidth',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Makes the button fill its container width.',
   },
   {
     name: 'loading',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a loading indicator and disables interaction.',
   },
   {
@@ -185,11 +200,13 @@ const nativeButtonApi: readonly ComponentApiProp[] = [
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Disables interaction and applies disabled styling.',
   },
   {
     name: 'iconOnly',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Renders the button as an icon-only action.',
   },
 ];

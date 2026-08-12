@@ -342,12 +342,14 @@
   }
 
   .inheritedTable td {
-    display: block;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
     min-width: 0;
   }
 
   .inheritedTable td::before {
-    content: none;
+    content: attr(data-label);
   }
 
   .inheritedTable td[data-empty='true'] {

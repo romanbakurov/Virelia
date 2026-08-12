@@ -106,7 +106,7 @@ export const componentPages = {
     Examples: ButtonExamples,
     Accessibility: ButtonAccessibility,
     api: buttonApi,
-    related: ['input', 'dropdown', 'tooltip'],
+    related: [],
   },
 
   input: {

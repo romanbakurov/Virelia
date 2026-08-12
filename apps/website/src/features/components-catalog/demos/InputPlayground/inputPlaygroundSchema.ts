@@ -1,74 +1,70 @@
 import type { PlaygroundControl } from '../../components/PlaygroundControls';
 
-import type {
-  InputPlaygroundColor,
-  InputPlaygroundSize,
-  InputPlaygroundState,
-  InputPlaygroundType,
-  InputPlaygroundValue,
-  InputPlaygroundVariant,
-} from './InputPlayground';
-
-const types: InputPlaygroundType[] = [
-  'text',
-  'email',
-  'password',
-  'number',
-  'tel',
-  'url',
-  'search',
-];
-
-const sizes: InputPlaygroundSize[] = ['sm', 'md', 'lg'];
-
-const colors: InputPlaygroundColor[] = [
-  'primary',
-  'neutral',
-  'success',
-  'warning',
-  'danger',
-];
-
-const variants: InputPlaygroundVariant[] = ['outline', 'filled', 'soft'];
-
-const states: InputPlaygroundState[] = [
-  'default',
-  'disabled',
-  'loading',
-  'invalid',
-  'readOnly',
-];
+import type { InputPlaygroundValue } from './InputPlayground';
 
 export const inputPlaygroundControls = [
   {
-    type: 'select',
-    key: 'type',
-    label: 'Type',
-    options: types,
+    type: 'text',
+    key: 'label',
+    label: 'Label',
   },
   {
-    type: 'select',
-    key: 'color',
-    label: 'Color',
-    options: colors,
+    type: 'text',
+    key: 'description',
+    label: 'Description',
   },
   {
-    type: 'select',
-    key: 'variant',
-    label: 'Variant',
-    options: variants,
+    type: 'text',
+    key: 'placeholder',
+    label: 'Placeholder',
   },
   {
     type: 'select',
     key: 'size',
     label: 'Size',
-    options: sizes,
+    options: ['sm', 'md', 'lg'],
   },
   {
     type: 'select',
-    key: 'state',
-    label: 'State',
-    options: states,
+    key: 'color',
+    label: 'Color',
+    options: ['primary', 'neutral', 'success', 'warning', 'danger'],
+  },
+  {
+    type: 'select',
+    key: 'variant',
+    label: 'Variant',
+    options: ['outline', 'filled', 'soft'],
+  },
+  {
+    type: 'toggle',
+    key: 'disabled',
+    label: 'Disabled',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'readOnly',
+    label: 'Read Only',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'required',
+    label: 'Required',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'invalid',
+    label: 'Invalid',
+    group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'loading',
+    label: 'Loading',
+    group: 'Options',
   },
   {
     type: 'toggle',
@@ -78,8 +74,19 @@ export const inputPlaygroundControls = [
   },
   {
     type: 'toggle',
-    key: 'required',
-    label: 'Required',
+    key: 'revealPassword',
+    label: 'Reveal Password',
     group: 'Options',
+  },
+  {
+    type: 'toggle',
+    key: 'showCounter',
+    label: 'Show Counter',
+    group: 'Options',
+  },
+  {
+    type: 'text',
+    key: 'error',
+    label: 'Error',
   },
 ] as const satisfies readonly PlaygroundControl<InputPlaygroundValue>[];

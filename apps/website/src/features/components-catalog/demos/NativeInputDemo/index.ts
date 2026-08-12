@@ -1,1 +1,1 @@
-export * from './NativeInputDemo';
+export { NativeInputDemo } from './NativeInputDemo';

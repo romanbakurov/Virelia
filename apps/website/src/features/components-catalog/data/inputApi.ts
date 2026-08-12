@@ -4,6 +4,7 @@ const reactInputApi: readonly ComponentApiProp[] = [
   {
     name: 'type',
     type: 'import("react").HTMLInputTypeAttribute',
+    defaultValue: "'text'",
     description:
       'Native input type. Search automatically adds a start search icon.',
   },
@@ -88,16 +89,19 @@ const reactInputApi: readonly ComponentApiProp[] = [
   {
     name: 'startIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'default'",
     description: 'Tone for startIcon.',
   },
   {
     name: 'endIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'default'",
     description: 'Tone for endIcon.',
   },
   {
     name: 'clearIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'danger'",
     description: 'Tone for clearIcon.',
   },
   {
@@ -136,51 +140,60 @@ const reactInputApi: readonly ComponentApiProp[] = [
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description:
       'Field size. Inherits from FormField when omitted by compatible controls.',
   },
   {
     name: 'color',
     type: "'primary' | 'success' | 'danger' | 'neutral' | 'warning'",
+    defaultValue: "'primary'",
     description: 'Semantic color palette for the control.',
   },
   {
     name: 'variant',
     type: "'outline' | 'filled' | 'soft'",
+    defaultValue: "'outline'",
     description: 'Visual variant for the control chrome.',
   },
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Disables interaction. Also inherited from FormField by compatible controls.',
   },
   {
     name: 'readOnly',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Makes the control non-editable while preserving focus and value semantics.',
   },
   {
     name: 'required',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Marks the field as required. Also inherited from FormField.',
   },
   {
     name: 'invalid',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows invalid styling without requiring error text. Also inherited from FormField.',
   },
   {
     name: 'loading',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows a spinner in the right slot and makes the field read-only.',
   },
   {
     name: 'clearable',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a clear action when the field has a value.',
   },
   {
@@ -191,11 +204,13 @@ const reactInputApi: readonly ComponentApiProp[] = [
   {
     name: 'revealPassword',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a password visibility toggle for password inputs.',
   },
   {
     name: 'showCounter',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows the current character count when maxLength is provided.',
   },
@@ -225,6 +240,7 @@ const nativeInputApi: readonly ComponentApiProp[] = [
   {
     name: 'type',
     type: "'number' | 'text' | 'email' | 'password' | 'tel' | 'url' | 'search'",
+    defaultValue: "'text'",
     description:
       'Semantic input type used to derive keyboard and secure entry behavior.',
   },
@@ -247,16 +263,19 @@ const nativeInputApi: readonly ComponentApiProp[] = [
   {
     name: 'startIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'default'",
     description: 'Tone for startIcon.',
   },
   {
     name: 'endIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'default'",
     description: 'Tone for endIcon.',
   },
   {
     name: 'clearIconTone',
     type: "'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'muted' | 'inverse'",
+    defaultValue: "'danger'",
     description: 'Tone for clearIcon.',
   },
   {
@@ -308,51 +327,60 @@ const nativeInputApi: readonly ComponentApiProp[] = [
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description:
       'Field size. Inherits from FormField when omitted by compatible controls.',
   },
   {
     name: 'color',
     type: "'primary' | 'success' | 'danger' | 'neutral' | 'warning'",
+    defaultValue: "'primary'",
     description: 'Semantic color palette for the control.',
   },
   {
     name: 'variant',
     type: "'outline' | 'filled' | 'soft'",
+    defaultValue: "'outline'",
     description: 'Visual variant for the control chrome.',
   },
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Disables interaction. Also inherited from FormField by compatible controls.',
   },
   {
     name: 'readOnly',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Makes the control non-editable while preserving focus and value semantics.',
   },
   {
     name: 'required',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Marks the field as required. Also inherited from FormField.',
   },
   {
     name: 'invalid',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows invalid styling without requiring error text. Also inherited from FormField.',
   },
   {
     name: 'loading',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows a spinner in the right slot and makes the field read-only.',
   },
   {
     name: 'clearable',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a clear action when the field has a value.',
   },
   {
@@ -363,11 +391,13 @@ const nativeInputApi: readonly ComponentApiProp[] = [
   {
     name: 'revealPassword',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Shows a password visibility toggle for password inputs.',
   },
   {
     name: 'showCounter',
     type: 'boolean',
+    defaultValue: 'false',
     description:
       'Shows the current character count when maxLength is provided.',
   },

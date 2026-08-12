@@ -19,6 +19,7 @@ const reactRadioApi: readonly ComponentApiProp[] = [
   {
     name: 'color',
     type: "'primary' | 'neutral' | 'success' | 'warning' | 'danger'",
+    defaultValue: "'primary'",
     description: 'Selected radio color.',
   },
   {
@@ -40,16 +41,19 @@ const reactRadioApi: readonly ComponentApiProp[] = [
   {
     name: 'defaultChecked',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Initial checked state for uncontrolled standalone usage.',
   },
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Disables interaction and applies disabled styling.',
   },
   {
     name: 'required',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Marks the radio as required.',
   },
   {
@@ -60,6 +64,7 @@ const reactRadioApi: readonly ComponentApiProp[] = [
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description: 'Controls radio indicator and label sizing.',
   },
   {
@@ -88,6 +93,7 @@ const nativeRadioApi: readonly ComponentApiProp[] = [
   {
     name: 'color',
     type: "'primary' | 'neutral' | 'success' | 'warning' | 'danger'",
+    defaultValue: "'primary'",
     description: 'Selected radio color.',
   },
   {
@@ -129,21 +135,25 @@ const nativeRadioApi: readonly ComponentApiProp[] = [
   {
     name: 'defaultChecked',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Initial checked state for uncontrolled standalone usage.',
   },
   {
     name: 'disabled',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Disables interaction and applies disabled styling.',
   },
   {
     name: 'required',
     type: 'boolean',
+    defaultValue: 'false',
     description: 'Marks the radio as required.',
   },
   {
     name: 'size',
     type: "'sm' | 'md' | 'lg'",
+    defaultValue: "'md'",
     description: 'Controls radio indicator and label sizing.',
   },
   {

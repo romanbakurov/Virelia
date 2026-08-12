@@ -11,63 +11,47 @@ type InputAccessibilityProps = {
 export function InputAccessibility({ platform }: InputAccessibilityProps) {
   const reactItems = [
     {
-      title: 'Labels and descriptions',
-      description: (
-        <>
-          Provide a visible <code>label</code> whenever possible. Supporting
-          <code> description</code> and <code>error</code> text are associated
-          with the input so assistive technologies can announce the field
-          context.
-        </>
-      ),
-    },
-    {
-      title: 'Invalid and required states',
-      description: (
-        <>
-          Use <code>required</code> for required fields and <code>invalid</code>
-          or <code>error</code> to expose invalid state with the corresponding
-          accessibility semantics.
-        </>
-      ),
-    },
-    {
-      title: 'Disabled and read-only',
-      description: (
-        <>
-          <code>disabled</code> prevents interaction, while{' '}
-          <code>readOnly</code>
-          keeps the field focusable and preserves its value semantics.
-        </>
-      ),
-    },
-    {
-      title: 'Clear and password actions',
+      title: 'Accessible naming',
       description:
-        'Clear and password visibility controls expose accessible action labels while remaining keyboard operable.',
+        'Provide a visible label or another accessible name that clearly identifies the control.',
+    },
+    {
+      title: 'Disabled state',
+      description:
+        'Disabled controls should remain identifiable while preventing interaction.',
+    },
+    {
+      title: 'Validation feedback',
+      description:
+        'Associate validation feedback with the control and expose its invalid state to assistive technologies.',
+    },
+    {
+      title: 'Required fields',
+      description:
+        'Required state should be communicated semantically and not rely only on visual styling.',
     },
   ] as const;
 
   const nativeItems = [
     {
-      title: 'Labels and descriptions',
+      title: 'Accessible naming',
       description:
-        'Provide clear field labels and supporting text so screen readers can understand the purpose and context of the input.',
+        'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
     },
     {
-      title: 'Invalid and required states',
+      title: 'Disabled state',
       description:
-        'Required and invalid states are exposed through React Native accessibility semantics while preserving the shared visual treatment.',
+        'Disabled controls should remain identifiable while preventing interaction.',
     },
     {
-      title: 'Disabled and read-only',
+      title: 'Validation feedback',
       description:
-        'Disabled inputs block editing, while read-only inputs preserve the displayed value without allowing changes.',
+        'Expose validation feedback through accessible text or hints and preserve the invalid state for assistive technologies.',
     },
     {
-      title: 'Clear and password actions',
+      title: 'Required fields',
       description:
-        'Clear and password visibility actions preserve accessible labels and native interaction behavior.',
+        'Required state should be communicated semantically and not rely only on visual styling.',
     },
   ] as const;
 
