@@ -22,11 +22,9 @@ export function SelectDemo() {
           label='Favorite framework'
           description='Choose one option.'
         >
-          <>
-            <Select.Item value='react'>React</Select.Item>
-            <Select.Item value='vue'>Vue</Select.Item>
-            <Select.Item value='svelte'>Svelte</Select.Item>
-          </>
+          <Select.Item value='react'>React</Select.Item>
+          <Select.Item value='vue'>Vue</Select.Item>
+          <Select.Item value='svelte'>Svelte</Select.Item>
         </Select>
       )}
     />

@@ -43,6 +43,7 @@
   align-items: center;
   width: 100%;
   min-height: 96px;
+  min-width: 0;
 }
 
 .previewItem {
@@ -65,6 +66,14 @@
 
 .preview[data-align='start'] {
   align-items: flex-start;
+}
+
+.previewContent[data-width='field'] {
+  width: min(100%, 520px);
+}
+
+.previewContent[data-width='full'] {
+  width: 100%;
 }
 
 .controls {

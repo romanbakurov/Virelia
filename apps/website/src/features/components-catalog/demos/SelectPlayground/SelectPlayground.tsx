@@ -61,6 +61,7 @@ export function SelectPlayground({ renderSelect }: SelectPlaygroundProps) {
 
   return (
     <ComponentPlayground
+      previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
           value={value}

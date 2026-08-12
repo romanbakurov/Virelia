@@ -19,33 +19,45 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
         <ReactSelect
           label='Favorite framework'
           description='Choose one option.'
-        />
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n/>',
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
     },
     {
-      title: 'Disabled',
-      description: 'Disabled state.',
+      title: 'Searchable',
+      description: 'Filter options by typing a search query.',
       preview: (
         <ReactSelect
           label='Favorite framework'
           description='Choose one option.'
-          disabled
-        />
+          searchable
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  disabled\n/>',
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  searchable\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
     },
     {
-      title: 'Loading',
-      description: 'Loading state.',
+      title: 'Multiple',
+      description: 'Select more than one option.',
       preview: (
         <ReactSelect
           label='Favorite framework'
           description='Choose one option.'
-          loading
-        />
+          multiple
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  loading\n/>',
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  multiple\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
     },
     {
       title: 'Error',
@@ -55,9 +67,13 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           label='Favorite framework'
           description='Choose one option.'
           error='Please review this option.'
-        />
+        >
+          <ReactSelect.Item value='react'>React</ReactSelect.Item>
+          <ReactSelect.Item value='vue'>Vue</ReactSelect.Item>
+          <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
+        </ReactSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  error=\'Please review this option.\'\n/>',
+      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
     },
   ] as const;
 
@@ -69,33 +85,45 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
         <NativeSelect
           label='Favorite framework'
           description='Choose one option.'
-        />
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react-native\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n/>',
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
     },
     {
-      title: 'Disabled',
-      description: 'Disabled state.',
+      title: 'Searchable',
+      description: 'Filter options by typing a search query.',
       preview: (
         <NativeSelect
           label='Favorite framework'
           description='Choose one option.'
-          disabled
-        />
+          searchable
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react-native\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  disabled\n/>',
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  searchable\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
     },
     {
-      title: 'Loading',
-      description: 'Loading state.',
+      title: 'Multiple',
+      description: 'Select more than one option.',
       preview: (
         <NativeSelect
           label='Favorite framework'
           description='Choose one option.'
-          loading
-        />
+          multiple
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react-native\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  loading\n/>',
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  multiple\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
     },
     {
       title: 'Error',
@@ -105,9 +133,13 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           label='Favorite framework'
           description='Choose one option.'
           error='Please review this option.'
-        />
+        >
+          <NativeSelect.Item value='react' label='React' />
+          <NativeSelect.Item value='vue' label='Vue' />
+          <NativeSelect.Item value='svelte' label='Svelte' />
+        </NativeSelect>
       ),
-      code: 'import { Select } from \'@vellira-ui/react-native\';\n\n<Select\n  label="Favorite framework"\n  description="Choose one option."\n  error=\'Please review this option.\'\n/>',
+      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
     },
   ] as const;
 

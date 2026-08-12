@@ -8,12 +8,14 @@ type ComponentPlaygroundProps = {
   children: ReactNode;
   controls?: ReactNode;
   previewAlign?: 'center' | 'start';
+  previewWidth?: 'auto' | 'field' | 'full';
 };
 
 export function ComponentPlayground({
   children,
   controls,
   previewAlign = 'center',
+  previewWidth = 'auto',
 }: ComponentPlaygroundProps) {
   return (
     <section className={styles.root} aria-label='Component playground'>
@@ -27,8 +29,8 @@ export function ComponentPlayground({
       </div>
 
       <div className={styles.preview} data-align={previewAlign}>
-        <div className={styles.previewContent}>
-          <div className={styles.previewItem}>{children}</div>
+        <div className={styles.previewContent} data-width={previewWidth}>
+          {children}
         </div>
       </div>
 

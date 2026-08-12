@@ -1,14 +1,19 @@
 'use client';
 
+import { useWindowDimensions } from 'react-native';
 import { Select } from '@vellira-ui/react-native';
 
 import { SelectPlayground } from '../SelectPlayground';
 
 export function NativeSelectDemo() {
+  const { width } = useWindowDimensions();
+  const presentation = width <= 890 ? 'sheet' : 'popover';
+
   return (
     <SelectPlayground
       renderSelect={(value) => (
         <Select
+          presentation={presentation}
           placeholder={value.placeholder || undefined}
           size={value.size}
           color={value.color}
@@ -22,11 +27,9 @@ export function NativeSelectDemo() {
           label='Favorite framework'
           description='Choose one option.'
         >
-          <>
-            <Select.Item value='react' label='React' />
-            <Select.Item value='vue' label='Vue' />
-            <Select.Item value='svelte' label='Svelte' />
-          </>
+          <Select.Item value='react' label='React' />
+          <Select.Item value='vue' label='Vue' />
+          <Select.Item value='svelte' label='Svelte' />
         </Select>
       )}
     />

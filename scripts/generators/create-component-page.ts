@@ -26,6 +26,7 @@ type ComponentGeneratorConfig = {
   native?: {
     demoProps?: string;
     children?: string;
+    responsivePresentation?: boolean;
   };
   demo?: {
     label?: string;
@@ -34,7 +35,13 @@ type ComponentGeneratorConfig = {
     initialValues?: Record<string, string | boolean | number>;
     staticProps?: Record<string, string>;
     satisfiedRequiredProps?: readonly string[];
+    previewWidth?: 'auto' | 'field' | 'full';
   };
+  examples?: readonly {
+    title: string;
+    description: string;
+    props: readonly string[];
+  }[];
   related?: readonly string[];
 };
 
@@ -57,25 +64,23 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
         disabled: false,
         error: '',
       },
+      previewWidth: 'field',
     },
     related: ['RadioGroup', 'Checkbox', 'Select'],
   },
 
   Select: {
     react: {
-      children: `<>
-  <Select.Item value='react'>React</Select.Item>
-  <Select.Item value='vue'>Vue</Select.Item>
-  <Select.Item value='svelte'>Svelte</Select.Item>
-</>`,
+      children: `<Select.Item value='react'>React</Select.Item>
+<Select.Item value='vue'>Vue</Select.Item>
+<Select.Item value='svelte'>Svelte</Select.Item>`,
     },
 
     native: {
-      children: `<>
-  <Select.Item value='react' label='React' />
-  <Select.Item value='vue' label='Vue' />
-  <Select.Item value='svelte' label='Svelte' />
-</>`,
+      responsivePresentation: true,
+      children: `<Select.Item value='react' label='React' />
+<Select.Item value='vue' label='Vue' />
+<Select.Item value='svelte' label='Svelte' />`,
     },
 
     demo: {
@@ -107,6 +112,28 @@ const componentConfigs: Record<string, ComponentGeneratorConfig> = {
         error: '',
       },
     },
+    examples: [
+      {
+        title: 'Basic',
+        description: 'Basic component usage.',
+        props: [],
+      },
+      {
+        title: 'Searchable',
+        description: 'Filter options by typing a search query.',
+        props: ['searchable'],
+      },
+      {
+        title: 'Multiple',
+        description: 'Select more than one option.',
+        props: ['multiple'],
+      },
+      {
+        title: 'Error',
+        description: 'Validation error state.',
+        props: [`error='Please review this option.'`],
+      },
+    ],
   },
 };
 
@@ -462,7 +489,7 @@ const usageStaticProps = [
     : null,
 ]
   .filter((prop): prop is string => Boolean(prop))
-  .map((prop) => `    ${JSON.stringify(prop)},`)
+  .map((prop) => `    ${toTsString(prop)},`)
   .join('\n');
 
 const usageContent = `'use client';
@@ -518,20 +545,38 @@ ${playgroundProps
   }`;
     }
 
-    return `  if (value.${prop.name} !== ${JSON.stringify(
-      initialValue ?? prop.options[0] ?? ''
+    return `  if (value.${prop.name} !== ${toTsString(
+      String(initialValue ?? prop.options[0] ?? '')
     )}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);
   }`;
   })
   .join('\n\n')}
 
-  const propsText =
-    props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
+const propsText =
+  props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
 
+const children =
+  platform === 'react'
+    ? ${JSON.stringify(componentConfig.react?.children ?? '')}
+    : ${JSON.stringify(componentConfig.native?.children ?? '')};
+
+if (!children) {
   return \`import { ${componentName} } from '\${packageName}';
 
 <${componentName}\${propsText}/>\`;
+}
+
+const formattedChildren = children
+  .split('\\n')
+  .map((line) => '  ' + line)
+  .join('\\n');
+
+return \`import { ${componentName} } from '\${packageName}';
+
+<${componentName}\${propsText}>
+\${formattedChildren}
+</${componentName}>\`;
 }
 
 export function ${componentName}Usage({
@@ -577,7 +622,7 @@ const examplesIndexFile = path.join(examplesDir, 'index.ts');
 type GeneratedExample = {
   title: string;
   description: string;
-  props: string[];
+  props: readonly string[];
 };
 
 function hasExtractedProp(name: string) {
@@ -610,6 +655,10 @@ function getSelectExample() {
 }
 
 function createGeneratedExamples(): GeneratedExample[] {
+  if (componentConfig.examples) {
+    return [...componentConfig.examples];
+  }
+
   const examples: GeneratedExample[] = [
     {
       title: 'Basic',
@@ -680,21 +729,40 @@ function createExampleJsx(platform: Platform, example: GeneratedExample) {
   const props = [
     getDemoProps(platform),
     componentConfig.demo?.label
-      ? `label=${JSON.stringify(componentConfig.demo.label)}`
+      ? `label=${toTsString(componentConfig.demo.label)}`
       : '',
     componentConfig.demo?.description
-      ? `description=${JSON.stringify(componentConfig.demo.description)}`
+      ? `description=${toTsString(componentConfig.demo.description)}`
       : '',
     ...example.props,
   ].filter(Boolean);
 
-  if (props.length === 0) {
-    return `<${componentAlias} />`;
+  const exampleChildren =
+    platform === 'react'
+      ? (componentConfig.react?.children ?? '')
+      : (componentConfig.native?.children ?? '');
+
+  const propsText =
+    props.length === 0 ? '' : `\n          ${props.join('\n          ')}`;
+
+  if (!exampleChildren) {
+    return `<${componentAlias}${propsText}
+        />`;
   }
 
-  return `<${componentAlias}
-          ${props.join('\n          ')}
-        />`;
+  const aliasedChildren = exampleChildren
+    .replaceAll(`<${componentName}.`, `<${componentAlias}.`)
+    .replaceAll(`</${componentName}.`, `</${componentAlias}.`);
+
+  const formattedChildren = aliasedChildren
+    .split('\n')
+    .map((line) => `          ${line}`)
+    .join('\n');
+
+  return `<${componentAlias}${propsText}
+        >
+${formattedChildren}
+        </${componentAlias}>`;
 }
 
 function createExampleCode(platform: Platform, example: GeneratedExample) {
@@ -704,19 +772,37 @@ function createExampleCode(platform: Platform, example: GeneratedExample) {
   const props = [
     getDemoProps(platform),
     componentConfig.demo?.label
-      ? `label=${JSON.stringify(componentConfig.demo.label)}`
+      ? `label=${toTsString(componentConfig.demo.label)}`
       : '',
     componentConfig.demo?.description
-      ? `description=${JSON.stringify(componentConfig.demo.description)}`
+      ? `description=${toTsString(componentConfig.demo.description)}`
       : '',
     ...example.props,
   ].filter(Boolean);
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  return `import { ${componentName} } from '${packageName}';
+  const exampleChildren =
+    platform === 'react'
+      ? (componentConfig.react?.children ?? '')
+      : (componentConfig.native?.children ?? '');
+
+  if (!exampleChildren) {
+    return `import { ${componentName} } from '${packageName}';
 
 <${componentName}${propsText}/>`;
+  }
+
+  const formattedChildren = exampleChildren
+    .split('\n')
+    .map((line) => `  ${line}`)
+    .join('\n');
+
+  return `import { ${componentName} } from '${packageName}';
+
+<${componentName}${propsText}>
+${formattedChildren}
+</${componentName}>`;
 }
 
 const reactGeneratedExamples = generatedExamples
@@ -1093,10 +1179,10 @@ const nativeDemoChildren = componentConfig.native?.children ?? '';
 
 const demoPresentationProps = [
   componentConfig.demo?.label
-    ? `label=${JSON.stringify(componentConfig.demo.label)}`
+    ? `label=${toTsString(componentConfig.demo.label)}`
     : null,
   componentConfig.demo?.description
-    ? `description=${JSON.stringify(componentConfig.demo.description)}`
+    ? `description=${toTsString(componentConfig.demo.description)}`
     : null,
 ]
   .filter(Boolean)
@@ -1238,6 +1324,7 @@ export function ${componentName}Playground({
 
   return (
     <ComponentPlayground
+    previewWidth=${JSON.stringify(componentConfig.demo?.previewWidth ?? 'auto')}
       controls={
         <PlaygroundControlsFromSchema
           value={value}
@@ -1305,6 +1392,20 @@ const reactDemoFile = path.join(reactDemoDir, `${componentName}Demo.tsx`);
 
 const reactDemoIndexFile = path.join(reactDemoDir, 'index.ts');
 
+const nativeResponsivePresentation =
+  componentConfig.native?.responsivePresentation === true;
+
+const nativeResponsiveImport = nativeResponsivePresentation
+  ? `import { useWindowDimensions } from 'react-native';\n`
+  : '';
+
+const nativeResponsiveSetup = nativeResponsivePresentation
+  ? `  const { width } = useWindowDimensions();
+  const presentation = width <= 890 ? 'sheet' : 'popover';
+
+`
+  : '';
+
 function createDemoElement(params: {
   platform: Platform;
   propBindings: string;
@@ -1314,12 +1415,20 @@ function createDemoElement(params: {
   const children =
     platform === 'react' ? reactDemoChildren : nativeDemoChildren;
 
+  const formattedChildren = children
+    .split('\n')
+    .map((line) => `          ${line}`)
+    .join('\n');
+
   const staticProps =
     platform === 'react' ? reactStaticDemoProps : nativeStaticDemoProps;
 
   const props = [
     staticProps,
     staticDemoProps,
+    platform === 'react-native' && nativeResponsivePresentation
+      ? 'presentation={presentation}'
+      : '',
     propBindings,
     demoPresentationProps,
   ]
@@ -1335,7 +1444,7 @@ function createDemoElement(params: {
   return `<${componentName}
           ${props}
         >
-          ${children}
+${formattedChildren}
         </${componentName}>`;
 }
 
@@ -1349,6 +1458,18 @@ const nativeDemoElement = createDemoElement({
   propBindings: playgroundPropBindings,
 });
 
+const usesDemoValue = playgroundProps.length > 0;
+
+const usesDemoOnChange = playgroundProps.some((prop) =>
+  Boolean(getChangeHandlerName(prop.name))
+);
+
+const demoRenderParams = usesDemoOnChange
+  ? '(value, onChange)'
+  : usesDemoValue
+    ? '(value)'
+    : '()';
+
 const reactDemoContent = `'use client';
 
 import { ${componentName} } from '@vellira-ui/react';
@@ -1358,7 +1479,7 @@ import { ${componentName}Playground } from '../${componentName}Playground';
 export function ${componentName}Demo() {
   return (
     <${componentName}Playground
-      render${componentName}={(value, onChange) => (
+      render${componentName}={${demoRenderParams} => (
         ${reactDemoElement}
       )}
     />
@@ -1390,15 +1511,15 @@ const nativeDemoIndexFile = path.join(nativeDemoDir, 'index.ts');
 
 const nativeDemoContent = `'use client';
 
-import { ${componentName} } from '@vellira-ui/react-native';
+${nativeResponsiveImport}import { ${componentName} } from '@vellira-ui/react-native';
 
 import { ${componentName}Playground } from '../${componentName}Playground';
 
 export function Native${componentName}Demo() {
-  return (
+${nativeResponsiveSetup}  return (
     <${componentName}Playground
-      render${componentName}={(value, onChange) => (
-       ${nativeDemoElement}
+      render${componentName}={${demoRenderParams} => (
+        ${nativeDemoElement}
       )}
     />
   );
