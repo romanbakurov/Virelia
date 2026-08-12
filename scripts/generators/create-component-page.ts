@@ -16,7 +16,26 @@ if (!componentName) {
 
 const root = process.cwd();
 
+const velliraApiSourceRoots = [
+  path.join(root, 'packages', 'types', 'src'),
+  path.join(root, 'packages', 'types', 'dist'),
+  path.join(root, 'packages', 'react', 'src'),
+  path.join(root, 'packages', 'react', 'dist'),
+  path.join(root, 'packages', 'react-native', 'src'),
+  path.join(root, 'packages', 'react-native', 'dist'),
+].map((sourceRoot) => path.normalize(sourceRoot));
+
 const slug = componentName.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+
+function isPathInside(filePath: string, directoryPath: string) {
+  const relativePath = path.relative(directoryPath, filePath);
+
+  return (
+    Boolean(relativePath) &&
+    !relativePath.startsWith('..') &&
+    !path.isAbsolute(relativePath)
+  );
+}
 
 type ComponentGeneratorConfig = {
   react?: {
@@ -424,7 +443,7 @@ function extractComponentProps(name: string): ExtractedProp[] {
     return [];
   }
 
-  const typeName = `Base${name}Props`;
+  const typeNames = [`Base${name}Props`, `${name}BaseProps`];
 
   const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
 
@@ -435,10 +454,10 @@ function extractComponentProps(name: string): ExtractedProp[] {
 
   const exportedSymbol = checker
     .getExportsOfModule(moduleSymbol)
-    .find((symbol) => symbol.name === typeName);
+    .find((symbol) => typeNames.includes(symbol.name));
 
   if (!exportedSymbol) {
-    console.log(`⚠️ Export ${typeName} not found.`);
+    console.log(`⚠️ Export ${typeNames.join(' or ')} not found.`);
     return [];
   }
 
@@ -1356,11 +1375,14 @@ function cleanApiType(type: string) {
 }
 
 function getApiType(prop: ExtractedProp) {
-  if (prop.kind === 'select' && prop.options?.length) {
-    return prop.options.map((option) => `'${option}'`).join(' | ');
+  const sharedProp = getSharedProp(prop);
+  const apiProp = isExternalProp(prop) && sharedProp ? sharedProp : prop;
+
+  if (apiProp.kind === 'select' && apiProp.options?.length) {
+    return apiProp.options.map((option) => `'${option}'`).join(' | ');
   }
 
-  return cleanApiType(prop.type);
+  return cleanApiType(apiProp.type);
 }
 
 function getApiDefaultValue(prop: ExtractedProp, platform: Platform) {
@@ -1390,14 +1412,9 @@ function isExternalProp(prop: ExtractedProp) {
   }
 
   const normalizedSource = path.normalize(prop.sourceFilePath);
-  const sourceRoots = [
-    path.join(root, 'packages', 'types', 'src'),
-    path.join(root, 'packages', 'react', 'src'),
-    path.join(root, 'packages', 'react-native', 'src'),
-  ].map((sourceRoot) => path.normalize(sourceRoot));
 
-  return !sourceRoots.some((sourceRoot) =>
-    normalizedSource.startsWith(sourceRoot)
+  return !velliraApiSourceRoots.some((sourceRoot) =>
+    isPathInside(normalizedSource, sourceRoot)
   );
 }
 
@@ -1407,20 +1424,29 @@ function getFallbackApiDescription(prop: ExtractedProp, platform: Platform) {
   }
 
   if (platform === 'react') {
-    return `Forwarded React DOM prop for ${componentName}.`;
+    return 'Forwarded React DOM prop.';
   }
 
-  return `Forwarded React Native prop for ${componentName}.`;
+  return 'Forwarded React Native prop.';
+}
+
+function getSharedProp(prop: ExtractedProp) {
+  return extractedProps.find((item) => item.name === prop.name);
+}
+
+function isOwnedApiProp(prop: ExtractedProp) {
+  return !isExternalProp(prop) || Boolean(getSharedProp(prop));
 }
 
 function createApiEntries(props: readonly ExtractedProp[], platform: Platform) {
   return props
     .map((prop) => {
       const defaultValue = getApiDefaultValue(prop, platform);
-      const sharedProp = extractedProps.find((item) => item.name === prop.name);
+      const sharedProp = getSharedProp(prop);
 
       const description =
         componentConfig.apiDescriptions?.[prop.name] ||
+        (isExternalProp(prop) ? sharedProp?.description : undefined) ||
         prop.description ||
         sharedProp?.description ||
         getFallbackApiDescription(prop, platform);
@@ -1438,13 +1464,43 @@ function createApiEntries(props: readonly ExtractedProp[], platform: Platform) {
     .join('\n');
 }
 
-const reactApiEntries = createApiEntries(
-  reactApiProps.length > 0 ? reactApiProps : extractedProps,
+function splitApiProps(props: readonly ExtractedProp[]) {
+  const ownedProps: ExtractedProp[] = [];
+  const inheritedProps: ExtractedProp[] = [];
+
+  for (const prop of props) {
+    if (isOwnedApiProp(prop)) {
+      ownedProps.push(prop);
+    } else {
+      inheritedProps.push(prop);
+    }
+  }
+
+  return { ownedProps, inheritedProps };
+}
+
+const reactSplit = splitApiProps(
+  reactApiProps.length > 0 ? reactApiProps : extractedProps
+);
+
+const nativeSplit = splitApiProps(
+  nativeApiProps.length > 0 ? nativeApiProps : extractedProps
+);
+
+const reactApiEntries = createApiEntries(reactSplit.ownedProps, 'react');
+
+const nativeApiEntries = createApiEntries(
+  nativeSplit.ownedProps,
+  'react-native'
+);
+
+const reactInheritedApiEntries = createApiEntries(
+  reactSplit.inheritedProps,
   'react'
 );
 
-const nativeApiEntries = createApiEntries(
-  nativeApiProps.length > 0 ? nativeApiProps : extractedProps,
+const nativeInheritedApiEntries = createApiEntries(
+  nativeSplit.inheritedProps,
   'react-native'
 );
 
@@ -1458,9 +1514,21 @@ const native${componentName}Api: readonly ComponentApiProp[] = [
 ${nativeApiEntries}
 ];
 
+const inheritedReact${componentName}Api: readonly ComponentApiProp[] = [
+${reactInheritedApiEntries}
+];
+
+const inheritedNative${componentName}Api: readonly ComponentApiProp[] = [
+${nativeInheritedApiEntries}
+];
+
 export const ${slug}Api = {
   react: react${componentName}Api,
   'react-native': native${componentName}Api,
+  inherited: {
+    react: inheritedReact${componentName}Api,
+    'react-native': inheritedNative${componentName}Api,
+  },
 } as const;
 `;
 
@@ -1493,10 +1561,16 @@ function insertAfterMarker(params: {
       .slice(entryStart + 1)
       .match(/\n {2}[a-z0-9-]+: \{/);
 
+    const registryEndMatch = source
+      .slice(entryStart)
+      .match(/\n}(?: satisfies [^;]+)?;/);
+
     const entryEnd =
       nextEntryMatch?.index !== undefined
         ? entryStart + 1 + nextEntryMatch.index
-        : source.indexOf('\n};', entryStart);
+        : registryEndMatch?.index !== undefined
+          ? entryStart + registryEndMatch.index
+          : -1;
 
     if (entryEnd === -1) {
       console.error(`Could not determine registry entry boundary for ${slug}`);

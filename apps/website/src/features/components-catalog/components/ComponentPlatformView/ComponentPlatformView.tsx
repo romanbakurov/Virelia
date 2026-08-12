@@ -6,12 +6,16 @@ import type { ComponentCatalogEntry, ComponentPlatform } from '../../types';
 import { ComponentHeader } from '../ComponentHeader';
 import { ComponentDemoStateProvider } from '../ComponentDemoStateProvider';
 import { componentPages } from '../../data/componentPages';
-import { ComponentApi } from '../ComponentApi';
+import { ComponentApi, type ComponentApiProp } from '../ComponentApi';
 import { RelatedComponents } from '../RelatedComponents';
 import { webComponents } from '../../data/components';
 
 type ComponentPlatformViewProps = {
   component: ComponentCatalogEntry;
+};
+
+type ApiWithInheritedProps = {
+  inherited?: Partial<Record<ComponentPlatform, readonly ComponentApiProp[]>>;
 };
 
 export function ComponentPlatformView({
@@ -57,6 +61,10 @@ export function ComponentPlatformView({
               description={`Props available for the ${
                 platform === 'react' ? 'React' : 'React Native'
               } ${page.name}.`}
+              inheritedProps={
+                (page.api as ApiWithInheritedProps).inherited?.[platform]
+              }
+              platform={platform}
               props={page.api[platform]}
             />
 

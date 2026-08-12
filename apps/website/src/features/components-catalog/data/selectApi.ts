@@ -103,19 +103,22 @@ const reactSelectApi: readonly ComponentApiProp[] = [
     name: 'avoidCollisions',
     type: 'boolean',
     defaultValue: 'true',
-    description: 'Adjusts floating content to stay within viewport boundaries.',
+    description:
+      'Adjusts floating content placement to avoid viewport collisions.\nAdjusts floating content to stay within viewport boundaries.',
   },
   {
     name: 'modal',
     type: 'boolean',
     defaultValue: 'false',
-    description: 'Uses modal interaction semantics while the dropdown is open.',
+    description:
+      'Uses modal interaction semantics for the overlay.\nUses modal interaction semantics while the dropdown is open.',
   },
   {
     name: 'command',
     type: 'boolean',
     defaultValue: 'false',
-    description: 'Enables command-palette style search behavior.',
+    description:
+      'Enables command-style interaction behavior.\nEnables command-palette style search behavior.',
   },
   {
     name: 'children',
@@ -554,7 +557,15 @@ const nativeSelectApi: readonly ComponentApiProp[] = [
   },
 ];
 
+const inheritedReactSelectApi: readonly ComponentApiProp[] = [];
+
+const inheritedNativeSelectApi: readonly ComponentApiProp[] = [];
+
 export const selectApi = {
   react: reactSelectApi,
   'react-native': nativeSelectApi,
+  inherited: {
+    react: inheritedReactSelectApi,
+    'react-native': inheritedNativeSelectApi,
+  },
 } as const;

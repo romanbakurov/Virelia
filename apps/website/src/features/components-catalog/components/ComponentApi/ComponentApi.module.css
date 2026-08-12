@@ -44,6 +44,23 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  table-layout: fixed;
+}
+
+.propColumn {
+  width: 18%;
+}
+
+.typeColumn {
+  width: 30%;
+}
+
+.defaultColumn {
+  width: 14%;
+}
+
+.descriptionColumn {
+  width: 38%;
 }
 
 .table th {
@@ -105,7 +122,8 @@
 .type {
   max-width: 360px;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
   color: var(--text-brand);
   background: color-mix(in srgb, var(--text-brand) 5%, transparent);
 }
@@ -132,6 +150,43 @@
 
 .propDescription {
   min-width: 260px;
+}
+
+.inherited {
+  margin-top: var(--space-5);
+}
+
+.inheritedSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  gap: var(--space-4);
+}
+
+.inheritedCount {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.inheritedDescription {
+  margin: var(--space-3) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.tableWrapper[data-tone='muted'] {
+  border-color: var(--border-muted);
 }
 
 @media (width <= 760px) {

@@ -52,7 +52,9 @@ type ComponentPageConfig = {
   Usage: PlatformSection;
   Examples: PlatformSection;
   Accessibility: PlatformSection;
-  api: Readonly<Record<ComponentPlatform, readonly ComponentApiProp[]>>;
+  api: Readonly<Record<ComponentPlatform, readonly ComponentApiProp[]>> & {
+    inherited?: Partial<Record<ComponentPlatform, readonly ComponentApiProp[]>>;
+  };
   related: readonly string[];
 };
 
@@ -117,6 +119,6 @@ export const componentPages = {
     Examples: InputExamples,
     Accessibility: InputAccessibility,
     api: inputApi,
-    related: ['form-field', 'select', 'button'],
+    related: [],
   },
 } satisfies Record<string, ComponentPageConfig>;
