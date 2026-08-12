@@ -75,25 +75,27 @@
 }
 
 .input {
-  appearance: none;
   width: 100%;
-  padding: var(--space-3) var(--space-4);
+  height: var(--input-height);
   color: var(--input-current-default-fg);
-  font-family: var(--font-family-base);
-  font-size: var(--font-size-md);
+  font-size: var(--input-font-size);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-md);
-  letter-spacing: inherit;
+  line-height: var(--input-line-height);
   background-color: var(--input-current-default-bg);
   border: 1px solid var(--input-current-default-border);
   border-radius: var(--radius-md);
-  outline: none;
   transition:
     color 0.2s,
     border-color 0.2s,
     background-color 0.2s,
     box-shadow 0.2s,
     transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  appearance: none;
+  box-sizing: border-box;
+  padding-block: 0;
+  font-family: var(--font-family-base);
+  letter-spacing: inherit;
+  outline: none;
 
   &::placeholder {
     color: var(--input-current-default-placeholder);
@@ -146,18 +148,15 @@
   }
 
   &.sm {
-    padding: var(--space-2) var(--space-3);
-    font-size: var(--font-size-sm);
+    padding-inline: var(--space-3);
   }
 
   &.md {
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--font-size-md);
+    padding-inline: var(--space-4);
   }
 
   &.lg {
-    padding: var(--space-4) var(--space-5);
-    font-size: var(--font-size-lg);
+    padding-inline: var(--space-5);
   }
 
   &:-webkit-autofill,
@@ -234,8 +233,8 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: var(--space-6);
-  height: var(--space-6);
+  width: var(--input-icon-size);
+  height: var(--input-icon-size);
   color: var(--input-current-default-icon);
   transform: translateY(-50%);
   pointer-events: none;
@@ -297,6 +296,8 @@
 .endAdornment svg {
   display: block;
   flex: 0 0 auto;
+  width: 100%;
+  height: 100%;
 }
 
 .inputWrapper:has(.input:hover:not(:disabled, :focus-visible)) {

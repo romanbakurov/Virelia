@@ -1,7 +1,15 @@
 import { cloneElement, forwardRef, useState } from 'react';
 
+import { controlSizes } from '@vellira-ui/tokens';
 import type { TextInputProps } from 'react-native';
-import { Platform, Pressable, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { FormField, useFormFieldContext } from '../../patterns/FormField';
 import { useTheme, useThemeStyles } from '../../theme';
@@ -149,6 +157,8 @@ export const Input = forwardRef<TextInput, InputProps>(
     const displayValue = format ? format(currentValue) : currentValue;
     const hasValue = currentValue !== '';
     const resolvedSize = size ?? field?.size ?? 'md';
+    const controlSize = controlSizes[resolvedSize];
+    const resolvedIconSize = iconSize ?? controlSize.iconSize;
     const inputColorPalette = theme.components.input[color];
     const inputPalette = inputColorPalette[variant];
     const inputState = isFocused ? inputPalette.focus : inputPalette.default;
@@ -157,6 +167,7 @@ export const Input = forwardRef<TextInput, InputProps>(
     const isDisabled = disabled || (!hasOwnField && Boolean(field?.disabled));
     const isRequired = required || (!hasOwnField && Boolean(field?.required));
     const isReadOnly = readOnly || loading;
+    const showLoading = loading && !isDisabled;
     const placeholderTextColor = isDisabled
       ? getDisabledPlaceholderTextColor(theme)
       : readOnly
@@ -178,7 +189,6 @@ export const Input = forwardRef<TextInput, InputProps>(
 
     const isPassword = type === 'password';
     const [isPasswordRevealed, setIsPasswordRevealed] = useState(false);
-    const resolvedIconSize = iconSize ?? 16;
 
     const handleFocus: NonNullable<TextInputProps['onFocus']> = (event) => {
       setIsFocused(true);
@@ -210,10 +220,18 @@ export const Input = forwardRef<TextInput, InputProps>(
       onClear?.();
     };
 
-    const showClearButton = clearable && hasValue && !isDisabled && !isReadOnly;
-    const showRevealButton = revealPassword && isPassword && !isDisabled;
+    const showClearButton =
+      clearable && hasValue && !isDisabled && !isReadOnly && !showLoading;
+
+    const showRevealButton =
+      revealPassword &&
+      isPassword &&
+      !isDisabled &&
+      !showLoading &&
+      !showClearButton;
+
     const showRightIcon =
-      !showClearButton && !showRevealButton && Boolean(endIcon);
+      !showLoading && !showClearButton && !showRevealButton && Boolean(endIcon);
 
     const startIconColor = isDisabled
       ? theme.components.input.disabled.icon
@@ -267,7 +285,10 @@ export const Input = forwardRef<TextInput, InputProps>(
           placeholderTextColor={placeholderTextColor}
           accessibilityLabel={accessibilityLabel ?? label}
           accessibilityHint={accessibilityHint}
-          accessibilityState={{ disabled: isDisabled }}
+          accessibilityState={{
+            disabled: isDisabled,
+            busy: loading,
+          }}
           accessibilityLabelledBy={!hasOwnField ? field?.labelId : undefined}
           aria-describedby={!hasOwnField ? field?.ariaDescribedBy : undefined}
           style={[
@@ -276,11 +297,17 @@ export const Input = forwardRef<TextInput, InputProps>(
               color: inputState.fg,
               backgroundColor: inputState.bg,
               borderColor: inputState.border,
+              height: controlSize.height,
+              fontSize: controlSize.fontSize,
+              lineHeight: controlSize.lineHeight,
             },
             styles[resolvedSize],
             inputStyle,
             startIcon && styles.inputWithLeftAdornment,
-            (showRightIcon || showClearButton || showRevealButton) &&
+            (showLoading ||
+              showRightIcon ||
+              showClearButton ||
+              showRevealButton) &&
               styles.inputWithRightAdornment,
             isFocused &&
               !isDisabled &&
@@ -301,7 +328,16 @@ export const Input = forwardRef<TextInput, InputProps>(
           ]}
         />
 
-        {showClearButton ? (
+        {showLoading ? (
+          <View
+            {...nativePointerEventsNone}
+            style={[styles.rightIcon, webPointerEventsNone]}
+            accessibilityElementsHidden
+            importantForAccessibility='no'
+          >
+            <ActivityIndicator size='small' color={endIconColor} />
+          </View>
+        ) : showClearButton ? (
           <Pressable
             accessibilityRole='button'
             accessibilityLabel='Clear input'

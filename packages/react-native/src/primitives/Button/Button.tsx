@@ -1,5 +1,6 @@
 import { cloneElement, useState } from 'react';
 
+import { controlSizes } from '@vellira-ui/tokens';
 import type { LayoutChangeEvent, PressableProps } from 'react-native';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
@@ -9,38 +10,20 @@ import { devWarning } from '../../utils/devWarning';
 import { createStyles } from './Button.styles';
 import type { ButtonIconElement, ButtonProps } from './types';
 
-const sizeMap: Record<
+const buttonSizeMap: Record<
   NonNullable<ButtonProps['size']>,
   {
     px: number;
-    py: number;
-    height: number;
-    fontSize: number;
-    iconSize: number;
   }
 > = {
   sm: {
     px: 16,
-    py: 6,
-    height: 36,
-    fontSize: 12,
-    iconSize: 16,
   },
-
   md: {
     px: 24,
-    py: 8,
-    height: 44,
-    fontSize: 14,
-    iconSize: 20,
   },
-
   lg: {
     px: 32,
-    py: 10,
-    height: 52,
-    fontSize: 16,
-    iconSize: 24,
   },
 };
 
@@ -73,7 +56,8 @@ export function Button({
 }: ButtonProps) {
   const { theme } = useTheme();
   const styles = useThemeStyles(createStyles);
-  const config = sizeMap[size];
+  const controlSize = controlSizes[size];
+  const buttonSize = buttonSizeMap[size];
   const radius =
     shape === 'square'
       ? theme.tokens.radius.sm
@@ -102,7 +86,7 @@ export function Button({
     'Button: icon-only buttons must provide an accessibilityLabel.'
   );
 
-  const resolvedIconSize = iconSize ?? config.iconSize;
+  const resolvedIconSize = iconSize ?? controlSize.iconSize;
 
   const handleFocus: NonNullable<PressableProps['onFocus']> = (event) => {
     setIsFocused(true);
@@ -172,10 +156,11 @@ export function Button({
             backgroundColor: interactionTheme.bg,
             borderColor: interactionTheme.border,
             borderRadius: radius,
-            paddingHorizontal: iconOnly ? 0 : config.px,
-            paddingVertical: iconOnly ? 0 : config.py,
-            width: iconOnly ? config.height : undefined,
-            height: iconOnly ? config.height : undefined,
+            minHeight: controlSize.height,
+            paddingHorizontal: iconOnly ? 0 : buttonSize.px,
+            paddingVertical: 0,
+            width: iconOnly ? controlSize.height : undefined,
+            height: iconOnly ? controlSize.height : undefined,
           },
           fullWidth && !iconOnly && styles.fullWidth,
           isDisabled && styles.disabled,
@@ -191,7 +176,12 @@ export function Button({
 
         return (
           <>
-            {loading && <ActivityIndicator size='small' color={contentColor} />}
+            {loading && (
+              <ActivityIndicator
+                size={controlSize.iconSize}
+                color={contentColor}
+              />
+            )}
 
             {!loading && iconStart && renderIcon(iconStart, contentColor)}
 
@@ -207,7 +197,8 @@ export function Button({
                   style={[
                     styles.text,
                     {
-                      fontSize: config.fontSize,
+                      fontSize: controlSize.fontSize,
+                      lineHeight: controlSize.lineHeight,
                       color: contentColor,
                     },
                     textStyle,
@@ -225,7 +216,8 @@ export function Button({
                       styles.text,
                       styles.labelMeasure,
                       {
-                        fontSize: config.fontSize,
+                        fontSize: controlSize.fontSize,
+                        lineHeight: controlSize.lineHeight,
                       },
                       textStyle,
                     ]}

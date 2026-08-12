@@ -3,7 +3,8 @@ import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 import { FormField, useFormFieldContext } from '@patterns/FormField';
 import { cn } from '@utils/cn';
 import { Search } from '@vellira-ui/icons';
-import type { ChangeEvent, InputHTMLAttributes } from 'react';
+import { controlSizes } from '@vellira-ui/tokens';
+import type { ChangeEvent, CSSProperties, InputHTMLAttributes } from 'react';
 
 import type { InputProps } from './types';
 
@@ -18,6 +19,13 @@ const toneClassNameByTone = {
   muted: styles.toneMuted,
   inverse: styles.toneInverse,
 } as const;
+
+type InputSizeStyle = CSSProperties & {
+  '--input-height': string;
+  '--input-font-size': string;
+  '--input-line-height': string;
+  '--input-icon-size': string;
+};
 
 const getAutoComplete = (
   type: InputHTMLAttributes<HTMLInputElement>['type'] = 'text',
@@ -93,6 +101,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       required = false,
       loading = false,
       className,
+      style,
       wrapperClassName,
       autoComplete,
       readOnly = false,
@@ -146,6 +155,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const displayValue = format ? format(currentValueText) : currentValueText;
     const hasValue = currentValueText.length > 0;
     const resolvedSize = size ?? field?.size ?? 'md';
+    const controlSize = controlSizes[resolvedSize];
+    const sizeStyle: InputSizeStyle = {
+      '--input-height': `${controlSize.height}px`,
+      '--input-font-size': `${controlSize.fontSize}px`,
+      '--input-line-height': `${controlSize.lineHeight}px`,
+      '--input-icon-size': `${controlSize.iconSize}px`,
+    };
     const isInvalid =
       invalid || Boolean(error) || (!hasOwnField && Boolean(field?.invalid));
     const isDisabled = disabled || (!hasOwnField && Boolean(field?.disabled));
@@ -291,6 +307,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 },
                 className
               )}
+              style={{
+                ...sizeStyle,
+                ...style,
+              }}
               value={displayValue}
               onChange={handleChange}
               placeholder={placeholder}

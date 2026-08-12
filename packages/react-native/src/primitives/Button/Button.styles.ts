@@ -23,7 +23,6 @@ export const createStyles = (theme: NativeTheme) =>
     text: {
       fontFamily: theme.tokens.typography.family.regular,
       fontWeight: fontWeight(theme.tokens.typography.weight.regular),
-      lineHeight: theme.tokens.typography.lineHeight.md,
       textAlign: 'center',
 
       // Fallback color.
@@ -43,7 +42,6 @@ export const createStyles = (theme: NativeTheme) =>
 
     spinner: {
       fontSize: 12,
-      lineHeight: theme.tokens.typography.lineHeight.md,
     },
 
     badge: {

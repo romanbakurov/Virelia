@@ -268,9 +268,22 @@ const buttonGroupStyle = {
   alignItems: 'center',
 } satisfies CSSProperties;
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({
+  title,
+  children,
+  style,
+}: {
+  title: string;
+  children: ReactNode;
+  style?: CSSProperties;
+}) {
   return (
-    <section style={sectionStyle}>
+    <section
+      style={{
+        ...sectionStyle,
+        ...style,
+      }}
+    >
       <h3 style={subtitleStyle}>{title}</h3>
       {children}
     </section>
@@ -414,25 +427,49 @@ export const Matrix: Story = {
       'warning',
       'danger',
     ] as const;
+
     const appearances = ['solid', 'outline', 'ghost', 'soft', 'link'] as const;
 
     return (
-      <Section title='Matrix'>
-        <div style={stackStyle}>
-          {colors.map((color) => (
-            <div key={color} style={rowStyle}>
-              {appearances.map((appearance) => (
-                <Button
-                  key={`${color}-${appearance}`}
-                  {...args}
-                  color={color}
-                  appearance={appearance}
-                >
-                  {color} {appearance}
-                </Button>
-              ))}
-            </div>
-          ))}
+      <Section
+        title='Matrix'
+        style={{
+          maxWidth: 820,
+        }}
+      >
+        <div style={{ overflowX: 'auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16,
+            }}
+          >
+            {colors.map((color) => (
+              <div
+                key={color}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(136px, 1fr))',
+                  gap: 12,
+                  alignItems: 'center',
+                  width: '100%',
+                }}
+              >
+                {appearances.map((appearance) => (
+                  <Button
+                    key={`${color}-${appearance}`}
+                    {...args}
+                    color={color}
+                    appearance={appearance}
+                    fullWidth
+                  >
+                    {color} {appearance}
+                  </Button>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </Section>
     );
