@@ -3,7 +3,9 @@ import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes } from '../../theme';
 
+import { createStyles as createTriggerStyles } from './Trigger/TabsTrigger.styles';
 import { Tabs } from '.';
 
 afterEach(() => {
@@ -53,11 +55,21 @@ describe('Native Tabs', () => {
     );
 
     const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    const tablist = container.querySelector<HTMLElement>('[role="tablist"]');
 
     expect(tabs[0].style.borderColor).toBe('transparent');
     expect(tabs[1].style.borderColor).toBe('transparent');
+    expect(tablist?.style.borderBottomWidth).toBe('1px');
 
     unmount();
+  });
+
+  it('keeps line trigger heights aligned to the cross-platform size contract', () => {
+    const styles = createTriggerStyles(nativeThemes.light);
+
+    expect(styles.tabSm.minHeight).toBe(32);
+    expect(styles.tab.minHeight).toBe(38);
+    expect(styles.tabLg.minHeight).toBe(51);
   });
 
   it('keeps icon-only pill triggers square', () => {
@@ -86,7 +98,7 @@ describe('Native Tabs', () => {
     unmount();
   });
 
-  it('stretches segmented triggers evenly across the list', () => {
+  it('keeps segmented triggers content-sized like the React implementation', () => {
     const { container, unmount } = render(
       <Tabs defaultValue='overview' variant='segmented'>
         <Tabs.List>
@@ -100,10 +112,15 @@ describe('Native Tabs', () => {
     );
 
     const tabs = container.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    const tablist = container.querySelector<HTMLElement>('[role="tablist"]');
 
-    expect(tabs[0].style.flex).toBe('1 1 0%');
+    expect(tablist?.style.alignSelf).toBe('flex-start');
+    expect(tablist?.style.width).toBe('auto');
+    expect(tabs[0].style.flexGrow).toBe('0');
+    expect(tabs[0].style.flexShrink).toBe('0');
     expect(tabs[0].style.minWidth).toBe('0px');
-    expect(tabs[1].style.flex).toBe('1 1 0%');
+    expect(tabs[1].style.flexGrow).toBe('0');
+    expect(tabs[1].style.flexShrink).toBe('0');
     expect(tabs[1].style.minWidth).toBe('0px');
 
     unmount();

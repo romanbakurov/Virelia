@@ -1,12 +1,8 @@
-import type { ReactNode } from 'react';
-
 import { createDropdownSlot } from '../internal/DropdownCollection';
 
-import styles from '../Content/DropdownContent.module.scss';
+import type { DropdownEmptyProps } from './types';
 
-export type DropdownEmptyProps = {
-  children?: ReactNode;
-};
+import styles from '../Content/DropdownContent.module.scss';
 
 export const DropdownEmpty = createDropdownSlot<DropdownEmptyProps>(
   'empty',

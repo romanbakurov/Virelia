@@ -1,0 +1,283 @@
+import type { ComponentType } from 'react';
+
+import type {
+  ComponentApiProp,
+  ComponentApiSection,
+} from '../shared/ComponentApi';
+import type { ComponentPlatform } from '../types';
+
+// component-page-imports
+import {
+  RadioGroupAccessibility,
+  RadioGroupDemo,
+  RadioGroupExamples,
+  RadioGroupUsage,
+  NativeRadioGroupDemo,
+  radioGroupApi,
+} from '../components/RadioGroup';
+import {
+  FormFieldAccessibility,
+  FormFieldDemo,
+  FormFieldExamples,
+  FormFieldUsage,
+  NativeFormFieldDemo,
+  formFieldApi,
+} from '../components/FormField';
+import {
+  PopoverAccessibility,
+  PopoverDemo,
+  PopoverExamples,
+  PopoverUsage,
+  NativePopoverDemo,
+  popoverApi,
+} from '../components/Popover';
+import {
+  TooltipAccessibility,
+  TooltipDemo,
+  TooltipExamples,
+  TooltipUsage,
+  NativeTooltipDemo,
+  tooltipApi,
+} from '../components/Tooltip';
+import {
+  ModalAccessibility,
+  ModalDemo,
+  ModalExamples,
+  ModalUsage,
+  NativeModalDemo,
+  modalApi,
+} from '../components/Modal';
+import {
+  TabsAccessibility,
+  TabsDemo,
+  TabsExamples,
+  TabsUsage,
+  NativeTabsDemo,
+  tabsApi,
+} from '../components/Tabs';
+import {
+  DropdownAccessibility,
+  DropdownDemo,
+  DropdownExamples,
+  DropdownUsage,
+  NativeDropdownDemo,
+  dropdownApi,
+} from '../components/Dropdown';
+import {
+  SelectAccessibility,
+  SelectDemo,
+  SelectExamples,
+  SelectUsage,
+  NativeSelectDemo,
+  selectApi,
+} from '../components/Select';
+import {
+  CheckboxAccessibility,
+  CheckboxDemo,
+  CheckboxExamples,
+  CheckboxUsage,
+  NativeCheckboxDemo,
+  checkboxApi,
+} from '../components/Checkbox';
+import {
+  RadioAccessibility,
+  RadioDemo,
+  RadioExamples,
+  RadioUsage,
+  NativeRadioDemo,
+  radioApi,
+} from '../components/Radio';
+import {
+  InputAccessibility,
+  InputDemo,
+  InputExamples,
+  InputUsage,
+  NativeInputDemo,
+  inputApi,
+} from '../components/Input';
+import {
+  ButtonAccessibility,
+  ButtonDemo,
+  ButtonExamples,
+  ButtonUsage,
+  NativeButtonDemo,
+  buttonApi,
+} from '../components/Button';
+
+type PlatformSectionProps = {
+  platform: ComponentPlatform;
+};
+
+type PlatformSection = ComponentType<PlatformSectionProps>;
+
+type PlatformDemoRegistry = Partial<Record<ComponentPlatform, ComponentType>>;
+
+type ComponentPageConfig = {
+  name: string;
+  demos: PlatformDemoRegistry;
+  Usage: PlatformSection;
+  Examples: PlatformSection;
+  Accessibility: PlatformSection;
+  api: Readonly<
+    Record<
+      ComponentPlatform,
+      | readonly ComponentApiProp[]
+      | {
+          sections?: readonly ComponentApiSection[];
+          props?: readonly ComponentApiProp[];
+          inheritedProps?: readonly ComponentApiProp[];
+        }
+    >
+  > & {
+    inherited?: Partial<Record<ComponentPlatform, readonly ComponentApiProp[]>>;
+  };
+  related: readonly string[];
+};
+
+export const componentPages = {
+  // component-page-entries
+  'radio-group': {
+    name: 'RadioGroup',
+    demos: {
+      react: RadioGroupDemo,
+      'react-native': NativeRadioGroupDemo,
+    },
+    Usage: RadioGroupUsage,
+    Examples: RadioGroupExamples,
+    Accessibility: RadioGroupAccessibility,
+    api: radioGroupApi,
+    related: ['radio', 'checkbox', 'select'],
+  },
+  'form-field': {
+    name: 'FormField',
+    demos: {
+      react: FormFieldDemo,
+      'react-native': NativeFormFieldDemo,
+    },
+    Usage: FormFieldUsage,
+    Examples: FormFieldExamples,
+    Accessibility: FormFieldAccessibility,
+    api: formFieldApi,
+    related: ['input', 'select', 'checkbox'],
+  },
+  popover: {
+    name: 'Popover',
+    demos: {
+      react: PopoverDemo,
+      'react-native': NativePopoverDemo,
+    },
+    Usage: PopoverUsage,
+    Examples: PopoverExamples,
+    Accessibility: PopoverAccessibility,
+    api: popoverApi,
+    related: ['button', 'tooltip', 'modal'],
+  },
+  modal: {
+    name: 'Modal',
+    demos: {
+      react: ModalDemo,
+      'react-native': NativeModalDemo,
+    },
+    Usage: ModalUsage,
+    Examples: ModalExamples,
+    Accessibility: ModalAccessibility,
+    api: modalApi,
+    related: ['button', 'popover', 'tooltip'],
+  },
+  tooltip: {
+    name: 'Tooltip',
+    demos: {
+      react: TooltipDemo,
+      'react-native': NativeTooltipDemo,
+    },
+    Usage: TooltipUsage,
+    Examples: TooltipExamples,
+    Accessibility: TooltipAccessibility,
+    api: tooltipApi,
+    related: ['button', 'popover'],
+  },
+  tabs: {
+    name: 'Tabs',
+    demos: {
+      react: TabsDemo,
+      'react-native': NativeTabsDemo,
+    },
+    Usage: TabsUsage,
+    Examples: TabsExamples,
+    Accessibility: TabsAccessibility,
+    api: tabsApi,
+    related: ['radio-group', 'button'],
+  },
+  dropdown: {
+    name: 'Dropdown',
+    demos: {
+      react: DropdownDemo,
+      'react-native': NativeDropdownDemo,
+    },
+    Usage: DropdownUsage,
+    Examples: DropdownExamples,
+    Accessibility: DropdownAccessibility,
+    api: dropdownApi,
+    related: ['button', 'select', 'popover'],
+  },
+  select: {
+    name: 'Select',
+    demos: {
+      react: SelectDemo,
+      'react-native': NativeSelectDemo,
+    },
+    Usage: SelectUsage,
+    Examples: SelectExamples,
+    Accessibility: SelectAccessibility,
+    api: selectApi,
+    related: ['input', 'dropdown', 'radio-group'],
+  },
+  radio: {
+    name: 'Radio',
+    demos: {
+      react: RadioDemo,
+      'react-native': NativeRadioDemo,
+    },
+    Usage: RadioUsage,
+    Examples: RadioExamples,
+    Accessibility: RadioAccessibility,
+    api: radioApi,
+    related: ['radio-group', 'checkbox', 'select'],
+  },
+  checkbox: {
+    name: 'Checkbox',
+    demos: {
+      react: CheckboxDemo,
+      'react-native': NativeCheckboxDemo,
+    },
+    Usage: CheckboxUsage,
+    Examples: CheckboxExamples,
+    Accessibility: CheckboxAccessibility,
+    api: checkboxApi,
+    related: ['radio', 'select'],
+  },
+  button: {
+    name: 'Button',
+    demos: {
+      react: ButtonDemo,
+      'react-native': NativeButtonDemo,
+    },
+    Usage: ButtonUsage,
+    Examples: ButtonExamples,
+    Accessibility: ButtonAccessibility,
+    api: buttonApi,
+    related: ['input', 'checkbox', 'modal'],
+  },
+  input: {
+    name: 'Input',
+    demos: {
+      react: InputDemo,
+      'react-native': NativeInputDemo,
+    },
+    Usage: InputUsage,
+    Examples: InputExamples,
+    Accessibility: InputAccessibility,
+    api: inputApi,
+    related: ['form-field', 'select', 'checkbox'],
+  },
+} satisfies Record<string, ComponentPageConfig>;

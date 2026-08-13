@@ -24,6 +24,9 @@ function pressOutside() {
 const textById = (id: string | null | undefined) =>
   id ? document.getElementById(id)?.textContent : undefined;
 
+const waitForModalWarningCheck = () =>
+  new Promise((resolve) => window.setTimeout(resolve, 0));
+
 afterEach(() => {
   document.body.innerHTML = '';
   document.body.style.overflow = '';
@@ -100,6 +103,78 @@ describe('Modal', () => {
     expect(textById(descriptionId)).toBe('Are you sure?');
 
     unmount();
+  });
+
+  it('does not warn when Modal.Content contains Modal.Title', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content>
+            <Modal.Header>
+              <Modal.Title>Delete file</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Body content</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    await waitForModalWarningCheck();
+
+    expect(warn).not.toHaveBeenCalledWith(
+      'Modal.Content requires Modal.Title or ariaLabel.'
+    );
+
+    unmount();
+    warn.mockRestore();
+  });
+
+  it('does not warn when Modal.Content has ariaLabel without Modal.Title', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content ariaLabel='Settings'>
+            <Modal.Body>Body content</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    await waitForModalWarningCheck();
+
+    expect(warn).not.toHaveBeenCalledWith(
+      'Modal.Content requires Modal.Title or ariaLabel.'
+    );
+
+    unmount();
+    warn.mockRestore();
+  });
+
+  it('warns when Modal.Content has no Modal.Title or ariaLabel', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { unmount } = render(
+      <Modal open>
+        <Portal>
+          <Modal.Overlay />
+          <Modal.Content>
+            <Modal.Body>Body content</Modal.Body>
+          </Modal.Content>
+        </Portal>
+      </Modal>
+    );
+
+    await waitForModalWarningCheck();
+
+    expect(warn).toHaveBeenCalledWith(
+      'Modal.Content requires Modal.Title or ariaLabel.'
+    );
+
+    unmount();
+    warn.mockRestore();
   });
 
   it('supports Trigger asChild without rendering an extra button', () => {

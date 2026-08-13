@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import {
   ComponentNavigationProvider,
   ComponentsHeader,
-} from '@/features/components-catalog';
+} from '@/component-catalog';
 
 interface ComponentsLayoutProps {
   children: ReactNode;

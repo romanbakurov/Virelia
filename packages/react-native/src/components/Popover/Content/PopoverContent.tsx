@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 
 import type { View as NativeView } from 'react-native';
-import { Pressable, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 
 import { Portal } from '../../../primitives/Portal';
 import { useTheme } from '../../../theme';
@@ -47,7 +47,7 @@ export function PopoverContent({
     <Portal visible={open} onRequestClose={requestClose}>
       <View
         ref={layerRef}
-        pointerEvents='box-none'
+        pointerEvents={Platform.OS === 'web' ? undefined : 'box-none'}
         style={[styles.root, { zIndex }]}
       >
         <Pressable

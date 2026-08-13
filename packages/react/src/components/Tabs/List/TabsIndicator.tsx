@@ -1,16 +1,10 @@
 import { cn } from '@utils/cn';
-import type { HTMLAttributes } from 'react';
 
 import { useTabsIndicator } from '../internal/useTabsIndicator';
 
-import styles from './TabsList.module.scss';
+import type { TabsIndicatorProps } from './types';
 
-export interface TabsIndicatorProps extends Omit<
-  HTMLAttributes<HTMLSpanElement>,
-  'children'
-> {
-  className?: string;
-}
+import styles from './TabsList.module.scss';
 
 export const TabsIndicator = ({
   className,

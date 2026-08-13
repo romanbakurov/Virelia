@@ -6,12 +6,9 @@ import { Close } from '@vellira-ui/icons';
 import { useSelectContext } from '../internal/SelectContext';
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from '../Content/SelectContent.module.scss';
+import type { SelectSearchProps } from './types';
 
-export interface SelectSearchProps {
-  placeholder?: string;
-  className?: string;
-}
+import styles from '../Content/SelectContent.module.scss';
 
 export const SelectSearch: SelectSlotComponent<SelectSearchProps> = ({
   placeholder,

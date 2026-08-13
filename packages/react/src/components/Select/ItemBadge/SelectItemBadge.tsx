@@ -1,10 +1,6 @@
-import type { ReactNode } from 'react';
-
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-export interface SelectItemBadgeProps {
-  children?: ReactNode;
-}
+import type { SelectItemBadgeProps } from './types';
 
 export const SelectItemBadge: SelectSlotComponent<SelectItemBadgeProps> = () =>
   null;

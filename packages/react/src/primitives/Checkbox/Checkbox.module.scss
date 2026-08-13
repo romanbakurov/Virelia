@@ -28,6 +28,7 @@
   --checkbox-hover-label-fg: var(--checkbox-selected-hover-label-fg);
   --checkbox-size: 20px;
 
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-3);

@@ -1,0 +1,64 @@
+.root {
+  overflow: hidden;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.language {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+
+.copy {
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-height: 30px;
+  padding-inline: var(--space-3);
+}
+
+.copy:hover {
+  color: var(--text-primary);
+  background: var(--surface-default);
+  border-color: var(--border-muted);
+}
+
+.copy:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--space-1);
+}
+
+.code {
+  overflow-x: auto;
+}
+
+.code pre {
+  margin: 0;
+  padding: var(--space-5);
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  background: transparent !important;
+  overflow-x: auto;
+  font-family: var(--font-family-mono);
+}
+
+.code code {
+  font-family: inherit;
+}

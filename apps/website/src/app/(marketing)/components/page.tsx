@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
-import { ComponentsPageHero } from '@/features/components-catalog';
+import { ComponentsPageHero } from '@/component-catalog';
 import { componentsPortalEnabled } from '@/config/features';
 import { notFound } from 'next/navigation';
 

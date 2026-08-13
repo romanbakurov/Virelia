@@ -1,2 +1,2 @@
-export type { SelectItemIconProps } from './SelectItemIcon';
 export { SelectItemIcon } from './SelectItemIcon';
+export type { SelectItemIconProps } from './types';

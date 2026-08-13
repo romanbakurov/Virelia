@@ -4,8 +4,10 @@ import { Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes } from '../../theme';
 
 import { Checkbox } from './Checkbox';
+import { createStyles } from './Checkbox.styles';
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -167,5 +169,19 @@ describe('Native Checkbox', () => {
     ).not.toBe(null);
 
     unmount();
+  });
+
+  it('keeps labeled row height stable across sizes', () => {
+    const styles = createStyles(nativeThemes.light);
+
+    expect(styles.labelSm.lineHeight).toBe(
+      nativeThemes.light.tokens.typography.lineHeight.md
+    );
+    expect(styles.labelMd.lineHeight).toBe(
+      nativeThemes.light.tokens.typography.lineHeight.md
+    );
+    expect(styles.labelLg.lineHeight).toBe(
+      nativeThemes.light.tokens.typography.lineHeight.md
+    );
   });
 });

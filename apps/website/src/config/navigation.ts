@@ -64,18 +64,18 @@ export const externalNavigation = [
     label: 'Documentation',
     href: 'https://docs.vellira.dev',
     icon: '/brand/navigation/documentation.svg',
-    iconSize: 21,
+    iconSize: 20,
   },
   {
     label: 'Storybook',
     href: 'https://storybook.vellira.dev',
     icon: '/brand/navigation/storybook.svg',
-    iconSize: 21,
+    iconSize: 20,
   },
   {
     label: 'GitHub',
     href: 'https://github.com/vellira-dev/vellira',
     icon: '/brand/navigation/github.svg',
-    iconSize: 20,
+    iconSize: 19,
   },
 ] as const;

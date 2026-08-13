@@ -1,2 +1,2 @@
-export type { SelectSearchProps } from './SelectSearch';
 export { SelectSearch } from './SelectSearch';
+export type { SelectSearchProps } from './types';

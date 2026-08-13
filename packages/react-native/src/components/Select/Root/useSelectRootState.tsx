@@ -75,10 +75,8 @@ export function useSelectRootState(props: SelectProps) {
   const searchInputRef = useRef<TextInput>(null);
   const selectedFocusValueRef = useRef<string | undefined>(undefined);
   const resolvedPresentation = useOverlayPresentation(presentation);
-  const { position, onFloatingLayout } = useNativeFloatingPosition(
-    placement,
-    offset
-  );
+  const { position, updatePosition, onFloatingLayout } =
+    useNativeFloatingPosition(placement, offset);
 
   const {
     options,
@@ -130,6 +128,11 @@ export function useSelectRootState(props: SelectProps) {
     filterOptions,
     filter,
   });
+
+  const openAndPositionDropdown = useCallback(() => {
+    updatePosition(triggerRef);
+    openDropdown();
+  }, [openDropdown, updatePosition]);
 
   const selectedFocusValue = selectedValues.includes(
     selectedFocusValueRef.current ?? ''
@@ -243,7 +246,7 @@ export function useSelectRootState(props: SelectProps) {
     isOpen,
     isRequired,
     clearValue,
-    openDropdown,
+    openDropdown: openAndPositionDropdown,
     resolvedHint,
     resolvedLabel,
     resolvedSize,

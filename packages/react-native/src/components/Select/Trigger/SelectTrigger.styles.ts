@@ -13,7 +13,7 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     trigger: {
       width: '100%',
       minWidth: 0,
-      minHeight: 44,
+      minHeight: 38,
       alignItems: 'center',
       flexDirection: 'row',
       borderRadius: theme.tokens.radius.md,
@@ -21,7 +21,7 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     },
 
     sm: {
-      minHeight: 44,
+      minHeight: 38,
       paddingHorizontal: theme.tokens.spacing[3],
       paddingVertical: theme.tokens.spacing[2],
     },
@@ -39,15 +39,15 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     },
 
     triggerWithClearSm: {
-      paddingRight: theme.tokens.spacing[3] + 28 + theme.tokens.spacing[2],
+      paddingRight: theme.tokens.spacing[3] + 24 + theme.tokens.spacing[2],
     },
 
     triggerWithClearMd: {
-      paddingRight: theme.tokens.spacing[4] + 28 + theme.tokens.spacing[2],
+      paddingRight: theme.tokens.spacing[4] + 24 + theme.tokens.spacing[2],
     },
 
     triggerWithClearLg: {
-      paddingRight: theme.tokens.spacing[5] + 28 + theme.tokens.spacing[2],
+      paddingRight: theme.tokens.spacing[5] + 24 + theme.tokens.spacing[2],
     },
 
     clearButtonContainer: {
@@ -103,16 +103,16 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     },
 
     startIcon: {
-      width: 18,
-      height: 18,
+      width: 16,
+      height: 16,
       marginRight: theme.tokens.spacing[2],
       alignItems: 'center',
       justifyContent: 'center',
     },
 
     endIcon: {
-      width: 18,
-      height: 18,
+      width: 16,
+      height: 16,
       marginLeft: theme.tokens.spacing[2],
       alignItems: 'center',
       justifyContent: 'center',
@@ -123,8 +123,8 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     },
 
     clearButton: {
-      width: 28,
-      height: 28,
+      width: 24,
+      height: 24,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 999,

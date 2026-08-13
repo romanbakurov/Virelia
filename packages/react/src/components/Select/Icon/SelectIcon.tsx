@@ -1,16 +1,12 @@
 import { cn } from '@utils/cn';
 import { ChevronDown } from '@vellira-ui/icons';
-import type { ReactNode } from 'react';
 
 import { useSelectContext } from '../internal/SelectContext';
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-import styles from '../Trigger/SelectTrigger.module.scss';
+import type { SelectIconProps } from './types';
 
-export interface SelectIconProps {
-  children?: ReactNode;
-  className?: string;
-}
+import styles from '../Trigger/SelectTrigger.module.scss';
 
 export const SelectIcon: SelectSlotComponent<SelectIconProps> = ({
   children,

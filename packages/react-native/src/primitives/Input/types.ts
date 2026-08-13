@@ -14,7 +14,9 @@ import type {
 export type NativeInputKeyboardType = TextInputProps['keyboardType'];
 
 export type InputIconElement = ReactElement<{
+  /** Color passed to icon elements by the input. */
   color?: string;
+  /** Size passed to icon elements by the input. */
   size?: number;
 }>;
 

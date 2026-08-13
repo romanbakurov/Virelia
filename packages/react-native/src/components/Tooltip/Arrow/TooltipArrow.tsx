@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { useTheme } from '../../../theme/useTheme';
 import { useTooltipContext } from '../internal/TooltipContext';
@@ -32,9 +32,10 @@ export function TooltipArrow() {
 
   return (
     <View
-      pointerEvents='none'
+      pointerEvents={Platform.OS === 'web' ? undefined : 'none'}
       style={{
         position: 'absolute',
+        ...(Platform.OS === 'web' ? { pointerEvents: 'none' as const } : {}),
         width: size,
         height: size,
         backgroundColor: theme.components.tooltip.arrow.bg,

@@ -1,0 +1,113 @@
+.controls {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.controlGroup {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.controlLabel {
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.textInput {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.textInput::placeholder {
+  color: var(--text-tertiary);
+}
+
+.textInput:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--text-secondary) 24%,
+    var(--border-muted)
+  );
+}
+
+.textInput:focus {
+  border-color: var(--focus-ring-color);
+  outline: none;
+}
+
+.textInput:focus-visible {
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.control {
+  padding: 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  transition:
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  cursor: pointer;
+  min-width: 72px;
+  min-height: 36px;
+  font-family: inherit;
+}
+
+.control:hover {
+  color: var(--text-primary);
+  background: var(--surface-subtle);
+  border-color: color-mix(
+    in srgb,
+    var(--text-secondary) 24%,
+    var(--border-muted)
+  );
+}
+
+.control[data-active] {
+  color: var(--text-brand);
+  background: color-mix(in srgb, var(--text-brand) 6%, transparent);
+  border-color: color-mix(in srgb, var(--text-brand) 52%, transparent);
+}
+
+.control:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--space-1);
+}
+
+@media (width <= 640px) {
+  .controlGroup {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .control {
+    min-width: 64px;
+  }
+}

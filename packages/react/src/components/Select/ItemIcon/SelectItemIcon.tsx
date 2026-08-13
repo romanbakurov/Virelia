@@ -1,10 +1,6 @@
-import type { ReactNode } from 'react';
-
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 
-export interface SelectItemIconProps {
-  children?: ReactNode;
-}
+import type { SelectItemIconProps } from './types';
 
 export const SelectItemIcon: SelectSlotComponent<SelectItemIconProps> = () =>
   null;

@@ -276,7 +276,7 @@ const sections: ApiSection[] = [
     'web',
     '### Tabs.Indicator Props',
     'TabsIndicatorProps',
-    'src/components/Tabs/List/TabsIndicator.tsx'
+    'src/components/Tabs/List/types.ts'
   ),
   section(
     'web',
@@ -385,7 +385,7 @@ const sections: ApiSection[] = [
     'native',
     '### Tabs.Indicator Props',
     'TabsIndicatorProps',
-    'src/components/Tabs/List/TabsIndicator.tsx'
+    'src/components/Tabs/List/types.ts'
   ),
   section(
     'native',

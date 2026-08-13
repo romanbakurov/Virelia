@@ -6,6 +6,13 @@ import type {
 } from '@vellira-ui/types';
 import type { FocusEventHandler, KeyboardEvent, ReactNode, Ref } from 'react';
 
+export interface SelectTriggerSlotProps {
+  /** Custom trigger content. */
+  children?: ReactNode;
+  /** Class name applied to the trigger element. */
+  className?: string;
+}
+
 export interface SelectTriggerProps extends BaseSelectTriggerProps {
   children?: ReactNode;
   displayText: ReactNode;

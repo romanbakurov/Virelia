@@ -210,11 +210,6 @@
     gap: var(--space-1);
   }
 
-  .portal .externalActions {
-    display: inline-flex;
-    gap: var(--space-1);
-  }
-
   .portal .externalAction {
     --icon-size: 20px;
   }

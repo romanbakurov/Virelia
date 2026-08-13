@@ -116,24 +116,18 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     sm: {
-      minHeight: 36,
       paddingHorizontal: theme.tokens.spacing[3],
-      paddingVertical: theme.tokens.spacing[2],
-      fontSize: theme.tokens.typography.size.sm,
+      paddingVertical: 0,
     },
 
     md: {
-      minHeight: 44,
       paddingHorizontal: theme.tokens.spacing[4],
-      paddingVertical: theme.tokens.spacing[3],
-      fontSize: theme.tokens.typography.size.md,
+      paddingVertical: 0,
     },
 
     lg: {
-      minHeight: 52,
       paddingHorizontal: theme.tokens.spacing[5],
-      paddingVertical: theme.tokens.spacing[4],
-      fontSize: theme.tokens.typography.size.lg,
+      paddingVertical: 0,
     },
 
     focused: {

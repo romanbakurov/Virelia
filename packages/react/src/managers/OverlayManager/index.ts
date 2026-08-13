@@ -5,6 +5,7 @@ export {
 export type {
   OverlayEntry,
   OverlayManager,
+  OverlayManagerProviderProps,
   OverlayRegistration,
   OverlaySnapshot,
   OverlayZIndexLevel,

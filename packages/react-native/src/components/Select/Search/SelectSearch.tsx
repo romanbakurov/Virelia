@@ -65,7 +65,7 @@ export const SelectSearchField = () => {
         accessibilityLabel={searchPlaceholder}
         style={[styles.searchInput, searchStyle]}
       />
-      {query && (
+      {Boolean(query) && (
         <Pressable
           accessibilityRole='button'
           accessibilityLabel='Clear search'

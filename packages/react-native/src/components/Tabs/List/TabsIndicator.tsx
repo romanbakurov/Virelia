@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
@@ -8,10 +7,7 @@ import { useTheme } from '../../../theme';
 import { useTabs } from '../internal/TabsContext';
 import type { TabsTriggerLayout } from '../types';
 
-export interface TabsIndicatorProps {
-  children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
-}
+import type { TabsIndicatorProps } from './types';
 
 const COLLAPSED_SIZE = 8;
 const LINE_ANIMATION_DURATION = 360;

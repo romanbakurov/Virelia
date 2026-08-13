@@ -23,6 +23,7 @@ export const SelectRoot = (props: SelectProps) => {
     isDisabled,
     isRequired,
     label,
+    resolvedSize,
     triggerId,
     triggerProps,
   } = useSelectRootState(props);
@@ -68,6 +69,7 @@ export const SelectRoot = (props: SelectProps) => {
       required={isRequired}
       disabled={isDisabled}
       bindControl={false}
+      size={resolvedSize}
       className={className}
     >
       {children ? control : defaultControl}

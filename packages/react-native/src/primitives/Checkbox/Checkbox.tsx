@@ -161,7 +161,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
                       ))}
                 </View>
 
-                {label && (
+                {Boolean(label) && (
                   <Text
                     style={[
                       styles.label,
@@ -184,7 +184,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
           }}
         </Pressable>
 
-        {description && (
+        {Boolean(description) && (
           <Text
             style={[
               styles.descriptionText,

@@ -127,7 +127,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     labelSm: {
       fontSize: theme.tokens.typography.size.sm,
-      lineHeight: theme.tokens.typography.lineHeight.sm,
+      lineHeight: theme.tokens.typography.lineHeight.md,
     },
 
     labelMd: {
@@ -137,7 +137,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     labelLg: {
       fontSize: theme.tokens.typography.size.lg,
-      lineHeight: theme.tokens.typography.lineHeight.lg,
+      lineHeight: theme.tokens.typography.lineHeight.md,
     },
 
     labelDisabled: {

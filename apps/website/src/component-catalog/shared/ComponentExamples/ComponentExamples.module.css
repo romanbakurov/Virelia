@@ -1,0 +1,106 @@
+.root {
+  margin-top: var(--space-12);
+}
+
+.heading {
+  margin-bottom: var(--space-5);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+}
+
+.description {
+  max-width: 680px;
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.card {
+  display: grid;
+  grid-template-rows: minmax(120px, auto) minmax(188px, auto) minmax(auto, 1fr);
+  overflow: hidden;
+  background: var(--surface-default);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-muted);
+}
+
+.cardTitle {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.cardDescription {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+.preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 188px;
+  padding: var(--space-8);
+  background-color: var(--surface-subtle);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--text-secondary) 12%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}
+
+.card > :last-child {
+  align-self: stretch;
+  border: 0;
+  border-top: 1px solid var(--border-muted);
+  border-radius: 0;
+}
+
+@media (width <= 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+}
+
+@media (width <= 640px) {
+  .card {
+    grid-template-rows: minmax(96px, auto) minmax(176px, auto) minmax(auto, 1fr);
+  }
+
+  .cardHeader {
+    padding: var(--space-4);
+  }
+
+  .preview {
+    min-height: 176px;
+    padding: var(--space-6);
+  }
+}

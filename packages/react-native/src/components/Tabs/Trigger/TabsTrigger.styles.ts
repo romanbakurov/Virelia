@@ -8,7 +8,7 @@ const fontWeight = (value: string): TextStyle['fontWeight'] =>
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     tab: {
-      minHeight: 44,
+      minHeight: 38,
       minWidth: 44,
       alignItems: 'center',
       flexDirection: 'row',
@@ -27,7 +27,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabSm: {
-      minHeight: 36,
+      minHeight: 32,
       paddingHorizontal: theme.tokens.spacing[3],
       paddingVertical: 6,
     },
@@ -39,7 +39,7 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabLg: {
-      minHeight: 52,
+      minHeight: 51,
       paddingHorizontal: theme.tokens.spacing[5],
       paddingVertical: theme.tokens.spacing[3],
     },
@@ -51,7 +51,8 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabSegmented: {
-      flex: 1,
+      flexGrow: 0,
+      flexShrink: 0,
       minWidth: 0,
       minHeight: 32,
       paddingVertical: 5,
@@ -118,7 +119,7 @@ export const createStyles = (theme: NativeTheme) =>
     tabText: {
       flexShrink: 0,
       textAlign: 'center',
-      lineHeight: theme.tokens.typography.lineHeight.md,
+      lineHeight: theme.tokens.typography.size.md * 1.25,
       color: theme.components.tabs.primary.trigger.default.fg,
       fontFamily: theme.tokens.typography.family.regular,
       fontSize: theme.tokens.typography.size.md,
@@ -127,12 +128,12 @@ export const createStyles = (theme: NativeTheme) =>
 
     tabTextSm: {
       fontSize: theme.tokens.typography.size.sm,
-      lineHeight: theme.tokens.typography.lineHeight.sm,
+      lineHeight: theme.tokens.typography.size.sm * 1.25,
     },
 
     tabTextLg: {
       fontSize: theme.tokens.typography.size.lg,
-      lineHeight: theme.tokens.typography.lineHeight.lg,
+      lineHeight: theme.tokens.typography.size.lg * 1.25,
     },
 
     tabTextHover: {

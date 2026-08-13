@@ -10,7 +10,7 @@ export const createStyles = (theme: NativeTheme) =>
     root: {
       width: '100%',
       minWidth: 0,
-      alignSelf: 'stretch',
+      alignSelf: 'auto',
       gap: theme.components.formField.size.md.gap,
     },
 

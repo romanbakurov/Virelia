@@ -70,10 +70,13 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
         required={required}
         disabled={disabled}
         size={size}
+        accessibilityRole='radiogroup'
+        accessibilityLabel={resolvedAccessibilityLabel}
+        accessibilityHint={resolvedAccessibilityHint}
         labelStyle={labelStyle}
         descriptionStyle={descriptionStyle}
         errorStyle={errorStyle}
-        style={style}
+        style={[{ alignSelf: 'auto' }, style]}
       >
         <RadioGroupProvider
           value={{
@@ -89,12 +92,6 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
           <View
             {...rest}
             ref={ref}
-            accessibilityRole='radiogroup'
-            accessibilityLabel={resolvedAccessibilityLabel}
-            accessibilityHint={resolvedAccessibilityHint}
-            accessibilityState={{
-              disabled,
-            }}
             style={[
               styles.items,
               orientation === 'horizontal'

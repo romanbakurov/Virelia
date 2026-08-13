@@ -6,17 +6,15 @@ $button-appearances: solid, outline, ghost, soft, link;
 @mixin button-state($color, $appearance, $state) {
   color: var(--button-#{$color}-#{$appearance}-#{$state}-fg);
   background-color: var(--button-#{$color}-#{$appearance}-#{$state}-bg);
-  box-shadow: inset 0 0 0 1px
-    var(--button-#{$color}-#{$appearance}-#{$state}-border);
+  border-color: var(--button-#{$color}-#{$appearance}-#{$state}-border);
 }
 
 @mixin button-focus-border($color, $appearance) {
-  box-shadow: inset 0 0 0 1px
-    color-mix(
-      in srgb,
-      var(--button-#{$color}-#{$appearance}-default-border) 70%,
-      var(--button-#{$color}-ring)
-    );
+  border-color: color-mix(
+    in srgb,
+    var(--button-#{$color}-#{$appearance}-default-border) 70%,
+    var(--button-#{$color}-ring)
+  );
 }
 
 .button {
@@ -24,19 +22,22 @@ $button-appearances: solid, outline, ghost, soft, link;
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  height: var(--button-height);
   margin: var(--space-0);
   color: inherit;
+  font-size: var(--button-font-size);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-md);
-  border: none;
+  line-height: var(--button-line-height);
+  border: 1px solid transparent;
   border-radius: var(--button-radius, var(--radius-full));
-  box-shadow: inset 0 0 0 1px transparent;
   transition:
     color 0.2s ease,
     background-color 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
   cursor: pointer;
+  padding-block: 0;
+  box-sizing: border-box;
   gap: var(--space-2);
   font-family: var(--font-family-base);
   white-space: nowrap;
@@ -81,7 +82,7 @@ $button-appearances: solid, outline, ghost, soft, link;
 .button.loading {
   color: var(--button-disabled-fg);
   background-color: var(--button-disabled-bg);
-  box-shadow: inset 0 0 0 1px var(--button-disabled-border);
+  border-color: var(--button-disabled-border);
   transform: none;
   cursor: not-allowed;
 }
@@ -103,24 +104,15 @@ $button-appearances: solid, outline, ghost, soft, link;
 }
 
 .sm {
-  --icon-size: 16px;
-
-  padding: var(--space-2) var(--space-6);
-  font-size: var(--font-size-sm);
+  padding-inline: 16px;
 }
 
 .md {
-  --icon-size: 20px;
-
-  padding: var(--space-3) var(--space-8);
-  font-size: var(--font-size-md);
+  padding-inline: 24px;
 }
 
 .lg {
-  --icon-size: 24px;
-
-  padding: var(--space-4) var(--space-10);
-  font-size: var(--font-size-xl);
+  padding-inline: 32px;
 }
 
 .fullWidth {
@@ -129,22 +121,12 @@ $button-appearances: solid, outline, ghost, soft, link;
 
 .iconOnly {
   gap: 0;
+  width: var(--button-height);
+  padding-inline: 0;
 }
 
 .iconOnly .label {
   display: none;
-}
-
-.sm.iconOnly {
-  padding: var(--space-2);
-}
-
-.md.iconOnly {
-  padding: var(--space-3);
-}
-
-.lg.iconOnly {
-  padding: var(--space-4);
 }
 
 .label {

@@ -29,6 +29,7 @@ const webPointerEventsNone =
   Platform.OS === 'web' ? { pointerEvents: 'none' as const } : undefined;
 const webPointerEventsBoxNone =
   Platform.OS === 'web' ? { pointerEvents: 'box-none' as const } : undefined;
+const compactTouchHitSlop = { top: 3, bottom: 3, left: 0, right: 0 } as const;
 
 export function SelectTrigger({
   displayText,
@@ -61,7 +62,7 @@ export function SelectTrigger({
   const styles = useThemeStyles(createTriggerStyles);
   const palette = theme.components.select[color][variant];
   const triggerState = isOpen ? palette.focus : palette.default;
-  const resolvedIconSize = size === 'lg' ? 18 : 16;
+  const resolvedIconSize = 16;
 
   const showClearButton = clearable && hasValue && !disabled && !loading;
   const openRingStyle =
@@ -161,6 +162,7 @@ export function SelectTrigger({
           selected: hasValue,
           busy: loading,
         }}
+        hitSlop={size === 'sm' ? compactTouchHitSlop : undefined}
         onPress={onPress}
         style={[
           styles.trigger,
@@ -241,8 +243,8 @@ export function SelectTrigger({
             style={styles.clearButton}
           >
             <Close
-              width={14}
-              height={14}
+              width={16}
+              height={16}
               color={theme.components.select.clearButton.hoverFg}
             />
           </Pressable>

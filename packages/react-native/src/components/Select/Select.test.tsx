@@ -915,6 +915,19 @@ describe('Native Select', () => {
     unmount();
   });
 
+  it('uses the shared compact visual height for small Select triggers', () => {
+    const { container, unmount } = render(
+      <Select label='Country' size='sm' options={options} />
+    );
+
+    const trigger =
+      container.querySelector<HTMLButtonElement>('[role="button"]');
+
+    expect(trigger?.style.minHeight).toBe('38px');
+
+    unmount();
+  });
+
   it('treats missing runtime options as an empty list', () => {
     const props = {
       label: 'Country',

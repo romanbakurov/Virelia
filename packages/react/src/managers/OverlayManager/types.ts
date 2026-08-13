@@ -1,4 +1,5 @@
 import type { lightTheme } from '@vellira-ui/tokens';
+import type { ReactNode } from 'react';
 
 export type OverlayZIndexLevel = keyof typeof lightTheme.tokens.zIndex;
 
@@ -46,4 +47,9 @@ export type OverlayManager = {
   dispatchPointerDownOutside: (event: PointerEvent) => boolean;
   subscribe: (listener: () => void) => () => void;
   clear: () => void;
+};
+
+export type OverlayManagerProviderProps = {
+  children: ReactNode;
+  manager?: OverlayManager;
 };

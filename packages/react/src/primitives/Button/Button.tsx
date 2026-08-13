@@ -1,5 +1,6 @@
 import {
   cloneElement,
+  type CSSProperties,
   forwardRef,
   isValidElement,
   type MouseEventHandler,
@@ -10,6 +11,7 @@ import {
 
 import { cn } from '@utils/cn';
 import { devWarning } from '@utils/devWarning';
+import { controlSizes } from '@vellira-ui/tokens';
 
 import type { ButtonProps } from './types';
 
@@ -19,6 +21,7 @@ type ButtonChildProps = {
   children?: ReactNode;
   className?: string;
   href?: string;
+  style?: CSSProperties;
   'aria-busy'?: boolean;
   'aria-disabled'?: boolean;
   'aria-label'?: string;
@@ -27,6 +30,13 @@ type ButtonChildProps = {
   ref?: Ref<HTMLElement>;
   tabIndex?: number;
   title?: string;
+};
+
+type ButtonSizeStyle = CSSProperties & {
+  '--button-height': string;
+  '--button-font-size': string;
+  '--button-line-height': string;
+  '--icon-size': string;
 };
 
 export const Button = forwardRef<
@@ -54,6 +64,7 @@ export const Button = forwardRef<
       iconOnly: iconOnlyProp = false,
       asChild = false,
       className,
+      style,
       onClick,
       'aria-label': ariaLabel,
       'aria-labelledby': ariaLabelledBy,
@@ -83,6 +94,15 @@ export const Button = forwardRef<
     );
 
     const isDisabled = disabled || loading;
+    const controlSize = controlSizes[size];
+
+    const sizeStyle: ButtonSizeStyle = {
+      '--button-height': `${controlSize.height}px`,
+      '--button-font-size': `${controlSize.fontSize}px`,
+      '--button-line-height': `${controlSize.lineHeight}px`,
+      '--icon-size': `${controlSize.iconSize}px`,
+    };
+
     const content = loading && loadingText ? loadingText : visibleChildren;
     const labelMeasure =
       loadingText &&
@@ -175,6 +195,11 @@ export const Button = forwardRef<
       return cloneElement(child, {
         ...props,
         ref: ref as Ref<HTMLElement>,
+        style: {
+          ...sizeStyle,
+          ...child.props.style,
+          ...style,
+        },
         'aria-busy': loading || undefined,
         'aria-disabled': isDisabled || undefined,
         'aria-label': ariaLabel || child.props['aria-label'] || undefined,
@@ -211,6 +236,10 @@ export const Button = forwardRef<
           aria-busy={loading || undefined}
           className={resolvedClassName}
           title={tooltip}
+          style={{
+            ...sizeStyle,
+            ...style,
+          }}
         >
           {inner}
         </a>
@@ -232,6 +261,10 @@ export const Button = forwardRef<
         aria-busy={loading || undefined}
         className={resolvedClassName}
         title={tooltip}
+        style={{
+          ...sizeStyle,
+          ...style,
+        }}
       >
         {inner}
       </button>

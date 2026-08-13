@@ -7,6 +7,9 @@ import { render } from '../../test-utils/render';
 
 import { Tooltip } from './Tooltip';
 
+const getTrigger = (container: HTMLElement) =>
+  container.querySelector<HTMLElement>('button, [tabindex="0"]');
+
 afterEach(() => {
   document.body.innerHTML = '';
   vi.restoreAllMocks();
@@ -28,10 +31,10 @@ describe('Native Tooltip', () => {
 
     expect(document.body.textContent).not.toContain('Helpful text');
 
-    const trigger = container.querySelector<HTMLButtonElement>('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Helpful text');
@@ -57,10 +60,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).not.toContain('Disabled tooltip');
@@ -80,13 +83,36 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Bottom tooltip');
+
+    unmount();
+  });
+
+  it('opens on web press', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Focused tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.body.textContent).toContain('Focused tooltip');
 
     unmount();
   });
@@ -104,10 +130,10 @@ describe('Native Tooltip', () => {
 
     expect(document.body.textContent).not.toContain('Controlled tooltip');
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(onOpenChange).toHaveBeenCalledWith(true);
@@ -178,10 +204,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Close delayed tooltip');
@@ -213,10 +239,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
       vi.advanceTimersByTime(199);
     });
 
@@ -337,6 +363,135 @@ describe('Native Tooltip', () => {
     const arrow = tooltip?.querySelector<HTMLDivElement>('div');
 
     expect(arrow?.style.left).toBe('24px');
+
+    unmount();
+  });
+
+  it('opens and closes from web focus lifecycle', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip delay={{ open: 0, close: 0 }}>
+        <Tooltip.Trigger>
+          <span>Focus trigger</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Focus tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    expect(document.body.textContent).not.toContain('Focus tooltip');
+
+    act(() => {
+      trigger?.focus();
+    });
+
+    expect(document.body.textContent).toContain('Focus tooltip');
+
+    act(() => {
+      trigger?.blur();
+      vi.runAllTimers();
+    });
+
+    expect(document.body.textContent).not.toContain('Focus tooltip');
+
+    unmount();
+  });
+
+  it('opens from web hover and preserves content on mouse leave', () => {
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger>
+          <span>Hover trigger</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Hover tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+        })
+      );
+    });
+
+    expect(document.body.textContent).toContain('Hover tooltip');
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+        })
+      );
+    });
+
+    // RN Web Tooltip intentionally does not immediately hide on mouse leave.
+    expect(document.body.textContent).toContain('Hover tooltip');
+
+    unmount();
+  });
+
+  it('forwards web trigger callbacks', () => {
+    const onPress = vi.fn();
+    const onFocus = vi.fn();
+    const onBlur = vi.fn();
+    const onHoverIn = vi.fn();
+    const onHoverOut = vi.fn();
+
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger
+          onPress={onPress}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onHoverIn={onHoverIn}
+          onHoverOut={onHoverOut}
+        >
+          <span>Callbacks</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Callbacks tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      trigger?.focus();
+    });
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+        })
+      );
+    });
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+        })
+      );
+    });
+
+    act(() => {
+      trigger?.blur();
+    });
+
+    expect(onPress).toHaveBeenCalled();
+    expect(onFocus).toHaveBeenCalled();
+    expect(onBlur).toHaveBeenCalled();
+    expect(onHoverIn).toHaveBeenCalled();
+    expect(onHoverOut).toHaveBeenCalled();
 
     unmount();
   });

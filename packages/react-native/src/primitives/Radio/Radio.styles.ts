@@ -9,8 +9,6 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     pressable: {
-      minWidth: 32,
-      minHeight: 32,
       flexDirection: 'row',
       alignItems: 'flex-start',
       gap: theme.tokens.spacing[2],

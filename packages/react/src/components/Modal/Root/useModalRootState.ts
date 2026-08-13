@@ -82,6 +82,7 @@ export const useModalRootState = ({
   } = modalState;
   const [titlePresent, setTitlePresent] = useState(false);
   const [descriptionPresent, setDescriptionPresent] = useState(false);
+  const [contentRevision, setContentRevision] = useState(0);
   const animationDuration = resolveDuration(duration);
   const shouldAnimate = animation !== 'none';
   const closeDuration = shouldAnimate ? animationDuration.close : 0;
@@ -112,7 +113,10 @@ export const useModalRootState = ({
   }, [requestModalClose]);
 
   const setContentRef = useCallback((node: HTMLElement | null) => {
-    contentRef.current = node;
+    if (contentRef.current !== node) {
+      contentRef.current = node;
+      setContentRevision((revision) => revision + 1);
+    }
   }, []);
 
   useScrollLock({
@@ -163,13 +167,35 @@ export const useModalRootState = ({
       process.env.NODE_ENV === 'production' ||
       !isOpen ||
       titlePresent ||
-      contentRef.current?.hasAttribute('aria-label')
+      !contentRef.current
     ) {
       return;
     }
 
-    console.warn('Modal.Content requires Modal.Title or ariaLabel.');
-  }, [isOpen, titlePresent]);
+    const timeoutId = window.setTimeout(() => {
+      const contentNode = contentRef.current;
+      const labelledBy = contentNode?.getAttribute('aria-labelledby');
+      const hasLabelledByTarget = labelledBy
+        ? Boolean(document.getElementById(labelledBy))
+        : false;
+
+      if (
+        !isOpen ||
+        titlePresent ||
+        !contentNode ||
+        contentNode.hasAttribute('aria-label') ||
+        hasLabelledByTarget
+      ) {
+        return;
+      }
+
+      console.warn('Modal.Content requires Modal.Title or ariaLabel.');
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [contentRevision, isOpen, titlePresent]);
 
   useEffect(() => {
     if (

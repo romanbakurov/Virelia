@@ -1,0 +1,292 @@
+import path from 'node:path';
+
+import {
+  generatedFileHeader,
+  getCatalogPaths,
+  getVelliraApiSourceRoots,
+} from './helpers/paths';
+import { createFileWriter } from './helpers/writer';
+import { buildGeneratedPageModel } from './model/build-page-model';
+import { resolvePageInput } from './model/resolve-page-input';
+import {
+  buildAccessibilityItems,
+  renderAccessibility,
+} from './renderers/accessibility';
+import { buildApiFile } from './renderers/api';
+import { renderComponentIndex } from './renderers/component-index';
+import { renderDemoFiles } from './renderers/demo';
+import { buildExamples, renderExamples } from './renderers/examples';
+import { buildPlaygroundArtifacts } from './renderers/playground';
+import { updateComponentRegistry } from './renderers/registry';
+import { renderUsage } from './renderers/usage';
+
+const [, , componentName, ...args] = process.argv;
+
+const force = args.includes('--force');
+const check = args.includes('--check');
+
+if (!componentName) {
+  console.error(
+    'Usage: pnpm create:component-page ComponentName [--force] [--check]'
+  );
+  process.exit(1);
+}
+
+const root = process.cwd();
+
+const {
+  catalogRoot,
+  catalogComponentsRoot,
+  catalogRegistryFile,
+  componentCatalogDir,
+  slug,
+} = getCatalogPaths({ root, componentName });
+
+const velliraApiSourceRoots = getVelliraApiSourceRoots(root);
+
+const fileWriter = createFileWriter({ root, force, check });
+const { checkFailures, writeIfMissing } = fileWriter;
+
+const {
+  componentConfig,
+  componentProfile,
+  extractedProps,
+  playgroundProps,
+  platforms,
+  reactApiProps,
+  nativeApiProps,
+  getDemoProps,
+  getChangeHandlerName,
+} = await resolvePageInput({
+  root,
+  catalogComponentsRoot,
+  componentName,
+});
+
+if (platforms.length === 0) {
+  console.error(
+    `Component "${componentName}" was not found in react or react-native packages.`
+  );
+  process.exit(1);
+}
+
+const usageFile = path.join(componentCatalogDir, `${componentName}Usage.tsx`);
+
+const { content: usageContent, children: usageChildren } = renderUsage({
+  componentName,
+  componentConfig,
+  playgroundProps,
+  generatedFileHeader,
+  getDemoProps,
+});
+
+const reactUsageChildren = usageChildren.react ?? '';
+const nativeUsageChildren = usageChildren['react-native'] ?? '';
+
+await writeIfMissing(usageFile, usageContent);
+
+const examplesFile = path.join(
+  componentCatalogDir,
+  `${componentName}Examples.tsx`
+);
+
+const generatedExamples = buildExamples({
+  componentName,
+  componentConfig,
+  componentProfile,
+  extractedProps,
+  playgroundProps,
+});
+
+const examplesContent = renderExamples({
+  componentName,
+  componentConfig,
+  generatedExamples,
+  generatedFileHeader,
+  getDemoProps,
+});
+
+await writeIfMissing(examplesFile, examplesContent);
+
+const accessibilityFile = path.join(
+  componentCatalogDir,
+  `${componentName}Accessibility.tsx`
+);
+
+const reactAccessibilityItems = buildAccessibilityItems({
+  platform: 'react',
+  componentConfig,
+  componentProfile,
+  extractedProps,
+  reactApiProps,
+  nativeApiProps,
+});
+
+const nativeAccessibilityItems = buildAccessibilityItems({
+  platform: 'react-native',
+  componentConfig,
+  componentProfile,
+  extractedProps,
+  reactApiProps,
+  nativeApiProps,
+});
+
+const accessibilityContent = renderAccessibility({
+  componentName,
+  reactAccessibilityItems,
+  nativeAccessibilityItems,
+  generatedFileHeader,
+});
+
+await writeIfMissing(accessibilityFile, accessibilityContent);
+
+const apiFile = path.join(componentCatalogDir, `${slug}Api.ts`);
+
+const {
+  content: apiContent,
+  reactSplit,
+  nativeSplit,
+  reactApiSections,
+  nativeApiSections,
+} = buildApiFile({
+  root,
+  componentName,
+  slug,
+  componentConfig,
+  extractedProps,
+  reactApiProps,
+  nativeApiProps,
+  velliraApiSourceRoots,
+  generatedFileHeader,
+});
+
+await writeIfMissing(apiFile, apiContent);
+
+const playgroundSchemaFile = path.join(
+  componentCatalogDir,
+  `${slug}PlaygroundSchema.ts`
+);
+
+const playgroundFile = path.join(
+  componentCatalogDir,
+  `${componentName}Playground.tsx`
+);
+
+const playgroundArtifacts = buildPlaygroundArtifacts({
+  componentName,
+  slug,
+  componentConfig,
+  playgroundProps,
+  generatedFileHeader,
+  getChangeHandlerName,
+});
+
+await writeIfMissing(playgroundSchemaFile, playgroundArtifacts.schemaContent);
+await writeIfMissing(playgroundFile, playgroundArtifacts.content);
+
+const reactStaticDemoProps = getDemoProps('react');
+const nativeStaticDemoProps = getDemoProps('react-native');
+const reactDemoChildren = componentConfig.react?.children ?? '';
+const nativeDemoChildren = componentConfig.native?.children ?? '';
+const nativeResponsivePresentation =
+  componentConfig.native?.responsivePresentation === true;
+const relatedComponents = componentConfig.related ?? [];
+const generatedPageModel = buildGeneratedPageModel({
+  componentName,
+  slug,
+  platforms,
+  reactStaticDemoProps,
+  nativeStaticDemoProps,
+  reactDemoChildren,
+  nativeDemoChildren,
+  reactImports: componentConfig.react?.imports ?? [],
+  nativeImports: componentConfig.native?.imports ?? [],
+  nativeResponsivePresentation,
+  playgroundProps,
+  playgroundInitialValues: playgroundArtifacts.initialValues,
+  reactUsageChildren,
+  nativeUsageChildren,
+  generatedExamples,
+  reactAccessibilityItems,
+  nativeAccessibilityItems,
+  reactApiSections,
+  nativeApiSections,
+  reactInheritedProps: reactSplit.inheritedProps,
+  nativeInheritedProps: nativeSplit.inheritedProps,
+  relatedComponents,
+});
+
+const reactDemoFile = path.join(
+  componentCatalogDir,
+  `${componentName}Demo.tsx`
+);
+const nativeDemoFile = path.join(
+  componentCatalogDir,
+  `Native${componentName}Demo.tsx`
+);
+
+const demoFiles = renderDemoFiles({
+  componentName,
+  componentConfig,
+  platforms,
+  playgroundProps,
+  playgroundPropBindings: playgroundArtifacts.propBindings,
+  reactStaticDemoProps,
+  nativeStaticDemoProps,
+  reactDemoChildren,
+  nativeDemoChildren,
+  nativeResponsivePresentation,
+  generatedFileHeader,
+  getChangeHandlerName,
+});
+
+if (demoFiles.reactContent) {
+  await writeIfMissing(reactDemoFile, demoFiles.reactContent);
+}
+
+if (demoFiles.nativeContent) {
+  await writeIfMissing(nativeDemoFile, demoFiles.nativeContent);
+}
+
+const componentIndexFile = path.join(componentCatalogDir, 'index.ts');
+
+const componentIndexContent = renderComponentIndex({
+  componentName,
+  slug,
+  platforms,
+  generatedFileHeader,
+});
+
+await writeIfMissing(componentIndexFile, componentIndexContent);
+
+updateComponentRegistry({
+  root,
+  force,
+  check,
+  checkFailures,
+  componentCatalogDir,
+  componentPagesFile: catalogRegistryFile,
+  model: generatedPageModel,
+});
+
+if (check) {
+  if (checkFailures.length > 0) {
+    console.error('Generated component page files are out of date:');
+
+    for (const filePath of [...new Set(checkFailures)].sort()) {
+      console.error(`  - ${filePath}`);
+    }
+
+    process.exit(1);
+  }
+
+  console.log(`Generated component page is up to date: ${componentName}`);
+  process.exit(0);
+}
+
+console.log('Extracted props:', extractedProps);
+
+console.log(`Component: ${componentName}`);
+console.log(`Slug: ${slug}`);
+console.log(`Platforms: ${platforms.join(', ')}`);
+console.log(`Catalog root: ${catalogRoot}`);

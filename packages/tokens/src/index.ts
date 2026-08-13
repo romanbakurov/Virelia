@@ -36,6 +36,8 @@ export {
   tokenPaths,
 } from './generated/token-types.js';
 export { overlay } from './primitives/overlay.js';
+export type { ControlSize } from './tokens/controlSizes.js';
+export { controlSizes } from './tokens/controlSizes.js';
 export type { FontWeight } from './tokens/typography.js';
 export { fontWeights } from './tokens/typography.js';
 

@@ -11,7 +11,9 @@ import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
 export interface TabsProps extends BaseTabsProps {
+  /** Tab list and tab panel content. */
   children: ReactNode;
+  /** Style applied to the root container. */
   style?: StyleProp<ViewStyle>;
 }
 

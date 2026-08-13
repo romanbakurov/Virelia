@@ -186,6 +186,11 @@ export function SiteHeader({
                 shape='square'
                 iconOnly
                 className={styles.externalAction}
+                style={
+                  {
+                    '--icon-size': '24px',
+                  } as CSSProperties
+                }
                 iconStart={
                   <span
                     className={styles.actionIcon}

@@ -430,8 +430,8 @@ describe('Native Input', () => {
 
     const input = container.querySelector<HTMLInputElement>('input');
     expect(input?.disabled).toBe(true);
-    expect(input?.style.fontSize).toBe('20px');
-    expect(input?.style.minHeight).toBe('52px');
+    expect(input?.style.fontSize).toBe('16px');
+    expect(input?.style.height).toBe('52px');
     expect(container.querySelectorAll('input')).toHaveLength(1);
 
     unmount();

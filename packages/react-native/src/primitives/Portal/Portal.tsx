@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 import type React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, Platform, StyleSheet, View } from 'react-native';
 
 import type { PortalProps, PortalProviderProps } from './types';
 
@@ -15,6 +15,11 @@ type PortalComponent = ((props: PortalProps) => React.ReactElement | null) & {
 const styles = StyleSheet.create({
   host: {
     flex: 1,
+    ...(Platform.OS === 'web'
+      ? {
+          pointerEvents: 'box-none',
+        }
+      : {}),
   },
 });
 
@@ -53,7 +58,10 @@ export const Portal: PortalComponent = ({
       transparent
       visible
     >
-      <View pointerEvents='box-none' style={styles.host}>
+      <View
+        pointerEvents={Platform.OS === 'web' ? undefined : 'box-none'}
+        style={styles.host}
+      >
         {children}
       </View>
     </Modal>

@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { render } from '../../test-utils/render';
+import { nativeThemes } from '../../theme';
 
 import { FormField } from './FormField';
+import { createStyles } from './FormField.styles';
 
 afterEach(() => {
   document.body.innerHTML = '';
@@ -29,7 +31,7 @@ describe('Native FormField', () => {
     const requiredMark = container.querySelector('[aria-hidden="true"]');
     const error = container.querySelector('[aria-live="polite"]');
 
-    expect(requiredMark?.textContent).toBe(' *');
+    expect(requiredMark?.textContent).toBe('*');
     expect(requiredMark?.getAttribute('data-important-for-accessibility')).toBe(
       'no'
     );
@@ -224,5 +226,11 @@ describe('Native FormField', () => {
     expect(message?.style.textDecorationLine).toBe('underline');
 
     unmount();
+  });
+
+  it('does not stretch the root across centered preview containers by default', () => {
+    const styles = createStyles(nativeThemes.light);
+
+    expect(styles.root.alignSelf).toBe('auto');
   });
 });

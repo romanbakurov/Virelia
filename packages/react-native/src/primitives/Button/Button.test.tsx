@@ -143,8 +143,8 @@ describe('Native Button', () => {
 
     expect(button?.getAttribute('aria-label')).toBe('Search');
     expect(button?.textContent).toBe('Icon');
-    expect(button?.style.width).toBe('44px');
-    expect(button?.style.height).toBe('44px');
+    expect(button?.style.width).toBe('46px');
+    expect(button?.style.height).toBe('46px');
     expect(button?.style.alignSelf).toBe('');
     expect(warn).not.toHaveBeenCalled();
 
@@ -184,8 +184,18 @@ describe('Native Button', () => {
     );
     const button = container.querySelector('button');
 
-    expect(button?.style.alignSelf).toBe('stretch');
+    expect(button?.style.alignSelf).toBe('');
     expect(button?.style.width).toBe('240px');
+
+    unmount();
+  });
+
+  it('does not stretch fullWidth vertically on React Native Web', () => {
+    const { container, unmount } = render(<Button fullWidth>Save</Button>);
+    const button = container.querySelector('button');
+
+    expect(button?.style.width).toBe('100%');
+    expect(button?.style.alignSelf).toBe('');
 
     unmount();
   });

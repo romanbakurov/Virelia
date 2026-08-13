@@ -2,7 +2,6 @@ export {
   createNativeOverlayManager,
   nativeOverlayManager,
 } from './NativeOverlayManager';
-export type { NativeOverlayManagerProviderProps } from './OverlayManagerProvider';
 export {
   NativeOverlayManagerProvider,
   useNativeOverlayManager,
@@ -11,5 +10,6 @@ export type {
   NativeOverlayDismissHandler,
   NativeOverlayEntry,
   NativeOverlayManager,
+  NativeOverlayManagerProviderProps,
   NativeOverlayOutsidePressHandler,
 } from './types';

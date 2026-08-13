@@ -13,7 +13,19 @@ export const createStyles = (theme: NativeTheme) =>
       marginBottom: theme.tokens.spacing[6],
     },
 
+    listLine: {
+      borderBottomWidth: 1,
+      borderColor: theme.components.tabs.list.border,
+    },
+
+    listLineVertical: {
+      borderRightWidth: 1,
+      borderBottomWidth: 0,
+    },
+
     listSegmented: {
+      alignSelf: 'flex-start',
+      width: 'auto',
       gap: theme.tokens.spacing[1],
       padding: 2,
       backgroundColor: theme.components.tabs.list.segmentedBg,

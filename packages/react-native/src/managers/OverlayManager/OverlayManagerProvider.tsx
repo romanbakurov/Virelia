@@ -1,25 +1,17 @@
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useMemo,
-  useRef,
-} from 'react';
+import { createContext, useContext, useMemo, useRef } from 'react';
 
 import {
   createNativeOverlayManager,
   nativeOverlayManager,
 } from './NativeOverlayManager';
-import type { NativeOverlayManager } from './types';
+import type {
+  NativeOverlayManager,
+  NativeOverlayManagerProviderProps,
+} from './types';
 
 const NativeOverlayManagerContext = createContext<NativeOverlayManager | null>(
   null
 );
-
-export type NativeOverlayManagerProviderProps = {
-  children: ReactNode;
-  manager?: NativeOverlayManager;
-};
 
 export const NativeOverlayManagerProvider = ({
   children,

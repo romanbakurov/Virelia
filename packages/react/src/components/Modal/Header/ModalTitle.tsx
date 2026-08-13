@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 import type { ReactNode } from 'react';
 
@@ -9,7 +9,7 @@ import styles from './ModalHeader.module.scss';
 export const ModalTitle = ({ children }: { children: ReactNode }) => {
   const { setTitlePresent, titleId } = useModalContext();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTitlePresent(true);
 
     return () => setTitlePresent(false);
