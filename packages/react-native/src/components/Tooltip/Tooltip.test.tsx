@@ -366,4 +366,133 @@ describe('Native Tooltip', () => {
 
     unmount();
   });
+
+  it('opens and closes from web focus lifecycle', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip delay={{ open: 0, close: 0 }}>
+        <Tooltip.Trigger>
+          <span>Focus trigger</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Focus tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    expect(document.body.textContent).not.toContain('Focus tooltip');
+
+    act(() => {
+      trigger?.focus();
+    });
+
+    expect(document.body.textContent).toContain('Focus tooltip');
+
+    act(() => {
+      trigger?.blur();
+      vi.runAllTimers();
+    });
+
+    expect(document.body.textContent).not.toContain('Focus tooltip');
+
+    unmount();
+  });
+
+  it('opens from web hover and preserves content on mouse leave', () => {
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger>
+          <span>Hover trigger</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Hover tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+        })
+      );
+    });
+
+    expect(document.body.textContent).toContain('Hover tooltip');
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+        })
+      );
+    });
+
+    // RN Web Tooltip intentionally does not immediately hide on mouse leave.
+    expect(document.body.textContent).toContain('Hover tooltip');
+
+    unmount();
+  });
+
+  it('forwards web trigger callbacks', () => {
+    const onPress = vi.fn();
+    const onFocus = vi.fn();
+    const onBlur = vi.fn();
+    const onHoverIn = vi.fn();
+    const onHoverOut = vi.fn();
+
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger
+          onPress={onPress}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onHoverIn={onHoverIn}
+          onHoverOut={onHoverOut}
+        >
+          <span>Callbacks</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Callbacks tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.click();
+    });
+
+    act(() => {
+      trigger?.focus();
+    });
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseover', {
+          bubbles: true,
+        })
+      );
+    });
+
+    act(() => {
+      trigger?.dispatchEvent(
+        new MouseEvent('mouseout', {
+          bubbles: true,
+        })
+      );
+    });
+
+    act(() => {
+      trigger?.blur();
+    });
+
+    expect(onPress).toHaveBeenCalled();
+    expect(onFocus).toHaveBeenCalled();
+    expect(onBlur).toHaveBeenCalled();
+    expect(onHoverIn).toHaveBeenCalled();
+    expect(onHoverOut).toHaveBeenCalled();
+
+    unmount();
+  });
 });
