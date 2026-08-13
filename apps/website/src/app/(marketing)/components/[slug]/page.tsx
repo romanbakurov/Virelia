@@ -9,7 +9,7 @@ import {
   ComponentPlatformView,
   getComponentBySlug,
   webComponents,
-} from '@/features/components-catalog';
+} from '@/component-catalog';
 
 interface ComponentPageProps {
   params: Promise<{

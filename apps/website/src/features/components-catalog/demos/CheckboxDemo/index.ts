@@ -1,1 +1,0 @@
-export { CheckboxDemo } from './CheckboxDemo';

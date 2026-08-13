@@ -1,1 +1,0 @@
-export { InputDemo } from './InputDemo';

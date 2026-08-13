@@ -1,1 +1,0 @@
-export { InputAccessibility } from './InputAccessibility';

@@ -1,1 +1,0 @@
-export { CheckboxAccessibility } from './CheckboxAccessibility';

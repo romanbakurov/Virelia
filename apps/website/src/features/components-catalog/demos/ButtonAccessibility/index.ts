@@ -1,1 +1,0 @@
-export { ButtonAccessibility } from './ButtonAccessibility';

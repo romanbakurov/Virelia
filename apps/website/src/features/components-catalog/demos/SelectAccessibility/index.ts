@@ -1,1 +1,0 @@
-export { SelectAccessibility } from './SelectAccessibility';

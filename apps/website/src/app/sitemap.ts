@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { componentsPortalEnabled } from '@/config/features';
-import { webComponents } from '@/features/components-catalog';
+import { webComponents } from '@/component-catalog';
 
 const SITE_URL = 'https://vellira.dev';
 
