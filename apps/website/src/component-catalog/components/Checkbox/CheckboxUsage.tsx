@@ -26,10 +26,7 @@ function createCheckboxCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] =
-    platform === 'react'
-      ? ["label='Accept terms'", "description='Required before continuing.'"]
-      : ["label='Accept terms'", "description='Required before continuing.'"];
+  const props: string[] = platform === 'react' ? [] : [];
 
   const children = platform === 'react' ? '' : '';
 
@@ -61,7 +58,7 @@ function createCheckboxCode(
     props.push(`color='${value.color}'`);
   }
 
-  if (value.labelPosition !== 'end') {
+  if (value.labelPosition !== 'start') {
     props.push(`labelPosition='${value.labelPosition}'`);
   }
 

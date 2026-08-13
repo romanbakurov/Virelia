@@ -21,8 +21,6 @@ export function NativeCheckboxDemo() {
           size={value.size}
           color={value.color}
           labelPosition={value.labelPosition}
-          label='Accept terms'
-          description='Required before continuing.'
         />
       )}
     />

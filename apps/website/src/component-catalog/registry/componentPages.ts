@@ -214,7 +214,7 @@ export const componentPages = {
     Examples: CheckboxExamples,
     Accessibility: CheckboxAccessibility,
     api: checkboxApi,
-    related: ['radio', 'radio-group', 'select'],
+    related: [],
   },
   button: {
     name: 'Button',

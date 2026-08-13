@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const generatorsRoot = path.join(root, 'scripts', 'generators');
 const catalogRoot = path.join(
   root,
   'apps',
@@ -26,6 +27,35 @@ function assertNotIncludes(source: string, expected: string, message: string) {
 const buttonExamples = read('components/Button/ButtonExamples.tsx');
 const buttonApi = read('components/Button/buttonApi.ts');
 const componentPages = read('registry/componentPages.ts');
+const checkboxMetadataFile = path.join(
+  catalogRoot,
+  'components',
+  'Checkbox',
+  'metadata.ts'
+);
+const checkboxUsage = read('components/Checkbox/CheckboxUsage.tsx');
+const checkboxExamples = read('components/Checkbox/CheckboxExamples.tsx');
+const checkboxApi = read('components/Checkbox/checkboxApi.ts');
+
+assert.ok(
+  !fs.existsSync(checkboxMetadataFile),
+  'Checkbox proves metadata-free component generation'
+);
+assertIncludes(
+  checkboxUsage,
+  'Checkbox',
+  'Metadata-free Checkbox usage is generated'
+);
+assertIncludes(
+  checkboxExamples,
+  "title: 'Basic'",
+  'Metadata-free Checkbox examples are generated'
+);
+assertIncludes(
+  checkboxApi,
+  "defaultValue: 'false'",
+  'Metadata-free Checkbox receives profile defaults'
+);
 
 assertIncludes(buttonExamples, "title: 'Icons'", 'Button icon example exists');
 assertIncludes(
@@ -167,5 +197,16 @@ for (const slug of entrySlugs) {
     componentPages.match(new RegExp(`\\n\\s*${slug}: \\{`, 'g')) ?? [];
   assert.equal(matches.length, 1, `${slug} has exactly one registry entry`);
 }
+
+const componentGeneratorSource = fs.readFileSync(
+  path.join(generatorsRoot, 'component', 'create-component.ts'),
+  'utf8'
+);
+
+assertNotIncludes(
+  componentGeneratorSource,
+  'component-page',
+  'Component generator does not import component-page subsystem'
+);
 
 console.log('Component page contract tests passed.');

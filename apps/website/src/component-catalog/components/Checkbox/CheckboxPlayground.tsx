@@ -40,7 +40,7 @@ export const initialCheckboxPlaygroundValue: CheckboxPlaygroundValue = {
   error: '',
   size: 'md',
   color: 'primary',
-  labelPosition: 'end',
+  labelPosition: 'start',
 };
 
 export function CheckboxPlayground({

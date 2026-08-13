@@ -18,19 +18,38 @@ export function CheckboxAccessibility({
     {
       title: 'Accessible naming',
       description:
-        'Use the visible label or another accessible name to describe the checked state.',
-      props: ['label', 'aria-label'],
+        'Provide a visible label or another accessible name that clearly identifies the control.',
+      props: ['label', 'children', 'aria-label'],
     },
     {
-      title: 'Mixed state',
+      title: 'State communication',
       description:
-        'Expose indeterminate state only when it represents a real partial selection.',
-      props: ['indeterminate', 'checked'],
+        'Expose the current interactive state through the appropriate native semantics and keep it synchronized with the visual state.',
+      props: ['checked'],
+    },
+    {
+      title: 'Disabled state',
+      description:
+        'Disabled controls should remain identifiable while preventing interaction.',
+      props: ['disabled'],
     },
     {
       title: 'Validation feedback',
-      description: 'Pair required and error state with clear text guidance.',
-      props: ['required', 'error'],
+      description:
+        'Associate validation feedback with the control and expose its invalid state to assistive technologies.',
+      props: ['error'],
+    },
+    {
+      title: 'Required fields',
+      description:
+        'Required state should be communicated semantically and not rely only on visual styling.',
+      props: ['required'],
+    },
+    {
+      title: 'Keyboard and focus',
+      description:
+        'Preserve expected keyboard interaction and visible focus behavior.',
+      props: ['onKeyDown', 'onFocus', 'onBlur', 'onClick'],
     },
   ] as const;
 
@@ -38,14 +57,38 @@ export function CheckboxAccessibility({
     {
       title: 'Accessible naming',
       description:
-        'Use the visible label or accessibilityLabel to identify the checkbox.',
-      props: ['label', 'accessibilityLabel'],
+        'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
+      props: ['label', 'children', 'aria-label', 'accessibilityLabel'],
     },
     {
       title: 'State communication',
       description:
-        'Keep checked, indeterminate, disabled, and required state synchronized with React Native accessibility state.',
-      props: ['checked', 'indeterminate', 'disabled', 'required'],
+        'Expose the current interactive state through React Native accessibilityState and keep it synchronized with the visual state.',
+      props: ['checked'],
+    },
+    {
+      title: 'Disabled state',
+      description:
+        'Disabled controls should remain identifiable while preventing interaction.',
+      props: ['disabled'],
+    },
+    {
+      title: 'Validation feedback',
+      description:
+        'Expose validation feedback through accessible text or hints and preserve the invalid state for assistive technologies.',
+      props: ['error'],
+    },
+    {
+      title: 'Required fields',
+      description:
+        'Required state should be communicated semantically and not rely only on visual styling.',
+      props: ['required'],
+    },
+    {
+      title: 'Keyboard and focus',
+      description:
+        'Verify focus and screen reader interaction on supported React Native platforms.',
+      props: ['onFocus', 'onBlur'],
     },
   ] as const;
 

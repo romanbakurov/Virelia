@@ -2,6 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { generatedComponentPageComponents } from './component-page-components';
+import {
+  loadComponentMetadata,
+  validateComponentMetadata,
+} from './metadata/metadata';
 
 type AuditFailure = {
   componentName: string;
@@ -16,6 +20,7 @@ const catalogRoot = path.join(
   'src',
   'component-catalog'
 );
+const catalogComponentsRoot = path.join(catalogRoot, 'components');
 
 const failures: AuditFailure[] = [];
 
@@ -91,10 +96,6 @@ function auditComponent(componentName: string, componentPagesSource: string) {
   if (!fs.existsSync(apiFile)) addFailure(componentName, 'missing API file');
   if (!entry) addFailure(componentName, 'missing componentPages entry');
 
-  if (entry && !/related: \[[^\]]+\],/.test(entry)) {
-    addFailure(componentName, 'componentPages entry has empty related');
-  }
-
   if (
     entry &&
     countMatches(
@@ -154,6 +155,29 @@ for (const match of componentPagesSource.matchAll(/related: \[([^\]]*)\]/g)) {
 }
 
 for (const componentName of generatedComponentPageComponents) {
+  const metadata = await loadComponentMetadata({
+    catalogComponentsRoot,
+    componentName,
+  });
+
+  try {
+    validateComponentMetadata({ componentName, metadata });
+  } catch (error) {
+    addFailure(
+      componentName,
+      error instanceof Error ? error.message : 'invalid metadata'
+    );
+  }
+
+  for (const relatedSlug of metadata.related ?? []) {
+    if (!knownComponentSlugs.has(relatedSlug)) {
+      addFailure(
+        componentName,
+        `unknown metadata related slug: ${relatedSlug}`
+      );
+    }
+  }
+
   auditComponent(componentName, componentPagesSource);
 }
 

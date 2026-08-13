@@ -17,124 +17,78 @@ export function CheckboxExamples({ platform }: CheckboxExamplesProps) {
   const reactExamples = [
     {
       title: 'Basic',
-      description: 'Binary selection control.',
-      preview: (
-        <ReactCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n/>",
-    },
-    {
-      title: 'Checked',
-      description: 'Selected state.',
-      preview: (
-        <ReactCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          checked
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  checked\n/>",
-    },
-    {
-      title: 'Indeterminate',
-      description: 'Mixed state for partial selections.',
-      preview: (
-        <ReactCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          indeterminate
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  indeterminate\n/>",
+      description: 'Basic component usage.',
+      preview: <ReactCheckbox />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox/>",
     },
     {
       title: 'Disabled',
       description: 'Disabled state.',
-      preview: (
-        <ReactCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          disabled
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  disabled\n/>",
+      preview: <ReactCheckbox disabled />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  disabled\n/>",
+    },
+    {
+      title: 'Selected',
+      description: 'Selected state.',
+      preview: <ReactCheckbox checked />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  checked\n/>",
     },
     {
       title: 'Error',
-      description: 'Validation feedback state.',
-      preview: (
-        <ReactCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          error='Accept the terms to continue.'
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  error='Accept the terms to continue.'\n/>",
+      description: 'Validation error state.',
+      preview: <ReactCheckbox error='Please review this option.' />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  error='Please review this option.'\n/>",
+    },
+    {
+      title: 'Size',
+      description: 'Alternative size option.',
+      preview: <ReactCheckbox size='sm' />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  size='sm'\n/>",
+    },
+    {
+      title: 'Required',
+      description: 'Required form control.',
+      preview: <ReactCheckbox required />,
+      code: "import { Checkbox } from '@vellira-ui/react';\n\n<Checkbox\n  required\n/>",
     },
   ] as const;
 
   const nativeExamples = [
     {
       title: 'Basic',
-      description: 'Binary selection control.',
-      preview: (
-        <NativeCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n/>",
-    },
-    {
-      title: 'Checked',
-      description: 'Selected state.',
-      preview: (
-        <NativeCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          checked
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  checked\n/>",
-    },
-    {
-      title: 'Indeterminate',
-      description: 'Mixed state for partial selections.',
-      preview: (
-        <NativeCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          indeterminate
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  indeterminate\n/>",
+      description: 'Basic component usage.',
+      preview: <NativeCheckbox />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox/>",
     },
     {
       title: 'Disabled',
       description: 'Disabled state.',
-      preview: (
-        <NativeCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          disabled
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  disabled\n/>",
+      preview: <NativeCheckbox disabled />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  disabled\n/>",
+    },
+    {
+      title: 'Selected',
+      description: 'Selected state.',
+      preview: <NativeCheckbox checked />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  checked\n/>",
     },
     {
       title: 'Error',
-      description: 'Validation feedback state.',
-      preview: (
-        <NativeCheckbox
-          label='Accept terms'
-          description='Required before continuing.'
-          error='Accept the terms to continue.'
-        />
-      ),
-      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  label='Accept terms'\n  description='Required before continuing.'\n  error='Accept the terms to continue.'\n/>",
+      description: 'Validation error state.',
+      preview: <NativeCheckbox error='Please review this option.' />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  error='Please review this option.'\n/>",
+    },
+    {
+      title: 'Size',
+      description: 'Alternative size option.',
+      preview: <NativeCheckbox size='sm' />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  size='sm'\n/>",
+    },
+    {
+      title: 'Required',
+      description: 'Required form control.',
+      preview: <NativeCheckbox required />,
+      code: "import { Checkbox } from '@vellira-ui/react-native';\n\n<Checkbox\n  required\n/>",
     },
   ] as const;
 
