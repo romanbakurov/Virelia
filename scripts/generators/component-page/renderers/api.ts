@@ -6,7 +6,11 @@ import {
   findPlatformExportSourceFile,
   getSectionExportName,
 } from '../extractors/source';
-import { isPathInside, toTsString } from '../helpers/format';
+import {
+  identifierFromSlug,
+  isPathInside,
+  toTsString,
+} from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from '../model/types';
 
@@ -44,6 +48,7 @@ export function buildApiFile(params: {
     velliraApiSourceRoots,
     generatedFileHeader,
   } = params;
+  const slugIdentifier = identifierFromSlug(slug);
 
   function getSharedProp(prop: ExtractedProp) {
     return extractedProps.find((item) => item.name === prop.name);
@@ -272,7 +277,7 @@ const inheritedNative${componentName}Api: readonly ComponentApiProp[] = [
 ${nativeInheritedApiEntries}
 ];
 
-export const ${slug}Api = {
+export const ${slugIdentifier}Api = {
   react: {
     sections: react${componentName}ApiSections,
     inheritedProps: inheritedReact${componentName}Api,

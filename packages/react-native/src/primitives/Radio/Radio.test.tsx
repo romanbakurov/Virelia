@@ -173,9 +173,11 @@ describe('Native Radio', () => {
           `${theme.components.radio.size.lg.indicatorSize}px`
     );
     const error = container.querySelector<HTMLElement>('[aria-live="polite"]');
+    const radio = container.querySelector<HTMLElement>('[role="radio"]');
 
     expect(control).not.toBeUndefined();
     expect(indicator).not.toBeUndefined();
+    expect(radio?.style.minHeight).toBe('');
     expect(error?.style.marginLeft).toBe(
       `${
         theme.components.radio.size.lg.controlSize + theme.tokens.spacing[2]

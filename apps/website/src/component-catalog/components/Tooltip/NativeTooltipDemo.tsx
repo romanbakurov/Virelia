@@ -4,6 +4,7 @@
 'use client';
 
 import { Tooltip } from '@vellira-ui/react-native';
+import { Text as NativeText, View as NativeView } from 'react-native';
 
 import { TooltipPlayground } from './TooltipPlayground';
 
@@ -12,8 +13,18 @@ export function NativeTooltipDemo() {
     <TooltipPlayground
       renderTooltip={(value) => (
         <Tooltip placement={value.placement} disabled={value.disabled}>
-          <Tooltip.Trigger>Press for details</Tooltip.Trigger>
-          <Tooltip.Content>Helpful contextual label.</Tooltip.Content>
+          <Tooltip.Trigger>
+            <NativeView
+              style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: '#eee',
+              }}
+            >
+              <NativeText>Press and hold</NativeText>
+            </NativeView>
+          </Tooltip.Trigger>
+          <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
         </Tooltip>
       )}
     />

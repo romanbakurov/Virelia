@@ -32,6 +32,7 @@ export function getProfileMetadata(
   if (profile === 'selection-control') {
     return {
       demo: {
+        label: 'Accept terms',
         initialValues: {
           checked: false,
           disabled: false,
@@ -39,6 +40,7 @@ export function getProfileMetadata(
           indeterminate: false,
           size: 'md',
           color: 'primary',
+          labelPosition: 'end',
           error: '',
         },
         previewWidth: 'field',
@@ -52,8 +54,10 @@ export function getProfileMetadata(
           indeterminate: false,
           size: 'md',
           color: 'primary',
+          labelPosition: 'end',
         },
       },
+      related: ['radio', 'select'],
     };
   }
 

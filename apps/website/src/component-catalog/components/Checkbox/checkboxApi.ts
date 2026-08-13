@@ -39,6 +39,7 @@ const reactCheckboxApiSections: readonly ComponentApiSection[] = [
       {
         name: 'labelPosition',
         type: "'start' | 'end'",
+        defaultValue: "'end'",
         description: 'Position of the visible label relative to the checkbox.',
       },
       {
@@ -129,6 +130,7 @@ const nativeCheckboxApiSections: readonly ComponentApiSection[] = [
       {
         name: 'labelPosition',
         type: "'start' | 'end'",
+        defaultValue: "'end'",
         description: 'Position of the visible label relative to the checkbox.',
       },
       {

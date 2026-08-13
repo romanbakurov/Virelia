@@ -30,8 +30,22 @@ function createTooltipCode(
 
   const children =
     platform === 'react'
-      ? '  <Tooltip.Trigger>Hover for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>'
-      : '  <Tooltip.Trigger>Press for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>';
+      ? `  <Tooltip.Trigger asChild>
+    <ReactButton>Hover for details</ReactButton>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`
+      : `  <Tooltip.Trigger>
+    <NativeView
+      style={{
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: '#eee',
+      }}
+    >
+      <NativeText>Press and hold</NativeText>
+    </NativeView>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`;
 
   if (value.placement !== 'top') {
     props.push(`placement='${value.placement}'`);
@@ -45,13 +59,25 @@ function createTooltipCode(
 
   if (!children) {
     return `import { Tooltip } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { Text as NativeText, View as NativeView } from 'react-native';`
+}
 
 <Tooltip${propsText}/>`;
   }
 
   return `import { Tooltip } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { Text as NativeText, View as NativeView } from 'react-native';`
+}
 
 <Tooltip${propsText}>
 ${children}

@@ -5,6 +5,10 @@
 
 import { Dropdown as ReactDropdown } from '@vellira-ui/react';
 import { Dropdown as NativeDropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+import { Download, Settings } from '@vellira-ui/icons';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -20,7 +24,15 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
       description: 'Action menu with common items.',
       preview: (
         <ReactDropdown>
-          <ReactDropdown.Trigger>Actions</ReactDropdown.Trigger>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
           <ReactDropdown.Content>
             <ReactDropdown.Item>Profile</ReactDropdown.Item>
             <ReactDropdown.Item>Settings</ReactDropdown.Item>
@@ -29,14 +41,125 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </ReactDropdown.Content>
         </ReactDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react';\n\n<Dropdown>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item>Profile</Dropdown.Item>\n    <Dropdown.Item>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Profile</Dropdown.Item>
+    <Dropdown.Item>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Groups and separators',
+      description: 'Organizes related actions with labels and dividers.',
+      preview: (
+        <ReactDropdown>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
+          <ReactDropdown.Content>
+            <ReactDropdown.Group>
+              <ReactDropdown.Label>Account</ReactDropdown.Label>
+              <ReactDropdown.Item>Profile</ReactDropdown.Item>
+              <ReactDropdown.Item>Settings</ReactDropdown.Item>
+            </ReactDropdown.Group>
+            <ReactDropdown.Separator />
+            <ReactDropdown.Item color='danger'>Sign out</ReactDropdown.Item>
+          </ReactDropdown.Content>
+        </ReactDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Group>
+      <Dropdown.Label>Account</Dropdown.Label>
+      <Dropdown.Item>Profile</Dropdown.Item>
+      <Dropdown.Item>Settings</Dropdown.Item>
+    </Dropdown.Group>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Item adornments',
+      description: 'Adds icons, badges, and shortcuts to clarify actions.',
+      preview: (
+        <ReactDropdown>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
+          <ReactDropdown.Content>
+            <ReactDropdown.Item icon={<Settings />} shortcut='Cmd+,'>
+              Settings
+            </ReactDropdown.Item>
+            <ReactDropdown.Item
+              icon={<Download />}
+              badge='New'
+              shortcut='Cmd+D'
+            >
+              Download
+            </ReactDropdown.Item>
+            <ReactDropdown.Item disabled>Unavailable</ReactDropdown.Item>
+          </ReactDropdown.Content>
+        </ReactDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+import { Download, Settings } from '@vellira-ui/icons';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item icon={<Settings />} shortcut='Cmd+,'>Settings</Dropdown.Item>
+    <Dropdown.Item icon={<Download />} badge='New' shortcut='Cmd+D'>Download</Dropdown.Item>
+    <Dropdown.Item disabled>Unavailable</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Searchable',
       description: 'Filter menu items.',
       preview: (
         <ReactDropdown searchable>
-          <ReactDropdown.Trigger>Actions</ReactDropdown.Trigger>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
           <ReactDropdown.Content>
             <ReactDropdown.Item>Profile</ReactDropdown.Item>
             <ReactDropdown.Item>Settings</ReactDropdown.Item>
@@ -45,14 +168,134 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </ReactDropdown.Content>
         </ReactDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react';\n\n<Dropdown\n  searchable\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item>Profile</Dropdown.Item>\n    <Dropdown.Item>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown
+  searchable
+>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Profile</Dropdown.Item>
+    <Dropdown.Item>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Selectable items',
+      description:
+        'Uses checkbox and radio menu items for temporary preferences.',
+      preview: (
+        <ReactDropdown>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              View options
+            </ReactButton>
+          </ReactDropdown.Trigger>
+          <ReactDropdown.Content>
+            <ReactDropdown.CheckboxItem checked>
+              Show archived
+            </ReactDropdown.CheckboxItem>
+            <ReactDropdown.Separator />
+            <ReactDropdown.RadioGroup defaultValue='comfortable'>
+              <ReactDropdown.RadioItem value='comfortable'>
+                Comfortable
+              </ReactDropdown.RadioItem>
+              <ReactDropdown.RadioItem value='compact'>
+                Compact
+              </ReactDropdown.RadioItem>
+            </ReactDropdown.RadioGroup>
+          </ReactDropdown.Content>
+        </ReactDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>View options</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.CheckboxItem checked>Show archived</Dropdown.CheckboxItem>
+    <Dropdown.Separator />
+    <Dropdown.RadioGroup defaultValue='comfortable'>
+      <Dropdown.RadioItem value='comfortable'>Comfortable</Dropdown.RadioItem>
+      <Dropdown.RadioItem value='compact'>Compact</Dropdown.RadioItem>
+    </Dropdown.RadioGroup>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Submenu',
+      description:
+        'Nests secondary actions when the web menu has more choices.',
+      preview: (
+        <ReactDropdown>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Export
+            </ReactButton>
+          </ReactDropdown.Trigger>
+          <ReactDropdown.Content>
+            <ReactDropdown.Item>Copy link</ReactDropdown.Item>
+            <ReactDropdown.Sub>
+              <ReactDropdown.SubTrigger>Download</ReactDropdown.SubTrigger>
+              <ReactDropdown.SubContent>
+                <ReactDropdown.Item>PDF</ReactDropdown.Item>
+                <ReactDropdown.Item>CSV</ReactDropdown.Item>
+              </ReactDropdown.SubContent>
+            </ReactDropdown.Sub>
+          </ReactDropdown.Content>
+        </ReactDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Export</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Copy link</Dropdown.Item>
+    <Dropdown.Sub>
+      <Dropdown.SubTrigger>Download</Dropdown.SubTrigger>
+      <Dropdown.SubContent>
+        <Dropdown.Item>PDF</Dropdown.Item>
+        <Dropdown.Item>CSV</Dropdown.Item>
+      </Dropdown.SubContent>
+    </Dropdown.Sub>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Loading',
       description: 'Loading menu state.',
       preview: (
         <ReactDropdown loading>
-          <ReactDropdown.Trigger>Actions</ReactDropdown.Trigger>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
           <ReactDropdown.Content>
             <ReactDropdown.Item>Profile</ReactDropdown.Item>
             <ReactDropdown.Item>Settings</ReactDropdown.Item>
@@ -61,14 +304,38 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </ReactDropdown.Content>
         </ReactDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react';\n\n<Dropdown\n  loading\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item>Profile</Dropdown.Item>\n    <Dropdown.Item>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown
+  loading
+>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Profile</Dropdown.Item>
+    <Dropdown.Item>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled trigger state.',
       preview: (
         <ReactDropdown disabled>
-          <ReactDropdown.Trigger>Actions</ReactDropdown.Trigger>
+          <ReactDropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </ReactButton>
+          </ReactDropdown.Trigger>
           <ReactDropdown.Content>
             <ReactDropdown.Item>Profile</ReactDropdown.Item>
             <ReactDropdown.Item>Settings</ReactDropdown.Item>
@@ -77,7 +344,23 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </ReactDropdown.Content>
         </ReactDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react';\n\n<Dropdown\n  disabled\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item>Profile</Dropdown.Item>\n    <Dropdown.Item>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Dropdown
+  disabled
+>
+  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Profile</Dropdown.Item>
+    <Dropdown.Item>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
   ] as const;
 
@@ -87,7 +370,15 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
       description: 'Action menu with common items.',
       preview: (
         <NativeDropdown>
-          <NativeDropdown.Trigger>Actions</NativeDropdown.Trigger>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
           <NativeDropdown.Content>
             <NativeDropdown.Item value='profile'>Profile</NativeDropdown.Item>
             <NativeDropdown.Item value='settings'>Settings</NativeDropdown.Item>
@@ -98,14 +389,121 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </NativeDropdown.Content>
         </NativeDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react-native';\n\n<Dropdown>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item value='profile'>Profile</Dropdown.Item>\n    <Dropdown.Item value='settings'>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Groups and separators',
+      description: 'Organizes related actions with labels and dividers.',
+      preview: (
+        <NativeDropdown>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
+          <NativeDropdown.Content>
+            <NativeDropdown.Group>Account</NativeDropdown.Group>
+            <NativeDropdown.Item value='profile'>Profile</NativeDropdown.Item>
+            <NativeDropdown.Item value='settings'>Settings</NativeDropdown.Item>
+            <NativeDropdown.Separator />
+            <NativeDropdown.Item value='sign-out' color='danger'>
+              Sign out
+            </NativeDropdown.Item>
+          </NativeDropdown.Content>
+        </NativeDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Group>Account</Dropdown.Group>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
+    },
+    {
+      title: 'Item adornments',
+      description: 'Adds icons, badges, and shortcuts to clarify actions.',
+      preview: (
+        <NativeDropdown>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
+          <NativeDropdown.Content>
+            <NativeDropdown.Item value='settings' icon={<Settings />}>
+              Settings
+            </NativeDropdown.Item>
+            <NativeDropdown.Item value='download' icon={<Download />}>
+              Download
+            </NativeDropdown.Item>
+            <NativeDropdown.Item value='unavailable' disabled>
+              Unavailable
+            </NativeDropdown.Item>
+          </NativeDropdown.Content>
+        </NativeDropdown>
+      ),
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+import { Download, Settings } from '@vellira-ui/icons';
+
+<Dropdown>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='settings' icon={<Settings />}>Settings</Dropdown.Item>
+    <Dropdown.Item value='download' icon={<Download />}>Download</Dropdown.Item>
+    <Dropdown.Item value='unavailable' disabled>Unavailable</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Searchable',
       description: 'Filter menu items.',
       preview: (
         <NativeDropdown searchable>
-          <NativeDropdown.Trigger>Actions</NativeDropdown.Trigger>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
           <NativeDropdown.Content>
             <NativeDropdown.Item value='profile'>Profile</NativeDropdown.Item>
             <NativeDropdown.Item value='settings'>Settings</NativeDropdown.Item>
@@ -116,14 +514,38 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </NativeDropdown.Content>
         </NativeDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react-native';\n\n<Dropdown\n  searchable\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item value='profile'>Profile</Dropdown.Item>\n    <Dropdown.Item value='settings'>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Dropdown
+  searchable
+>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Loading',
       description: 'Loading menu state.',
       preview: (
         <NativeDropdown loading>
-          <NativeDropdown.Trigger>Actions</NativeDropdown.Trigger>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
           <NativeDropdown.Content>
             <NativeDropdown.Item value='profile'>Profile</NativeDropdown.Item>
             <NativeDropdown.Item value='settings'>Settings</NativeDropdown.Item>
@@ -134,14 +556,38 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </NativeDropdown.Content>
         </NativeDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react-native';\n\n<Dropdown\n  loading\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item value='profile'>Profile</Dropdown.Item>\n    <Dropdown.Item value='settings'>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Dropdown
+  loading
+>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled trigger state.',
       preview: (
         <NativeDropdown disabled>
-          <NativeDropdown.Trigger>Actions</NativeDropdown.Trigger>
+          <NativeDropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+            >
+              Actions
+            </NativeButton>
+          </NativeDropdown.Trigger>
           <NativeDropdown.Content>
             <NativeDropdown.Item value='profile'>Profile</NativeDropdown.Item>
             <NativeDropdown.Item value='settings'>Settings</NativeDropdown.Item>
@@ -152,7 +598,23 @@ export function DropdownExamples({ platform }: DropdownExamplesProps) {
           </NativeDropdown.Content>
         </NativeDropdown>
       ),
-      code: "import { Dropdown } from '@vellira-ui/react-native';\n\n<Dropdown\n  disabled\n>\n  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item value='profile'>Profile</Dropdown.Item>\n    <Dropdown.Item value='settings'>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>\n</Dropdown>",
+      code: `import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Dropdown
+  disabled
+>
+  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>
+</Dropdown>`,
     },
   ] as const;
 

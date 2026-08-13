@@ -16,8 +16,10 @@ export const TabsList = ({
   const scrollable = scrollableProp ?? false;
   const listStyle = [
     styles.list,
+    variant === 'line' && styles.listLine,
     variant === 'segmented' && styles.listSegmented,
     orientation === 'vertical' && styles.listVertical,
+    variant === 'line' && orientation === 'vertical' && styles.listLineVertical,
     style,
   ];
 

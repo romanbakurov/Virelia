@@ -1,5 +1,5 @@
 import type { ViewStyle } from 'react-native';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import type { nativeThemes } from '../../../theme';
 
@@ -64,6 +64,11 @@ export function createPopoverArrowStyles({
       position: 'absolute',
       width: tokens.size,
       height: tokens.size,
+      ...(Platform.OS === 'web'
+        ? {
+            pointerEvents: 'none',
+          }
+        : {}),
       backgroundColor: tokens.bg,
       ...position,
       ...border,

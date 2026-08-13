@@ -31,6 +31,18 @@ export function ModalAccessibility({ platform }: ModalAccessibilityProps) {
         'Choose outside press and Escape dismissal behavior based on task criticality.',
       props: ['closeOnOutsidePress', 'closeOnEscape'],
     },
+    {
+      title: 'Destructive confirmations',
+      description:
+        'Use alert dialog semantics only for urgent decisions that require immediate attention.',
+      props: ['role'],
+    },
+    {
+      title: 'Scrollable content',
+      description:
+        'Keep title, description, and final actions reachable when modal content is long.',
+      props: ['scrollBehavior', 'size'],
+    },
   ] as const;
 
   const nativeItems = [

@@ -547,6 +547,7 @@ export function useSelectRootState(props: SelectProps) {
     isDisabled,
     isRequired,
     label,
+    resolvedSize,
     triggerId,
     triggerProps,
   };

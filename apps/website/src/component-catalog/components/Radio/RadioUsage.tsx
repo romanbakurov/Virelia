@@ -29,17 +29,17 @@ function createRadioCode(
   const props: string[] =
     platform === 'react'
       ? [
-          'value="option"',
-          "label='Email notifications'",
-          "description='Receive updates by email.'",
+          `value='option'`,
+          `label='Email notifications'`,
+          `description='Receive updates by email.'`,
         ]
       : [
-          'value="option"',
-          "label='Email notifications'",
-          "description='Receive updates by email.'",
+          `value='option'`,
+          `label='Email notifications'`,
+          `description='Receive updates by email.'`,
         ];
 
-  const children = platform === 'react' ? '' : '';
+  const children = platform === 'react' ? `` : ``;
 
   if (value.checked) {
     props.push('checked');
@@ -65,13 +65,13 @@ function createRadioCode(
 
   if (!children) {
     return `import { Radio } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Radio${propsText}/>`;
   }
 
   return `import { Radio } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Radio${propsText}>
 ${children}

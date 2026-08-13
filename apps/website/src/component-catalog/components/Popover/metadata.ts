@@ -2,17 +2,22 @@ import { defineComponentPageMetadata } from '../../metadata';
 
 export default defineComponentPageMetadata({
   react: {
-    children: `<Popover.Trigger>Open popover</Popover.Trigger>
+    children: `<Popover.Trigger asChild>
+  <ReactButton>Open popover</ReactButton>
+</Popover.Trigger>
 <Popover.Content>
+  <Popover.Arrow />
   <Popover.Title>Details</Popover.Title>
   <Popover.Description>Contextual information for this control.</Popover.Description>
 </Popover.Content>`,
+    imports: [`import { Button as ReactButton } from '@vellira-ui/react';`],
   },
   native: {
     children: `<Popover.Trigger asChild>
   <NativeButton>Open popover</NativeButton>
 </Popover.Trigger>
 <Popover.Content>
+  <Popover.Arrow />
   <Popover.Title>Details</Popover.Title>
   <Popover.Description>Contextual information for this control.</Popover.Description>
 </Popover.Content>`,
@@ -33,19 +38,43 @@ export default defineComponentPageMetadata({
       strategy: 'absolute',
     },
   },
+  demo: {
+    initialValues: {
+      open: false,
+      modal: false,
+    },
+    previewWidth: 'field',
+  },
   examples: [
     {
       title: 'Basic',
       description: 'Floating contextual content.',
       props: [],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
       nativeImports: [
         `import { Button as NativeButton } from '@vellira-ui/react-native';`,
       ],
     },
     {
-      title: 'Top aligned',
-      description: 'Alternative content placement.',
-      props: [`side='top'`, `align='start'`],
+      title: 'Placement',
+      description: 'Positions content relative to the trigger.',
+      props: [`side='top'`, `align='start'`, 'sideOffset={12}'],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports: [
+        `import { Button as NativeButton } from '@vellira-ui/react-native';`,
+      ],
+    },
+    {
+      title: 'Open change handler',
+      description: 'Observes popover visibility from application state.',
+      props: ['onOpenChange={() => {}}'],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
       nativeImports: [
         `import { Button as NativeButton } from '@vellira-ui/react-native';`,
       ],
@@ -54,6 +83,75 @@ export default defineComponentPageMetadata({
       title: 'Modal',
       description: 'Modal interaction semantics.',
       props: ['modal'],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports: [
+        `import { Button as NativeButton } from '@vellira-ui/react-native';`,
+      ],
+    },
+    {
+      title: 'Arrow and close action',
+      description:
+        'Adds an arrow and an explicit close control inside the popover.',
+      props: [],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      reactChildren: `<Popover.Trigger asChild>
+  <ReactButton>Open popover</ReactButton>
+</Popover.Trigger>
+<Popover.Content>
+  <Popover.Arrow />
+  <Popover.Title>Details</Popover.Title>
+  <Popover.Description>Contextual information for this control.</Popover.Description>
+  <Popover.Close asChild>
+    <ReactButton appearance='outline'>Close</ReactButton>
+  </Popover.Close>
+</Popover.Content>`,
+      nativeChildren: `<Popover.Trigger asChild>
+  <NativeButton>Open popover</NativeButton>
+</Popover.Trigger>
+<Popover.Content>
+  <Popover.Arrow />
+  <Popover.Title>Details</Popover.Title>
+  <Popover.Description>Contextual information for this control.</Popover.Description>
+  <Popover.Close asChild>
+    <NativeButton>Close</NativeButton>
+  </Popover.Close>
+</Popover.Content>`,
+      nativeImports: [
+        `import { Button as NativeButton } from '@vellira-ui/react-native';`,
+      ],
+    },
+    {
+      title: 'Separate anchor',
+      description:
+        'Positions content from an anchor while using a separate trigger.',
+      props: [],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      reactChildren: `<Popover.Anchor>
+  <span>Anchor point</span>
+</Popover.Anchor>
+<Popover.Trigger asChild>
+  <ReactButton>Open popover</ReactButton>
+</Popover.Trigger>
+<Popover.Content>
+  <Popover.Title>Details</Popover.Title>
+  <Popover.Description>Anchored contextual information.</Popover.Description>
+</Popover.Content>`,
+      nativeChildren: `<Popover.Anchor asChild>
+  <NativeButton>Anchor point</NativeButton>
+</Popover.Anchor>
+<Popover.Trigger asChild>
+  <NativeButton>Open popover</NativeButton>
+</Popover.Trigger>
+<Popover.Content>
+  <Popover.Title>Details</Popover.Title>
+  <Popover.Description>Anchored contextual information.</Popover.Description>
+</Popover.Content>`,
       nativeImports: [
         `import { Button as NativeButton } from '@vellira-ui/react-native';`,
       ],
@@ -82,7 +180,13 @@ export default defineComponentPageMetadata({
         title: 'Dismissal and focus',
         description:
           'Keep focus and dismissal predictable when content contains interactive controls.',
-        props: ['modal', 'side', 'align'],
+        props: ['modal', 'side', 'align', 'onOpenChange'],
+      },
+      {
+        title: 'Explicit close controls',
+        description:
+          'Provide a close action when popover content contains interactive or multi-step content.',
+        props: ['children'],
       },
     ],
     native: [
@@ -97,6 +201,12 @@ export default defineComponentPageMetadata({
         description:
           'Choose placement that keeps content near its trigger without obscuring controls.',
         props: ['side', 'align'],
+      },
+      {
+        title: 'Explicit close controls',
+        description:
+          'Use a clearly labelled close action when the popover stays open for task content.',
+        props: ['children'],
       },
     ],
   },

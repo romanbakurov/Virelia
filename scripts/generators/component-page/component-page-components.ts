@@ -1,7 +1,9 @@
 export const generatedComponentPageComponents = [
   'Button',
   'Input',
+  'FormField',
   'Radio',
+  'RadioGroup',
   'Checkbox',
   'Select',
   'Dropdown',

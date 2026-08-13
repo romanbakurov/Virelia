@@ -30,8 +30,24 @@ function createDropdownCode(
 
   const children =
     platform === 'react'
-      ? "  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item>Profile</Dropdown.Item>\n    <Dropdown.Item>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>"
-      : "  <Dropdown.Trigger>Actions</Dropdown.Trigger>\n  <Dropdown.Content>\n    <Dropdown.Item value='profile'>Profile</Dropdown.Item>\n    <Dropdown.Item value='settings'>Settings</Dropdown.Item>\n    <Dropdown.Separator />\n    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>\n  </Dropdown.Content>";
+      ? `  <Dropdown.Trigger asChild>
+    <ReactButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</ReactButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item>Profile</Dropdown.Item>
+    <Dropdown.Item>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>`
+      : `  <Dropdown.Trigger asChild>
+    <NativeButton appearance='outline' color='neutral' iconEnd={<ChevronDown />}>Actions</NativeButton>
+  </Dropdown.Trigger>
+  <Dropdown.Content>
+    <Dropdown.Item value='profile'>Profile</Dropdown.Item>
+    <Dropdown.Item value='settings'>Settings</Dropdown.Item>
+    <Dropdown.Separator />
+    <Dropdown.Item value='sign-out' color='danger'>Sign out</Dropdown.Item>
+  </Dropdown.Content>`;
 
   if (value.open) {
     props.push('open');
@@ -77,13 +93,29 @@ function createDropdownCode(
 
   if (!children) {
     return `import { Dropdown } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Dropdown${propsText}/>`;
   }
 
   return `import { Dropdown } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Dropdown${propsText}>
 ${children}

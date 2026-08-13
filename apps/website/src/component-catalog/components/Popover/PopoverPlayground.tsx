@@ -48,7 +48,7 @@ export function PopoverPlayground({ renderPopover }: PopoverPlaygroundProps) {
 
   return (
     <ComponentPlayground
-      previewWidth='auto'
+      previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
           value={value}

@@ -9,6 +9,7 @@ export interface TabsIndicatorProps extends Omit<
   HTMLAttributes<HTMLSpanElement>,
   'children'
 > {
+  /** Class name applied to the active tab indicator. */
   className?: string;
 }
 

@@ -2,10 +2,10 @@ import { defineComponentPageMetadata } from '../../metadata';
 
 export default defineComponentPageMetadata({
   react: {
-    demoProps: 'value="option"',
+    demoProps: `value='option'`,
   },
   native: {
-    demoProps: 'value="option"',
+    demoProps: `value='option'`,
   },
   demo: {
     label: 'Email notifications',

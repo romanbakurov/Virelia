@@ -4,6 +4,8 @@
 'use client';
 
 import { Dropdown } from '@vellira-ui/react';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as ReactButton } from '@vellira-ui/react';
 
 import { DropdownPlayground } from './DropdownPlayground';
 
@@ -24,7 +26,16 @@ export function DropdownDemo() {
           searchValue={value.searchValue || undefined}
           searchPlaceholder={value.searchPlaceholder || undefined}
         >
-          <Dropdown.Trigger>Actions</Dropdown.Trigger>
+          <Dropdown.Trigger asChild>
+            <ReactButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+              size={value.size}
+            >
+              Actions
+            </ReactButton>
+          </Dropdown.Trigger>
           <Dropdown.Content>
             <Dropdown.Item>Profile</Dropdown.Item>
             <Dropdown.Item>Settings</Dropdown.Item>

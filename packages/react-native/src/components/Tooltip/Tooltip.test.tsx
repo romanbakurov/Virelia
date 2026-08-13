@@ -7,6 +7,9 @@ import { render } from '../../test-utils/render';
 
 import { Tooltip } from './Tooltip';
 
+const getTrigger = (container: HTMLElement) =>
+  container.querySelector<HTMLElement>('button, [tabindex="0"]');
+
 afterEach(() => {
   document.body.innerHTML = '';
   vi.restoreAllMocks();
@@ -28,10 +31,10 @@ describe('Native Tooltip', () => {
 
     expect(document.body.textContent).not.toContain('Helpful text');
 
-    const trigger = container.querySelector<HTMLButtonElement>('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Helpful text');
@@ -57,10 +60,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).not.toContain('Disabled tooltip');
@@ -80,13 +83,36 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Bottom tooltip');
+
+    unmount();
+  });
+
+  it('opens on web press', () => {
+    vi.useFakeTimers();
+
+    const { container, unmount } = render(
+      <Tooltip>
+        <Tooltip.Trigger>
+          <span>Show help</span>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Focused tooltip</Tooltip.Content>
+      </Tooltip>
+    );
+
+    const trigger = getTrigger(container);
+
+    act(() => {
+      trigger?.click();
+    });
+
+    expect(document.body.textContent).toContain('Focused tooltip');
 
     unmount();
   });
@@ -104,10 +130,10 @@ describe('Native Tooltip', () => {
 
     expect(document.body.textContent).not.toContain('Controlled tooltip');
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(onOpenChange).toHaveBeenCalledWith(true);
@@ -178,10 +204,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
     });
 
     expect(document.body.textContent).toContain('Close delayed tooltip');
@@ -213,10 +239,10 @@ describe('Native Tooltip', () => {
       </Tooltip>
     );
 
-    const trigger = container.querySelector('button');
+    const trigger = getTrigger(container);
 
     act(() => {
-      trigger?.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+      trigger?.click();
       vi.advanceTimersByTime(199);
     });
 

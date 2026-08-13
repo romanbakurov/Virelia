@@ -30,8 +30,48 @@ function createModalCode(
 
   const children =
     platform === 'react'
-      ? "  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay />\n  <Modal.Content>\n    <Modal.Header>\n      <Modal.Title>Confirm action</Modal.Title>\n      <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n    </Modal.Header>\n    <Modal.Body>Modal body content.</Modal.Body>\n    <Modal.Footer>\n      <Modal.Close aria-label='Cancel' />\n    </Modal.Footer>\n  </Modal.Content>"
-      : "  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay>\n    <Modal.Content>\n      <Modal.Header>\n        <Modal.Title>Confirm action</Modal.Title>\n        <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n      </Modal.Header>\n      <Modal.Body>Modal body content.</Modal.Body>\n      <Modal.Footer>\n        <Modal.Close accessibilityLabel='Cancel' />\n      </Modal.Footer>\n    </Modal.Content>\n  </Modal.Overlay>";
+      ? `  <Modal.Trigger asChild>
+    <ReactButton>Open modal</ReactButton>
+  </Modal.Trigger>
+  <ReactPortal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <ReactButton color='neutral' appearance='ghost'>Cancel</ReactButton>
+        </Modal.Close>
+        <ReactButton color='danger'>Delete</ReactButton>
+      </Modal.Footer>
+    </Modal.Content>
+  </ReactPortal>`
+      : `  <Modal.Trigger asChild>
+    <NativeButton>Open Modal</NativeButton>
+  </Modal.Trigger>
+  <Modal.Overlay>
+    <Modal.Content>
+      <Modal.Header>
+        <Modal.Title>Delete file</Modal.Title>
+        <Modal.Description>This action uses the native overlay stack and focus restore.</Modal.Description>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close>
+          <NativeButton color='neutral' appearance='solid'>Cancel</NativeButton>
+        </Modal.Close>
+        <Modal.Close>
+          <NativeButton color='danger' appearance='solid'>Delete</NativeButton>
+        </Modal.Close>
+      </Modal.Footer>
+    </Modal.Content>
+  </Modal.Overlay>`;
 
   if (value.open) {
     props.push('open');
@@ -61,13 +101,25 @@ function createModalCode(
 
   if (!children) {
     return `import { Modal } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';`
+    : `
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Modal${propsText}/>`;
   }
 
   return `import { Modal } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';`
+    : `
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Modal${propsText}>
 ${children}

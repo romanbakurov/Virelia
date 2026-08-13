@@ -29,6 +29,7 @@ export function NativeTabsDemo() {
           <Tabs.List>
             <Tabs.Trigger value='account'>Account</Tabs.Trigger>
             <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+            <Tabs.Indicator />
           </Tabs.List>
           <Tabs.Content value='account'>
             <NativeText>Account settings</NativeText>

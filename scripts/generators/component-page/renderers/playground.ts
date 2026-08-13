@@ -1,4 +1,4 @@
-import { toLabel } from '../helpers/format';
+import { identifierFromSlug, toLabel, toTsLiteral } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp } from '../model/types';
 
@@ -10,7 +10,7 @@ export function getInitialValue(params: {
   const configuredValue = componentConfig.demo?.initialValues?.[prop.name];
 
   if (configuredValue !== undefined) {
-    return JSON.stringify(configuredValue);
+    return toTsLiteral(configuredValue);
   }
 
   if (prop.kind === 'boolean') {
@@ -22,10 +22,23 @@ export function getInitialValue(params: {
   }
 
   if (prop.kind === 'select') {
-    return JSON.stringify(prop.options[0] ?? '');
+    return toTsLiteral(prop.options[0] ?? '');
   }
 
-  return prop.required ? JSON.stringify('example') : JSON.stringify('');
+  return prop.required ? toTsLiteral('example') : toTsLiteral('');
+}
+
+function getControlOptions(prop: ExtractedProp) {
+  if (
+    prop.name === 'labelPosition' &&
+    prop.kind === 'select' &&
+    prop.options.includes('end') &&
+    prop.options.includes('start')
+  ) {
+    return ['end', 'start'];
+  }
+
+  return prop.kind === 'select' ? prop.options : [];
 }
 
 export function buildPlaygroundArtifacts(params: {
@@ -44,6 +57,7 @@ export function buildPlaygroundArtifacts(params: {
     generatedFileHeader,
     getChangeHandlerName,
   } = params;
+  const slugIdentifier = identifierFromSlug(slug);
 
   function getPlaygroundPropBinding(prop: ExtractedProp) {
     const propValue =
@@ -109,11 +123,13 @@ export function buildPlaygroundArtifacts(params: {
       }
 
       if (prop.kind === 'select') {
+        const options = getControlOptions(prop);
+
         return `  {
     type: 'select',
     key: '${prop.name}',
     label: '${label}',
-    options: [${prop.options.map((option) => `'${option}'`).join(', ')}],
+    options: [${options.map((option) => `'${option}'`).join(', ')}],
   },`;
       }
 
@@ -137,7 +153,7 @@ export function buildPlaygroundArtifacts(params: {
 
 import type { ${componentName}PlaygroundValue } from './${componentName}Playground';
 
-export const ${slug}PlaygroundControls = [
+export const ${slugIdentifier}PlaygroundControls = [
 ${playgroundControlEntries}
 ] as const satisfies readonly PlaygroundControl<${componentName}PlaygroundValue>[];
 `;
@@ -150,7 +166,7 @@ import { ComponentPlayground } from '../../shared/ComponentPlayground';
 import { useComponentDemoState } from '../../shared/ComponentDemoStateProvider';
 import { PlaygroundControlsFromSchema } from '../../shared/PlaygroundControls';
 
-import { ${slug}PlaygroundControls } from './${slug}PlaygroundSchema';
+import { ${slugIdentifier}PlaygroundControls } from './${slug}PlaygroundSchema';
 
 export type ${componentName}PlaygroundValue = {
 ${playgroundValueFields}
@@ -190,11 +206,11 @@ export function ${componentName}Playground({
 
   return (
     <ComponentPlayground
-    previewWidth=${JSON.stringify(componentConfig.demo?.previewWidth ?? 'auto')}
+      previewWidth=${toTsLiteral(componentConfig.demo?.previewWidth ?? 'auto')}
       controls={
         <PlaygroundControlsFromSchema
           value={value}
-          controls={${slug}PlaygroundControls}
+          controls={${slugIdentifier}PlaygroundControls}
           onChange={update}
         />
       }

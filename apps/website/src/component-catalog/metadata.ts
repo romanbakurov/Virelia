@@ -11,8 +11,14 @@ export type ComponentCatalogProfile =
 export type ComponentPlatformMetadata = {
   demoProps?: string;
   children?: string;
+  childPropBindings?: readonly ComponentChildPropBinding[];
   imports?: readonly string[];
   responsivePresentation?: boolean;
+};
+
+export type ComponentChildPropBinding = {
+  target: string;
+  props: readonly string[];
 };
 
 export type ComponentDemoMetadata = {

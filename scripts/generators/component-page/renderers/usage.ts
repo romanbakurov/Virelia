@@ -1,5 +1,15 @@
+import { toTemplateLiteral, toTsLiteral } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from '../model/types';
+
+function normalizePropFragments(props: readonly string[]) {
+  return props.flatMap((prop) =>
+    prop
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+  );
+}
 
 export function renderUsage(params: {
   componentName: string;
@@ -17,17 +27,18 @@ export function renderUsage(params: {
   } = params;
 
   function createUsageStaticProps(platform: Platform) {
-    return [
-      getDemoProps(platform) || null,
-      componentConfig.demo?.label
-        ? `label='${componentConfig.demo.label}'`
-        : null,
-      componentConfig.demo?.description
-        ? `description='${componentConfig.demo.description}'`
-        : null,
-    ]
-      .filter((prop): prop is string => Boolean(prop))
-      .map((prop) => `        ${JSON.stringify(prop)},`)
+    return normalizePropFragments(
+      [
+        getDemoProps(platform) || null,
+        componentConfig.demo?.label
+          ? `label='${componentConfig.demo.label}'`
+          : null,
+        componentConfig.demo?.description
+          ? `description='${componentConfig.demo.description}'`
+          : null,
+      ].filter((prop): prop is string => Boolean(prop))
+    )
+      .map((prop) => `        ${toTemplateLiteral(prop)},`)
       .join('\n');
   }
 
@@ -101,8 +112,8 @@ ${nativeUsageStaticProps}
 
   const children =
     platform === 'react'
-      ? ${JSON.stringify(reactUsageChildren)}
-      : ${JSON.stringify(nativeUsageChildren)};
+      ? ${toTemplateLiteral(reactUsageChildren)}
+      : ${toTemplateLiteral(nativeUsageChildren)};
 
 ${playgroundProps
   .map((prop) => {
@@ -121,12 +132,12 @@ ${playgroundProps
     }
 
     if (prop.kind === 'number') {
-      return `  if (value.${prop.name} !== ${JSON.stringify(initialValue ?? 0)}) {
+      return `  if (value.${prop.name} !== ${toTsLiteral(initialValue ?? 0)}) {
     props.push(\`${prop.name}={\${value.${prop.name}}}\`);
   }`;
     }
 
-    return `  if (value.${prop.name} !== ${JSON.stringify(
+    return `  if (value.${prop.name} !== ${toTsLiteral(
       initialValue ?? prop.options[0] ?? ''
     )}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);
@@ -139,13 +150,13 @@ ${playgroundProps
 
   if (!children) {
     return \`import { ${componentName} } from '\${packageName}';
-\${platform === 'react' ? ${JSON.stringify(reactPlatformImports)} : ${JSON.stringify(nativePlatformImports)}}
+\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
 
 <${componentName}\${propsText}/>\`;
   }
 
   return \`import { ${componentName} } from '\${packageName}';
-\${platform === 'react' ? ${JSON.stringify(reactPlatformImports)} : ${JSON.stringify(nativePlatformImports)}}
+\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
 
 <${componentName}\${propsText}>
 \${children}

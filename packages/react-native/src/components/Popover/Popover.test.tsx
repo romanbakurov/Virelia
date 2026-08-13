@@ -436,4 +436,33 @@ describe('Native Popover', () => {
 
     unmount();
   });
+
+  it('does not pass deprecated web-only pointerEvents or shadow props', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { unmount } = render(
+      <Popover defaultOpen>
+        <Popover.Trigger asChild>
+          <Button>Open popover</Button>
+        </Popover.Trigger>
+
+        <Popover.Content>
+          <Popover.Arrow />
+          <Text>Popover content</Text>
+        </Popover.Content>
+      </Popover>
+    );
+
+    const messages = [...warn.mock.calls, ...error.mock.calls]
+      .flat()
+      .join('\n');
+
+    expect(messages).not.toContain('props.pointerEvents is deprecated');
+    expect(messages).not.toContain('shadow');
+
+    unmount();
+    warn.mockRestore();
+    error.mockRestore();
+  });
 });

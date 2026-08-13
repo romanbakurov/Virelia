@@ -63,6 +63,8 @@ export interface DropdownProps extends BaseDropdownProps {
 }
 
 export interface DropdownTriggerProps extends BaseDropdownTriggerProps {
+  /** Composes trigger behavior onto a single child element. */
+  asChild?: boolean;
   /** Trigger content. */
   children?: ReactNode;
 }

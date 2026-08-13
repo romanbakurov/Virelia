@@ -51,6 +51,6 @@ export const checkboxPlaygroundControls = [
     type: 'select',
     key: 'labelPosition',
     label: 'Label Position',
-    options: ['start', 'end'],
+    options: ['end', 'start'],
   },
 ] as const satisfies readonly PlaygroundControl<CheckboxPlaygroundValue>[];

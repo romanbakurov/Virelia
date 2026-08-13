@@ -21,6 +21,7 @@ export function NativePopoverDemo() {
             <NativeButton>Open popover</NativeButton>
           </Popover.Trigger>
           <Popover.Content>
+            <Popover.Arrow />
             <Popover.Title>Details</Popover.Title>
             <Popover.Description>
               Contextual information for this control.

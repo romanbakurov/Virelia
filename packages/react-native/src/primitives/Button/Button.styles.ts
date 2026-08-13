@@ -16,7 +16,6 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     fullWidth: {
-      alignSelf: 'stretch',
       width: '100%',
     },
 

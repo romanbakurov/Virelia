@@ -30,8 +30,22 @@ function createPopoverCode(
 
   const children =
     platform === 'react'
-      ? '  <Popover.Trigger>Open popover</Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>'
-      : '  <Popover.Trigger asChild>\n    <NativeButton>Open popover</NativeButton>\n  </Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>';
+      ? `  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>`
+      : `  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>`;
 
   if (value.open) {
     props.push('open');
@@ -45,13 +59,25 @@ function createPopoverCode(
 
   if (!children) {
     return `import { Popover } from '${packageName}';
-${platform === 'react' ? '' : "\nimport { Button as NativeButton } from '@vellira-ui/react-native';"}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Popover${propsText}/>`;
   }
 
   return `import { Popover } from '${packageName}';
-${platform === 'react' ? '' : "\nimport { Button as NativeButton } from '@vellira-ui/react-native';"}
+${
+  platform === 'react'
+    ? `
+import { Button as ReactButton } from '@vellira-ui/react';`
+    : `
+import { Button as NativeButton } from '@vellira-ui/react-native';`
+}
 
 <Popover${propsText}>
 ${children}

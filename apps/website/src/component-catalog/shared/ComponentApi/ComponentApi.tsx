@@ -1,4 +1,8 @@
 import styles from './ComponentApi.module.css';
+import {
+  formatApiTypeForDisplay,
+  getApiTypePreview,
+} from './formatApiTypeForDisplay';
 
 import type { ComponentPlatform } from '../../types';
 
@@ -21,7 +25,6 @@ const genericInheritedDescriptions = new Set([
 ]);
 
 const longTypeLength = 40;
-const compactTypePreviewLength = 36;
 
 type ComponentApiProps = {
   title?: string;
@@ -223,22 +226,26 @@ function TypeValue({
   compact?: boolean;
   type: string;
 }) {
-  if (compact && isLongType(type)) {
+  const displayType = formatApiTypeForDisplay(type);
+
+  if (compact && isLongType(displayType)) {
     return (
       <details className={styles.typeDetails}>
         <summary>
           <code className={`${styles.type} ${styles.typePreview}`}>
-            {shortenType(type)}
+            {getApiTypePreview(type)}
           </code>
           <span>Full type</span>
         </summary>
 
-        <code className={styles.type}>{renderWrappableType(type)}</code>
+        <code className={styles.type}>{renderWrappableType(displayType)}</code>
       </details>
     );
   }
 
-  return <code className={styles.type}>{renderWrappableType(type)}</code>;
+  return (
+    <code className={styles.type}>{renderWrappableType(displayType)}</code>
+  );
 }
 
 function InheritedDescription({ description }: { description: string }) {
@@ -277,14 +284,6 @@ function isLongType(type: string) {
     type.includes('=>') ||
     type.split('|').length > 3
   );
-}
-
-function shortenType(type: string) {
-  if (type.length <= compactTypePreviewLength) {
-    return type;
-  }
-
-  return `${type.slice(0, compactTypePreviewLength - 1).trim()}...`;
 }
 
 function hasUsefulInheritedDescription(description: string) {

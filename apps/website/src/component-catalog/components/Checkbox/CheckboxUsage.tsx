@@ -26,9 +26,10 @@ function createCheckboxCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = platform === 'react' ? [] : [];
+  const props: string[] =
+    platform === 'react' ? [`label='Accept terms'`] : [`label='Accept terms'`];
 
-  const children = platform === 'react' ? '' : '';
+  const children = platform === 'react' ? `` : ``;
 
   if (value.checked) {
     props.push('checked');
@@ -58,7 +59,7 @@ function createCheckboxCode(
     props.push(`color='${value.color}'`);
   }
 
-  if (value.labelPosition !== 'start') {
+  if (value.labelPosition !== 'end') {
     props.push(`labelPosition='${value.labelPosition}'`);
   }
 
@@ -66,13 +67,13 @@ function createCheckboxCode(
 
   if (!children) {
     return `import { Checkbox } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Checkbox${propsText}/>`;
   }
 
   return `import { Checkbox } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Checkbox${propsText}>
 ${children}

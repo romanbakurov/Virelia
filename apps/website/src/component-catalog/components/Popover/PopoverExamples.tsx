@@ -5,6 +5,7 @@
 
 import { Popover as ReactPopover } from '@vellira-ui/react';
 import { Popover as NativePopover } from '@vellira-ui/react-native';
+import { Button as ReactButton } from '@vellira-ui/react';
 import { Button as NativeButton } from '@vellira-ui/react-native';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
@@ -21,8 +22,11 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
       description: 'Floating contextual content.',
       preview: (
         <ReactPopover>
-          <ReactPopover.Trigger>Open popover</ReactPopover.Trigger>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
           <ReactPopover.Content>
+            <ReactPopover.Arrow />
             <ReactPopover.Title>Details</ReactPopover.Title>
             <ReactPopover.Description>
               Contextual information for this control.
@@ -30,15 +34,30 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </ReactPopover.Content>
         </ReactPopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react';\n\n<Popover>\n  <Popover.Trigger>Open popover</Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
     {
-      title: 'Top aligned',
-      description: 'Alternative content placement.',
+      title: 'Placement',
+      description: 'Positions content relative to the trigger.',
       preview: (
-        <ReactPopover side='top' align='start'>
-          <ReactPopover.Trigger>Open popover</ReactPopover.Trigger>
+        <ReactPopover side='top' align='start' sideOffset={12}>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
           <ReactPopover.Content>
+            <ReactPopover.Arrow />
             <ReactPopover.Title>Details</ReactPopover.Title>
             <ReactPopover.Description>
               Contextual information for this control.
@@ -46,15 +65,67 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </ReactPopover.Content>
         </ReactPopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react';\n\n<Popover\n  side='top'\n  align='start'\n>\n  <Popover.Trigger>Open popover</Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover
+  side='top'
+  align='start'
+  sideOffset={12}
+>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Open change handler',
+      description: 'Observes popover visibility from application state.',
+      preview: (
+        <ReactPopover onOpenChange={() => {}}>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
+          <ReactPopover.Content>
+            <ReactPopover.Arrow />
+            <ReactPopover.Title>Details</ReactPopover.Title>
+            <ReactPopover.Description>
+              Contextual information for this control.
+            </ReactPopover.Description>
+          </ReactPopover.Content>
+        </ReactPopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover
+  onOpenChange={() => {}}
+>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
     {
       title: 'Modal',
       description: 'Modal interaction semantics.',
       preview: (
         <ReactPopover modal>
-          <ReactPopover.Trigger>Open popover</ReactPopover.Trigger>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
           <ReactPopover.Content>
+            <ReactPopover.Arrow />
             <ReactPopover.Title>Details</ReactPopover.Title>
             <ReactPopover.Description>
               Contextual information for this control.
@@ -62,7 +133,95 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </ReactPopover.Content>
         </ReactPopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react';\n\n<Popover\n  modal\n>\n  <Popover.Trigger>Open popover</Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover
+  modal
+>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Arrow and close action',
+      description:
+        'Adds an arrow and an explicit close control inside the popover.',
+      preview: (
+        <ReactPopover>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
+          <ReactPopover.Content>
+            <ReactPopover.Arrow />
+            <ReactPopover.Title>Details</ReactPopover.Title>
+            <ReactPopover.Description>
+              Contextual information for this control.
+            </ReactPopover.Description>
+            <ReactPopover.Close asChild>
+              <ReactButton appearance='outline'>Close</ReactButton>
+            </ReactPopover.Close>
+          </ReactPopover.Content>
+        </ReactPopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+    <Popover.Close asChild>
+      <ReactButton appearance='outline'>Close</ReactButton>
+    </Popover.Close>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Separate anchor',
+      description:
+        'Positions content from an anchor while using a separate trigger.',
+      preview: (
+        <ReactPopover>
+          <ReactPopover.Anchor>
+            <span>Anchor point</span>
+          </ReactPopover.Anchor>
+          <ReactPopover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </ReactPopover.Trigger>
+          <ReactPopover.Content>
+            <ReactPopover.Title>Details</ReactPopover.Title>
+            <ReactPopover.Description>
+              Anchored contextual information.
+            </ReactPopover.Description>
+          </ReactPopover.Content>
+        </ReactPopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Popover>
+  <Popover.Anchor>
+    <span>Anchor point</span>
+  </Popover.Anchor>
+  <Popover.Trigger asChild>
+    <ReactButton>Open popover</ReactButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Anchored contextual information.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
   ] as const;
 
@@ -76,6 +235,7 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
             <NativeButton>Open popover</NativeButton>
           </NativePopover.Trigger>
           <NativePopover.Content>
+            <NativePopover.Arrow />
             <NativePopover.Title>Details</NativePopover.Title>
             <NativePopover.Description>
               Contextual information for this control.
@@ -83,17 +243,30 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </NativePopover.Content>
         </NativePopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react-native';\nimport { Button as NativeButton } from '@vellira-ui/react-native';\n\n<Popover>\n  <Popover.Trigger asChild>\n    <NativeButton>Open popover</NativeButton>\n  </Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
     {
-      title: 'Top aligned',
-      description: 'Alternative content placement.',
+      title: 'Placement',
+      description: 'Positions content relative to the trigger.',
       preview: (
-        <NativePopover side='top' align='start'>
+        <NativePopover side='top' align='start' sideOffset={12}>
           <NativePopover.Trigger asChild>
             <NativeButton>Open popover</NativeButton>
           </NativePopover.Trigger>
           <NativePopover.Content>
+            <NativePopover.Arrow />
             <NativePopover.Title>Details</NativePopover.Title>
             <NativePopover.Description>
               Contextual information for this control.
@@ -101,7 +274,56 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </NativePopover.Content>
         </NativePopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react-native';\nimport { Button as NativeButton } from '@vellira-ui/react-native';\n\n<Popover\n  side='top'\n  align='start'\n>\n  <Popover.Trigger asChild>\n    <NativeButton>Open popover</NativeButton>\n  </Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover
+  side='top'
+  align='start'
+  sideOffset={12}
+>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Open change handler',
+      description: 'Observes popover visibility from application state.',
+      preview: (
+        <NativePopover onOpenChange={() => {}}>
+          <NativePopover.Trigger asChild>
+            <NativeButton>Open popover</NativeButton>
+          </NativePopover.Trigger>
+          <NativePopover.Content>
+            <NativePopover.Arrow />
+            <NativePopover.Title>Details</NativePopover.Title>
+            <NativePopover.Description>
+              Contextual information for this control.
+            </NativePopover.Description>
+          </NativePopover.Content>
+        </NativePopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover
+  onOpenChange={() => {}}
+>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
     {
       title: 'Modal',
@@ -112,6 +334,7 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
             <NativeButton>Open popover</NativeButton>
           </NativePopover.Trigger>
           <NativePopover.Content>
+            <NativePopover.Arrow />
             <NativePopover.Title>Details</NativePopover.Title>
             <NativePopover.Description>
               Contextual information for this control.
@@ -119,7 +342,95 @@ export function PopoverExamples({ platform }: PopoverExamplesProps) {
           </NativePopover.Content>
         </NativePopover>
       ),
-      code: "import { Popover } from '@vellira-ui/react-native';\nimport { Button as NativeButton } from '@vellira-ui/react-native';\n\n<Popover\n  modal\n>\n  <Popover.Trigger asChild>\n    <NativeButton>Open popover</NativeButton>\n  </Popover.Trigger>\n  <Popover.Content>\n    <Popover.Title>Details</Popover.Title>\n    <Popover.Description>Contextual information for this control.</Popover.Description>\n  </Popover.Content>\n</Popover>",
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover
+  modal
+>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Arrow and close action',
+      description:
+        'Adds an arrow and an explicit close control inside the popover.',
+      preview: (
+        <NativePopover>
+          <NativePopover.Trigger asChild>
+            <NativeButton>Open popover</NativeButton>
+          </NativePopover.Trigger>
+          <NativePopover.Content>
+            <NativePopover.Arrow />
+            <NativePopover.Title>Details</NativePopover.Title>
+            <NativePopover.Description>
+              Contextual information for this control.
+            </NativePopover.Description>
+            <NativePopover.Close asChild>
+              <NativeButton>Close</NativeButton>
+            </NativePopover.Close>
+          </NativePopover.Content>
+        </NativePopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Arrow />
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Contextual information for this control.</Popover.Description>
+    <Popover.Close asChild>
+      <NativeButton>Close</NativeButton>
+    </Popover.Close>
+  </Popover.Content>
+</Popover>`,
+    },
+    {
+      title: 'Separate anchor',
+      description:
+        'Positions content from an anchor while using a separate trigger.',
+      preview: (
+        <NativePopover>
+          <NativePopover.Anchor asChild>
+            <NativeButton>Anchor point</NativeButton>
+          </NativePopover.Anchor>
+          <NativePopover.Trigger asChild>
+            <NativeButton>Open popover</NativeButton>
+          </NativePopover.Trigger>
+          <NativePopover.Content>
+            <NativePopover.Title>Details</NativePopover.Title>
+            <NativePopover.Description>
+              Anchored contextual information.
+            </NativePopover.Description>
+          </NativePopover.Content>
+        </NativePopover>
+      ),
+      code: `import { Popover } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Popover>
+  <Popover.Anchor asChild>
+    <NativeButton>Anchor point</NativeButton>
+  </Popover.Anchor>
+  <Popover.Trigger asChild>
+    <NativeButton>Open popover</NativeButton>
+  </Popover.Trigger>
+  <Popover.Content>
+    <Popover.Title>Details</Popover.Title>
+    <Popover.Description>Anchored contextual information.</Popover.Description>
+  </Popover.Content>
+</Popover>`,
     },
   ] as const;
 

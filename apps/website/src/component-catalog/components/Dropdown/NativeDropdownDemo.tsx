@@ -5,6 +5,8 @@
 
 import { useWindowDimensions } from 'react-native';
 import { Dropdown } from '@vellira-ui/react-native';
+import { ChevronDown } from '@vellira-ui/icons';
+import { Button as NativeButton } from '@vellira-ui/react-native';
 
 import { DropdownPlayground } from './DropdownPlayground';
 
@@ -29,7 +31,16 @@ export function NativeDropdownDemo() {
           searchValue={value.searchValue || undefined}
           searchPlaceholder={value.searchPlaceholder || undefined}
         >
-          <Dropdown.Trigger>Actions</Dropdown.Trigger>
+          <Dropdown.Trigger asChild>
+            <NativeButton
+              appearance='outline'
+              color='neutral'
+              iconEnd={<ChevronDown />}
+              size={value.size}
+            >
+              Actions
+            </NativeButton>
+          </Dropdown.Trigger>
           <Dropdown.Content>
             <Dropdown.Item value='profile'>Profile</Dropdown.Item>
             <Dropdown.Item value='settings'>Settings</Dropdown.Item>

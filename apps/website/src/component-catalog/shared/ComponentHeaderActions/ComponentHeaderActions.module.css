@@ -1,4 +1,6 @@
 .root {
+  position: relative;
+  z-index: calc(var(--z-index-toast, 1100) + 100);
   display: flex;
   gap: var(--space-4);
   align-items: center;

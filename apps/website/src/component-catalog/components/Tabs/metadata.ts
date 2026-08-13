@@ -5,6 +5,7 @@ export default defineComponentPageMetadata({
     children: `<Tabs.List>
   <Tabs.Trigger value='account'>Account</Tabs.Trigger>
   <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+  <Tabs.Indicator />
 </Tabs.List>
 <Tabs.Content value='account'>Account settings</Tabs.Content>
 <Tabs.Content value='billing'>Billing details</Tabs.Content>`,
@@ -13,6 +14,7 @@ export default defineComponentPageMetadata({
     children: `<Tabs.List>
   <Tabs.Trigger value='account'>Account</Tabs.Trigger>
   <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+  <Tabs.Indicator />
 </Tabs.List>
 <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
 <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>`,
@@ -63,6 +65,7 @@ export default defineComponentPageMetadata({
     sections: [
       { name: 'Tabs.List', exportName: 'TabsListProps' },
       { name: 'Tabs.Trigger', exportName: 'TabsTriggerProps' },
+      { name: 'Tabs.Indicator', exportName: 'TabsIndicatorProps' },
       { name: 'Tabs.Content', exportName: 'TabsContentProps' },
     ],
   },

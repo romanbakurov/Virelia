@@ -99,6 +99,9 @@ describe('Native RadioGroup', () => {
       'Choose one plan. Required. Plan is required.'
     );
     expect(group?.getAttribute('aria-disabled')).toBe('true');
+    expect(group?.textContent).toContain('Plan');
+    expect(group?.textContent).toContain('Choose one plan.');
+    expect((group as HTMLElement | null)?.style.alignSelf).toBe('auto');
     expect(radios[0].getAttribute('aria-disabled')).toBe('true');
     expect(radios[0].getAttribute('aria-description')).toBe('Required.');
     expect(radios[0].textContent).toContain('Starter');
@@ -183,13 +186,18 @@ describe('Native RadioGroup', () => {
     const theme = nativeThemes.dark;
     const { container, unmount } = render(
       <ThemeProvider defaultTheme='dark'>
-        <RadioGroup label='Plan' size='lg' orientation='horizontal'>
+        <RadioGroup
+          label='Plan'
+          size='lg'
+          orientation='horizontal'
+          testID='items'
+        >
           <PlanRadios />
         </RadioGroup>
       </ThemeProvider>
     );
 
-    const group = container.querySelector<HTMLElement>('[role="radiogroup"]');
+    const items = container.querySelector<HTMLElement>('[data-testid="items"]');
     const control = Array.from(
       container.querySelectorAll<HTMLElement>('div')
     ).find(
@@ -200,10 +208,10 @@ describe('Native RadioGroup', () => {
           `${theme.components.radio.size.lg.controlSize}px`
     );
 
-    expect(group?.style.columnGap).toBe(
+    expect(items?.style.columnGap).toBe(
       `${theme.components.radioGroup.size.lg.horizontalGap}px`
     );
-    expect(group?.style.rowGap).toBe(
+    expect(items?.style.rowGap).toBe(
       `${theme.components.radioGroup.size.lg.itemGap}px`
     );
     expect(control).not.toBeUndefined();

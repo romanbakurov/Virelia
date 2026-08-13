@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import type { ComponentCatalogEntry, ComponentPlatform } from '../../types';
 import { ComponentHeader } from '../ComponentHeader';
@@ -80,6 +80,10 @@ export function ComponentPlatformView({
     : null;
 
   const relatedSlugs = page?.related ?? [];
+  const transientStateKeys = useMemo(
+    () => ['open', 'defaultOpen', 'expanded', 'defaultExpanded'],
+    []
+  );
 
   const relatedComponents: ComponentCatalogEntry[] = [];
 
@@ -99,13 +103,20 @@ export function ComponentPlatformView({
         onPlatformChange={setPlatform}
       />
 
-      <ComponentDemoStateProvider key={component.slug}>
-        {Demo ? <Demo /> : null}
+      <ComponentDemoStateProvider
+        resetKey={`${component.slug}:${platform}`}
+        transientStateKeys={transientStateKeys}
+      >
+        <Fragment key={`${component.slug}:${platform}:demo`}>
+          {Demo ? <Demo /> : null}
+        </Fragment>
 
         {page && (
           <>
             <page.Usage platform={platform} />
-            <page.Examples platform={platform} />
+            <Fragment key={`${component.slug}:${platform}:examples`}>
+              <page.Examples platform={platform} />
+            </Fragment>
 
             <ComponentApi
               description={`Props available for the ${

@@ -1,7 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { escapeRegExp } from '../helpers/format';
+import {
+  escapeRegExp,
+  identifierFromSlug,
+  objectPropertyKey,
+} from '../helpers/format';
 import type { GeneratedPageModel } from '../model/types';
 
 export function insertAfterMarker(params: {
@@ -30,15 +34,19 @@ export function insertAfterMarker(params: {
   const originalSource = fs.readFileSync(filePath, 'utf8');
   const source = originalSource;
 
-  if (source.includes(existsCheck)) {
+  const entryPattern = new RegExp(
+    `\\n\\s*(?:${escapeRegExp(slug)}|${escapeRegExp(
+      `'${slug}'`
+    )}|${escapeRegExp(`"${slug}"`)}): \\{`
+  );
+
+  if (source.includes(existsCheck) || entryPattern.test(source)) {
     if (!force) {
       console.log(`⏭ Skipped registry update: ${existsCheck}`);
       return;
     }
 
-    const entryStartMatch = source.match(
-      new RegExp(`\\n\\s*${escapeRegExp(slug)}: \\{`)
-    );
+    const entryStartMatch = source.match(entryPattern);
     const entryStart =
       entryStartMatch?.index !== undefined ? entryStartMatch.index + 1 : -1;
 
@@ -49,7 +57,7 @@ export function insertAfterMarker(params: {
 
     const nextEntryMatch = source
       .slice(entryStart + 1)
-      .match(/\n {2}[a-z0-9-]+: \{/);
+      .match(/\n {2}(?:[A-Za-z_$][\w$]*|'[^']+'|"[^"]+"): \{/);
 
     const registryEndMatch = source
       .slice(entryStart)
@@ -160,6 +168,7 @@ export function insertMissingLinesAfterMarker(params: {
 }
 
 export function renderPageConfigSnippet(model: GeneratedPageModel) {
+  const slugIdentifier = identifierFromSlug(model.slug);
   const demoEntries = [
     model.platforms.includes('react')
       ? `      react: ${model.componentName}Demo,`
@@ -172,7 +181,7 @@ export function renderPageConfigSnippet(model: GeneratedPageModel) {
     .join('\n');
 
   return `
-  ${model.slug}: {
+  ${objectPropertyKey(model.slug)}: {
     name: '${model.componentName}',
     demos: {
 ${demoEntries}
@@ -180,7 +189,7 @@ ${demoEntries}
     Usage: ${model.componentName}Usage,
     Examples: ${model.componentName}Examples,
     Accessibility: ${model.componentName}Accessibility,
-    api: ${model.slug}Api,
+    api: ${slugIdentifier}Api,
     related: ${
       model.related.length > 0
         ? `[${model.related.map((item) => `'${item}'`).join(', ')}]`
@@ -241,7 +250,7 @@ export function updateComponentRegistry(params: {
     model.platforms.includes('react-native')
       ? `Native${model.componentName}Demo`
       : null,
-    `${model.slug}Api`,
+    `${identifierFromSlug(model.slug)}Api`,
   ].filter((name): name is string => Boolean(name));
 
   const registryImports = [
@@ -268,7 +277,7 @@ ${registryImportNames.map((name) => `  ${name},`).join('\n')}
     filePath: componentPagesFile,
     marker: '// component-page-entries',
     content: renderPageConfigSnippet(model).trimEnd().replace(/^\n/, ''),
-    existsCheck: `${model.slug}: {`,
+    existsCheck: `${objectPropertyKey(model.slug)}: {`,
     slug: model.slug,
   });
 }

@@ -4,6 +4,10 @@
 'use client';
 
 import { Modal } from '@vellira-ui/react';
+import {
+  Button as ReactButton,
+  Portal as ReactPortal,
+} from '@vellira-ui/react';
 
 import { ModalPlayground } from './ModalPlayground';
 
@@ -20,20 +24,32 @@ export function ModalDemo() {
           easing={value.easing}
           restoreFocus={value.restoreFocus}
         >
-          <Modal.Trigger>Open modal</Modal.Trigger>
-          <Modal.Overlay />
-          <Modal.Content>
-            <Modal.Header>
-              <Modal.Title>Confirm action</Modal.Title>
-              <Modal.Description>
-                This action can be reviewed before continuing.
-              </Modal.Description>
-            </Modal.Header>
-            <Modal.Body>Modal body content.</Modal.Body>
-            <Modal.Footer>
-              <Modal.Close aria-label='Cancel' />
-            </Modal.Footer>
-          </Modal.Content>
+          <Modal.Trigger asChild>
+            <ReactButton>Open modal</ReactButton>
+          </Modal.Trigger>
+          <ReactPortal>
+            <Modal.Overlay />
+            <Modal.Content>
+              <Modal.Header>
+                <div>
+                  <Modal.Title>Delete file</Modal.Title>
+                  <Modal.Description>
+                    This action cannot be undone.
+                  </Modal.Description>
+                </div>
+                <Modal.Close />
+              </Modal.Header>
+              <Modal.Body>Are you sure you want to continue?</Modal.Body>
+              <Modal.Footer>
+                <Modal.Close asChild>
+                  <ReactButton color='neutral' appearance='ghost'>
+                    Cancel
+                  </ReactButton>
+                </Modal.Close>
+                <ReactButton color='danger'>Delete</ReactButton>
+              </Modal.Footer>
+            </Modal.Content>
+          </ReactPortal>
         </Modal>
       )}
     />

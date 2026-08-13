@@ -5,6 +5,8 @@
 
 import { Tooltip as ReactTooltip } from '@vellira-ui/react';
 import { Tooltip as NativeTooltip } from '@vellira-ui/react-native';
+import { Button as ReactButton } from '@vellira-ui/react';
+import { Text as NativeText, View as NativeView } from 'react-native';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -20,33 +22,94 @@ export function TooltipExamples({ platform }: TooltipExamplesProps) {
       description: 'Contextual label for a trigger.',
       preview: (
         <ReactTooltip>
-          <ReactTooltip.Trigger>Hover for details</ReactTooltip.Trigger>
-          <ReactTooltip.Content>Helpful contextual label.</ReactTooltip.Content>
+          <ReactTooltip.Trigger asChild>
+            <ReactButton>Hover for details</ReactButton>
+          </ReactTooltip.Trigger>
+          <ReactTooltip.Content withArrow>
+            Helpful contextual label.
+          </ReactTooltip.Content>
         </ReactTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react';\n\n<Tooltip>\n  <Tooltip.Trigger>Hover for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Tooltip>
+  <Tooltip.Trigger asChild>
+    <ReactButton>Hover for details</ReactButton>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
     },
     {
       title: 'Placement',
       description: 'Alternative tooltip placement.',
       preview: (
         <ReactTooltip placement='bottom'>
-          <ReactTooltip.Trigger>Hover for details</ReactTooltip.Trigger>
-          <ReactTooltip.Content>Helpful contextual label.</ReactTooltip.Content>
+          <ReactTooltip.Trigger asChild>
+            <ReactButton>Hover for details</ReactButton>
+          </ReactTooltip.Trigger>
+          <ReactTooltip.Content withArrow>
+            Helpful contextual label.
+          </ReactTooltip.Content>
         </ReactTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react';\n\n<Tooltip\n  placement='bottom'\n>\n  <Tooltip.Trigger>Hover for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Tooltip
+  placement='bottom'
+>
+  <Tooltip.Trigger asChild>
+    <ReactButton>Hover for details</ReactButton>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled tooltip behavior.',
       preview: (
         <ReactTooltip disabled>
-          <ReactTooltip.Trigger>Hover for details</ReactTooltip.Trigger>
-          <ReactTooltip.Content>Helpful contextual label.</ReactTooltip.Content>
+          <ReactTooltip.Trigger asChild>
+            <ReactButton>Hover for details</ReactButton>
+          </ReactTooltip.Trigger>
+          <ReactTooltip.Content withArrow>
+            Helpful contextual label.
+          </ReactTooltip.Content>
         </ReactTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react';\n\n<Tooltip\n  disabled\n>\n  <Tooltip.Trigger>Hover for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Tooltip
+  disabled
+>
+  <Tooltip.Trigger asChild>
+    <ReactButton>Hover for details</ReactButton>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
+    },
+    {
+      title: 'Without arrow',
+      description: 'Omits the arrow when a simpler bubble is preferred.',
+      preview: (
+        <ReactTooltip>
+          <ReactTooltip.Trigger asChild>
+            <ReactButton>No arrow</ReactButton>
+          </ReactTooltip.Trigger>
+          <ReactTooltip.Content>Tooltip without arrow</ReactTooltip.Content>
+        </ReactTooltip>
+      ),
+      code: `import { Tooltip } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
+
+<Tooltip>
+  <Tooltip.Trigger asChild>
+    <ReactButton>No arrow</ReactButton>
+  </Tooltip.Trigger>
+  <Tooltip.Content>Tooltip without arrow</Tooltip.Content>
+</Tooltip>`,
     },
   ] as const;
 
@@ -56,39 +119,158 @@ export function TooltipExamples({ platform }: TooltipExamplesProps) {
       description: 'Contextual label for a trigger.',
       preview: (
         <NativeTooltip>
-          <NativeTooltip.Trigger>Press for details</NativeTooltip.Trigger>
-          <NativeTooltip.Content>
+          <NativeTooltip.Trigger>
+            <NativeView
+              style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: '#eee',
+              }}
+            >
+              <NativeText>Press and hold</NativeText>
+            </NativeView>
+          </NativeTooltip.Trigger>
+          <NativeTooltip.Content withArrow>
             Helpful contextual label.
           </NativeTooltip.Content>
         </NativeTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react-native';\n\n<Tooltip>\n  <Tooltip.Trigger>Press for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react-native';
+import { Text as NativeText, View as NativeView } from 'react-native';
+
+<Tooltip>
+  <Tooltip.Trigger>
+    <NativeView
+      style={{
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: '#eee',
+      }}
+    >
+      <NativeText>Press and hold</NativeText>
+    </NativeView>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
     },
     {
       title: 'Placement',
       description: 'Alternative tooltip placement.',
       preview: (
         <NativeTooltip placement='bottom'>
-          <NativeTooltip.Trigger>Press for details</NativeTooltip.Trigger>
-          <NativeTooltip.Content>
+          <NativeTooltip.Trigger>
+            <NativeView
+              style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: '#eee',
+              }}
+            >
+              <NativeText>Press and hold</NativeText>
+            </NativeView>
+          </NativeTooltip.Trigger>
+          <NativeTooltip.Content withArrow>
             Helpful contextual label.
           </NativeTooltip.Content>
         </NativeTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react-native';\n\n<Tooltip\n  placement='bottom'\n>\n  <Tooltip.Trigger>Press for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react-native';
+import { Text as NativeText, View as NativeView } from 'react-native';
+
+<Tooltip
+  placement='bottom'
+>
+  <Tooltip.Trigger>
+    <NativeView
+      style={{
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: '#eee',
+      }}
+    >
+      <NativeText>Press and hold</NativeText>
+    </NativeView>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled tooltip behavior.',
       preview: (
         <NativeTooltip disabled>
-          <NativeTooltip.Trigger>Press for details</NativeTooltip.Trigger>
-          <NativeTooltip.Content>
+          <NativeTooltip.Trigger>
+            <NativeView
+              style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: '#eee',
+              }}
+            >
+              <NativeText>Press and hold</NativeText>
+            </NativeView>
+          </NativeTooltip.Trigger>
+          <NativeTooltip.Content withArrow>
             Helpful contextual label.
           </NativeTooltip.Content>
         </NativeTooltip>
       ),
-      code: "import { Tooltip } from '@vellira-ui/react-native';\n\n<Tooltip\n  disabled\n>\n  <Tooltip.Trigger>Press for details</Tooltip.Trigger>\n  <Tooltip.Content>Helpful contextual label.</Tooltip.Content>\n</Tooltip>",
+      code: `import { Tooltip } from '@vellira-ui/react-native';
+import { Text as NativeText, View as NativeView } from 'react-native';
+
+<Tooltip
+  disabled
+>
+  <Tooltip.Trigger>
+    <NativeView
+      style={{
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: '#eee',
+      }}
+    >
+      <NativeText>Press and hold</NativeText>
+    </NativeView>
+  </Tooltip.Trigger>
+  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+</Tooltip>`,
+    },
+    {
+      title: 'Without arrow',
+      description: 'Omits the arrow when a simpler bubble is preferred.',
+      preview: (
+        <NativeTooltip>
+          <NativeTooltip.Trigger>
+            <NativeView
+              style={{
+                padding: 12,
+                borderRadius: 8,
+                backgroundColor: '#eee',
+              }}
+            >
+              <NativeText>No arrow</NativeText>
+            </NativeView>
+          </NativeTooltip.Trigger>
+          <NativeTooltip.Content>Tooltip without arrow</NativeTooltip.Content>
+        </NativeTooltip>
+      ),
+      code: `import { Tooltip } from '@vellira-ui/react-native';
+import { Text as NativeText, View as NativeView } from 'react-native';
+
+<Tooltip>
+  <Tooltip.Trigger>
+    <NativeView
+      style={{
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: '#eee',
+      }}
+    >
+      <NativeText>No arrow</NativeText>
+    </NativeView>
+  </Tooltip.Trigger>
+  <Tooltip.Content>Tooltip without arrow</Tooltip.Content>
+</Tooltip>`,
     },
   ] as const;
 

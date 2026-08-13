@@ -26,9 +26,12 @@ function createButtonCode(
   const packageName =
     platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-  const props: string[] = platform === 'react' ? [] : [];
+  const props: string[] =
+    platform === 'react'
+      ? [`iconStart={<Plus />}`, `aria-label='Add item'`]
+      : [`iconStart={<Plus />}`, `accessibilityLabel='Add item'`];
 
-  const children = platform === 'react' ? '  Button' : '  Button';
+  const children = platform === 'react' ? `  Add item` : `  Add item`;
 
   if (value.color !== 'primary') {
     props.push(`color='${value.color}'`);
@@ -70,13 +73,25 @@ function createButtonCode(
 
   if (!children) {
     return `import { Button } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Plus } from '@vellira-ui/icons';`
+    : `
+import { Plus } from '@vellira-ui/icons';`
+}
 
 <Button${propsText}/>`;
   }
 
   return `import { Button } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${
+  platform === 'react'
+    ? `
+import { Plus } from '@vellira-ui/icons';`
+    : `
+import { Plus } from '@vellira-ui/icons';`
+}
 
 <Button${propsText}>
 ${children}

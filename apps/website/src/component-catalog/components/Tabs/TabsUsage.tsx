@@ -30,8 +30,20 @@ function createTabsCode(
 
   const children =
     platform === 'react'
-      ? "  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'>Account settings</Tabs.Content>\n  <Tabs.Content value='billing'>Billing details</Tabs.Content>"
-      : "  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>\n  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>";
+      ? `  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'>Account settings</Tabs.Content>
+  <Tabs.Content value='billing'>Billing details</Tabs.Content>`
+      : `  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
+  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>`;
 
   if (value.value) {
     props.push(`value='${value.value}'`);
@@ -81,13 +93,23 @@ function createTabsCode(
 
   if (!children) {
     return `import { Tabs } from '${packageName}';
-${platform === 'react' ? '' : "\nimport { Text as NativeText } from 'react-native';"}
+${
+  platform === 'react'
+    ? ``
+    : `
+import { Text as NativeText } from 'react-native';`
+}
 
 <Tabs${propsText}/>`;
   }
 
   return `import { Tabs } from '${packageName}';
-${platform === 'react' ? '' : "\nimport { Text as NativeText } from 'react-native';"}
+${
+  platform === 'react'
+    ? ``
+    : `
+import { Text as NativeText } from 'react-native';`
+}
 
 <Tabs${propsText}>
 ${children}

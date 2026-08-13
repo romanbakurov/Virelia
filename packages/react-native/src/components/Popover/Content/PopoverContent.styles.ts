@@ -1,10 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
 export const styles = StyleSheet.create({
   root: {
     flex: 1,
+    ...(Platform.OS === 'web'
+      ? {
+          pointerEvents: 'box-none',
+        }
+      : {}),
   },
 
   backdrop: StyleSheet.absoluteFill,
@@ -30,14 +35,20 @@ export function createPopoverContentStyles(theme: NativeTheme) {
       borderWidth: tokens.borderWidth,
       borderRadius: tokens.radius,
 
-      shadowColor: shadow.color,
-      shadowOpacity: shadow.opacity,
-      shadowRadius: shadow.blur,
-      shadowOffset: {
-        width: shadow.x,
-        height: shadow.y,
-      },
-      elevation: shadow.elevation,
+      ...(Platform.OS === 'web'
+        ? {
+            boxShadow: tokens.shadow.web,
+          }
+        : {
+            shadowColor: shadow.color,
+            shadowOpacity: shadow.opacity,
+            shadowRadius: shadow.blur,
+            shadowOffset: {
+              width: shadow.x,
+              height: shadow.y,
+            },
+            elevation: shadow.elevation,
+          }),
     },
   });
 }

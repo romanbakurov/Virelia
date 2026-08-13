@@ -4,6 +4,7 @@
 'use client';
 
 import { Tooltip } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
 
 import { TooltipPlayground } from './TooltipPlayground';
 
@@ -12,8 +13,10 @@ export function TooltipDemo() {
     <TooltipPlayground
       renderTooltip={(value) => (
         <Tooltip placement={value.placement} disabled={value.disabled}>
-          <Tooltip.Trigger>Hover for details</Tooltip.Trigger>
-          <Tooltip.Content>Helpful contextual label.</Tooltip.Content>
+          <Tooltip.Trigger asChild>
+            <ReactButton>Hover for details</ReactButton>
+          </Tooltip.Trigger>
+          <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
         </Tooltip>
       )}
     />

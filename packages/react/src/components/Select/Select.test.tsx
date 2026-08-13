@@ -1318,6 +1318,27 @@ describe('Select', () => {
     });
   });
 
+  it('applies Select size to its generated FormField wrapper', () => {
+    const form = document.createElement('form');
+    document.body.append(form);
+
+    const root = createRoot(form);
+
+    act(() => {
+      root.render(<Select id='country' label='Country' size='lg' />);
+    });
+
+    const field = form.firstElementChild;
+    const trigger = form.querySelector<HTMLButtonElement>('[role="combobox"]');
+
+    expect(field?.getAttribute('data-size')).toBe('lg');
+    expect(trigger?.className).toContain('lg');
+
+    act(() => {
+      root.unmount();
+    });
+  });
+
   it('supports clearable, searchable, loading, and rich option content', async () => {
     const onValueChange = vi.fn();
     const onSearch = vi.fn();

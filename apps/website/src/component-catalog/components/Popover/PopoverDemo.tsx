@@ -4,6 +4,7 @@
 'use client';
 
 import { Popover } from '@vellira-ui/react';
+import { Button as ReactButton } from '@vellira-ui/react';
 
 import { PopoverPlayground } from './PopoverPlayground';
 
@@ -16,8 +17,11 @@ export function PopoverDemo() {
           onOpenChange={(nextValue) => onChange('open', nextValue)}
           modal={value.modal}
         >
-          <Popover.Trigger>Open popover</Popover.Trigger>
+          <Popover.Trigger asChild>
+            <ReactButton>Open popover</ReactButton>
+          </Popover.Trigger>
           <Popover.Content>
+            <Popover.Arrow />
             <Popover.Title>Details</Popover.Title>
             <Popover.Description>
               Contextual information for this control.

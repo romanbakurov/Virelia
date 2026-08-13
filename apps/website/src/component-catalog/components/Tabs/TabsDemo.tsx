@@ -28,6 +28,7 @@ export function TabsDemo() {
           <Tabs.List>
             <Tabs.Trigger value='account'>Account</Tabs.Trigger>
             <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+            <Tabs.Indicator />
           </Tabs.List>
           <Tabs.Content value='account'>Account settings</Tabs.Content>
           <Tabs.Content value='billing'>Billing details</Tabs.Content>

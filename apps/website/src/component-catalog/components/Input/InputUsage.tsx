@@ -28,10 +28,10 @@ function createInputCode(
 
   const props: string[] =
     platform === 'react'
-      ? ["label='Email'", "description='Used for account notifications.'"]
-      : ["label='Email'", "description='Used for account notifications.'"];
+      ? [`label='Email'`, `description='Used for account notifications.'`]
+      : [`label='Email'`, `description='Used for account notifications.'`];
 
-  const children = platform === 'react' ? '' : '';
+  const children = platform === 'react' ? `` : ``;
 
   if (value.label) {
     props.push(`label='${value.label}'`);
@@ -97,13 +97,13 @@ function createInputCode(
 
   if (!children) {
     return `import { Input } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Input${propsText}/>`;
   }
 
   return `import { Input } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Input${propsText}>
 ${children}

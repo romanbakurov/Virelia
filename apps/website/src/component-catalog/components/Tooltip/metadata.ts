@@ -1,13 +1,33 @@
 import { defineComponentPageMetadata } from '../../metadata';
 
+const nativeImports = [
+  `import { Text as NativeText, View as NativeView } from 'react-native';`,
+] as const;
+
+const nativeTriggerChildren = `<Tooltip.Trigger>
+  <NativeView
+    style={{
+      padding: 12,
+      borderRadius: 8,
+      backgroundColor: '#eee',
+    }}
+  >
+    <NativeText>Press and hold</NativeText>
+  </NativeView>
+</Tooltip.Trigger>
+<Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`;
+
 export default defineComponentPageMetadata({
   react: {
-    children: `<Tooltip.Trigger>Hover for details</Tooltip.Trigger>
-<Tooltip.Content>Helpful contextual label.</Tooltip.Content>`,
+    children: `<Tooltip.Trigger asChild>
+  <ReactButton>Hover for details</ReactButton>
+</Tooltip.Trigger>
+<Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`,
+    imports: [`import { Button as ReactButton } from '@vellira-ui/react';`],
   },
   native: {
-    children: `<Tooltip.Trigger>Press for details</Tooltip.Trigger>
-<Tooltip.Content>Helpful contextual label.</Tooltip.Content>`,
+    children: nativeTriggerChildren,
+    imports: nativeImports,
   },
   defaults: {
     shared: {
@@ -20,16 +40,53 @@ export default defineComponentPageMetadata({
       title: 'Basic',
       description: 'Contextual label for a trigger.',
       props: [],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports,
     },
     {
       title: 'Placement',
       description: 'Alternative tooltip placement.',
       props: [`placement='bottom'`],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports,
     },
     {
       title: 'Disabled',
       description: 'Disabled tooltip behavior.',
       props: ['disabled'],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports,
+    },
+    {
+      title: 'Without arrow',
+      description: 'Omits the arrow when a simpler bubble is preferred.',
+      props: [],
+      reactImports: [
+        `import { Button as ReactButton } from '@vellira-ui/react';`,
+      ],
+      nativeImports,
+      reactChildren: `<Tooltip.Trigger asChild>
+  <ReactButton>No arrow</ReactButton>
+</Tooltip.Trigger>
+<Tooltip.Content>Tooltip without arrow</Tooltip.Content>`,
+      nativeChildren: `<Tooltip.Trigger>
+  <NativeView
+    style={{
+      padding: 12,
+      borderRadius: 8,
+      backgroundColor: '#eee',
+    }}
+  >
+    <NativeText>No arrow</NativeText>
+  </NativeView>
+</Tooltip.Trigger>
+<Tooltip.Content>Tooltip without arrow</Tooltip.Content>`,
     },
   ],
   api: {

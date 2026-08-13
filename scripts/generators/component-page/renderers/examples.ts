@@ -1,4 +1,4 @@
-import { toLabel, toTsString } from '../helpers/format';
+import { toLabel, toTemplateLiteral, toTsString } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, GeneratedExample, Platform } from '../model/types';
 import type { ComponentProfile } from '../profiles/profiles';
@@ -122,6 +122,19 @@ export function buildExamples(params: {
   return examples;
 }
 
+function uniqueImports(imports: readonly string[]) {
+  return Array.from(new Set(imports));
+}
+
+function normalizePropFragments(props: readonly string[]) {
+  return props.flatMap((prop) =>
+    prop
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+  );
+}
+
 export function renderExamples(params: {
   componentName: string;
   componentConfig: ComponentPageMetadata;
@@ -141,19 +154,21 @@ export function renderExamples(params: {
     const componentAlias =
       platform === 'react' ? `React${componentName}` : `Native${componentName}`;
 
-    const props = [
-      getDemoProps(platform),
-      componentConfig.demo?.label
-        ? `label=${toTsString(componentConfig.demo.label)}`
-        : '',
-      componentConfig.demo?.description
-        ? `description=${toTsString(componentConfig.demo.description)}`
-        : '',
-      ...example.props,
-      ...(platform === 'react'
-        ? (example.reactProps ?? [])
-        : (example.nativeProps ?? [])),
-    ].filter(Boolean);
+    const props = normalizePropFragments(
+      [
+        getDemoProps(platform),
+        componentConfig.demo?.label
+          ? `label=${toTsString(componentConfig.demo.label)}`
+          : '',
+        componentConfig.demo?.description
+          ? `description=${toTsString(componentConfig.demo.description)}`
+          : '',
+        ...example.props,
+        ...(platform === 'react'
+          ? (example.reactProps ?? [])
+          : (example.nativeProps ?? [])),
+      ].filter(Boolean)
+    );
 
     const exampleChildren =
       platform === 'react'
@@ -187,19 +202,21 @@ ${formattedChildren}
     const packageName =
       platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-    const props = [
-      getDemoProps(platform),
-      componentConfig.demo?.label
-        ? `label=${toTsString(componentConfig.demo.label)}`
-        : '',
-      componentConfig.demo?.description
-        ? `description=${toTsString(componentConfig.demo.description)}`
-        : '',
-      ...example.props,
-      ...(platform === 'react'
-        ? (example.reactProps ?? [])
-        : (example.nativeProps ?? [])),
-    ].filter(Boolean);
+    const props = normalizePropFragments(
+      [
+        getDemoProps(platform),
+        componentConfig.demo?.label
+          ? `label=${toTsString(componentConfig.demo.label)}`
+          : '',
+        componentConfig.demo?.description
+          ? `description=${toTsString(componentConfig.demo.description)}`
+          : '',
+        ...example.props,
+        ...(platform === 'react'
+          ? (example.reactProps ?? [])
+          : (example.nativeProps ?? [])),
+      ].filter(Boolean)
+    );
 
     const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
@@ -209,13 +226,16 @@ ${formattedChildren}
         : (example.nativeChildren ?? componentConfig.native?.children ?? '');
 
     if (!exampleChildren) {
-      const imports = [
+      const imports = uniqueImports([
         `import { ${componentName} } from '${packageName}';`,
+        ...(platform === 'react'
+          ? (componentConfig.react?.imports ?? [])
+          : (componentConfig.native?.imports ?? [])),
         ...(example.imports ?? []),
         ...(platform === 'react'
           ? (example.reactImports ?? [])
           : (example.nativeImports ?? [])),
-      ].join('\n');
+      ]).join('\n');
 
       return `${imports}
 
@@ -227,13 +247,16 @@ ${formattedChildren}
       .map((line) => `  ${line}`)
       .join('\n');
 
-    const imports = [
+    const imports = uniqueImports([
       `import { ${componentName} } from '${packageName}';`,
+      ...(platform === 'react'
+        ? (componentConfig.react?.imports ?? [])
+        : (componentConfig.native?.imports ?? [])),
       ...(example.imports ?? []),
       ...(platform === 'react'
         ? (example.reactImports ?? [])
         : (example.nativeImports ?? [])),
-    ].join('\n');
+    ]).join('\n');
 
     return `${imports}
 
@@ -268,7 +291,7 @@ ${formattedChildren}
       preview: (
         ${createExampleJsx('react', example)}
       ),
-      code: ${JSON.stringify(createExampleCode('react', example))},
+      code: ${toTemplateLiteral(createExampleCode('react', example))},
     },`
     )
     .join('\n');
@@ -281,7 +304,7 @@ ${formattedChildren}
       preview: (
         ${createExampleJsx('react-native', example)}
       ),
-      code: ${JSON.stringify(createExampleCode('react-native', example))},
+      code: ${toTemplateLiteral(createExampleCode('react-native', example))},
     },`
     )
     .join('\n');

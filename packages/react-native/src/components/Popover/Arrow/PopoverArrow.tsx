@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 import { useTheme } from '../../../theme';
 import { usePopoverContext } from '../internal';
@@ -27,7 +27,7 @@ export function PopoverArrow({ style }: PopoverArrowProps) {
   return (
     <View
       accessible={false}
-      pointerEvents='none'
+      pointerEvents={Platform.OS === 'web' ? undefined : 'none'}
       style={[styles.arrow, style]}
     />
   );

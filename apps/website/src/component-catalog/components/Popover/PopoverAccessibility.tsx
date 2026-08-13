@@ -23,7 +23,13 @@ export function PopoverAccessibility({ platform }: PopoverAccessibilityProps) {
       title: 'Dismissal and focus',
       description:
         'Keep focus and dismissal predictable when content contains interactive controls.',
-      props: ['modal', 'side', 'align'],
+      props: ['modal', 'side', 'align', 'onOpenChange'],
+    },
+    {
+      title: 'Explicit close controls',
+      description:
+        'Provide a close action when popover content contains interactive or multi-step content.',
+      props: ['children'],
     },
   ] as const;
 
@@ -39,6 +45,12 @@ export function PopoverAccessibility({ platform }: PopoverAccessibilityProps) {
       description:
         'Choose placement that keeps content near its trigger without obscuring controls.',
       props: ['side', 'align'],
+    },
+    {
+      title: 'Explicit close controls',
+      description:
+        'Use a clearly labelled close action when the popover stays open for task content.',
+      props: ['children'],
     },
   ] as const;
 

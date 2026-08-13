@@ -24,7 +24,12 @@ export function InputExamples({ platform }: InputExamplesProps) {
           description='Used for account notifications.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+/>`,
     },
     {
       title: 'Clearable',
@@ -37,7 +42,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='Acme Inc.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  clearable\n  defaultValue='Acme Inc.'\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  clearable
+  defaultValue='Acme Inc.'
+/>`,
     },
     {
       title: 'Loading',
@@ -50,7 +62,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='Checking...'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  loading\n  defaultValue='Checking...'\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  loading
+  defaultValue='Checking...'
+/>`,
     },
     {
       title: 'Error',
@@ -62,7 +81,13 @@ export function InputExamples({ platform }: InputExamplesProps) {
           error='Enter a valid email.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  error='Enter a valid email.'\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  error='Enter a valid email.'
+/>`,
     },
     {
       title: 'Read only',
@@ -75,7 +100,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='readonly@example.com'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  readOnly\n  defaultValue='readonly@example.com'\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  readOnly
+  defaultValue='readonly@example.com'
+/>`,
     },
     {
       title: 'Password',
@@ -88,7 +120,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           revealPassword
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  type='password'\n  revealPassword\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  type='password'
+  revealPassword
+/>`,
     },
     {
       title: 'Counter',
@@ -101,7 +140,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           maxLength={80}
         />
       ),
-      code: "import { Input } from '@vellira-ui/react';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  showCounter\n  maxLength={80}\n/>",
+      code: `import { Input } from '@vellira-ui/react';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  showCounter
+  maxLength={80}
+/>`,
     },
   ] as const;
 
@@ -115,7 +161,12 @@ export function InputExamples({ platform }: InputExamplesProps) {
           description='Used for account notifications.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+/>`,
     },
     {
       title: 'Clearable',
@@ -128,7 +179,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='Acme Inc.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  clearable\n  defaultValue='Acme Inc.'\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  clearable
+  defaultValue='Acme Inc.'
+/>`,
     },
     {
       title: 'Loading',
@@ -141,7 +199,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='Checking...'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  loading\n  defaultValue='Checking...'\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  loading
+  defaultValue='Checking...'
+/>`,
     },
     {
       title: 'Error',
@@ -153,7 +218,13 @@ export function InputExamples({ platform }: InputExamplesProps) {
           error='Enter a valid email.'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  error='Enter a valid email.'\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  error='Enter a valid email.'
+/>`,
     },
     {
       title: 'Read only',
@@ -166,7 +237,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           defaultValue='readonly@example.com'
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  readOnly\n  defaultValue='readonly@example.com'\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  readOnly
+  defaultValue='readonly@example.com'
+/>`,
     },
     {
       title: 'Password',
@@ -179,7 +257,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           revealPassword
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  type='password'\n  revealPassword\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  type='password'
+  revealPassword
+/>`,
     },
     {
       title: 'Counter',
@@ -192,7 +277,14 @@ export function InputExamples({ platform }: InputExamplesProps) {
           maxLength={80}
         />
       ),
-      code: "import { Input } from '@vellira-ui/react-native';\n\n<Input\n  label='Email'\n  description='Used for account notifications.'\n  showCounter\n  maxLength={80}\n/>",
+      code: `import { Input } from '@vellira-ui/react-native';
+
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  showCounter
+  maxLength={80}
+/>`,
     },
   ] as const;
 

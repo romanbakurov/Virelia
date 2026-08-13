@@ -1,10 +1,25 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import prettier from 'prettier';
+
 export type FileWriter = {
-  writeIfMissing(filePath: string, content: string): void;
+  writeIfMissing(filePath: string, content: string): Promise<void>;
   checkFailures: string[];
 };
+
+async function formatGeneratedContent(filePath: string, content: string) {
+  if (!/\.(?:ts|tsx)$/.test(filePath)) {
+    return content;
+  }
+
+  const config = await prettier.resolveConfig(filePath);
+
+  return prettier.format(content, {
+    ...config,
+    filepath: filePath,
+  });
+}
 
 export function createFileWriter(params: {
   root: string;
@@ -16,7 +31,8 @@ export function createFileWriter(params: {
 
   return {
     checkFailures,
-    writeIfMissing(filePath, content) {
+    async writeIfMissing(filePath, content) {
+      const formattedContent = await formatGeneratedContent(filePath, content);
       const exists = fs.existsSync(filePath);
 
       if (check) {
@@ -24,7 +40,7 @@ export function createFileWriter(params: {
           ? fs.readFileSync(filePath, 'utf8')
           : null;
 
-        if (currentContent !== content) {
+        if (currentContent !== formattedContent) {
           checkFailures.push(path.relative(root, filePath));
         }
 
@@ -37,7 +53,7 @@ export function createFileWriter(params: {
       }
 
       fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      fs.writeFileSync(filePath, content);
+      fs.writeFileSync(filePath, formattedContent);
 
       console.log(
         `${exists ? '♻️ Updated' : '✅ Created'}: ${path.relative(root, filePath)}`

@@ -28,13 +28,17 @@ function createSelectCode(
 
   const props: string[] =
     platform === 'react'
-      ? ["label='Favorite framework'", "description='Choose one option.'"]
-      : ["label='Favorite framework'", "description='Choose one option.'"];
+      ? [`label='Favorite framework'`, `description='Choose one option.'`]
+      : [`label='Favorite framework'`, `description='Choose one option.'`];
 
   const children =
     platform === 'react'
-      ? "  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>"
-      : "  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />";
+      ? `  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>`
+      : `  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />`;
 
   if (value.placeholder) {
     props.push(`placeholder='${value.placeholder}'`);
@@ -80,13 +84,13 @@ function createSelectCode(
 
   if (!children) {
     return `import { Select } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Select${propsText}/>`;
   }
 
   return `import { Select } from '${packageName}';
-${platform === 'react' ? '' : ''}
+${platform === 'react' ? `` : ``}
 
 <Select${propsText}>
 ${children}

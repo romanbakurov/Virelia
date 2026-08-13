@@ -5,6 +5,11 @@
 
 import { Modal as ReactModal } from '@vellira-ui/react';
 import { Modal as NativeModal } from '@vellira-ui/react-native';
+import {
+  Button as ReactButton,
+  Portal as ReactPortal,
+} from '@vellira-ui/react';
+import { Button as NativeButton } from '@vellira-ui/react-native';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -20,46 +25,286 @@ export function ModalExamples({ platform }: ModalExamplesProps) {
       description: 'Dialog with trigger and content.',
       preview: (
         <ReactModal>
-          <ReactModal.Trigger>Open modal</ReactModal.Trigger>
-          <ReactModal.Overlay />
-          <ReactModal.Content>
-            <ReactModal.Header>
-              <ReactModal.Title>Confirm action</ReactModal.Title>
-              <ReactModal.Description>
-                This action can be reviewed before continuing.
-              </ReactModal.Description>
-            </ReactModal.Header>
-            <ReactModal.Body>Modal body content.</ReactModal.Body>
-            <ReactModal.Footer>
-              <ReactModal.Close aria-label='Cancel' />
-            </ReactModal.Footer>
-          </ReactModal.Content>
+          <ReactModal.Trigger asChild>
+            <ReactButton>Open modal</ReactButton>
+          </ReactModal.Trigger>
+          <ReactPortal>
+            <ReactModal.Overlay />
+            <ReactModal.Content>
+              <ReactModal.Header>
+                <div>
+                  <ReactModal.Title>Delete file</ReactModal.Title>
+                  <ReactModal.Description>
+                    This action cannot be undone.
+                  </ReactModal.Description>
+                </div>
+                <ReactModal.Close />
+              </ReactModal.Header>
+              <ReactModal.Body>
+                Are you sure you want to continue?
+              </ReactModal.Body>
+              <ReactModal.Footer>
+                <ReactModal.Close asChild>
+                  <ReactButton color='neutral' appearance='ghost'>
+                    Cancel
+                  </ReactButton>
+                </ReactModal.Close>
+                <ReactButton color='danger'>Delete</ReactButton>
+              </ReactModal.Footer>
+            </ReactModal.Content>
+          </ReactPortal>
         </ReactModal>
       ),
-      code: "import { Modal } from '@vellira-ui/react';\n\n<Modal>\n  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay />\n  <Modal.Content>\n    <Modal.Header>\n      <Modal.Title>Confirm action</Modal.Title>\n      <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n    </Modal.Header>\n    <Modal.Body>Modal body content.</Modal.Body>\n    <Modal.Footer>\n      <Modal.Close aria-label='Cancel' />\n    </Modal.Footer>\n  </Modal.Content>\n</Modal>",
+      code: `import { Modal } from '@vellira-ui/react';
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';
+
+<Modal>
+  <Modal.Trigger asChild>
+    <ReactButton>Open modal</ReactButton>
+  </Modal.Trigger>
+  <ReactPortal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <ReactButton color='neutral' appearance='ghost'>Cancel</ReactButton>
+        </Modal.Close>
+        <ReactButton color='danger'>Delete</ReactButton>
+      </Modal.Footer>
+    </Modal.Content>
+  </ReactPortal>
+</Modal>`,
     },
     {
       title: 'No outside dismissal',
       description: 'Requires an explicit close action.',
       preview: (
         <ReactModal closeOnOutsidePress={false}>
-          <ReactModal.Trigger>Open modal</ReactModal.Trigger>
+          <ReactModal.Trigger asChild>
+            <ReactButton>Open modal</ReactButton>
+          </ReactModal.Trigger>
+          <ReactPortal>
+            <ReactModal.Overlay />
+            <ReactModal.Content>
+              <ReactModal.Header>
+                <div>
+                  <ReactModal.Title>Delete file</ReactModal.Title>
+                  <ReactModal.Description>
+                    This action cannot be undone.
+                  </ReactModal.Description>
+                </div>
+                <ReactModal.Close />
+              </ReactModal.Header>
+              <ReactModal.Body>
+                Are you sure you want to continue?
+              </ReactModal.Body>
+              <ReactModal.Footer>
+                <ReactModal.Close asChild>
+                  <ReactButton color='neutral' appearance='ghost'>
+                    Cancel
+                  </ReactButton>
+                </ReactModal.Close>
+                <ReactButton color='danger'>Delete</ReactButton>
+              </ReactModal.Footer>
+            </ReactModal.Content>
+          </ReactPortal>
+        </ReactModal>
+      ),
+      code: `import { Modal } from '@vellira-ui/react';
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';
+
+<Modal
+  closeOnOutsidePress={false}
+>
+  <Modal.Trigger asChild>
+    <ReactButton>Open modal</ReactButton>
+  </Modal.Trigger>
+  <ReactPortal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <ReactButton color='neutral' appearance='ghost'>Cancel</ReactButton>
+        </Modal.Close>
+        <ReactButton color='danger'>Delete</ReactButton>
+      </Modal.Footer>
+    </Modal.Content>
+  </ReactPortal>
+</Modal>`,
+    },
+    {
+      title: 'Fade animation',
+      description: 'Uses an alternate transition for modal entry and exit.',
+      preview: (
+        <ReactModal animation='fade'>
+          <ReactModal.Trigger asChild>
+            <ReactButton>Open modal</ReactButton>
+          </ReactModal.Trigger>
+          <ReactPortal>
+            <ReactModal.Overlay />
+            <ReactModal.Content>
+              <ReactModal.Header>
+                <div>
+                  <ReactModal.Title>Delete file</ReactModal.Title>
+                  <ReactModal.Description>
+                    This action cannot be undone.
+                  </ReactModal.Description>
+                </div>
+                <ReactModal.Close />
+              </ReactModal.Header>
+              <ReactModal.Body>
+                Are you sure you want to continue?
+              </ReactModal.Body>
+              <ReactModal.Footer>
+                <ReactModal.Close asChild>
+                  <ReactButton color='neutral' appearance='ghost'>
+                    Cancel
+                  </ReactButton>
+                </ReactModal.Close>
+                <ReactButton color='danger'>Delete</ReactButton>
+              </ReactModal.Footer>
+            </ReactModal.Content>
+          </ReactPortal>
+        </ReactModal>
+      ),
+      code: `import { Modal } from '@vellira-ui/react';
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';
+
+<Modal
+  animation='fade'
+>
+  <Modal.Trigger asChild>
+    <ReactButton>Open modal</ReactButton>
+  </Modal.Trigger>
+  <ReactPortal>
+    <Modal.Overlay />
+    <Modal.Content>
+      <Modal.Header>
+        <div>
+          <Modal.Title>Delete file</Modal.Title>
+          <Modal.Description>This action cannot be undone.</Modal.Description>
+        </div>
+        <Modal.Close />
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close asChild>
+          <ReactButton color='neutral' appearance='ghost'>Cancel</ReactButton>
+        </Modal.Close>
+        <ReactButton color='danger'>Delete</ReactButton>
+      </Modal.Footer>
+    </Modal.Content>
+  </ReactPortal>
+</Modal>`,
+    },
+    {
+      title: 'Large scrollable content',
+      description:
+        'Uses a larger panel with inside scrolling for long content.',
+      preview: (
+        <ReactModal>
+          <ReactModal.Trigger asChild>
+            <ReactButton>Review details</ReactButton>
+          </ReactModal.Trigger>
+          <ReactModal.Overlay />
+          <ReactModal.Content size='lg' scrollBehavior='inside'>
+            <ReactModal.Header>
+              <ReactModal.Title>Release notes</ReactModal.Title>
+              <ReactModal.Description>
+                Review changes before publishing.
+              </ReactModal.Description>
+            </ReactModal.Header>
+            <ReactModal.Body>
+              Long-form modal content can scroll inside the panel.
+            </ReactModal.Body>
+            <ReactModal.Footer>
+              <ReactModal.Close aria-label='Close' />
+            </ReactModal.Footer>
+          </ReactModal.Content>
+        </ReactModal>
+      ),
+      code: `import { Modal } from '@vellira-ui/react';
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';
+
+<Modal>
+  <Modal.Trigger asChild>
+    <ReactButton>Review details</ReactButton>
+  </Modal.Trigger>
+  <Modal.Overlay />
+  <Modal.Content size='lg' scrollBehavior='inside'>
+    <Modal.Header>
+      <Modal.Title>Release notes</Modal.Title>
+      <Modal.Description>Review changes before publishing.</Modal.Description>
+    </Modal.Header>
+    <Modal.Body>Long-form modal content can scroll inside the panel.</Modal.Body>
+    <Modal.Footer>
+      <Modal.Close aria-label='Close' />
+    </Modal.Footer>
+  </Modal.Content>
+</Modal>`,
+    },
+    {
+      title: 'Alert dialog',
+      description: 'Uses alert dialog semantics for destructive confirmation.',
+      preview: (
+        <ReactModal role='alertdialog'>
+          <ReactModal.Trigger asChild>
+            <ReactButton color='danger'>Delete project</ReactButton>
+          </ReactModal.Trigger>
           <ReactModal.Overlay />
           <ReactModal.Content>
             <ReactModal.Header>
-              <ReactModal.Title>Confirm action</ReactModal.Title>
+              <ReactModal.Title>Delete project?</ReactModal.Title>
               <ReactModal.Description>
-                This action can be reviewed before continuing.
+                This action cannot be undone.
               </ReactModal.Description>
             </ReactModal.Header>
-            <ReactModal.Body>Modal body content.</ReactModal.Body>
+            <ReactModal.Body>
+              All project data will be permanently removed.
+            </ReactModal.Body>
             <ReactModal.Footer>
               <ReactModal.Close aria-label='Cancel' />
             </ReactModal.Footer>
           </ReactModal.Content>
         </ReactModal>
       ),
-      code: "import { Modal } from '@vellira-ui/react';\n\n<Modal\n  closeOnOutsidePress={false}\n>\n  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay />\n  <Modal.Content>\n    <Modal.Header>\n      <Modal.Title>Confirm action</Modal.Title>\n      <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n    </Modal.Header>\n    <Modal.Body>Modal body content.</Modal.Body>\n    <Modal.Footer>\n      <Modal.Close aria-label='Cancel' />\n    </Modal.Footer>\n  </Modal.Content>\n</Modal>",
+      code: `import { Modal } from '@vellira-ui/react';
+import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react';
+
+<Modal
+  role='alertdialog'
+>
+  <Modal.Trigger asChild>
+    <ReactButton color='danger'>Delete project</ReactButton>
+  </Modal.Trigger>
+  <Modal.Overlay />
+  <Modal.Content>
+    <Modal.Header>
+      <Modal.Title>Delete project?</Modal.Title>
+      <Modal.Description>This action cannot be undone.</Modal.Description>
+    </Modal.Header>
+    <Modal.Body>All project data will be permanently removed.</Modal.Body>
+    <Modal.Footer>
+      <Modal.Close aria-label='Cancel' />
+    </Modal.Footer>
+  </Modal.Content>
+</Modal>`,
     },
   ] as const;
 
@@ -69,48 +314,187 @@ export function ModalExamples({ platform }: ModalExamplesProps) {
       description: 'Dialog with trigger and content.',
       preview: (
         <NativeModal>
-          <NativeModal.Trigger>Open modal</NativeModal.Trigger>
+          <NativeModal.Trigger asChild>
+            <NativeButton>Open Modal</NativeButton>
+          </NativeModal.Trigger>
           <NativeModal.Overlay>
             <NativeModal.Content>
               <NativeModal.Header>
-                <NativeModal.Title>Confirm action</NativeModal.Title>
+                <NativeModal.Title>Delete file</NativeModal.Title>
                 <NativeModal.Description>
-                  This action can be reviewed before continuing.
+                  This action uses the native overlay stack and focus restore.
                 </NativeModal.Description>
               </NativeModal.Header>
-              <NativeModal.Body>Modal body content.</NativeModal.Body>
+              <NativeModal.Body>
+                Are you sure you want to continue?
+              </NativeModal.Body>
               <NativeModal.Footer>
-                <NativeModal.Close accessibilityLabel='Cancel' />
+                <NativeModal.Close>
+                  <NativeButton color='neutral' appearance='solid'>
+                    Cancel
+                  </NativeButton>
+                </NativeModal.Close>
+                <NativeModal.Close>
+                  <NativeButton color='danger' appearance='solid'>
+                    Delete
+                  </NativeButton>
+                </NativeModal.Close>
               </NativeModal.Footer>
             </NativeModal.Content>
           </NativeModal.Overlay>
         </NativeModal>
       ),
-      code: "import { Modal } from '@vellira-ui/react-native';\n\n<Modal>\n  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay>\n    <Modal.Content>\n      <Modal.Header>\n        <Modal.Title>Confirm action</Modal.Title>\n        <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n      </Modal.Header>\n      <Modal.Body>Modal body content.</Modal.Body>\n      <Modal.Footer>\n        <Modal.Close accessibilityLabel='Cancel' />\n      </Modal.Footer>\n    </Modal.Content>\n  </Modal.Overlay>\n</Modal>",
+      code: `import { Modal } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Modal>
+  <Modal.Trigger asChild>
+    <NativeButton>Open Modal</NativeButton>
+  </Modal.Trigger>
+  <Modal.Overlay>
+    <Modal.Content>
+      <Modal.Header>
+        <Modal.Title>Delete file</Modal.Title>
+        <Modal.Description>This action uses the native overlay stack and focus restore.</Modal.Description>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close>
+          <NativeButton color='neutral' appearance='solid'>Cancel</NativeButton>
+        </Modal.Close>
+        <Modal.Close>
+          <NativeButton color='danger' appearance='solid'>Delete</NativeButton>
+        </Modal.Close>
+      </Modal.Footer>
+    </Modal.Content>
+  </Modal.Overlay>
+</Modal>`,
     },
     {
       title: 'No outside dismissal',
       description: 'Requires an explicit close action.',
       preview: (
         <NativeModal closeOnOutsidePress={false}>
-          <NativeModal.Trigger>Open modal</NativeModal.Trigger>
+          <NativeModal.Trigger asChild>
+            <NativeButton>Open Modal</NativeButton>
+          </NativeModal.Trigger>
           <NativeModal.Overlay>
             <NativeModal.Content>
               <NativeModal.Header>
-                <NativeModal.Title>Confirm action</NativeModal.Title>
+                <NativeModal.Title>Delete file</NativeModal.Title>
                 <NativeModal.Description>
-                  This action can be reviewed before continuing.
+                  This action uses the native overlay stack and focus restore.
                 </NativeModal.Description>
               </NativeModal.Header>
-              <NativeModal.Body>Modal body content.</NativeModal.Body>
+              <NativeModal.Body>
+                Are you sure you want to continue?
+              </NativeModal.Body>
               <NativeModal.Footer>
-                <NativeModal.Close accessibilityLabel='Cancel' />
+                <NativeModal.Close>
+                  <NativeButton color='neutral' appearance='solid'>
+                    Cancel
+                  </NativeButton>
+                </NativeModal.Close>
+                <NativeModal.Close>
+                  <NativeButton color='danger' appearance='solid'>
+                    Delete
+                  </NativeButton>
+                </NativeModal.Close>
               </NativeModal.Footer>
             </NativeModal.Content>
           </NativeModal.Overlay>
         </NativeModal>
       ),
-      code: "import { Modal } from '@vellira-ui/react-native';\n\n<Modal\n  closeOnOutsidePress={false}\n>\n  <Modal.Trigger>Open modal</Modal.Trigger>\n  <Modal.Overlay>\n    <Modal.Content>\n      <Modal.Header>\n        <Modal.Title>Confirm action</Modal.Title>\n        <Modal.Description>This action can be reviewed before continuing.</Modal.Description>\n      </Modal.Header>\n      <Modal.Body>Modal body content.</Modal.Body>\n      <Modal.Footer>\n        <Modal.Close accessibilityLabel='Cancel' />\n      </Modal.Footer>\n    </Modal.Content>\n  </Modal.Overlay>\n</Modal>",
+      code: `import { Modal } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Modal
+  closeOnOutsidePress={false}
+>
+  <Modal.Trigger asChild>
+    <NativeButton>Open Modal</NativeButton>
+  </Modal.Trigger>
+  <Modal.Overlay>
+    <Modal.Content>
+      <Modal.Header>
+        <Modal.Title>Delete file</Modal.Title>
+        <Modal.Description>This action uses the native overlay stack and focus restore.</Modal.Description>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close>
+          <NativeButton color='neutral' appearance='solid'>Cancel</NativeButton>
+        </Modal.Close>
+        <Modal.Close>
+          <NativeButton color='danger' appearance='solid'>Delete</NativeButton>
+        </Modal.Close>
+      </Modal.Footer>
+    </Modal.Content>
+  </Modal.Overlay>
+</Modal>`,
+    },
+    {
+      title: 'Fade animation',
+      description: 'Uses an alternate transition for modal entry and exit.',
+      preview: (
+        <NativeModal animation='fade'>
+          <NativeModal.Trigger asChild>
+            <NativeButton>Open Modal</NativeButton>
+          </NativeModal.Trigger>
+          <NativeModal.Overlay>
+            <NativeModal.Content>
+              <NativeModal.Header>
+                <NativeModal.Title>Delete file</NativeModal.Title>
+                <NativeModal.Description>
+                  This action uses the native overlay stack and focus restore.
+                </NativeModal.Description>
+              </NativeModal.Header>
+              <NativeModal.Body>
+                Are you sure you want to continue?
+              </NativeModal.Body>
+              <NativeModal.Footer>
+                <NativeModal.Close>
+                  <NativeButton color='neutral' appearance='solid'>
+                    Cancel
+                  </NativeButton>
+                </NativeModal.Close>
+                <NativeModal.Close>
+                  <NativeButton color='danger' appearance='solid'>
+                    Delete
+                  </NativeButton>
+                </NativeModal.Close>
+              </NativeModal.Footer>
+            </NativeModal.Content>
+          </NativeModal.Overlay>
+        </NativeModal>
+      ),
+      code: `import { Modal } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
+
+<Modal
+  animation='fade'
+>
+  <Modal.Trigger asChild>
+    <NativeButton>Open Modal</NativeButton>
+  </Modal.Trigger>
+  <Modal.Overlay>
+    <Modal.Content>
+      <Modal.Header>
+        <Modal.Title>Delete file</Modal.Title>
+        <Modal.Description>This action uses the native overlay stack and focus restore.</Modal.Description>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to continue?</Modal.Body>
+      <Modal.Footer>
+        <Modal.Close>
+          <NativeButton color='neutral' appearance='solid'>Cancel</NativeButton>
+        </Modal.Close>
+        <Modal.Close>
+          <NativeButton color='danger' appearance='solid'>Delete</NativeButton>
+        </Modal.Close>
+      </Modal.Footer>
+    </Modal.Content>
+  </Modal.Overlay>
+</Modal>`,
     },
   ] as const;
 

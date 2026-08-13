@@ -4,6 +4,7 @@
 'use client';
 
 import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
 
 import { ButtonPlayground } from './ButtonPlayground';
 
@@ -12,6 +13,8 @@ export function NativeButtonDemo() {
     <ButtonPlayground
       renderButton={(value) => (
         <Button
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
           color={value.color}
           appearance={value.appearance}
           size={value.size}
@@ -22,7 +25,7 @@ export function NativeButtonDemo() {
           disabled={value.disabled}
           iconOnly={value.iconOnly}
         >
-          Button
+          Add item
         </Button>
       )}
     />

@@ -1,4 +1,4 @@
-import { toTsString } from '../helpers/format';
+import { applyChildPropBindings, toTsString } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from '../model/types';
 
@@ -69,8 +69,13 @@ export function renderDemoFiles(params: {
   }) {
     const { platform, propBindings } = params;
 
-    const children =
-      platform === 'react' ? reactDemoChildren : nativeDemoChildren;
+    const platformConfig =
+      platform === 'react' ? componentConfig.react : componentConfig.native;
+
+    const children = applyChildPropBindings(
+      platform === 'react' ? reactDemoChildren : nativeDemoChildren,
+      platformConfig?.childPropBindings ?? []
+    );
 
     const staticProps =
       platform === 'react' ? reactStaticDemoProps : nativeStaticDemoProps;

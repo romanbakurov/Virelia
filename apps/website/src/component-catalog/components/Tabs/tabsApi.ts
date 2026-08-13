@@ -182,6 +182,32 @@ const reactTabsApiSections: readonly ComponentApiSection[] = [
     ],
   },
   {
+    name: 'Tabs.Indicator',
+    props: [
+      {
+        name: 'className',
+        type: 'string',
+        description: 'Class name applied to the active tab indicator.',
+      },
+      {
+        name: 'defaultValue',
+        type: 'string',
+        description: 'Initial selected tab value for uncontrolled usage.',
+      },
+      {
+        name: 'dir',
+        type: "'ltr' | 'rtl'",
+        description: 'Text direction used for horizontal keyboard navigation.',
+      },
+      {
+        name: 'color',
+        type: "'primary' | 'neutral' | 'success' | 'warning' | 'danger'",
+        defaultValue: "'primary'",
+        description: 'Semantic color palette for active tab styling.',
+      },
+    ],
+  },
+  {
     name: 'Tabs.Content',
     props: [
       {
@@ -381,6 +407,21 @@ const nativeTabsApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'false',
         description: 'Disables this tab trigger.',
+      },
+    ],
+  },
+  {
+    name: 'Tabs.Indicator',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Custom indicator content.',
+      },
+      {
+        name: 'style',
+        type: 'StyleProp<ViewStyle>',
+        description: 'Style applied to the indicator container.',
       },
     ],
   },

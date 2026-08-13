@@ -334,6 +334,142 @@ const reactDropdownApiSections: readonly ComponentApiSection[] = [
     ],
   },
   {
+    name: 'Dropdown.CheckboxItem',
+    props: [
+      {
+        name: 'disabled',
+        type: 'boolean',
+        defaultValue: 'false',
+        description: 'Disables item interaction.',
+      },
+      {
+        name: 'closeOnSelect',
+        type: 'boolean',
+        defaultValue: 'true',
+        description:
+          'Overrides whether selecting this item closes the dropdown.',
+      },
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description:
+          'Composes checkbox item behavior onto a single child element.',
+      },
+      {
+        name: 'checked',
+        type: 'boolean',
+        description: 'Controlled checked state.',
+      },
+      {
+        name: 'defaultChecked',
+        type: 'boolean',
+        description: 'Initial checked state for uncontrolled usage.',
+      },
+      {
+        name: 'onCheckedChange',
+        type: '((checked: boolean) => void)',
+        description: 'Called when the checked state changes.',
+      },
+      {
+        name: 'icon',
+        type: 'ReactNode',
+        description: 'Indicator icon shown when the item is checked.',
+      },
+      {
+        name: 'shortcut',
+        type: 'ReactNode',
+        description: 'Keyboard shortcut hint rendered after the item label.',
+      },
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Checkbox item label or custom content.',
+        required: true,
+      },
+      {
+        name: 'className',
+        type: 'string',
+        description: 'Class name applied to the checkbox item element.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.RadioGroup',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Radio item children.',
+      },
+      {
+        name: 'value',
+        type: 'string',
+        description: 'Controlled selected radio value.',
+      },
+      {
+        name: 'defaultValue',
+        type: 'string',
+        description: 'Initial selected radio value for uncontrolled usage.',
+      },
+      {
+        name: 'onValueChange',
+        type: '((value: string) => void)',
+        description: 'Called when the selected radio value changes.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.RadioItem',
+    props: [
+      {
+        name: 'disabled',
+        type: 'boolean',
+        defaultValue: 'false',
+        description: 'Disables item interaction.',
+      },
+      {
+        name: 'closeOnSelect',
+        type: 'boolean',
+        defaultValue: 'true',
+        description:
+          'Overrides whether selecting this item closes the dropdown.',
+      },
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Radio item label or custom content.',
+        required: true,
+      },
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description:
+          'Composes radio item behavior onto a single child element.',
+      },
+      {
+        name: 'value',
+        type: 'string',
+        description: 'Value represented by this radio item.',
+        required: true,
+      },
+      {
+        name: 'icon',
+        type: 'ReactNode',
+        description: 'Indicator icon shown when the item is selected.',
+      },
+      {
+        name: 'shortcut',
+        type: 'ReactNode',
+        description: 'Keyboard shortcut hint rendered after the item label.',
+      },
+      {
+        name: 'className',
+        type: 'string',
+        description: 'Class name applied to the radio item element.',
+      },
+    ],
+  },
+  {
     name: 'Dropdown.Group',
     props: [
       {
@@ -365,6 +501,151 @@ const reactDropdownApiSections: readonly ComponentApiSection[] = [
         name: 'className',
         type: 'string',
         description: 'Class name applied to the separator element.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.Sub',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Submenu trigger and content.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.SubTrigger',
+    props: [
+      {
+        name: 'target',
+        type: 'import("react").HTMLAttributeAnchorTarget',
+        description: 'Anchor target used when href is provided.',
+      },
+      {
+        name: 'color',
+        type: "'default' | 'primary' | 'success' | 'warning' | 'danger'",
+        defaultValue: "'primary'",
+        description: 'Semantic color palette for the item.',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        defaultValue: 'false',
+        description: 'Disables item interaction.',
+      },
+      {
+        name: 'closeOnSelect',
+        type: 'boolean',
+        defaultValue: 'true',
+        description:
+          'Overrides whether selecting this item closes the dropdown.',
+      },
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Item label or custom item content.',
+        required: true,
+      },
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description: 'Composes item behavior onto a single child element.',
+      },
+      {
+        name: 'icon',
+        type: 'ReactNode',
+        description: 'Icon rendered before the item label.',
+      },
+      {
+        name: 'description',
+        type: 'ReactNode',
+        description: 'Supporting text rendered below the item label.',
+      },
+      {
+        name: 'badge',
+        type: 'ReactNode',
+        description: 'Badge content rendered after the item label.',
+      },
+      {
+        name: 'shortcut',
+        type: 'ReactNode',
+        description: 'Keyboard shortcut hint rendered after the item label.',
+      },
+      {
+        name: 'href',
+        type: 'string',
+        description: 'Link target rendered when the item acts as an anchor.',
+      },
+      {
+        name: 'rel',
+        type: 'string',
+        description: 'Anchor rel attribute used when href is provided.',
+      },
+      {
+        name: 'download',
+        type: 'string | boolean',
+        description: 'Anchor download attribute used when href is provided.',
+      },
+      {
+        name: 'className',
+        type: 'string',
+        description: 'Class name applied to the item element.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.SubContent',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Submenu item and slot content.',
+      },
+      {
+        name: 'className',
+        type: 'string',
+        description: 'Class name applied to the submenu content element.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.ItemIcon',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Icon slot content.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.ItemDescription',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Description slot content.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.ItemBadge',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Badge slot content.',
+      },
+    ],
+  },
+  {
+    name: 'Dropdown.ItemShortcut',
+    props: [
+      {
+        name: 'children',
+        type: 'ReactNode',
+        description: 'Shortcut slot content.',
       },
     ],
   },
@@ -574,6 +855,11 @@ const nativeDropdownApiSections: readonly ComponentApiSection[] = [
   {
     name: 'Dropdown.Trigger',
     props: [
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description: 'Composes trigger behavior onto a single child element.',
+      },
       {
         name: 'children',
         type: 'ReactNode',

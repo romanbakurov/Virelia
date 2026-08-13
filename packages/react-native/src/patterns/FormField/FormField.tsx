@@ -207,7 +207,7 @@ function FormFieldRoot({
                     accessible={false}
                     importantForAccessibility='no'
                   >
-                    {' *'}
+                    *
                   </Text>
                 )}
 

@@ -24,6 +24,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.List>
             <ReactTabs.Trigger value='account'>Account</ReactTabs.Trigger>
             <ReactTabs.Trigger value='billing'>Billing</ReactTabs.Trigger>
+            <ReactTabs.Indicator />
           </ReactTabs.List>
           <ReactTabs.Content value='account'>
             Account settings
@@ -31,7 +32,17 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.Content value='billing'>Billing details</ReactTabs.Content>
         </ReactTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react';\n\n<Tabs>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'>Account settings</Tabs.Content>\n  <Tabs.Content value='billing'>Billing details</Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react';
+
+<Tabs>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'>Account settings</Tabs.Content>
+  <Tabs.Content value='billing'>Billing details</Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Pills',
@@ -41,6 +52,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.List>
             <ReactTabs.Trigger value='account'>Account</ReactTabs.Trigger>
             <ReactTabs.Trigger value='billing'>Billing</ReactTabs.Trigger>
+            <ReactTabs.Indicator />
           </ReactTabs.List>
           <ReactTabs.Content value='account'>
             Account settings
@@ -48,7 +60,19 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.Content value='billing'>Billing details</ReactTabs.Content>
         </ReactTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react';\n\n<Tabs\n  variant='pills'\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'>Account settings</Tabs.Content>\n  <Tabs.Content value='billing'>Billing details</Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react';
+
+<Tabs
+  variant='pills'
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'>Account settings</Tabs.Content>
+  <Tabs.Content value='billing'>Billing details</Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Manual activation',
@@ -58,6 +82,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.List>
             <ReactTabs.Trigger value='account'>Account</ReactTabs.Trigger>
             <ReactTabs.Trigger value='billing'>Billing</ReactTabs.Trigger>
+            <ReactTabs.Indicator />
           </ReactTabs.List>
           <ReactTabs.Content value='account'>
             Account settings
@@ -65,7 +90,19 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.Content value='billing'>Billing details</ReactTabs.Content>
         </ReactTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react';\n\n<Tabs\n  activationMode='manual'\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'>Account settings</Tabs.Content>\n  <Tabs.Content value='billing'>Billing details</Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react';
+
+<Tabs
+  activationMode='manual'
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'>Account settings</Tabs.Content>
+  <Tabs.Content value='billing'>Billing details</Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Disabled',
@@ -75,6 +112,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.List>
             <ReactTabs.Trigger value='account'>Account</ReactTabs.Trigger>
             <ReactTabs.Trigger value='billing'>Billing</ReactTabs.Trigger>
+            <ReactTabs.Indicator />
           </ReactTabs.List>
           <ReactTabs.Content value='account'>
             Account settings
@@ -82,7 +120,19 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <ReactTabs.Content value='billing'>Billing details</ReactTabs.Content>
         </ReactTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react';\n\n<Tabs\n  disabled\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'>Account settings</Tabs.Content>\n  <Tabs.Content value='billing'>Billing details</Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react';
+
+<Tabs
+  disabled
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'>Account settings</Tabs.Content>
+  <Tabs.Content value='billing'>Billing details</Tabs.Content>
+</Tabs>`,
     },
   ] as const;
 
@@ -95,6 +145,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <NativeTabs.List>
             <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
             <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+            <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
             <NativeText>Account settings</NativeText>
@@ -104,7 +155,18 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           </NativeTabs.Content>
         </NativeTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react-native';\n\n<Tabs>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>\n  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react-native';
+import { Text as NativeText } from 'react-native';
+
+<Tabs>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
+  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Pills',
@@ -114,6 +176,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <NativeTabs.List>
             <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
             <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+            <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
             <NativeText>Account settings</NativeText>
@@ -123,7 +186,20 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           </NativeTabs.Content>
         </NativeTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react-native';\n\n<Tabs\n  variant='pills'\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>\n  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react-native';
+import { Text as NativeText } from 'react-native';
+
+<Tabs
+  variant='pills'
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
+  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Manual activation',
@@ -133,6 +209,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <NativeTabs.List>
             <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
             <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+            <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
             <NativeText>Account settings</NativeText>
@@ -142,7 +219,20 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           </NativeTabs.Content>
         </NativeTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react-native';\n\n<Tabs\n  activationMode='manual'\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>\n  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react-native';
+import { Text as NativeText } from 'react-native';
+
+<Tabs
+  activationMode='manual'
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
+  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+</Tabs>`,
     },
     {
       title: 'Disabled',
@@ -152,6 +242,7 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           <NativeTabs.List>
             <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
             <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+            <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
             <NativeText>Account settings</NativeText>
@@ -161,7 +252,20 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
           </NativeTabs.Content>
         </NativeTabs>
       ),
-      code: "import { Tabs } from '@vellira-ui/react-native';\n\n<Tabs\n  disabled\n>\n  <Tabs.List>\n    <Tabs.Trigger value='account'>Account</Tabs.Trigger>\n    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>\n  </Tabs.List>\n  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>\n  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>\n</Tabs>",
+      code: `import { Tabs } from '@vellira-ui/react-native';
+import { Text as NativeText } from 'react-native';
+
+<Tabs
+  disabled
+>
+  <Tabs.List>
+    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
+  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+</Tabs>`,
     },
   ] as const;
 

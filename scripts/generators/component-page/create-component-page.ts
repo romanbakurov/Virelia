@@ -83,7 +83,7 @@ const { content: usageContent, children: usageChildren } = renderUsage({
 const reactUsageChildren = usageChildren.react ?? '';
 const nativeUsageChildren = usageChildren['react-native'] ?? '';
 
-writeIfMissing(usageFile, usageContent);
+await writeIfMissing(usageFile, usageContent);
 
 const examplesFile = path.join(
   componentCatalogDir,
@@ -106,7 +106,7 @@ const examplesContent = renderExamples({
   getDemoProps,
 });
 
-writeIfMissing(examplesFile, examplesContent);
+await writeIfMissing(examplesFile, examplesContent);
 
 const accessibilityFile = path.join(
   componentCatalogDir,
@@ -138,7 +138,7 @@ const accessibilityContent = renderAccessibility({
   generatedFileHeader,
 });
 
-writeIfMissing(accessibilityFile, accessibilityContent);
+await writeIfMissing(accessibilityFile, accessibilityContent);
 
 const apiFile = path.join(componentCatalogDir, `${slug}Api.ts`);
 
@@ -160,7 +160,7 @@ const {
   generatedFileHeader,
 });
 
-writeIfMissing(apiFile, apiContent);
+await writeIfMissing(apiFile, apiContent);
 
 const playgroundSchemaFile = path.join(
   componentCatalogDir,
@@ -181,8 +181,8 @@ const playgroundArtifacts = buildPlaygroundArtifacts({
   getChangeHandlerName,
 });
 
-writeIfMissing(playgroundSchemaFile, playgroundArtifacts.schemaContent);
-writeIfMissing(playgroundFile, playgroundArtifacts.content);
+await writeIfMissing(playgroundSchemaFile, playgroundArtifacts.schemaContent);
+await writeIfMissing(playgroundFile, playgroundArtifacts.content);
 
 const reactStaticDemoProps = getDemoProps('react');
 const nativeStaticDemoProps = getDemoProps('react-native');
@@ -241,11 +241,11 @@ const demoFiles = renderDemoFiles({
 });
 
 if (demoFiles.reactContent) {
-  writeIfMissing(reactDemoFile, demoFiles.reactContent);
+  await writeIfMissing(reactDemoFile, demoFiles.reactContent);
 }
 
 if (demoFiles.nativeContent) {
-  writeIfMissing(nativeDemoFile, demoFiles.nativeContent);
+  await writeIfMissing(nativeDemoFile, demoFiles.nativeContent);
 }
 
 const componentIndexFile = path.join(componentCatalogDir, 'index.ts');
@@ -257,7 +257,7 @@ const componentIndexContent = renderComponentIndex({
   generatedFileHeader,
 });
 
-writeIfMissing(componentIndexFile, componentIndexContent);
+await writeIfMissing(componentIndexFile, componentIndexContent);
 
 updateComponentRegistry({
   root,

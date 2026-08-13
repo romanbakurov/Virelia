@@ -74,6 +74,11 @@ export const Radio = forwardRef<View, RadioProps>(
 
     const controlMarginTop =
       (radioSize.labelLineHeight - radioSize.controlSize) / 2;
+    const visualHeight = Math.max(
+      radioSize.labelLineHeight,
+      radioSize.controlSize
+    );
+    const hitSlop = Math.max(0, (32 - visualHeight) / 2);
 
     useEffect(() => {
       if (
@@ -137,6 +142,7 @@ export const Radio = forwardRef<View, RadioProps>(
             disabled: resolvedDisabled,
           }}
           disabled={resolvedDisabled}
+          hitSlop={Platform.OS === 'web' ? undefined : hitSlop}
           onPress={handlePress}
           style={resolvePressableStyle}
         >

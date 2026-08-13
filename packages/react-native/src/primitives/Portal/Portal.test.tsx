@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
 
@@ -30,5 +30,26 @@ describe('Native Portal', () => {
     expect(container.textContent).toContain('Provided portal content');
 
     unmount();
+  });
+
+  it('does not pass deprecated pointerEvents as a web prop', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { unmount } = render(
+      <Portal>
+        <Text>Portal content</Text>
+      </Portal>
+    );
+
+    const messages = [...warn.mock.calls, ...error.mock.calls]
+      .flat()
+      .join('\n');
+
+    expect(messages).not.toContain('props.pointerEvents is deprecated');
+
+    unmount();
+    warn.mockRestore();
+    error.mockRestore();
   });
 });

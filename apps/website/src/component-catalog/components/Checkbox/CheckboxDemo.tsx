@@ -21,6 +21,7 @@ export function CheckboxDemo() {
           size={value.size}
           color={value.color}
           labelPosition={value.labelPosition}
+          label='Accept terms'
         />
       )}
     />

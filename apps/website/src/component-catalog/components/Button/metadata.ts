@@ -2,10 +2,16 @@ import { defineComponentPageMetadata } from '../../metadata';
 
 export default defineComponentPageMetadata({
   react: {
-    children: 'Button',
+    children: 'Add item',
+    demoProps: `iconStart={<Plus />}
+aria-label='Add item'`,
+    imports: [`import { Plus } from '@vellira-ui/icons';`],
   },
   native: {
-    children: 'Button',
+    children: 'Add item',
+    demoProps: `iconStart={<Plus />}
+accessibilityLabel='Add item'`,
+    imports: [`import { Plus } from '@vellira-ui/icons';`],
   },
   demo: {
     initialValues: {
@@ -51,16 +57,13 @@ export default defineComponentPageMetadata({
     {
       title: 'Icons',
       description: 'Icons clarify the action without replacing the label.',
-      imports: [`import { ArrowRight, Download } from '@vellira-ui/icons';`],
-      props: ['iconStart={<Download />}', 'iconEnd={<ArrowRight />}'],
+      imports: [`import { ArrowRight } from '@vellira-ui/icons';`],
+      props: ['iconEnd={<ArrowRight />}'],
     },
     {
       title: 'Icon-only',
       description: 'Compact action with an accessible name.',
-      imports: [`import { Plus } from '@vellira-ui/icons';`],
-      props: ['iconOnly', 'iconStart={<Plus />}'],
-      reactProps: [`aria-label='Add item'`],
-      nativeProps: [`accessibilityLabel='Add item'`],
+      props: ['iconOnly'],
       reactChildren: '',
       nativeChildren: '',
     },

@@ -28,7 +28,16 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
     {
       title: 'Searchable',
@@ -44,7 +53,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  searchable\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  searchable
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
     {
       title: 'Multiple',
@@ -60,7 +79,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  multiple\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  multiple
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
     {
       title: 'Error',
@@ -76,7 +105,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  error='Please review this option.'
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
     {
       title: 'Disabled',
@@ -92,7 +131,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  disabled\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  disabled
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
     {
       title: 'Loading',
@@ -108,7 +157,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <ReactSelect.Item value='svelte'>Svelte</ReactSelect.Item>
         </ReactSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  loading\n>\n  <Select.Item value='react'>React</Select.Item>\n  <Select.Item value='vue'>Vue</Select.Item>\n  <Select.Item value='svelte'>Svelte</Select.Item>\n</Select>",
+      code: `import { Select } from '@vellira-ui/react';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  loading
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>`,
     },
   ] as const;
 
@@ -126,7 +185,16 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
     {
       title: 'Searchable',
@@ -142,7 +210,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  searchable\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  searchable
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
     {
       title: 'Multiple',
@@ -158,7 +236,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  multiple\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  multiple
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
     {
       title: 'Error',
@@ -174,7 +262,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  error='Please review this option.'\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  error='Please review this option.'
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
     {
       title: 'Disabled',
@@ -190,7 +288,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  disabled\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  disabled
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
     {
       title: 'Loading',
@@ -206,7 +314,17 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
           <NativeSelect.Item value='svelte' label='Svelte' />
         </NativeSelect>
       ),
-      code: "import { Select } from '@vellira-ui/react-native';\n\n<Select\n  label='Favorite framework'\n  description='Choose one option.'\n  loading\n>\n  <Select.Item value='react' label='React' />\n  <Select.Item value='vue' label='Vue' />\n  <Select.Item value='svelte' label='Svelte' />\n</Select>",
+      code: `import { Select } from '@vellira-ui/react-native';
+
+<Select
+  label='Favorite framework'
+  description='Choose one option.'
+  loading
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>`,
     },
   ] as const;
 

@@ -4,6 +4,7 @@
 'use client';
 
 import { Modal } from '@vellira-ui/react-native';
+import { Button as NativeButton } from '@vellira-ui/react-native';
 
 import { ModalPlayground } from './ModalPlayground';
 
@@ -20,18 +21,29 @@ export function NativeModalDemo() {
           easing={value.easing}
           restoreFocus={value.restoreFocus}
         >
-          <Modal.Trigger>Open modal</Modal.Trigger>
+          <Modal.Trigger asChild>
+            <NativeButton>Open Modal</NativeButton>
+          </Modal.Trigger>
           <Modal.Overlay>
             <Modal.Content>
               <Modal.Header>
-                <Modal.Title>Confirm action</Modal.Title>
+                <Modal.Title>Delete file</Modal.Title>
                 <Modal.Description>
-                  This action can be reviewed before continuing.
+                  This action uses the native overlay stack and focus restore.
                 </Modal.Description>
               </Modal.Header>
-              <Modal.Body>Modal body content.</Modal.Body>
+              <Modal.Body>Are you sure you want to continue?</Modal.Body>
               <Modal.Footer>
-                <Modal.Close accessibilityLabel='Cancel' />
+                <Modal.Close>
+                  <NativeButton color='neutral' appearance='solid'>
+                    Cancel
+                  </NativeButton>
+                </Modal.Close>
+                <Modal.Close>
+                  <NativeButton color='danger' appearance='solid'>
+                    Delete
+                  </NativeButton>
+                </Modal.Close>
               </Modal.Footer>
             </Modal.Content>
           </Modal.Overlay>

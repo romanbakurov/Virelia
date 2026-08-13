@@ -28,6 +28,19 @@ function slugify(componentName: string) {
   return componentName.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getRegistryEntryPattern(slug: string, flags = '') {
+  return new RegExp(
+    `\\n\\s*(?:${escapeRegExp(slug)}|${escapeRegExp(
+      `'${slug}'`
+    )}|${escapeRegExp(`"${slug}"`)}): \\{`,
+    flags
+  );
+}
+
 function readGeneratedFile(componentName: string, kind: string) {
   const filePath = path.join(
     catalogRoot,
@@ -46,7 +59,7 @@ function addFailure(componentName: string, message: string) {
 function getEntrySource(componentName: string, componentPagesSource: string) {
   const slug = slugify(componentName);
   const entryStartMatch = componentPagesSource.match(
-    new RegExp(`\\n {2}${slug}: \\{`)
+    getRegistryEntryPattern(slug)
   );
   const entryStart =
     entryStartMatch?.index !== undefined ? entryStartMatch.index + 1 : -1;
@@ -57,7 +70,7 @@ function getEntrySource(componentName: string, componentPagesSource: string) {
 
   const nextEntryMatch = componentPagesSource
     .slice(entryStart + 1)
-    .match(/\n {2}[a-z0-9-]+: \{/);
+    .match(/\n {2}(?:[A-Za-z_$][\w$]*|'[^']+'|"[^"]+"): \{/);
   const registryEndMatch = componentPagesSource
     .slice(entryStart)
     .match(/\n} satisfies/);
@@ -98,10 +111,7 @@ function auditComponent(componentName: string, componentPagesSource: string) {
 
   if (
     entry &&
-    countMatches(
-      componentPagesSource,
-      new RegExp(`\\n\\s*${slug}: \\{`, 'g')
-    ) !== 1
+    countMatches(componentPagesSource, getRegistryEntryPattern(slug, 'g')) !== 1
   ) {
     addFailure(componentName, 'duplicate componentPages entries');
   }

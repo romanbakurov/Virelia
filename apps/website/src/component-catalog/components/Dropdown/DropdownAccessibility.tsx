@@ -33,6 +33,12 @@ export function DropdownAccessibility({
         'Use disabled and color state to communicate unavailable or destructive actions.',
       props: ['disabled', 'color'],
     },
+    {
+      title: 'Selection patterns',
+      description:
+        'Use checkbox and radio items only when menu selections remain understandable from their labels.',
+      props: ['checked', 'value', 'onValueChange'],
+    },
   ] as const;
 
   const nativeItems = [

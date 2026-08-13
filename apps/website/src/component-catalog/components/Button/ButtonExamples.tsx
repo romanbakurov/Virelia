@@ -5,8 +5,8 @@
 
 import { Button as ReactButton } from '@vellira-ui/react';
 import { Button as NativeButton } from '@vellira-ui/react-native';
-import { ArrowRight, Download } from '@vellira-ui/icons';
 import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -20,78 +20,191 @@ export function ButtonExamples({ platform }: ButtonExamplesProps) {
     {
       title: 'Basic',
       description: 'Primary action button.',
-      preview: <ReactButton>Button</ReactButton>,
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button>\n  Button\n</Button>",
+      preview: (
+        <ReactButton iconStart={<Plus />} aria-label='Add item'>
+          Add item
+        </ReactButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Appearance and color',
       description: 'Alternative surface and semantic action tone.',
       preview: (
-        <ReactButton appearance='outline' color='danger'>
-          Button
+        <ReactButton
+          iconStart={<Plus />}
+          aria-label='Add item'
+          appearance='outline'
+          color='danger'
+        >
+          Add item
         </ReactButton>
       ),
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  appearance='outline'\n  color='danger'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  appearance='outline'
+  color='danger'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Icons',
       description: 'Icons clarify the action without replacing the label.',
       preview: (
-        <ReactButton iconStart={<Download />} iconEnd={<ArrowRight />}>
-          Button
+        <ReactButton
+          iconStart={<Plus />}
+          aria-label='Add item'
+          iconEnd={<ArrowRight />}
+        >
+          Add item
         </ReactButton>
       ),
-      code: "import { Button } from '@vellira-ui/react';\nimport { ArrowRight, Download } from '@vellira-ui/icons';\n\n<Button\n  iconStart={<Download />}\n  iconEnd={<ArrowRight />}\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  iconEnd={<ArrowRight />}
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Icon-only',
       description: 'Compact action with an accessible name.',
       preview: (
-        <ReactButton iconOnly iconStart={<Plus />} aria-label='Add item' />
+        <ReactButton iconStart={<Plus />} aria-label='Add item' iconOnly />
       ),
-      code: "import { Button } from '@vellira-ui/react';\nimport { Plus } from '@vellira-ui/icons';\n\n<Button\n  iconOnly\n  iconStart={<Plus />}\n  aria-label='Add item'\n/>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  iconOnly
+/>`,
     },
     {
       title: 'Loading',
       description: 'Shows progress and prevents interaction.',
       preview: (
-        <ReactButton loading loadingText='Saving...'>
-          Button
+        <ReactButton
+          iconStart={<Plus />}
+          aria-label='Add item'
+          loading
+          loadingText='Saving...'
+        >
+          Add item
         </ReactButton>
       ),
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  loading\n  loadingText='Saving...'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  loading
+  loadingText='Saving...'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled action state.',
-      preview: <ReactButton disabled>Button</ReactButton>,
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  disabled\n>\n  Button\n</Button>",
+      preview: (
+        <ReactButton iconStart={<Plus />} aria-label='Add item' disabled>
+          Add item
+        </ReactButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  disabled
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Full width',
       description: 'Button expands to fill its container.',
-      preview: <ReactButton fullWidth>Button</ReactButton>,
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  fullWidth\n>\n  Button\n</Button>",
+      preview: (
+        <ReactButton iconStart={<Plus />} aria-label='Add item' fullWidth>
+          Add item
+        </ReactButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  fullWidth
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Size and shape',
       description: 'Large rounded button treatment.',
       preview: (
-        <ReactButton size='lg' shape='rounded'>
-          Button
+        <ReactButton
+          iconStart={<Plus />}
+          aria-label='Add item'
+          size='lg'
+          shape='rounded'
+        >
+          Add item
         </ReactButton>
       ),
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  size='lg'\n  shape='rounded'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  size='lg'
+  shape='rounded'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Composed link',
       description: 'Composes button styling onto a custom React link.',
       preview: (
-        <ReactButton asChild>
+        <ReactButton iconStart={<Plus />} aria-label='Add item' asChild>
           <a href='/components/button'>Button</a>
         </ReactButton>
       ),
-      code: "import { Button } from '@vellira-ui/react';\n\n<Button\n  asChild\n>\n  <a href='/components/button'>Button</a>\n</Button>",
+      code: `import { Button } from '@vellira-ui/react';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  aria-label='Add item'
+  asChild
+>
+  <a href='/components/button'>Button</a>
+</Button>`,
     },
   ] as const;
 
@@ -99,78 +212,207 @@ export function ButtonExamples({ platform }: ButtonExamplesProps) {
     {
       title: 'Basic',
       description: 'Primary action button.',
-      preview: <NativeButton>Button</NativeButton>,
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button>\n  Button\n</Button>",
+      preview: (
+        <NativeButton iconStart={<Plus />} accessibilityLabel='Add item'>
+          Add item
+        </NativeButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Appearance and color',
       description: 'Alternative surface and semantic action tone.',
       preview: (
-        <NativeButton appearance='outline' color='danger'>
-          Button
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          appearance='outline'
+          color='danger'
+        >
+          Add item
         </NativeButton>
       ),
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  appearance='outline'\n  color='danger'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  appearance='outline'
+  color='danger'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Icons',
       description: 'Icons clarify the action without replacing the label.',
       preview: (
-        <NativeButton iconStart={<Download />} iconEnd={<ArrowRight />}>
-          Button
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          iconEnd={<ArrowRight />}
+        >
+          Add item
         </NativeButton>
       ),
-      code: "import { Button } from '@vellira-ui/react-native';\nimport { ArrowRight, Download } from '@vellira-ui/icons';\n\n<Button\n  iconStart={<Download />}\n  iconEnd={<ArrowRight />}\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  iconEnd={<ArrowRight />}
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Icon-only',
       description: 'Compact action with an accessible name.',
       preview: (
         <NativeButton
-          iconOnly
           iconStart={<Plus />}
           accessibilityLabel='Add item'
+          iconOnly
         />
       ),
-      code: "import { Button } from '@vellira-ui/react-native';\nimport { Plus } from '@vellira-ui/icons';\n\n<Button\n  iconOnly\n  iconStart={<Plus />}\n  accessibilityLabel='Add item'\n/>",
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  iconOnly
+/>`,
     },
     {
       title: 'Loading',
       description: 'Shows progress and prevents interaction.',
       preview: (
-        <NativeButton loading loadingText='Saving...'>
-          Button
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          loading
+          loadingText='Saving...'
+        >
+          Add item
         </NativeButton>
       ),
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  loading\n  loadingText='Saving...'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  loading
+  loadingText='Saving...'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Disabled',
       description: 'Disabled action state.',
-      preview: <NativeButton disabled>Button</NativeButton>,
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  disabled\n>\n  Button\n</Button>",
+      preview: (
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          disabled
+        >
+          Add item
+        </NativeButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  disabled
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Full width',
       description: 'Button expands to fill its container.',
-      preview: <NativeButton fullWidth>Button</NativeButton>,
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  fullWidth\n>\n  Button\n</Button>",
+      preview: (
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          fullWidth
+        >
+          Add item
+        </NativeButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  fullWidth
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Size and shape',
       description: 'Large rounded button treatment.',
       preview: (
-        <NativeButton size='lg' shape='rounded'>
-          Button
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          size='lg'
+          shape='rounded'
+        >
+          Add item
         </NativeButton>
       ),
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  size='lg'\n  shape='rounded'\n>\n  Button\n</Button>",
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  size='lg'
+  shape='rounded'
+>
+  Add item
+</Button>`,
     },
     {
       title: 'Press handler',
       description: 'Handles native press interaction.',
-      preview: <NativeButton onPress={() => {}}>Button</NativeButton>,
-      code: "import { Button } from '@vellira-ui/react-native';\n\n<Button\n  onPress={() => {}}\n>\n  Button\n</Button>",
+      preview: (
+        <NativeButton
+          iconStart={<Plus />}
+          accessibilityLabel='Add item'
+          onPress={() => {}}
+        >
+          Add item
+        </NativeButton>
+      ),
+      code: `import { Button } from '@vellira-ui/react-native';
+import { Plus } from '@vellira-ui/icons';
+
+<Button
+  iconStart={<Plus />}
+  accessibilityLabel='Add item'
+  onPress={() => {}}
+>
+  Add item
+</Button>`,
     },
   ] as const;
 
