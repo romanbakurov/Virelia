@@ -1,0 +1,100 @@
+name: Dependabot Alert Watch
+
+on:
+  schedule:
+    # Every day at 08:00 UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: read
+  issues: write
+
+jobs:
+  check-alerts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check unresolved High and Critical Dependabot alerts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          ISSUE_TITLE="Unresolved Dependabot security alerts"
+
+          alerts="$(
+            gh api \
+              --paginate \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${GH_REPO}/dependabot/alerts?state=open&per_page=100" \
+            | jq -s '
+                add
+                | map(
+                    select(
+                      .security_advisory.severity == "high"
+                      or .security_advisory.severity == "critical"
+                    )
+                  )
+              '
+          )"
+
+          count="$(jq 'length' <<< "$alerts")"
+
+          existing="$(
+            gh issue list \
+              --repo "$GH_REPO" \
+              --state open \
+              --search "\"${ISSUE_TITLE}\" in:title" \
+              --json number,title \
+              --jq ".[] | select(.title == \"${ISSUE_TITLE}\") | .number" \
+              | head -n 1
+          )"
+
+          if [ "$count" -eq 0 ]; then
+            echo "No unresolved High/Critical Dependabot alerts."
+
+            if [ -n "$existing" ]; then
+              gh issue close "$existing" \
+                --repo "$GH_REPO" \
+                --comment "All High/Critical Dependabot alerts have been resolved automatically."
+            fi
+
+            exit 0
+          fi
+
+          {
+            echo "## Unresolved Dependabot security alerts"
+            echo
+            echo "This issue is maintained automatically."
+            echo
+            echo "Found **${count}** open High/Critical alert(s)."
+            echo
+            echo "| Severity | Package | Alert |"
+            echo "| --- | --- | --- |"
+
+            jq -r '
+              .[] |
+              "| \(.security_advisory.severity | ascii_upcase) | `\(.dependency.package.name)` | \(.security_advisory.summary) (#\(.number)) |"
+            ' <<< "$alerts"
+
+            echo
+            echo "_Last checked: $(date -u '+%Y-%m-%d %H:%M UTC')_"
+          } > /tmp/dependabot-alerts.md
+
+          if [ -n "$existing" ]; then
+            echo "Updating issue #${existing}."
+
+            gh issue edit "$existing" \
+              --repo "$GH_REPO" \
+              --body-file /tmp/dependabot-alerts.md
+          else
+            echo "Creating tracking issue."
+
+            gh issue create \
+              --repo "$GH_REPO" \
+              --title "$ISSUE_TITLE" \
+              --body-file /tmp/dependabot-alerts.md
+          fi
