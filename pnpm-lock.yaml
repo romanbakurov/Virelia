@@ -34,7 +34,7 @@ importers:
         specifier: ^21.2.0
         version: 21.2.0
       '@eslint/js':
-        specifier: ^9.39.5
+        specifier: ^9.39.4
         version: 9.39.5
       '@lhci/cli':
         specifier: 0.15.1
@@ -55,16 +55,16 @@ importers:
         specifier: ^14.1.1
         version: 14.1.1(semantic-release@25.0.9(supports-color@10.2.2)(typescript@6.0.3))(supports-color@10.2.2)
       '@types/node':
-        specifier: ^26.2.0
+        specifier: ^26.1.1
         version: 26.2.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^8.67.0
+        specifier: ^8.63.0
         version: 8.67.0(@typescript-eslint/parser@8.67.0(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       '@typescript-eslint/parser':
-        specifier: ^8.67.0
+        specifier: ^8.64.0
         version: 8.67.0(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       eslint:
-        specifier: ^9.39.5
+        specifier: ^9.39.4
         version: 9.39.5(jiti@2.6.1)(supports-color@10.2.2)
       eslint-config-prettier:
         specifier: ^10.1.8
@@ -91,22 +91,22 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)
       eslint-plugin-react-refresh:
-        specifier: ^0.5.4
+        specifier: ^0.5.2
         version: 0.5.4(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))
       eslint-plugin-simple-import-sort:
         specifier: ^13.0.0
         version: 13.0.0(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))
       globals:
-        specifier: ^17.11.0
+        specifier: ^17.7.0
         version: 17.11.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^17.3.0
+        specifier: ^17.0.7
         version: 17.3.0
       prettier:
-        specifier: ^3.9.6
+        specifier: ^3.9.5
         version: 3.9.6
       react:
         specifier: 19.2.3
@@ -118,7 +118,7 @@ importers:
         specifier: ^25.0.9
         version: 25.0.9(supports-color@10.2.2)(typescript@6.0.3)
       stylelint:
-        specifier: ^17.14.1
+        specifier: ^17.11.0
         version: 17.14.1(supports-color@10.2.2)(typescript@6.0.3)
       stylelint-config-standard-scss:
         specifier: ^17.0.0
@@ -127,19 +127,19 @@ importers:
         specifier: ^8.1.1
         version: 8.1.1(stylelint@17.14.1(supports-color@10.2.2)(typescript@6.0.3))
       stylelint-scss:
-        specifier: ^7.2.0
+        specifier: ^7.1.1
         version: 7.2.0(stylelint@17.14.1(supports-color@10.2.2)(typescript@6.0.3))
       tsx:
-        specifier: ^4.23.12
+        specifier: ^4.23.1
         version: 4.23.12
       typescript:
         specifier: 6.0.3
         version: 6.0.3
       typescript-eslint:
-        specifier: ^8.67.0
+        specifier: ^8.64.0
         version: 8.67.0(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
       wrangler:
-        specifier: ^4.122.0
+        specifier: ^4.114.0
         version: 4.122.0(@types/node@26.2.0)
 
   apps/docs:
@@ -157,7 +157,7 @@ importers:
         specifier: ^7.29.7
         version: 7.29.7(supports-color@10.2.2)
       '@expo/metro-runtime':
-        specifier: ~57.0.9
+        specifier: ~57.0.7
         version: 57.0.9(@expo/log-box@57.0.2)(expo@57.0.12)(react-dom@19.2.3(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       '@gorhom/bottom-sheet':
         specifier: ^5.2.14
@@ -187,13 +187,13 @@ importers:
         specifier: ^10.1.1
         version: 10.1.1(@babel/core@7.29.7(supports-color@10.2.2))(webpack@5.108.3(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       expo:
-        specifier: ~57.0.12
+        specifier: ~57.0.7
         version: 57.0.12(@babel/core@7.29.7(supports-color@10.2.2))(@expo/dom-webview@57.0.1)(@expo/metro-runtime@57.0.9)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2)(typescript@6.0.3)
       expo-font:
         specifier: ^57.0.1
         version: 57.0.1(expo@57.0.12)(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       expo-splash-screen:
-        specifier: ~57.0.6
+        specifier: ~57.0.4
         version: 57.0.6(expo@57.0.12)(supports-color@10.2.2)(typescript@6.0.3)
       expo-status-bar:
         specifier: ~57.0.1
@@ -211,10 +211,10 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-reanimated:
-        specifier: ~4.5.3
+        specifier: ~4.5.0
         version: 4.5.3(react-native-worklets@0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-safe-area-context:
-        specifier: ^5.9.0
+        specifier: ^5.7.0
         version: 5.9.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-svg:
         specifier: ^15.15.4
@@ -227,7 +227,7 @@ importers:
         version: 0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2)
     devDependencies:
       '@types/react':
-        specifier: ~19.2.18
+        specifier: ~19.2.3
         version: 19.2.18
       typescript:
         specifier: 6.0.3
@@ -254,16 +254,16 @@ importers:
         specifier: 2.11.4
         version: 2.11.4(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       '@storybook/addon-ondevice-actions':
-        specifier: ^10.5.4
+        specifier: ^10.5.0
         version: 10.5.4(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))
       '@storybook/addon-ondevice-controls':
-        specifier: ^10.5.4
+        specifier: ^10.5.0
         version: 10.5.4(@gorhom/bottom-sheet@5.2.14(80c0e607eed9f86ebdb293e66412e22a))(@react-native-community/datetimepicker@9.1.0(expo@57.0.12)(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(@react-native-community/slider@5.2.0)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))(supports-color@10.2.2)(typescript@6.0.3)
       '@storybook/react-native':
-        specifier: ^10.5.4
+        specifier: ^10.5.0
         version: 10.5.4(b7650ee4480797c895cfa48ad6ca58aa)
       '@storybook/react-native-ui-lite':
-        specifier: ^10.5.4
+        specifier: ^10.5.0
         version: 10.5.4(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react-native-safe-area-context@5.9.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))(supports-color@10.2.2)(typescript@6.0.3)
       '@vellira-ui/assets':
         specifier: workspace:*
@@ -278,13 +278,13 @@ importers:
         specifier: ^10.1.1
         version: 10.1.1(@babel/core@7.29.7(supports-color@10.2.2))(webpack@5.108.3(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       expo:
-        specifier: ~57.0.12
+        specifier: ~57.0.7
         version: 57.0.12(@babel/core@7.29.7(supports-color@10.2.2))(@expo/dom-webview@57.0.1)(@expo/metro-runtime@57.0.9)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native-worklets@0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2)(typescript@6.0.3)
       expo-font:
         specifier: ^57.0.1
         version: 57.0.1(expo@57.0.12)(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       expo-splash-screen:
-        specifier: ~57.0.6
+        specifier: ~57.0.4
         version: 57.0.6(expo@57.0.12)(supports-color@10.2.2)(typescript@6.0.3)
       expo-status-bar:
         specifier: ~57.0.1
@@ -299,10 +299,10 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-reanimated:
-        specifier: ~4.5.3
+        specifier: ~4.5.0
         version: 4.5.3(react-native-worklets@0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-safe-area-context:
-        specifier: ^5.9.0
+        specifier: ^5.7.0
         version: 5.9.0(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)
       react-native-svg:
         specifier: ^15.15.4
@@ -311,11 +311,11 @@ importers:
         specifier: 0.10.0
         version: 0.10.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(react-native@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2))(react@19.2.3)(supports-color@10.2.2)
       storybook:
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3)
     devDependencies:
       '@types/react':
-        specifier: ~19.2.18
+        specifier: ~19.2.3
         version: 19.2.18
       eslint-plugin-storybook:
         specifier: 10.5.0
@@ -343,37 +343,37 @@ importers:
         version: 19.2.3(react@19.2.3)
     devDependencies:
       '@types/node':
-        specifier: ^26.2.0
+        specifier: ^26.1.1
         version: 26.2.0
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19.2.0
         version: 19.2.18
       '@types/react-dom':
-        specifier: ^19.2.4
+        specifier: ^19.2.3
         version: 19.2.4(@types/react@19.2.18)
       '@vitejs/plugin-react':
-        specifier: ^6.0.5
+        specifier: ^6.0.3
         version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))
       eslint-plugin-react-hooks:
         specifier: ^7.1.1
         version: 7.1.1(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)
       eslint-plugin-react-refresh:
-        specifier: ^0.5.4
+        specifier: ^0.5.2
         version: 0.5.4(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))
       globals:
-        specifier: ^17.11.0
+        specifier: ^17.7.0
         version: 17.11.0
       typescript:
         specifier: 6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.2.1
+        specifier: ^8.1.4
         version: 8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0)
 
   apps/react-storybook:
     dependencies:
       '@floating-ui/react':
-        specifier: ^0.27.20
+        specifier: ^0.27.19
         version: 0.27.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@vellira-ui/react':
         specifier: workspace:*
@@ -385,7 +385,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       focus-trap-react:
-        specifier: ^12.0.3
+        specifier: ^12.0.2
         version: 12.0.3(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react:
         specifier: 19.2.3
@@ -395,28 +395,28 @@ importers:
         version: 19.2.3(react@19.2.3)
     devDependencies:
       '@chromatic-com/storybook':
-        specifier: ^5.3.0
+        specifier: ^5.2.1
         version: 5.3.0(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))
       '@playwright/test':
         specifier: 1.61.1
         version: 1.61.1
       '@storybook/addon-a11y':
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))
       '@storybook/addon-docs':
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.1)(rollup@4.62.4)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       '@storybook/addon-vitest':
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(@vitest/browser-playwright@4.1.10)(@vitest/browser@4.1.10)(@vitest/runner@4.1.10)(react@19.2.3)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))(vitest@4.1.10)
       '@storybook/react-vite':
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.62.4)(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3))(supports-color@10.2.2)(typescript@6.0.3)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19.2.0
         version: 19.2.18
       '@types/react-dom':
-        specifier: ^19.2.4
+        specifier: ^19.2.3
         version: 19.2.4(@types/react@19.2.18)
       '@vellira-ui/assets':
         specifier: workspace:*
@@ -425,7 +425,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/icons
       '@vitejs/plugin-react':
-        specifier: ^6.0.5
+        specifier: ^6.0.3
         version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))
       '@vitest/browser-playwright':
         specifier: ^4.1.10
@@ -434,7 +434,7 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
       chromatic:
-        specifier: ^18.2.0
+        specifier: ^18.0.1
         version: 18.2.0
       eslint-plugin-storybook:
         specifier: ^10.5.0
@@ -443,10 +443,10 @@ importers:
         specifier: ^5.13.0
         version: 5.13.0
       sass:
-        specifier: ^1.102.0
+        specifier: ^1.99.0
         version: 1.102.0
       storybook:
-        specifier: ^10.5.7
+        specifier: ^10.5.0
         version: 10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.3)
       typescript:
         specifier: 6.0.3
@@ -455,10 +455,10 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(supports-color@10.2.2)(typescript@6.0.3)
       vite:
-        specifier: ^8.2.1
+        specifier: ^8.1.4
         version: 8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0)
       vite-plugin-dts:
-        specifier: ^5.0.3
+        specifier: ^5.0.0
         version: 5.0.3(esbuild@0.28.1)(rolldown@1.2.4)(rollup@4.62.4)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       vite-plugin-svgr:
         specifier: ^5.2.0
@@ -491,7 +491,7 @@ importers:
         specifier: ^5.13.0
         version: 5.13.0
       motion:
-        specifier: ^12.43.0
+        specifier: ^12.42.2
         version: 12.43.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next:
         specifier: 16.2.11
@@ -506,26 +506,26 @@ importers:
         specifier: ^0.21.2
         version: 0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       shiki:
-        specifier: ^4.4.3
+        specifier: ^4.4.2
         version: 4.4.3
     devDependencies:
       '@types/node':
-        specifier: ^20.19.43
+        specifier: ^20
         version: 20.19.43
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19
         version: 19.2.18
       '@types/react-dom':
-        specifier: ^19.2.4
+        specifier: ^19
         version: 19.2.4(@types/react@19.2.18)
       eslint:
-        specifier: ^9.39.5
+        specifier: ^9
         version: 9.39.5(jiti@2.6.1)(supports-color@10.2.2)
       eslint-config-next:
         specifier: 16.2.11
         version: 16.2.11(@typescript-eslint/parser@8.67.0(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3))(eslint@9.39.5(jiti@2.6.1)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@5.9.3)
       typescript:
-        specifier: ^5.9.3
+        specifier: ^5
         version: 5.9.3
 
   packages/assets: {}
@@ -545,7 +545,7 @@ importers:
         specifier: ^8.1.0
         version: 8.1.0(@svgr/core@8.1.0(supports-color@10.2.2)(typescript@6.0.3))(supports-color@10.2.2)
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19.2.17
         version: 19.2.18
       fast-glob:
         specifier: ^3.3.3
@@ -566,7 +566,7 @@ importers:
   packages/react:
     dependencies:
       '@floating-ui/react':
-        specifier: ^0.27.20
+        specifier: ^0.27.19
         version: 0.27.20(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@vellira-ui/core':
         specifier: workspace:*
@@ -584,32 +584,32 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       focus-trap-react:
-        specifier: ^12.0.3
+        specifier: ^12.0.2
         version: 12.0.3(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
       '@testing-library/jest-dom':
-        specifier: ^6.10.0
+        specifier: ^6.9.1
         version: 6.10.0(@testing-library/dom@10.4.1)
       '@testing-library/react':
         specifier: ^16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@testing-library/user-event':
-        specifier: ^14.6.4
+        specifier: ^14.6.1
         version: 14.6.4(@testing-library/dom@10.4.1)
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19.2.0
         version: 19.2.18
       '@types/react-dom':
-        specifier: ^19.2.4
+        specifier: ^19.2.3
         version: 19.2.4(@types/react@19.2.18)
       '@vitejs/plugin-react':
-        specifier: ^6.0.5
+        specifier: ^6.0.3
         version: 6.0.5(babel-plugin-react-compiler@1.0.0)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))
       '@vitest/coverage-v8':
         specifier: ^4.1.10
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
       axe-core:
-        specifier: ^4.13.0
+        specifier: ^4.12.1
         version: 4.13.0
       jsdom:
         specifier: ^28.1.0
@@ -624,10 +624,10 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
       vite:
-        specifier: ^8.2.1
+        specifier: ^8.1.4
         version: 8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0)
       vite-plugin-dts:
-        specifier: ^5.0.3
+        specifier: ^5.0.0
         version: 5.0.3(esbuild@0.28.1)(rolldown@1.2.4)(rollup@4.62.4)(supports-color@10.2.2)(typescript@6.0.3)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.1)(jiti@2.6.1)(less@4.8.1(supports-color@10.2.2))(sass@1.102.0)(stylus@0.62.0(supports-color@10.2.2))(terser@5.50.0)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.108.3(esbuild@0.28.1)(lightningcss@1.33.0)(postcss@8.5.23)(uglify-js@3.19.3))
       vite-plugin-lib-inject-css:
         specifier: ^2.2.2
@@ -661,7 +661,7 @@ importers:
         version: 0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(@react-native/metro-config@0.86.0(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2))(@types/react@19.2.18)(react@19.2.3)(supports-color@10.2.2)
     devDependencies:
       '@types/react':
-        specifier: ^19.2.18
+        specifier: ^19.2.3
         version: 19.2.18
       '@vitest/coverage-v8':
         specifier: ^4.1.10
@@ -673,7 +673,7 @@ importers:
         specifier: 19.2.3
         version: 19.2.3
       tsdown:
-        specifier: ^0.22.14
+        specifier: ^0.22.13
         version: 0.22.14(@volar/typescript@2.4.28(typescript@6.0.3))(oxc-resolver@11.24.2)(tsx@4.23.12)(typescript@6.0.3)
       typescript:
         specifier: 6.0.3
