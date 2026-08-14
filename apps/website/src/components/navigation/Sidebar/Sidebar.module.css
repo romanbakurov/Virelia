@@ -49,14 +49,18 @@
 
 .item > a:hover {
   color: var(--text-primary);
-  background: var(--surface-subtle);
+  background: color-mix(in srgb, var(--text-brand) 5%, transparent);
 }
 
 .activeItem > a {
   color: var(--text-primary);
-  background: color-mix(in srgb, var(--text-brand) 10%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--text-brand) 12%,
+    var(--surface-background)
+  );
 }
 
 .activeItem > a:hover {
-  background: color-mix(in srgb, var(--text-brand) 12%, transparent);
+  background: color-mix(in srgb, var(--text-brand) 15%, transparent);
 }

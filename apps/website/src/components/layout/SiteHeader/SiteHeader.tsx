@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,8 +8,9 @@ import { usePathname } from 'next/navigation';
 import { externalNavigation, marketingNavigation } from '@/config/navigation';
 import type { SiteHeaderProps } from './types';
 
-import { Button } from '@vellira-ui/react';
+import { Button, Tabs } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { HeaderSearch } from './HeaderSearch';
 
 import styles from './SiteHeader.module.css';
 
@@ -73,6 +74,16 @@ function getNavigationSections() {
     );
 }
 
+function getActiveNavigationHref(pathname: string) {
+  const pageItem = marketingNavigation.find(
+    (item) =>
+      item.type === 'page' &&
+      (pathname === item.href || pathname.startsWith(`${item.href}/`))
+  );
+
+  return pageItem?.href ?? pathname;
+}
+
 export function SiteHeader({
   variant = 'marketing',
   mobileAction,
@@ -83,7 +94,7 @@ export function SiteHeader({
 
   useEffect(() => {
     if (pathname !== '/') {
-      setActiveHref(pathname);
+      setActiveHref(getActiveNavigationHref(pathname));
       return;
     }
 
@@ -127,6 +138,11 @@ export function SiteHeader({
     };
   }, [pathname]);
 
+  const navigationValue =
+    pathname === '/'
+      ? (activeHref ?? undefined)
+      : getActiveNavigationHref(pathname);
+
   return (
     <header
       className={[styles.header, navigationOpen ? styles.navigationOpen : null]
@@ -145,35 +161,56 @@ export function SiteHeader({
           />
         </Link>
 
-        <nav className={styles.navigation} aria-label='Primary navigation'>
-          {marketingNavigation.map((item) => (
-            <Link
-              key={item.label}
-              className={styles.navigationLink}
-              href={item.href}
-              aria-current={activeHref === item.href ? 'page' : undefined}
-              onClick={(event) => {
-                if (item.type !== 'section' || pathname !== '/') {
-                  return;
-                }
+        <div className={styles.headerRight}>
+          <div className={styles.headerSearch}>
+            <HeaderSearch />
+          </div>
 
-                event.preventDefault();
-                setActiveHref(item.href);
-                scrollToAnchor(item.hash);
-              }}
+          <nav className={styles.navigation} aria-label='Primary navigation'>
+            <Tabs
+              mode='navigation'
+              value={navigationValue}
+              onValueChange={setActiveHref}
+              variant='line'
+              size='sm'
+              className={styles.navigationTabs}
             >
-              <span>{item.label}</span>
+              <Tabs.List className={styles.navigationList}>
+                {marketingNavigation.map((item) => (
+                  <Tabs.Trigger key={item.label} value={item.href} asChild>
+                    <Link
+                      href={item.href}
+                      className={styles.navigationLink}
+                      onClick={(event) => {
+                        if (item.type !== 'section' || pathname !== '/') {
+                          return;
+                        }
 
-              {'badge' in item && (
-                <span className={styles.navigationBadge}>{item.badge}</span>
-              )}
-            </Link>
-          ))}
-        </nav>
+                        event.preventDefault();
+                        setActiveHref(item.href);
+                        scrollToAnchor(item.hash);
+                      }}
+                    >
+                      <span>{item.label}</span>
 
-        <div className={styles.actions}>
-          <div className={styles.themeAction}>
-            <ThemeSwitcher />
+                      {'badge' in item && (
+                        <span className={styles.navigationBadge}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  </Tabs.Trigger>
+                ))}
+
+                <Tabs.Indicator />
+              </Tabs.List>
+            </Tabs>
+          </nav>
+
+          <div className={styles.actions}>
+            <div className={styles.themeAction}>
+              <ThemeSwitcher />
+            </div>
           </div>
 
           <div className={styles.externalActions}>

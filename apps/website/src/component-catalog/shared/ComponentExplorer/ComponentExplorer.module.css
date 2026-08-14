@@ -3,6 +3,16 @@
   max-width: none;
   padding-left: var(--site-gutter);
   padding-right: 0;
+  background: var(--surface-default);
+  background: linear-gradient(
+    to right,
+    var(--surface-background) 0,
+    var(--surface-background)
+      calc(var(--site-gutter) + var(--explorer-sidebar-width)),
+    var(--surface-default)
+      calc(var(--site-gutter) + var(--explorer-sidebar-width)),
+    var(--surface-default) 100%
+  );
 }
 
 .layout {
@@ -17,6 +27,7 @@
 .sidebarColumn {
   position: relative;
   min-width: 0;
+  background: var(--surface-background);
 }
 
 .sidebarColumn::after {
@@ -42,6 +53,7 @@
   flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
+  background-color: var(--surface-canvas);
 }
 
 .content {
