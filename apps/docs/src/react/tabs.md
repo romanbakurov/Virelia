@@ -259,6 +259,7 @@ application handles persistence intentionally.
 
 `Tabs.Trigger asChild` is intended for `mode='navigation'`. It composes the
 trigger behavior and visual state onto a single child element such as a link
+
 ## See Also
 
 - [Button](/react/button) for actions inside tab panels.
