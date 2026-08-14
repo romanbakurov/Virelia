@@ -1,5 +1,25 @@
 import type { BaseTabsTriggerProps } from '@vellira-ui/types';
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type {
+  ButtonHTMLAttributes,
+  MouseEventHandler,
+  ReactNode,
+  Ref,
+} from 'react';
+
+export interface TabsTriggerChildProps {
+  children?: ReactNode;
+  id?: string;
+  className?: string;
+  href?: string;
+  'aria-current'?: 'page' | 'step' | 'location' | 'date' | 'time' | boolean;
+  'aria-disabled'?: boolean;
+  'data-state'?: 'active' | 'inactive';
+  'data-disabled'?: string;
+  onClick?: MouseEventHandler<HTMLElement>;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLElement>) => void;
+  ref?: Ref<HTMLElement>;
+  tabIndex?: number;
+}
 
 export interface TabsTriggerProps
   extends

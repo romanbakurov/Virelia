@@ -1,20 +1,32 @@
-import { Children, forwardRef, isValidElement, useCallback } from 'react';
+import {
+  Children,
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type MouseEventHandler,
+  type ReactElement,
+  type Ref,
+  useCallback,
+} from 'react';
 
 import { cn } from '@utils/cn';
 
 import { useTabsContext } from '../internal/TabsContext';
 
-import type { TabsTriggerProps } from './types';
+import type { TabsTriggerChildProps, TabsTriggerProps } from './types';
 
 import styles from './TabsTrigger.module.scss';
 
-export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
+export const TabsTrigger = forwardRef<HTMLElement, TabsTriggerProps>(
   (
     {
       value,
       children,
       className,
       disabled = false,
+      asChild = false,
       icon,
       badge,
       description,
@@ -29,6 +41,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
       focusedValue,
       setValue,
       setFocusedValue,
+      mode,
       orientation,
       variant,
       size,
@@ -42,14 +55,19 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     const isDisabled = rootDisabled || disabled;
     const isActive = selectedValue === value;
     const isFocused = focusedValue === value || (!focusedValue && isActive);
-    const childArray = Children.toArray(children);
+    const child =
+      asChild && isValidElement<TabsTriggerChildProps>(children)
+        ? (children as ReactElement<TabsTriggerChildProps>)
+        : undefined;
+    const visibleChildren = child ? child.props.children : children;
+    const childArray = Children.toArray(visibleChildren);
     const hasExplicitIcon = childArray.some(
       (child) =>
         isValidElement(child) &&
         (child.type as { displayName?: string }).displayName === 'Tabs.Icon'
     );
     const hasIcon = Boolean(icon);
-    const isOnlyIcon = (hasIcon || hasExplicitIcon) && children == null;
+    const isOnlyIcon = (hasIcon || hasExplicitIcon) && visibleChildren == null;
 
     if (process.env.NODE_ENV !== 'production' && hasIcon && hasExplicitIcon) {
       console.warn(
@@ -58,7 +76,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     }
 
     const triggerRef = useCallback(
-      (element: HTMLButtonElement | null) => {
+      (element: HTMLElement | null) => {
         registerTrigger(value, element, isDisabled);
 
         if (typeof ref === 'function') {
@@ -76,6 +94,105 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
       (child) => typeof child === 'string' || typeof child === 'number'
     );
 
+    const resolvedClassName = cn(
+      styles.trigger,
+      styles[variant],
+      styles[size],
+      orientation === 'vertical' && styles.vertical,
+      hasIcon && styles.withIcon,
+      isOnlyIcon && styles.iconOnly,
+      className
+    );
+
+    const handleClick: MouseEventHandler<HTMLElement> = (event) => {
+      if (isDisabled) {
+        event.preventDefault();
+        return;
+      }
+
+      setFocusedValue(value);
+      setValue(value);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+      if (event.defaultPrevented) return;
+
+      onTriggerKeyDown(event);
+    };
+
+    if (mode === 'navigation' && child) {
+      return cloneElement(child, {
+        ...props,
+        ref: triggerRef as Ref<HTMLElement>,
+        id: getTriggerId(value),
+        className: cn(child.props.className, resolvedClassName),
+        'aria-current': isActive ? 'page' : undefined,
+        'aria-disabled': isDisabled || undefined,
+        'data-state': isActive ? 'active' : 'inactive',
+        tabIndex: isDisabled ? -1 : child.props.tabIndex,
+        onClick: (event: ReactMouseEvent<HTMLElement>) => {
+          child.props.onClick?.(event);
+
+          if (isDisabled) {
+            event.preventDefault();
+            return;
+          }
+
+          handleClick(event);
+        },
+
+        onKeyDown: (event: KeyboardEvent<HTMLElement>) => {
+          child.props.onKeyDown?.(event);
+
+          if (event.defaultPrevented) return;
+
+          handleKeyDown(event);
+        },
+        children: (
+          <>
+            {hasIcon && !hasExplicitIcon && (
+              <span className={styles.icon} aria-hidden='true'>
+                {icon}
+              </span>
+            )}
+
+            {visibleChildren != null &&
+              (hasSimpleSlots ? (
+                <span className={styles.body}>
+                  <span className={styles.label}>{visibleChildren}</span>
+                  {description != null && (
+                    <span className={styles.description}>{description}</span>
+                  )}
+                </span>
+              ) : hasOnlyTextChildren ? (
+                <span className={styles.label}>{visibleChildren}</span>
+              ) : (
+                visibleChildren
+              ))}
+
+            {badge != null && <span className={styles.badge}>{badge}</span>}
+          </>
+        ),
+      });
+    }
+
+    if (process.env.NODE_ENV !== 'production' && mode === 'tabs' && asChild) {
+      console.warn(
+        'Tabs.Trigger: asChild is only supported when Tabs mode="navigation".'
+      );
+    }
+
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      mode === 'navigation' &&
+      asChild &&
+      !child
+    ) {
+      console.warn(
+        'Tabs.Trigger: asChild requires a single valid React element child.'
+      );
+    }
+
     return (
       <button
         {...props}
@@ -90,29 +207,20 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         data-state={isActive ? 'active' : 'inactive'}
         data-orientation={orientation}
         data-disabled={isDisabled ? '' : undefined}
-        className={cn(
-          styles.trigger,
-          styles[variant],
-          styles[size],
-          orientation === 'vertical' && styles.vertical,
-          hasIcon && styles.withIcon,
-          isOnlyIcon && styles.iconOnly,
-          className
-        )}
+        className={resolvedClassName}
         onClick={(event) => {
           onClick?.(event);
 
-          if (event.defaultPrevented || isDisabled) return;
+          if (event.defaultPrevented) return;
 
-          setFocusedValue(value);
-          setValue(value);
+          handleClick(event);
         }}
         onKeyDown={(event) => {
           onKeyDown?.(event);
 
           if (event.defaultPrevented) return;
 
-          onTriggerKeyDown(event);
+          handleKeyDown(event);
         }}
       >
         {hasIcon && !hasExplicitIcon && (
@@ -121,18 +229,18 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
           </span>
         )}
 
-        {children != null &&
+        {visibleChildren != null &&
           (hasSimpleSlots ? (
             <span className={styles.body}>
-              <span className={styles.label}>{children}</span>
+              <span className={styles.label}>{visibleChildren}</span>
               {description != null && (
                 <span className={styles.description}>{description}</span>
               )}
             </span>
           ) : hasOnlyTextChildren ? (
-            <span className={styles.label}>{children}</span>
+            <span className={styles.label}>{visibleChildren}</span>
           ) : (
-            children
+            visibleChildren
           ))}
 
         {badge != null && <span className={styles.badge}>{badge}</span>}

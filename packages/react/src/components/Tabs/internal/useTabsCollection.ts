@@ -26,7 +26,7 @@ export const useTabsCollection = () => {
   }, []);
 
   const registerTrigger = useCallback(
-    (value: TabsValue, element: HTMLButtonElement | null, disabled = false) => {
+    (value: TabsValue, element: HTMLElement | null, disabled = false) => {
       if (!element) {
         const existingIndex = triggersRef.current.findIndex(
           (tab) => tab.value === value

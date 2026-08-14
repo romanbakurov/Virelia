@@ -196,4 +196,52 @@ describe('Tabs keyboard', () => {
 
     unmount();
   });
+
+  it('moves focus between navigation triggers with arrow keys', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='components'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='#components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' asChild>
+            <a href='#themes'>Themes</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='roadmap' asChild>
+            <a href='#roadmap'>Roadmap</a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    links[0].focus();
+
+    pressKey(links[0], 'ArrowRight');
+
+    expect(document.activeElement).toBe(links[1]);
+    expect(onValueChange).toHaveBeenCalledWith('themes');
+    expect(links[1].getAttribute('aria-current')).toBe('page');
+
+    pressKey(links[1], 'End');
+
+    expect(document.activeElement).toBe(links[2]);
+    expect(links[2].getAttribute('aria-current')).toBe('page');
+
+    pressKey(links[2], 'Home');
+
+    expect(document.activeElement).toBe(links[0]);
+    expect(links[0].getAttribute('aria-current')).toBe('page');
+
+    unmount();
+  });
 });

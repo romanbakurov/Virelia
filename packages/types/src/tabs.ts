@@ -11,6 +11,8 @@ export type TabsColor =
 
 export type TabsSize = 'sm' | 'md' | 'lg';
 
+export type TabsMode = 'tabs' | 'navigation';
+
 export interface BaseTabsProps {
   /** Controlled selected tab value. */
   value?: TabsValue;
@@ -40,6 +42,9 @@ export interface BaseTabsProps {
   /** Controls trigger and indicator sizing. */
   size?: TabsSize;
 
+  /** Interaction and accessibility model used by the component. */
+  mode?: TabsMode;
+
   /** Disables every tab trigger. */
   disabled?: boolean;
 }
@@ -58,6 +63,8 @@ export interface BaseTabsTriggerProps {
   description?: unknown;
   /** Badge content shown with the trigger label. */
   badge?: unknown;
+  /** Composes the trigger behavior onto a single child element. */
+  asChild?: boolean;
 }
 
 export interface BaseTabsContentProps {

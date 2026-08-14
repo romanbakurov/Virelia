@@ -1,4 +1,4 @@
-import { act, useState } from 'react';
+import { act, type MouseEvent, useState } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -745,6 +745,178 @@ describe('Tabs', () => {
     expect(warn).toHaveBeenCalledWith(
       'Tabs.Content value "orphan" does not match any Tabs.Trigger.'
     );
+
+    unmount();
+  });
+
+  it('renders navigation triggers as composed links without tab semantics', () => {
+    const { container, unmount } = render(
+      <Tabs mode='navigation' defaultValue='components'>
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='/components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' asChild>
+            <a href='/themes'>Themes</a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    expect(links).toHaveLength(2);
+
+    expect(container.querySelector('[role="tablist"]')).toBeNull();
+    expect(container.querySelector('[role="tab"]')).toBeNull();
+    expect(container.querySelector('[role="tabpanel"]')).toBeNull();
+
+    expect(links[0].getAttribute('href')).toBe('/components');
+    expect(links[0].getAttribute('aria-current')).toBe('page');
+    expect(links[0].getAttribute('data-state')).toBe('active');
+
+    expect(links[1].getAttribute('aria-current')).toBeNull();
+    expect(links[1].getAttribute('data-state')).toBe('inactive');
+
+    unmount();
+  });
+
+  it('changes the active navigation value when a composed link is clicked', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='components'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='#components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' asChild>
+            <a href='#themes'>Themes</a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    act(() => {
+      links[1].click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('themes');
+    expect(links[0].getAttribute('aria-current')).toBeNull();
+    expect(links[1].getAttribute('aria-current')).toBe('page');
+    expect(links[1].getAttribute('data-state')).toBe('active');
+
+    unmount();
+  });
+
+  it('does not require matching content in navigation mode', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    const { unmount } = render(
+      <Tabs mode='navigation' defaultValue='components'>
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='/components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' asChild>
+            <a href='/themes'>Themes</a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    expect(warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('does not have a matching Tabs.Content')
+    );
+
+    unmount();
+  });
+
+  it('prevents interaction for disabled navigation triggers', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='components'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='#components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' disabled asChild>
+            <a href='#themes'>Themes</a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    expect(links[1].getAttribute('aria-disabled')).toBe('true');
+    expect(links[1].tabIndex).toBe(-1);
+
+    act(() => {
+      links[1].click();
+    });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(links[0].getAttribute('aria-current')).toBe('page');
+
+    unmount();
+  });
+
+  it('respects a composed navigation child that prevents default', () => {
+    const onValueChange = vi.fn();
+
+    const childClick = vi.fn((event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+    });
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='components'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List aria-label='Primary navigation'>
+          <Tabs.Trigger value='components' asChild>
+            <a href='#components'>Components</a>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='themes' asChild>
+            <a href='#themes' onClick={childClick}>
+              Themes
+            </a>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    act(() => {
+      links[1].click();
+    });
+
+    expect(childClick).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenCalledWith('themes');
+    expect(links[0].id).toContain('trigger-components');
+    expect(links[1].id).toContain('trigger-themes');
+    expect(links[0].getAttribute('aria-current')).toBeNull();
+    expect(links[1].getAttribute('aria-current')).toBe('page');
+    expect(links[1].getAttribute('data-state')).toBe('active');
 
     unmount();
   });

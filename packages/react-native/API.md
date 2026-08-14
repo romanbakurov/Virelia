@@ -648,6 +648,7 @@ content needs to be preserved.
 | `size`           | `TabsSize`                   | No       | Tabs size.                                                                                |
 | `dir`            | `'ltr' \| 'rtl'`             | No       | Text direction reserved for API parity.                                                   |
 | `disabled`       | `boolean`                    | No       | Disables interaction.                                                                     |
+| `mode`           | `TabsMode`                   | No       | —                                                                                         |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 
@@ -688,6 +689,7 @@ content needs to be preserved.
 | `description` | `ReactNode`            | No       | Secondary text rendered below the trigger label.                             |
 | `value`       | `string`               | Yes      | Stable trigger value matched with Tabs.Content.                              |
 | `disabled`    | `boolean`              | No       | Disables interaction.                                                        |
+| `asChild`     | `boolean`              | No       | —                                                                            |
 
 <!-- api-docgen:end native.TabsTriggerProps.TabsTriggerProps -->
 

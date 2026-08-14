@@ -15,6 +15,7 @@ export const TabsRoot = ({
   onValueChange,
   orientation = 'horizontal',
   activationMode = 'automatic',
+  mode = 'tabs',
   variant = 'line',
   color = 'primary',
   size = 'md',
@@ -107,6 +108,7 @@ export const TabsRoot = ({
     () => ({
       value,
       setValue,
+      mode,
       orientation,
       activationMode,
       variant,
@@ -126,6 +128,7 @@ export const TabsRoot = ({
       disabled,
       keepMounted,
       lazyMount,
+      mode,
       orientation,
       getTriggerLayout,
       indicatorVersion,

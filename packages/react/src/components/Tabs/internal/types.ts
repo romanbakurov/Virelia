@@ -2,6 +2,7 @@ import type {
   Orientation,
   TabsActivationMode,
   TabsColor,
+  TabsMode,
   TabsSize,
   TabsValue,
   TabsVariant,
@@ -10,7 +11,7 @@ import type { KeyboardEvent } from 'react';
 
 export interface RegisteredTab {
   value: TabsValue;
-  element: HTMLButtonElement;
+  element: HTMLElement;
   disabled: boolean;
 }
 
@@ -24,6 +25,8 @@ export interface TabsContextValue {
   collectionVersion: number;
   setValue: (value: TabsValue) => void;
   setFocusedValue: (value: TabsValue) => void;
+
+  mode: TabsMode;
 
   orientation: Orientation;
   activationMode: TabsActivationMode;
@@ -40,12 +43,12 @@ export interface TabsContextValue {
 
   registerTrigger: (
     value: TabsValue,
-    element: HTMLButtonElement | null,
+    element: HTMLElement | null,
     disabled?: boolean
   ) => void;
   registerContent: (value: TabsValue, mounted: boolean) => void;
 
-  onTriggerKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => void;
+  onTriggerKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 
   getTriggerId: (value: TabsValue) => string;
   getContentId: (value: TabsValue) => string;

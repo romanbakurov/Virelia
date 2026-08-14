@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Home, Settings, User } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 
@@ -26,6 +26,8 @@ Navigation component used to organize related content into multiple views.
 - Controlled and uncontrolled value state
 - Horizontal and vertical orientation
 - Automatic and manual activation modes
+- Tabs and navigation interaction modes
+- Trigger composition through \`asChild\`
 - Line, pills, and segmented variants
 - Primary, neutral, success, warning, and danger colors
 - Sizes: sm, md, and lg
@@ -64,12 +66,20 @@ should be active at a time.
 
 ### Accessibility
 
-Tabs use native tab semantics where available:
+In the default \`mode='tabs'\`, Tabs exposes native tab semantics where
+available:
 
 - \`Tabs.List\` exposes a tab list
 - \`Tabs.Trigger\` exposes selected and disabled state
 - disabled triggers do not activate
 - active content is mounted according to the root mounting policy
+
+When \`mode='navigation'\` is used, Tabs switches away from tab semantics:
+
+- \`Tabs.List\` does not expose a tab-list role
+- \`Tabs.Trigger asChild\` preserves the semantics of the composed child
+- disabled navigation triggers do not activate
+- \`Tabs.Content\` is not required
 `,
       },
     },
@@ -83,6 +93,10 @@ Tabs use native tab semantics where available:
     variant: {
       control: 'select',
       options: ['line', 'pills', 'segmented'],
+    },
+    mode: {
+      control: 'select',
+      options: ['tabs', 'navigation'],
     },
     orientation: {
       control: 'select',
@@ -220,6 +234,38 @@ const IconOnlyTabsStory = () => {
   );
 };
 
+const NavigationTabsStory = () => (
+  <Tabs mode='navigation' defaultValue='overview' variant='line'>
+    <Tabs.List>
+      <Tabs.Trigger value='overview' asChild>
+        <Pressable>
+          <Text>Overview</Text>
+        </Pressable>
+      </Tabs.Trigger>
+
+      <Tabs.Trigger value='projects' asChild>
+        <Pressable>
+          <Text>Projects</Text>
+        </Pressable>
+      </Tabs.Trigger>
+
+      <Tabs.Trigger value='activity' asChild>
+        <Pressable>
+          <Text>Activity</Text>
+        </Pressable>
+      </Tabs.Trigger>
+
+      <Tabs.Trigger value='settings' asChild>
+        <Pressable>
+          <Text>Settings</Text>
+        </Pressable>
+      </Tabs.Trigger>
+
+      <Tabs.Indicator />
+    </Tabs.List>
+  </Tabs>
+);
+
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -274,6 +320,14 @@ export const Segmented: Story = {
   render: (args) => (
     <Section title='Segmented'>
       <DefaultTabsStory {...args} />
+    </Section>
+  ),
+};
+
+export const Navigation: Story = {
+  render: () => (
+    <Section title='Navigation'>
+      <NavigationTabsStory />
     </Section>
   ),
 };

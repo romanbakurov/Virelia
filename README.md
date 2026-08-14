@@ -283,20 +283,20 @@ pnpm docker:e2e:update
 Every component is available for both React and React Native, providing a familiar developer experience with a consistent API across platforms.
 
 | Component  | React | React Native |
-| ---------- | :---: | :----------: |
-| Button     |  ✅   |      ✅      |
-| Checkbox   |  ✅   |      ✅      |
-| Dropdown   |  ✅   |      ✅      |
-| FormField  |  ✅   |      ✅      |
-| Input      |  ✅   |      ✅      |
-| Modal      |  ✅   |      ✅      |
-| Popover    |  ✅   |      x       |
-| Portal     |  ✅   |      ✅      |
-| Radio      |  ✅   |      ✅      |
-| RadioGroup |  ✅   |      ✅      |
-| Select     |  ✅   |      ✅      |
-| Tabs       |  ✅   |      ✅      |
-| Tooltip    |  ✅   |      ✅      |
+| ---------- | :---: |:------------:|
+| Button     |  ✅   |      ✅       |
+| Checkbox   |  ✅   |      ✅       |
+| Dropdown   |  ✅   |      ✅       |
+| FormField  |  ✅   |      ✅       |
+| Input      |  ✅   |      ✅       |
+| Modal      |  ✅   |      ✅       |
+| Popover    |  ✅   |      ✅       |
+| Portal     |  ✅   |      ✅       |
+| Radio      |  ✅   |      ✅       |
+| RadioGroup |  ✅   |      ✅       |
+| Select     |  ✅   |      ✅       |
+| Tabs       |  ✅   |      ✅       |
+| Tooltip    |  ✅   |      ✅       |
 
 ---
 

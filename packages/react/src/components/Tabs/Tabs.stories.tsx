@@ -84,6 +84,8 @@ Compound navigation component for switching between related sections of content.
 - List-level scrollable tabs
 - keepMounted, lazyMount, and forceMount mounting policies
 - Arrow, Home, End, loop, and RTL keyboard navigation
+- Tabs and navigation interaction modes
+- Navigation composition through \`Tabs.Trigger asChild\`
 
 ### Usage
 
@@ -114,9 +116,35 @@ panel should be active at a time.
 </Tabs>
 \`\`\`
 
+### Navigation mode
+
+Use \`mode='navigation'\` when the same visual treatment is needed for navigation links rather than tab panels.
+
+\`\`\`tsx
+<nav aria-label='Primary navigation'>
+  <Tabs mode='navigation' defaultValue='components'>
+    <Tabs.List>
+      <Tabs.Trigger value='components' asChild>
+        <a href='/components'>Components</a>
+      </Tabs.Trigger>
+
+      <Tabs.Trigger value='themes' asChild>
+        <a href='/themes'>Themes</a>
+      </Tabs.Trigger>
+    </Tabs.List>
+  </Tabs>
+</nav>
+
+In navigation mode:
+
+Tabs.List does not expose role='tablist'
+composed triggers render as links instead of tabs
+the active item uses aria-current='page'
+Tabs.Content is not required
+
 ### Accessibility
 
-Tabs use the WAI-ARIA tabs pattern:
+In \`mode='tabs'\`, Tabs use the WAI-ARIA tabs pattern:
 
 - \`Tabs.List\` renders a tab list
 - \`Tabs.Trigger\` renders a tab
@@ -124,6 +152,14 @@ Tabs use the WAI-ARIA tabs pattern:
 - triggers and content are connected through accessible IDs
 - disabled triggers are skipped during keyboard navigation
 - automatic and manual keyboard activation are supported
+
+In \`mode='navigation'\`, Tabs switches away from the WAI-ARIA tabs pattern:
+
+- \`Tabs.List\` does not expose tab-list semantics
+- \`Tabs.Trigger asChild\` preserves the native semantics of the composed link
+- the active navigation item uses \`aria-current='page'\`
+- \`Tabs.Content\` is not required
+- keyboard navigation between navigation triggers remains available
 `,
       },
     },
@@ -131,6 +167,7 @@ Tabs use the WAI-ARIA tabs pattern:
 
   args: {
     defaultValue: 'home',
+    mode: 'tabs',
     orientation: 'horizontal',
     activationMode: 'automatic',
     loop: true,
@@ -172,6 +209,16 @@ Tabs use the WAI-ARIA tabs pattern:
       action: 'value changed',
       table: {
         type: { summary: '(value: string) => void' },
+      },
+    },
+
+    mode: {
+      description: 'Interaction and accessibility model used by the component.',
+      control: 'select',
+      options: ['tabs', 'navigation'],
+      table: {
+        type: { summary: `'tabs' | 'navigation'` },
+        defaultValue: { summary: 'tabs' },
       },
     },
 
@@ -417,6 +464,53 @@ export const Basic: Story = {
 
         <DemoContent />
       </Tabs>
+    </Section>
+  ),
+};
+
+export const Navigation: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Navigation mode composes native links while preserving Tabs visual states and keyboard navigation.',
+      },
+    },
+  },
+
+  render: () => (
+    <Section title='Navigation'>
+      <nav aria-label='Example navigation'>
+        <Tabs mode='navigation' defaultValue='overview'>
+          <Tabs.List>
+            <Tabs.Trigger value='overview' asChild>
+              <a href='#overview' onClick={(event) => event.preventDefault()}>
+                Overview
+              </a>
+            </Tabs.Trigger>
+
+            <Tabs.Trigger value='projects' asChild>
+              <a href='#projects' onClick={(event) => event.preventDefault()}>
+                Projects
+              </a>
+            </Tabs.Trigger>
+
+            <Tabs.Trigger value='activity' asChild>
+              <a href='#activity' onClick={(event) => event.preventDefault()}>
+                Activity
+              </a>
+            </Tabs.Trigger>
+
+            <Tabs.Trigger value='settings' asChild>
+              <a href='#settings' onClick={(event) => event.preventDefault()}>
+                Settings
+              </a>
+            </Tabs.Trigger>
+
+            <Tabs.Indicator />
+          </Tabs.List>
+        </Tabs>
+      </nav>
     </Section>
   ),
 };

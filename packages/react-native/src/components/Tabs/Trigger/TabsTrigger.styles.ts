@@ -1,4 +1,5 @@
-import { StyleSheet, type TextStyle } from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
@@ -229,3 +230,78 @@ export const createStyles = (theme: NativeTheme) =>
       color: theme.components.tabs.primary.pills.active.fg,
     },
   });
+
+interface GetTabStyleOptions {
+  styles: ReturnType<typeof createStyles>;
+  isSm: boolean;
+  isLg: boolean;
+  isOnlyIcon: boolean;
+  isVertical: boolean;
+  isPills: boolean;
+  isSegmented: boolean;
+  isLine: boolean;
+  isActive: boolean;
+  isDisabled: boolean;
+  borderColor: string;
+  backgroundColor: string;
+  segmentedActiveBorderColor: string;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const getTriggerStyle = ({
+  styles,
+  isSm,
+  isLg,
+  isOnlyIcon,
+  isVertical,
+  isPills,
+  isSegmented,
+  isLine,
+  isActive,
+  isDisabled,
+  borderColor,
+  backgroundColor,
+  segmentedActiveBorderColor,
+  style,
+}: GetTabStyleOptions): StyleProp<ViewStyle> => [
+  styles.tab,
+  isSm && styles.tabSm,
+  isLg && styles.tabLg,
+
+  isOnlyIcon && styles.tabIconOnly,
+  isOnlyIcon && isSm && styles.tabIconOnlySm,
+  isOnlyIcon && isLg && styles.tabIconOnlyLg,
+
+  isVertical && styles.tabVertical,
+
+  isPills && styles.tabPills,
+  isPills && isOnlyIcon && styles.tabPillsIconOnly,
+
+  isSegmented && styles.tabSegmented,
+  isSegmented && isSm && styles.tabSegmentedSm,
+  isSegmented && isLg && styles.tabSegmentedLg,
+  isSegmented && isOnlyIcon && styles.tabSegmentedIconOnly,
+  isSegmented && isOnlyIcon && isSm && styles.tabSegmentedIconOnlySm,
+  isSegmented && isOnlyIcon && isLg && styles.tabSegmentedIconOnlyLg,
+
+  {
+    borderColor: isLine ? 'transparent' : borderColor,
+    backgroundColor,
+  },
+
+  isSegmented &&
+    isActive && {
+      borderColor: segmentedActiveBorderColor,
+      backgroundColor: 'transparent',
+    },
+
+  isPills &&
+    isActive && {
+      borderColor: 'transparent',
+      backgroundColor: 'transparent',
+    },
+
+  isDisabled && styles.tabDisabled,
+
+  style,
+];
