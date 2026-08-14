@@ -85,6 +85,10 @@ function createTabsCode(
     props.push(`size='${value.size}'`);
   }
 
+  if (value.mode !== 'tabs') {
+    props.push(`mode='${value.mode}'`);
+  }
+
   if (value.disabled) {
     props.push('disabled');
   }

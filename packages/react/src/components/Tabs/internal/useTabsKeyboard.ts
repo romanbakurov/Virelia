@@ -24,7 +24,7 @@ export const useTabsKeyboard = ({
   dir,
   loop,
 }: UseTabsKeyboardParams) => {
-  const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     const tabs = getTabs().filter((tab) => !tab.disabled);
 
     if (tabs.length === 0) return;

@@ -12,14 +12,14 @@ export const TabsList = ({
   scrollable: scrollableProp,
   ...props
 }: TabsListProps) => {
-  const { orientation, variant } = useTabsContext();
+  const { mode, orientation, variant } = useTabsContext();
   const scrollable = scrollableProp ?? false;
 
   return (
     <div
       {...props}
-      role='tablist'
-      aria-orientation={orientation}
+      role={mode === 'tabs' ? 'tablist' : undefined}
+      aria-orientation={mode === 'tabs' ? orientation : undefined}
       data-orientation={orientation}
       data-variant={variant}
       data-scrollable={scrollable ? '' : undefined}

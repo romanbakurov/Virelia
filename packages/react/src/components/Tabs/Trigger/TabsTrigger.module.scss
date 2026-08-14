@@ -176,16 +176,21 @@
   border-color: transparent;
   border-radius: var(--radius-lg);
 
-  &:hover:not(:disabled, [aria-selected='true']) {
+  &:hover:not(:disabled, [aria-selected='true'], [data-state='active']) {
     color: var(--tabs-trigger-hover-fg);
   }
 
-  &:hover:not(:disabled, [aria-selected='true'])::before {
+  &:hover:not(
+      :disabled,
+      [aria-selected='true'],
+      [data-state='active']
+    )::before {
     background-color: var(--tabs-trigger-hover-bg);
     transform: scaleX(1);
   }
 
-  &[aria-selected='true'] {
+  &[aria-selected='true'],
+  &[data-state='active'] {
     color: var(--tabs-segmented-active-fg);
     background-color: transparent;
   }
@@ -231,7 +236,8 @@
     transform: scaleX(1);
   }
 
-  &[aria-selected='true'] {
+  &[aria-selected='true'],
+  &[data-state='active'] {
     color: var(--tabs-trigger-active-fg);
     background-color: var(--tabs-trigger-active-bg);
   }
@@ -243,16 +249,21 @@
   border-color: transparent;
   border-radius: var(--radius-md);
 
-  &:hover:not(:disabled, [aria-selected='true']) {
+  &:hover:not(:disabled, [aria-selected='true'], [data-state='active']) {
     color: var(--tabs-pills-hover-fg);
   }
 
-  &:hover:not(:disabled, [aria-selected='true'])::before {
+  &:hover:not(
+      :disabled,
+      [aria-selected='true'],
+      [data-state='active']
+    )::before {
     background-color: var(--tabs-pills-hover-bg);
     transform: scaleX(1);
   }
 
-  &[aria-selected='true'] {
+  &[aria-selected='true'],
+  &[data-state='active'] {
     color: var(--tabs-pills-active-fg);
     background-color: transparent;
   }

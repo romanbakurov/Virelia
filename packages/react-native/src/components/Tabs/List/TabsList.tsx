@@ -12,7 +12,7 @@ export const TabsList = ({
   style,
 }: TabsListProps) => {
   const styles = useThemeStyles(createStyles);
-  const { orientation, variant } = useTabs();
+  const { mode, orientation, variant } = useTabs();
   const scrollable = scrollableProp ?? false;
   const listStyle = [
     styles.list,
@@ -27,7 +27,7 @@ export const TabsList = ({
     return (
       <ScrollView
         horizontal
-        accessibilityRole='tablist'
+        accessibilityRole={mode === 'tabs' ? 'tablist' : undefined}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={listStyle}
       >
@@ -37,7 +37,10 @@ export const TabsList = ({
   }
 
   return (
-    <View accessibilityRole='tablist' style={listStyle}>
+    <View
+      accessibilityRole={mode === 'tabs' ? 'tablist' : undefined}
+      style={listStyle}
+    >
       {children}
     </View>
   );

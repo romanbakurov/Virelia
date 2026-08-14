@@ -23,6 +23,7 @@ export function TabsDemo() {
           variant={value.variant}
           color={value.color}
           size={value.size}
+          mode={value.mode}
           disabled={value.disabled}
         >
           <Tabs.List>

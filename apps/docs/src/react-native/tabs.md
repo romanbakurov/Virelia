@@ -122,11 +122,68 @@ Use `lazyMount` to defer a panel until it is activated for the first time.
 
 ## Accessibility
 
+In the default `mode='tabs'`, Tabs exposes native tab semantics where available.
+`Tabs.List` exposes the tab list, while triggers expose their selected and
+disabled states.
+
+In `mode='navigation'`, Tabs does not expose tab semantics. When `asChild` is
+used, the composed child keeps responsibility for the semantics appropriate to
+the navigation destination.
+
 - Use short, distinct trigger labels.
-- Do not use color alone to identify the active tab.
+- Do not use color alone to identify the active item.
 - Keep trigger values stable across renders.
-- Verify scrollable tab rows and panel changes with VoiceOver and TalkBack.
-- Preserve panel state deliberately rather than mounting every expensive screen by default.
+- Disabled triggers should be rare and clearly understandable.
+- Verify scrollable tab rows and navigation with VoiceOver and TalkBack.
+- Preserve panel state deliberately rather than mounting every expensive screen
+  by default.
+
+## Navigation Mode
+
+Use `mode='navigation'` when the triggers represent navigation destinations
+rather than panels in the current screen.
+
+```tsx
+import { Pressable, Text } from 'react-native';
+
+import { Tabs } from '@vellira-ui/react-native';
+
+<Tabs mode='navigation' defaultValue='overview' variant='line'>
+  <Tabs.List>
+    <Tabs.Trigger value='overview' asChild>
+      <Pressable>
+        <Text>Overview</Text>
+      </Pressable>
+    </Tabs.Trigger>
+
+    <Tabs.Trigger value='projects' asChild>
+      <Pressable>
+        <Text>Projects</Text>
+      </Pressable>
+    </Tabs.Trigger>
+
+    <Tabs.Trigger value='settings' asChild>
+      <Pressable>
+        <Text>Settings</Text>
+      </Pressable>
+    </Tabs.Trigger>
+
+    <Tabs.Indicator />
+  </Tabs.List>
+</Tabs>;
+```
+
+Navigation mode differs from regular tabs:
+
+- `Tabs.List` does not expose tab-list semantics.
+- `Tabs.Trigger asChild` composes trigger behavior onto the child.
+- `Tabs.Content` is not required.
+- the selected value still drives the active visual state and indicator.
+- use your application's navigation or router component as the composed child
+  when a trigger should change screens or routes.
+
+Use the default `mode='tabs'` when triggers switch related content within the
+same screen.
 
 ## See Also
 

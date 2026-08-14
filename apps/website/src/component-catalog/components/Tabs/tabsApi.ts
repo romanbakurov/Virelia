@@ -89,6 +89,12 @@ const reactTabsApiSections: readonly ComponentApiSection[] = [
         description: 'Controls trigger and indicator sizing.',
       },
       {
+        name: 'mode',
+        type: "'tabs' | 'navigation'",
+        description:
+          'Interaction and accessibility model used by the component.',
+      },
+      {
         name: 'disabled',
         type: 'boolean',
         defaultValue: 'false',
@@ -162,6 +168,12 @@ const reactTabsApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'false',
         description: 'Disables this tab trigger.',
+      },
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description:
+          'Composes the trigger behavior onto a single child element.',
       },
       {
         name: 'defaultValue',
@@ -335,6 +347,12 @@ const nativeTabsApiSections: readonly ComponentApiSection[] = [
         description: 'Controls trigger and indicator sizing.',
       },
       {
+        name: 'mode',
+        type: "'tabs' | 'navigation'",
+        description:
+          'Interaction and accessibility model used by the component.',
+      },
+      {
         name: 'disabled',
         type: 'boolean',
         defaultValue: 'false',
@@ -407,6 +425,12 @@ const nativeTabsApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'false',
         description: 'Disables this tab trigger.',
+      },
+      {
+        name: 'asChild',
+        type: 'boolean',
+        description:
+          'Composes the trigger behavior onto a single child element.',
       },
     ],
   },

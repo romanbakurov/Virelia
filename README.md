@@ -290,7 +290,7 @@ Every component is available for both React and React Native, providing a famili
 | FormField  |  ✅   |      ✅      |
 | Input      |  ✅   |      ✅      |
 | Modal      |  ✅   |      ✅      |
-| Popover    |  ✅   |      x       |
+| Popover    |  ✅   |      ✅      |
 | Portal     |  ✅   |      ✅      |
 | Radio      |  ✅   |      ✅      |
 | RadioGroup |  ✅   |      ✅      |

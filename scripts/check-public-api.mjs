@@ -479,6 +479,7 @@ const publicSymbolContracts = {
     'SelectVirtualConfig',
     'TabsActivationMode',
     'TabsColor',
+    'TabsMode',
     'TabsSize',
     'TabsValue',
     'TabsVariant',

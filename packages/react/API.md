@@ -732,6 +732,7 @@ content needs to be preserved.
 | `size`           | `TabsSize`                   | No       | Tabs size.                                                                                |
 | `dir`            | `'ltr' \| 'rtl'`             | No       | Text direction used for horizontal keyboard navigation and indicator positioning.         |
 | `disabled`       | `boolean`                    | No       | Disables interaction.                                                                     |
+| `mode`           | `TabsMode`                   | No       | —                                                                                         |
 
 <!-- api-docgen:end web.TabsProps.TabsProps -->
 
@@ -768,6 +769,7 @@ content needs to be preserved.
 | `value`       | `string`    | Yes      | Stable trigger value matched with Tabs.Content.                              |
 | `badge`       | `ReactNode` | No       | Badge rendered after the label.                                              |
 | `description` | `ReactNode` | No       | Secondary text rendered below the trigger label.                             |
+| `asChild`     | `boolean`   | No       | —                                                                            |
 
 <!-- api-docgen:end web.TabsTriggerProps.TabsTriggerProps -->
 

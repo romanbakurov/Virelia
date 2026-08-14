@@ -1,5 +1,6 @@
 import { act } from 'react';
 
+import { Pressable, Text } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../test-utils/render';
@@ -149,8 +150,8 @@ describe('Native Tabs', () => {
     expect(tabs).toHaveLength(3);
     expect(tabs[0].textContent).toBe('Overview');
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
-    expect(tabs[0].getAttribute('aria-disabled')).toBeNull();
-    expect(tabs[1].textContent).toBe('Disabled');
+    expect(tabs[0].getAttribute('aria-disabled')).toBe('false');
+    expect(tabs[1].getAttribute('aria-disabled')).toBe('true');
     expect(tabs[1].disabled).toBe(true);
     expect(tabs[1].getAttribute('aria-selected')).toBe('false');
     expect(tabs[1].getAttribute('aria-disabled')).toBe('true');
@@ -353,5 +354,129 @@ describe('Native Tabs', () => {
     expect(() => {
       render(<Tabs.Badge>New</Tabs.Badge>);
     }).toThrow('Tabs components must be used inside <Tabs>.');
+  });
+
+  it('renders navigation mode without tab accessibility roles', () => {
+    const { container, unmount } = render(
+      <Tabs mode='navigation' defaultValue='overview'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview'>Overview</Tabs.Trigger>
+          <Tabs.Trigger value='settings'>Settings</Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    expect(container.querySelector('[role="tablist"]')).toBeNull();
+    expect(container.querySelector('[role="tab"]')).toBeNull();
+
+    unmount();
+  });
+
+  it('supports asChild in navigation mode', () => {
+    const childPress = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs mode='navigation' defaultValue='overview'>
+        <Tabs.List>
+          <Tabs.Trigger value='overview' asChild>
+            <button type='button' data-testid='overview-link'>
+              Overview
+            </button>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='settings' asChild>
+            <button
+              type='button'
+              data-testid='settings-link'
+              onClick={childPress}
+            >
+              Settings
+            </button>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const settings = container.querySelector<HTMLButtonElement>(
+      '[data-testid="settings-link"]'
+    );
+
+    act(() => {
+      settings?.click();
+    });
+
+    expect(childPress).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  it('updates navigation value when an asChild trigger is pressed', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='overview'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List>
+          <Tabs.Trigger value='overview' asChild>
+            <Pressable testID='overview-link'>
+              <Text>Overview</Text>
+            </Pressable>
+          </Tabs.Trigger>
+
+          <Tabs.Trigger value='settings' asChild>
+            <Pressable testID='settings-link'>
+              <Text>Settings</Text>
+            </Pressable>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const settings = container.querySelector<HTMLElement>(
+      '[data-testid="settings-link"]'
+    );
+
+    act(() => {
+      settings?.click();
+    });
+
+    expect(onValueChange).toHaveBeenCalledWith('settings');
+
+    unmount();
+  });
+
+  it('does not activate a disabled navigation trigger', () => {
+    const onValueChange = vi.fn();
+
+    const { container, unmount } = render(
+      <Tabs
+        mode='navigation'
+        defaultValue='overview'
+        onValueChange={onValueChange}
+      >
+        <Tabs.List>
+          <Tabs.Trigger value='settings' disabled asChild>
+            <Pressable testID='settings-link'>
+              <Text>Settings</Text>
+            </Pressable>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs>
+    );
+
+    const settings = container.querySelector<HTMLElement>(
+      '[data-testid="settings-link"]'
+    );
+
+    act(() => {
+      settings?.click();
+    });
+
+    expect(onValueChange).not.toHaveBeenCalled();
+
+    unmount();
   });
 });

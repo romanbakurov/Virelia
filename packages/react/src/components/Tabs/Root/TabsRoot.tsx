@@ -22,6 +22,7 @@ export const TabsRoot = ({
   activationMode = 'automatic',
   dir = 'ltr',
   loop = true,
+  mode = 'tabs',
   variant = 'line',
   color = 'primary',
   size = 'md',
@@ -55,7 +56,7 @@ export const TabsRoot = ({
   const registerTrigger = useCallback(
     (
       triggerValue: string,
-      element: HTMLButtonElement | null,
+      element: HTMLElement | null,
       triggerDisabled = false
     ) => {
       if (!element) {
@@ -139,6 +140,7 @@ export const TabsRoot = ({
     setValue,
     setFocusedValue,
 
+    mode,
     orientation,
     activationMode,
     dir,
@@ -211,6 +213,8 @@ export const TabsRoot = ({
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') return;
 
+    if (mode === 'navigation') return;
+
     const triggerValues = triggersRef.current.map((tab) => tab.value);
     const contentValues = contentsRef.current.map((content) => content.value);
     const duplicatedValue = triggerValues.find(
@@ -238,7 +242,7 @@ export const TabsRoot = ({
         );
       }
     }
-  }, [contentsRef, triggersRef, version]);
+  }, [contentsRef, mode, triggersRef, version]);
 
   return (
     <TabsContext.Provider value={contextValue}>
@@ -249,6 +253,7 @@ export const TabsRoot = ({
           orientation === 'vertical' && styles.vertical,
           className
         )}
+        data-mode={mode}
         data-orientation={orientation}
         dir={dir}
         data-variant={variant}

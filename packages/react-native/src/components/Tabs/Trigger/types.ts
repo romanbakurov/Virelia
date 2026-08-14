@@ -1,6 +1,25 @@
 import type { BaseTabsTriggerProps } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import type {
+  GestureResponderEvent,
+  LayoutChangeEvent,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
+
+export interface TabsTriggerChildProps {
+  children?: ReactNode;
+  accessibilityRole?: string;
+  accessibilityState?: {
+    selected?: boolean;
+    disabled?: boolean;
+  };
+  disabled?: boolean;
+  onPress?: (event: GestureResponderEvent) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
+  style?: StyleProp<ViewStyle>;
+}
 
 export interface TabsTriggerProps extends BaseTabsTriggerProps {
   /** Trigger label content. */

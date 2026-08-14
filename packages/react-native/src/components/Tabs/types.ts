@@ -3,6 +3,7 @@ import type {
   Orientation,
   TabsActivationMode,
   TabsColor,
+  TabsMode,
   TabsSize,
   TabsValue,
   TabsVariant,
@@ -32,6 +33,7 @@ export interface TabsTriggerLayout {
 export interface TabsContextValue {
   value?: TabsValue;
   setValue: (value: TabsValue) => void;
+  mode: TabsMode;
   orientation: Orientation;
   activationMode: TabsActivationMode;
   variant: TabsVariant;

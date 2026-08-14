@@ -2,15 +2,12 @@ import path from 'node:path';
 
 import { defineConfig } from 'vitest/config';
 
+const dirname = import.meta.dirname;
+
 export default defineConfig({
   resolve: {
     alias: {
-      'react-native': path.resolve(__dirname, 'test/react-native.mock.tsx'),
-      '@vellira-ui/react-native': path.resolve(__dirname, 'src/index.ts'),
-      '@vellira-ui/core': path.resolve(__dirname, '../core/src/index.ts'),
-      '@vellira-ui/icons': path.resolve(__dirname, 'test/icons.mock.tsx'),
-      '@vellira-ui/tokens': path.resolve(__dirname, '../tokens/src/index.ts'),
-      'storybook/test': path.resolve(__dirname, 'test/storybook-test.mock.ts'),
+      'react-native': path.resolve(dirname, 'test/react-native.mock.tsx'),
     },
   },
   test: {
@@ -20,6 +17,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       exclude: [
+        '**/dist/**',
         '**/*.styles.ts',
         '**/*.stories.*',
         '**/*.test.*',

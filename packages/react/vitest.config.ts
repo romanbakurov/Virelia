@@ -3,14 +3,17 @@ import path from 'node:path';
 import { mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
-import viteConfig from './vite.config';
+import viteConfig from './vite.config.ts';
 
 export default mergeConfig(
   viteConfig,
   defineConfig({
     resolve: {
       alias: {
-        '@vellira-ui/core': path.resolve(__dirname, '../core/src/index.ts'),
+        '@vellira-ui/core': path.resolve(
+          import.meta.dirname,
+          '../core/src/index.ts'
+        ),
       },
     },
     test: {

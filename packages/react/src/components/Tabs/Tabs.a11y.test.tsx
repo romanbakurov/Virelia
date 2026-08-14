@@ -100,4 +100,34 @@ describe('Tabs accessibility', () => {
 
     unmount();
   });
+
+  it('renders navigation mode without tab ARIA semantics', async () => {
+    const { container, unmount } = render(
+      <nav aria-label='Primary navigation'>
+        <Tabs mode='navigation' defaultValue='components'>
+          <Tabs.List>
+            <Tabs.Trigger value='components' asChild>
+              <a href='/components'>Components</a>
+            </Tabs.Trigger>
+
+            <Tabs.Trigger value='themes' asChild>
+              <a href='/themes'>Themes</a>
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Tabs>
+      </nav>
+    );
+
+    await expectNoA11yViolations(container);
+
+    expect(container.querySelector('[role="tablist"]')).toBeNull();
+    expect(container.querySelector('[role="tab"]')).toBeNull();
+
+    const links = container.querySelectorAll<HTMLAnchorElement>('a');
+
+    expect(links[0].getAttribute('aria-current')).toBe('page');
+    expect(links[1].getAttribute('aria-current')).toBeNull();
+
+    unmount();
+  });
 });
