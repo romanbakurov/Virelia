@@ -27,9 +27,6 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: '@vellira-ui'
 
-      - name: Install npm with trusted publishing support
-        run: npm install --global npm@11.18.0
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -59,8 +56,10 @@ jobs:
       - name: Smoke packages
         run: pnpm ci:smoke
 
-      - name: Verify npm registry
-        run: npm ping --registry=https://registry.npmjs.org
+      - name: Verify npm CLI and registry
+        run: |
+          pnpm exec npm --version
+          pnpm exec npm ping --registry=https://registry.npmjs.org
 
       - name: Release
         env:
