@@ -36,6 +36,7 @@ Accessibility-minded • Cross-platform • Modular
 
 <p align="center">
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14078/badge)](https://www.bestpractices.dev/projects/14078)
 [![npm version](https://img.shields.io/npm/v/@vellira-ui/react)](https://www.npmjs.com/package/@vellira-ui/react)
 [![npm downloads](https://img.shields.io/npm/dm/@vellira-ui/react)](https://www.npmjs.com/package/@vellira-ui/react)
 [![CI](https://github.com/vellira-dev/vellira/actions/workflows/ci.yml/badge.svg)](https://github.com/vellira-dev/vellira/actions/workflows/ci.yml)
