@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
 import { CompactFooter } from '@/components/layout/CompactFooter';
-import { componentsPortalEnabled } from '@/config/features';
 
 import {
   ComponentExplorer,
@@ -52,10 +50,6 @@ export async function generateMetadata({
 }
 
 export default async function ComponentPage({ params }: ComponentPageProps) {
-  if (!componentsPortalEnabled) {
-    notFound();
-  }
-
   const { slug } = await params;
   const component = getComponentBySlug(slug);
 

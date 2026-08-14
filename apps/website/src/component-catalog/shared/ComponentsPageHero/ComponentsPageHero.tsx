@@ -7,17 +7,13 @@ export function ComponentsPageHero() {
     <header className={styles.root}>
       <Container size='wide'>
         <div className={styles.content}>
-          <div className={styles.eyebrow}>React components</div>
+          <div className={styles.eyebrow}>Components</div>
 
-          <h1 className={styles.title}>
-            Build interfaces
-            <br />
-            with Vellira
-          </h1>
+          <h1 className={styles.title}>Components</h1>
 
           <p className={styles.description}>
-            Explore accessible, production-ready React components with
-            interactive examples and detailed documentation.
+            Accessible, production-ready building blocks for React and React
+            Native.
           </p>
         </div>
       </Container>

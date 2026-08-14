@@ -69,7 +69,7 @@
   padding: 0 var(--space-1);
   color: var(--text-brand);
   font-size: 10px;
-  font-weight: var(--font-weight-bold);
+  font-weight: 700;
   line-height: 1;
   letter-spacing: 0;
   background: color-mix(in srgb, var(--text-brand) 10%, transparent);
