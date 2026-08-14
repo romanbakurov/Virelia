@@ -66,6 +66,12 @@ export const tabsPlaygroundControls = [
     options: ['sm', 'md', 'lg'],
   },
   {
+    type: 'select',
+    key: 'mode',
+    label: 'Mode',
+    options: ['tabs', 'navigation'],
+  },
+  {
     type: 'toggle',
     key: 'disabled',
     label: 'Disabled',

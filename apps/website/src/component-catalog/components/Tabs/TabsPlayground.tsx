@@ -22,6 +22,7 @@ export type TabsPlaygroundValue = {
   variant: 'line' | 'pills' | 'segmented';
   color: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
   size: 'sm' | 'md' | 'lg';
+  mode: 'tabs' | 'navigation';
   disabled: boolean;
 };
 
@@ -46,6 +47,7 @@ export const initialTabsPlaygroundValue: TabsPlaygroundValue = {
   variant: 'line',
   color: 'primary',
   size: 'md',
+  mode: 'tabs',
   disabled: false,
 };
 
