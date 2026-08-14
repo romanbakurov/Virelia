@@ -74,6 +74,16 @@ function getNavigationSections() {
     );
 }
 
+function getActiveNavigationHref(pathname: string) {
+  const pageItem = marketingNavigation.find(
+    (item) =>
+      item.type === 'page' &&
+      (pathname === item.href || pathname.startsWith(`${item.href}/`))
+  );
+
+  return pageItem?.href ?? pathname;
+}
+
 export function SiteHeader({
   variant = 'marketing',
   mobileAction,
@@ -84,7 +94,7 @@ export function SiteHeader({
 
   useEffect(() => {
     if (pathname !== '/') {
-      setActiveHref(pathname);
+      setActiveHref(getActiveNavigationHref(pathname));
       return;
     }
 
@@ -128,6 +138,11 @@ export function SiteHeader({
     };
   }, [pathname]);
 
+  const navigationValue =
+    pathname === '/'
+      ? (activeHref ?? undefined)
+      : getActiveNavigationHref(pathname);
+
   return (
     <header
       className={[styles.header, navigationOpen ? styles.navigationOpen : null]
@@ -154,7 +169,7 @@ export function SiteHeader({
           <nav className={styles.navigation} aria-label='Primary navigation'>
             <Tabs
               mode='navigation'
-              value={activeHref ?? undefined}
+              value={navigationValue}
               onValueChange={setActiveHref}
               variant='line'
               size='sm'

@@ -68,7 +68,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en' data-scroll-behavior='smooth' suppressHydrationWarning>
       <body>
         <JsonLd />
         <WebsiteProviders>{children}</WebsiteProviders>

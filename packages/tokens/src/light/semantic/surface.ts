@@ -2,6 +2,7 @@ import { colors } from '../../primitives/colors.js';
 import { withAlpha } from '../../utils/color.js';
 
 export const surface = {
+  canvas: colors.vellira[50],
   default: colors.vellira[50],
   muted: colors.vellira[100],
   subtle: colors.vellira[25],

@@ -4,8 +4,7 @@
   z-index: var(--z-index-dropdown);
   width: 100%;
   border-bottom: 1px solid var(--border-muted);
-  background: color-mix(in srgb, var(--surface-default) 82%, transparent);
-  backdrop-filter: blur(18px);
+  background: var(--surface-background);
 }
 
 .container {
