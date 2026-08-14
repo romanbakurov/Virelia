@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Check unresolved High and Critical Dependabot alerts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEPENDABOT_ALERTS_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
