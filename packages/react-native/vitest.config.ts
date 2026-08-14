@@ -17,6 +17,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       exclude: [
+        '**/dist/**',
         '**/*.styles.ts',
         '**/*.stories.*',
         '**/*.test.*',
