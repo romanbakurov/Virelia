@@ -225,21 +225,48 @@
 }
 
 .line {
+  overflow: visible;
   border-radius: 0;
 
-  &:hover:not(:disabled) {
+  // Disable the generic surface hover animation for the line variant.
+  &::before {
+    display: none;
+  }
+
+  // Hover underline.
+  &::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background-color: color-mix(
+      in srgb,
+      var(--tabs-trigger-active-fg) 35%,
+      transparent
+    );
+    border-radius: var(--radius-full);
+    content: '';
+    pointer-events: none;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition:
+      transform 380ms cubic-bezier(0.33, 1, 0.68, 1),
+      background-color 140ms ease;
+  }
+
+  &:hover:not(:disabled, [aria-selected='true'], [data-state='active']) {
     color: var(--tabs-trigger-hover-fg);
   }
 
-  &:hover:not(:disabled)::before {
-    background-color: var(--tabs-trigger-hover-bg);
+  &:hover:not(:disabled, [aria-selected='true'], [data-state='active'])::after {
     transform: scaleX(1);
   }
 
   &[aria-selected='true'],
   &[data-state='active'] {
     color: var(--tabs-trigger-active-fg);
-    background-color: var(--tabs-trigger-active-bg);
+    background-color: transparent;
   }
 }
 
