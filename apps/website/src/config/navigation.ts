@@ -1,5 +1,3 @@
-import { componentsPortalEnabled } from './features';
-
 export type MarketingNavigationItem =
   | {
       label: string;
@@ -15,16 +13,13 @@ export type MarketingNavigationItem =
       badge?: string;
     };
 
-const componentNavigation: readonly MarketingNavigationItem[] =
-  componentsPortalEnabled
-    ? [
-        {
-          label: 'Components',
-          href: '/components',
-          type: 'page',
-        },
-      ]
-    : [];
+const componentNavigation: readonly MarketingNavigationItem[] = [
+  {
+    label: 'Components',
+    href: '/components',
+    type: 'page',
+  },
+];
 
 const sectionNavigation = [
   {

@@ -8,6 +8,7 @@ export { ComponentPlatformView } from './shared/ComponentPlatformView';
 export { ComponentCodeBlock } from './shared/ComponentCodeBlock';
 export { ComponentApi, type ComponentApiProp } from './shared/ComponentApi';
 export { RelatedComponents } from './shared/RelatedComponents';
+export { ComponentsCatalog } from './shared/ComponentsCatalog';
 export {
   ComponentExamples,
   type ComponentExampleItem,

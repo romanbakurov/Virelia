@@ -36,8 +36,6 @@
       280px,
       0.75fr
     );
-  width: min(1180px, 100%);
-  margin: 0 auto;
   gap: var(--space-10);
 }
 
@@ -281,8 +279,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  width: min(1180px, 100%);
-  margin: var(--space-12) auto 0;
+  width: 100%;
+  margin-top: var(--space-12);
   padding-top: var(--space-6);
   color: var(--text-tertiary);
   font-size: var(--font-size-xs);

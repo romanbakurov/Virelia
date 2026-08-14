@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 
-import { ComponentsPageHero } from '@/component-catalog';
-import { componentsPortalEnabled } from '@/config/features';
-import { notFound } from 'next/navigation';
+import { ComponentsCatalog, ComponentsPageHero } from '@/component-catalog';
 
 export const metadata: Metadata = {
   title: 'React Components',
@@ -21,13 +19,10 @@ export const metadata: Metadata = {
 };
 
 export default function ComponentsPage() {
-  if (!componentsPortalEnabled) {
-    notFound();
-  }
-
   return (
     <>
       <ComponentsPageHero />
+      <ComponentsCatalog />
       <SiteFooter />
     </>
   );

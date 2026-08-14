@@ -2,7 +2,7 @@
   position: relative;
   z-index: calc(var(--z-index-dropdown) + 1);
   flex: none;
-  width: 150px;
+  width: 220px;
   align-self: center;
 }
 
