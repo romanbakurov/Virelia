@@ -9,6 +9,7 @@ export { ComponentCodeBlock } from './shared/ComponentCodeBlock';
 export { ComponentApi, type ComponentApiProp } from './shared/ComponentApi';
 export { RelatedComponents } from './shared/RelatedComponents';
 export { ComponentsCatalog } from './shared/ComponentsCatalog';
+export { ComponentNavigationShell } from './shared/ComponentNavigationShell';
 export {
   ComponentExamples,
   type ComponentExampleItem,

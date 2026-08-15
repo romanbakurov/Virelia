@@ -21,7 +21,7 @@ export function ComponentExplorer({
     <Container size='wide' className={styles.container}>
       <div className={styles.layout}>
         <div className={styles.sidebarColumn}>
-          <ComponentNavigationShell activeSlug={activeSlug} />
+          <ComponentNavigationShell activeSlug={activeSlug} desktopOnly />
         </div>
 
         <div className={styles.mainColumn}>

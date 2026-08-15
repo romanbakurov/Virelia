@@ -133,58 +133,217 @@
   align-items: center;
 }
 
-@media (width <= 980px) {
+.mobileMenuTrigger,
+.mobileNavigationLayer,
+.mobileGlobalClose {
+  display: none;
+}
+
+@media (width <= 1100px) {
   .container {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .navigation {
     display: none;
   }
+
+  .headerRight {
+    gap: var(--space-3);
+  }
+
+  .headerSearch {
+    margin-left: auto;
+  }
+
+  .mobileMenuTrigger,
+  .mobileAction {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+  }
+
+  .mobileNavigationLayer {
+    position: fixed;
+    inset: var(--site-header-height) 0 0;
+    z-index: var(--z-index-modal);
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .mobileNavigationLayerOpen {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .mobileNavigationBackdrop {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    background: color-mix(in srgb, var(--text-primary) 36%, transparent);
+    border: 0;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .mobileNavigationLayerOpen .mobileNavigationBackdrop {
+    opacity: 1;
+  }
+
+  .mobileNavigation {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: min(620px, calc(100vh - var(--site-header-height)));
+    padding: var(--space-4) var(--site-gutter) var(--space-5);
+    overflow-y: auto;
+    background: var(--surface-background);
+    border-bottom: 1px solid var(--border-muted);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 160ms ease,
+      transform 180ms ease;
+  }
+
+  .mobileNavigationLayerOpen .mobileNavigation {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobileNavigationLinks {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobileNavigationLink {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 48px;
+    padding-inline: var(--space-2);
+    color: var(--text-primary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition:
+      color 140ms ease,
+      background-color 140ms ease;
+  }
+
+  .mobileNavigationLink:hover {
+    color: var(--text-brand);
+    background: var(--surface-subtle);
+  }
+
+  .mobileNavigationFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-muted);
+  }
+
+  .mobileExternalLinks {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .mobileGlobalClose {
+    display: inline-flex;
+    flex: none;
+  }
 }
 
 @media (width <= 900px) {
-  .mobileAction {
-    display: flex;
-    align-items: center;
+  .headerRight {
+    gap: var(--space-2);
+  }
+
+  .externalActions {
+    gap: var(--space-2);
+  }
+
+  .externalAction {
+    --icon-size: 20px;
+  }
+
+  .headerSearch {
+    flex: 0 1 220px;
+    min-width: 0;
   }
 }
 
 @media (width <= 640px) {
   .container {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-3);
+    display: flex;
+    align-items: center;
     width: 100%;
     min-height: var(--site-header-height);
     padding-inline: var(--site-gutter);
-  }
-
-  .search {
-    display: none;
+    gap: var(--space-2);
   }
 
   .brand {
-    margin-right: 0;
+    flex: none;
+    margin-right: auto;
   }
 
-  .actions {
-    gap: var(--space-2);
+  .brand img {
+    width: 92px;
+    height: auto;
   }
 
-  .externalActions {
-    display: none;
-  }
-
-  .portal .externalActions {
-    display: inline-flex;
-    gap: var(--space-2);
-  }
-
-  .portal .actions {
+  .headerRight {
+    flex: none;
+    width: auto;
+    height: var(--site-header-height);
     gap: var(--space-1);
   }
 
-  .portal .externalAction {
-    --icon-size: 20px;
+  .headerSearch {
+    flex: none;
+    margin-left: 0;
+  }
+
+  .actions,
+  .externalActions,
+  .ctaButton {
+    display: none;
+  }
+
+  .mobileNavigation {
+    width: 100%;
+    border-right: 0;
+  }
+
+  .mobileMenuTrigger,
+  .mobileAction,
+  .mobileGlobalClose {
+    flex: none;
+  }
+}
+
+@media (width > 640px) and (width <= 1100px) {
+  .mobileNavigationLinks,
+  .mobileNavigationFooter {
+    width: min(100%, 720px);
+    margin-inline: auto;
+  }
+}
+
+@media (width <= 380px) {
+  .container {
+    gap: var(--space-1);
+  }
+
+  .brand img {
+    width: 84px;
   }
 }

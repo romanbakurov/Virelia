@@ -11,9 +11,17 @@ import {
 
 type ComponentNavigationContextValue = {
   open: boolean;
+  mainOpen: boolean;
+
   openNavigation: () => void;
   closeNavigation: () => void;
   toggleNavigation: () => void;
+
+  openMainNavigation: () => void;
+  closeMainNavigation: () => void;
+
+  switchToMainNavigation: () => void;
+  setMainNavigationOpen: (open: boolean) => void;
 };
 
 const ComponentNavigationContext =
@@ -27,8 +35,15 @@ export function ComponentNavigationProvider({
   children,
 }: ComponentNavigationProviderProps) {
   const [open, setOpen] = useState(false);
+  const [mainOpen, setMainOpen] = useState(false);
+
+  const setMainNavigationOpen = useCallback((nextOpen: boolean) => {
+    setOpen(false);
+    setMainOpen(nextOpen);
+  }, []);
 
   const openNavigation = useCallback(() => {
+    setMainOpen(false);
     setOpen(true);
   }, []);
 
@@ -37,17 +52,50 @@ export function ComponentNavigationProvider({
   }, []);
 
   const toggleNavigation = useCallback(() => {
+    setMainOpen(false);
     setOpen((current) => !current);
+  }, []);
+
+  const openMainNavigation = useCallback(() => {
+    setOpen(false);
+    setMainOpen(true);
+  }, []);
+
+  const closeMainNavigation = useCallback(() => {
+    setMainOpen(false);
+  }, []);
+
+  const switchToMainNavigation = useCallback(() => {
+    setOpen(false);
+    setMainOpen(true);
   }, []);
 
   const value = useMemo(
     () => ({
       open,
+      mainOpen,
+
       openNavigation,
       closeNavigation,
       toggleNavigation,
+
+      openMainNavigation,
+      closeMainNavigation,
+
+      switchToMainNavigation,
+      setMainNavigationOpen,
     }),
-    [closeNavigation, open, openNavigation, toggleNavigation]
+    [
+      closeMainNavigation,
+      closeNavigation,
+      mainOpen,
+      open,
+      openMainNavigation,
+      openNavigation,
+      switchToMainNavigation,
+      setMainNavigationOpen,
+      toggleNavigation,
+    ]
   );
 
   return (

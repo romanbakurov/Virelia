@@ -48,3 +48,22 @@
     font-size: 48px;
   }
 }
+
+@media (width <= 420px) {
+  .root {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-7);
+  }
+
+  .title {
+    font-size: clamp(40px, 11.5vw, 46px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .description {
+    max-width: 100%;
+    font-size: var(--font-size-md);
+    line-height: 1.5;
+  }
+}
