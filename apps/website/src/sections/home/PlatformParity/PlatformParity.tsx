@@ -133,7 +133,7 @@ export function PlatformParity() {
         NATIVE_PREVIEW_ORIGIN
       );
     } catch {
-      setNativePreviewLoaded(false);
+      // Ignore transient preview messaging failures.
     }
   }, [workspace, notificationsEnabled, activeTab, density, team, previewTheme]);
 

@@ -25,7 +25,9 @@ export function ComponentNavigationShell({
     useComponentNavigation();
 
   useEffect(() => {
-    if (!open) return;
+    if (desktopOnly || !open) {
+      return;
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -42,7 +44,7 @@ export function ComponentNavigationShell({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [closeNavigation, open]);
+  }, [closeNavigation, desktopOnly, open]);
 
   return (
     <>
@@ -96,7 +98,10 @@ export function ComponentNavigationShell({
               </div>
 
               <div className={styles.mobilePanelContent}>
-                <ComponentSidebar activeSlug={activeSlug} />
+                <ComponentSidebar
+                  activeSlug={activeSlug}
+                  onNavigate={closeNavigation}
+                />
               </div>
             </aside>
           </div>

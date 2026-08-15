@@ -114,9 +114,7 @@
   background: transparent;
   border: 0;
   border-radius: 8px;
-  transition:
-    color 140ms ease,
-    background-color 140ms ease;
+  transition: color 140ms ease;
   cursor: pointer;
   gap: 8px;
   min-height: 40px;
@@ -125,14 +123,18 @@
 
 .filter:hover {
   color: var(--text-primary);
-  background: var(--surface-hover);
+}
+
+.filter:hover::after {
+  opacity: 0.45;
+  transform: scaleX(1);
 }
 
 .filter::after {
   position: absolute;
-  right: 12px;
+  right: 8px;
   bottom: -1px;
-  left: 12px;
+  left: 10px;
   height: 2px;
   background: var(--text-brand);
   border-radius: 2px 2px 0 0;
@@ -144,11 +146,21 @@
     transform 200ms ease;
 }
 
+.filter:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .filterActive {
   color: var(--text-brand);
 }
 
-.filterActive::after {
+.filterActive:hover {
+  color: var(--text-brand);
+}
+
+.filterActive::after,
+.filterActive:hover::after {
   opacity: 1;
   transform: scaleX(1);
 }

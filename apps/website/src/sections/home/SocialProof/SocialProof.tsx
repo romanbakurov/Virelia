@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { animate, motion, useInView, useReducedMotion } from 'motion/react';
+import Image from 'next/image';
 
 import {
   ArrowRight,
@@ -135,11 +136,15 @@ export function SocialProof() {
     }
 
     if (shouldReduceMotion) {
-      setActiveCheck(workflowChecks.length - 1);
-      setQualityReady(true);
-      setWorkflowComplete(true);
+      const timer = window.setTimeout(() => {
+        setActiveCheck(workflowChecks.length - 1);
+        setQualityReady(true);
+        setWorkflowComplete(true);
+      }, 0);
 
-      return;
+      return () => {
+        window.clearTimeout(timer);
+      };
     }
 
     const timers = workflowChecks.map((_, index) =>
@@ -157,14 +162,15 @@ export function SocialProof() {
       },
       workflowStartDelay + workflowChecks.length * workflowStepDelay + 420
     );
+
     const qualityTimer = window.setTimeout(() => {
       setQualityReady(true);
     }, qualityRevealDelay);
 
     return () => {
       timers.forEach(window.clearTimeout);
-      window.clearTimeout(qualityTimer);
       window.clearTimeout(completionTimer);
+      window.clearTimeout(qualityTimer);
     };
   }, [isDashboardInView, shouldReduceMotion]);
 
@@ -239,14 +245,18 @@ export function SocialProof() {
           >
             <div className={styles.repositoryIdentity}>
               <span className={styles.repositoryMark} aria-hidden='true'>
-                <img
+                <Image
                   src='/brand/icons/logo-icon-dark.svg'
                   alt=''
+                  width={24}
+                  height={24}
                   className={styles.repositoryLogoDark}
                 />
-                <img
+                <Image
                   src='/brand/icons/logo-icon-light.svg'
                   alt=''
+                  width={24}
+                  height={24}
                   className={styles.repositoryLogoLight}
                 />
               </span>

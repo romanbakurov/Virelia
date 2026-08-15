@@ -75,10 +75,6 @@ export function HeaderSearch() {
   }, [normalizedQuery]);
 
   useEffect(() => {
-    setActiveIndex(-1);
-  }, [results]);
-
-  useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
 
@@ -196,6 +192,7 @@ export function HeaderSearch() {
           value={query}
           onChange={(event) => {
             setQuery(event.target.value);
+            setActiveIndex(-1);
             setOpen(true);
           }}
           onFocus={() => {

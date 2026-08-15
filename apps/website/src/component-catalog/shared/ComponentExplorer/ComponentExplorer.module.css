@@ -64,11 +64,12 @@
   margin-inline: auto;
 }
 
-@media (width <= 900px) {
+@media (width <= 1100px) {
   .container {
     width: 100%;
     max-width: none;
     padding: 0;
+    background: var(--surface-default);
   }
 
   .layout {
@@ -78,7 +79,7 @@
   }
 
   .sidebarColumn {
-    position: static;
+    display: none;
   }
 
   .mainColumn {
@@ -87,17 +88,5 @@
 
   .content {
     padding: 32px clamp(20px, 5vw, 40px) 72px;
-  }
-}
-
-@media (width <= 768px) {
-  .layout {
-    display: block;
-    height: auto;
-    overflow: visible;
-  }
-
-  .mainColumn {
-    overflow: visible;
   }
 }

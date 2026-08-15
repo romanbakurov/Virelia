@@ -10,9 +10,13 @@ import { componentGroups } from '../../registry/componentGroups';
 
 interface ComponentSidebarProps {
   activeSlug?: string;
+  onNavigate?: () => void;
 }
 
-export function ComponentSidebar({ activeSlug }: ComponentSidebarProps) {
+export function ComponentSidebar({
+  activeSlug,
+  onNavigate,
+}: ComponentSidebarProps) {
   return (
     <Sidebar ariaLabel='Component navigation'>
       {componentGroups.map((group) => (
@@ -27,6 +31,7 @@ export function ComponentSidebar({ activeSlug }: ComponentSidebarProps) {
                 aria-current={
                   component.slug === activeSlug ? 'page' : undefined
                 }
+                onClick={onNavigate}
               >
                 <span>{component.name}</span>
 

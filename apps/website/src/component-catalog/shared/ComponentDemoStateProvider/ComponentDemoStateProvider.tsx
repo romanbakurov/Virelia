@@ -2,8 +2,8 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -23,35 +23,49 @@ type ComponentDemoStateProviderProps = {
   transientStateKeys?: readonly string[];
 };
 
+type ComponentDemoStateSnapshot = {
+  resetKey?: string;
+  state: unknown;
+};
+
 export function ComponentDemoStateProvider({
   children,
   resetKey,
   transientStateKeys = [],
 }: ComponentDemoStateProviderProps) {
-  const [state, setState] = useState<unknown>(undefined);
-  const [activeResetKey, setActiveResetKey] = useState(resetKey);
+  const [snapshot, setSnapshot] = useState<ComponentDemoStateSnapshot>({
+    resetKey,
+    state: undefined,
+  });
 
   const effectiveState = useMemo(
     () =>
-      resetKey !== activeResetKey
-        ? resetComponentDemoTransientState(state, transientStateKeys)
-        : state,
-    [activeResetKey, resetKey, state, transientStateKeys]
+      resetKey !== snapshot.resetKey
+        ? resetComponentDemoTransientState(snapshot.state, transientStateKeys)
+        : snapshot.state,
+    [resetKey, snapshot, transientStateKeys]
   );
 
-  useEffect(() => {
-    if (resetKey === activeResetKey) {
-      return;
-    }
+  const setState = useCallback(
+    (nextState: unknown) => {
+      setSnapshot({
+        resetKey,
+        state: nextState,
+      });
+    },
+    [resetKey]
+  );
 
-    setState(resetComponentDemoTransientState(state, transientStateKeys));
-    setActiveResetKey(resetKey);
-  }, [activeResetKey, resetKey, state, transientStateKeys]);
+  const value = useMemo(
+    () => ({
+      state: effectiveState,
+      setState,
+    }),
+    [effectiveState, setState]
+  );
 
   return (
-    <ComponentDemoStateContext.Provider
-      value={{ state: effectiveState, setState }}
-    >
+    <ComponentDemoStateContext.Provider value={value}>
       {children}
     </ComponentDemoStateContext.Provider>
   );
