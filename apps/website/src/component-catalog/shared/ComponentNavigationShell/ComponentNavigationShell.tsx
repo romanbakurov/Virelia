@@ -6,17 +6,23 @@ import { useEffect } from 'react';
 
 import { ComponentSidebar } from '../ComponentSidebar';
 import { useComponentNavigation } from '../ComponentNavigationProvider';
+import { ArrowLeft } from '@vellira-ui/icons';
 
 import styles from './ComponentNavigationShell.module.css';
 
 type ComponentNavigationShellProps = {
-  activeSlug: string;
+  activeSlug?: string;
+  mobileOnly?: boolean;
+  desktopOnly?: boolean;
 };
 
 export function ComponentNavigationShell({
   activeSlug,
+  mobileOnly = false,
+  desktopOnly = false,
 }: ComponentNavigationShellProps) {
-  const { open, closeNavigation } = useComponentNavigation();
+  const { open, closeNavigation, switchToMainNavigation } =
+    useComponentNavigation();
 
   useEffect(() => {
     if (!open) return;
@@ -40,51 +46,62 @@ export function ComponentNavigationShell({
 
   return (
     <>
-      <div className={styles.desktop}>
-        <ComponentSidebar activeSlug={activeSlug} />
-      </div>
-
-      <div
-        className={[styles.mobileLayer, open ? styles.mobileLayerOpen : null]
-          .filter(Boolean)
-          .join(' ')}
-        aria-hidden={!open}
-      >
-        <button
-          type='button'
-          className={styles.backdrop}
-          aria-label='Close component navigation'
-          tabIndex={open ? 0 : -1}
-          onClick={closeNavigation}
-        />
-
-        <div className={styles.mobileSurface}>
-          <div className={styles.mobileHeader}>
-            <Link
-              href='/'
-              className={styles.mobileBrand}
-              onClick={closeNavigation}
-            >
-              <Image
-                src='/brand/logos/logo-gradient.svg'
-                alt='Vellira'
-                width={100}
-                height={32}
-                preload
-                fetchPriority='high'
-              />
-            </Link>
-          </div>
-
-          <aside
-            id='component-navigation'
-            className={styles.mobilePanel}
-            aria-label='Component navigation'
-          >
-            <ComponentSidebar activeSlug={activeSlug} />
-          </aside>
+      {!mobileOnly && (
+        <div className={styles.desktop}>
+          <ComponentSidebar activeSlug={activeSlug} />
         </div>
-      </div>
+      )}
+
+      {!desktopOnly && open && (
+        <div className={[styles.mobileLayer, styles.mobileLayerOpen].join(' ')}>
+          <button
+            type='button'
+            className={styles.backdrop}
+            aria-label='Close component navigation'
+            onClick={closeNavigation}
+          />
+
+          <div className={styles.mobileSurface}>
+            <div className={styles.mobileHeader}>
+              <Link
+                href='/'
+                className={styles.mobileBrand}
+                onClick={closeNavigation}
+              >
+                <Image
+                  src='/brand/logos/logo-gradient.svg'
+                  alt='Vellira'
+                  width={100}
+                  height={32}
+                  preload
+                  fetchPriority='high'
+                />
+              </Link>
+            </div>
+
+            <aside
+              id='component-navigation'
+              className={styles.mobilePanel}
+              aria-label='Component navigation'
+            >
+              <div className={styles.mainNavigation}>
+                <button
+                  type='button'
+                  className={styles.mainNavigationButton}
+                  onClick={switchToMainNavigation}
+                >
+                  <ArrowLeft size={16} aria-hidden='true' />
+                  <span>Main navigation</span>
+                </button>
+              </div>
+
+              <div className={styles.mobilePanelContent}>
+                <ComponentSidebar activeSlug={activeSlug} />
+              </div>
+            </aside>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -11,6 +11,7 @@ import type { SiteHeaderProps } from './types';
 import { Button, Tabs } from '@vellira-ui/react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 import { HeaderSearch } from './HeaderSearch';
+import { Close, Menu } from '@vellira-ui/icons';
 
 import styles from './SiteHeader.module.css';
 
@@ -88,9 +89,41 @@ export function SiteHeader({
   variant = 'marketing',
   mobileAction,
   navigationOpen = false,
+  mobileMenuOpen,
+  onMobileMenuOpenChange,
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState<string | null>(null);
+  const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
+
+  const resolvedMobileMenuOpen = mobileMenuOpen ?? internalMobileMenuOpen;
+
+  const setResolvedMobileMenuOpen = (open: boolean) => {
+    if (onMobileMenuOpenChange) {
+      onMobileMenuOpenChange(open);
+      return;
+    }
+
+    setInternalMobileMenuOpen(open);
+  };
+
+  useEffect(() => {
+    if (!resolvedMobileMenuOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setResolvedMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [resolvedMobileMenuOpen]);
 
   useEffect(() => {
     if (pathname !== '/') {
@@ -143,6 +176,8 @@ export function SiteHeader({
       ? (activeHref ?? undefined)
       : getActiveNavigationHref(pathname);
 
+  const hasMobileNavigation = variant === 'marketing' || variant === 'portal';
+
   return (
     <header
       className={[styles.header, navigationOpen ? styles.navigationOpen : null]
@@ -165,6 +200,24 @@ export function SiteHeader({
           <div className={styles.headerSearch}>
             <HeaderSearch />
           </div>
+
+          {variant === 'marketing' && (
+            <Button
+              type='button'
+              size='sm'
+              appearance='ghost'
+              shape='square'
+              iconOnly
+              className={styles.mobileMenuTrigger}
+              aria-label={
+                resolvedMobileMenuOpen ? 'Close navigation' : 'Open navigation'
+              }
+              aria-expanded={resolvedMobileMenuOpen}
+              aria-controls='mobile-site-navigation'
+              iconStart={resolvedMobileMenuOpen ? <Close /> : <Menu />}
+              onClick={() => setResolvedMobileMenuOpen(!resolvedMobileMenuOpen)}
+            />
+          )}
 
           <nav className={styles.navigation} aria-label='Primary navigation'>
             <Tabs
@@ -252,8 +305,124 @@ export function SiteHeader({
             ))}
           </div>
 
-          {mobileAction && (
+          {hasMobileNavigation && (
+            <div
+              className={[
+                styles.mobileNavigationLayer,
+                resolvedMobileMenuOpen
+                  ? styles.mobileNavigationLayerOpen
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              inert={!resolvedMobileMenuOpen}
+            >
+              <button
+                type='button'
+                className={styles.mobileNavigationBackdrop}
+                aria-label='Close navigation'
+                onClick={() => setResolvedMobileMenuOpen(false)}
+              />
+
+              <div
+                id='mobile-site-navigation'
+                className={styles.mobileNavigation}
+              >
+                <nav
+                  className={styles.mobileNavigationLinks}
+                  aria-label='Mobile navigation'
+                >
+                  {marketingNavigation.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className={styles.mobileNavigationLink}
+                      onClick={(event) => {
+                        setResolvedMobileMenuOpen(false);
+
+                        if (item.type !== 'section' || pathname !== '/') {
+                          return;
+                        }
+
+                        event.preventDefault();
+                        setActiveHref(item.href);
+                        scrollToAnchor(item.hash);
+                      }}
+                    >
+                      <span>{item.label}</span>
+
+                      {'badge' in item && item.badge && (
+                        <span className={styles.navigationBadge}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </nav>
+
+                <div className={styles.mobileNavigationFooter}>
+                  <ThemeSwitcher />
+
+                  <div className={styles.mobileExternalLinks}>
+                    {externalNavigation.map((link) => (
+                      <Button
+                        key={link.label}
+                        asChild
+                        size='sm'
+                        appearance='ghost'
+                        shape='square'
+                        iconOnly
+                        style={
+                          {
+                            '--icon-size': '22px',
+                          } as CSSProperties
+                        }
+                        iconStart={
+                          <span
+                            className={styles.actionIcon}
+                            style={
+                              {
+                                '--action-icon': `url(${link.icon})`,
+                                '--action-icon-size': `${link.iconSize}px`,
+                              } as CSSProperties
+                            }
+                            aria-hidden='true'
+                          />
+                        }
+                      >
+                        <a
+                          href={link.href}
+                          target='_blank'
+                          rel='noreferrer noopener'
+                          aria-label={link.label}
+                          title={link.label}
+                        />
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {mobileAction && !resolvedMobileMenuOpen && (
             <div className={styles.mobileAction}>{mobileAction}</div>
+          )}
+
+          {resolvedMobileMenuOpen && variant !== 'marketing' && (
+            <Button
+              type='button'
+              size='sm'
+              appearance='ghost'
+              shape='square'
+              iconOnly
+              className={styles.mobileGlobalClose}
+              aria-label='Close navigation'
+              aria-expanded='true'
+              aria-controls='mobile-site-navigation'
+              onClick={() => setResolvedMobileMenuOpen(false)}
+              iconStart={<Close />}
+            />
           )}
 
           {variant === 'marketing' && (

@@ -6,4 +6,6 @@ export interface SiteHeaderProps {
   variant?: SiteHeaderVariant;
   mobileAction?: ReactNode;
   navigationOpen?: boolean;
+  mobileMenuOpen?: boolean;
+  onMobileMenuOpenChange?: (open: boolean) => void;
 }

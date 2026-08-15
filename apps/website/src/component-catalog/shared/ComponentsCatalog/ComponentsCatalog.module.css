@@ -95,9 +95,10 @@
 }
 
 .filters {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-self: start;
+  place-self: stretch start;
   gap: 4px;
 }
 
@@ -105,6 +106,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  height: 100%;
   color: var(--text-secondary);
   font: inherit;
   font-size: var(--font-size-sm);
@@ -129,7 +131,7 @@
 .filter::after {
   position: absolute;
   right: 12px;
-  bottom: -17px;
+  bottom: -1px;
   left: 12px;
   height: 2px;
   background: var(--text-brand);
@@ -626,6 +628,10 @@
 }
 
 @media (width < 900px) {
+  .filter::after {
+    bottom: -9px;
+  }
+
   .toolbarInner {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -654,5 +660,80 @@
   .card {
     aspect-ratio: auto;
     min-height: 190px;
+  }
+}
+
+@media (width <= 420px) {
+  .toolbarInner {
+    gap: 14px;
+    min-height: 64px;
+  }
+
+  .searchIcon {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+  }
+
+  .filters {
+    gap: 0;
+  }
+
+  .filter {
+    gap: 6px;
+    min-height: 36px;
+    padding-inline: 7px;
+    font-size: var(--font-size-xs);
+  }
+
+  .filterIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .filter::after {
+    right: 7px;
+    left: 7px;
+  }
+
+  .preview {
+    padding-inline: 12px;
+  }
+
+  .previewStack {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+}
+
+@media (width <= 380px) {
+  .filters {
+    gap: 0;
+  }
+
+  .filter {
+    gap: 6px;
+    min-height: 38px;
+    padding-inline: 8px;
+    font-size: var(--font-size-sm);
+  }
+
+  .filterIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .filter::after {
+    right: 8px;
+    left: 8px;
+  }
+
+  .preview {
+    padding-inline: 12px;
+  }
+
+  .previewStack {
+    gap: 6px;
+    flex-wrap: nowrap;
   }
 }
