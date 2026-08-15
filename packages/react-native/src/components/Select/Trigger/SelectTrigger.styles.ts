@@ -38,18 +38,6 @@ export const createTriggerStyles = (theme: NativeTheme) =>
       paddingVertical: theme.tokens.spacing[4],
     },
 
-    triggerWithClearSm: {
-      paddingRight: theme.tokens.spacing[3] + 24 + theme.tokens.spacing[2],
-    },
-
-    triggerWithClearMd: {
-      paddingRight: theme.tokens.spacing[4] + 24 + theme.tokens.spacing[2],
-    },
-
-    triggerWithClearLg: {
-      paddingRight: theme.tokens.spacing[5] + 24 + theme.tokens.spacing[2],
-    },
-
     clearButtonContainer: {
       position: 'absolute',
       top: 0,
@@ -59,20 +47,24 @@ export const createTriggerStyles = (theme: NativeTheme) =>
     },
 
     clearButtonContainerSm: {
-      right: theme.tokens.spacing[3],
+      right: theme.tokens.spacing[3] + 16 + theme.tokens.spacing[2],
     },
 
     clearButtonContainerMd: {
-      right: theme.tokens.spacing[4],
+      right: theme.tokens.spacing[4] + 16 + theme.tokens.spacing[2],
     },
 
     clearButtonContainerLg: {
-      right: theme.tokens.spacing[5],
+      right: theme.tokens.spacing[5] + 16 + theme.tokens.spacing[2],
     },
 
     value: {
       flex: 1,
       minWidth: 0,
+    },
+
+    valueWithClear: {
+      marginRight: 24 + theme.tokens.spacing[2],
     },
 
     text: {
@@ -128,6 +120,6 @@ export const createTriggerStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 999,
-      backgroundColor: theme.components.select.clearButton.hoverBg,
+      backgroundColor: 'transparent',
     },
   });

@@ -43,6 +43,6 @@ export const createSearchStyles = (theme: NativeTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 999,
-      backgroundColor: theme.components.select.clearButton.hoverBg,
+      backgroundColor: 'transparent',
     },
   });

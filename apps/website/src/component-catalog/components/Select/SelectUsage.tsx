@@ -29,7 +29,12 @@ function createSelectCode(
   const props: string[] =
     platform === 'react'
       ? [`label='Favorite framework'`, `description='Choose one option.'`]
-      : [`label='Favorite framework'`, `description='Choose one option.'`];
+      : [
+          `presentation='popover'`,
+          `matchTriggerWidth`,
+          `label='Favorite framework'`,
+          `description='Choose one option.'`,
+        ];
 
   const children =
     platform === 'react'

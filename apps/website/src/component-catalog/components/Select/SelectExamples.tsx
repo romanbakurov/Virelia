@@ -177,6 +177,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Basic component usage.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
         >
@@ -188,6 +190,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
 >
@@ -201,6 +205,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Filter options by typing a search query.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
           searchable
@@ -213,6 +219,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
   searchable
@@ -227,6 +235,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Select more than one option.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
           multiple
@@ -239,6 +249,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
   multiple
@@ -253,6 +265,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Validation error state.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
           error='Please review this option.'
@@ -265,6 +279,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
   error='Please review this option.'
@@ -279,6 +295,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Disabled select state.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
           disabled
@@ -291,6 +309,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
   disabled
@@ -305,6 +325,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       description: 'Loading state while options are being resolved.',
       preview: (
         <NativeSelect
+          presentation='popover'
+          matchTriggerWidth
           label='Favorite framework'
           description='Choose one option.'
           loading
@@ -317,6 +339,8 @@ export function SelectExamples({ platform }: SelectExamplesProps) {
       code: `import { Select } from '@vellira-ui/react-native';
 
 <Select
+  presentation='popover'
+  matchTriggerWidth
   label='Favorite framework'
   description='Choose one option.'
   loading

@@ -866,7 +866,7 @@ describe('Native Select', () => {
     );
 
     const popover = container.querySelector<HTMLElement>(
-      '[data-testid="select-popover"]'
+      '[data-testid="select-popover-surface"]'
     );
 
     expect(popover).not.toBeNull();

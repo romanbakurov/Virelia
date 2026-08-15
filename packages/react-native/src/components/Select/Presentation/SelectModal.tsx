@@ -32,11 +32,13 @@ export const SelectModal = ({
         testID='select-content-root'
       >
         <SelectBackdrop outsidePressProps={outsidePressProps} />
-        <View
-          style={[styles.content, styles.modalPresentation, contentStyle]}
-          testID='select-modal'
-        >
-          {children}
+        <View style={[styles.surface, styles.modalSurface]}>
+          <View
+            style={[styles.content, styles.modalPresentation, contentStyle]}
+            testID='select-modal'
+          >
+            {children}
+          </View>
         </View>
       </View>
     </Modal>
