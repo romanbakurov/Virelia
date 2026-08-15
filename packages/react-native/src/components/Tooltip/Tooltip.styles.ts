@@ -26,7 +26,7 @@ export const createStyles = (theme: NativeTheme) =>
 
       ...Platform.select({
         web: {
-          boxShadow: `${theme.tokens.shadows.md.x}px ${theme.tokens.shadows.md.y}px ${theme.tokens.shadows.md.blur}px ${theme.tokens.shadows.md.color}`,
+          boxShadow: theme.components.tooltip.content.shadow,
         },
         default: {
           shadowColor: theme.tokens.shadows.md.color,

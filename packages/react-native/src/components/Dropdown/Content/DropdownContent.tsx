@@ -70,7 +70,7 @@ export function DropdownContent({
       return;
     }
 
-    if (reduceMotion) {
+    if (reduceMotion || Platform.OS === 'web') {
       animation.setValue(1);
       return;
     }
@@ -80,7 +80,7 @@ export function DropdownContent({
     Animated.timing(animation, {
       toValue: 1,
       duration: isSheet ? 220 : 160,
-      useNativeDriver: Platform.OS !== 'web',
+      useNativeDriver: true,
     }).start();
   }, [animation, open, isSheet, reduceMotion]);
 

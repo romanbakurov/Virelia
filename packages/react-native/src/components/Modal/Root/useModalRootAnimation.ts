@@ -55,7 +55,8 @@ export function useModalRootAnimation({
   const [shouldRender, setShouldRender] = useState(defaultOpen);
   const [reduceMotion, setReduceMotion] = useState(false);
   const animationDuration = resolveDuration(duration);
-  const shouldAnimate = animation !== 'none' && !reduceMotion;
+  const shouldAnimate =
+    animation !== 'none' && !reduceMotion && Platform.OS !== 'web';
 
   useEffect(() => {
     AccessibilityInfo.isReduceMotionEnabled?.().then(setReduceMotion);
