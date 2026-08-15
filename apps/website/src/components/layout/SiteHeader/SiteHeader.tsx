@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, type CSSProperties } from 'react';
+import { useCallback, useState, useEffect, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -98,14 +98,17 @@ export function SiteHeader({
 
   const resolvedMobileMenuOpen = mobileMenuOpen ?? internalMobileMenuOpen;
 
-  const setResolvedMobileMenuOpen = (open: boolean) => {
-    if (onMobileMenuOpenChange) {
-      onMobileMenuOpenChange(open);
-      return;
-    }
+  const setResolvedMobileMenuOpen = useCallback(
+    (open: boolean) => {
+      if (onMobileMenuOpenChange) {
+        onMobileMenuOpenChange(open);
+        return;
+      }
 
-    setInternalMobileMenuOpen(open);
-  };
+      setInternalMobileMenuOpen(open);
+    },
+    [onMobileMenuOpenChange]
+  );
 
   useEffect(() => {
     if (!resolvedMobileMenuOpen) {
@@ -123,11 +126,10 @@ export function SiteHeader({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [resolvedMobileMenuOpen]);
+  }, [resolvedMobileMenuOpen, setResolvedMobileMenuOpen]);
 
   useEffect(() => {
     if (pathname !== '/') {
-      setActiveHref(getActiveNavigationHref(pathname));
       return;
     }
 

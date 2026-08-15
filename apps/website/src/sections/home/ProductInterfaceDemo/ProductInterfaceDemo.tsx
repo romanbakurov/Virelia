@@ -13,6 +13,7 @@ import {
   System,
   Trash,
 } from '@vellira-ui/icons';
+import Image from 'next/image';
 import { Button, Checkbox, Dropdown, Input, Tabs } from '@vellira-ui/react';
 import { motion, useReducedMotion } from 'motion/react';
 
@@ -77,16 +78,25 @@ export function ProductInterfaceDemo() {
     }
   };
 
-  useEffect(() => {
-    if (!animationStarted) {
-      return undefined;
-    }
+  const handleAnimationStart = () => {
+    setAnimationStarted(true);
+    setDropdownOpen(false);
+    setSavePulse(false);
 
     if (shouldReduceMotion) {
       setWorkspace('Vellira workspace');
       setNotificationsEnabled(true);
       setActiveView('design');
+      return;
+    }
 
+    setWorkspace('');
+    setNotificationsEnabled(false);
+    setActiveView('design');
+  };
+
+  useEffect(() => {
+    if (!animationStarted || shouldReduceMotion) {
       return undefined;
     }
 
@@ -94,12 +104,6 @@ export function ProductInterfaceDemo() {
     let typingTimer: ReturnType<typeof setInterval> | undefined;
 
     const workspaceName = 'Vellira workspace';
-
-    setWorkspace('');
-    setNotificationsEnabled(false);
-    setActiveView('design');
-    setDropdownOpen(false);
-    setSavePulse(false);
 
     timers.push(
       setTimeout(() => {
@@ -233,9 +237,7 @@ export function ProductInterfaceDemo() {
             scale: 1,
             filter: 'blur(0px)',
           }}
-          onViewportEnter={() => {
-            setAnimationStarted(true);
-          }}
+          onViewportEnter={handleAnimationStart}
           transition={{
             duration: shouldReduceMotion ? 0.2 : 1.05,
             ease: [0.16, 1, 0.3, 1],
@@ -285,7 +287,12 @@ export function ProductInterfaceDemo() {
             >
               <div className={styles.brand}>
                 <span className={styles.brandMark} aria-hidden='true'>
-                  <img src='/brand/icons/logo-icon-white.svg' alt='' />
+                  <Image
+                    src='/brand/icons/logo-icon-white.svg'
+                    alt=''
+                    width={24}
+                    height={24}
+                  />
                 </span>
 
                 <div>
@@ -501,7 +508,12 @@ export function ProductInterfaceDemo() {
 
                   <div className={styles.workspacePreview}>
                     <div className={styles.workspaceAvatar} aria-hidden='true'>
-                      <img src='/brand/icons/logo-icon-white.svg' alt='' />
+                      <Image
+                        src='/brand/icons/logo-icon-white.svg'
+                        alt=''
+                        width={24}
+                        height={24}
+                      />
                     </div>
 
                     <div>

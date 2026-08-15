@@ -46,7 +46,7 @@
     flex: 1;
     flex-direction: column;
     min-height: 0;
-    background: var(--surface-default);
+    background: var(--surface-background);
   }
 
   .mobileHeader {
@@ -57,7 +57,7 @@
     align-items: center;
     min-height: var(--site-header-height);
     padding-inline: var(--site-gutter);
-    background: var(--surface-default);
+    background: var(--surface-background);
   }
 
   .mobileLayerOpen .backdrop {
@@ -72,7 +72,7 @@
     flex-direction: column;
     width: min(calc(var(--explorer-sidebar-width) + var(--site-gutter)), 100vw);
     max-width: 100vw;
-    background: var(--surface-default);
+    background: var(--surface-background);
     border-right: 1px solid var(--border-muted);
     isolation: isolate;
     transform: translateX(-100%);
@@ -130,7 +130,7 @@
     display: flex;
     flex: none;
     padding: var(--space-3) var(--site-gutter);
-    background: var(--surface-default);
+    background: var(--surface-background);
     border-bottom: 1px solid var(--border-muted);
   }
 

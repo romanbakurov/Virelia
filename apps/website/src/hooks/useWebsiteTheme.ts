@@ -25,21 +25,24 @@ export function useWebsiteTheme() {
 
   useEffect(() => {
     const savedPreference = window.localStorage.getItem(STORAGE_KEY);
-
-    if (isThemePreference(savedPreference)) {
-      setPreferenceState(savedPreference);
-    }
-
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const updateSystemTheme = () => {
       setSystemTheme(mediaQuery.matches ? 'dark' : 'light');
     };
 
-    updateSystemTheme();
+    const frame = window.requestAnimationFrame(() => {
+      if (isThemePreference(savedPreference)) {
+        setPreferenceState(savedPreference);
+      }
+
+      updateSystemTheme();
+    });
+
     mediaQuery.addEventListener('change', updateSystemTheme);
 
     return () => {
+      window.cancelAnimationFrame(frame);
       mediaQuery.removeEventListener('change', updateSystemTheme);
     };
   }, []);
