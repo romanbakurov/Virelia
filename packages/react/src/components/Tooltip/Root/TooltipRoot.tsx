@@ -23,7 +23,6 @@ export const TooltipRoot = ({
   interactive = false,
   avoidCollisions = true,
   matchTriggerWidth = false,
-  modal: _modal = false,
 }: TooltipRootProps) => {
   const generatedId = useId();
   const contentId = `${generatedId}-content`;
