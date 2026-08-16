@@ -46,7 +46,7 @@
     "component-pages:check": "tsx scripts/generators/component-page/check-component-pages.ts",
     "component-pages:audit": "tsx scripts/generators/component-page/audit-component-pages.ts",
     "test:component-pages": "tsx scripts/generators/component-page/component-page-contract.ts",
-    "test:component-page-generator": "vitest run scripts/generators/component-page/renderers/*.test.ts",
+    "test:component-page-generator": "vitest run scripts/generators/component-page/**/*.test.ts",
     "docs:dev": "pnpm --filter @vellira-ui/docs dev",
     "docs:build": "pnpm --filter @vellira-ui/docs build",
     "docs:preview": "pnpm --filter @vellira-ui/docs preview",
