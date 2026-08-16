@@ -64,6 +64,11 @@ const reactRadioGroupApiSections: readonly ComponentApiSection[] = [
         description: 'Marks the radio group as required.',
       },
       {
+        name: 'invalid',
+        type: 'boolean',
+        description: 'Shows invalid state without requiring an error message.',
+      },
+      {
         name: 'orientation',
         type: "'vertical' | 'horizontal'",
         defaultValue: "'vertical'",
@@ -240,6 +245,11 @@ const nativeRadioGroupApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'false',
         description: 'Marks the radio group as required.',
+      },
+      {
+        name: 'invalid',
+        type: 'boolean',
+        description: 'Shows invalid state without requiring an error message.',
       },
       {
         name: 'orientation',

@@ -78,8 +78,13 @@ export const Checkbox = forwardRef<View, CheckboxProps>(
 
     const resolvedAccessibilityLabel = accessibilityLabel ?? label;
 
-    const resolvedAccessibilityHint = [accessibilityHint, description, error]
-      .filter(Boolean)
+    const resolvedAccessibilityHint = [
+      accessibilityHint,
+      description,
+      required ? 'Required.' : undefined,
+      error,
+    ]
+      .filter((item): item is string => Boolean(item))
       .join(' ');
 
     const accessibilityChecked = indeterminate ? 'mixed' : isChecked;

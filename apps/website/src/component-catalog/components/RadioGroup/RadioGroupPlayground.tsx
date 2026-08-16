@@ -15,6 +15,7 @@ export type RadioGroupPlaygroundValue = {
   value: string;
   disabled: boolean;
   required: boolean;
+  invalid: boolean;
   orientation: 'vertical' | 'horizontal';
   size: 'sm' | 'md' | 'lg';
   color: 'primary' | 'neutral' | 'success' | 'warning' | 'danger';
@@ -35,6 +36,7 @@ export const initialRadioGroupPlaygroundValue: RadioGroupPlaygroundValue = {
   value: '',
   disabled: false,
   required: false,
+  invalid: false,
   orientation: 'vertical',
   size: 'md',
   color: 'primary',

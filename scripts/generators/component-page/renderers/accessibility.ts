@@ -65,9 +65,12 @@ export function buildAccessibilityItems(params: {
         platform === 'react'
           ? 'Provide a visible label or another accessible name that clearly identifies the control.'
           : 'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
-      props: ['label', 'children', 'aria-label', 'accessibilityLabel'].filter(
-        hasProp
-      ),
+      props:
+        platform === 'react'
+          ? ['label', 'children', 'aria-label', 'aria-labelledby'].filter(
+              hasProp
+            )
+          : ['label', 'children', 'accessibilityLabel'].filter(hasProp),
     });
   }
 
@@ -102,7 +105,7 @@ export function buildAccessibilityItems(params: {
       description:
         platform === 'react'
           ? 'Associate validation feedback with the control and expose its invalid state to assistive technologies.'
-          : 'Expose validation feedback through accessible text or hints and preserve the invalid state for assistive technologies.',
+          : 'Announce validation feedback through accessible text or hints without relying only on visual styling.',
       props: ['error', 'invalid'].filter(hasProp),
     });
   }

@@ -17,7 +17,7 @@ export function RadioAccessibility({ platform }: RadioAccessibilityProps) {
       title: 'Accessible naming',
       description:
         'Provide a visible label or another accessible name that clearly identifies the control.',
-      props: ['label', 'children', 'aria-label'],
+      props: ['label', 'children', 'aria-label', 'aria-labelledby'],
     },
     {
       title: 'State communication',
@@ -56,7 +56,7 @@ export function RadioAccessibility({ platform }: RadioAccessibilityProps) {
       title: 'Accessible naming',
       description:
         'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
-      props: ['label', 'children', 'aria-label', 'accessibilityLabel'],
+      props: ['label', 'children', 'accessibilityLabel'],
     },
     {
       title: 'State communication',
@@ -73,7 +73,7 @@ export function RadioAccessibility({ platform }: RadioAccessibilityProps) {
     {
       title: 'Validation feedback',
       description:
-        'Expose validation feedback through accessible text or hints and preserve the invalid state for assistive technologies.',
+        'Announce validation feedback through accessible text or hints without relying only on visual styling.',
       props: ['error'],
     },
     {

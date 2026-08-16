@@ -48,6 +48,12 @@ export function FormFieldAccessibility({
         'Compatible Vellira controls inherit disabled, invalid, required, and size through context.',
       props: ['disabled', 'invalid', 'required', 'size'],
     },
+    {
+      title: 'Accessible state',
+      description:
+        'Compatible controls announce required and invalid state through React Native accessibility semantics.',
+      props: ['required', 'invalid'],
+    },
   ] as const;
 
   return (

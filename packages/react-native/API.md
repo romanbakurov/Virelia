@@ -314,6 +314,7 @@ import { Radio, RadioGroup } from '@vellira-ui/react-native';
 | `descriptionStyle` | `StyleProp<TextStyle>`        | No       | —                                     |
 | `errorStyle`       | `StyleProp<TextStyle>`        | No       | —                                     |
 | `color`            | `RadioColor`                  | No       | —                                     |
+| `invalid`          | `boolean`                     | No       | —                                     |
 
 <!-- api-docgen:end native.RadioGroupProps.RadioGroupProps -->
 

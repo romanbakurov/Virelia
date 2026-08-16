@@ -392,6 +392,7 @@ import { Radio, RadioGroup } from '@vellira-ui/react';
 | `description`   | `ReactNode`                   | No       | Additional descriptive text.          |
 | `size`          | `RadioSize`                   | No       | Size inherited by child radios.       |
 | `color`         | `RadioColor`                  | No       | —                                     |
+| `invalid`       | `boolean`                     | No       | —                                     |
 
 <!-- api-docgen:end web.RadioGroupProps.RadioGroupProps -->
 

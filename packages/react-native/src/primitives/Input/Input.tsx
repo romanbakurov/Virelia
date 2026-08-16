@@ -166,6 +166,17 @@ export const Input = forwardRef<TextInput, InputProps>(
       invalid || Boolean(error) || (!hasOwnField && Boolean(field?.invalid));
     const isDisabled = disabled || (!hasOwnField && Boolean(field?.disabled));
     const isRequired = required || (!hasOwnField && Boolean(field?.required));
+
+    const resolvedAccessibilityHint = [
+      accessibilityHint,
+      hasOwnField && typeof description === 'string' ? description : undefined,
+      isRequired ? 'Required.' : undefined,
+      isInvalid ? 'Invalid.' : undefined,
+      hasOwnField && typeof error === 'string' ? error : undefined,
+    ]
+      .filter((item): item is string => Boolean(item))
+      .join(' ');
+
     const isReadOnly = readOnly || loading;
     const showLoading = loading && !isDisabled;
     const placeholderTextColor = isDisabled
@@ -284,7 +295,7 @@ export const Input = forwardRef<TextInput, InputProps>(
           testID={testID}
           placeholderTextColor={placeholderTextColor}
           accessibilityLabel={accessibilityLabel ?? label}
-          accessibilityHint={accessibilityHint}
+          accessibilityHint={resolvedAccessibilityHint || undefined}
           accessibilityState={{
             disabled: isDisabled,
             busy: loading,
