@@ -4,7 +4,7 @@ import { useTooltipProviderContext } from './TooltipContext';
 import type { TooltipDelayConfig } from './types';
 
 export function useTooltipDelay(
-  delay?: number | TooltipDelay,
+  delay?: number | Partial<TooltipDelay>,
   _skipDelay?: number
 ): TooltipDelayConfig {
   const provider = useTooltipProviderContext();

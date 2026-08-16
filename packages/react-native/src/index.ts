@@ -11,7 +11,18 @@ export type {
   DropdownSeparatorProps,
   DropdownTriggerProps,
 } from './components/Dropdown/types';
-export type { ModalProps } from './components/Modal';
+export type {
+  ModalBodyProps,
+  ModalCloseProps,
+  ModalContentProps,
+  ModalDescriptionProps,
+  ModalFooterProps,
+  ModalHeaderProps,
+  ModalOverlayProps,
+  ModalProps,
+  ModalTitleProps,
+  ModalTriggerProps,
+} from './components/Modal';
 export { Modal } from './components/Modal';
 export type {
   PopoverAnchorProps,
@@ -24,13 +35,34 @@ export type {
   PopoverTriggerProps,
 } from './components/Popover';
 export { Popover } from './components/Popover';
-export type { RadioGroupProps } from './components/RadioGroup';
+export type {
+  RadioGroupItemProps,
+  RadioGroupProps,
+} from './components/RadioGroup';
 export { RadioGroup } from './components/RadioGroup';
 export type {
+  SelectContentProps,
+  SelectEmptyProps,
+  SelectGroupProps,
+  SelectIconSlotProps,
+  SelectItemBadgeProps,
+  SelectItemDescriptionProps,
+  SelectItemIconProps,
+  SelectItemProps,
+  SelectLabelProps,
+  SelectLoadingProps,
   SelectOption,
+  SelectPresentation,
   SelectProps,
+  SelectRenderOption,
   SelectRenderOptionContext,
+  SelectRenderValue,
   SelectRenderValueContext,
+  SelectSearchProps,
+  SelectSeparatorProps,
+  SelectTriggerSlotProps,
+  SelectValueSlotProps,
+  SelectVirtualConfig,
 } from './components/Select';
 export { Select } from './components/Select';
 export type {

@@ -14,7 +14,7 @@ export interface TooltipRootProps extends Omit<
   /** Called when the open state changes. */
   onOpenChange?: (open: boolean) => void;
   /** Open delay in milliseconds, or explicit open/close delays. */
-  delay?: number | BaseTooltipProps['delay'];
+  delay?: number | Partial<BaseTooltipProps['delay']>;
   /** Delay window for future sibling tooltip delay skipping. */
   skipDelay?: number;
   /** Distance between trigger and content in pixels. */
