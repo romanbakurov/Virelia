@@ -50,7 +50,6 @@ export function getProfileMetadata(
           defaultChecked: false,
           disabled: false,
           required: false,
-          checked: false,
           indeterminate: false,
           size: 'md',
           color: 'primary',

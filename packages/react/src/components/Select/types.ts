@@ -75,14 +75,8 @@ interface SelectOwnProps {
   placement?: Extract<Placement, 'bottom' | 'top' | 'left' | 'right'>;
   /** Matches dropdown width to the trigger width. */
   matchTriggerWidth?: boolean;
-  /** Adjusts floating content to stay within viewport boundaries. */
-  avoidCollisions?: boolean;
   /** Renders dropdown content through a portal. */
   portal?: boolean;
-  /** Uses modal interaction semantics while the dropdown is open. */
-  modal?: boolean;
-  /** Enables command-palette style search behavior. */
-  command?: boolean;
   /** Controlled open state. */
   open?: boolean;
   /** Initial open state for uncontrolled usage. */
