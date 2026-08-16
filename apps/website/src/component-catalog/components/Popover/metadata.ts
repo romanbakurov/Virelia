@@ -132,28 +132,85 @@ export default defineComponentPageMetadata({
       reactImports: [
         `import { Button as ReactButton } from '@vellira-ui/react';`,
       ],
-      reactChildren: `<Popover.Anchor>
-  <span>Anchor point</span>
-</Popover.Anchor>
-<Popover.Trigger asChild>
-  <ReactButton>Open popover</ReactButton>
-</Popover.Trigger>
+      reactChildren: `<div
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: 16,
+  }}
+>
+  <Popover.Anchor asChild>
+    <div
+      style={{
+        padding: 16,
+        border: '1px dashed var(--border-muted)',
+        borderRadius: 'var(--radius-lg)',
+      }}
+    >
+      Position relative to me
+    </div>
+  </Popover.Anchor>
+
+  <Popover.Trigger asChild>
+    <ReactButton>Toggle popover</ReactButton>
+  </Popover.Trigger>
+</div>
+
 <Popover.Content>
-  <Popover.Title>Details</Popover.Title>
-  <Popover.Description>Anchored contextual information.</Popover.Description>
+  <Popover.Arrow />
+  <Popover.Title>Separate anchor</Popover.Title>
+  <Popover.Description>
+    The trigger controls the state, but the content is positioned relative to the anchor.
+  </Popover.Description>
+
+  <Popover.Close asChild>
+    <ReactButton size='sm' appearance='ghost'>
+      Close
+    </ReactButton>
+  </Popover.Close>
 </Popover.Content>`,
-      nativeChildren: `<Popover.Anchor asChild>
-  <NativeButton>Anchor point</NativeButton>
-</Popover.Anchor>
-<Popover.Trigger asChild>
-  <NativeButton>Open popover</NativeButton>
-</Popover.Trigger>
+      nativeChildren: `<NativeView
+  style={{
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  }}
+>
+  <Popover.Anchor asChild>
+    <NativeView
+      style={{
+        padding: 16,
+        borderWidth: 1,
+        borderStyle: 'dashed',
+        borderColor: '#d8d2f0',
+        borderRadius: 16,
+      }}
+    >
+      <NativeText>Position relative to me</NativeText>
+    </NativeView>
+  </Popover.Anchor>
+
+  <Popover.Trigger asChild>
+    <NativeButton>Toggle popover</NativeButton>
+  </Popover.Trigger>
+</NativeView>
+
 <Popover.Content>
-  <Popover.Title>Details</Popover.Title>
-  <Popover.Description>Anchored contextual information.</Popover.Description>
+  <Popover.Arrow />
+  <Popover.Title>Separate anchor</Popover.Title>
+  <Popover.Description>
+    The trigger controls the state, but the content is positioned relative to the anchor.
+  </Popover.Description>
+
+  <Popover.Close asChild>
+    <NativeButton size='sm' appearance='ghost'>
+      Close
+    </NativeButton>
+  </Popover.Close>
 </Popover.Content>`,
       nativeImports: [
         `import { Button as NativeButton } from '@vellira-ui/react-native';`,
+        `import { Text as NativeText, View as NativeView } from 'react-native';`,
       ],
     },
   ],

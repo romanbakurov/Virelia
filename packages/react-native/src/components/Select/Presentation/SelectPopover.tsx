@@ -36,19 +36,31 @@ export const SelectPopover = ({
         <View
           onLayout={onFloatingLayout}
           style={[
-            styles.content,
-            styles.popover,
+            styles.surface,
+            styles.popoverSurface,
             {
               position: 'absolute',
               top: position.top,
               left: position.left,
             },
-            matchTriggerWidth && triggerWidth ? { width: triggerWidth } : null,
-            contentStyle,
+            matchTriggerWidth && triggerWidth
+              ? {
+                  width: triggerWidth,
+                  maxWidth: triggerWidth,
+                }
+              : {
+                  width: '100%',
+                  maxWidth: 420,
+                },
           ]}
-          testID='select-popover'
+          testID='select-popover-surface'
         >
-          {children}
+          <View
+            style={[styles.content, styles.popover, contentStyle]}
+            testID='select-popover'
+          >
+            {children}
+          </View>
         </View>
       </View>
     </Modal>

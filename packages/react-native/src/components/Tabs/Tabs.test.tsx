@@ -69,7 +69,7 @@ describe('Native Tabs', () => {
     const styles = createTriggerStyles(nativeThemes.light);
 
     expect(styles.tabSm.minHeight).toBe(32);
-    expect(styles.tab.minHeight).toBe(38);
+    expect(styles.tab.minHeight).toBe(36);
     expect(styles.tabLg.minHeight).toBe(51);
   });
 

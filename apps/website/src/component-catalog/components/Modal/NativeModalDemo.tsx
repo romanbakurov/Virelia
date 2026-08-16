@@ -22,7 +22,7 @@ export function NativeModalDemo() {
           restoreFocus={value.restoreFocus}
         >
           <Modal.Trigger asChild>
-            <NativeButton>Open Modal</NativeButton>
+            <NativeButton>Open modal</NativeButton>
           </Modal.Trigger>
           <Modal.Overlay>
             <Modal.Content>

@@ -2,7 +2,13 @@ import { cloneElement, useState } from 'react';
 
 import { controlSizes } from '@vellira-ui/tokens';
 import type { LayoutChangeEvent, PressableProps } from 'react-native';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
 
 import { useTheme, useThemeStyles } from '../../theme';
 import { devWarning } from '../../utils/devWarning';
@@ -89,7 +95,14 @@ export function Button({
   const resolvedIconSize = iconSize ?? controlSize.iconSize;
 
   const handleFocus: NonNullable<PressableProps['onFocus']> = (event) => {
-    setIsFocused(true);
+    if (Platform.OS === 'web') {
+      const target = event.currentTarget as unknown as HTMLElement;
+
+      setIsFocused(target.matches?.(':focus-visible') ?? false);
+    } else {
+      setIsFocused(true);
+    }
+
     onFocus?.(event);
   };
 

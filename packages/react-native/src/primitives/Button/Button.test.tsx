@@ -215,8 +215,12 @@ describe('Native Button', () => {
     unmount();
   });
 
-  it('shows a focus ring when focused', () => {
-    const { container, unmount } = render(<Button>Save</Button>);
+  it('shows a focus ring when focus is visible', () => {
+    const matchesSpy = vi
+      .spyOn(HTMLElement.prototype, 'matches')
+      .mockReturnValue(true);
+
+    const { container, unmount } = render(<Button>Button</Button>);
     const button = container.querySelector('button');
 
     act(() => {
@@ -227,6 +231,27 @@ describe('Native Button', () => {
       hexToRgb(nativeThemes.light.semantic.focus.ring.color)
     );
 
+    matchesSpy.mockRestore();
+    unmount();
+  });
+
+  it('does not show a focus ring for non-visible web focus', () => {
+    const matchesSpy = vi
+      .spyOn(HTMLElement.prototype, 'matches')
+      .mockReturnValue(false);
+
+    const { container, unmount } = render(<Button>Button</Button>);
+    const button = container.querySelector('button');
+
+    act(() => {
+      button?.focus();
+    });
+
+    expect(button?.style.borderColor).not.toBe(
+      hexToRgb(nativeThemes.light.semantic.focus.ring.color)
+    );
+
+    matchesSpy.mockRestore();
     unmount();
   });
 

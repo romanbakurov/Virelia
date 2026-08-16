@@ -225,7 +225,7 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
         isVertical
           ? {
               top: 0,
-              left: 0,
+              right: 0,
               width: 3,
               height,
               transform: [{ translateY }],
@@ -276,7 +276,11 @@ export const TabsIndicator = ({ children, style }: TabsIndicatorProps) => {
         borderWidth: 1,
         ...Platform.select({
           web: {
-            boxShadow: `${theme.tokens.shadows.sm.x}px ${theme.tokens.shadows.sm.y}px ${theme.tokens.shadows.sm.blur}px ${theme.tokens.shadows.sm.color}`,
+            boxShadow: `${theme.tokens.shadows.sm.x}px ${
+              theme.tokens.shadows.sm.y
+            }px ${theme.tokens.shadows.sm.blur}px color-mix(in srgb, ${
+              theme.tokens.shadows.sm.color
+            } ${theme.tokens.shadows.sm.opacity * 100}%, transparent)`,
           },
           default: {
             shadowColor: theme.tokens.shadows.sm.color,

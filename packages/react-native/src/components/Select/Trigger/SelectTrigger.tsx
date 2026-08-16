@@ -78,12 +78,6 @@ export function SelectTrigger({
           elevation: 1,
         };
 
-  const triggerWithClearStyle = {
-    sm: styles.triggerWithClearSm,
-    md: styles.triggerWithClearMd,
-    lg: styles.triggerWithClearLg,
-  } as const;
-
   const clearButtonContainerStyle = {
     sm: styles.clearButtonContainerSm,
     md: styles.clearButtonContainerMd,
@@ -171,7 +165,6 @@ export function SelectTrigger({
             borderColor: triggerState.border,
           },
           styles[size],
-          showClearButton && triggerWithClearStyle[size],
           isOpen && openRingStyle,
           hasError && {
             borderColor: theme.components.select.trigger.error.border,
@@ -196,7 +189,9 @@ export function SelectTrigger({
 
         {prefix && <Text style={styles.affix}>{prefix}</Text>}
 
-        <View style={styles.value}>{renderValue()}</View>
+        <View style={[styles.value, showClearButton && styles.valueWithClear]}>
+          {renderValue()}
+        </View>
 
         {suffix && <Text style={styles.affix}>{suffix}</Text>}
 
@@ -206,7 +201,7 @@ export function SelectTrigger({
             size='small'
             color={iconColor}
           />
-        ) : showClearButton ? null : endIcon ? (
+        ) : endIcon ? (
           <View
             {...nativePointerEventsNone}
             style={[styles.endIcon, webPointerEventsNone]}
@@ -245,7 +240,7 @@ export function SelectTrigger({
             <Close
               width={16}
               height={16}
-              color={theme.components.select.clearButton.hoverFg}
+              color={theme.components.select.clearButton.fg}
             />
           </Pressable>
         </View>

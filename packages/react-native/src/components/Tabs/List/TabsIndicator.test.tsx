@@ -444,7 +444,9 @@ describe('Native TabsIndicator', () => {
 
     const indicator = container.firstElementChild as HTMLElement;
 
-    expect(indicator.style.boxShadow).toBe('0px 1px 3px #0f172a');
+    expect(indicator.style.boxShadow).toBe(
+      '0px 1px 3px color-mix(in srgb, #0f172a 4%, transparent)'
+    );
 
     unmount();
   });

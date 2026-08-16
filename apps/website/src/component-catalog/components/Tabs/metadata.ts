@@ -16,8 +16,28 @@ export default defineComponentPageMetadata({
   <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
   <Tabs.Indicator />
 </Tabs.List>
-<Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
-<Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>`,
+<Tabs.Content value='account'>
+  <NativeText
+    style={{
+      fontFamily: 'VelliraSans-Regular',
+      fontSize: 16,
+      lineHeight: 20,
+    }}
+  >
+    Account settings
+  </NativeText>
+</Tabs.Content>
+<Tabs.Content value='billing'>
+  <NativeText
+    style={{
+      fontFamily: 'VelliraSans-Regular',
+      fontSize: 16,
+      lineHeight: 20,
+    }}
+  >
+    Billing details
+  </NativeText>
+</Tabs.Content>`,
     imports: [`import { Text as NativeText } from 'react-native';`],
   },
   demo: {

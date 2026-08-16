@@ -33,12 +33,14 @@ export const SelectSheet = ({
         testID='select-content-root'
       >
         <SelectBackdrop outsidePressProps={outsidePressProps} />
-        <View
-          style={[styles.content, styles.sheet, contentStyle]}
-          testID='select-sheet'
-        >
-          <SelectHandle />
-          {children}
+        <View style={[styles.surface, styles.sheetSurface]}>
+          <View
+            style={[styles.content, styles.sheet, contentStyle]}
+            testID='select-sheet'
+          >
+            <SelectHandle />
+            {children}
+          </View>
         </View>
       </View>
     </Modal>

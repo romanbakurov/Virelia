@@ -8,7 +8,8 @@ export default defineComponentPageMetadata({
   },
 
   native: {
-    responsivePresentation: true,
+    demoProps: `presentation='popover'
+matchTriggerWidth`,
     children: `<Select.Item value='react' label='React' />
 <Select.Item value='vue' label='Vue' />
 <Select.Item value='svelte' label='Svelte' />`,

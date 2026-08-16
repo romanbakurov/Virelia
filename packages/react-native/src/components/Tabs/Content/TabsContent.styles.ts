@@ -22,12 +22,4 @@ export const createStyles = (theme: NativeTheme) =>
     panelHidden: {
       display: 'none',
     },
-
-    text: {
-      flexShrink: 1,
-      color: theme.components.tabs.panel.fg,
-      fontFamily: theme.tokens.typography.family.regular,
-      fontSize: theme.tokens.typography.size.md,
-      lineHeight: theme.tokens.typography.lineHeight.md,
-    },
   });

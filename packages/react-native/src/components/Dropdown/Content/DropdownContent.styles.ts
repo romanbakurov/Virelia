@@ -39,7 +39,7 @@ export const createStyles = (theme: NativeTheme) =>
 
       ...Platform.select({
         web: {
-          boxShadow: `${theme.tokens.shadows.lg.x}px ${-theme.tokens.shadows.lg.y}px ${theme.tokens.shadows.lg.blur}px ${theme.tokens.shadows.lg.color}`,
+          boxShadow: theme.components.dropdown.content.shadow,
         },
         default: {
           shadowColor: theme.tokens.shadows.lg.color,

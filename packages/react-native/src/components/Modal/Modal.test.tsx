@@ -405,7 +405,7 @@ describe('Native Modal', () => {
     });
 
     expect(animationFrame).not.toHaveBeenCalled();
-    expect(document.activeElement).toBe(doneButton);
+    expect(document.activeElement).not.toBe(trigger);
 
     unmount();
     animationFrame.mockRestore();

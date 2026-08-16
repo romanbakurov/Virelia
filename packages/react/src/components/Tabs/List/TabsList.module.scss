@@ -97,6 +97,16 @@
   box-shadow: var(--shadow-sm);
 }
 
+.segmented.vertical {
+  gap: 0;
+}
+
+.segmented.vertical .indicator {
+  inset: -1 2px auto;
+  width: auto;
+  height: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .indicator {
     transition: none;
