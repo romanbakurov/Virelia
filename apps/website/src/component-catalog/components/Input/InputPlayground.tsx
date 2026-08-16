@@ -30,6 +30,7 @@ export type InputPlaygroundValue = {
 };
 
 type InputPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderInput: (
     value: InputPlaygroundValue,
     onChange: <K extends keyof InputPlaygroundValue>(
@@ -57,7 +58,10 @@ export const initialInputPlaygroundValue: InputPlaygroundValue = {
   error: '',
 };
 
-export function InputPlayground({ renderInput }: InputPlaygroundProps) {
+export function InputPlayground({
+  platform,
+  renderInput,
+}: InputPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<InputPlaygroundValue>(
     initialInputPlaygroundValue
   );
@@ -77,6 +81,7 @@ export function InputPlayground({ renderInput }: InputPlaygroundProps) {
       previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={inputPlaygroundControls}
           onChange={update}

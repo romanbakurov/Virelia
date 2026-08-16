@@ -380,39 +380,6 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
 </Popover>`,
     },
     {
-      title: 'Modal',
-      description: 'Modal interaction semantics.',
-      preview: (
-        <NativePopover modal>
-          <NativePopover.Trigger asChild>
-            <NativeButton>Open popover</NativeButton>
-          </NativePopover.Trigger>
-          <NativePopover.Content>
-            <NativePopover.Arrow />
-            <NativePopover.Title>Details</NativePopover.Title>
-            <NativePopover.Description>
-              Contextual information for this control.
-            </NativePopover.Description>
-          </NativePopover.Content>
-        </NativePopover>
-      ),
-      code: `import { Popover } from '@vellira-ui/react-native';
-import { Button as NativeButton } from '@vellira-ui/react-native';
-
-<Popover
-  modal
->
-  <Popover.Trigger asChild>
-    <NativeButton>Open popover</NativeButton>
-  </Popover.Trigger>
-  <Popover.Content>
-    <Popover.Arrow />
-    <Popover.Title>Details</Popover.Title>
-    <Popover.Description>Contextual information for this control.</Popover.Description>
-  </Popover.Content>
-</Popover>`,
-    },
-    {
       title: 'Arrow and close action',
       description:
         'Adds an arrow and an explicit close control inside the popover.',

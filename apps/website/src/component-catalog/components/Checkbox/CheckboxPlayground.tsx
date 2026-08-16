@@ -23,6 +23,7 @@ export type CheckboxPlaygroundValue = {
 };
 
 type CheckboxPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderCheckbox: (
     value: CheckboxPlaygroundValue,
     onChange: <K extends keyof CheckboxPlaygroundValue>(
@@ -44,6 +45,7 @@ export const initialCheckboxPlaygroundValue: CheckboxPlaygroundValue = {
 };
 
 export function CheckboxPlayground({
+  platform,
   renderCheckbox,
 }: CheckboxPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<CheckboxPlaygroundValue>(
@@ -65,6 +67,7 @@ export function CheckboxPlayground({
       previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={checkboxPlaygroundControls}
           onChange={update}

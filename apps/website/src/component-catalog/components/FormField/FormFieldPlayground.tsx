@@ -25,6 +25,7 @@ export type FormFieldPlaygroundValue = {
 };
 
 type FormFieldPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderFormField: (
     value: FormFieldPlaygroundValue,
     onChange: <K extends keyof FormFieldPlaygroundValue>(
@@ -48,6 +49,7 @@ export const initialFormFieldPlaygroundValue: FormFieldPlaygroundValue = {
 };
 
 export function FormFieldPlayground({
+  platform,
   renderFormField,
 }: FormFieldPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<FormFieldPlaygroundValue>(
@@ -69,6 +71,7 @@ export function FormFieldPlayground({
       previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={formFieldPlaygroundControls}
           onChange={update}

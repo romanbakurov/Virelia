@@ -86,6 +86,25 @@ export function buildPlaygroundArtifacts(params: {
   const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
   const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
 
+  function getControlPlatforms(prop: ExtractedProp) {
+    const supportedOnReact = reactApiPropNames.has(prop.name);
+    const supportedOnNative = nativeApiPropNames.has(prop.name);
+
+    if (supportedOnReact && supportedOnNative) {
+      return '';
+    }
+
+    if (supportedOnReact) {
+      return `\n    platforms: ['react'],`;
+    }
+
+    if (supportedOnNative) {
+      return `\n    platforms: ['react-native'],`;
+    }
+
+    return '';
+  }
+
   const reactPropBindings = playgroundProps
     .filter((prop) => reactApiPropNames.has(prop.name))
     .map((prop) => getPlaygroundPropBinding(prop))
@@ -126,12 +145,14 @@ export function buildPlaygroundArtifacts(params: {
     .map((prop) => {
       const label = toLabel(prop.name);
 
+      const platforms = getControlPlatforms(prop);
+
       if (prop.kind === 'boolean') {
         return `  {
     type: 'toggle',
     key: '${prop.name}',
     label: '${label}',
-    group: 'Options',
+    group: 'Options',${platforms}
   },`;
       }
 
@@ -142,7 +163,7 @@ export function buildPlaygroundArtifacts(params: {
     type: 'select',
     key: '${prop.name}',
     label: '${label}',
-    options: [${options.map((option) => `'${option}'`).join(', ')}],
+    options: [${options.map((option) => `'${option}'`).join(', ')}],${platforms}
   },`;
       }
 
@@ -150,14 +171,14 @@ export function buildPlaygroundArtifacts(params: {
         return `  {
     type: 'number',
     key: '${prop.name}',
-    label: '${label}',
+    label: '${label}',${platforms}
   },`;
       }
 
       return `  {
     type: 'text',
     key: '${prop.name}',
-    label: '${label}',
+    label: '${label}',${platforms}
   },`;
     })
     .join('\n');
@@ -186,6 +207,7 @@ ${playgroundValueFields}
 };
 
 type ${componentName}PlaygroundProps = {
+  platform: 'react' | 'react-native';
   render${componentName}: (
     value: ${componentName}PlaygroundValue,
     onChange: <K extends keyof ${componentName}PlaygroundValue>(
@@ -200,6 +222,7 @@ ${playgroundInitialValues}
 };
 
 export function ${componentName}Playground({
+  platform,
   render${componentName},
 }: ${componentName}PlaygroundProps) {
   const [value, setValue] =
@@ -222,6 +245,7 @@ export function ${componentName}Playground({
       previewWidth=${toTsLiteral(componentConfig.demo?.previewWidth ?? 'auto')}
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={${slugIdentifier}PlaygroundControls}
           onChange={update}

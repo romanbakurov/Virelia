@@ -17,6 +17,7 @@ export type PopoverPlaygroundValue = {
 };
 
 type PopoverPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderPopover: (
     value: PopoverPlaygroundValue,
     onChange: <K extends keyof PopoverPlaygroundValue>(
@@ -31,7 +32,10 @@ export const initialPopoverPlaygroundValue: PopoverPlaygroundValue = {
   modal: false,
 };
 
-export function PopoverPlayground({ renderPopover }: PopoverPlaygroundProps) {
+export function PopoverPlayground({
+  platform,
+  renderPopover,
+}: PopoverPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<PopoverPlaygroundValue>(
     initialPopoverPlaygroundValue
   );
@@ -51,6 +55,7 @@ export function PopoverPlayground({ renderPopover }: PopoverPlaygroundProps) {
       previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={popoverPlaygroundControls}
           onChange={update}

@@ -20,6 +20,7 @@ export type RadioPlaygroundValue = {
 };
 
 type RadioPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderRadio: (
     value: RadioPlaygroundValue,
     onChange: <K extends keyof RadioPlaygroundValue>(
@@ -37,7 +38,10 @@ export const initialRadioPlaygroundValue: RadioPlaygroundValue = {
   color: 'primary',
 };
 
-export function RadioPlayground({ renderRadio }: RadioPlaygroundProps) {
+export function RadioPlayground({
+  platform,
+  renderRadio,
+}: RadioPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<RadioPlaygroundValue>(
     initialRadioPlaygroundValue
   );
@@ -57,6 +61,7 @@ export function RadioPlayground({ renderRadio }: RadioPlaygroundProps) {
       previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={radioPlaygroundControls}
           onChange={update}

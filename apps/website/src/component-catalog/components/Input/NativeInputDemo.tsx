@@ -10,6 +10,7 @@ import { InputPlayground } from './InputPlayground';
 export function NativeInputDemo() {
   return (
     <InputPlayground
+      platform='react-native'
       renderInput={(value) => (
         <Input
           label={value.label || undefined}

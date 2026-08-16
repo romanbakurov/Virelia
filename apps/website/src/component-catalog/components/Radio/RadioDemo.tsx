@@ -10,6 +10,7 @@ import { RadioPlayground } from './RadioPlayground';
 export function RadioDemo() {
   return (
     <RadioPlayground
+      platform='react'
       renderRadio={(value, onChange) => (
         <Radio
           value='option'

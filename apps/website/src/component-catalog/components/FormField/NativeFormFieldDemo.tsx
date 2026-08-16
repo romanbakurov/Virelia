@@ -11,6 +11,7 @@ import { FormFieldPlayground } from './FormFieldPlayground';
 export function NativeFormFieldDemo() {
   return (
     <FormFieldPlayground
+      platform='react-native'
       renderFormField={(value) => (
         <FormField
           label={value.label || undefined}

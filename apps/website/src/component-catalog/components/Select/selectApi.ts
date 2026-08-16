@@ -30,21 +30,6 @@ const reactSelectApiSections: readonly ComponentApiSection[] = [
         description: 'Enables multiple selection when true.',
       },
       {
-        name: 'value',
-        type: 'string | SelectMultipleValue',
-        description: 'Controlled selected value or values.',
-      },
-      {
-        name: 'defaultValue',
-        type: 'string | SelectMultipleValue',
-        description: 'Initial selected value or values for uncontrolled usage.',
-      },
-      {
-        name: 'onValueChange',
-        type: '((value: SelectValue) => void) | ((value: SelectMultipleValue) => void)',
-        description: 'Called when the selected value or values change.',
-      },
-      {
         name: 'placeholder',
         type: 'string',
         defaultValue: "'Select...'",
@@ -285,6 +270,21 @@ const reactSelectApiSections: readonly ComponentApiSection[] = [
         name: 'dropdownClassName',
         type: 'string',
         description: 'Class name applied to the dropdown element.',
+      },
+      {
+        name: 'value',
+        type: 'string | import("@vellira-ui/types").SelectMultipleValue | null',
+        description: 'Controlled selected value or values.',
+      },
+      {
+        name: 'defaultValue',
+        type: 'string | import("@vellira-ui/types").SelectMultipleValue | null',
+        description: 'Initial selected value or values for uncontrolled usage.',
+      },
+      {
+        name: 'onValueChange',
+        type: '((value: string | null) => void) | ((value: import("@vellira-ui/types").SelectMultipleValue) => void)',
+        description: 'Called when the selected value or values change.',
       },
     ],
   },

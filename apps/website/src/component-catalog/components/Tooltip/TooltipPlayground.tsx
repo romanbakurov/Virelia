@@ -29,6 +29,7 @@ export type TooltipPlaygroundValue = {
 };
 
 type TooltipPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderTooltip: (
     value: TooltipPlaygroundValue,
     onChange: <K extends keyof TooltipPlaygroundValue>(
@@ -43,7 +44,10 @@ export const initialTooltipPlaygroundValue: TooltipPlaygroundValue = {
   disabled: false,
 };
 
-export function TooltipPlayground({ renderTooltip }: TooltipPlaygroundProps) {
+export function TooltipPlayground({
+  platform,
+  renderTooltip,
+}: TooltipPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<TooltipPlaygroundValue>(
     initialTooltipPlaygroundValue
   );
@@ -63,6 +67,7 @@ export function TooltipPlayground({ renderTooltip }: TooltipPlaygroundProps) {
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={tooltipPlaygroundControls}
           onChange={update}

@@ -10,6 +10,7 @@ import { TabsPlayground } from './TabsPlayground';
 export function TabsDemo() {
   return (
     <TabsPlayground
+      platform='react'
       renderTabs={(value, onChange) => (
         <Tabs
           value={value.value || undefined}

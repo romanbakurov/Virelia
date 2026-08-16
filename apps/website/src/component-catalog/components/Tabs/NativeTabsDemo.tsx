@@ -11,6 +11,7 @@ import { TabsPlayground } from './TabsPlayground';
 export function NativeTabsDemo() {
   return (
     <TabsPlayground
+      platform='react-native'
       renderTabs={(value, onChange) => (
         <Tabs
           value={value.value || undefined}

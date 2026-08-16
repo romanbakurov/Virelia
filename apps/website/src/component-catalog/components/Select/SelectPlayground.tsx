@@ -25,6 +25,7 @@ export type SelectPlaygroundValue = {
 };
 
 type SelectPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderSelect: (
     value: SelectPlaygroundValue,
     onChange: <K extends keyof SelectPlaygroundValue>(
@@ -47,7 +48,10 @@ export const initialSelectPlaygroundValue: SelectPlaygroundValue = {
   disabled: false,
 };
 
-export function SelectPlayground({ renderSelect }: SelectPlaygroundProps) {
+export function SelectPlayground({
+  platform,
+  renderSelect,
+}: SelectPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<SelectPlaygroundValue>(
     initialSelectPlaygroundValue
   );
@@ -67,6 +71,7 @@ export function SelectPlayground({ renderSelect }: SelectPlaygroundProps) {
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={selectPlaygroundControls}
           onChange={update}

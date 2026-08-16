@@ -25,6 +25,7 @@ export type DropdownPlaygroundValue = {
 };
 
 type DropdownPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderDropdown: (
     value: DropdownPlaygroundValue,
     onChange: <K extends keyof DropdownPlaygroundValue>(
@@ -48,6 +49,7 @@ export const initialDropdownPlaygroundValue: DropdownPlaygroundValue = {
 };
 
 export function DropdownPlayground({
+  platform,
   renderDropdown,
 }: DropdownPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<DropdownPlaygroundValue>(
@@ -69,6 +71,7 @@ export function DropdownPlayground({
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={dropdownPlaygroundControls}
           onChange={update}

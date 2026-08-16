@@ -63,6 +63,13 @@ describe('buildPlaygroundArtifacts', () => {
       getChangeHandlerName: () => null,
     });
 
+    expect(result.schemaContent).toContain("platforms: ['react']");
+    expect(result.schemaContent).toMatch(
+      /key: 'activationMode',[\s\S]*?platforms: \['react'\]/
+    );
+    expect(result.schemaContent).toMatch(
+      /key: 'orientation',[\s\S]*?options: \['horizontal', 'vertical'\],\n {2}},/
+    );
     expect(result.reactPropBindings).toContain(
       'orientation={value.orientation}'
     );

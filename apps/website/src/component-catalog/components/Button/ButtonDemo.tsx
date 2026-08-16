@@ -11,6 +11,7 @@ import { ButtonPlayground } from './ButtonPlayground';
 export function ButtonDemo() {
   return (
     <ButtonPlayground
+      platform='react'
       renderButton={(value) => (
         <Button
           iconStart={<Plus />}

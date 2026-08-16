@@ -12,4 +12,5 @@ export type {
   PlaygroundSelectControl,
   PlaygroundTextControl,
   PlaygroundToggleControl,
+  PlaygroundControlPlatform,
 } from './PlaygroundControls';

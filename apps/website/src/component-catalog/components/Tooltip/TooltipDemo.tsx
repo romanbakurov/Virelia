@@ -11,6 +11,7 @@ import { TooltipPlayground } from './TooltipPlayground';
 export function TooltipDemo() {
   return (
     <TooltipPlayground
+      platform='react'
       renderTooltip={(value) => (
         <Tooltip placement={value.placement} disabled={value.disabled}>
           <Tooltip.Trigger asChild>

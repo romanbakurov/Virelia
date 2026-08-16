@@ -144,6 +144,7 @@ import { ${componentName}Playground } from './${componentName}Playground';
 export function ${componentName}Demo() {
   return (
     <${componentName}Playground
+      platform='react'
       render${componentName}={${demoRenderParams} => (
         ${reactDemoElement}
       )}
@@ -162,6 +163,7 @@ import { ${componentName}Playground } from './${componentName}Playground';
 export function Native${componentName}Demo() {
 ${nativeResponsiveSetup}  return (
     <${componentName}Playground
+      platform='react-native'
       render${componentName}={${demoRenderParams} => (
         ${nativeDemoElement}
       )}

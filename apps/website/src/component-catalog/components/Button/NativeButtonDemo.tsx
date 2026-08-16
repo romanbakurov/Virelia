@@ -11,6 +11,7 @@ import { ButtonPlayground } from './ButtonPlayground';
 export function NativeButtonDemo() {
   return (
     <ButtonPlayground
+      platform='react-native'
       renderButton={(value) => (
         <Button
           iconStart={<Plus />}

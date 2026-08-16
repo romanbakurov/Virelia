@@ -10,6 +10,7 @@ import { SelectPlayground } from './SelectPlayground';
 export function SelectDemo() {
   return (
     <SelectPlayground
+      platform='react'
       renderSelect={(value) => (
         <Select
           placeholder={value.placeholder || undefined}

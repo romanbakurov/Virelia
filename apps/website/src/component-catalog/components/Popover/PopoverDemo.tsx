@@ -11,6 +11,7 @@ import { PopoverPlayground } from './PopoverPlayground';
 export function PopoverDemo() {
   return (
     <PopoverPlayground
+      platform='react'
       renderPopover={(value, onChange) => (
         <Popover
           open={value.open}

@@ -33,7 +33,7 @@ const reactTooltipApiSections: readonly ComponentApiSection[] = [
       },
       {
         name: 'delay',
-        type: 'number | import("@vellira-ui/types").TooltipDelay',
+        type: 'number | Partial<import("@vellira-ui/types").TooltipDelay>',
         description:
           'Open delay in milliseconds, or explicit open/close delays.',
       },
@@ -67,12 +67,6 @@ const reactTooltipApiSections: readonly ComponentApiSection[] = [
         name: 'matchTriggerWidth',
         type: 'boolean',
         description: 'Matches tooltip content width to the trigger width.',
-      },
-      {
-        name: 'modal',
-        type: 'boolean',
-        description:
-          'Reserved for modal overlay semantics. Tooltip defaults to non-modal.',
       },
       {
         name: 'placement',
