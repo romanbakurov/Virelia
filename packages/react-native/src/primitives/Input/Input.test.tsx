@@ -527,4 +527,46 @@ describe('Native Input', () => {
 
     unmount();
   });
+
+  it('announces description, required, invalid and error for its own field', () => {
+    const { container, unmount } = render(
+      <Input
+        label='Email'
+        description='Used for login.'
+        required
+        invalid
+        error='Enter a valid email.'
+        value=''
+      />
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-description')).toBe(
+      'Used for login. Required. Invalid. Enter a valid email.'
+    );
+
+    unmount();
+  });
+
+  it('keeps FormField label relationship while announcing required and invalid state', () => {
+    const { container, unmount } = render(
+      <FormField
+        label='Email'
+        description='Used for login.'
+        error='Enter a valid email.'
+        required
+        invalid
+      >
+        <Input value='' />
+      </FormField>
+    );
+
+    const input = container.querySelector<HTMLInputElement>('input');
+
+    expect(input?.getAttribute('aria-labelledby')).toBeTruthy();
+    expect(input?.getAttribute('aria-description')).toBe('Required. Invalid.');
+
+    unmount();
+  });
 });

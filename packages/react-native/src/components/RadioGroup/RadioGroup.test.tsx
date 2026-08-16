@@ -263,4 +263,20 @@ describe('Native RadioGroup', () => {
 
     unmount();
   });
+
+  it('announces standalone invalid state on the radio group', () => {
+    const { container, unmount } = render(
+      <RadioGroup label='Plan' invalid>
+        <Radio value='free' label='Free' />
+        <Radio value='pro' label='Pro' />
+      </RadioGroup>
+    );
+
+    const group = container.querySelector('[role="radiogroup"]');
+
+    expect(group).toBeTruthy();
+    expect(group?.getAttribute('aria-description')).toBe('Invalid.');
+
+    unmount();
+  });
 });

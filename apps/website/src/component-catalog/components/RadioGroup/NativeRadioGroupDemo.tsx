@@ -17,6 +17,7 @@ export function NativeRadioGroupDemo() {
           onValueChange={(nextValue) => onChange('value', nextValue)}
           disabled={value.disabled}
           required={value.required}
+          invalid={value.invalid}
           orientation={value.orientation}
           size={value.size}
           color={value.color}

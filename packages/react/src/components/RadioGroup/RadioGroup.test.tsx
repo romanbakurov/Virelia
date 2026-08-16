@@ -237,4 +237,22 @@ describe('RadioGroup', () => {
 
     unmount();
   });
+
+  it('supports invalid state without an error message', () => {
+    const { container, unmount } = render(
+      <RadioGroup label='Plan' invalid>
+        <PlanRadios />
+      </RadioGroup>
+    );
+
+    const group = container.querySelector<HTMLElement>('[role="radiogroup"]');
+    const radios = container.querySelectorAll<HTMLInputElement>(
+      'input[type="radio"]'
+    );
+
+    expect(group?.getAttribute('aria-invalid')).toBe('true');
+    expect(radios[0].getAttribute('aria-invalid')).toBe('true');
+
+    unmount();
+  });
 });

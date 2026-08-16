@@ -18,6 +18,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
       onValueChange,
       disabled = false,
       required = false,
+      invalid = false,
       size = 'md',
       color = 'primary',
       name,
@@ -52,7 +53,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
       onChange: onValueChange,
     });
 
-    const invalid = Boolean(error);
+    const isInvalid = invalid || Boolean(error);
     const handleKeyDown = useRadioGroupKeyboard({
       rootRef,
       orientation,
@@ -81,7 +82,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
         aria-describedby={describedBy}
         aria-disabled={disabled || undefined}
         aria-required={required || undefined}
-        aria-invalid={invalid || undefined}
+        aria-invalid={isInvalid || undefined}
         onKeyDown={(event) => {
           onKeyDown?.(event);
 
@@ -92,7 +93,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
         className={cn(
           styles.root,
           styles[size],
-          invalid && styles.invalid,
+          isInvalid && styles.invalid,
           disabled && styles.disabled,
           className
         )}
@@ -121,7 +122,7 @@ export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
             value: currentValue,
             disabled,
             required,
-            invalid,
+            invalid: isInvalid,
             size,
             color,
             describedBy,

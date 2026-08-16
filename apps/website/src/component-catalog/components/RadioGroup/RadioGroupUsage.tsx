@@ -52,6 +52,10 @@ function createRadioGroupCode(
     props.push('required');
   }
 
+  if (value.invalid) {
+    props.push('invalid');
+  }
+
   if (value.orientation !== 'vertical') {
     props.push(`orientation='${value.orientation}'`);
   }

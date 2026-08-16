@@ -24,6 +24,12 @@ export const radioGroupPlaygroundControls = [
     group: 'Options',
   },
   {
+    type: 'toggle',
+    key: 'invalid',
+    label: 'Invalid',
+    group: 'Options',
+  },
+  {
     type: 'select',
     key: 'orientation',
     label: 'Orientation',

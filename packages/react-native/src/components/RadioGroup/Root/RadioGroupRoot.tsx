@@ -18,6 +18,7 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
       onValueChange,
       disabled = false,
       required = false,
+      invalid = false,
       size = 'md',
       color = 'primary',
       orientation = 'vertical',
@@ -46,7 +47,7 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
       onChange: onValueChange,
     });
 
-    const invalid = Boolean(error);
+    const isInvalid = invalid || Boolean(error);
 
     const resolvedAccessibilityLabel =
       accessibilityLabel ?? (typeof label === 'string' ? label : undefined);
@@ -56,6 +57,7 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
         [
           typeof description === 'string' ? description : undefined,
           required ? 'Required.' : undefined,
+          isInvalid && !error ? 'Invalid.' : undefined,
           typeof error === 'string' ? error : undefined,
         ]
           .filter(Boolean)
@@ -83,7 +85,7 @@ export const RadioGroupRoot = forwardRef<View, RadioGroupProps>(
             value: selectedValue,
             disabled,
             required,
-            invalid,
+            invalid: isInvalid,
             size,
             color,
             onValueChange: setSelectedValue,

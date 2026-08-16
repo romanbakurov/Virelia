@@ -58,6 +58,26 @@ describe('Native Checkbox', () => {
     unmount();
   });
 
+  it('announces required and error state through the accessibility hint', () => {
+    const { container, unmount } = render(
+      <Checkbox
+        label='Accept terms'
+        description='Required to continue.'
+        required
+        error='You must accept the terms.'
+      />
+    );
+
+    const checkbox =
+      container.querySelector<HTMLButtonElement>('[role="checkbox"]');
+
+    expect(checkbox?.getAttribute('aria-description')).toBe(
+      'Required to continue. Required. You must accept the terms.'
+    );
+
+    unmount();
+  });
+
   it('resolves the indeterminate state to checked on press', () => {
     const onCheckedChange = vi.fn();
     const { container, unmount } = render(

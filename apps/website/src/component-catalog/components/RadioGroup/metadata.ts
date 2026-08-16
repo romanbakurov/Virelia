@@ -115,6 +115,12 @@ export default defineComponentPageMetadata({
           'Pair required state with clear error content when validation fails.',
         props: ['required', 'error'],
       },
+      {
+        title: 'Accessibility state',
+        description:
+          'Disabled, required, and invalid state are exposed through React Native accessibility semantics.',
+        props: ['disabled', 'required', 'invalid'],
+      },
     ],
   },
   related: ['radio', 'checkbox', 'select'],

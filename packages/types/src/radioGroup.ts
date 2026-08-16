@@ -12,6 +12,8 @@ export interface BaseRadioGroupProps {
   disabled?: boolean;
   /** Marks the radio group as required. */
   required?: boolean;
+  /** Shows invalid state without requiring an error message. */
+  invalid?: boolean;
   /** Layout direction. */
   orientation?: RadioGroupOrientation;
   /** Size inherited by child radios. */
