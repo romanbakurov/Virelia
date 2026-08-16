@@ -115,28 +115,36 @@ export function useSelectRootState(props: SelectProps) {
     [isSearchable, resolvedOptions, searchValue]
   );
 
-  const internalValue = props.multiple
-    ? props.value
-    : props.value === null
-      ? ''
-      : props.value;
+  const internalValue =
+    props.multiple === true
+      ? props.value
+      : props.value === null
+        ? ''
+        : props.value;
 
-  const internalDefaultValue = props.multiple
-    ? props.defaultValue
-    : props.defaultValue === null
-      ? ''
-      : props.defaultValue;
+  const internalDefaultValue =
+    props.multiple === true
+      ? props.defaultValue
+      : props.defaultValue === null
+        ? ''
+        : props.defaultValue;
+
+  const multipleOnValueChange =
+    props.multiple === true ? props.onValueChange : undefined;
+
+  const singleOnValueChange =
+    props.multiple === true ? undefined : props.onValueChange;
 
   const handleValueChange = useCallback(
     (nextValue: string | string[]) => {
-      if (props.multiple) {
-        props.onValueChange?.(
+      if (multiple) {
+        multipleOnValueChange?.(
           Array.isArray(nextValue) ? nextValue : nextValue ? [nextValue] : []
         );
         return;
       }
 
-      props.onValueChange?.(
+      singleOnValueChange?.(
         Array.isArray(nextValue)
           ? (nextValue[0] ?? null)
           : nextValue === ''
@@ -144,7 +152,7 @@ export function useSelectRootState(props: SelectProps) {
             : nextValue
       );
     },
-    [props.multiple, props.onValueChange]
+    [multiple, multipleOnValueChange, singleOnValueChange]
   );
 
   const {
