@@ -254,7 +254,7 @@ export function PlatformParity() {
                 label='Owning team'
                 value={team}
                 onValueChange={(value) => {
-                  if (isTeamValue(value)) {
+                  if (value !== null && isTeamValue(value)) {
                     setTeam(value);
                   }
                 }}
