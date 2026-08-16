@@ -26,7 +26,7 @@ export const createStyles = (theme: NativeTheme) =>
     listSegmented: {
       alignSelf: 'flex-start',
       width: 'auto',
-      gap: theme.tokens.spacing[1],
+      gap: 0,
       padding: 2,
       backgroundColor: theme.components.tabs.list.segmentedBg,
       borderColor: theme.components.tabs.list.border,
@@ -44,5 +44,21 @@ export const createStyles = (theme: NativeTheme) =>
       flexShrink: 0,
       gap: theme.tokens.spacing[1],
       marginBottom: 0,
+    },
+
+    listPillsVertical: {
+      gap: theme.tokens.spacing[2],
+    },
+
+    listSegmentedVertical: {
+      gap: 0,
+      padding: 2,
+      width: 156,
+      minWidth: 156,
+      maxWidth: 156,
+      backgroundColor: theme.components.tabs.list.segmentedBg,
+      borderColor: theme.components.tabs.list.border,
+      borderRadius: theme.tokens.radius.xl,
+      borderWidth: 1,
     },
   });

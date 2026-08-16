@@ -18,8 +18,19 @@ export const TabsList = ({
     styles.list,
     variant === 'line' && styles.listLine,
     variant === 'segmented' && styles.listSegmented,
+
     orientation === 'vertical' && styles.listVertical,
+
     variant === 'line' && orientation === 'vertical' && styles.listLineVertical,
+
+    variant === 'pills' &&
+      orientation === 'vertical' &&
+      styles.listPillsVertical,
+
+    variant === 'segmented' &&
+      orientation === 'vertical' &&
+      styles.listSegmentedVertical,
+
     style,
   ];
 

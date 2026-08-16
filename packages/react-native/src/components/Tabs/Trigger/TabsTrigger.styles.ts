@@ -9,7 +9,7 @@ const fontWeight = (value: string): TextStyle['fontWeight'] =>
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     tab: {
-      minHeight: 38,
+      minHeight: 36,
       minWidth: 44,
       alignItems: 'center',
       flexDirection: 'row',
@@ -91,7 +91,6 @@ export const createStyles = (theme: NativeTheme) =>
     tabVertical: {
       position: 'relative',
       width: '100%',
-      minHeight: 44,
       flexGrow: 0,
       flexShrink: 0,
       justifyContent: 'flex-start',
@@ -158,10 +157,10 @@ export const createStyles = (theme: NativeTheme) =>
     },
 
     tabPills: {
-      minHeight: 36,
-      paddingHorizontal: theme.tokens.spacing[3],
-      paddingVertical: theme.tokens.spacing[1],
-      borderRadius: theme.tokens.radius.md,
+      minHeight: 38,
+      paddingHorizontal: theme.tokens.spacing[4],
+      paddingVertical: theme.tokens.spacing[2],
+      borderRadius: theme.tokens.radius.lg,
     },
 
     tabPillsIconOnly: {

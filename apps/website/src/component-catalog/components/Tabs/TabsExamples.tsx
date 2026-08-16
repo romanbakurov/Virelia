@@ -148,10 +148,26 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
             <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
-            <NativeText>Account settings</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Account settings
+            </NativeText>
           </NativeTabs.Content>
           <NativeTabs.Content value='billing'>
-            <NativeText>Billing details</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Billing details
+            </NativeText>
           </NativeTabs.Content>
         </NativeTabs>
       ),
@@ -164,8 +180,28 @@ import { Text as NativeText } from 'react-native';
     <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
     <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
-  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+  <Tabs.Content value='account'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Account settings
+    </NativeText>
+  </Tabs.Content>
+  <Tabs.Content value='billing'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Billing details
+    </NativeText>
+  </Tabs.Content>
 </Tabs>`,
     },
     {
@@ -179,10 +215,26 @@ import { Text as NativeText } from 'react-native';
             <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
-            <NativeText>Account settings</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Account settings
+            </NativeText>
           </NativeTabs.Content>
           <NativeTabs.Content value='billing'>
-            <NativeText>Billing details</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Billing details
+            </NativeText>
           </NativeTabs.Content>
         </NativeTabs>
       ),
@@ -197,8 +249,28 @@ import { Text as NativeText } from 'react-native';
     <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
     <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
-  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+  <Tabs.Content value='account'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Account settings
+    </NativeText>
+  </Tabs.Content>
+  <Tabs.Content value='billing'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Billing details
+    </NativeText>
+  </Tabs.Content>
 </Tabs>`,
     },
     {
@@ -212,10 +284,26 @@ import { Text as NativeText } from 'react-native';
             <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
-            <NativeText>Account settings</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Account settings
+            </NativeText>
           </NativeTabs.Content>
           <NativeTabs.Content value='billing'>
-            <NativeText>Billing details</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Billing details
+            </NativeText>
           </NativeTabs.Content>
         </NativeTabs>
       ),
@@ -230,8 +318,28 @@ import { Text as NativeText } from 'react-native';
     <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
     <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
-  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+  <Tabs.Content value='account'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Account settings
+    </NativeText>
+  </Tabs.Content>
+  <Tabs.Content value='billing'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Billing details
+    </NativeText>
+  </Tabs.Content>
 </Tabs>`,
     },
     {
@@ -245,10 +353,26 @@ import { Text as NativeText } from 'react-native';
             <NativeTabs.Indicator />
           </NativeTabs.List>
           <NativeTabs.Content value='account'>
-            <NativeText>Account settings</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Account settings
+            </NativeText>
           </NativeTabs.Content>
           <NativeTabs.Content value='billing'>
-            <NativeText>Billing details</NativeText>
+            <NativeText
+              style={{
+                fontFamily: 'VelliraSans-Regular',
+                fontSize: 16,
+                lineHeight: 20,
+              }}
+            >
+              Billing details
+            </NativeText>
           </NativeTabs.Content>
         </NativeTabs>
       ),
@@ -263,8 +387,28 @@ import { Text as NativeText } from 'react-native';
     <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
     <Tabs.Indicator />
   </Tabs.List>
-  <Tabs.Content value='account'><NativeText>Account settings</NativeText></Tabs.Content>
-  <Tabs.Content value='billing'><NativeText>Billing details</NativeText></Tabs.Content>
+  <Tabs.Content value='account'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Account settings
+    </NativeText>
+  </Tabs.Content>
+  <Tabs.Content value='billing'>
+    <NativeText
+      style={{
+        fontFamily: 'VelliraSans-Regular',
+        fontSize: 16,
+        lineHeight: 20,
+      }}
+    >
+      Billing details
+    </NativeText>
+  </Tabs.Content>
 </Tabs>`,
     },
   ] as const;

@@ -66,12 +66,29 @@ export const TabsRoot = ({
 
   const registerTriggerLayout = useCallback(
     (triggerValue: string, layout: TabsTriggerLayout | undefined) => {
+      const previous = triggerLayoutsRef.current.get(triggerValue);
+
       if (!layout) {
+        if (!previous) {
+          return;
+        }
+
         triggerLayoutsRef.current.delete(triggerValue);
-      } else {
-        triggerLayoutsRef.current.set(triggerValue, layout);
+        setIndicatorVersion((current) => current + 1);
+        return;
       }
 
+      if (
+        previous &&
+        previous.x === layout.x &&
+        previous.y === layout.y &&
+        previous.width === layout.width &&
+        previous.height === layout.height
+      ) {
+        return;
+      }
+
+      triggerLayoutsRef.current.set(triggerValue, layout);
       setIndicatorVersion((current) => current + 1);
     },
     []

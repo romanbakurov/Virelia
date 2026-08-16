@@ -309,9 +309,17 @@
   width: 100%;
   text-align: left;
 
-  &.segmented,
   &.line {
     padding-left: calc(var(--space-4) + 3px);
+
+    &::after {
+      display: none;
+    }
+
+    &:hover:not(:disabled, [aria-selected='true'], [data-state='active']) {
+      color: var(--tabs-trigger-hover-fg);
+      background-color: var(--tabs-trigger-hover-bg);
+    }
   }
 
   &.pills {
