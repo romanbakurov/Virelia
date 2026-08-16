@@ -16,9 +16,6 @@ export function NativeTabsDemo() {
           value={value.value || undefined}
           onValueChange={(nextValue) => onChange('value', nextValue)}
           orientation={value.orientation}
-          activationMode={value.activationMode}
-          dir={value.dir}
-          loop={value.loop}
           keepMounted={value.keepMounted}
           lazyMount={value.lazyMount}
           variant={value.variant}

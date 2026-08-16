@@ -35,10 +35,10 @@ export function TabsAccessibility({ platform }: TabsAccessibilityProps) {
       props: ['value', 'defaultValue'],
     },
     {
-      title: 'Activation behavior',
+      title: 'Orientation',
       description:
-        'Use activation mode and orientation consistently with the platform navigation pattern.',
-      props: ['activationMode', 'orientation'],
+        'Use an orientation that keeps tab navigation clear and predictable for the available space.',
+      props: ['orientation'],
     },
   ] as const;
 

@@ -297,25 +297,6 @@ const nativeTabsApiSections: readonly ComponentApiSection[] = [
           'Layout direction for tab triggers and keyboard navigation.',
       },
       {
-        name: 'activationMode',
-        type: "'automatic' | 'manual'",
-        defaultValue: "'automatic'",
-        description:
-          'Controls whether focus automatically activates tabs or requires explicit selection.',
-      },
-      {
-        name: 'dir',
-        type: "'ltr' | 'rtl'",
-        description: 'Text direction used for horizontal keyboard navigation.',
-      },
-      {
-        name: 'loop',
-        type: 'boolean',
-        defaultValue: 'true',
-        description:
-          'Allows keyboard navigation to wrap from last to first tab and back.',
-      },
-      {
         name: 'keepMounted',
         type: 'boolean',
         defaultValue: 'false',

@@ -53,14 +53,16 @@ export default defineComponentPageMetadata({
   defaults: {
     shared: {
       orientation: 'horizontal',
-      activationMode: 'automatic',
-      loop: true,
       keepMounted: false,
       lazyMount: false,
       variant: 'line',
       color: 'primary',
       size: 'md',
       disabled: false,
+    },
+    react: {
+      activationMode: 'automatic',
+      loop: true,
     },
   },
   examples: [
@@ -74,6 +76,7 @@ export default defineComponentPageMetadata({
       title: 'Manual activation',
       description: 'Focus tabs without selecting until activation.',
       props: [`activationMode='manual'`],
+      platforms: ['react'],
     },
     {
       title: 'Disabled',
@@ -112,10 +115,10 @@ export default defineComponentPageMetadata({
         props: ['value', 'defaultValue'],
       },
       {
-        title: 'Activation behavior',
+        title: 'Orientation',
         description:
-          'Use activation mode and orientation consistently with the platform navigation pattern.',
-        props: ['activationMode', 'orientation'],
+          'Use an orientation that keeps tab navigation clear and predictable for the available space.',
+        props: ['orientation'],
       },
     ],
   },

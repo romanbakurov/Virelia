@@ -7,7 +7,8 @@ export function renderDemoFiles(params: {
   componentConfig: ComponentPageMetadata;
   platforms: readonly Platform[];
   playgroundProps: readonly ExtractedProp[];
-  playgroundPropBindings: string;
+  reactPlaygroundPropBindings: string;
+  nativePlaygroundPropBindings: string;
   reactStaticDemoProps: string;
   nativeStaticDemoProps: string;
   reactDemoChildren: string;
@@ -21,7 +22,8 @@ export function renderDemoFiles(params: {
     componentConfig,
     platforms,
     playgroundProps,
-    playgroundPropBindings,
+    reactPlaygroundPropBindings,
+    nativePlaygroundPropBindings,
     reactStaticDemoProps,
     nativeStaticDemoProps,
     reactDemoChildren,
@@ -112,12 +114,12 @@ ${formattedChildren}
 
   const reactDemoElement = createDemoElement({
     platform: 'react',
-    propBindings: playgroundPropBindings,
+    propBindings: reactPlaygroundPropBindings,
   });
 
   const nativeDemoElement = createDemoElement({
     platform: 'react-native',
-    propBindings: playgroundPropBindings,
+    propBindings: nativePlaygroundPropBindings,
   });
 
   const usesDemoValue = playgroundProps.length > 0;

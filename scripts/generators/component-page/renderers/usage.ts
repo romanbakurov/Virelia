@@ -15,6 +15,8 @@ export function renderUsage(params: {
   componentName: string;
   componentConfig: ComponentPageMetadata;
   playgroundProps: readonly ExtractedProp[];
+  reactApiProps: readonly ExtractedProp[];
+  nativeApiProps: readonly ExtractedProp[];
   generatedFileHeader: string;
   getDemoProps(platform: Platform): string;
 }) {
@@ -22,6 +24,8 @@ export function renderUsage(params: {
     componentName,
     componentConfig,
     playgroundProps,
+    reactApiProps,
+    nativeApiProps,
     generatedFileHeader,
     getDemoProps,
   } = params;
@@ -73,6 +77,8 @@ export function renderUsage(params: {
   const nativeUsageChildren = createUsageChildren('react-native');
   const reactPlatformImports = createPlatformImports('react');
   const nativePlatformImports = createPlatformImports('react-native');
+  const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
+  const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
 
   const content = `${generatedFileHeader}'use client';
 
@@ -117,27 +123,39 @@ ${nativeUsageStaticProps}
 
 ${playgroundProps
   .map((prop) => {
+    const supportedOnReact = reactApiPropNames.has(prop.name);
+    const supportedOnNative = nativeApiPropNames.has(prop.name);
+
+    const platformGuard =
+      supportedOnReact && supportedOnNative
+        ? ''
+        : supportedOnReact
+          ? `platform === 'react' && `
+          : `platform === 'react-native' && `;
+
     const initialValue = componentConfig.demo?.initialValues?.[prop.name];
 
     if (prop.kind === 'boolean') {
-      return `  if (value.${prop.name}) {
+      return `  if (${platformGuard}value.${prop.name}) {
     props.push('${prop.name}');
   }`;
     }
 
     if (prop.kind === 'string') {
-      return `  if (value.${prop.name}) {
+      return `  if (${platformGuard}value.${prop.name}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);
   }`;
     }
 
     if (prop.kind === 'number') {
-      return `  if (value.${prop.name} !== ${toTsLiteral(initialValue ?? 0)}) {
+      return `  if (${platformGuard}value.${prop.name} !== ${toTsLiteral(
+        initialValue ?? 0
+      )}) {
     props.push(\`${prop.name}={\${value.${prop.name}}}\`);
   }`;
     }
 
-    return `  if (value.${prop.name} !== ${toTsLiteral(
+    return `  if (${platformGuard}value.${prop.name} !== ${toTsLiteral(
       initialValue ?? prop.options[0] ?? ''
     )}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);

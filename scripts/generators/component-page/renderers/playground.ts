@@ -45,6 +45,8 @@ export function buildPlaygroundArtifacts(params: {
   componentName: string;
   slug: string;
   componentConfig: ComponentPageMetadata;
+  reactApiProps: readonly ExtractedProp[];
+  nativeApiProps: readonly ExtractedProp[];
   playgroundProps: readonly ExtractedProp[];
   generatedFileHeader: string;
   getChangeHandlerName(propName: string): string | null;
@@ -54,6 +56,8 @@ export function buildPlaygroundArtifacts(params: {
     slug,
     componentConfig,
     playgroundProps,
+    reactApiProps,
+    nativeApiProps,
     generatedFileHeader,
     getChangeHandlerName,
   } = params;
@@ -79,7 +83,16 @@ export function buildPlaygroundArtifacts(params: {
           }`;
   }
 
-  const playgroundPropBindings = playgroundProps
+  const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
+  const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
+
+  const reactPropBindings = playgroundProps
+    .filter((prop) => reactApiPropNames.has(prop.name))
+    .map((prop) => getPlaygroundPropBinding(prop))
+    .join('\n          ');
+
+  const nativePropBindings = playgroundProps
+    .filter((prop) => nativeApiPropNames.has(prop.name))
     .map((prop) => getPlaygroundPropBinding(prop))
     .join('\n          ');
 
@@ -231,7 +244,8 @@ export function ${componentName}Playground({
   return {
     schemaContent,
     content,
-    propBindings: playgroundPropBindings,
+    reactPropBindings,
+    nativePropBindings,
     initialValues,
   };
 }

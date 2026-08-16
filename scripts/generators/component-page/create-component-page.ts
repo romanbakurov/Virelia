@@ -76,6 +76,8 @@ const { content: usageContent, children: usageChildren } = renderUsage({
   componentName,
   componentConfig,
   playgroundProps,
+  reactApiProps,
+  nativeApiProps,
   generatedFileHeader,
   getDemoProps,
 });
@@ -177,6 +179,8 @@ const playgroundArtifacts = buildPlaygroundArtifacts({
   slug,
   componentConfig,
   playgroundProps,
+  reactApiProps,
+  nativeApiProps,
   generatedFileHeader,
   getChangeHandlerName,
 });
@@ -230,7 +234,8 @@ const demoFiles = renderDemoFiles({
   componentConfig,
   platforms,
   playgroundProps,
-  playgroundPropBindings: playgroundArtifacts.propBindings,
+  reactPlaygroundPropBindings: playgroundArtifacts.reactPropBindings,
+  nativePlaygroundPropBindings: playgroundArtifacts.nativePropBindings,
   reactStaticDemoProps,
   nativeStaticDemoProps,
   reactDemoChildren,

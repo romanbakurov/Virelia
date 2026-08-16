@@ -14,7 +14,6 @@ export const TabsRoot = ({
   defaultValue,
   onValueChange,
   orientation = 'horizontal',
-  activationMode = 'automatic',
   mode = 'tabs',
   variant = 'line',
   color = 'primary',
@@ -127,7 +126,6 @@ export const TabsRoot = ({
       setValue,
       mode,
       orientation,
-      activationMode,
       variant,
       color,
       size,
@@ -140,7 +138,6 @@ export const TabsRoot = ({
       registerTriggerLayout,
     }),
     [
-      activationMode,
       color,
       disabled,
       keepMounted,
