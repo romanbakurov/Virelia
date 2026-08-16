@@ -10,50 +10,65 @@ export default defineConfig({
       {
         find: '@vellira-ui/icons/lottie',
         replacement: path.resolve(
-          __dirname,
+          import.meta.dirname,
           '../../packages/icons/src/lottie.ts'
         ),
       },
       {
         find: '@vellira-ui/icons',
-        replacement: path.resolve(__dirname, '../../packages/icons/src/web.ts'),
+        replacement: path.resolve(
+          import.meta.dirname,
+          '../../packages/icons/src/web.ts'
+        ),
       },
       {
         find: '@components',
         replacement: path.resolve(
-          __dirname,
+          import.meta.dirname,
           '../../packages/react/src/components'
         ),
       },
       {
         find: '@patterns',
         replacement: path.resolve(
-          __dirname,
+          import.meta.dirname,
           '../../packages/react/src/patterns'
         ),
       },
       {
         find: '@primitives',
         replacement: path.resolve(
-          __dirname,
+          import.meta.dirname,
           '../../packages/react/src/primitives'
         ),
       },
       {
         find: '@styles',
-        replacement: path.resolve(__dirname, '../../packages/react/src/styles'),
+        replacement: path.resolve(
+          import.meta.dirname,
+          '../../packages/react/src/styles'
+        ),
       },
       {
         find: '@utils',
-        replacement: path.resolve(__dirname, '../../packages/react/src/utils'),
+        replacement: path.resolve(
+          import.meta.dirname,
+          '../../packages/react/src/utils'
+        ),
       },
       {
         find: '@assets',
-        replacement: path.resolve(__dirname, '../../packages/react/src/assets'),
+        replacement: path.resolve(
+          import.meta.dirname,
+          '../../packages/react/src/assets'
+        ),
       },
       {
         find: '@',
-        replacement: path.resolve(__dirname, '../../packages/react/src'),
+        replacement: path.resolve(
+          import.meta.dirname,
+          '../../packages/react/src'
+        ),
       },
     ],
   },
