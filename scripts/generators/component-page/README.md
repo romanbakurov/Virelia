@@ -7,8 +7,11 @@ Builds website component catalog pages under
 
 ```bash
 pnpm create:component-page <Name> [--force] [--check]
+pnpm create:component-page --help
+pnpm component-pages:generate
 pnpm component-pages:audit
 pnpm component-pages:check
+pnpm test:component-page-generator
 pnpm test:component-pages
 ```
 
@@ -48,3 +51,16 @@ normalized model rather than re-extracting source facts.
 - `renderers/` turns the normalized model and derived artifacts into generated
   website files and registry updates.
 - `helpers/` contains component-page-only formatting, paths, and file writing.
+
+## Intentional React / React Native API differences
+
+Platform parity means equivalent user-facing capability where appropriate,
+not identical prop surfaces.
+
+Examples:
+
+- DOM events (`onClick`, keyboard events) remain React-specific.
+- Native interaction events use `onPress`, `onLayout`, and native accessibility props.
+- Web-only overlay positioning/focus props are not exposed on React Native when unsupported.
+- React Native presentation/virtualization props remain native-specific where the platform requires them.
+- Platform-specific props must not appear in generated demos, usage code, examples, API sections, or playground controls for unsupported platforms.
