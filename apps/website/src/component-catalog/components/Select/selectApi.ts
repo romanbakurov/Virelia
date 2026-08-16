@@ -99,21 +99,19 @@ const reactSelectApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'true',
         description:
-          'Adjusts floating content placement to avoid viewport collisions.\nAdjusts floating content to stay within viewport boundaries.',
+          'Adjusts floating content placement to avoid viewport collisions.',
       },
       {
         name: 'modal',
         type: 'boolean',
         defaultValue: 'false',
-        description:
-          'Uses modal interaction semantics for the overlay.\nUses modal interaction semantics while the dropdown is open.',
+        description: 'Uses modal interaction semantics for the overlay.',
       },
       {
         name: 'command',
         type: 'boolean',
         defaultValue: 'false',
-        description:
-          'Enables command-style interaction behavior.\nEnables command-palette style search behavior.',
+        description: 'Enables command-style interaction behavior.',
       },
       {
         name: 'children',

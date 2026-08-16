@@ -50,7 +50,6 @@ const reactCheckboxApiSections: readonly ComponentApiSection[] = [
       {
         name: 'checked',
         type: 'boolean',
-        defaultValue: 'false',
         description: 'Controlled checked state.',
       },
       {
@@ -141,7 +140,6 @@ const nativeCheckboxApiSections: readonly ComponentApiSection[] = [
       {
         name: 'checked',
         type: 'boolean',
-        defaultValue: 'false',
         description: 'Controlled checked state.',
       },
       {

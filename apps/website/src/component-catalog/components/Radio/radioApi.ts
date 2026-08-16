@@ -45,7 +45,6 @@ const reactRadioApiSections: readonly ComponentApiSection[] = [
       {
         name: 'checked',
         type: 'boolean',
-        defaultValue: 'false',
         description: 'Controlled checked state for standalone usage.',
       },
       {
@@ -145,7 +144,6 @@ const nativeRadioApiSections: readonly ComponentApiSection[] = [
       {
         name: 'checked',
         type: 'boolean',
-        defaultValue: 'false',
         description: 'Controlled checked state for standalone usage.',
       },
       {
