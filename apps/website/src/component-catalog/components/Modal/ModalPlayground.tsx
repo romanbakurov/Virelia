@@ -22,6 +22,7 @@ export type ModalPlaygroundValue = {
 };
 
 type ModalPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderModal: (
     value: ModalPlaygroundValue,
     onChange: <K extends keyof ModalPlaygroundValue>(
@@ -40,7 +41,10 @@ export const initialModalPlaygroundValue: ModalPlaygroundValue = {
   restoreFocus: false,
 };
 
-export function ModalPlayground({ renderModal }: ModalPlaygroundProps) {
+export function ModalPlayground({
+  platform,
+  renderModal,
+}: ModalPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<ModalPlaygroundValue>(
     initialModalPlaygroundValue
   );
@@ -60,6 +64,7 @@ export function ModalPlayground({ renderModal }: ModalPlaygroundProps) {
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={modalPlaygroundControls}
           onChange={update}

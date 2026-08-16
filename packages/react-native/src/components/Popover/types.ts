@@ -5,7 +5,15 @@ import type {
 import type { ReactNode } from 'react';
 
 export interface PopoverProps
-  extends BasePopoverProps, BasePopoverPositioningProps {
+  extends
+    Omit<BasePopoverProps, 'modal'>,
+    Omit<
+      BasePopoverPositioningProps,
+      | 'alignOffset'
+      | 'collisionPadding'
+      | 'avoidCollisions'
+      | 'hideWhenDetached'
+    > {
   /** Popover trigger, anchor, content, and compound children. */
   children: ReactNode;
   /** Closes the popover when pressing outside the content. */

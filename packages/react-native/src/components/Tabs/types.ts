@@ -1,7 +1,6 @@
 import type {
   BaseTabsProps,
   Orientation,
-  TabsActivationMode,
   TabsColor,
   TabsMode,
   TabsSize,
@@ -11,7 +10,10 @@ import type {
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
 
-export interface TabsProps extends BaseTabsProps {
+export interface TabsProps extends Omit<
+  BaseTabsProps,
+  'activationMode' | 'dir' | 'loop'
+> {
   /** Tab list and tab panel content. */
   children: ReactNode;
   /** Style applied to the root container. */
@@ -35,7 +37,6 @@ export interface TabsContextValue {
   setValue: (value: TabsValue) => void;
   mode: TabsMode;
   orientation: Orientation;
-  activationMode: TabsActivationMode;
   variant: TabsVariant;
   color: TabsColor;
   size: TabsSize;

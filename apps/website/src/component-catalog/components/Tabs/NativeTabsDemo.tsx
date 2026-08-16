@@ -11,14 +11,12 @@ import { TabsPlayground } from './TabsPlayground';
 export function NativeTabsDemo() {
   return (
     <TabsPlayground
+      platform='react-native'
       renderTabs={(value, onChange) => (
         <Tabs
           value={value.value || undefined}
           onValueChange={(nextValue) => onChange('value', nextValue)}
           orientation={value.orientation}
-          activationMode={value.activationMode}
-          dir={value.dir}
-          loop={value.loop}
           keepMounted={value.keepMounted}
           lazyMount={value.lazyMount}
           variant={value.variant}

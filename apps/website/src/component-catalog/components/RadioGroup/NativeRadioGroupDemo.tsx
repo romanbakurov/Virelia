@@ -10,6 +10,7 @@ import { RadioGroupPlayground } from './RadioGroupPlayground';
 export function NativeRadioGroupDemo() {
   return (
     <RadioGroupPlayground
+      platform='react-native'
       renderRadioGroup={(value, onChange) => (
         <RadioGroup
           value={value.value || undefined}

@@ -15,7 +15,21 @@ export type {
   DropdownSubTriggerProps,
   DropdownTriggerProps,
 } from './components/Dropdown/types';
-export type { ModalProps } from './components/Modal';
+export type {
+  ModalAutoFocusEvent,
+  ModalBodyProps,
+  ModalCloseProps,
+  ModalContentPlacement,
+  ModalContentProps,
+  ModalContentSize,
+  ModalFooterProps,
+  ModalHeaderProps,
+  ModalOutsideEvent,
+  ModalOverlayProps,
+  ModalProps,
+  ModalScrollBehavior,
+  ModalTriggerProps,
+} from './components/Modal';
 export { Modal } from './components/Modal';
 export type {
   PopoverAnchorProps,
@@ -29,13 +43,30 @@ export type {
   PopoverTriggerProps,
 } from './components/Popover';
 export { Popover } from './components/Popover';
-export type { RadioGroupProps } from './components/RadioGroup';
+export type {
+  RadioGroupItemProps,
+  RadioGroupProps,
+} from './components/RadioGroup';
 export { RadioGroup } from './components/RadioGroup';
 export type {
+  SelectContentSlotProps,
+  SelectEmptyProps,
+  SelectGroupProps,
+  SelectIconProps,
+  SelectItemBadgeProps,
+  SelectItemDescriptionProps,
+  SelectItemIconProps,
+  SelectItemProps,
+  SelectLabelProps,
+  SelectLoadingProps,
   SelectOption,
   SelectProps,
   SelectRenderOptionContext,
   SelectRenderValueContext,
+  SelectSearchProps,
+  SelectSeparatorProps,
+  SelectTriggerSlotProps,
+  SelectValueProps,
 } from './components/Select';
 export { Select } from './components/Select';
 export type {
@@ -47,7 +78,12 @@ export type {
   TabsTriggerProps,
 } from './components/Tabs';
 export { Tabs } from './components/Tabs';
-export type { TooltipProps } from './components/Tooltip';
+export type {
+  TooltipContentProps,
+  TooltipProps,
+  TooltipRootProps,
+  TooltipTriggerProps,
+} from './components/Tooltip';
 export { Tooltip } from './components/Tooltip';
 export type {
   FormFieldControlProps,

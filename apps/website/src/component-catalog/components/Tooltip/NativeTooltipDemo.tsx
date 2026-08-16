@@ -11,6 +11,7 @@ import { TooltipPlayground } from './TooltipPlayground';
 export function NativeTooltipDemo() {
   return (
     <TooltipPlayground
+      platform='react-native'
       renderTooltip={(value) => (
         <Tooltip placement={value.placement} disabled={value.disabled}>
           <Tooltip.Trigger>

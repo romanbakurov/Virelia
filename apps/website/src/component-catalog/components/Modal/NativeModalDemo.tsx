@@ -11,6 +11,7 @@ import { ModalPlayground } from './ModalPlayground';
 export function NativeModalDemo() {
   return (
     <ModalPlayground
+      platform='react-native'
       renderModal={(value, onChange) => (
         <Modal
           open={value.open}

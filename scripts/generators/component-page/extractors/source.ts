@@ -179,9 +179,37 @@ export function createPackageProgram(params: {
     path.dirname(tsconfigPath)
   );
 
+  const workspacePaths = {
+    '@vellira-ui/core': [
+      path.join(params.root, 'packages', 'core', 'src', 'index.ts'),
+    ],
+    '@vellira-ui/icons': [
+      path.join(params.root, 'packages', 'icons', 'src', 'index.ts'),
+    ],
+    '@vellira-ui/icons/lottie': [
+      path.join(params.root, 'packages', 'icons', 'src', 'lottie.ts'),
+    ],
+    '@vellira-ui/react-native': [
+      path.join(params.root, 'packages', 'react-native', 'src', 'index.ts'),
+    ],
+    '@vellira-ui/tokens': [
+      path.join(params.root, 'packages', 'tokens', 'src', 'index.ts'),
+    ],
+    '@vellira-ui/types': [
+      path.join(params.root, 'packages', 'types', 'src', 'index.ts'),
+    ],
+  };
+
   return ts.createProgram({
     rootNames: parsedConfig.fileNames,
-    options: parsedConfig.options,
+    options: {
+      ...parsedConfig.options,
+      baseUrl: parsedConfig.options.baseUrl ?? params.root,
+      paths: {
+        ...parsedConfig.options.paths,
+        ...workspacePaths,
+      },
+    },
   });
 }
 

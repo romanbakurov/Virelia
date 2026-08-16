@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 
 import styles from './PlaygroundControls.module.css';
 
+export type PlaygroundControlPlatform = 'react' | 'react-native';
+
 type PlaygroundControlGroupProps<T extends string> = {
   label: string;
   value: T;
@@ -151,35 +153,37 @@ export function PlaygroundControls({ children }: PlaygroundControlsProps) {
   return <div className={styles.controls}>{children}</div>;
 }
 
-export type PlaygroundSelectControl<T extends Record<string, unknown>> = {
-  type: 'select';
+type PlaygroundControlBase<T extends Record<string, unknown>> = {
   key: keyof T;
   label: string;
-  options: readonly string[];
+  platforms?: readonly PlaygroundControlPlatform[];
 };
 
-export type PlaygroundToggleControl<T extends Record<string, unknown>> = {
-  type: 'toggle';
-  key: keyof T;
-  label: string;
-  group?: string;
-};
+export type PlaygroundSelectControl<T extends Record<string, unknown>> =
+  PlaygroundControlBase<T> & {
+    type: 'select';
+    options: readonly string[];
+  };
 
-export type PlaygroundTextControl<T extends Record<string, unknown>> = {
-  type: 'text';
-  key: keyof T;
-  label: string;
-  placeholder?: string;
-};
+export type PlaygroundToggleControl<T extends Record<string, unknown>> =
+  PlaygroundControlBase<T> & {
+    type: 'toggle';
+    group?: string;
+  };
 
-export type PlaygroundNumberControl<T extends Record<string, unknown>> = {
-  type: 'number';
-  key: keyof T;
-  label: string;
-  min?: number;
-  max?: number;
-  step?: number;
-};
+export type PlaygroundTextControl<T extends Record<string, unknown>> =
+  PlaygroundControlBase<T> & {
+    type: 'text';
+    placeholder?: string;
+  };
+
+export type PlaygroundNumberControl<T extends Record<string, unknown>> =
+  PlaygroundControlBase<T> & {
+    type: 'number';
+    min?: number;
+    max?: number;
+    step?: number;
+  };
 
 export type PlaygroundControl<T extends Record<string, unknown>> =
   | PlaygroundSelectControl<T>
@@ -188,6 +192,7 @@ export type PlaygroundControl<T extends Record<string, unknown>> =
   | PlaygroundNumberControl<T>;
 
 type PlaygroundControlsFromSchemaProps<T extends Record<string, unknown>> = {
+  platform: PlaygroundControlPlatform;
   value: T;
   controls: readonly PlaygroundControl<T>[];
   onChange: <K extends keyof T>(key: K, value: T[K]) => void;
@@ -195,14 +200,23 @@ type PlaygroundControlsFromSchemaProps<T extends Record<string, unknown>> = {
 
 export function PlaygroundControlsFromSchema<
   T extends Record<string, unknown>,
->({ value, controls, onChange }: PlaygroundControlsFromSchemaProps<T>) {
-  const selectControls = controls.filter(
+>({
+  platform,
+  value,
+  controls,
+  onChange,
+}: PlaygroundControlsFromSchemaProps<T>) {
+  const activeControls = controls.filter(
+    (control) => !control.platforms || control.platforms.includes(platform)
+  );
+
+  const selectControls = activeControls.filter(
     (control) => control.type === 'select'
   );
 
   const toggleGroups = new Map<string, PlaygroundToggleControl<T>[]>();
 
-  for (const control of controls) {
+  for (const control of activeControls) {
     if (control.type !== 'toggle') {
       continue;
     }
@@ -228,7 +242,7 @@ export function PlaygroundControlsFromSchema<
         />
       ))}
 
-      {controls
+      {activeControls
         .filter((control) => control.type === 'text')
         .map((control) => (
           <PlaygroundTextInput
@@ -242,7 +256,7 @@ export function PlaygroundControlsFromSchema<
           />
         ))}
 
-      {controls
+      {activeControls
         .filter((control) => control.type === 'number')
         .map((control) => (
           <PlaygroundNumberInput

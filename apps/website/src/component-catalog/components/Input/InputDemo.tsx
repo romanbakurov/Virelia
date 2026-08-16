@@ -10,6 +10,7 @@ import { InputPlayground } from './InputPlayground';
 export function InputDemo() {
   return (
     <InputPlayground
+      platform='react'
       renderInput={(value) => (
         <Input
           label={value.label || undefined}

@@ -17,5 +17,6 @@ export const popoverPlaygroundControls = [
     key: 'modal',
     label: 'Modal',
     group: 'Options',
+    platforms: ['react'],
   },
 ] as const satisfies readonly PlaygroundControl<PopoverPlaygroundValue>[];

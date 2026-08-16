@@ -35,7 +35,6 @@ export function PopoverRoot({
   side = 'bottom',
   align = 'center',
   sideOffset = 8,
-  alignOffset: _alignOffset = 0,
   collisionPadding = 8,
   avoidCollisions = true,
   portal = true,

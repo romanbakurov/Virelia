@@ -70,11 +70,6 @@ const reactPopoverApiSections: readonly ComponentApiSection[] = [
         description: 'Distance between the anchor and popover content.',
       },
       {
-        name: 'alignOffset',
-        type: 'number',
-        description: 'Offset along the aligned edge.',
-      },
-      {
         name: 'collisionPadding',
         type: 'number',
         description: 'Padding used when avoiding viewport collisions.',
@@ -84,12 +79,6 @@ const reactPopoverApiSections: readonly ComponentApiSection[] = [
         type: 'boolean',
         defaultValue: 'true',
         description: 'Allows the popover to flip or shift to stay visible.',
-      },
-      {
-        name: 'hideWhenDetached',
-        type: 'boolean',
-        description:
-          'Hides content when the anchor becomes detached from layout.',
       },
     ],
   },
@@ -277,13 +266,6 @@ const nativePopoverApiSections: readonly ComponentApiSection[] = [
         description: 'Initial open state for uncontrolled usage.',
       },
       {
-        name: 'modal',
-        type: 'boolean',
-        defaultValue: 'false',
-        description:
-          'Uses modal interaction semantics while the popover is open.',
-      },
-      {
         name: 'onOpenChange',
         type: '((open: boolean, details: PopoverOpenChangeDetails) => void)',
         description: 'Called when the open state changes.',
@@ -306,28 +288,6 @@ const nativePopoverApiSections: readonly ComponentApiSection[] = [
         type: 'number',
         defaultValue: '8',
         description: 'Distance between the anchor and popover content.',
-      },
-      {
-        name: 'alignOffset',
-        type: 'number',
-        description: 'Offset along the aligned edge.',
-      },
-      {
-        name: 'collisionPadding',
-        type: 'number',
-        description: 'Padding used when avoiding viewport collisions.',
-      },
-      {
-        name: 'avoidCollisions',
-        type: 'boolean',
-        defaultValue: 'true',
-        description: 'Allows the popover to flip or shift to stay visible.',
-      },
-      {
-        name: 'hideWhenDetached',
-        type: 'boolean',
-        description:
-          'Hides content when the anchor becomes detached from layout.',
       },
     ],
   },

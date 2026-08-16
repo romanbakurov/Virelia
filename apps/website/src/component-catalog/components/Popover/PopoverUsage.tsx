@@ -51,7 +51,7 @@ function createPopoverCode(
     props.push('open');
   }
 
-  if (value.modal) {
+  if (platform === 'react' && value.modal) {
     props.push('modal');
   }
 

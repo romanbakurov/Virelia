@@ -10,6 +10,7 @@ import { CheckboxPlayground } from './CheckboxPlayground';
 export function CheckboxDemo() {
   return (
     <CheckboxPlayground
+      platform='react'
       renderCheckbox={(value, onChange) => (
         <Checkbox
           checked={value.checked}

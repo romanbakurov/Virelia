@@ -10,6 +10,7 @@ import { RadioGroupPlayground } from './RadioGroupPlayground';
 export function RadioGroupDemo() {
   return (
     <RadioGroupPlayground
+      platform='react'
       renderRadioGroup={(value, onChange) => (
         <RadioGroup
           value={value.value || undefined}

@@ -109,7 +109,7 @@ function CountryItems() {
 }
 
 export function WebSelectValueChangeExample() {
-  const [country, setCountry] = useState('fr');
+  const [country, setCountry] = useState<string | null>('fr');
 
   return (
     <Select

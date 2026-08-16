@@ -21,6 +21,7 @@ export type RadioGroupPlaygroundValue = {
 };
 
 type RadioGroupPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderRadioGroup: (
     value: RadioGroupPlaygroundValue,
     onChange: <K extends keyof RadioGroupPlaygroundValue>(
@@ -40,6 +41,7 @@ export const initialRadioGroupPlaygroundValue: RadioGroupPlaygroundValue = {
 };
 
 export function RadioGroupPlayground({
+  platform,
   renderRadioGroup,
 }: RadioGroupPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<RadioGroupPlaygroundValue>(
@@ -61,6 +63,7 @@ export function RadioGroupPlayground({
       previewWidth='full'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={radioGroupPlaygroundControls}
           onChange={update}

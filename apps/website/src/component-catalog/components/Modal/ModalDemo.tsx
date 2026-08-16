@@ -14,6 +14,7 @@ import { ModalPlayground } from './ModalPlayground';
 export function ModalDemo() {
   return (
     <ModalPlayground
+      platform='react'
       renderModal={(value, onChange) => (
         <Modal
           open={value.open}

@@ -12,6 +12,7 @@ import { DropdownPlayground } from './DropdownPlayground';
 export function DropdownDemo() {
   return (
     <DropdownPlayground
+      platform='react'
       renderDropdown={(value, onChange) => (
         <Dropdown
           open={value.open}

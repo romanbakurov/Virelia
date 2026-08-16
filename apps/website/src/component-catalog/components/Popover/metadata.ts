@@ -30,10 +30,10 @@ export default defineComponentPageMetadata({
       side: 'bottom',
       align: 'center',
       sideOffset: 8,
-      avoidCollisions: true,
-      modal: false,
     },
     react: {
+      avoidCollisions: true,
+      modal: false,
       portal: true,
       strategy: 'absolute',
     },
@@ -83,11 +83,9 @@ export default defineComponentPageMetadata({
       title: 'Modal',
       description: 'Modal interaction semantics.',
       props: ['modal'],
+      platforms: ['react'],
       reactImports: [
         `import { Button as ReactButton } from '@vellira-ui/react';`,
-      ],
-      nativeImports: [
-        `import { Button as NativeButton } from '@vellira-ui/react-native';`,
       ],
     },
     {

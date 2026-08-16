@@ -16,6 +16,7 @@ export function NativeDropdownDemo() {
 
   return (
     <DropdownPlayground
+      platform='react-native'
       renderDropdown={(value, onChange) => (
         <Dropdown
           presentation={presentation}

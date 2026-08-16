@@ -11,11 +11,11 @@ import { PopoverPlayground } from './PopoverPlayground';
 export function NativePopoverDemo() {
   return (
     <PopoverPlayground
+      platform='react-native'
       renderPopover={(value, onChange) => (
         <Popover
           open={value.open}
           onOpenChange={(nextValue) => onChange('open', nextValue)}
-          modal={value.modal}
         >
           <Popover.Trigger asChild>
             <NativeButton>Open popover</NativeButton>

@@ -7,7 +7,7 @@
     "build-storybook": "storybook build",
     "playwright:install": "playwright install --with-deps chromium",
     "test:e2e": "playwright test --config=playwright.config.ts",
-    "test": "vitest run --config vitest.config.ts"
+    "test": "vitest run --config vitest.config.mts"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",

@@ -24,6 +24,39 @@ const [, , componentName, ...args] = process.argv;
 
 const force = args.includes('--force');
 const check = args.includes('--check');
+const help =
+  componentName === '--help' ||
+  componentName === '-h' ||
+  args.includes('--help') ||
+  args.includes('-h');
+
+const helpText = `
+Vellira component page generator
+
+Usage:
+  pnpm create:component-page <ComponentName> [options]
+
+Options:
+  --force    Overwrite existing generated files
+  --check    Check whether generated files are up to date without writing
+  --help     Show this help message
+  -h         Alias for --help
+
+Examples:
+  pnpm create:component-page Button
+  pnpm create:component-page Tabs --force
+  pnpm create:component-page Select --check
+`;
+
+if (help) {
+  console.log(helpText.trim());
+  process.exit(0);
+}
+
+if (!componentName) {
+  console.error(helpText.trim());
+  process.exit(1);
+}
 
 if (!componentName) {
   console.error(
@@ -76,6 +109,8 @@ const { content: usageContent, children: usageChildren } = renderUsage({
   componentName,
   componentConfig,
   playgroundProps,
+  reactApiProps,
+  nativeApiProps,
   generatedFileHeader,
   getDemoProps,
 });
@@ -177,6 +212,8 @@ const playgroundArtifacts = buildPlaygroundArtifacts({
   slug,
   componentConfig,
   playgroundProps,
+  reactApiProps,
+  nativeApiProps,
   generatedFileHeader,
   getChangeHandlerName,
 });
@@ -230,7 +267,8 @@ const demoFiles = renderDemoFiles({
   componentConfig,
   platforms,
   playgroundProps,
-  playgroundPropBindings: playgroundArtifacts.propBindings,
+  reactPlaygroundPropBindings: playgroundArtifacts.reactPropBindings,
+  nativePlaygroundPropBindings: playgroundArtifacts.nativePropBindings,
   reactStaticDemoProps,
   nativeStaticDemoProps,
   reactDemoChildren,

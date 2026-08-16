@@ -73,15 +73,15 @@ function createTabsCode(
     props.push(`orientation='${value.orientation}'`);
   }
 
-  if (value.activationMode !== 'automatic') {
+  if (platform === 'react' && value.activationMode !== 'automatic') {
     props.push(`activationMode='${value.activationMode}'`);
   }
 
-  if (value.dir !== 'ltr') {
+  if (platform === 'react' && value.dir !== 'ltr') {
     props.push(`dir='${value.dir}'`);
   }
 
-  if (value.loop) {
+  if (platform === 'react' && value.loop) {
     props.push('loop');
   }
 

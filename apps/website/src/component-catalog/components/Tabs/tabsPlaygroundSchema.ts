@@ -22,18 +22,21 @@ export const tabsPlaygroundControls = [
     key: 'activationMode',
     label: 'Activation Mode',
     options: ['automatic', 'manual'],
+    platforms: ['react'],
   },
   {
     type: 'select',
     key: 'dir',
     label: 'Dir',
     options: ['ltr', 'rtl'],
+    platforms: ['react'],
   },
   {
     type: 'toggle',
     key: 'loop',
     label: 'Loop',
     group: 'Options',
+    platforms: ['react'],
   },
   {
     type: 'toggle',

@@ -24,6 +24,7 @@ export type ButtonPlaygroundValue = {
 };
 
 type ButtonPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderButton: (
     value: ButtonPlaygroundValue,
     onChange: <K extends keyof ButtonPlaygroundValue>(
@@ -45,7 +46,10 @@ export const initialButtonPlaygroundValue: ButtonPlaygroundValue = {
   iconOnly: false,
 };
 
-export function ButtonPlayground({ renderButton }: ButtonPlaygroundProps) {
+export function ButtonPlayground({
+  platform,
+  renderButton,
+}: ButtonPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<ButtonPlaygroundValue>(
     initialButtonPlaygroundValue
   );
@@ -65,6 +69,7 @@ export function ButtonPlayground({ renderButton }: ButtonPlaygroundProps) {
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={buttonPlaygroundControls}
           onChange={update}

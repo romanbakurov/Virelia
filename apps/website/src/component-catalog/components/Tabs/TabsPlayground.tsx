@@ -27,6 +27,7 @@ export type TabsPlaygroundValue = {
 };
 
 type TabsPlaygroundProps = {
+  platform: 'react' | 'react-native';
   renderTabs: (
     value: TabsPlaygroundValue,
     onChange: <K extends keyof TabsPlaygroundValue>(
@@ -51,7 +52,7 @@ export const initialTabsPlaygroundValue: TabsPlaygroundValue = {
   disabled: false,
 };
 
-export function TabsPlayground({ renderTabs }: TabsPlaygroundProps) {
+export function TabsPlayground({ platform, renderTabs }: TabsPlaygroundProps) {
   const [value, setValue] = useComponentDemoState<TabsPlaygroundValue>(
     initialTabsPlaygroundValue
   );
@@ -71,6 +72,7 @@ export function TabsPlayground({ renderTabs }: TabsPlaygroundProps) {
       previewWidth='auto'
       controls={
         <PlaygroundControlsFromSchema
+          platform={platform}
           value={value}
           controls={tabsPlaygroundControls}
           onChange={update}

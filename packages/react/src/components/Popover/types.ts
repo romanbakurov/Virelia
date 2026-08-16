@@ -5,7 +5,9 @@ import type {
 import type { ReactNode } from 'react';
 
 export interface PopoverProps
-  extends BasePopoverProps, BasePopoverPositioningProps {
+  extends
+    BasePopoverProps,
+    Omit<BasePopoverPositioningProps, 'alignOffset' | 'hideWhenDetached'> {
   /** Popover trigger, anchor, content, and compound children. */
   children: ReactNode;
   /** Renders popover content through a portal. */

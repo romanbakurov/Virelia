@@ -11,6 +11,7 @@ import { FormFieldPlayground } from './FormFieldPlayground';
 export function FormFieldDemo() {
   return (
     <FormFieldPlayground
+      platform='react'
       renderFormField={(value) => (
         <FormField
           label={value.label || undefined}

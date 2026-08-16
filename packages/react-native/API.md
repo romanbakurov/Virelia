@@ -631,24 +631,21 @@ content needs to be preserved.
 
 <!-- api-docgen:start native.TabsProps.TabsProps -->
 
-| Prop             | Type                         | Required | Description                                                                               |
-| ---------------- | ---------------------------- | -------- | ----------------------------------------------------------------------------------------- |
-| `children`       | `ReactNode`                  | Yes      | `Tabs.List`, `Tabs.Trigger`, and `Tabs.Content` content.                                  |
-| `style`          | `StyleProp<ViewStyle>`       | No       | Extra root style.                                                                         |
-| `orientation`    | `Orientation`                | No       | Layout orientation.                                                                       |
-| `value`          | `string`                     | No       | Controlled selected value.                                                                |
-| `defaultValue`   | `string`                     | No       | Initial selected value for uncontrolled usage.                                            |
-| `onValueChange`  | `(value: TabsValue) => void` | No       | Called when the selected value changes.                                                   |
-| `activationMode` | `TabsActivationMode`         | No       | Keyboard activation mode: automatic selects on focus, manual selects with Enter or Space. |
-| `loop`           | `boolean`                    | No       | Loops keyboard navigation from last to first and first to last.                           |
-| `keepMounted`    | `boolean`                    | No       | Keeps all content mounted and hides inactive panels.                                      |
-| `lazyMount`      | `boolean`                    | No       | Mounts content only after its value has been activated.                                   |
-| `variant`        | `TabsVariant`                | No       | Visual style: line, pills, or segmented.                                                  |
-| `color`          | `TabsColor`                  | No       | Visual tone: primary, neutral, success, warning, or danger.                               |
-| `size`           | `TabsSize`                   | No       | Tabs size.                                                                                |
-| `dir`            | `'ltr' \| 'rtl'`             | No       | Text direction reserved for API parity.                                                   |
-| `disabled`       | `boolean`                    | No       | Disables interaction.                                                                     |
-| `mode`           | `TabsMode`                   | No       | —                                                                                         |
+| Prop            | Type                         | Required | Description                                                 |
+| --------------- | ---------------------------- | -------- | ----------------------------------------------------------- |
+| `children`      | `ReactNode`                  | Yes      | `Tabs.List`, `Tabs.Trigger`, and `Tabs.Content` content.    |
+| `style`         | `StyleProp<ViewStyle>`       | No       | Extra root style.                                           |
+| `orientation`   | `Orientation`                | No       | Layout orientation.                                         |
+| `value`         | `string`                     | No       | Controlled selected value.                                  |
+| `defaultValue`  | `string`                     | No       | Initial selected value for uncontrolled usage.              |
+| `onValueChange` | `(value: TabsValue) => void` | No       | Called when the selected value changes.                     |
+| `keepMounted`   | `boolean`                    | No       | Keeps all content mounted and hides inactive panels.        |
+| `lazyMount`     | `boolean`                    | No       | Mounts content only after its value has been activated.     |
+| `variant`       | `TabsVariant`                | No       | Visual style: line, pills, or segmented.                    |
+| `color`         | `TabsColor`                  | No       | Visual tone: primary, neutral, success, warning, or danger. |
+| `size`          | `TabsSize`                   | No       | Tabs size.                                                  |
+| `disabled`      | `boolean`                    | No       | Disables interaction.                                       |
+| `mode`          | `TabsMode`                   | No       | —                                                           |
 
 <!-- api-docgen:end native.TabsProps.TabsProps -->
 

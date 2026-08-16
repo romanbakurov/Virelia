@@ -119,9 +119,22 @@ interface SelectOwnProps {
 
 export type SelectSingleProps = Omit<
   BaseSelectSingleProps,
-  'options' | 'label' | 'description' | 'error'
+  | 'options'
+  | 'label'
+  | 'description'
+  | 'error'
+  | 'value'
+  | 'defaultValue'
+  | 'onValueChange'
 > &
-  SelectOwnProps;
+  SelectOwnProps & {
+    /** Controlled selected value. Null represents no selection. */
+    value?: string | null;
+    /** Initial selected value for uncontrolled usage. Null represents no selection. */
+    defaultValue?: string | null;
+    /** Called when the selected value changes. Null represents no selection. */
+    onValueChange?: (value: string | null) => void;
+  };
 
 export type SelectMultipleProps = Omit<
   BaseSelectMultipleProps,

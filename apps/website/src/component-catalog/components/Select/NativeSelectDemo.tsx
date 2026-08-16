@@ -10,6 +10,7 @@ import { SelectPlayground } from './SelectPlayground';
 export function NativeSelectDemo() {
   return (
     <SelectPlayground
+      platform='react-native'
       renderSelect={(value) => (
         <Select
           presentation='popover'
