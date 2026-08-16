@@ -32,7 +32,7 @@ const reactModalChildren = `<Modal.Trigger asChild>
 </ReactPortal>`;
 
 const nativeModalChildren = `<Modal.Trigger asChild>
-  <NativeButton>Open Modal</NativeButton>
+  <NativeButton>Open modal</NativeButton>
 </Modal.Trigger>
 <Modal.Overlay>
   <Modal.Content>

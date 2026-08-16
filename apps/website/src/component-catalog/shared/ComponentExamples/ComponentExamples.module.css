@@ -25,14 +25,16 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: 1fr;
   gap: var(--space-5);
-  align-items: stretch;
+  align-items: start;
 }
 
 .card {
   display: grid;
-  grid-template-rows: minmax(120px, auto) minmax(188px, auto) minmax(auto, 1fr);
+  grid-template-rows:
+    minmax(120px, auto)
+    minmax(188px, auto)
+    auto;
   overflow: hidden;
   background: var(--surface-default);
   border: 1px solid var(--border-muted);
@@ -92,7 +94,10 @@
 
 @media (width <= 640px) {
   .card {
-    grid-template-rows: minmax(96px, auto) minmax(176px, auto) minmax(auto, 1fr);
+    grid-template-rows:
+      minmax(96px, auto)
+      minmax(176px, auto)
+      auto;
   }
 
   .cardHeader {

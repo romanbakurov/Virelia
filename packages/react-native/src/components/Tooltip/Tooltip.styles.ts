@@ -5,7 +5,10 @@ import type { NativeTheme } from '../../theme';
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     root: {
-      alignSelf: 'flex-start',
+      alignSelf: Platform.select({
+        web: 'auto',
+        default: 'flex-start',
+      }),
     },
 
     overlay: {

@@ -315,7 +315,7 @@ import { Button as ReactButton, Portal as ReactPortal } from '@vellira-ui/react'
       preview: (
         <NativeModal>
           <NativeModal.Trigger asChild>
-            <NativeButton>Open Modal</NativeButton>
+            <NativeButton>Open modal</NativeButton>
           </NativeModal.Trigger>
           <NativeModal.Overlay>
             <NativeModal.Content>
@@ -349,7 +349,7 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
 
 <Modal>
   <Modal.Trigger asChild>
-    <NativeButton>Open Modal</NativeButton>
+    <NativeButton>Open modal</NativeButton>
   </Modal.Trigger>
   <Modal.Overlay>
     <Modal.Content>
@@ -376,7 +376,7 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
       preview: (
         <NativeModal closeOnOutsidePress={false}>
           <NativeModal.Trigger asChild>
-            <NativeButton>Open Modal</NativeButton>
+            <NativeButton>Open modal</NativeButton>
           </NativeModal.Trigger>
           <NativeModal.Overlay>
             <NativeModal.Content>
@@ -412,7 +412,7 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
   closeOnOutsidePress={false}
 >
   <Modal.Trigger asChild>
-    <NativeButton>Open Modal</NativeButton>
+    <NativeButton>Open modal</NativeButton>
   </Modal.Trigger>
   <Modal.Overlay>
     <Modal.Content>
@@ -439,7 +439,7 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
       preview: (
         <NativeModal animation='fade'>
           <NativeModal.Trigger asChild>
-            <NativeButton>Open Modal</NativeButton>
+            <NativeButton>Open modal</NativeButton>
           </NativeModal.Trigger>
           <NativeModal.Overlay>
             <NativeModal.Content>
@@ -475,7 +475,7 @@ import { Button as NativeButton } from '@vellira-ui/react-native';
   animation='fade'
 >
   <Modal.Trigger asChild>
-    <NativeButton>Open Modal</NativeButton>
+    <NativeButton>Open modal</NativeButton>
   </Modal.Trigger>
   <Modal.Overlay>
     <Modal.Content>

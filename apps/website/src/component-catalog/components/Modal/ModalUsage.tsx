@@ -53,7 +53,7 @@ function createModalCode(
     </Modal.Content>
   </ReactPortal>`
       : `  <Modal.Trigger asChild>
-    <NativeButton>Open Modal</NativeButton>
+    <NativeButton>Open modal</NativeButton>
   </Modal.Trigger>
   <Modal.Overlay>
     <Modal.Content>

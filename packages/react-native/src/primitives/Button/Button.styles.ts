@@ -66,6 +66,7 @@ export const createStyles = (theme: NativeTheme) =>
 
     focused: {
       borderColor: theme.semantic.focus.ring.color,
+
       ...Platform.select({
         web: {
           boxShadow: `0 0 0 4px ${theme.semantic.focus.ring.color}`,
