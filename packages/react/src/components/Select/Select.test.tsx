@@ -1433,7 +1433,7 @@ describe('Select', () => {
       clear?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(onValueChange).toHaveBeenCalledWith('');
+    expect(onValueChange).toHaveBeenCalledWith(null);
     expect(onClear).toHaveBeenCalledTimes(1);
 
     act(() => {

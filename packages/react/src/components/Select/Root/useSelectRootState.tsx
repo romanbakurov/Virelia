@@ -35,9 +35,6 @@ export function useSelectRootState(props: SelectProps) {
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
     'aria-labelledby': ariaLabelledBy,
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
     multiple = false,
     maxSelected,
     closeOnSelect,
@@ -118,6 +115,38 @@ export function useSelectRootState(props: SelectProps) {
     [isSearchable, resolvedOptions, searchValue]
   );
 
+  const internalValue = props.multiple
+    ? props.value
+    : props.value === null
+      ? ''
+      : props.value;
+
+  const internalDefaultValue = props.multiple
+    ? props.defaultValue
+    : props.defaultValue === null
+      ? ''
+      : props.defaultValue;
+
+  const handleValueChange = useCallback(
+    (nextValue: string | string[]) => {
+      if (props.multiple) {
+        props.onValueChange?.(
+          Array.isArray(nextValue) ? nextValue : nextValue ? [nextValue] : []
+        );
+        return;
+      }
+
+      props.onValueChange?.(
+        Array.isArray(nextValue)
+          ? (nextValue[0] ?? null)
+          : nextValue === ''
+            ? null
+            : nextValue
+      );
+    },
+    [props.multiple, props.onValueChange]
+  );
+
   const {
     selectedValue,
     selectedValues,
@@ -131,9 +160,9 @@ export function useSelectRootState(props: SelectProps) {
     selectValue,
     onKeyDown,
   } = useSelect({
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
+    value: internalValue,
+    defaultValue: internalDefaultValue,
+    onValueChange: handleValueChange,
     options: filteredOptions,
     multiple,
     maxSelected,
