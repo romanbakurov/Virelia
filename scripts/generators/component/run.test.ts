@@ -415,4 +415,43 @@ describe('component generator', () => {
       ])
     );
   });
+
+  it('plans metadata creation and registry updates in dry-run mode without writing files', () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+
+    const result = runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+        dryRun: true,
+      },
+    });
+
+    expect(result.dryRun).toBe(true);
+
+    expect(result.createdFiles).toContain(result.plan.metadataFile);
+
+    expect(result.updatedFiles).toContain(result.plan.metadataBarrelFile);
+
+    expect(fs.existsSync(result.plan.metadataFile)).toBe(false);
+
+    for (const target of result.plan.targets) {
+      expect(fs.existsSync(target.componentDir)).toBe(false);
+    }
+
+    const metadataRegistry = fs.readFileSync(
+      result.plan.metadataBarrelFile,
+      'utf8'
+    );
+
+    expect(metadataRegistry).not.toContain('avatarMetadata');
+  });
 });

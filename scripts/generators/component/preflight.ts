@@ -60,6 +60,25 @@ export function validateComponentGenerationPlan(
         `Invalid componentMetadata registry in ${plan.metadataBarrelFile}`
       );
     }
+
+    const metadataName = `${plan.componentName[0].toLowerCase()}${plan.componentName.slice(1)}Metadata`;
+
+    const metadataImport = `import { ${metadataName} } from './${plan.componentName}.metadata';`;
+    const metadataRegistryEntry = `  ${metadataName},`;
+
+    const hasMetadataImport = metadataBarrel.includes(metadataImport);
+    const hasMetadataRegistryEntry = metadataBarrel.includes(
+      metadataRegistryEntry
+    );
+
+    if (
+      (hasMetadataImport || hasMetadataRegistryEntry) &&
+      !fs.existsSync(plan.metadataFile)
+    ) {
+      errors.push(
+        `Conflicting metadata registration for ${plan.componentName} in ${plan.metadataBarrelFile}`
+      );
+    }
   }
 
   if (fs.existsSync(plan.metadataFile)) {

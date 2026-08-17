@@ -533,4 +533,43 @@ describe('component generator writer', () => {
     expect(webTrigger).toContain("aria-haspopup='dialog'");
     expect(nativeTrigger).toContain("accessibilityRole='button'");
   });
+
+  it('writes and registers single-platform component metadata', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        parts: [],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
+    const barrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+    expect(metadata).toContain("name: 'Dialog'");
+    expect(metadata).toContain("platforms: ['react']");
+    expect(metadata).not.toContain("'react-native'");
+
+    expect(barrel).toContain(
+      "import { dialogMetadata } from './Dialog.metadata';"
+    );
+
+    expect(barrel).toContain('  dialogMetadata,');
+
+    expect(
+      barrel.match(/import \{ dialogMetadata \} from '\.\/Dialog\.metadata';/g)
+    ).toHaveLength(1);
+
+    expect(barrel.match(/ {2}dialogMetadata,/g)).toHaveLength(1);
+  });
 });

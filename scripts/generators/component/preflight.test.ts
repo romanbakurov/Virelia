@@ -413,4 +413,58 @@ describe('component generator preflight', () => {
       );
     }
   });
+
+  it('rejects conflicting metadata registration before writing anything', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root);
+
+    const metadataBarrelFile = path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'index.ts'
+    );
+
+    fs.writeFileSync(
+      metadataBarrelFile,
+      `import { avatarMetadata } from './Avatar.metadata';
+
+export const componentMetadata = [
+  avatarMetadata,
+] as const;
+`
+    );
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        `Conflicting metadata registration for Avatar in ${plan.metadataBarrelFile}`
+      );
+    }
+
+    expect(fs.existsSync(plan.metadataFile)).toBe(false);
+
+    for (const target of plan.targets) {
+      expect(fs.existsSync(target.componentDir)).toBe(false);
+    }
+  });
 });
