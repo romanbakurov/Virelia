@@ -23,6 +23,7 @@ export type ComponentGeneratorOptions = {
   profile: ComponentProfileArg;
   parts: readonly string[];
   force: boolean;
+  dryRun?: boolean;
 };
 
 const platforms: readonly ComponentPlatformArg[] = ['web', 'native', 'both'];
@@ -47,7 +48,7 @@ const categories: readonly ComponentCategoryArg[] = [
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--parts=Root,Trigger,Content] [--force]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -57,6 +58,7 @@ export function parseComponentGeneratorArgs(
 
   let profile: ComponentProfileArg = 'base';
   let force = false;
+  let dryRun = false;
   let parts: string[] = [];
 
   const [componentName, platformArg, layerArg, categoryArg, ...extraArgs] =
@@ -65,6 +67,11 @@ export function parseComponentGeneratorArgs(
   for (const flag of flags) {
     if (flag === '--force') {
       force = true;
+      continue;
+    }
+
+    if (flag === '--dry-run') {
+      dryRun = true;
       continue;
     }
 
@@ -154,5 +161,6 @@ export function parseComponentGeneratorArgs(
     profile,
     parts,
     force,
+    dryRun,
   };
 }

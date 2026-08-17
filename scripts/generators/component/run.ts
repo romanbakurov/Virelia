@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { createComponentGenerationPlan } from './plan';
 import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
@@ -8,7 +10,55 @@ export type RunComponentGeneratorResult = {
   plan: ReturnType<typeof createComponentGenerationPlan>;
   createdFiles: string[];
   updatedFiles: string[];
+  dryRun: boolean;
 };
+
+function getPlannedCreatedFiles(
+  plan: ReturnType<typeof createComponentGenerationPlan>
+) {
+  const files: string[] = [];
+
+  for (const target of plan.targets) {
+    const { componentDir, isNative } = target;
+    const { componentName } = plan;
+
+    files.push(
+      path.join(componentDir, 'types.ts'),
+      path.join(componentDir, 'index.ts'),
+      path.join(componentDir, `${componentName}.tsx`),
+      path.join(componentDir, `${componentName}.stories.tsx`),
+      path.join(componentDir, `${componentName}.test.tsx`),
+      path.join(
+        componentDir,
+        isNative ? `${componentName}.styles.ts` : `${componentName}.module.scss`
+      ),
+      path.join(componentDir, 'README.md')
+    );
+
+    for (const partName of plan.parts) {
+      const partDir = path.join(componentDir, partName);
+
+      files.push(
+        path.join(partDir, 'types.ts'),
+        path.join(partDir, 'index.ts'),
+        path.join(partDir, `${componentName}${partName}.tsx`)
+      );
+    }
+  }
+
+  files.push(plan.metadataFile);
+
+  return files;
+}
+
+function getPlannedUpdatedFiles(
+  plan: ReturnType<typeof createComponentGenerationPlan>
+) {
+  return [
+    ...plan.targets.map((target) => target.barrelFile),
+    plan.metadataBarrelFile,
+  ];
+}
 
 export function runComponentGenerator(params: {
   root: string;
@@ -22,10 +72,20 @@ export function runComponentGenerator(params: {
     throw new Error(preflight.errors.join('\n'));
   }
 
+  if (params.options.dryRun) {
+    return {
+      plan,
+      createdFiles: getPlannedCreatedFiles(plan),
+      updatedFiles: getPlannedUpdatedFiles(plan),
+      dryRun: true,
+    };
+  }
+
   const result = writeComponentGenerationPlan(plan);
 
   return {
     plan,
     ...result,
+    dryRun: false,
   };
 }

@@ -39,7 +39,12 @@ function createLayerBarrels(
   );
 
   fs.mkdirSync(metadataDir, { recursive: true });
-  fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
+  fs.writeFileSync(
+    path.join(metadataDir, 'index.ts'),
+    `export const componentMetadata = [
+] as const;
+`
+  );
 }
 
 describe('component generator writer', () => {
@@ -149,9 +154,11 @@ describe('component generator writer', () => {
 
     expect(
       metadataBarrel.match(
-        /export \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g
+        /import \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g
       )
     ).toHaveLength(1);
+
+    expect(metadataBarrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
   it('overwrites component files without duplicating barrel exports', () => {
@@ -263,8 +270,18 @@ describe('component generator writer', () => {
     const barrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
 
     expect(barrel).toContain(
-      "export { avatarMetadata } from './Avatar.metadata';"
+      "import { avatarMetadata } from './Avatar.metadata';"
     );
+
+    expect(barrel).toContain('export const componentMetadata = [');
+
+    expect(barrel).toContain('  avatarMetadata,');
+
+    expect(
+      barrel.match(/import \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g)
+    ).toHaveLength(1);
+
+    expect(barrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
   it('generates capabilities from the selected profile', () => {
@@ -515,5 +532,44 @@ describe('component generator writer', () => {
 
     expect(webTrigger).toContain("aria-haspopup='dialog'");
     expect(nativeTrigger).toContain("accessibilityRole='button'");
+  });
+
+  it('writes and registers single-platform component metadata', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        parts: [],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
+    const barrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+    expect(metadata).toContain("name: 'Dialog'");
+    expect(metadata).toContain("platforms: ['react']");
+    expect(metadata).not.toContain("'react-native'");
+
+    expect(barrel).toContain(
+      "import { dialogMetadata } from './Dialog.metadata';"
+    );
+
+    expect(barrel).toContain('  dialogMetadata,');
+
+    expect(
+      barrel.match(/import \{ dialogMetadata \} from '\.\/Dialog\.metadata';/g)
+    ).toHaveLength(1);
+
+    expect(barrel.match(/ {2}dialogMetadata,/g)).toHaveLength(1);
   });
 });

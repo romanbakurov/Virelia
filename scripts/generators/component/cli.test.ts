@@ -19,6 +19,7 @@ describe('component generator CLI', () => {
       profile: 'base',
       parts: [],
       force: false,
+      dryRun: false,
     });
   });
 
@@ -34,6 +35,21 @@ describe('component generator CLI', () => {
     ).toMatchObject({
       componentName: 'Toast',
       force: true,
+    });
+  });
+
+  it('parses --dry-run', () => {
+    expect(
+      parseComponentGeneratorArgs([
+        'Avatar',
+        'both',
+        'primitives',
+        'data-display',
+        '--dry-run',
+      ])
+    ).toMatchObject({
+      componentName: 'Avatar',
+      dryRun: true,
     });
   });
 
@@ -180,5 +196,17 @@ describe('component generator CLI', () => {
         '--parts=Root,Trigger,Trigger',
       ])
     ).toThrow('Component parts must not contain duplicates.');
+  });
+
+  it('parses --dry-run', () => {
+    const options = parseComponentGeneratorArgs([
+      'Avatar',
+      'both',
+      'primitives',
+      'data-display',
+      '--dry-run',
+    ]);
+
+    expect(options.dryRun).toBe(true);
   });
 });

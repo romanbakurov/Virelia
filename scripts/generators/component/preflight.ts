@@ -48,6 +48,37 @@ export function validateComponentGenerationPlan(
 
   if (!fs.existsSync(plan.metadataBarrelFile)) {
     errors.push(`Missing metadata barrel file: ${plan.metadataBarrelFile}`);
+  } else {
+    const metadataBarrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+    if (!metadataBarrel.includes('export const componentMetadata = [')) {
+      errors.push(
+        `Missing componentMetadata registry in ${plan.metadataBarrelFile}`
+      );
+    } else if (!metadataBarrel.includes('] as const;')) {
+      errors.push(
+        `Invalid componentMetadata registry in ${plan.metadataBarrelFile}`
+      );
+    }
+
+    const metadataName = `${plan.componentName[0].toLowerCase()}${plan.componentName.slice(1)}Metadata`;
+
+    const metadataImport = `import { ${metadataName} } from './${plan.componentName}.metadata';`;
+    const metadataRegistryEntry = `  ${metadataName},`;
+
+    const hasMetadataImport = metadataBarrel.includes(metadataImport);
+    const hasMetadataRegistryEntry = metadataBarrel.includes(
+      metadataRegistryEntry
+    );
+
+    if (
+      (hasMetadataImport || hasMetadataRegistryEntry) &&
+      !fs.existsSync(plan.metadataFile)
+    ) {
+      errors.push(
+        `Conflicting metadata registration for ${plan.componentName} in ${plan.metadataBarrelFile}`
+      );
+    }
   }
 
   if (fs.existsSync(plan.metadataFile)) {
