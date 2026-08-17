@@ -1,0 +1,119 @@
+import path from 'node:path';
+
+import { describe, expect, it } from 'vitest';
+
+import { createComponentGenerationPlan } from './plan';
+
+describe('component generation plan', () => {
+  const root = '/repo';
+
+  it('creates web target', () => {
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(plan.profile).toBe('base');
+    expect(plan.targets).toHaveLength(1);
+    expect(plan.targets[0]).toEqual({
+      packageName: 'react',
+      isNative: false,
+      componentDir: path.join(root, 'packages/react/src/primitives/Avatar'),
+      barrelFile: path.join(root, 'packages/react/src/primitives/index.ts'),
+    });
+  });
+
+  it('creates native target', () => {
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'native',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(plan.targets).toHaveLength(1);
+    expect(plan.targets[0]?.packageName).toBe('react-native');
+    expect(plan.targets[0]?.isNative).toBe(true);
+  });
+
+  it('creates both targets predictably', () => {
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: true,
+      },
+    });
+
+    expect(plan.metadataFile).toBe(
+      path.join(root, 'packages/metadata/src/components/Avatar.metadata.ts')
+    );
+
+    expect(plan.metadataBarrelFile).toBe(
+      path.join(root, 'packages/metadata/src/components/index.ts')
+    );
+    expect(plan.targets.map((target) => target.packageName)).toEqual([
+      'react',
+      'react-native',
+    ]);
+    expect(plan.force).toBe(true);
+    expect(plan.category).toBe('data-display');
+  });
+
+  it('preserves an explicit component profile', () => {
+    const root = '/repo';
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Modal',
+        platform: 'both',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(plan.profile).toBe('overlay');
+  });
+
+  it('preserves component parts', () => {
+    const root = '/repo';
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tabs',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        parts: ['Root', 'List', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    expect(plan.parts).toEqual(['Root', 'List', 'Trigger', 'Content']);
+  });
+});

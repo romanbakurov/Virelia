@@ -5,6 +5,7 @@ export const formFieldMetadata = defineComponentMetadata({
   layer: 'patterns',
   category: 'form',
   platforms: ['react', 'react-native'],
+  profile: 'form-control',
   status: 'stable',
   capabilities: ['disabled', 'required', 'invalid', 'compound-api'],
   dependencies: {

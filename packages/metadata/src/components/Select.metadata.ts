@@ -5,6 +5,7 @@ export const selectMetadata = defineComponentMetadata({
   layer: 'components',
   category: 'form',
   platforms: ['react', 'react-native'],
+  profile: 'compound',
   status: 'stable',
   capabilities: [
     'controlled',

@@ -5,6 +5,7 @@ export const modalMetadata = defineComponentMetadata({
   layer: 'components',
   category: 'overlay',
   platforms: ['react', 'react-native'],
+  profile: 'overlay',
   status: 'stable',
   capabilities: [
     'controlled',

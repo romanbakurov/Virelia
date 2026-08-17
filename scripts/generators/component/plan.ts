@@ -1,0 +1,98 @@
+import path from 'node:path';
+
+import type {
+  ComponentGeneratorOptions,
+  ComponentLayerArg,
+  ComponentPlatformArg,
+  ComponentProfileArg,
+} from './cli';
+
+export type ComponentTargetPackage = 'react' | 'react-native';
+
+export type ComponentGenerationTarget = {
+  packageName: ComponentTargetPackage;
+  componentDir: string;
+  barrelFile: string;
+  isNative: boolean;
+};
+
+export type ComponentGenerationPlan = {
+  componentName: string;
+  layer: ComponentLayerArg;
+  category: ComponentGeneratorOptions['category'];
+  profile: ComponentProfileArg;
+  force: boolean;
+  parts: readonly string[];
+  targets: readonly ComponentGenerationTarget[];
+  metadataFile: string;
+  metadataBarrelFile: string;
+};
+
+function getTargetPackages(
+  platform: ComponentPlatformArg
+): ComponentTargetPackage[] {
+  switch (platform) {
+    case 'web':
+      return ['react'];
+    case 'native':
+      return ['react-native'];
+    case 'both':
+      return ['react', 'react-native'];
+  }
+}
+
+export function createComponentGenerationPlan(params: {
+  root: string;
+  options: ComponentGeneratorOptions;
+}): ComponentGenerationPlan {
+  const { root, options } = params;
+
+  const targets = getTargetPackages(options.platform).map((packageName) => ({
+    packageName,
+    isNative: packageName === 'react-native',
+    componentDir: path.join(
+      root,
+      'packages',
+      packageName,
+      'src',
+      options.layer,
+      options.componentName
+    ),
+    barrelFile: path.join(
+      root,
+      'packages',
+      packageName,
+      'src',
+      options.layer,
+      'index.ts'
+    ),
+  }));
+
+  return {
+    componentName: options.componentName,
+    layer: options.layer,
+    category: options.category,
+    profile: options.profile,
+    parts: options.parts,
+    force: options.force,
+    targets,
+
+    metadataFile: path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      `${options.componentName}.metadata.ts`
+    ),
+
+    metadataBarrelFile: path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'index.ts'
+    ),
+  };
+}

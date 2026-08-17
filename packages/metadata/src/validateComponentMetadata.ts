@@ -60,6 +60,13 @@ const componentCapabilities: readonly ComponentCapability[] = [
   'responsive',
 ];
 
+const COMPONENT_PROFILES = [
+  'base',
+  'form-control',
+  'compound',
+  'overlay',
+] as const;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -149,6 +156,15 @@ export function validateComponentMetadata(
     !componentCategories.includes(input.category as ComponentCategory)
   ) {
     errors.push(`category must be one of: ${componentCategories.join(', ')}.`);
+  }
+
+  if (
+    typeof input.profile !== 'string' ||
+    !COMPONENT_PROFILES.includes(
+      input.profile as (typeof COMPONENT_PROFILES)[number]
+    )
+  ) {
+    errors.push(`profile must be one of: ${COMPONENT_PROFILES.join(', ')}.`);
   }
 
   validateStringArray({

@@ -7,6 +7,7 @@ const validMetadata = {
   layer: 'primitives',
   category: 'action',
   platforms: ['react', 'react-native'],
+  profile: 'base',
   status: 'stable',
   capabilities: ['disabled', 'loading'],
   dependencies: {
@@ -113,6 +114,21 @@ describe('validateComponentMetadata', () => {
 
     if (!result.valid) {
       expect(result.errors).toContain('requirements.tests must be a boolean.');
+    }
+  });
+
+  it('rejects unsupported component profile', () => {
+    const result = validateComponentMetadata({
+      ...validMetadata,
+      profile: 'unknown',
+    });
+
+    expect(result.valid).toBe(false);
+
+    if (!result.valid) {
+      expect(result.errors).toContain(
+        'profile must be one of: base, form-control, compound, overlay.'
+      );
     }
   });
 });

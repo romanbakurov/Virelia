@@ -12,7 +12,9 @@ export function renderStoryTemplate({
   const storybookPackage = isNative
     ? '@storybook/react'
     : '@storybook/react-vite';
+
   const title = `${layer[0].toUpperCase() + layer.slice(1)}/${componentName}`;
+
   const description = [
     `### ${componentName} Component`,
     '',
@@ -30,7 +32,7 @@ export function renderStoryTemplate({
     'Correct usage:',
     '',
     '\\`\\`\\`tsx',
-    `<${componentName} />`,
+    `<${componentName}>Example content</${componentName}>`,
     '\\`\\`\\`',
   ].join('\n');
 
@@ -57,6 +59,10 @@ export default meta;
 
 type Story = StoryObj<typeof ${componentName}>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    children: 'Example content',
+  },
+};
 `;
 }
