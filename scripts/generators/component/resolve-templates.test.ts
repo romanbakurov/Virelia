@@ -100,4 +100,51 @@ describe('component template resolver', () => {
     expect(result.component).toContain('<View>');
     expect(result.component).not.toContain('closeOnEscape');
   });
+
+  it('composes overlay parts through the root component', () => {
+    const overlayPlan: ComponentGenerationPlan = {
+      ...createPlan('overlay'),
+      parts: ['Root', 'Trigger', 'Content'],
+    };
+
+    const web = resolveComponentTemplates({
+      plan: overlayPlan,
+      target: createTarget(false),
+    });
+
+    const native = resolveComponentTemplates({
+      plan: overlayPlan,
+      target: createTarget(true),
+    });
+
+    expect(web.component).toContain(
+      'export const Example = Object.assign(ExampleRoot, {'
+    );
+    expect(web.component).toContain('Trigger: ExampleTrigger');
+    expect(web.component).toContain('Content: ExampleContent');
+
+    expect(native.component).toContain(
+      'export const Example = Object.assign(ExampleRoot, {'
+    );
+    expect(native.component).toContain('Trigger: ExampleTrigger');
+    expect(native.component).toContain('Content: ExampleContent');
+  });
+
+  it('keeps overlays without parts as standalone platform-specific scaffolds', () => {
+    const web = resolveComponentTemplates({
+      plan: createPlan('overlay'),
+      target: createTarget(false),
+    });
+
+    const native = resolveComponentTemplates({
+      plan: createPlan('overlay'),
+      target: createTarget(true),
+    });
+
+    expect(web.component).toContain('<div');
+    expect(web.component).not.toContain('Object.assign');
+
+    expect(native.component).toContain('<View>');
+    expect(native.component).not.toContain('Object.assign');
+  });
 });

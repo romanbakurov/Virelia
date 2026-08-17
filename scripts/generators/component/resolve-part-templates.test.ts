@@ -50,4 +50,57 @@ describe('component part template resolver', () => {
     expect(result.component).toContain('export function TabsContent');
     expect(result.component).toContain('<View>');
   });
+
+  it('resolves web overlay part templates', () => {
+    const overlayPlan: ComponentGenerationPlan = {
+      ...plan,
+      componentName: 'Dialog',
+      category: 'overlay',
+      profile: 'overlay',
+      parts: ['Root', 'Trigger', 'Content'],
+    };
+
+    const trigger = resolvePartTemplates({
+      plan: overlayPlan,
+      target: createTarget(false),
+      partName: 'Trigger',
+    });
+
+    const content = resolvePartTemplates({
+      plan: overlayPlan,
+      target: createTarget(false),
+      partName: 'Content',
+    });
+
+    expect(trigger.component).toContain("aria-haspopup='dialog'");
+    expect(content.component).toContain("role='dialog'");
+    expect(content.component).toContain('tabIndex={-1}');
+  });
+
+  it('resolves native overlay part templates', () => {
+    const overlayPlan: ComponentGenerationPlan = {
+      ...plan,
+      componentName: 'Dialog',
+      category: 'overlay',
+      profile: 'overlay',
+      parts: ['Root', 'Trigger', 'Content'],
+    };
+
+    const trigger = resolvePartTemplates({
+      plan: overlayPlan,
+      target: createTarget(true),
+      partName: 'Trigger',
+    });
+
+    const content = resolvePartTemplates({
+      plan: overlayPlan,
+      target: createTarget(true),
+      partName: 'Content',
+    });
+
+    expect(trigger.component).toContain('<Pressable');
+    expect(trigger.component).toContain("accessibilityRole='button'");
+    expect(content.component).toContain('accessibilityViewIsModal');
+    expect(content.component).not.toContain("role='dialog'");
+  });
 });

@@ -2,6 +2,10 @@ import {
   renderPartComponentTemplate,
   renderPartIndexTemplate,
   renderPartTypesTemplate,
+  renderNativeOverlayPartComponentTemplate,
+  renderNativeOverlayPartTypesTemplate,
+  renderWebOverlayPartComponentTemplate,
+  renderWebOverlayPartTypesTemplate,
 } from './templates';
 
 import type {
@@ -21,6 +25,36 @@ export function resolvePartTemplates(params: {
   partName: string;
 }): ResolvedPartTemplates {
   const { plan, target, partName } = params;
+
+  if (plan.profile === 'overlay') {
+    return {
+      types: target.isNative
+        ? renderNativeOverlayPartTypesTemplate({
+            componentName: plan.componentName,
+            partName,
+          })
+        : renderWebOverlayPartTypesTemplate({
+            componentName: plan.componentName,
+            partName,
+          }),
+
+      index: renderPartIndexTemplate({
+        componentName: plan.componentName,
+        partName,
+        isNative: target.isNative,
+      }),
+
+      component: target.isNative
+        ? renderNativeOverlayPartComponentTemplate({
+            componentName: plan.componentName,
+            partName,
+          })
+        : renderWebOverlayPartComponentTemplate({
+            componentName: plan.componentName,
+            partName,
+          }),
+    };
+  }
 
   return {
     types: renderPartTypesTemplate({

@@ -459,4 +459,61 @@ describe('component generator writer', () => {
     expect(webTypes).toContain('onValueChange?: (value: string) => void');
     expect(nativeTypes).toContain('onValueChange?: (value: string) => void');
   });
+
+  it('generates composed platform-specific overlay parts', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Dialog',
+        platform: 'both',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        parts: ['Root', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    const webComponent = fs.readFileSync(
+      path.join(root, 'packages/react/src/components/Dialog/Dialog.tsx'),
+      'utf8'
+    );
+
+    const nativeComponent = fs.readFileSync(
+      path.join(root, 'packages/react-native/src/components/Dialog/Dialog.tsx'),
+      'utf8'
+    );
+
+    expect(webComponent).toContain(
+      'export const Dialog = Object.assign(DialogRoot, {'
+    );
+    expect(nativeComponent).toContain(
+      'export const Dialog = Object.assign(DialogRoot, {'
+    );
+
+    const webTrigger = fs.readFileSync(
+      path.join(
+        root,
+        'packages/react/src/components/Dialog/Trigger/DialogTrigger.tsx'
+      ),
+      'utf8'
+    );
+
+    const nativeTrigger = fs.readFileSync(
+      path.join(
+        root,
+        'packages/react-native/src/components/Dialog/Trigger/DialogTrigger.tsx'
+      ),
+      'utf8'
+    );
+
+    expect(webTrigger).toContain("aria-haspopup='dialog'");
+    expect(nativeTrigger).toContain("accessibilityRole='button'");
+  });
 });

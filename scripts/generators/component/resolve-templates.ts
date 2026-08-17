@@ -52,6 +52,23 @@ export function resolveComponentTemplates(params: {
       };
 
     case 'overlay':
+      if (plan.parts.length > 0) {
+        return {
+          types: target.isNative
+            ? renderNativeOverlayTypesTemplate({
+                componentName,
+              })
+            : renderWebOverlayTypesTemplate({
+                componentName,
+              }),
+
+          component: renderCompoundComponentTemplate({
+            componentName,
+            parts: plan.parts,
+          }),
+        };
+      }
+
       return target.isNative
         ? {
             types: renderNativeOverlayTypesTemplate({

@@ -12,6 +12,8 @@ export * from './component-compound';
 export * from './component-form-control';
 export * from './component-overlay-web';
 export * from './component-overlay-native';
+export * from './component-overlay-part-native';
+export * from './component-overlay-part-web';
 
 import type { ComponentTemplateParams } from './component-types';
 
