@@ -156,13 +156,17 @@ export function renderExamples(params: {
 
     const props = normalizePropFragments(
       [
-        getDemoProps(platform),
-        componentConfig.demo?.label
-          ? `label=${toTsString(componentConfig.demo.label)}`
-          : '',
-        componentConfig.demo?.description
-          ? `description=${toTsString(componentConfig.demo.description)}`
-          : '',
+        example.inheritDemoProps === false ? '' : getDemoProps(platform),
+        example.inheritDemoProps === false
+          ? ''
+          : componentConfig.demo?.label
+            ? `label=${toTsString(componentConfig.demo.label)}`
+            : '',
+        example.inheritDemoProps === false
+          ? ''
+          : componentConfig.demo?.description
+            ? `description=${toTsString(componentConfig.demo.description)}`
+            : '',
         ...example.props,
         ...(platform === 'react'
           ? (example.reactProps ?? [])
@@ -204,13 +208,17 @@ ${formattedChildren}
 
     const props = normalizePropFragments(
       [
-        getDemoProps(platform),
-        componentConfig.demo?.label
-          ? `label=${toTsString(componentConfig.demo.label)}`
-          : '',
-        componentConfig.demo?.description
-          ? `description=${toTsString(componentConfig.demo.description)}`
-          : '',
+        example.inheritDemoProps === false ? '' : getDemoProps(platform),
+        example.inheritDemoProps === false
+          ? ''
+          : componentConfig.demo?.label
+            ? `label=${toTsString(componentConfig.demo.label)}`
+            : '',
+        example.inheritDemoProps === false
+          ? ''
+          : componentConfig.demo?.description
+            ? `description=${toTsString(componentConfig.demo.description)}`
+            : '',
         ...example.props,
         ...(platform === 'react'
           ? (example.reactProps ?? [])
