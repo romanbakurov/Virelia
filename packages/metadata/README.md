@@ -67,11 +67,7 @@ export const selectMetadata = defineComponentMetadata({
   ],
 
   dependencies: {
-    packages: [
-      '@vellira-ui/types',
-      '@vellira-ui/core',
-      '@vellira-ui/icons',
-    ],
+    packages: ['@vellira-ui/types', '@vellira-ui/core', '@vellira-ui/icons'],
   },
 
   requirements: {
@@ -159,8 +155,8 @@ Declares relevant package and component dependencies.
 
 ```ts
 const dependencies = {
-    packages: ['@vellira-ui/types'],
-    components: ['FormField'],
+  packages: ['@vellira-ui/types'],
+  components: ['FormField'],
 };
 ```
 
@@ -173,10 +169,10 @@ Defines which quality artifacts are required for the component.
 
 ```ts
 const requirements = {
-    tests: true,
-    storybook: true,
-    docs: true,
-    accessibility: true,
+  tests: true,
+  storybook: true,
+  docs: true,
+  accessibility: true,
 };
 ```
 
@@ -185,11 +181,11 @@ groups:
 
 ```ts
 const requirements = {
-    tests: true,
-    storybook: true,
-    docs: true,
-    accessibility: true,
-    tokens: ['select'],
+  tests: true,
+  storybook: true,
+  docs: true,
+  accessibility: true,
+  tokens: ['select'],
 };
 ```
 
