@@ -2,12 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
-  renderCompoundComponentTemplate,
   renderIndexTemplate,
-  renderFormControlComponentTemplate,
-  renderFormControlTypesTemplate,
   renderMetadataTemplate,
-  renderNativeComponentTemplate,
   renderNativeStylesTemplate,
   renderPartComponentTemplate,
   renderPartIndexTemplate,
@@ -16,11 +12,10 @@ import {
   renderStoryTemplate,
   renderStylesTemplate,
   renderTestTemplate,
-  renderTypesTemplate,
-  renderWebComponentTemplate,
 } from './templates';
 
 import { getComponentProfile } from './profiles';
+import { resolveComponentTemplates } from './resolve-templates';
 
 import type {
   ComponentGenerationPlan,
@@ -135,14 +130,14 @@ function writeTarget(params: {
     });
   }
 
-  const typesContent =
-    plan.profile === 'form-control'
-      ? renderFormControlTypesTemplate({ componentName })
-      : renderTypesTemplate({ componentName });
+  const templates = resolveComponentTemplates({
+    plan,
+    target,
+  });
 
   writeFile({
     filePath: path.join(target.componentDir, 'types.ts'),
-    content: typesContent,
+    content: templates.types,
     createdFiles: result.createdFiles,
   });
 
@@ -152,24 +147,9 @@ function writeTarget(params: {
     createdFiles: result.createdFiles,
   });
 
-  const componentContent =
-    plan.profile === 'compound'
-      ? renderCompoundComponentTemplate({
-          componentName,
-          parts: plan.parts,
-        })
-      : plan.profile === 'form-control'
-        ? renderFormControlComponentTemplate({
-            componentName,
-            isNative: target.isNative,
-          })
-        : target.isNative
-          ? renderNativeComponentTemplate({ componentName })
-          : renderWebComponentTemplate({ componentName });
-
   writeFile({
     filePath: path.join(target.componentDir, `${componentName}.tsx`),
-    content: componentContent,
+    content: templates.component,
     createdFiles: result.createdFiles,
   });
 
