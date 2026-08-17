@@ -1,8 +1,9 @@
+import type { ComponentCapability } from '@vellira-ui/metadata';
 import type { ComponentProfileArg } from './cli';
 
 export type ComponentProfileDefinition = {
   profile: ComponentProfileArg;
-  capabilities: readonly string[];
+  capabilities: readonly ComponentCapability[];
   description: string;
 };
 

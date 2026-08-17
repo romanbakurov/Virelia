@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { afterEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { createComponentGenerationPlan } from './plan';
 import { writeComponentGenerationPlan } from './write';
@@ -19,36 +19,28 @@ function createTempRoot() {
   return root;
 }
 
-function createLayerBarrels(root: string) {
+function createLayerBarrels(
+  root: string,
+  layer: 'primitives' | 'components' | 'patterns' = 'primitives'
+) {
   for (const packageName of ['react', 'react-native']) {
-    const layerDir = path.join(
-      root,
-      'packages',
-      packageName,
-      'src',
-      'primitives'
-    );
+    const layerDir = path.join(root, 'packages', packageName, 'src', layer);
 
     fs.mkdirSync(layerDir, { recursive: true });
     fs.writeFileSync(path.join(layerDir, 'index.ts'), '');
-    const metadataDir = path.join(
-      root,
-      'packages',
-      'metadata',
-      'src',
-      'components'
-    );
-
-    fs.mkdirSync(metadataDir, { recursive: true });
-    fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
   }
+
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
 }
-
-afterEach(() => {
-  for (const root of tempRoots.splice(0)) {
-    fs.rmSync(root, { recursive: true, force: true });
-  }
-});
 
 describe('component generator writer', () => {
   it('writes canonical React and React Native component files', () => {
@@ -255,6 +247,8 @@ describe('component generator writer', () => {
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
 
     expect(metadata).toContain("name: 'Avatar'");
+    expect(metadata).toContain("status: 'experimental'");
+    expect(metadata).toContain("name: 'Avatar'");
     expect(metadata).toContain("layer: 'primitives'");
     expect(metadata).toContain("category: 'data-display'");
     expect(metadata).toContain("'react'");
@@ -266,5 +260,37 @@ describe('component generator writer', () => {
     expect(barrel).toContain(
       "export { avatarMetadata } from './Avatar.metadata';"
     );
+  });
+
+  it('generates capabilities from the selected profile', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        force: false,
+      },
+    });
+
+    const result = writeComponentGenerationPlan(plan);
+
+    const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
+
+    expect(result.createdFiles).toContain(plan.metadataFile);
+
+    expect(metadata).toContain("profile: 'overlay'");
+    expect(metadata).toContain("'controlled'");
+    expect(metadata).toContain("'uncontrolled'");
+    expect(metadata).toContain("'keyboard'");
+    expect(metadata).toContain("'focus-management'");
+    expect(metadata).toContain("'compound-api'");
+    expect(metadata).toContain("'portal'");
   });
 });

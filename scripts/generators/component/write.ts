@@ -14,6 +14,8 @@ import {
   renderWebComponentTemplate,
 } from './templates';
 
+import { getComponentProfile } from './profiles';
+
 import type {
   ComponentGenerationPlan,
   ComponentGenerationTarget,
@@ -151,6 +153,8 @@ function writeMetadata(params: {
       : ('react-native' as const)
   );
 
+  const profile = getComponentProfile(plan.profile);
+
   writeFile({
     filePath: plan.metadataFile,
     content: renderMetadataTemplate({
@@ -159,6 +163,7 @@ function writeMetadata(params: {
       category: plan.category,
       platforms,
       profile: plan.profile,
+      capabilities: profile.capabilities,
     }),
     createdFiles: result.createdFiles,
   });
