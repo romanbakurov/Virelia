@@ -190,6 +190,73 @@ function writeTarget(params: {
   });
 }
 
+function registerMetadata(params: {
+  metadataBarrelFile: string;
+  componentName: string;
+  updatedFiles: string[];
+}) {
+  const { metadataBarrelFile, componentName, updatedFiles } = params;
+
+  const metadataName = `${componentName[0].toLowerCase()}${componentName.slice(1)}Metadata`;
+  const importLine = `import { ${metadataName} } from './${componentName}.metadata';`;
+
+  let content = fs.readFileSync(metadataBarrelFile, 'utf8');
+
+  if (!content.includes(importLine)) {
+    const importMatches = [...content.matchAll(/^import .*;$/gm)];
+
+    if (importMatches.length > 0) {
+      const lastImport = importMatches.at(-1);
+
+      if (!lastImport || lastImport.index === undefined) {
+        throw new Error('Unable to locate metadata imports.');
+      }
+
+      const insertAt = lastImport.index + lastImport[0].length;
+
+      content =
+        content.slice(0, insertAt) +
+        `\n${importLine}` +
+        content.slice(insertAt);
+    } else {
+      content = `${importLine}\n\n${content}`;
+    }
+  }
+
+  const registryMarker = 'export const componentMetadata = [';
+  const registryStart = content.indexOf(registryMarker);
+
+  if (registryStart === -1) {
+    throw new Error(
+      `Missing componentMetadata registry in ${metadataBarrelFile}`
+    );
+  }
+
+  const registryEnd = content.indexOf('] as const;', registryStart);
+
+  if (registryEnd === -1) {
+    throw new Error(
+      `Invalid componentMetadata registry in ${metadataBarrelFile}`
+    );
+  }
+
+  const registryContent = content.slice(registryStart, registryEnd);
+  const registryEntry = `  ${metadataName},`;
+
+  if (!registryContent.includes(registryEntry)) {
+    content =
+      content.slice(0, registryEnd) +
+      `${registryEntry}\n` +
+      content.slice(registryEnd);
+  }
+
+  fs.writeFileSync(metadataBarrelFile, content);
+
+  if (!updatedFiles.includes(metadataBarrelFile)) {
+    updatedFiles.push(metadataBarrelFile);
+  }
+}
+
 function writeMetadata(params: {
   plan: ComponentGenerationPlan;
   result: ComponentGenerationResult;
@@ -217,11 +284,9 @@ function writeMetadata(params: {
     createdFiles: result.createdFiles,
   });
 
-  const metadataName = `${plan.componentName[0].toLowerCase()}${plan.componentName.slice(1)}Metadata`;
-
-  updateBarrel({
-    barrelFile: plan.metadataBarrelFile,
-    exportLine: `export { ${metadataName} } from './${plan.componentName}.metadata';`,
+  registerMetadata({
+    metadataBarrelFile: plan.metadataBarrelFile,
+    componentName: plan.componentName,
     updatedFiles: result.updatedFiles,
   });
 }

@@ -39,7 +39,12 @@ function createLayerBarrels(
   );
 
   fs.mkdirSync(metadataDir, { recursive: true });
-  fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
+  fs.writeFileSync(
+    path.join(metadataDir, 'index.ts'),
+    `export const componentMetadata = [
+] as const;
+`
+  );
 }
 
 afterEach(() => {
@@ -323,5 +328,89 @@ describe('component generator preflight', () => {
     const result = validateComponentGenerationPlan(plan);
 
     expect(result.ok).toBe(true);
+  });
+
+  it('rejects a metadata barrel without the componentMetadata registry', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root);
+
+    const metadataBarrelFile = path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'index.ts'
+    );
+
+    fs.writeFileSync(metadataBarrelFile, `export const somethingElse = [];\n`);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        `Missing componentMetadata registry in ${plan.metadataBarrelFile}`
+      );
+    }
+  });
+
+  it('rejects an invalid componentMetadata registry', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root);
+
+    const metadataBarrelFile = path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'index.ts'
+    );
+
+    fs.writeFileSync(
+      metadataBarrelFile,
+      `export const componentMetadata = [
+`
+    );
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        `Invalid componentMetadata registry in ${plan.metadataBarrelFile}`
+      );
+    }
   });
 });

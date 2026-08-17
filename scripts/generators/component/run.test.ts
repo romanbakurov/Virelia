@@ -5,6 +5,8 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { runComponentGenerator } from './run';
+import { checkComponentCompleteness } from '../../checks/component-completeness/check-component';
+import type { ComponentMetadata } from '@vellira-ui/metadata';
 
 const tempRoots: string[] = [];
 
@@ -38,7 +40,12 @@ function createRequiredRepositoryStructure(
   );
 
   fs.mkdirSync(metadataDir, { recursive: true });
-  fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
+  fs.writeFileSync(
+    path.join(metadataDir, 'index.ts'),
+    `export const componentMetadata = [
+] as const;
+`
+  );
 }
 
 afterEach(() => {
@@ -126,9 +133,18 @@ describe('component generator', () => {
       )
     ).toContain("export * from './Avatar';");
 
-    expect(fs.readFileSync(result.plan.metadataBarrelFile, 'utf8')).toContain(
-      "export { avatarMetadata } from './Avatar.metadata';"
+    const metadataRegistry = fs.readFileSync(
+      result.plan.metadataBarrelFile,
+      'utf8'
     );
+
+    expect(metadataRegistry).toContain(
+      "import { avatarMetadata } from './Avatar.metadata';"
+    );
+
+    expect(metadataRegistry).toContain('export const componentMetadata = [');
+
+    expect(metadataRegistry).toContain('  avatarMetadata,');
   });
 
   it('rejects a repeated run without --force', () => {
@@ -211,9 +227,11 @@ describe('component generator', () => {
 
     expect(
       metadataBarrel.match(
-        /export \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g
+        /import \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g
       )
     ).toHaveLength(1);
+
+    expect(metadataBarrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
   it('generates platform-specific overlay scaffolds through the full pipeline', () => {
@@ -302,5 +320,99 @@ describe('component generator', () => {
 
     expect(nativeContent).toContain('accessibilityViewIsModal');
     expect(nativeContent).not.toContain("role='dialog'");
+  });
+
+  it('generates metadata that can be consumed by the completeness checker', () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+
+    const result = runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    const metadataSource = fs.readFileSync(result.plan.metadataFile, 'utf8');
+
+    const registrySource = fs.readFileSync(
+      result.plan.metadataBarrelFile,
+      'utf8'
+    );
+
+    expect(metadataSource).toContain("name: 'Avatar'");
+    expect(metadataSource).toContain("platforms: ['react', 'react-native']");
+    expect(metadataSource).toContain("status: 'experimental'");
+
+    expect(registrySource).toContain(
+      "import { avatarMetadata } from './Avatar.metadata';"
+    );
+
+    expect(registrySource).toContain('  avatarMetadata,');
+
+    const metadata: ComponentMetadata = {
+      name: 'Avatar',
+      layer: 'primitives',
+      category: 'data-display',
+      platforms: ['react', 'react-native'],
+      profile: 'base',
+      status: 'experimental',
+      capabilities: [],
+      requirements: {
+        tests: true,
+        storybook: true,
+        docs: false,
+        accessibility: false,
+      },
+    };
+
+    const completeness = checkComponentCompleteness({
+      root,
+      metadata,
+    });
+
+    expect(completeness.ready).toBe(true);
+
+    expect(completeness.checks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'implementation',
+          platform: 'react',
+          ok: true,
+        }),
+        expect.objectContaining({
+          name: 'implementation',
+          platform: 'react-native',
+          ok: true,
+        }),
+        expect.objectContaining({
+          name: 'types',
+          platform: 'react',
+          ok: true,
+        }),
+        expect.objectContaining({
+          name: 'types',
+          platform: 'react-native',
+          ok: true,
+        }),
+        expect.objectContaining({
+          name: 'exports',
+          platform: 'react',
+          ok: true,
+        }),
+        expect.objectContaining({
+          name: 'exports',
+          platform: 'react-native',
+          ok: true,
+        }),
+      ])
+    );
   });
 });
