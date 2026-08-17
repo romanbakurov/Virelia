@@ -5,9 +5,6 @@ import {
   renderIndexTemplate,
   renderMetadataTemplate,
   renderNativeStylesTemplate,
-  renderPartComponentTemplate,
-  renderPartIndexTemplate,
-  renderPartTypesTemplate,
   renderReadmeTemplate,
   renderStoryTemplate,
   renderStylesTemplate,
@@ -16,6 +13,7 @@ import {
 
 import { getComponentProfile } from './profiles';
 import { resolveComponentTemplates } from './resolve-templates';
+import { resolvePartTemplates } from './resolve-part-templates';
 
 import type {
   ComponentGenerationPlan,
@@ -49,35 +47,29 @@ function writePart(params: {
   const partDir = path.join(target.componentDir, partName);
   const partComponentName = `${plan.componentName}${partName}`;
 
+  const templates = resolvePartTemplates({
+    plan,
+    target,
+    partName,
+  });
+
   fs.mkdirSync(partDir, { recursive: true });
 
   writeFile({
     filePath: path.join(partDir, 'types.ts'),
-    content: renderPartTypesTemplate({
-      componentName: plan.componentName,
-      partName,
-      isNative: target.isNative,
-    }),
+    content: templates.types,
     createdFiles: result.createdFiles,
   });
 
   writeFile({
     filePath: path.join(partDir, 'index.ts'),
-    content: renderPartIndexTemplate({
-      componentName: plan.componentName,
-      partName,
-      isNative: target.isNative,
-    }),
+    content: templates.index,
     createdFiles: result.createdFiles,
   });
 
   writeFile({
     filePath: path.join(partDir, `${partComponentName}.tsx`),
-    content: renderPartComponentTemplate({
-      componentName: plan.componentName,
-      partName,
-      isNative: target.isNative,
-    }),
+    content: templates.component,
     createdFiles: result.createdFiles,
   });
 }
