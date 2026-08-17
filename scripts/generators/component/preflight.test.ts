@@ -19,29 +19,27 @@ function createTempRoot() {
   return root;
 }
 
-function createLayerBarrels(root: string) {
+function createLayerBarrels(
+  root: string,
+  layer: 'primitives' | 'components' | 'patterns' = 'primitives'
+) {
   for (const packageName of ['react', 'react-native']) {
-    const layerDir = path.join(
-      root,
-      'packages',
-      packageName,
-      'src',
-      'primitives'
-    );
+    const layerDir = path.join(root, 'packages', packageName, 'src', layer);
 
     fs.mkdirSync(layerDir, { recursive: true });
     fs.writeFileSync(path.join(layerDir, 'index.ts'), '');
-    const metadataDir = path.join(
-      root,
-      'packages',
-      'metadata',
-      'src',
-      'components'
-    );
-
-    fs.mkdirSync(metadataDir, { recursive: true });
-    fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
   }
+
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(path.join(metadataDir, 'index.ts'), '');
 }
 
 afterEach(() => {
@@ -270,7 +268,7 @@ describe('component generator preflight', () => {
 
     if (!result.ok) {
       expect(result.errors).toContain(
-        'Compound components require a Root part.'
+        'Component profile "compound" requires a Root part when parts are provided.'
       );
     }
   });
@@ -299,8 +297,31 @@ describe('component generator preflight', () => {
 
     if (!result.ok) {
       expect(result.errors).toContain(
-        'Component parts currently require the compound profile.'
+        'Component parts are not supported by the base profile.'
       );
     }
+  });
+
+  it('allows parts for overlay profiles', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Popover',
+        platform: 'both',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        parts: ['Root', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(true);
   });
 });

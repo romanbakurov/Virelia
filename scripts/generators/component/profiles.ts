@@ -5,6 +5,7 @@ export type ComponentProfileDefinition = {
   profile: ComponentProfileArg;
   capabilities: readonly ComponentCapability[];
   description: string;
+  supportsParts: boolean;
 };
 
 export const componentProfiles: Record<
@@ -14,6 +15,7 @@ export const componentProfiles: Record<
   base: {
     profile: 'base',
     capabilities: [],
+    supportsParts: false,
     description: 'Neutral component scaffold with no specialized behavior.',
   },
 
@@ -26,6 +28,7 @@ export const componentProfiles: Record<
       'required',
       'invalid',
     ],
+    supportsParts: false,
     description:
       'Form-oriented scaffold with controlled and uncontrolled state, validation, and field-state requirements.',
   },
@@ -33,6 +36,7 @@ export const componentProfiles: Record<
   compound: {
     profile: 'compound',
     capabilities: ['compound-api'],
+    supportsParts: true,
     description:
       'Compound component scaffold composed from a root and public child slots.',
   },
@@ -47,6 +51,7 @@ export const componentProfiles: Record<
       'compound-api',
       'portal',
     ],
+    supportsParts: true,
     description:
       'Overlay scaffold with open-state, focus, dismissal, and portal requirements.',
   },

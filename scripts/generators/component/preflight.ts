@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
 import type { ComponentGenerationPlan } from './plan';
+import { getComponentProfile } from './profiles';
 
 export type ComponentPreflightResult =
   | {
@@ -17,6 +18,7 @@ export function validateComponentGenerationPlan(
 ): ComponentPreflightResult {
   const errors: string[] = [];
   const existingTargets: string[] = [];
+  const profile = getComponentProfile(plan.profile);
 
   for (const target of plan.targets) {
     if (!fs.existsSync(target.barrelFile)) {
@@ -28,12 +30,20 @@ export function validateComponentGenerationPlan(
     }
   }
 
-  if (plan.profile === 'compound' && !plan.parts.includes('Root')) {
-    errors.push('Compound components require a Root part.');
+  if (
+    profile.supportsParts &&
+    plan.parts.length > 0 &&
+    !plan.parts.includes('Root')
+  ) {
+    errors.push(
+      `Component profile "${plan.profile}" requires a Root part when parts are provided.`
+    );
   }
 
-  if (plan.profile !== 'compound' && plan.parts.length > 0) {
-    errors.push('Component parts currently require the compound profile.');
+  if (!profile.supportsParts && plan.parts.length > 0) {
+    errors.push(
+      `Component parts are not supported by the ${plan.profile} profile.`
+    );
   }
 
   if (!fs.existsSync(plan.metadataBarrelFile)) {

@@ -7,6 +7,7 @@ describe('component generator profiles', () => {
     expect(getComponentProfile('base')).toEqual({
       profile: 'base',
       capabilities: [],
+      supportsParts: false,
       description: 'Neutral component scaffold with no specialized behavior.',
     });
   });
@@ -38,5 +39,12 @@ describe('component generator profiles', () => {
       'required',
       'invalid',
     ]);
+  });
+
+  it('allows parts for compound and overlay profiles', () => {
+    expect(getComponentProfile('base').supportsParts).toBe(false);
+    expect(getComponentProfile('form-control').supportsParts).toBe(false);
+    expect(getComponentProfile('compound').supportsParts).toBe(true);
+    expect(getComponentProfile('overlay').supportsParts).toBe(true);
   });
 });
