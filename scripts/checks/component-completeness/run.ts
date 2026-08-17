@@ -8,17 +8,61 @@ export function formatComponentCompletenessResult(
 ) {
   const lines = [result.componentName, ''];
 
-  for (const check of result.checks) {
-    const status = check.ok ? '✓' : '✗';
+  const platformGroups = [
+    {
+      platform: 'react' as const,
+      label: 'React',
+    },
+    {
+      platform: 'react-native' as const,
+      label: 'React Native',
+    },
+  ];
 
-    lines.push(
-      `${check.name.padEnd(16)} ${status}${
-        !check.ok && check.details ? ` ${check.details}` : ''
-      }`
+  for (const { platform, label } of platformGroups) {
+    const platformChecks = result.checks.filter(
+      (check) => check.platform === platform
     );
+
+    if (platformChecks.length === 0) {
+      continue;
+    }
+
+    lines.push(label);
+
+    for (const check of platformChecks) {
+      const status = check.ok ? '✓' : '✗';
+
+      lines.push(
+        `${check.name.padEnd(16)} ${status}${
+          !check.ok && check.details ? ` ${check.details}` : ''
+        }`
+      );
+    }
+
+    lines.push('');
   }
 
-  lines.push('');
+  const sharedChecks = result.checks.filter(
+    (check) => check.platform === undefined
+  );
+
+  if (sharedChecks.length > 0) {
+    lines.push('Shared');
+
+    for (const check of sharedChecks) {
+      const status = check.ok ? '✓' : '✗';
+
+      lines.push(
+        `${check.name.padEnd(16)} ${status}${
+          !check.ok && check.details ? ` ${check.details}` : ''
+        }`
+      );
+    }
+
+    lines.push('');
+  }
+
   lines.push(result.ready ? 'READY' : 'INCOMPLETE');
 
   return lines.join('\n');
