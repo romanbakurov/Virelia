@@ -140,10 +140,10 @@ pnpm create:component Dialog both components overlay \
 may generate public parts corresponding to:
 
 ```tsx
-<Dialog.Root>
+<Dialog>
   <Dialog.Trigger />
   <Dialog.Content />
-</Dialog.Root>
+</Dialog>
 ```
 
 The public component intent can remain aligned across platforms while the
