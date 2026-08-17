@@ -5,6 +5,10 @@ import {
   renderNativeComponentTemplate,
   renderTypesTemplate,
   renderWebComponentTemplate,
+  renderNativeOverlayComponentTemplate,
+  renderNativeOverlayTypesTemplate,
+  renderWebOverlayComponentTemplate,
+  renderWebOverlayTypesTemplate,
 } from './templates';
 
 import type {
@@ -48,19 +52,23 @@ export function resolveComponentTemplates(params: {
       };
 
     case 'overlay':
-      // Overlay-specific web/native templates will be added next.
-      return {
-        types: renderTypesTemplate({
-          componentName,
-        }),
-        component: target.isNative
-          ? renderNativeComponentTemplate({
-              componentName,
-            })
-          : renderWebComponentTemplate({
+      return target.isNative
+        ? {
+            types: renderNativeOverlayTypesTemplate({
               componentName,
             }),
-      };
+            component: renderNativeOverlayComponentTemplate({
+              componentName,
+            }),
+          }
+        : {
+            types: renderWebOverlayTypesTemplate({
+              componentName,
+            }),
+            component: renderWebOverlayComponentTemplate({
+              componentName,
+            }),
+          };
 
     case 'base':
       return {

@@ -74,4 +74,30 @@ describe('component template resolver', () => {
 
     expect(result.component).toContain('Object.assign(ExampleRoot');
   });
+
+  it('resolves web overlay templates', () => {
+    const result = resolveComponentTemplates({
+      plan: createPlan('overlay'),
+      target: createTarget(false),
+    });
+
+    expect(result.types).toContain('closeOnEscape?: boolean');
+    expect(result.types).toContain('closeOnOutsidePress?: boolean');
+    expect(result.component).toContain('<div');
+    expect(result.component).toContain('closeOnEscape = true');
+  });
+
+  it('resolves native overlay templates without browser-only behavior', () => {
+    const result = resolveComponentTemplates({
+      plan: createPlan('overlay'),
+      target: createTarget(true),
+    });
+
+    expect(result.types).toContain('closeOnOutsidePress?: boolean');
+    expect(result.types).toContain('restoreFocus?: boolean');
+    expect(result.types).not.toContain('closeOnEscape');
+
+    expect(result.component).toContain('<View>');
+    expect(result.component).not.toContain('closeOnEscape');
+  });
 });

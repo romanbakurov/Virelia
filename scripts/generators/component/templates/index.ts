@@ -10,6 +10,8 @@ export * from './component-readme';
 export * from './component-part';
 export * from './component-compound';
 export * from './component-form-control';
+export * from './component-overlay-web';
+export * from './component-overlay-native';
 
 import type { ComponentTemplateParams } from './component-types';
 
