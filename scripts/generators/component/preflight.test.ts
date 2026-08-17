@@ -63,6 +63,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -89,6 +90,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -120,6 +122,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: true,
       },
     });
@@ -143,6 +146,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -185,6 +189,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -225,6 +230,7 @@ describe('component generator preflight', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -236,6 +242,64 @@ describe('component generator preflight', () => {
     if (!result.ok) {
       expect(result.errors).toContain(
         `Missing metadata barrel file: ${plan.metadataBarrelFile}`
+      );
+    }
+  });
+
+  it('rejects compound components without a Root part', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tabs',
+        platform: 'web',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        parts: ['List', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        'Compound components require a Root part.'
+      );
+    }
+  });
+
+  it('rejects parts for non-compound profiles', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'primitives');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: ['Root', 'Image'],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        'Component parts currently require the compound profile.'
       );
     }
   });

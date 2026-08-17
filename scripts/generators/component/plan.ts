@@ -22,6 +22,7 @@ export type ComponentGenerationPlan = {
   category: ComponentGeneratorOptions['category'];
   profile: ComponentProfileArg;
   force: boolean;
+  parts: readonly string[];
   targets: readonly ComponentGenerationTarget[];
   metadataFile: string;
   metadataBarrelFile: string;
@@ -72,6 +73,7 @@ export function createComponentGenerationPlan(params: {
     layer: options.layer,
     category: options.category,
     profile: options.profile,
+    parts: options.parts,
     force: options.force,
     targets,
 

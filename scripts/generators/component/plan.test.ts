@@ -16,6 +16,7 @@ describe('component generation plan', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -39,6 +40,7 @@ describe('component generation plan', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: false,
       },
     });
@@ -57,6 +59,7 @@ describe('component generation plan', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: true,
       },
     });
@@ -87,10 +90,30 @@ describe('component generation plan', () => {
         layer: 'components',
         category: 'overlay',
         profile: 'overlay',
+        parts: [],
         force: false,
       },
     });
 
     expect(plan.profile).toBe('overlay');
+  });
+
+  it('preserves component parts', () => {
+    const root = '/repo';
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tabs',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        parts: ['Root', 'List', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    expect(plan.parts).toEqual(['Root', 'List', 'Trigger', 'Content']);
   });
 });

@@ -17,6 +17,7 @@ describe('component generator CLI', () => {
       layer: 'primitives',
       category: 'data-display',
       profile: 'base',
+      parts: [],
       force: false,
     });
   });
@@ -140,5 +141,44 @@ describe('component generator CLI', () => {
     ).toThrow(
       'Invalid component profile "unknown". Expected base, form-control, compound, or overlay.'
     );
+  });
+
+  it('parses component parts', () => {
+    const result = parseComponentGeneratorArgs([
+      'Tabs',
+      'both',
+      'components',
+      'navigation',
+      '--profile=compound',
+      '--parts=Root,List,Trigger,Content',
+    ]);
+
+    expect(result.parts).toEqual(['Root', 'List', 'Trigger', 'Content']);
+  });
+
+  it('rejects invalid component parts', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Tabs',
+        'both',
+        'components',
+        'navigation',
+        '--parts=Root,tab-trigger',
+      ])
+    ).toThrow(
+      'Component parts must be PascalCase and contain only letters and numbers.'
+    );
+  });
+
+  it('rejects duplicate component parts', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Tabs',
+        'both',
+        'components',
+        'navigation',
+        '--parts=Root,Trigger,Trigger',
+      ])
+    ).toThrow('Component parts must not contain duplicates.');
   });
 });

@@ -66,8 +66,9 @@ describe('component generator', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -143,8 +144,9 @@ describe('component generator', () => {
       platform: 'both',
       layer: 'primitives',
       category: 'data-display',
-      force: false,
       profile: 'base',
+      parts: [],
+      force: false,
     } as const;
 
     runComponentGenerator({
@@ -172,8 +174,9 @@ describe('component generator', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -185,6 +188,7 @@ describe('component generator', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: true,
       },
     });

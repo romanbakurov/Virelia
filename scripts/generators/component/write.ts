@@ -2,10 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  renderCompoundComponentTemplate,
   renderIndexTemplate,
   renderMetadataTemplate,
   renderNativeComponentTemplate,
   renderNativeStylesTemplate,
+  renderPartComponentTemplate,
+  renderPartIndexTemplate,
+  renderPartTypesTemplate,
   renderReadmeTemplate,
   renderStoryTemplate,
   renderStylesTemplate,
@@ -35,6 +39,50 @@ function writeFile(params: {
 
   fs.writeFileSync(filePath, content);
   createdFiles.push(filePath);
+}
+
+function writePart(params: {
+  plan: ComponentGenerationPlan;
+  target: ComponentGenerationTarget;
+  partName: string;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, target, partName, result } = params;
+
+  const partDir = path.join(target.componentDir, partName);
+  const partComponentName = `${plan.componentName}${partName}`;
+
+  fs.mkdirSync(partDir, { recursive: true });
+
+  writeFile({
+    filePath: path.join(partDir, 'types.ts'),
+    content: renderPartTypesTemplate({
+      componentName: plan.componentName,
+      partName,
+      isNative: target.isNative,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  writeFile({
+    filePath: path.join(partDir, 'index.ts'),
+    content: renderPartIndexTemplate({
+      componentName: plan.componentName,
+      partName,
+      isNative: target.isNative,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  writeFile({
+    filePath: path.join(partDir, `${partComponentName}.tsx`),
+    content: renderPartComponentTemplate({
+      componentName: plan.componentName,
+      partName,
+      isNative: target.isNative,
+    }),
+    createdFiles: result.createdFiles,
+  });
 }
 
 function updateBarrel(params: {
@@ -76,6 +124,15 @@ function writeTarget(params: {
 
   fs.mkdirSync(target.componentDir, { recursive: true });
 
+  for (const partName of plan.parts) {
+    writePart({
+      plan,
+      target,
+      partName,
+      result,
+    });
+  }
+
   writeFile({
     filePath: path.join(target.componentDir, 'types.ts'),
     content: renderTypesTemplate({ componentName }),
@@ -84,15 +141,23 @@ function writeTarget(params: {
 
   writeFile({
     filePath: path.join(target.componentDir, 'index.ts'),
-    content: renderIndexTemplate({ componentName }),
+    content: renderIndexTemplate({ componentName, parts: plan.parts }),
     createdFiles: result.createdFiles,
   });
 
+  const componentContent =
+    plan.profile === 'compound'
+      ? renderCompoundComponentTemplate({
+          componentName,
+          parts: plan.parts,
+        })
+      : target.isNative
+        ? renderNativeComponentTemplate({ componentName })
+        : renderWebComponentTemplate({ componentName });
+
   writeFile({
     filePath: path.join(target.componentDir, `${componentName}.tsx`),
-    content: target.isNative
-      ? renderNativeComponentTemplate({ componentName })
-      : renderWebComponentTemplate({ componentName }),
+    content: componentContent,
     createdFiles: result.createdFiles,
   });
 

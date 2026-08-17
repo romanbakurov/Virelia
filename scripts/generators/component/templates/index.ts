@@ -7,13 +7,20 @@ export * from './component-native-styles';
 export * from './component-test';
 export * from './component-metadata';
 export * from './component-readme';
+export * from './component-part';
+export * from './component-compound';
 
 import type { ComponentTemplateParams } from './component-types';
 
 export function renderIndexTemplate({
   componentName,
+  parts = [],
 }: ComponentTemplateParams) {
+  const partExports = parts
+    .map((partName) => `export * from './${partName}';`)
+    .join('\n');
+
   return `export * from './${componentName}';
-export * from './types';
+export * from './types';${partExports ? `\n${partExports}` : ''}
 `;
 }

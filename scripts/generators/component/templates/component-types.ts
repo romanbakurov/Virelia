@@ -1,7 +1,7 @@
 export type ComponentTemplateParams = {
   componentName: string;
+  parts?: readonly string[];
 };
-
 export function renderTypesTemplate({
   componentName,
 }: ComponentTemplateParams) {

@@ -54,8 +54,9 @@ describe('component generator writer', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -121,8 +122,9 @@ describe('component generator writer', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -164,6 +166,7 @@ describe('component generator writer', () => {
         layer: 'primitives',
         category: 'data-display',
         profile: 'base',
+        parts: [],
         force: true,
       },
     });
@@ -198,8 +201,9 @@ describe('component generator writer', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -237,8 +241,9 @@ describe('component generator writer', () => {
         platform: 'both',
         layer: 'primitives',
         category: 'data-display',
-        force: false,
         profile: 'base',
+        parts: [],
+        force: false,
       },
     });
 
@@ -275,6 +280,7 @@ describe('component generator writer', () => {
         layer: 'components',
         category: 'overlay',
         profile: 'overlay',
+        parts: [],
         force: false,
       },
     });
@@ -292,5 +298,71 @@ describe('component generator writer', () => {
     expect(metadata).toContain("'focus-management'");
     expect(metadata).toContain("'compound-api'");
     expect(metadata).toContain("'portal'");
+  });
+
+  it('generates compound component parts for each target platform', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tabs',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        parts: ['Root', 'List', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    for (const packageName of ['react', 'react-native']) {
+      const componentDir = path.join(
+        root,
+        'packages',
+        packageName,
+        'src',
+        'components',
+        'Tabs'
+      );
+
+      for (const partName of ['Root', 'List', 'Trigger', 'Content']) {
+        const partDir = path.join(componentDir, partName);
+
+        expect(fs.existsSync(path.join(partDir, 'types.ts'))).toBe(true);
+        expect(fs.existsSync(path.join(partDir, 'index.ts'))).toBe(true);
+        expect(fs.existsSync(path.join(partDir, `Tabs${partName}.tsx`))).toBe(
+          true
+        );
+      }
+
+      const componentSource = fs.readFileSync(
+        path.join(componentDir, 'Tabs.tsx'),
+        'utf8'
+      );
+
+      expect(componentSource).toContain(
+        'export const Tabs = Object.assign(TabsRoot, {'
+      );
+
+      expect(componentSource).toContain('List: TabsList');
+      expect(componentSource).toContain('Trigger: TabsTrigger');
+      expect(componentSource).toContain('Content: TabsContent');
+      expect(componentSource).not.toContain('Root: TabsRoot');
+
+      const componentIndex = fs.readFileSync(
+        path.join(componentDir, 'index.ts'),
+        'utf8'
+      );
+
+      expect(componentIndex).toContain("export * from './Root';");
+      expect(componentIndex).toContain("export * from './List';");
+      expect(componentIndex).toContain("export * from './Trigger';");
+      expect(componentIndex).toContain("export * from './Content';");
+    }
   });
 });

@@ -20,8 +20,9 @@ export type ComponentGeneratorOptions = {
   platform: ComponentPlatformArg;
   layer: ComponentLayerArg;
   category: ComponentCategoryArg;
-  force: boolean;
   profile: ComponentProfileArg;
+  parts: readonly string[];
+  force: boolean;
 };
 
 const platforms: readonly ComponentPlatformArg[] = ['web', 'native', 'both'];
@@ -46,7 +47,7 @@ const categories: readonly ComponentCategoryArg[] = [
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--force]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--parts=Root,Trigger,Content] [--force]';
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -56,6 +57,7 @@ export function parseComponentGeneratorArgs(
 
   let profile: ComponentProfileArg = 'base';
   let force = false;
+  let parts: string[] = [];
 
   const [componentName, platformArg, layerArg, categoryArg, ...extraArgs] =
     positionalArgs;
@@ -81,6 +83,31 @@ export function parseComponentGeneratorArgs(
       }
 
       profile = value;
+      continue;
+    }
+
+    if (flag.startsWith('--parts=')) {
+      const value = flag.slice('--parts='.length);
+
+      if (!value.trim()) {
+        throw new Error('--parts must contain at least one component part.');
+      }
+
+      parts = value
+        .split(',')
+        .map((part) => part.trim())
+        .filter(Boolean);
+
+      if (parts.some((part) => !componentNamePattern.test(part))) {
+        throw new Error(
+          'Component parts must be PascalCase and contain only letters and numbers.'
+        );
+      }
+
+      if (new Set(parts).size !== parts.length) {
+        throw new Error('Component parts must not contain duplicates.');
+      }
+
       continue;
     }
 
@@ -125,6 +152,7 @@ export function parseComponentGeneratorArgs(
     layer: layerArg as ComponentLayerArg,
     category: categoryArg as ComponentCategoryArg,
     profile,
+    parts,
     force,
   };
 }

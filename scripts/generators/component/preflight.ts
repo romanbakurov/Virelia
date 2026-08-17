@@ -28,6 +28,14 @@ export function validateComponentGenerationPlan(
     }
   }
 
+  if (plan.profile === 'compound' && !plan.parts.includes('Root')) {
+    errors.push('Compound components require a Root part.');
+  }
+
+  if (plan.profile !== 'compound' && plan.parts.length > 0) {
+    errors.push('Component parts currently require the compound profile.');
+  }
+
   if (!fs.existsSync(plan.metadataBarrelFile)) {
     errors.push(`Missing metadata barrel file: ${plan.metadataBarrelFile}`);
   }
