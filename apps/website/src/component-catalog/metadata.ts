@@ -35,6 +35,8 @@ export type ComponentExampleMetadata = {
   title: string;
   description: string;
   props: readonly string[];
+  /** Whether this example inherits the component's configured demo props. */
+  inheritDemoProps?: boolean;
   imports?: readonly string[];
   reactImports?: readonly string[];
   nativeImports?: readonly string[];

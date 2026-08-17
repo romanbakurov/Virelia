@@ -67,6 +67,35 @@ export default defineComponentPageMetadata({
       nativeImports: nativeInputImports,
     },
     {
+      title: 'Compound API',
+      description:
+        'Composes label, description, control, and message slots explicitly.',
+      props: [],
+      inheritDemoProps: false,
+      reactImports: reactInputImports,
+      nativeImports: nativeInputImports,
+      reactChildren: `<FormField.Label>Email</FormField.Label>
+<FormField.Description>
+  Used for account notifications.
+</FormField.Description>
+<FormField.Control>
+  <ReactInput placeholder='name@company.com' type='email' />
+</FormField.Control>
+<FormField.Message>
+  We will never share your email.
+</FormField.Message>`,
+      nativeChildren: `<FormField.Label>Email</FormField.Label>
+<FormField.Description>
+  Used for account notifications.
+</FormField.Description>
+<FormField.Control>
+  <NativeInput placeholder='name@company.com' />
+</FormField.Control>
+<FormField.Message>
+  We will never share your email.
+</FormField.Message>`,
+    },
+    {
       title: 'Required',
       description: 'Shows required field treatment.',
       props: ['required'],

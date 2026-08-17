@@ -39,6 +39,40 @@ import { Input as ReactInput } from '@vellira-ui/react';
 </FormField>`,
     },
     {
+      title: 'Compound API',
+      description:
+        'Composes label, description, control, and message slots explicitly.',
+      preview: (
+        <ReactFormField>
+          <ReactFormField.Label>Email</ReactFormField.Label>
+          <ReactFormField.Description>
+            Used for account notifications.
+          </ReactFormField.Description>
+          <ReactFormField.Control>
+            <ReactInput placeholder='name@company.com' type='email' />
+          </ReactFormField.Control>
+          <ReactFormField.Message>
+            We will never share your email.
+          </ReactFormField.Message>
+        </ReactFormField>
+      ),
+      code: `import { FormField } from '@vellira-ui/react';
+import { Input as ReactInput } from '@vellira-ui/react';
+
+<FormField>
+  <FormField.Label>Email</FormField.Label>
+  <FormField.Description>
+    Used for account notifications.
+  </FormField.Description>
+  <FormField.Control>
+    <ReactInput placeholder='name@company.com' type='email' />
+  </FormField.Control>
+  <FormField.Message>
+    We will never share your email.
+  </FormField.Message>
+</FormField>`,
+    },
+    {
       title: 'Required',
       description: 'Shows required field treatment.',
       preview: (
@@ -156,6 +190,40 @@ import { Input as NativeInput } from '@vellira-ui/react-native';
   description='Used for account notifications.'
 >
   <NativeInput placeholder='name@company.com' />
+</FormField>`,
+    },
+    {
+      title: 'Compound API',
+      description:
+        'Composes label, description, control, and message slots explicitly.',
+      preview: (
+        <NativeFormField>
+          <NativeFormField.Label>Email</NativeFormField.Label>
+          <NativeFormField.Description>
+            Used for account notifications.
+          </NativeFormField.Description>
+          <NativeFormField.Control>
+            <NativeInput placeholder='name@company.com' />
+          </NativeFormField.Control>
+          <NativeFormField.Message>
+            We will never share your email.
+          </NativeFormField.Message>
+        </NativeFormField>
+      ),
+      code: `import { FormField } from '@vellira-ui/react-native';
+import { Input as NativeInput } from '@vellira-ui/react-native';
+
+<FormField>
+  <FormField.Label>Email</FormField.Label>
+  <FormField.Description>
+    Used for account notifications.
+  </FormField.Description>
+  <FormField.Control>
+    <NativeInput placeholder='name@company.com' />
+  </FormField.Control>
+  <FormField.Message>
+    We will never share your email.
+  </FormField.Message>
 </FormField>`,
     },
     {
