@@ -9,6 +9,7 @@ export * from './component-metadata';
 export * from './component-readme';
 export * from './component-part';
 export * from './component-compound';
+export * from './component-form-control';
 
 import type { ComponentTemplateParams } from './component-types';
 

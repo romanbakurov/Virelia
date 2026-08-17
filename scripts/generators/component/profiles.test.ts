@@ -11,14 +11,6 @@ describe('component generator profiles', () => {
     });
   });
 
-  it('defines form-control requirements', () => {
-    expect(getComponentProfile('form-control').capabilities).toEqual([
-      'disabled',
-      'required',
-      'invalid',
-    ]);
-  });
-
   it('defines compound API behavior', () => {
     expect(getComponentProfile('compound').capabilities).toContain(
       'compound-api'
@@ -36,5 +28,15 @@ describe('component generator profiles', () => {
         'portal',
       ])
     );
+  });
+
+  it('defines form-control capabilities', () => {
+    expect(getComponentProfile('form-control').capabilities).toEqual([
+      'controlled',
+      'uncontrolled',
+      'disabled',
+      'required',
+      'invalid',
+    ]);
   });
 });

@@ -4,6 +4,8 @@ import path from 'node:path';
 import {
   renderCompoundComponentTemplate,
   renderIndexTemplate,
+  renderFormControlComponentTemplate,
+  renderFormControlTypesTemplate,
   renderMetadataTemplate,
   renderNativeComponentTemplate,
   renderNativeStylesTemplate,
@@ -133,9 +135,14 @@ function writeTarget(params: {
     });
   }
 
+  const typesContent =
+    plan.profile === 'form-control'
+      ? renderFormControlTypesTemplate({ componentName })
+      : renderTypesTemplate({ componentName });
+
   writeFile({
     filePath: path.join(target.componentDir, 'types.ts'),
-    content: renderTypesTemplate({ componentName }),
+    content: typesContent,
     createdFiles: result.createdFiles,
   });
 
@@ -151,9 +158,14 @@ function writeTarget(params: {
           componentName,
           parts: plan.parts,
         })
-      : target.isNative
-        ? renderNativeComponentTemplate({ componentName })
-        : renderWebComponentTemplate({ componentName });
+      : plan.profile === 'form-control'
+        ? renderFormControlComponentTemplate({
+            componentName,
+            isNative: target.isNative,
+          })
+        : target.isNative
+          ? renderNativeComponentTemplate({ componentName })
+          : renderWebComponentTemplate({ componentName });
 
   writeFile({
     filePath: path.join(target.componentDir, `${componentName}.tsx`),

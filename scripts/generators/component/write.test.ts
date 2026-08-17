@@ -300,6 +300,36 @@ describe('component generator writer', () => {
     expect(metadata).toContain("'portal'");
   });
 
+  it('generates form-control capabilities in metadata', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'primitives');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'FieldControl',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'form',
+        profile: 'form-control',
+        parts: [],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
+
+    expect(metadata).toContain("profile: 'form-control'");
+    expect(metadata).toContain("'controlled'");
+    expect(metadata).toContain("'uncontrolled'");
+    expect(metadata).toContain("'disabled'");
+    expect(metadata).toContain("'required'");
+    expect(metadata).toContain("'invalid'");
+  });
+
   it('generates compound component parts for each target platform', () => {
     const root = createTempRoot();
 
@@ -364,5 +394,69 @@ describe('component generator writer', () => {
       expect(componentIndex).toContain("export * from './Trigger';");
       expect(componentIndex).toContain("export * from './Content';");
     }
+  });
+
+  it('generates platform-specific form-control implementations', () => {
+    const root = createTempRoot();
+
+    createLayerBarrels(root, 'primitives');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'FieldControl',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'form',
+        profile: 'form-control',
+        parts: [],
+        force: false,
+      },
+    });
+
+    writeComponentGenerationPlan(plan);
+
+    const webSource = fs.readFileSync(
+      path.join(
+        root,
+        'packages/react/src/primitives/FieldControl/FieldControl.tsx'
+      ),
+      'utf8'
+    );
+
+    const nativeSource = fs.readFileSync(
+      path.join(
+        root,
+        'packages/react-native/src/primitives/FieldControl/FieldControl.tsx'
+      ),
+      'utf8'
+    );
+
+    const webTypes = fs.readFileSync(
+      path.join(root, 'packages/react/src/primitives/FieldControl/types.ts'),
+      'utf8'
+    );
+
+    const nativeTypes = fs.readFileSync(
+      path.join(
+        root,
+        'packages/react-native/src/primitives/FieldControl/types.ts'
+      ),
+      'utf8'
+    );
+
+    expect(webSource).toContain('<button');
+    expect(webSource).toContain('aria-required');
+    expect(webSource).toContain('aria-invalid');
+
+    expect(nativeSource).toContain('<Pressable');
+    expect(nativeSource).toContain("accessibilityRole='button'");
+    expect(nativeSource).toContain('accessibilityState');
+
+    expect(webTypes).toContain('value?: string');
+    expect(nativeTypes).toContain('value?: string');
+
+    expect(webTypes).toContain('onValueChange?: (value: string) => void');
+    expect(nativeTypes).toContain('onValueChange?: (value: string) => void');
   });
 });

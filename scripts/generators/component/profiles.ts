@@ -19,9 +19,15 @@ export const componentProfiles: Record<
 
   'form-control': {
     profile: 'form-control',
-    capabilities: ['disabled', 'required', 'invalid'],
+    capabilities: [
+      'controlled',
+      'uncontrolled',
+      'disabled',
+      'required',
+      'invalid',
+    ],
     description:
-      'Form-oriented scaffold with validation and field-state requirements.',
+      'Form-oriented scaffold with controlled and uncontrolled state, validation, and field-state requirements.',
   },
 
   compound: {
