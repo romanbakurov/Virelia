@@ -9,8 +9,10 @@ export function renderWebComponentTemplate({
 
 import styles from './${componentName}.module.scss';
 
-export function ${componentName}(_props: ${componentName}Props) {
-  return <div className={styles.${className}}>${componentName}</div>;
+export function ${componentName}({
+  children,
+}: ${componentName}Props) {
+  return <div className={styles.${className}}>{children}</div>;
 }
 `;
 }

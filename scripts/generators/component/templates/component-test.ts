@@ -21,10 +21,12 @@ afterEach(() => {
 });
 
 describe('${describeName}', () => {
-  it('renders component content', () => {
-    const { container, unmount } = render(<${componentName} />);
+  it('renders children', () => {
+    const { container, unmount } = render(
+      <${componentName}>Example content</${componentName}>
+    );
 
-    expect(container.textContent).toContain('${componentName}');
+    expect(container.textContent).toContain('Example content');
 
     unmount();
   });

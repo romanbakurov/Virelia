@@ -5,17 +5,15 @@ export function renderNativeComponentTemplate({
 }: ComponentTemplateParams) {
   const className = `${componentName[0].toLowerCase()}${componentName.slice(1)}`;
 
-  return `import { Text, View } from 'react-native';
+  return `import { View } from 'react-native';
 
 import { styles } from './${componentName}.styles';
 import type { ${componentName}Props } from './types';
 
-export function ${componentName}(_props: ${componentName}Props) {
-  return (
-    <View style={styles.${className}}>
-      <Text>${componentName}</Text>
-    </View>
-  );
+export function ${componentName}({
+  children,
+}: ${componentName}Props) {
+  return <View style={styles.${className}}>{children}</View>;
 }
 `;
 }

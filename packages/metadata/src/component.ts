@@ -27,6 +27,8 @@ export type ComponentCapability =
   | 'portal'
   | 'responsive';
 
+export type ComponentProfile = 'base' | 'form-control' | 'compound' | 'overlay';
+
 export interface ComponentDependencies {
   packages?: readonly string[];
   components?: readonly string[];
@@ -45,6 +47,7 @@ export interface ComponentMetadata {
   layer: ComponentLayer;
   category: ComponentCategory;
   platforms: readonly ComponentPlatform[];
+  profile: ComponentProfile;
   status: ComponentStatus;
   capabilities?: readonly ComponentCapability[];
   dependencies?: ComponentDependencies;

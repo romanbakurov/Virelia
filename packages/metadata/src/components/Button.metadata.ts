@@ -5,6 +5,7 @@ export const buttonMetadata = defineComponentMetadata({
   layer: 'primitives',
   category: 'action',
   platforms: ['react', 'react-native'],
+  profile: 'base',
   status: 'stable',
   capabilities: ['disabled', 'loading'],
   dependencies: {
