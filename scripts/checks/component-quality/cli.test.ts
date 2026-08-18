@@ -18,9 +18,8 @@ describe('component quality CLI', () => {
   it('prints the V1 report as JSON', async () => {
     const output: string[] = [];
 
-    const exitCode = await runCli(
-      ['Button', '--json'],
-      (message) => output.push(message)
+    const exitCode = await runCli(['Button', '--json'], (message) =>
+      output.push(message)
     );
 
     expect(exitCode).toBe(0);
