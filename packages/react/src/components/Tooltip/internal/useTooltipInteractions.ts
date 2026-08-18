@@ -1,8 +1,8 @@
 import { useFocus, useHover, useInteractions } from '@floating-ui/react';
 
-import type { UseFloatingPositionReturn } from '@/managers/FloatingManager';
-
 import type { TooltipDelayConfig } from './types';
+
+import type { UseFloatingPositionReturn } from '#managers/FloatingManager';
 
 export function useTooltipInteractions({
   context,

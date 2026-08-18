@@ -6,11 +6,11 @@ import {
   type ReactElement,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { usePopoverContext } from '../Context';
 
 import type { PopoverCloseProps } from './types';
+
+import { cn } from '#utils/cn';
 
 type CloseChildProps = ButtonHTMLAttributes<HTMLButtonElement>;
 

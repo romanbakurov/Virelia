@@ -9,8 +9,6 @@ import {
   useId,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { FormFieldContext } from './FormFieldContext';
 import type {
   FormFieldControlProps,
@@ -21,6 +19,8 @@ import type {
 } from './types';
 
 import styles from './FormField.module.scss';
+
+import { cn } from '#utils/cn';
 
 type FieldControlProps = AriaAttributes & {
   id?: string;

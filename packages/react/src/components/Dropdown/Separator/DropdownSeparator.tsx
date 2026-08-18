@@ -1,9 +1,9 @@
-import { cn } from '@utils/cn';
-
 import { createDropdownSlot } from '../internal/DropdownCollection';
 import type { DropdownSeparatorProps } from '../types';
 
 import styles from './DropdownSeparator.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const DropdownSeparator = createDropdownSlot<DropdownSeparatorProps>(
   'separator',

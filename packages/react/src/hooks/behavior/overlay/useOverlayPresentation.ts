@@ -2,7 +2,7 @@ import type { Middleware, Placement, Strategy } from '@floating-ui/react';
 import { resolveOverlayPresentation } from '@vellira-ui/core';
 import type { CSSProperties } from 'react';
 
-import { useFloatingPosition } from '@/managers/FloatingManager';
+import { useFloatingPosition } from '#managers/FloatingManager';
 
 export type OverlayPresentation = 'floating' | 'inline' | 'modal';
 export type OverlayPresentationResult = ReturnType<

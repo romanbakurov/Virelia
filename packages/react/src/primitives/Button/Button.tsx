@@ -9,13 +9,14 @@ import {
   type Ref,
 } from 'react';
 
-import { cn } from '@utils/cn';
-import { devWarning } from '@utils/devWarning';
 import { controlSizes } from '@vellira-ui/tokens';
 
 import type { ButtonProps } from './types';
 
 import styles from './Button.module.scss';
+
+import { cn } from '#utils/cn';
+import { devWarning } from '#utils/devWarning';
 
 type ButtonChildProps = {
   children?: ReactNode;

@@ -8,15 +8,6 @@ import {
   useState,
 } from 'react';
 
-import { useFormFieldContext } from '@patterns/FormField';
-
-import {
-  useOverlayDismiss,
-  useScrollLock,
-  useSelect,
-  useSelectPosition,
-} from '@/hooks';
-
 import type { SelectContentProps } from '../Content/types';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
 import type { SelectContextValue } from '../internal/SelectContext';
@@ -24,6 +15,14 @@ import { filterSelectOptions } from '../internal/SelectSearch';
 import { useSelectCollection } from '../internal/useSelectCollection';
 import type { SelectTriggerProps } from '../Trigger/types';
 import type { SelectProps } from '../types';
+
+import {
+  useOverlayDismiss,
+  useScrollLock,
+  useSelect,
+  useSelectPosition,
+} from '#hooks';
+import { useFormFieldContext } from '#patterns/FormField';
 
 export function useSelectRootState(props: SelectProps) {
   const {

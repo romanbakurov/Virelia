@@ -6,11 +6,11 @@ import {
   type Ref,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { usePopoverContext } from '../Context';
 
 import type { PopoverAnchorProps } from './types';
+
+import { cn } from '#utils/cn';
 
 type AnchorChildProps = HTMLAttributes<HTMLElement> & {
   ref?: Ref<HTMLElement>;

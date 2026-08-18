@@ -9,8 +9,6 @@ import {
   useState,
 } from 'react';
 
-import { cn } from '@utils/cn';
-import { devWarning } from '@utils/devWarning';
 import { Check, ChevronRight } from '@vellira-ui/icons';
 
 import {
@@ -24,6 +22,9 @@ import type { DropdownItemProps, DropdownSelectEvent } from '../types';
 import type { DropdownItemRowProps } from './types';
 
 import styles from './DropdownItem.module.scss';
+
+import { cn } from '#utils/cn';
+import { devWarning } from '#utils/devWarning';
 
 export const DropdownItem = createDropdownSlot<DropdownItemProps>(
   'item',

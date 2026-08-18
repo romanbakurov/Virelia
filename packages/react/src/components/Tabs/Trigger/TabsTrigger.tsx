@@ -11,13 +11,13 @@ import {
   useCallback,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { useTabsContext } from '../internal/TabsContext';
 
 import type { TabsTriggerChildProps, TabsTriggerProps } from './types';
 
 import styles from './TabsTrigger.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const TabsTrigger = forwardRef<HTMLElement, TabsTriggerProps>(
   (

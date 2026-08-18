@@ -1,10 +1,10 @@
-import { cn } from '@utils/cn';
-
 import { useTabsIndicator } from '../internal/useTabsIndicator';
 
 import type { TabsIndicatorProps } from './types';
 
 import styles from './TabsList.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const TabsIndicator = ({
   className,

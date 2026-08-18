@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
-import { cn } from '@utils/cn';
-
-import { useTabs } from '@/hooks';
-
 import { TabsContext } from '../internal/TabsContext';
 import type { TabsContextValue } from '../internal/types';
 import { useTabsCollection } from '../internal/useTabsCollection';
@@ -12,6 +8,9 @@ import { useTabsKeyboard } from '../internal/useTabsKeyboard';
 import type { TabsProps } from './types';
 
 import styles from '../Tabs.module.scss';
+
+import { useTabs } from '#hooks';
+import { cn } from '#utils/cn';
 
 export const TabsRoot = ({
   children,

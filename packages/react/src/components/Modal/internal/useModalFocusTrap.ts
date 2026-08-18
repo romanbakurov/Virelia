@@ -1,1 +1,1 @@
-export { useFocusScope as useModalFocusTrap } from '@/hooks';
+export { useFocusScope as useModalFocusTrap } from '#hooks';

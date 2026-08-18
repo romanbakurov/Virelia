@@ -1,7 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef } from 'react';
 
-import { Portal } from '@primitives/Portal';
-import { cn } from '@utils/cn';
 import { markCompoundSlot } from '@vellira-ui/core';
 import { Search } from '@vellira-ui/icons';
 
@@ -17,6 +15,9 @@ import { DropdownSeparatorSurface } from '../Separator';
 import type { DropdownContentProps } from '../types';
 
 import styles from './DropdownContent.module.scss';
+
+import { Portal } from '#primitives/Portal';
+import { cn } from '#utils/cn';
 
 export const DropdownContent: DropdownSlotComponent<DropdownContentProps> = ({
   className,

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
-import { type OverlayZIndexLevel, useOverlayManager } from '@/managers';
+import { type OverlayZIndexLevel, useOverlayManager } from '#managers';
 
 export type OverlayRegistrationOptions = {
   active: boolean;

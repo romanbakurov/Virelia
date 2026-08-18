@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 
-import type { OverlayZIndexLevel } from '@/managers';
+import type { OverlayZIndexLevel } from '#managers';
 
 export type OverlayAutoFocusEvent = {
   preventDefault: () => void;

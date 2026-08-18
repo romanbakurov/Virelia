@@ -1,8 +1,8 @@
 import type { KeyboardEvent, RefObject } from 'react';
 
-import { useOverlayDismiss } from '@/hooks';
-
 import type { ModalOutsideEvent } from '../types';
+
+import { useOverlayDismiss } from '#hooks';
 
 export const useModalDismiss = ({
   active,

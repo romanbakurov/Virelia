@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { cn } from '@utils/cn';
 import { Close } from '@vellira-ui/icons';
 
 import { useSelectContext } from '../internal/SelectContext';
@@ -9,6 +8,8 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import type { SelectSearchProps } from './types';
 
 import styles from '../Content/SelectContent.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const SelectSearch: SelectSlotComponent<SelectSearchProps> = ({
   placeholder,

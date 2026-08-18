@@ -1,6 +1,6 @@
 import type { HTMLAttributes, RefObject } from 'react';
 
-import type { OverlayAutoFocusEvent, OverlayOutsideEvent } from '@/hooks';
+import type { OverlayAutoFocusEvent, OverlayOutsideEvent } from '#hooks';
 
 export interface PopoverContentProps extends HTMLAttributes<HTMLDivElement> {
   /** Composes content behavior onto a single child element. */

@@ -1,6 +1,5 @@
 import { cloneElement, isValidElement } from 'react';
 
-import { cn } from '@utils/cn';
 import { Close } from '@vellira-ui/icons';
 import type { MouseEventHandler, Ref } from 'react';
 
@@ -11,6 +10,8 @@ import { useModalContext } from '../internal/ModalContext';
 import type { ModalCloseProps } from './types';
 
 import styles from '../Header/ModalHeader.module.scss';
+
+import { cn } from '#utils/cn';
 
 type CloseChildProps = {
   className?: string;

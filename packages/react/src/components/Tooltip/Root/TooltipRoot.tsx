@@ -1,7 +1,5 @@
 import { useId, useRef } from 'react';
 
-import { useControllableState, useOverlayDismiss } from '@/hooks';
-
 import { composeRefs } from '../internal/composeEventHandlers';
 import { TooltipRootProvider } from '../internal/TooltipContext';
 import { useTooltipDelay } from '../internal/useTooltipDelay';
@@ -9,6 +7,8 @@ import { useTooltipInteractions } from '../internal/useTooltipInteractions';
 import { useTooltipPosition } from '../internal/useTooltipPosition';
 
 import type { TooltipRootProps } from './types';
+
+import { useControllableState, useOverlayDismiss } from '#hooks';
 
 export const TooltipRoot = ({
   children,

@@ -5,13 +5,13 @@ import {
   type ReactElement,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { usePopoverContext } from '../Context';
 
 import type { PopoverDescriptionProps } from './types';
 
 import styles from './PopoverDescription.module.scss';
+
+import { cn } from '#utils/cn';
 
 type DescriptionChildProps = HTMLAttributes<HTMLElement>;
 

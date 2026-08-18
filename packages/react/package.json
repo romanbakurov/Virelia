@@ -32,11 +32,21 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "vellira-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./styles": "./dist/styles.css"
+  },
+  "imports": {
+    "#hooks": "./src/hooks/index.ts",
+    "#hooks/*": "./src/hooks/*.ts",
+    "#managers": "./src/managers/index.ts",
+    "#managers/*": "./src/managers/*/index.ts",
+    "#patterns/*": "./src/patterns/*/index.ts",
+    "#primitives/*": "./src/primitives/*/index.ts",
+    "#utils/*": "./src/utils/*.ts"
   },
   "files": [
     "dist/index.js",

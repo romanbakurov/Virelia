@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 
-import { FormField } from '@patterns/FormField';
-
 import { SelectContent, SelectContentSurface } from '../Content/SelectContent';
 import { SelectProvider } from '../internal/SelectContext';
 import { SelectTrigger, SelectTriggerSurface } from '../Trigger/SelectTrigger';
 import type { SelectProps } from '../types';
 
 import { useSelectRootState } from './useSelectRootState';
+
+import { FormField } from '#patterns/FormField';
 
 export const SelectRoot = (props: SelectProps) => {
   const {

@@ -6,8 +6,6 @@ import {
   type ReactNode,
 } from 'react';
 
-import { cn } from '@utils/cn';
-import { devWarning } from '@utils/devWarning';
 import { Check } from '@vellira-ui/icons';
 
 import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
@@ -15,6 +13,9 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import type { SelectItemProps, SelectItemRowProps } from './types';
 
 import styles from './SelectItem.module.scss';
+
+import { cn } from '#utils/cn';
+import { devWarning } from '#utils/devWarning';
 
 type SelectItemChildProps = {
   'aria-disabled'?: boolean;

@@ -1,6 +1,5 @@
 import { cloneElement, isValidElement } from 'react';
 
-import { cn } from '@utils/cn';
 import { markCompoundSlot } from '@vellira-ui/core';
 import { ChevronDown } from '@vellira-ui/icons';
 import type {
@@ -23,6 +22,8 @@ import type { DropdownSlotComponent } from '../internal/types';
 import type { DropdownTriggerProps } from '../types';
 
 import styles from './DropdownTrigger.module.scss';
+
+import { cn } from '#utils/cn';
 
 type TriggerChildProps = HTMLAttributes<HTMLElement> & {
   disabled?: boolean;

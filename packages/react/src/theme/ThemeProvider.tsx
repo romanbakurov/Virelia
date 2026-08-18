@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react';
 
-import { useControllableState } from '@/hooks';
-
 import { ThemeContext } from './ThemeContext';
 import type { ThemeProviderProps } from './types';
+
+import { useControllableState } from '#hooks';
 
 const normalizeThemeName = (theme: ThemeProviderProps['defaultTheme']) =>
   theme === 'highContrast' ? 'high-contrast' : theme;

@@ -10,7 +10,6 @@ import {
   useState,
 } from 'react';
 
-import { Portal } from '@primitives/Portal';
 import { Close } from '@vellira-ui/icons';
 
 import { useSelectContext } from '../internal/SelectContext';
@@ -25,6 +24,8 @@ import { SelectItemRow } from '../Item/SelectItem';
 import type { SelectContentProps, SelectContentSlotProps } from './types';
 
 import styles from './SelectContent.module.scss';
+
+import { Portal } from '#primitives/Portal';
 
 export const SelectContent: SelectSlotComponent<SelectContentSlotProps> = ({
   children,

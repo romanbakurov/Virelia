@@ -2,9 +2,9 @@ import { useRef } from 'react';
 
 import { arrow } from '@floating-ui/react';
 
-import { useOverlayPresentation } from '@/hooks';
-
 import type { TooltipRootProps } from '../Root/types';
+
+import { useOverlayPresentation } from '#hooks';
 
 export function useTooltipPosition({
   open,

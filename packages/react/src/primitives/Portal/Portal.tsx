@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 
 import type React from 'react';
 
-import { usePortal } from '@/hooks';
-
 import type { PortalProps, PortalProviderProps } from './types';
+
+import { usePortal } from '#hooks';
 
 const PortalContext = createContext<Element | DocumentFragment | null>(null);
 

@@ -1,6 +1,5 @@
 import { cloneElement, isValidElement } from 'react';
 
-import { cn } from '@utils/cn';
 import type {
   FocusEventHandler,
   HTMLAttributes,
@@ -16,6 +15,8 @@ import {
 import { useTooltipContext } from '../internal/TooltipContext';
 
 import type { TooltipTriggerElement, TooltipTriggerProps } from './types';
+
+import { cn } from '#utils/cn';
 
 type TooltipTriggerHtmlProps = HTMLAttributes<HTMLElement> & {
   'data-state'?: 'open' | 'closed';

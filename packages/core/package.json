@@ -29,6 +29,7 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "vellira-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }

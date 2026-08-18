@@ -1,11 +1,12 @@
 import { FloatingArrow } from '@floating-ui/react';
-import { cn } from '@utils/cn';
 
 import { usePopoverContext } from '../Context';
 
 import type { PopoverArrowProps } from './types';
 
 import styles from './PopoverArrow.module.scss';
+
+import { cn } from '#utils/cn';
 
 const staticOffsetByAlign = {
   start: '20%',
