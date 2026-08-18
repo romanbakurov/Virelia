@@ -8,6 +8,8 @@ import type {
   ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
+import { qualityRoot } from '../root';
+
 import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
@@ -148,7 +150,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
   },
   evaluate(context) {
     const snapshot = readSourceSnapshot(
-      process.cwd(),
+      qualityRoot(context),
       context.metadata,
       context.platform
     );
@@ -162,7 +164,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
 
     if (hasComponentExport && hasPropsContract) {
       return finding(publicApiSurfaceRule, context, 'pass', undefined, [
-        path.relative(process.cwd(), snapshot.componentDir),
+        path.relative(qualityRoot(context), snapshot.componentDir),
         propsName,
       ]);
     }
@@ -177,7 +179,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
       context,
       'fail',
       `Missing ${missing.join(' and ')}.`,
-      [path.relative(process.cwd(), snapshot.componentDir)]
+      [path.relative(qualityRoot(context), snapshot.componentDir)]
     );
   },
 };
@@ -216,7 +218,7 @@ export const controlledContractRule: ComponentQualityRule = {
     }
 
     const source = readSourceSnapshot(
-      process.cwd(),
+      qualityRoot(context),
       context.metadata,
       context.platform
     ).combinedSource;
@@ -264,7 +266,7 @@ export const declaredCapabilitiesRule: ComponentQualityRule = {
     }
 
     const source = readSourceSnapshot(
-      process.cwd(),
+      qualityRoot(context),
       context.metadata,
       context.platform
     ).combinedSource;

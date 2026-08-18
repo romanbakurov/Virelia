@@ -8,6 +8,8 @@ import type {
   ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
+import { qualityRoot } from '../root';
+
 import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
@@ -64,8 +66,13 @@ function readCorpus(files: readonly string[]): SourceCorpus {
   };
 }
 
-function relativeEvidence(files: readonly string[]) {
-  return files.slice(0, 6).map((file) => path.relative(process.cwd(), file));
+function relativeEvidence(
+  context: ComponentQualityRuleContext,
+  files: readonly string[]
+) {
+  return files
+    .slice(0, 6)
+    .map((file) => path.relative(qualityRoot(context), file));
 }
 
 function finding(
@@ -180,7 +187,7 @@ export const testCoverageRule: ComponentQualityRule = {
     }
 
     const componentDir = componentDirectory(
-      process.cwd(),
+      qualityRoot(context),
       context.metadata,
       context.platform
     );
@@ -199,7 +206,7 @@ export const testCoverageRule: ComponentQualityRule = {
         context,
         'fail',
         'Tests are required, but no executable test/assertion evidence was found.',
-        [path.relative(process.cwd(), componentDir)]
+        [path.relative(qualityRoot(context), componentDir)]
       );
     }
 
@@ -211,7 +218,7 @@ export const testCoverageRule: ComponentQualityRule = {
         context,
         'fail',
         `Important contracts are missing deterministic test coverage evidence: ${missing.join(', ')}.`,
-        relativeEvidence(files)
+        relativeEvidence(context, files)
       );
     }
     return finding(
@@ -219,7 +226,7 @@ export const testCoverageRule: ComponentQualityRule = {
       context,
       'pass',
       undefined,
-      relativeEvidence(files)
+      relativeEvidence(context, files)
     );
   },
 };
@@ -275,7 +282,7 @@ export const storybookCoverageRule: ComponentQualityRule = {
     }
 
     const componentDir = componentDirectory(
-      process.cwd(),
+      qualityRoot(context),
       context.metadata,
       context.platform
     );
@@ -290,7 +297,7 @@ export const storybookCoverageRule: ComponentQualityRule = {
         context,
         'warn',
         'Storybook coverage is expected, but no exported story evidence was found.',
-        [path.relative(process.cwd(), componentDir)]
+        [path.relative(qualityRoot(context), componentDir)]
       );
     }
 
@@ -302,7 +309,7 @@ export const storybookCoverageRule: ComponentQualityRule = {
         context,
         'warn',
         `Representative Storybook coverage is missing deterministic evidence for: ${missing.join(', ')}.`,
-        relativeEvidence(files)
+        relativeEvidence(context, files)
       );
     }
 
@@ -311,14 +318,14 @@ export const storybookCoverageRule: ComponentQualityRule = {
       context,
       'pass',
       undefined,
-      relativeEvidence(files)
+      relativeEvidence(context, files)
     );
   },
 };
 
-function documentationDirectory(metadata: ComponentMetadata) {
+function documentationDirectory(rootDir: string, metadata: ComponentMetadata) {
   return path.join(
-    process.cwd(),
+    rootDir,
     'apps',
     'website',
     'src',
@@ -358,7 +365,10 @@ export const documentationCoverageRule: ComponentQualityRule = {
       return finding(documentationCoverageRule, context, 'not-applicable');
     }
 
-    const docsDir = documentationDirectory(context.metadata);
+    const docsDir = documentationDirectory(
+      qualityRoot(context),
+      context.metadata
+    );
     const name = context.metadata.name;
     const apiFileName = findApiDocumentationFile(docsDir);
     const expected = [
@@ -398,7 +408,7 @@ export const documentationCoverageRule: ComponentQualityRule = {
         `Required documentation surfaces are missing or too thin: ${[
           ...new Set(missing),
         ].join(', ')}.`,
-        expected.map((file) => path.relative(process.cwd(), file))
+        expected.map((file) => path.relative(qualityRoot(context), file))
       );
     }
 
@@ -415,7 +425,7 @@ export const documentationCoverageRule: ComponentQualityRule = {
         context,
         'fail',
         'Cross-platform component documentation does not contain deterministic platform-specific evidence.',
-        relativeEvidence(expected)
+        relativeEvidence(context, expected)
       );
     }
 
@@ -424,7 +434,7 @@ export const documentationCoverageRule: ComponentQualityRule = {
       context,
       'pass',
       undefined,
-      relativeEvidence(expected)
+      relativeEvidence(context, expected)
     );
   },
 };

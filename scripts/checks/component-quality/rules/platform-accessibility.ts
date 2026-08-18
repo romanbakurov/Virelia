@@ -7,6 +7,8 @@ import type {
   ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
+import { qualityRoot } from '../root';
+
 import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
@@ -56,7 +58,7 @@ function collectSourceFiles(directory: string): string[] {
 }
 
 function readComponentSource(context: ComponentQualityRuleContext) {
-  const root = process.cwd();
+  const root = qualityRoot(context);
   const componentDir = componentDirectory(
     root,
     context.metadata,
@@ -90,8 +92,13 @@ function finding(
   };
 }
 
-function relativeEvidence(files: readonly string[]) {
-  return files.slice(0, 4).map((file) => path.relative(process.cwd(), file));
+function relativeEvidence(
+  context: ComponentQualityRuleContext,
+  files: readonly string[]
+) {
+  return files
+    .slice(0, 4)
+    .map((file) => path.relative(qualityRoot(context), file));
 }
 
 const webSemanticEvidence = [
@@ -141,7 +148,7 @@ export const accessibilitySemanticsRule: ComponentQualityRule = {
         context,
         'pass',
         undefined,
-        relativeEvidence(snapshot.files)
+        relativeEvidence(context, snapshot.files)
       );
     }
 
@@ -152,7 +159,7 @@ export const accessibilitySemanticsRule: ComponentQualityRule = {
       context.platform === 'react'
         ? 'Accessibility is required, but no semantic element, role, or ARIA evidence was found.'
         : 'Accessibility is required, but no React Native accessibilityRole/Label/State/accessible evidence was found.',
-      [path.relative(process.cwd(), snapshot.componentDir)]
+      [path.relative(qualityRoot(context), snapshot.componentDir)]
     );
   },
 };
@@ -205,7 +212,7 @@ export const platformInteractionRule: ComponentQualityRule = {
           context,
           'pass',
           undefined,
-          relativeEvidence(snapshot.files)
+          relativeEvidence(context, snapshot.files)
         )
       : finding(
           platformInteractionRule,
@@ -214,7 +221,7 @@ export const platformInteractionRule: ComponentQualityRule = {
           context.platform === 'react'
             ? 'Keyboard capability is declared, but no deterministic keyboard interaction evidence was found.'
             : 'Keyboard/interaction capability is declared, but no platform-appropriate React Native press/gesture interaction evidence was found.',
-          [path.relative(process.cwd(), snapshot.componentDir)]
+          [path.relative(qualityRoot(context), snapshot.componentDir)]
         );
   },
 };
@@ -266,14 +273,14 @@ export const focusManagementRule: ComponentQualityRule = {
           context,
           'pass',
           undefined,
-          relativeEvidence(snapshot.files)
+          relativeEvidence(context, snapshot.files)
         )
       : finding(
           focusManagementRule,
           context,
           'fail',
           `Focus-management capability is declared, but no ${context.platform === 'react' ? 'web' : 'React Native'} focus evidence was found.`,
-          [path.relative(process.cwd(), snapshot.componentDir)]
+          [path.relative(qualityRoot(context), snapshot.componentDir)]
         );
   },
 };
@@ -319,7 +326,7 @@ export const overlayPresentationRule: ComponentQualityRule = {
           context,
           'pass',
           undefined,
-          relativeEvidence(snapshot.files)
+          relativeEvidence(context, snapshot.files)
         )
       : finding(
           overlayPresentationRule,
@@ -328,7 +335,7 @@ export const overlayPresentationRule: ComponentQualityRule = {
           context.platform === 'react'
             ? 'Portal capability is declared, but no web portal or explicit compound overlay-presentation evidence was found.'
             : 'Portal capability is declared, but no React Native Modal/Presentation/Portal evidence was found.',
-          [path.relative(process.cwd(), snapshot.componentDir)]
+          [path.relative(qualityRoot(context), snapshot.componentDir)]
         );
   },
 };

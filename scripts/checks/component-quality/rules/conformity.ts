@@ -7,6 +7,8 @@ import type {
   ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
+import { qualityRoot } from '../root';
+
 import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
@@ -78,7 +80,7 @@ function collectFiles(directory: string): string[] {
 
 function readFiles(context: ComponentQualityRuleContext): SourceFile[] {
   const directory = componentDirectory(
-    process.cwd(),
+    qualityRoot(context),
     context.metadata,
     context.platform
   );
@@ -128,8 +130,13 @@ function lineNumberAt(source: string, index: number) {
   return source.slice(0, index).split('\n').length;
 }
 
-function sourceEvidence(filePath: string, line: number, value: string) {
-  return `${path.relative(process.cwd(), filePath)}:${line} — ${value}`;
+function sourceEvidence(
+  rootDir: string,
+  filePath: string,
+  line: number,
+  value: string
+) {
+  return `${path.relative(rootDir, filePath)}:${line} — ${value}`;
 }
 
 const hardcodedColorPattern =
@@ -164,6 +171,7 @@ export const hardcodedColorRule: ComponentQualityRule = {
 
         violations.push(
           sourceEvidence(
+            qualityRoot(context),
             file.filePath,
             lineNumberAt(file.source, match.index ?? 0),
             value
@@ -247,7 +255,7 @@ export const tokenIntegrationRule: ComponentQualityRule = {
           undefined,
           styleFiles
             .slice(0, 6)
-            .map((file) => path.relative(process.cwd(), file.filePath))
+            .map((file) => path.relative(qualityRoot(context), file.filePath))
         )
       : finding(
           tokenIntegrationRule,
@@ -256,7 +264,9 @@ export const tokenIntegrationRule: ComponentQualityRule = {
           context.platform === 'react'
             ? 'Styled Web component has no CSS custom-property/@styles token integration evidence.'
             : 'Styled React Native component has no NativeTheme token/component/semantic integration evidence.',
-          styleFiles.map((file) => path.relative(process.cwd(), file.filePath))
+          styleFiles.map((file) =>
+            path.relative(qualityRoot(context), file.filePath)
+          )
         );
   },
 };
@@ -301,6 +311,7 @@ export const hardcodedGeometryRule: ComponentQualityRule = {
 
         violations.push(
           sourceEvidence(
+            qualityRoot(context),
             file.filePath,
             lineNumberAt(file.source, match.index ?? 0),
             match[0]
