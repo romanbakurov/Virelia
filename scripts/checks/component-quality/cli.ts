@@ -4,6 +4,7 @@ import type {
 } from '@vellira-ui/metadata';
 
 import { runComponentQualityCheck } from './engine';
+import { componentQualityRules } from './rules';
 import { ComponentQualityRuntimeError } from './types';
 
 type CliOptions = {
@@ -87,7 +88,10 @@ export async function runCli(
 ): Promise<number> {
   try {
     const options = parseArgs(args);
-    const result = await runComponentQualityCheck(options);
+    const result = await runComponentQualityCheck({
+      ...options,
+      rules: componentQualityRules,
+    });
 
     write(
       options.json
