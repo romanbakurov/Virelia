@@ -32,10 +32,7 @@ export type ComponentQualityRuleSeverity = 'required' | 'recommended';
  * - not-applicable: the contract does not apply to this component/platform
  */
 export type ComponentQualityStatus =
-  | 'pass'
-  | 'warn'
-  | 'fail'
-  | 'not-applicable';
+  'pass' | 'warn' | 'fail' | 'not-applicable';
 
 /** Separates deterministic checks from criteria that still require judgment. */
 export type ComponentQualityEvaluationKind = 'automated' | 'human-review';

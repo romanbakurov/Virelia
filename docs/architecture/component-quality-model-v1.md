@@ -27,20 +27,20 @@ V1 intentionally defines the model and contracts only. It does not implement the
 
 V1 uses the following stable dimensions.
 
-| Dimension | Purpose | Typical deterministic signals |
-| --- | --- | --- |
-| `implementation-completeness` | Required implementation structure exists and is internally coherent | implementation files, declared platform implementation, expected parts |
-| `public-api` | Public API matches declared component contracts and Vellira conventions | exports, declared capabilities, compound parts, controlled/uncontrolled contracts |
-| `type-quality` | Public and internal TypeScript contracts are sound | exported types, platform types, unsafe public `any`, declaration reachability |
-| `behavior` | Declared states and behavioral capabilities are implemented | disabled, required, invalid, loading, controlled/uncontrolled behavior |
-| `accessibility` | Platform-appropriate accessibility contracts are satisfied | semantic HTML/ARIA or React Native accessibility props/state |
-| `interaction` | Interaction contracts are implemented where applicable | keyboard, focus, dismiss, portal, touch/press behavior |
-| `tests` | Required behavior has deterministic regression coverage | capability-driven tests and platform-specific coverage |
-| `storybook` | Representative supported states have Storybook coverage where required | required stories/states/variants |
-| `documentation` | Public usage, API, platform, and accessibility expectations are documented | website/docs/API coverage |
-| `tokens-theming` | Styling follows Vellira token and theme contracts | token requirements, prohibited hardcoded values where deterministic |
-| `exports-package` | Public package integration is valid | package exports, barrels, platform entry points |
-| `platform-quality` | Supported platforms satisfy their own declared contracts | platform-specific requirements and intentional divergence handling |
+| Dimension                     | Purpose                                                                    | Typical deterministic signals                                                     |
+| ----------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `implementation-completeness` | Required implementation structure exists and is internally coherent        | implementation files, declared platform implementation, expected parts            |
+| `public-api`                  | Public API matches declared component contracts and Vellira conventions    | exports, declared capabilities, compound parts, controlled/uncontrolled contracts |
+| `type-quality`                | Public and internal TypeScript contracts are sound                         | exported types, platform types, unsafe public `any`, declaration reachability     |
+| `behavior`                    | Declared states and behavioral capabilities are implemented                | disabled, required, invalid, loading, controlled/uncontrolled behavior            |
+| `accessibility`               | Platform-appropriate accessibility contracts are satisfied                 | semantic HTML/ARIA or React Native accessibility props/state                      |
+| `interaction`                 | Interaction contracts are implemented where applicable                     | keyboard, focus, dismiss, portal, touch/press behavior                            |
+| `tests`                       | Required behavior has deterministic regression coverage                    | capability-driven tests and platform-specific coverage                            |
+| `storybook`                   | Representative supported states have Storybook coverage where required     | required stories/states/variants                                                  |
+| `documentation`               | Public usage, API, platform, and accessibility expectations are documented | website/docs/API coverage                                                         |
+| `tokens-theming`              | Styling follows Vellira token and theme contracts                          | token requirements, prohibited hardcoded values where deterministic               |
+| `exports-package`             | Public package integration is valid                                        | package exports, barrels, platform entry points                                   |
+| `platform-quality`            | Supported platforms satisfy their own declared contracts                   | platform-specific requirements and intentional divergence handling                |
 
 A concrete rule belongs to one primary dimension even if it supports more than one quality concern.
 
