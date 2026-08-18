@@ -15,7 +15,7 @@
     "check:component": "tsx scripts/checks/component-completeness/check-components.ts",
     "ci": "pnpm ci:quality && pnpm ci:build && pnpm docs:build && pnpm ci:typecheck && pnpm ci:test && pnpm ci:smoke",
     "validate": "pnpm ci:quality && pnpm ci:build && pnpm docs:build && pnpm ci:typecheck && pnpm test && pnpm test:coverage && pnpm docker:e2e && pnpm ci:smoke",
-    "ci:quality": "pnpm format:check && pnpm lint && pnpm check:package-boundaries && pnpm check:playwright-version && pnpm component-pages:check && pnpm component-pages:audit",
+    "ci:quality": "pnpm format:check && pnpm lint && pnpm check:package-boundaries && pnpm check:playwright-version && pnpm component-pages:check && pnpm component-pages:audit && pnpm check:component --all",
     "ci:build": "pnpm build && pnpm build:native-playground && pnpm build:storybook",
     "ci:typecheck": "pnpm typecheck && pnpm docs:api:check && pnpm check:public-api",
     "ci:playwright": "pnpm --filter @vellira-ui/react-storybook run playwright:install",
