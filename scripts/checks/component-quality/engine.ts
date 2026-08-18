@@ -71,7 +71,8 @@ function normalizeFinding(
 async function evaluatePlatform(
   metadata: ComponentMetadata,
   platform: ComponentPlatform,
-  rules: readonly ComponentQualityRule[]
+  rules: readonly ComponentQualityRule[],
+  rootDir: string
 ): Promise<ComponentPlatformQualityResult> {
   const findings: ComponentQualityFinding[] = [];
 
@@ -84,7 +85,11 @@ async function evaluatePlatform(
     }
 
     try {
-      const finding = await rule.evaluate({ metadata, platform });
+      const finding = await rule.evaluate({
+        metadata,
+        platform,
+        rootDir,
+      });
       findings.push(normalizeFinding(rule, finding, platform));
     } catch (error) {
       throw new ComponentQualityRuntimeError(
@@ -106,6 +111,7 @@ export async function runComponentQualityCheck(
   const selection = options.platform ?? 'all';
   const rules = options.rules ?? componentQualityRules;
   const metadataRegistry = options.metadataRegistry ?? componentMetadata;
+  const rootDir = options.rootDir ?? process.cwd();
 
   const validatedMetadata = metadataRegistry.map((metadata) => {
     const validation = validateComponentMetadata(metadata);
@@ -151,7 +157,9 @@ export async function runComponentQualityCheck(
 
     const platformResults: ComponentPlatformQualityResult[] = [];
     for (const platform of platforms) {
-      platformResults.push(await evaluatePlatform(metadata, platform, rules));
+      platformResults.push(
+        await evaluatePlatform(metadata, platform, rules, rootDir)
+      );
     }
 
     const findings = platformResults.flatMap((result) => result.findings);
