@@ -25,6 +25,7 @@ export interface ComponentQualityRunOptions {
   componentName?: string;
   platform?: QualityPlatformSelection;
   rules?: readonly ComponentQualityRule[];
+  metadataRegistry?: readonly unknown[];
 }
 
 export interface ComponentQualityRunResult {
