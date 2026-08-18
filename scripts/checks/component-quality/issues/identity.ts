@@ -26,6 +26,8 @@ export function componentQualityIssueMarker(key: string) {
 
 export function extractComponentQualityIssueKey(body: string) {
   const escapedPrefix = markerPrefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const match = body.match(new RegExp(`<!--\\s*${escapedPrefix}([^\\s]+)\\s*-->`));
+  const match = body.match(
+    new RegExp(`<!--\\s*${escapedPrefix}([^\\s]+)\\s*-->`)
+  );
   return match?.[1];
 }
