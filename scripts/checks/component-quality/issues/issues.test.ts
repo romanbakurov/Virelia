@@ -134,7 +134,7 @@ describe('component quality issue synchronization', () => {
         status: 'fail',
         evidence: ['a.ts', 'b.ts'],
       });
-    }
+    },
   );
 
   it('includes WARN findings only when explicitly enabled', () => {
