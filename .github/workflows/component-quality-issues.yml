@@ -1,0 +1,115 @@
+name: Component Quality Issue Sync
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Preview operations without mutating GitHub issues
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: component-quality-issue-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync Component Quality findings
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout validated main commit
+        if: github.event_name == 'workflow_run'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+
+      - name: Checkout selected ref
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Component Quality report
+        id: report
+        shell: bash
+        run: |
+          mkdir -p .artifacts/component-quality
+
+          set +e
+          pnpm check:component-quality:json \
+            > .artifacts/component-quality/report.json
+          exit_code=$?
+          set -e
+
+          if [ "$exit_code" -eq 2 ]; then
+            echo "::error::Component Quality Checker failed with a runtime/configuration error."
+            exit 2
+          fi
+
+          if [ "$exit_code" -ne 0 ] && [ "$exit_code" -ne 1 ]; then
+            echo "::error::Component Quality Checker exited unexpectedly with code $exit_code."
+            exit "$exit_code"
+          fi
+
+          node -e "JSON.parse(require('fs').readFileSync('.artifacts/component-quality/report.json', 'utf8'))"
+
+          if [ "$exit_code" -eq 1 ]; then
+            echo "Component Quality report contains actionable FAIL findings."
+          else
+            echo "Component Quality report contains no blocking findings."
+          fi
+
+      - name: Upload Component Quality report
+        if: always() && steps.report.outcome == 'success'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: component-quality-issue-sync-report
+          path: .artifacts/component-quality/report.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Preview Component Quality issue synchronization
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          pnpm component-quality:issues
+          --dry-run
+          --repo ${{ github.repository }}
+          --report .artifacts/component-quality/report.json
+
+      - name: Synchronize Component Quality issues
+        if: >-
+          github.event_name == 'workflow_run' ||
+          (github.event_name == 'workflow_dispatch' && !inputs.dry_run)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          pnpm component-quality:issues
+          --repo ${{ github.repository }}
+          --report .artifacts/component-quality/report.json
