@@ -55,3 +55,44 @@ CI generates the machine-readable report with:
 
 and uploads `.artifacts/component-quality/report.json` as the
 `component-quality-report` artifact.
+
+## GitHub issue synchronization
+
+The issue synchronization layer is separate from the checker engine. It consumes
+the V1 report, normalizes actionable findings, plans deterministic lifecycle
+operations, and only then applies GitHub mutations.
+
+Default synchronization policy:
+
+- `FAIL` findings are actionable.
+- `WARN` findings are ignored unless `--warn` is passed explicitly.
+- `PASS` and `not-applicable` never create issues.
+- managed issues are identified by a stable HTML marker derived from component,
+  platform, and rule identity.
+- unmanaged issues are never modified by the synchronizer.
+
+Preview operations without mutations:
+
+`pnpm component-quality:issues --dry-run`
+
+Synchronize FAIL findings:
+
+`GITHUB_TOKEN=... pnpm component-quality:issues`
+
+Include WARN findings explicitly:
+
+`GITHUB_TOKEN=... pnpm component-quality:issues --warn`
+
+Consume an existing machine-readable report instead of running the checker:
+
+`pnpm component-quality:issues --dry-run --report .artifacts/component-quality/report.json`
+
+The repository defaults to `vellira-dev/vellira` and can be overridden with
+`--repo owner/name` or `GITHUB_REPOSITORY`. GitHub labels are applied only when
+the corresponding labels already exist in the target repository.
+
+The planner supports deterministic `create`, `update`, `close`, and `reopen`
+operations. Closing and reopening managed issues is marked automatically in the
+issue lifecycle. This design is intended to be callable later from a scheduled
+or post-main GitHub Actions workflow without coupling GitHub connectivity to the
+core quality checker.
