@@ -27,25 +27,25 @@ const statusRank: Record<ComponentQualityStatus, number> = {
 function aggregateStatus(statuses: readonly ComponentQualityStatus[]) {
   if (statuses.length === 0) return 'not-applicable' as const;
 
-  return statuses.reduce<ComponentQualityStatus>((current, status) =>
-    statusRank[status] > statusRank[current] ? status : current
-  , 'not-applicable');
+  return statuses.reduce<ComponentQualityStatus>(
+    (current, status) =>
+      statusRank[status] > statusRank[current] ? status : current,
+    'not-applicable'
+  );
 }
 
 function selectedPlatforms(
   metadata: ComponentMetadata,
   selection: QualityPlatformSelection
 ): ComponentPlatform[] {
-  const requested =
+  const requested: readonly ComponentPlatform[] =
     selection === 'web'
       ? ['react']
       : selection === 'native'
         ? ['react-native']
         : metadata.platforms;
 
-  return requested.filter((platform): platform is ComponentPlatform =>
-    metadata.platforms.includes(platform as ComponentPlatform)
-  );
+  return requested.filter((platform) => metadata.platforms.includes(platform));
 }
 
 function normalizeFinding(
@@ -95,21 +95,35 @@ async function evaluatePlatform(
   };
 }
 
+function validateRegistry(registry: readonly unknown[]): ComponentMetadata[] {
+  return registry.map((metadata, index) => {
+    const validation = validateComponentMetadata(metadata);
+    if (!validation.valid) {
+      const componentName =
+        typeof metadata === 'object' &&
+        metadata !== null &&
+        'name' in metadata &&
+        typeof metadata.name === 'string'
+          ? metadata.name
+          : `entry ${index}`;
+
+      throw new ComponentQualityRuntimeError(
+        `Invalid metadata for ${componentName}: ${validation.errors.join('; ')}`
+      );
+    }
+
+    return validation.value;
+  });
+}
+
 export async function runComponentQualityCheck(
   options: ComponentQualityRunOptions = {}
 ): Promise<ComponentQualityRunResult> {
   const selection = options.platform ?? 'all';
   const rules = options.rules ?? [];
-
-  const validatedMetadata = componentMetadata.map((metadata) => {
-    const validation = validateComponentMetadata(metadata);
-    if (!validation.valid) {
-      throw new ComponentQualityRuntimeError(
-        `Invalid metadata for ${metadata.name}: ${validation.errors.join('; ')}`
-      );
-    }
-    return metadata;
-  });
+  const validatedMetadata = validateRegistry(
+    options.metadataRegistry ?? componentMetadata
+  );
 
   const components = options.componentName
     ? validatedMetadata.filter(
