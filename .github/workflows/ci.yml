@@ -16,6 +16,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      COMPONENT_QUALITY_ENFORCEMENT: advisory
     container:
       image: mcr.microsoft.com/playwright:v1.61.1-noble
       options: --ipc=host
@@ -35,6 +36,59 @@ jobs:
 
       - name: Quality checks
         run: pnpm ci:quality
+
+      - name: Component Quality Checker
+        id: component-quality
+        shell: bash
+        run: |
+          set +e
+
+          pnpm check:component-quality --all
+          status=$?
+
+          set -e
+
+          if [ "$status" -eq 2 ]; then
+            echo "::error::Component Quality Checker failed with a runtime/configuration error."
+            exit 2
+          fi
+
+          if [ "$status" -eq 1 ]; then
+            if [ "$COMPONENT_QUALITY_ENFORCEMENT" = "blocking" ]; then
+              echo "::error::Component Quality Checker reported blocking quality findings."
+              exit 1
+            fi
+
+            echo "::warning::Component Quality Checker reported blocking quality findings. Advisory mode is active, so CI will continue."
+          fi
+
+          exit 0
+
+      - name: Generate Component Quality report
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p .artifacts/component-quality
+
+          set +e
+          pnpm check:component-quality:json \
+            > .artifacts/component-quality/report.json
+          status=$?
+          set -e
+
+          if [ "$status" -eq 2 ]; then
+            echo "::error::Failed to generate Component Quality Checker report."
+            exit 2
+          fi
+
+      - name: Upload Component Quality report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: component-quality-report
+          path: .artifacts/component-quality/report.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Build packages and apps
         run: pnpm ci:build
