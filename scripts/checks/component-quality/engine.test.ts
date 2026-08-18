@@ -40,6 +40,21 @@ const warningRule: ComponentQualityRule = {
   }),
 };
 
+const webOnlyMetadata = {
+  name: 'WebOnly',
+  layer: 'components',
+  category: 'utility',
+  platforms: ['react'],
+  profile: 'base',
+  status: 'stable',
+  requirements: {
+    tests: true,
+    storybook: true,
+    docs: true,
+    accessibility: true,
+  },
+} as const;
+
 describe('runComponentQualityCheck', () => {
   it('evaluates one component and aggregates rule results', async () => {
     const result = await runComponentQualityCheck({
@@ -51,9 +66,9 @@ describe('runComponentQualityCheck', () => {
     expect(result.report.schemaVersion).toBe('1');
     expect(result.report.components).toHaveLength(1);
     expect(result.report.components[0]?.componentName).toBe('Button');
-    expect(result.report.components[0]?.findings.map((finding) => finding.ruleId)).toContain(
-      'test.pass'
-    );
+    expect(
+      result.report.components[0]?.findings.map((finding) => finding.ruleId)
+    ).toContain('test.pass');
   });
 
   it('can target one platform independently', async () => {
@@ -83,8 +98,18 @@ describe('runComponentQualityCheck', () => {
 
   it('rejects unsupported platform selection', async () => {
     await expect(
-      runComponentQualityCheck({ componentName: 'FormField', platform: 'native' })
+      runComponentQualityCheck({
+        componentName: 'WebOnly',
+        platform: 'native',
+        metadataRegistry: [webOnlyMetadata],
+      })
     ).rejects.toThrow('does not support platform');
+  });
+
+  it('rejects malformed metadata', async () => {
+    await expect(
+      runComponentQualityCheck({ metadataRegistry: [{ name: 'Broken' }] })
+    ).rejects.toThrow('Invalid metadata for Broken');
   });
 
   it('wraps rule execution failures as runtime errors', async () => {
