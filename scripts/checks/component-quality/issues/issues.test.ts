@@ -121,18 +121,21 @@ function createMockClient(existing: readonly ManagedQualityIssue[] = []) {
 }
 
 describe('component quality issue synchronization', () => {
-  it('normalizes FAIL findings by default and ignores WARN/PASS/not-applicable', () => {
-    const findings = normalizeActionableFindings(report);
+  it(
+    'normalizes FAIL findings by default and ignores WARN/PASS/not-applicable',
+    () => {
+      const findings = normalizeActionableFindings(report);
 
-    expect(findings).toHaveLength(1);
-    expect(findings[0]).toMatchObject({
-      componentName: 'Select',
-      platform: 'react',
-      ruleId: 'api.public-surface',
-      status: 'fail',
-      evidence: ['a.ts', 'b.ts'],
-    });
-  });
+      expect(findings).toHaveLength(1);
+      expect(findings[0]).toMatchObject({
+        componentName: 'Select',
+        platform: 'react',
+        ruleId: 'api.public-surface',
+        status: 'fail',
+        evidence: ['a.ts', 'b.ts'],
+      });
+    }
+  );
 
   it('includes WARN findings only when explicitly enabled', () => {
     const findings = normalizeActionableFindings(report, { includeWarn: true });
@@ -174,7 +177,10 @@ describe('component quality issue synchronization', () => {
     const plan = planQualityIssueSync([finding], [], { base: [] });
 
     expect(plan.operations).toHaveLength(1);
-    expect(plan.operations[0]).toMatchObject({ kind: 'create', key: finding.key });
+    expect(plan.operations[0]).toMatchObject({
+      kind: 'create',
+      key: finding.key,
+    });
   });
 
   it('does not plan duplicate writes for unchanged managed issues', () => {
