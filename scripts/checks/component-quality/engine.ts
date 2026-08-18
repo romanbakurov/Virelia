@@ -1,14 +1,17 @@
 import {
   componentMetadata,
   validateComponentMetadata,
-  type ComponentMetadata,
-  type ComponentPlatform,
-  type ComponentPlatformQualityResult,
-  type ComponentQualityFinding,
-  type ComponentQualityResult,
-  type ComponentQualityStatus,
+} from '../../../packages/metadata/src';
+import type {
+  ComponentMetadata,
+  ComponentPlatform,
+  ComponentPlatformQualityResult,
+  ComponentQualityFinding,
+  ComponentQualityResult,
+  ComponentQualityStatus,
 } from '@vellira-ui/metadata';
 
+import { componentQualityRules } from './rules';
 import {
   ComponentQualityRuntimeError,
   type ComponentQualityRule,
@@ -38,14 +41,16 @@ function selectedPlatforms(
   metadata: ComponentMetadata,
   selection: QualityPlatformSelection
 ): ComponentPlatform[] {
-  const requested: readonly ComponentPlatform[] =
+  const requested =
     selection === 'web'
       ? ['react']
       : selection === 'native'
         ? ['react-native']
         : metadata.platforms;
 
-  return requested.filter((platform) => metadata.platforms.includes(platform));
+  return requested.filter((platform): platform is ComponentPlatform =>
+    metadata.platforms.includes(platform as ComponentPlatform)
+  );
 }
 
 function normalizeFinding(
@@ -95,8 +100,14 @@ async function evaluatePlatform(
   };
 }
 
-function validateRegistry(registry: readonly unknown[]): ComponentMetadata[] {
-  return registry.map((metadata, index) => {
+export async function runComponentQualityCheck(
+  options: ComponentQualityRunOptions = {}
+): Promise<ComponentQualityRunResult> {
+  const selection = options.platform ?? 'all';
+  const rules = options.rules ?? componentQualityRules;
+  const metadataRegistry = options.metadata ?? componentMetadata;
+
+  const validatedMetadata = metadataRegistry.map((metadata) => {
     const validation = validateComponentMetadata(metadata);
     if (!validation.valid) {
       const componentName =
@@ -105,25 +116,14 @@ function validateRegistry(registry: readonly unknown[]): ComponentMetadata[] {
         'name' in metadata &&
         typeof metadata.name === 'string'
           ? metadata.name
-          : `entry ${index}`;
+          : '<unknown>';
 
       throw new ComponentQualityRuntimeError(
         `Invalid metadata for ${componentName}: ${validation.errors.join('; ')}`
       );
     }
-
     return validation.value;
   });
-}
-
-export async function runComponentQualityCheck(
-  options: ComponentQualityRunOptions = {}
-): Promise<ComponentQualityRunResult> {
-  const selection = options.platform ?? 'all';
-  const rules = options.rules ?? [];
-  const validatedMetadata = validateRegistry(
-    options.metadataRegistry ?? componentMetadata
-  );
 
   const components = options.componentName
     ? validatedMetadata.filter(
