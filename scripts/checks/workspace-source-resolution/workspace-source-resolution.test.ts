@@ -141,4 +141,65 @@ describe('workspace source resolution', () => {
       ).toBe(expected(consumer.dist));
     }
   });
+
+  it('resolves icons root to web source for website consumers', () => {
+    expect(
+      resolvePackage({
+        packageName: '@vellira-ui/icons',
+        containingFile: path.join(
+          websiteRoot,
+          'src',
+          '__workspace-resolution-test__.ts'
+        ),
+        compilerOptions: websiteOptions,
+      })
+    ).toBe(expected('packages/icons/src/web.source.ts'));
+  });
+
+  it('resolves icons root to native source for React Native consumers', () => {
+    const nativeOptions: ts.CompilerOptions = {
+      ...websiteOptions,
+      customConditions: ['react-native', 'vellira-source'],
+    };
+
+    expect(
+      resolvePackage({
+        packageName: '@vellira-ui/icons',
+        containingFile: path.join(root, 'apps', 'native-playground', 'App.tsx'),
+        compilerOptions: nativeOptions,
+      })
+    ).toBe(expected('packages/icons/src/native.source.ts'));
+  });
+
+  it('falls back to published icon dist entries without vellira-source', () => {
+    const webOptions: ts.CompilerOptions = {
+      ...websiteOptions,
+      customConditions: [],
+    };
+
+    const nativeOptions: ts.CompilerOptions = {
+      ...websiteOptions,
+      customConditions: ['react-native'],
+    };
+
+    expect(
+      resolvePackage({
+        packageName: '@vellira-ui/icons',
+        containingFile: path.join(
+          websiteRoot,
+          'src',
+          '__workspace-resolution-test__.ts'
+        ),
+        compilerOptions: webOptions,
+      })
+    ).toBe(expected('packages/icons/dist/web.d.ts'));
+
+    expect(
+      resolvePackage({
+        packageName: '@vellira-ui/icons',
+        containingFile: path.join(root, 'apps', 'native-playground', 'App.tsx'),
+        compilerOptions: nativeOptions,
+      })
+    ).toBe(expected('packages/icons/dist/native.d.ts'));
+  });
 });
