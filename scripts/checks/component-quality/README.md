@@ -93,6 +93,33 @@ the corresponding labels already exist in the target repository.
 
 The planner supports deterministic `create`, `update`, `close`, and `reopen`
 operations. Closing and reopening managed issues is marked automatically in the
-issue lifecycle. This design is intended to be callable later from a scheduled
-or post-main GitHub Actions workflow without coupling GitHub connectivity to the
-core quality checker.
+issue lifecycle.
+
+### GitHub Actions automation
+
+`.github/workflows/component-quality-issues.yml` runs after a successful `CI`
+workflow on `main`. The workflow checks out the exact commit that passed CI,
+generates a fresh V1 report, and synchronizes `FAIL` findings with managed GitHub
+issues.
+
+The workflow has only `contents: read` and `issues: write` permissions. Pull
+request CI does not receive issue-write permissions from this automation path.
+Concurrent synchronization runs are serialized to prevent overlapping issue
+writes.
+
+The automatic post-main path performs real synchronization. Manual execution is
+available through `workflow_dispatch` and defaults to `dry_run: true`, which
+prints planned operations without mutating GitHub issues. Set `dry_run` to
+`false` explicitly to perform a manual synchronization.
+
+The automation preserves the synchronization lifecycle contract:
+
+- new finding → create;
+- materially changed finding → update;
+- resolved finding → close;
+- regressed finding → reopen;
+- unchanged finding → no write.
+
+`WARN` findings remain excluded from automatic synchronization. The workflow
+retains the generated report as the `component-quality-issue-sync-report`
+artifact for inspection.
