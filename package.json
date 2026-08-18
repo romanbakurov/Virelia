@@ -15,6 +15,7 @@
     "check:component": "tsx scripts/checks/component-completeness/check-components.ts",
     "check:component-quality": "tsx scripts/checks/component-quality/cli.ts",
     "check:component-quality:json": "tsx scripts/checks/component-quality/cli.ts --all --json",
+    "component-quality:issues": "tsx scripts/checks/component-quality/issues/cli.ts",
     "ci": "pnpm ci:quality && pnpm ci:build && pnpm docs:build && pnpm ci:typecheck && pnpm ci:test && pnpm ci:smoke",
     "validate": "pnpm ci:quality && pnpm ci:build && pnpm docs:build && pnpm ci:typecheck && pnpm test && pnpm test:coverage && pnpm docker:e2e && pnpm ci:smoke",
     "ci:quality": "pnpm format:check && pnpm lint && pnpm check:package-boundaries && pnpm check:playwright-version && pnpm component-pages:check && pnpm component-pages:audit && pnpm check:component --all",
