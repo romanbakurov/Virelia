@@ -31,6 +31,7 @@ export function HeaderSearch() {
 
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
@@ -103,6 +104,19 @@ export function HeaderSearch() {
     closeSearch();
   };
 
+  const openMobileSearch = () => {
+    setMobileOpen(true);
+
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+  };
+
+  const closeMobileSearch = () => {
+    resetSearch();
+    setMobileOpen(false);
+  };
+
   const openResult = (index: number) => {
     const result = results[index];
 
@@ -172,7 +186,21 @@ export function HeaderSearch() {
   }, [showResults]);
 
   return (
-    <div ref={rootRef} className={styles.root}>
+    <div
+      ref={rootRef}
+      className={styles.root}
+      data-mobile-open={mobileOpen ? '' : undefined}
+    >
+      <button
+        type='button'
+        className={styles.mobileTrigger}
+        aria-label='Open search'
+        aria-expanded={mobileOpen}
+        onClick={openMobileSearch}
+      >
+        <Search aria-hidden='true' />
+      </button>
+
       <div ref={fieldRef} className={styles.field}>
         <Search aria-hidden='true' className={styles.icon} />
 
@@ -202,6 +230,17 @@ export function HeaderSearch() {
           }}
           onKeyDown={handleKeyDown}
         />
+
+        {mobileOpen && (
+          <button
+            type='button'
+            className={styles.mobileClose}
+            aria-label='Close search'
+            onClick={closeMobileSearch}
+          >
+            <Close aria-hidden='true' />
+          </button>
+        )}
 
         {query && (
           <button

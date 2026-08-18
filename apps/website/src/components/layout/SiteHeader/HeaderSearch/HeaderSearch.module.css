@@ -185,6 +185,11 @@
   display: none;
 }
 
+.mobileTrigger,
+.mobileClose {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .field::before,
   .icon {
@@ -209,21 +214,112 @@
     width: 40px;
   }
 
-  .field {
+  .mobileTrigger {
+    display: inline-flex;
     justify-content: center;
+    align-items: center;
     width: 40px;
     height: 40px;
     padding: 0;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
     border-radius: var(--radius-md);
+    cursor: pointer;
   }
 
-  .input,
-  .clear {
+  .mobileTrigger svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .field {
     display: none;
   }
 
-  .icon {
-    width: 20px;
-    height: 20px;
+  .root[data-mobile-open] {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: calc(var(--z-index-modal) + 1);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: var(--site-header-height);
+    padding: 0 var(--site-gutter);
+    background: var(--surface-background);
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .root[data-mobile-open] .mobileTrigger {
+    display: none;
+  }
+
+  .root[data-mobile-open] .field {
+    display: flex;
+    width: 100%;
+    height: 42px;
+    padding: 0 44px 0 var(--space-3);
+    background: var(--surface-subtle);
+    border: 1px solid var(--border-muted);
+    border-radius: var(--radius-lg);
+  }
+
+  .root[data-mobile-open] .input {
+    display: block;
+    font-size: 16px;
+  }
+
+  .root[data-mobile-open] .clear {
+    display: none;
+  }
+
+  .root[data-mobile-open] .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mobileClose {
+    position: absolute;
+    top: 50%;
+    right: calc(var(--site-gutter) - 12px);
+    z-index: 2;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-md);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .root[data-mobile-open] .mobileClose {
+    display: inline-flex;
+  }
+
+  .mobileClose svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mobileClose:hover {
+    background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+  }
+
+  .mobileTrigger:focus-visible,
+  .mobileClose:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  .results {
+    right: var(--site-gutter);
+    left: var(--site-gutter) !important;
+    width: auto;
+    max-height: min(360px, calc(100vh - var(--site-header-height) - 16px));
   }
 }
