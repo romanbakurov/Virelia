@@ -57,15 +57,15 @@ export function createGitHubQualityIssueClient(
       );
     }
 
+    const headers = new Headers(init.headers);
+    headers.set('Accept', 'application/vnd.github+json');
+    headers.set('X-GitHub-Api-Version', '2022-11-28');
+    if (options.token) headers.set('Authorization', `Bearer ${options.token}`);
+    if (init.body) headers.set('Content-Type', 'application/json');
+
     const response = await fetchImpl(`${apiBaseUrl}${path}`, {
       ...init,
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        ...(options.token ? { Authorization: `Bearer ${options.token}` } : {}),
-        ...(init.body ? { 'Content-Type': 'application/json' } : {}),
-        ...init.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -97,6 +97,14 @@ export function createGitHubQualityIssueClient(
       body: input.body,
       labels: input.labels,
     });
+  }
+
+  async function addLifecycleComment(issueNumber: number, body: string) {
+    await request(
+      `/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
+      { method: 'POST', body: JSON.stringify({ body }) },
+      true
+    );
   }
 
   return {
@@ -155,9 +163,16 @@ export function createGitHubQualityIssueClient(
     },
 
     async closeIssue(issueNumber) {
+      await addLifecycleComment(
+        issueNumber,
+        'Automatically closing this managed issue because the corresponding Component Quality finding is no longer actionable.'
+      );
       await request(
         `/repos/${owner}/${repo}/issues/${issueNumber}`,
-        { method: 'PATCH', body: JSON.stringify({ state: 'closed' }) },
+        {
+          method: 'PATCH',
+          body: JSON.stringify({ state: 'closed', state_reason: 'completed' }),
+        },
         true
       );
     },
@@ -175,6 +190,10 @@ export function createGitHubQualityIssueClient(
           }),
         },
         true
+      );
+      await addLifecycleComment(
+        issueNumber,
+        'Automatically reopening this managed issue because the Component Quality finding has regressed and is actionable again.'
       );
     },
   };
