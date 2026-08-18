@@ -1,3 +1,8 @@
+import type {
+  ComponentPlatform,
+  ComponentQualityDimension,
+} from '@vellira-ui/metadata';
+
 import { componentQualityIssueMarker } from './identity';
 import type {
   DesiredQualityIssue,
@@ -5,7 +10,7 @@ import type {
   QualityIssueLabelPolicy,
 } from './types';
 
-const defaultLabelPolicy: QualityIssueLabelPolicy = {
+const desiredLabelPolicy: QualityIssueLabelPolicy = {
   base: ['component-quality'],
   dimensions: {
     accessibility: ['accessibility'],
@@ -28,6 +33,44 @@ function uniqueSorted(values: readonly string[]) {
   return [...new Set(values)].sort();
 }
 
+function filterLabels(
+  values: readonly string[] | undefined,
+  available: ReadonlySet<string>
+) {
+  return (values ?? []).filter((label) => available.has(label));
+}
+
+export function qualityIssueLabelPolicyForAvailableLabels(
+  availableLabels: readonly string[]
+): QualityIssueLabelPolicy {
+  const available = new Set(availableLabels);
+  const dimensions: Partial<
+    Record<ComponentQualityDimension, readonly string[]>
+  > = {};
+  const platforms: Partial<Record<ComponentPlatform, readonly string[]>> = {};
+
+  for (const [dimension, labels] of Object.entries(
+    desiredLabelPolicy.dimensions ?? {}
+  )) {
+    dimensions[dimension as ComponentQualityDimension] = filterLabels(
+      labels,
+      available
+    );
+  }
+
+  for (const [platform, labels] of Object.entries(
+    desiredLabelPolicy.platforms ?? {}
+  )) {
+    platforms[platform as ComponentPlatform] = filterLabels(labels, available);
+  }
+
+  return {
+    base: filterLabels(desiredLabelPolicy.base, available),
+    dimensions,
+    platforms,
+  };
+}
+
 function labelsForFinding(
   finding: NormalizedQualityFinding,
   policy: QualityIssueLabelPolicy
@@ -46,10 +89,12 @@ function evidenceSection(evidence: readonly string[]) {
 
 export function desiredIssueForFinding(
   finding: NormalizedQualityFinding,
-  labelPolicy: QualityIssueLabelPolicy = defaultLabelPolicy
+  labelPolicy: QualityIssueLabelPolicy = desiredLabelPolicy
 ): DesiredQualityIssue {
   const title = `[Component Quality] ${finding.componentName} (${finding.platform}): ${finding.ruleId}`;
-  const message = finding.message ?? 'The component quality rule reported an actionable finding.';
+  const message =
+    finding.message ??
+    'The component quality rule reported an actionable finding.';
 
   const body = `## Component quality finding
 
