@@ -6,7 +6,9 @@ describe('component quality CLI', () => {
   it('prints deterministic human-readable output', async () => {
     const output: string[] = [];
 
-    const exitCode = await runCli(['Button'], (message) => output.push(message));
+    const exitCode = await runCli(['Button'], (message) =>
+      output.push(message)
+    );
 
     expect(exitCode).toBe(0);
     expect(output.join('\n')).toContain('Button: NOT-APPLICABLE');
