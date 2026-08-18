@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { runCli } from './cli';
+import type { ComponentQualityRunResult } from './types';
 
 describe('component quality CLI', () => {
   it('prints deterministic human-readable output', async () => {
@@ -47,5 +48,61 @@ describe('component quality CLI', () => {
 
     expect(exitCode).toBe(2);
     expect(errors[0]).toContain('Expected --platform');
+  });
+
+  it('returns exit code 0 for warning-only quality results', async () => {
+    const runCheck = async (): Promise<ComponentQualityRunResult> => ({
+      status: 'warn',
+      report: {
+        schemaVersion: '1',
+        components: [],
+      },
+    });
+
+    const exitCode = await runCli(
+      ['--all'],
+      () => undefined,
+      () => undefined,
+      runCheck
+    );
+
+    expect(exitCode).toBe(0);
+  });
+
+  it('returns exit code 1 for blocking quality failures', async () => {
+    const runCheck = async (): Promise<ComponentQualityRunResult> => ({
+      status: 'fail',
+      report: {
+        schemaVersion: '1',
+        components: [],
+      },
+    });
+
+    const exitCode = await runCli(
+      ['--all'],
+      () => undefined,
+      () => undefined,
+      runCheck
+    );
+
+    expect(exitCode).toBe(1);
+  });
+
+  it('returns exit code 2 for checker runtime failures', async () => {
+    const errors: string[] = [];
+
+    const runCheck = async (): Promise<ComponentQualityRunResult> => {
+      throw new Error('fixture runtime failure');
+    };
+
+    const exitCode = await runCli(
+      ['--all'],
+      () => undefined,
+      (message) => errors.push(message),
+      runCheck
+    );
+
+    expect(exitCode).toBe(2);
+    expect(errors[0]).toContain('fixture runtime failure');
   });
 });

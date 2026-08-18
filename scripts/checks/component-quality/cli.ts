@@ -84,11 +84,12 @@ function formatHumanReport(report: ComponentQualityReportV1) {
 export async function runCli(
   args: readonly string[],
   write: (message: string) => void = console.log,
-  writeError: (message: string) => void = console.error
+  writeError: (message: string) => void = console.error,
+  runCheck = runComponentQualityCheck
 ): Promise<number> {
   try {
     const options = parseArgs(args);
-    const result = await runComponentQualityCheck({
+    const result = await runCheck({
       ...options,
       rules: componentQualityRules,
     });
