@@ -85,7 +85,10 @@ describe('runComponentQualityCheck', () => {
   });
 
   it('reports not-applicable when no rules are registered', async () => {
-    const result = await runComponentQualityCheck({ componentName: 'Button' });
+    const result = await runComponentQualityCheck({
+      componentName: 'Button',
+      rules: [],
+    });
 
     expect(result.status).toBe('not-applicable');
   });

@@ -1,4 +1,5 @@
 import type { ComponentQualityRule } from './types';
+import { apiFeatureQualityRules } from './rules/api-feature';
 
 /**
  * Canonical Component Quality Checker V1 rule registry.
@@ -6,4 +7,6 @@ import type { ComponentQualityRule } from './types';
  * Rule families are added by #518-#521. The core checker intentionally owns
  * orchestration only and must not hard-code rule-family behavior.
  */
-export const componentQualityRules: readonly ComponentQualityRule[] = [];
+export const componentQualityRules: readonly ComponentQualityRule[] = [
+  ...apiFeatureQualityRules,
+];

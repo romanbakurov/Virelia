@@ -1,0 +1,302 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+import type {
+  ComponentCapability,
+  ComponentMetadata,
+  ComponentPlatform,
+  ComponentQualityFinding,
+} from '@vellira-ui/metadata';
+
+import type {
+  ComponentQualityRule,
+  ComponentQualityRuleContext,
+} from '../types';
+
+type SourceSnapshot = {
+  componentDir: string;
+  indexSource: string;
+  typesSource: string;
+  implementationSource: string;
+  combinedSource: string;
+};
+
+const capabilityPatterns: Partial<
+  Record<ComponentCapability, readonly RegExp[]>
+> = {
+  disabled: [/\bdisabled\b/i, /\bisDisabled\b/],
+  required: [/\brequired\b/i, /\bisRequired\b/],
+  invalid: [/\binvalid\b/i, /\bisInvalid\b/, /\berror\b/i],
+  loading: [/\bloading\b/i, /\bisLoading\b/],
+  'compound-api': [
+    /\bObject\.assign\b/,
+    /\bRoot\b/,
+    /\bTrigger\b/,
+    /\bContent\b/,
+    /\bItem\b/,
+  ],
+};
+
+function platformPackage(platform: ComponentPlatform) {
+  return platform === 'react' ? 'react' : 'react-native';
+}
+
+function readIfExists(filePath: string) {
+  return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+}
+
+function componentDirectory(
+  root: string,
+  metadata: ComponentMetadata,
+  platform: ComponentPlatform
+) {
+  return path.join(
+    root,
+    'packages',
+    platformPackage(platform),
+    'src',
+    metadata.layer,
+    metadata.name
+  );
+}
+
+function shouldIncludeSourceFile(fileName: string) {
+  return (
+    /\.(ts|tsx)$/.test(fileName) &&
+    !/(\.test|\.stories|\.spec)\.(ts|tsx)$/.test(fileName)
+  );
+}
+
+function collectSourceFiles(directory: string): string[] {
+  if (!fs.existsSync(directory)) return [];
+
+  const entries = fs.readdirSync(directory, { withFileTypes: true });
+
+  return entries
+    .flatMap((entry) => {
+      const fullPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return collectSourceFiles(fullPath);
+      }
+
+      return shouldIncludeSourceFile(entry.name) ? [fullPath] : [];
+    })
+    .sort((left, right) => left.localeCompare(right));
+}
+
+function readSourceSnapshot(
+  root: string,
+  metadata: ComponentMetadata,
+  platform: ComponentPlatform
+): SourceSnapshot {
+  const componentDir = componentDirectory(root, metadata, platform);
+
+  if (!fs.existsSync(componentDir)) {
+    return {
+      componentDir,
+      indexSource: '',
+      typesSource: '',
+      implementationSource: '',
+      combinedSource: '',
+    };
+  }
+
+  const sourceFiles = collectSourceFiles(componentDir);
+  const combinedSource = sourceFiles
+    .map((filePath) => readIfExists(filePath))
+    .join('\n');
+
+  return {
+    componentDir,
+    indexSource: readIfExists(path.join(componentDir, 'index.ts')),
+    typesSource: readIfExists(path.join(componentDir, 'types.ts')),
+    implementationSource:
+      readIfExists(path.join(componentDir, `${metadata.name}.tsx`)) ||
+      readIfExists(path.join(componentDir, `${metadata.name}.ts`)),
+    combinedSource,
+  };
+}
+
+function finding(
+  rule: ComponentQualityRule,
+  context: ComponentQualityRuleContext,
+  status: ComponentQualityFinding['status'],
+  message?: string,
+  evidence?: readonly string[]
+): ComponentQualityFinding {
+  return {
+    ruleId: rule.definition.id,
+    dimension: rule.definition.dimension,
+    severity: rule.definition.severity,
+    evaluation: rule.definition.evaluation,
+    status,
+    platform: context.platform,
+    message,
+    evidence,
+  };
+}
+
+export const publicApiSurfaceRule: ComponentQualityRule = {
+  definition: {
+    id: 'api.public-surface',
+    dimension: 'public-api',
+    severity: 'required',
+    evaluation: 'automated',
+    description:
+      'Checks that the component exposes its public symbol and Props contract.',
+  },
+  evaluate(context) {
+    const snapshot = readSourceSnapshot(
+      process.cwd(),
+      context.metadata,
+      context.platform
+    );
+    const propsName = `${context.metadata.name}Props`;
+    const hasComponentExport = snapshot.indexSource.includes(
+      context.metadata.name
+    );
+    const hasPropsContract =
+      snapshot.typesSource.includes(propsName) ||
+      snapshot.combinedSource.includes(propsName);
+
+    if (hasComponentExport && hasPropsContract) {
+      return finding(publicApiSurfaceRule, context, 'pass', undefined, [
+        path.relative(process.cwd(), snapshot.componentDir),
+        propsName,
+      ]);
+    }
+
+    const missing = [
+      !hasComponentExport ? `public export for ${context.metadata.name}` : null,
+      !hasPropsContract ? `type contract ${propsName}` : null,
+    ].filter((value): value is string => value !== null);
+
+    return finding(
+      publicApiSurfaceRule,
+      context,
+      'fail',
+      `Missing ${missing.join(' and ')}.`,
+      [path.relative(process.cwd(), snapshot.componentDir)]
+    );
+  },
+};
+
+function supportsControlled(source: string) {
+  return (
+    /\buseControllableState\b/.test(source) ||
+    (/\b(value|checked|open)\b/.test(source) &&
+      /\b(onValueChange|onChange|onCheckedChange|onOpenChange)\b/.test(source))
+  );
+}
+
+function supportsUncontrolled(source: string) {
+  return (
+    /\buseControllableState\b/.test(source) ||
+    /\b(defaultValue|defaultChecked|defaultOpen)\b/.test(source)
+  );
+}
+
+export const controlledContractRule: ComponentQualityRule = {
+  definition: {
+    id: 'api.controlled-contract',
+    dimension: 'behavior',
+    severity: 'required',
+    evaluation: 'automated',
+    description:
+      'Checks controlled and uncontrolled contracts when declared in metadata.',
+  },
+  evaluate(context) {
+    const capabilities = context.metadata.capabilities ?? [];
+    const expectsControlled = capabilities.includes('controlled');
+    const expectsUncontrolled = capabilities.includes('uncontrolled');
+
+    if (!expectsControlled && !expectsUncontrolled) {
+      return finding(controlledContractRule, context, 'not-applicable');
+    }
+
+    const source = readSourceSnapshot(
+      process.cwd(),
+      context.metadata,
+      context.platform
+    ).combinedSource;
+    const missing: string[] = [];
+
+    if (expectsControlled && !supportsControlled(source)) {
+      missing.push('controlled value/change contract');
+    }
+    if (expectsUncontrolled && !supportsUncontrolled(source)) {
+      missing.push('uncontrolled default-value contract');
+    }
+
+    return missing.length === 0
+      ? finding(controlledContractRule, context, 'pass')
+      : finding(
+          controlledContractRule,
+          context,
+          'fail',
+          `Metadata declares ${missing.join(
+            ' and '
+          )}, but matching source evidence was not found.`
+        );
+  },
+};
+
+export const declaredCapabilitiesRule: ComponentQualityRule = {
+  definition: {
+    id: 'api.declared-capabilities',
+    dimension: 'behavior',
+    severity: 'required',
+    evaluation: 'automated',
+    description:
+      'Checks deterministic source evidence for declared V1 capabilities.',
+  },
+  evaluate(context) {
+    const declared = (context.metadata.capabilities ?? []).filter(
+      (capability) =>
+        capability !== 'controlled' &&
+        capability !== 'uncontrolled' &&
+        capabilityPatterns[capability] !== undefined
+    );
+
+    if (declared.length === 0) {
+      return finding(declaredCapabilitiesRule, context, 'not-applicable');
+    }
+
+    const source = readSourceSnapshot(
+      process.cwd(),
+      context.metadata,
+      context.platform
+    ).combinedSource;
+    const missing = declared.filter((capability) => {
+      const patterns = capabilityPatterns[capability] ?? [];
+      return !patterns.some((pattern) => pattern.test(source));
+    });
+
+    if (missing.length === 0) {
+      return finding(
+        declaredCapabilitiesRule,
+        context,
+        'pass',
+        undefined,
+        declared
+      );
+    }
+
+    return finding(
+      declaredCapabilitiesRule,
+      context,
+      'fail',
+      `Declared capabilities are missing matching source evidence: ${missing.join(
+        ', '
+      )}.`,
+      missing
+    );
+  },
+};
+
+export const apiFeatureQualityRules: readonly ComponentQualityRule[] = [
+  publicApiSurfaceRule,
+  controlledContractRule,
+  declaredCapabilitiesRule,
+];
