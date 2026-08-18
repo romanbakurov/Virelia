@@ -37,7 +37,9 @@ const qualitySeverities = new Set<ComponentQualityRuleSeverity>([
   'recommended',
 ]);
 
-function assertReport(report: unknown): asserts report is ComponentQualityReportV1 {
+function assertReport(
+  report: unknown
+): asserts report is ComponentQualityReportV1 {
   if (!report || typeof report !== 'object') {
     throw new ComponentQualityIssueSyncError(
       'Component Quality report must be an object.'
@@ -112,7 +114,10 @@ function assertOptionalString(value: unknown, field: string) {
 function normalizeEvidence(value: unknown): readonly string[] {
   if (value === undefined) return [];
 
-  if (!Array.isArray(value) || value.some((entry) => typeof entry !== 'string')) {
+  if (
+    !Array.isArray(value) ||
+    value.some((entry) => typeof entry !== 'string')
+  ) {
     throw new ComponentQualityIssueSyncError(
       'Component Quality report contains invalid finding evidence.'
     );
