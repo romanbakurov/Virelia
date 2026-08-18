@@ -1,5 +1,6 @@
 import type { ComponentQualityRule } from './types';
 import { apiFeatureQualityRules } from './rules/api-feature';
+import { coverageQualityRules } from './rules/coverage';
 import { platformAccessibilityQualityRules } from './rules/platform-accessibility';
 
 /**
@@ -11,4 +12,5 @@ import { platformAccessibilityQualityRules } from './rules/platform-accessibilit
 export const componentQualityRules: readonly ComponentQualityRule[] = [
   ...apiFeatureQualityRules,
   ...platformAccessibilityQualityRules,
+  ...coverageQualityRules,
 ];
