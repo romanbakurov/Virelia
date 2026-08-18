@@ -11,8 +11,15 @@ describe('component quality CLI', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(output.join('\n')).toContain('Button: NOT-APPLICABLE');
-    expect(output.join('\n')).toContain('No quality rules registered yet.');
+
+    const report = output.join('\n');
+
+    expect(report).toContain('Button: PASS');
+    expect(report).toContain('react: PASS');
+    expect(report).toContain('react-native: PASS');
+    expect(report).toContain('[PASS] api.public-surface');
+    expect(report).toContain('[NOT-APPLICABLE] api.controlled-contract');
+    expect(report).toContain('[PASS] api.declared-capabilities');
   });
 
   it('prints the V1 report as JSON', async () => {
