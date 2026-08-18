@@ -105,7 +105,7 @@ export async function runComponentQualityCheck(
 ): Promise<ComponentQualityRunResult> {
   const selection = options.platform ?? 'all';
   const rules = options.rules ?? componentQualityRules;
-  const metadataRegistry = options.metadata ?? componentMetadata;
+  const metadataRegistry = options.metadataRegistry ?? componentMetadata;
 
   const validatedMetadata = metadataRegistry.map((metadata) => {
     const validation = validateComponentMetadata(metadata);
