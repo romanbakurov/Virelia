@@ -119,8 +119,8 @@ describe('component quality GitHub issue adapter', () => {
   });
 
   it('surfaces GitHub API failures instead of silently losing operations', async () => {
-    const fetchImpl = vi.fn(async () =>
-      new Response('rate limited', { status: 403 })
+    const fetchImpl = vi.fn(
+      async () => new Response('rate limited', { status: 403 })
     );
     const client = createGitHubQualityIssueClient({
       repository: 'vellira-dev/vellira',
