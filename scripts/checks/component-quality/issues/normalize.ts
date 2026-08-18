@@ -63,11 +63,14 @@ export function normalizeActionableFindings(
       }
 
       for (const finding of platformResult.findings) {
-        const actionable =
-          finding.status === 'fail' ||
-          (includeWarn && finding.status === 'warn');
+        const status =
+          finding.status === 'fail'
+            ? 'fail'
+            : includeWarn && finding.status === 'warn'
+              ? 'warn'
+              : undefined;
 
-        if (!actionable) continue;
+        if (!status) continue;
 
         if (!finding.ruleId || !finding.dimension || !finding.severity) {
           throw new ComponentQualityIssueSyncError(
@@ -92,7 +95,7 @@ export function normalizeActionableFindings(
           ruleId: finding.ruleId,
           dimension: finding.dimension,
           severity: finding.severity,
-          status: finding.status,
+          status,
           message: finding.message,
           evidence: [...(finding.evidence ?? [])].sort(),
         });
