@@ -141,7 +141,9 @@ export async function runComponentQualityIssueSyncCli(
 
     if (!options.dryRun) {
       await applyQualityIssueSyncOperations(client, plan.operations);
-      write(`Applied ${plan.operations.length} component quality issue operation(s).`);
+      write(
+        `Applied ${plan.operations.length} component quality issue operation(s).`
+      );
     }
 
     return 0;
