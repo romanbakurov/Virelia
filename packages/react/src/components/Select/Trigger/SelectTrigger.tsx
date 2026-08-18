@@ -1,4 +1,3 @@
-import { cn } from '@utils/cn';
 import { ChevronDown, Close } from '@vellira-ui/icons';
 
 import { useSelectContext } from '../internal/SelectContext';
@@ -7,6 +6,8 @@ import { markSelectSlot, type SelectSlotComponent } from '../internal/types';
 import type { SelectTriggerProps, SelectTriggerSlotProps } from './types';
 
 import styles from './SelectTrigger.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const SelectTrigger: SelectSlotComponent<SelectTriggerSlotProps> = ({
   children,

@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "strict": true
+    "strict": true,
+    "customConditions": ["react-native", "vellira-source"]
   }
 }

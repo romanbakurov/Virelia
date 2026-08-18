@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react';
 
 import { createRetainedResourceRegistry } from '@vellira-ui/core';
 
-import { type OverlayManager, useOverlayManager } from '@/managers';
-
 import type { OverlayDismissOptions } from '../types.js';
 import { createOutsideEvent } from '../utils/events.js';
 
 import { useOverlayRegistration } from './useOverlayRegistration.js';
+
+import { type OverlayManager, useOverlayManager } from '#managers';
 
 const escapeKeyDownListeners = createRetainedResourceRegistry<OverlayManager>(
   (manager) => {

@@ -1,4 +1,3 @@
-import type { PortalProps } from '@primitives/Portal';
 import { getCompoundSlot } from '@vellira-ui/core';
 import type { ReactElement, ReactNode } from 'react';
 
@@ -18,6 +17,8 @@ import type {
   DropdownSubTriggerProps,
   DropdownTriggerProps,
 } from '../types';
+
+import type { PortalProps } from '#primitives/Portal';
 
 export type DropdownSlot =
   | 'arrow'

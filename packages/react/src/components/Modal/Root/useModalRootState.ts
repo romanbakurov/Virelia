@@ -3,10 +3,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { lightTheme } from '@vellira-ui/tokens';
 import type { CSSProperties } from 'react';
 
-import { useModal, useOverlayPresentation, useScrollLock } from '@/hooks';
-
 import { useModalDismiss } from '../internal/useModalDismiss';
 import type { ModalProps } from '../types';
+
+import { useModal, useOverlayPresentation, useScrollLock } from '#hooks';
 
 const easingMap = {
   standard: lightTheme.components.modal.motion.easing,

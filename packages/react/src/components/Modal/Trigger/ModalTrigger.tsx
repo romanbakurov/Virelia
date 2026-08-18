@@ -1,6 +1,5 @@
 import { cloneElement, isValidElement } from 'react';
 
-import { cn } from '@utils/cn';
 import type {
   HTMLAttributes,
   MouseEventHandler,
@@ -15,6 +14,8 @@ import {
 import { useModalContext } from '../internal/ModalContext';
 
 import type { ModalTriggerProps } from './types';
+
+import { cn } from '#utils/cn';
 
 type TriggerChildProps = HTMLAttributes<HTMLElement> & {
   disabled?: boolean;

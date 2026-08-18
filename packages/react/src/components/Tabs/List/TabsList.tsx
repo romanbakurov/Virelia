@@ -1,10 +1,10 @@
-import { cn } from '@utils/cn';
-
 import { useTabsContext } from '../internal/TabsContext';
 
 import type { TabsListProps } from './types';
 
 import styles from './TabsList.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const TabsList = ({
   children,

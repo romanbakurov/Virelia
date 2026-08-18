@@ -1,14 +1,14 @@
 import { forwardRef, useId, useRef } from 'react';
 
-import { useControllableState } from '@/hooks';
-import { cn } from '@/utils/cn';
-
 import { RadioGroupProvider } from '../internal/RadioGroupContext';
 import { useRadioGroupKeyboard } from '../internal/useRadioGroupKeyboard';
 
 import type { RadioGroupProps } from './types';
 
 import styles from '../RadioGroup.module.scss';
+
+import { useControllableState } from '#hooks';
+import { cn } from '#utils/cn';
 
 export const RadioGroupRoot = forwardRef<HTMLDivElement, RadioGroupProps>(
   (

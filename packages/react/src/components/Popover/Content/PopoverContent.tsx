@@ -8,22 +8,21 @@ import {
   useState,
 } from 'react';
 
-import { Portal } from '@primitives/Portal';
-import { cn } from '@utils/cn';
-
-import type { OverlayDismissReason } from '@/hooks';
-import {
-  useAriaIsolation,
-  useFocusScope,
-  useOverlayDismiss,
-  useScrollLock,
-} from '@/hooks';
-
 import { usePopoverContext } from '../Context';
 
 import type { PopoverContentProps } from './types';
 
 import styles from './PopoverContent.module.scss';
+
+import type { OverlayDismissReason } from '#hooks';
+import {
+  useAriaIsolation,
+  useFocusScope,
+  useOverlayDismiss,
+  useScrollLock,
+} from '#hooks';
+import { Portal } from '#primitives/Portal';
+import { cn } from '#utils/cn';
 
 type ContentChildProps = {
   className?: string;

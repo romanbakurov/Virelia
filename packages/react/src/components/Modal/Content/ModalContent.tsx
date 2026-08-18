@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { composeRefs } from '../internal/composeEventHandlers';
 import {
   ModalContentProvider,
@@ -13,6 +11,8 @@ import { useModalFocusTrap } from '../internal/useModalFocusTrap';
 import type { ModalContentProps } from './types';
 
 import styles from './ModalContent.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const ModalContent = ({
   children,

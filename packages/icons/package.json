@@ -32,22 +32,29 @@
   "react-native": "./dist/native.js",
   "exports": {
     ".": {
+      "react-native": {
+        "vellira-source": "./src/native.source.ts",
+        "default": "./dist/native.js"
+      },
+      "vellira-source": "./src/web.source.ts",
       "types": "./dist/web.d.ts",
-      "react-native": "./dist/native.js",
       "import": "./dist/web.js",
       "default": "./dist/web.js"
     },
     "./web": {
+      "vellira-source": "./src/web.source.ts",
       "types": "./dist/web.d.ts",
       "import": "./dist/web.js",
       "default": "./dist/web.js"
     },
     "./native": {
+      "vellira-source": "./src/native.source.ts",
       "types": "./dist/native.d.ts",
       "import": "./dist/native.js",
       "default": "./dist/native.js"
     },
     "./lottie": {
+      "vellira-source": "./src/lottie.ts",
       "types": "./dist/lottie.d.ts",
       "import": "./dist/lottie.js",
       "default": "./dist/lottie.js"

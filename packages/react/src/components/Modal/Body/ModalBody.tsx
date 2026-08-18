@@ -1,10 +1,10 @@
-import { cn } from '@utils/cn';
-
 import { useModalContentContext } from '../internal/ModalContext';
 
 import type { ModalBodyProps } from './types';
 
 import styles from './ModalBody.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const ModalBody = ({ children, className }: ModalBodyProps) => {
   const content = useModalContentContext();

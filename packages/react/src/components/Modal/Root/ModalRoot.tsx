@@ -1,9 +1,9 @@
-import { cn } from '@utils/cn';
-
 import { ModalProvider } from '../internal/ModalContext';
 import type { ModalProps } from '../types';
 
 import { useModalRootState } from './useModalRootState';
+
+import { cn } from '#utils/cn';
 
 export const ModalRoot = ({ children, className, ...props }: ModalProps) => {
   const { context, open } = useModalRootState(props);

@@ -1,7 +1,5 @@
 import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 
-import { FormField, useFormFieldContext } from '@patterns/FormField';
-import { cn } from '@utils/cn';
 import { Search } from '@vellira-ui/icons';
 import { controlSizes } from '@vellira-ui/tokens';
 import type { ChangeEvent, CSSProperties, InputHTMLAttributes } from 'react';
@@ -9,6 +7,9 @@ import type { ChangeEvent, CSSProperties, InputHTMLAttributes } from 'react';
 import type { InputProps } from './types';
 
 import styles from './Input.module.scss';
+
+import { FormField, useFormFieldContext } from '#patterns/FormField';
+import { cn } from '#utils/cn';
 
 const toneClassNameByTone = {
   default: styles.toneDefault,

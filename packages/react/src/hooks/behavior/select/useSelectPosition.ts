@@ -1,4 +1,4 @@
-import { useOverlayPresentation } from '@/hooks';
+import { useOverlayPresentation } from '#hooks';
 
 type SelectFloatingPlacement =
   | 'bottom'

@@ -137,6 +137,8 @@ async function run(): Promise<void> {
 
   const webExports: string[] = [];
   const nativeExports: string[] = [];
+  const webSourceExports: string[] = [];
+  const nativeSourceExports: string[] = [];
   const generatedFiles = new Set<string>();
 
   for (const file of files) {
@@ -167,6 +169,14 @@ async function run(): Promise<void> {
     nativeExports.push(
       `export { default as ${name} } from './generated/${name}.native.js';`
     );
+
+    webSourceExports.push(
+      `export { default as ${name} } from './generated/${name}.web';`
+    );
+
+    nativeSourceExports.push(
+      `export { default as ${name} } from './generated/${name}.native';`
+    );
   }
 
   for (const file of fs.readdirSync(ICONS)) {
@@ -183,6 +193,16 @@ async function run(): Promise<void> {
   writeFileIfChanged(
     path.join(ROOT, 'src/native.ts'),
     await format(`${nativeExports.join('\n')}\n`, PRETTIER_OPTIONS)
+  );
+
+  writeFileIfChanged(
+    path.join(ROOT, 'src/web.source.ts'),
+    await format(`${webSourceExports.join('\n')}\n`, PRETTIER_OPTIONS)
+  );
+
+  writeFileIfChanged(
+    path.join(ROOT, 'src/native.source.ts'),
+    await format(`${nativeSourceExports.join('\n')}\n`, PRETTIER_OPTIONS)
   );
 
   const lottieManifestPath = path.join(LOTTIE_ASSETS, 'manifest.json');

@@ -1,10 +1,10 @@
-import { cn } from '@utils/cn';
-
 import { useModalContext } from '../internal/ModalContext';
 
 import type { ModalOverlayProps } from './types';
 
 import styles from './ModalOverlay.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const ModalOverlay = ({
   className,

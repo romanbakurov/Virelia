@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { useTabsContext } from '../internal/TabsContext';
 
 import type { TabsContentProps } from './types';
 
 import styles from './TabsContent.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const TabsContent = ({
   value,

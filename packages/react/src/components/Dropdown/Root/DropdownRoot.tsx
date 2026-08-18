@@ -7,15 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { cn } from '@utils/cn';
 import type { KeyboardEvent, MouseEvent } from 'react';
-
-import {
-  useDropdown,
-  useOverlayDismiss,
-  useOverlayPresentation,
-  useScrollLock,
-} from '@/hooks';
 
 import { DropdownContent } from '../Content';
 import { toCssSize } from '../internal/composeEventHandlers';
@@ -31,6 +23,14 @@ import type {
 import type { DropdownProps, DropdownSelectEvent } from '../types';
 
 import styles from '../Dropdown.module.scss';
+
+import {
+  useDropdown,
+  useOverlayDismiss,
+  useOverlayPresentation,
+  useScrollLock,
+} from '#hooks';
+import { cn } from '#utils/cn';
 
 export const DropdownRoot = ({
   children,

@@ -1,7 +1,5 @@
 import { cloneElement, isValidElement, type MouseEvent } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { usePopoverContext } from '../Context';
 
 import type {
@@ -9,6 +7,8 @@ import type {
   PopoverTriggerChildProps,
   PopoverTriggerProps,
 } from './types';
+
+import { cn } from '#utils/cn';
 
 export function PopoverTrigger({
   children,

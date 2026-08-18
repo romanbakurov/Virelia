@@ -29,6 +29,11 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "react-native": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "vellira-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }

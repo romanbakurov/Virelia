@@ -5,13 +5,13 @@ import {
   type ReactElement,
 } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { usePopoverContext } from '../Context';
 
 import type { PopoverTitleProps } from './types';
 
 import styles from './PopoverTitle.module.scss';
+
+import { cn } from '#utils/cn';
 
 type TitleChildProps = HTMLAttributes<HTMLElement>;
 

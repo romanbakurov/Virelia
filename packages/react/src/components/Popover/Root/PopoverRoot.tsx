@@ -8,12 +8,12 @@ import type {
   PopoverSide,
 } from '@vellira-ui/types';
 
-import { useOverlayPresentation } from '@/hooks';
-import { useControllableState } from '@/hooks/useControllableState';
-
 import { PopoverProvider } from '../Context';
 
 import type { PopoverRootProps } from './types';
+
+import { useOverlayPresentation } from '#hooks';
+import { useControllableState } from '#hooks/useControllableState';
 
 function getPopoverPlacement(
   side: PopoverSide,

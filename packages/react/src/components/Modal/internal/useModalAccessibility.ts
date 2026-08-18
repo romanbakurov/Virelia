@@ -1,1 +1,1 @@
-export { useAriaIsolation as useModalAccessibility } from '@/hooks';
+export { useAriaIsolation as useModalAccessibility } from '#hooks';

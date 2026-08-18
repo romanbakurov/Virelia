@@ -1,13 +1,13 @@
 import { forwardRef } from 'react';
 
-import { cn } from '@utils/cn';
-
 import { composeRefs } from '../internal/composeEventHandlers';
 import { useTooltipContext } from '../internal/TooltipContext';
 
 import type { TooltipContentProps } from './types';
 
 import styles from './TooltipContent.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
   (

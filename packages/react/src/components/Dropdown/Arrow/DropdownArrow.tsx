@@ -1,10 +1,11 @@
-import { cn } from '@utils/cn';
 import { markCompoundSlot } from '@vellira-ui/core';
 
 import type { DropdownSlotComponent } from '../internal/types';
 import type { DropdownArrowProps } from '../types';
 
 import styles from './DropdownArrow.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const DropdownArrow: DropdownSlotComponent<DropdownArrowProps> = ({
   className,

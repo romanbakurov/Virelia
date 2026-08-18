@@ -1,9 +1,9 @@
-import { cn } from '@utils/cn';
-
 import { createDropdownSlot } from '../internal/DropdownCollection';
 import type { DropdownLabelProps } from '../types';
 
 import styles from '../Group/DropdownGroup.module.scss';
+
+import { cn } from '#utils/cn';
 
 export const DropdownLabel = createDropdownSlot<DropdownLabelProps>(
   'label',
