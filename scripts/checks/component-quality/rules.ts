@@ -1,5 +1,6 @@
 import type { ComponentQualityRule } from './types';
 import { apiFeatureQualityRules } from './rules/api-feature';
+import { platformAccessibilityQualityRules } from './rules/platform-accessibility';
 
 /**
  * Canonical Component Quality Checker V1 rule registry.
@@ -9,4 +10,5 @@ import { apiFeatureQualityRules } from './rules/api-feature';
  */
 export const componentQualityRules: readonly ComponentQualityRule[] = [
   ...apiFeatureQualityRules,
+  ...platformAccessibilityQualityRules,
 ];
