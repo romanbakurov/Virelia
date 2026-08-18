@@ -10,6 +10,10 @@
         "storybook-static/**"
       ]
     },
+    "@vellira-ui/docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["src/.vitepress/dist/**"]
+    },
     "typecheck": {
       "dependsOn": ["^build"],
       "outputs": []
