@@ -58,8 +58,7 @@
   ],
   "scripts": {
     "clean": "node --input-type=module -e \"import fs from 'node:fs'; fs.rmSync('dist', { recursive: true, force: true })\"",
-    "build": "pnpm run build:deps && pnpm run clean && vite build",
-    "build:deps": "pnpm --filter @vellira-ui/types build && pnpm --filter @vellira-ui/core build && pnpm --filter @vellira-ui/icons build && pnpm --filter @vellira-ui/tokens build",
+    "build": "pnpm run clean && vite build",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
     "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
