@@ -15,11 +15,7 @@ import {
   desiredIssueForFinding,
   qualityIssueLabelPolicyForAvailableLabels,
 } from './render';
-import type {
-  GitHubIssueMutationInput,
-  ManagedQualityIssue,
-  NormalizedQualityFinding,
-} from './types';
+import type { ManagedQualityIssue, NormalizedQualityFinding } from './types';
 
 const report: ComponentQualityReportV1 = {
   schemaVersion: '1',
@@ -104,16 +100,16 @@ function createMockClient(existing: readonly ManagedQualityIssue[] = []) {
     async listAvailableLabels() {
       return ['component-quality', 'api', 'react'];
     },
-    async createIssue(_input: GitHubIssueMutationInput) {
+    async createIssue() {
       mutations.push('create');
     },
-    async updateIssue(_issueNumber, _input) {
+    async updateIssue() {
       mutations.push('update');
     },
-    async closeIssue(_issueNumber) {
+    async closeIssue() {
       mutations.push('close');
     },
-    async reopenIssue(_issueNumber, _input) {
+    async reopenIssue() {
       mutations.push('reopen');
     },
   };
@@ -121,21 +117,18 @@ function createMockClient(existing: readonly ManagedQualityIssue[] = []) {
 }
 
 describe('component quality issue synchronization', () => {
-  it(
-    'normalizes FAIL findings by default and ignores WARN/PASS/not-applicable',
-    () => {
-      const findings = normalizeActionableFindings(report);
+  it('normalizes FAIL findings by default and ignores WARN/PASS/not-applicable', () => {
+    const findings = normalizeActionableFindings(report);
 
-      expect(findings).toHaveLength(1);
-      expect(findings[0]).toMatchObject({
-        componentName: 'Select',
-        platform: 'react',
-        ruleId: 'api.public-surface',
-        status: 'fail',
-        evidence: ['a.ts', 'b.ts'],
-      });
-    },
-  );
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      componentName: 'Select',
+      platform: 'react',
+      ruleId: 'api.public-surface',
+      status: 'fail',
+      evidence: ['a.ts', 'b.ts'],
+    });
+  });
 
   it('includes WARN findings only when explicitly enabled', () => {
     const findings = normalizeActionableFindings(report, { includeWarn: true });
@@ -185,11 +178,9 @@ describe('component quality issue synchronization', () => {
 
   it('does not plan duplicate writes for unchanged managed issues', () => {
     const finding = failFinding();
-    const plan = planQualityIssueSync(
-      [finding],
-      [managedIssue(finding)],
-      { base: [] }
-    );
+    const plan = planQualityIssueSync([finding], [managedIssue(finding)], {
+      base: [],
+    });
 
     expect(plan.operations).toEqual([]);
   });
@@ -207,7 +198,9 @@ describe('component quality issue synchronization', () => {
 
   it('plans close when a managed finding resolves', () => {
     const finding = failFinding();
-    const plan = planQualityIssueSync([], [managedIssue(finding)], { base: [] });
+    const plan = planQualityIssueSync([], [managedIssue(finding)], {
+      base: [],
+    });
 
     expect(plan.operations).toEqual([
       { kind: 'close', key: finding.key, issueNumber: 42 },
