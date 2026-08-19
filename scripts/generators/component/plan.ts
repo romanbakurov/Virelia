@@ -78,7 +78,7 @@ export function createComponentGenerationPlan(params: {
     category: options.category,
     profile: options.profile,
     control: options.control ?? 'value',
-    capabilities: options.capabilities,
+    capabilities: options.capabilities ?? [],
     parts: options.parts,
     force: options.force,
     targets,
