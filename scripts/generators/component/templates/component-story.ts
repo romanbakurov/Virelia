@@ -1,13 +1,19 @@
+import type { ComponentProfileArg, FormControlKindArg } from '../cli';
+
 export type StoryTemplateParams = {
   componentName: string;
   layer: string;
   isNative: boolean;
+  profile?: ComponentProfileArg;
+  control?: FormControlKindArg;
 };
 
 export function renderStoryTemplate({
   componentName,
   layer,
   isNative,
+  profile = 'base',
+  control = 'value',
 }: StoryTemplateParams) {
   const storybookPackage = isNative
     ? '@storybook/react'
@@ -28,13 +34,37 @@ export function renderStoryTemplate({
     '### Usage',
     '',
     'Replace this section with a real example before publishing the component.',
-    '',
-    'Correct usage:',
-    '',
-    '\\`\\`\\`tsx',
-    `<${componentName}>Example content</${componentName}>`,
-    '\\`\\`\\`',
   ].join('\n');
+
+  const defaultArgs =
+    profile === 'form-control'
+      ? control === 'boolean'
+        ? `{
+    defaultChecked: false,
+  }`
+        : `{
+    defaultValue: 'Example value',
+  }`
+      : `{
+    children: 'Example content',
+  }`;
+
+  const additionalStories =
+    profile === 'form-control'
+      ? `
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const Invalid: Story = {
+  args: {
+    invalid: true,
+  },
+};
+`
+      : '';
 
   return `import type { Meta, StoryObj } from '${storybookPackage}';
 
@@ -60,9 +90,7 @@ export default meta;
 type Story = StoryObj<typeof ${componentName}>;
 
 export const Default: Story = {
-  args: {
-    children: 'Example content',
-  },
+  args: ${defaultArgs},
 };
-`;
+${additionalStories}`;
 }
