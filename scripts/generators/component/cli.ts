@@ -13,7 +13,12 @@ export type ComponentCategoryArg =
   | 'utility';
 
 export type ComponentProfileArg =
-  'base' | 'form-control' | 'compound' | 'overlay';
+  | 'base'
+  | 'form-control'
+  | 'compound'
+  | 'overlay';
+
+export type FormControlKindArg = 'value' | 'boolean' | 'text';
 
 export type ComponentGeneratorOptions = {
   componentName: string;
@@ -21,6 +26,7 @@ export type ComponentGeneratorOptions = {
   layer: ComponentLayerArg;
   category: ComponentCategoryArg;
   profile: ComponentProfileArg;
+  control: FormControlKindArg;
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
@@ -48,7 +54,7 @@ const categories: readonly ComponentCategoryArg[] = [
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -57,6 +63,7 @@ export function parseComponentGeneratorArgs(
   const flags = args.filter((arg) => arg.startsWith('--'));
 
   let profile: ComponentProfileArg = 'base';
+  let control: FormControlKindArg = 'value';
   let force = false;
   let dryRun = false;
   let parts: string[] = [];
@@ -90,6 +97,19 @@ export function parseComponentGeneratorArgs(
       }
 
       profile = value;
+      continue;
+    }
+
+    if (flag.startsWith('--control=')) {
+      const value = flag.slice('--control='.length);
+
+      if (value !== 'value' && value !== 'boolean' && value !== 'text') {
+        throw new Error(
+          `Invalid form-control kind "${value}". Expected value, boolean, or text.`
+        );
+      }
+
+      control = value;
       continue;
     }
 
@@ -153,12 +173,17 @@ export function parseComponentGeneratorArgs(
     );
   }
 
+  if (control !== 'value' && profile !== 'form-control') {
+    throw new Error('--control is only supported by the form-control profile.');
+  }
+
   return {
     componentName,
     platform: platformArg as ComponentPlatformArg,
     layer: layerArg as ComponentLayerArg,
     category: categoryArg as ComponentCategoryArg,
     profile,
+    control,
     parts,
     force,
     dryRun,
