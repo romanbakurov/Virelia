@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import type { ComponentCapability } from '@vellira-ui/metadata';
 import type {
   ComponentGeneratorOptions,
   ComponentLayerArg,
@@ -23,6 +24,7 @@ export type ComponentGenerationPlan = {
   category: ComponentGeneratorOptions['category'];
   profile: ComponentProfileArg;
   control: FormControlKindArg;
+  capabilities: readonly ComponentCapability[];
   force: boolean;
   parts: readonly string[];
   targets: readonly ComponentGenerationTarget[];
@@ -76,6 +78,7 @@ export function createComponentGenerationPlan(params: {
     category: options.category,
     profile: options.profile,
     control: options.control ?? 'value',
+    capabilities: options.capabilities,
     parts: options.parts,
     force: options.force,
     targets,
