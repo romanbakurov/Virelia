@@ -38,4 +38,59 @@ describe('web overlay part templates', () => {
     expect(content).toContain("role='dialog'");
     expect(content).toContain('tabIndex={-1}');
   });
+
+  it('renders interactive Close semantics', () => {
+    const types = renderWebOverlayPartTypesTemplate({
+      componentName: 'Dialog',
+      partName: 'Close',
+    });
+    const close = renderWebOverlayPartComponentTemplate({
+      componentName: 'Dialog',
+      partName: 'Close',
+    });
+
+    expect(types).toContain('onActivate?: () => void');
+    expect(close).toContain('<button');
+    expect(close).toContain('onClick={onActivate}');
+  });
+
+  it.each(['Overlay', 'Backdrop'])(
+    'renders decorative %s semantics',
+    (partName) => {
+      const result = renderWebOverlayPartComponentTemplate({
+        componentName: 'Dialog',
+        partName,
+      });
+
+      expect(result).toContain("aria-hidden='true'");
+    }
+  );
+
+  it('renders semantic Title and Description parts', () => {
+    const title = renderWebOverlayPartComponentTemplate({
+      componentName: 'Dialog',
+      partName: 'Title',
+    });
+    const description = renderWebOverlayPartComponentTemplate({
+      componentName: 'Dialog',
+      partName: 'Description',
+    });
+
+    expect(title).toContain('<h2>');
+    expect(description).toContain('<p>');
+  });
+
+  it('renders positioning-oriented Anchor and Arrow parts', () => {
+    const anchor = renderWebOverlayPartComponentTemplate({
+      componentName: 'Popover',
+      partName: 'Anchor',
+    });
+    const arrow = renderWebOverlayPartComponentTemplate({
+      componentName: 'Popover',
+      partName: 'Arrow',
+    });
+
+    expect(anchor).toContain('<span>');
+    expect(arrow).toContain("aria-hidden='true'");
+  });
 });
