@@ -274,6 +274,9 @@ function writeMetadata(params: {
   );
 
   const profile = getComponentProfile(plan.profile);
+  const capabilities = [
+    ...new Set([...profile.capabilities, ...plan.capabilities]),
+  ];
 
   writeFile({
     filePath: plan.metadataFile,
@@ -283,7 +286,7 @@ function writeMetadata(params: {
       category: plan.category,
       platforms,
       profile: plan.profile,
-      capabilities: profile.capabilities,
+      capabilities,
     }),
     createdFiles: result.createdFiles,
   });
