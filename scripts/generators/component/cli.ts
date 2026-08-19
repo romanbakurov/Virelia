@@ -26,7 +26,7 @@ export type ComponentGeneratorOptions = {
   category: ComponentCategoryArg;
   profile: ComponentProfileArg;
   control?: FormControlKindArg;
-  capabilities: readonly ComponentCapability[];
+  capabilities?: readonly ComponentCapability[];
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
