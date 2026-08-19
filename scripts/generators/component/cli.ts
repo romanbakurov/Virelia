@@ -26,7 +26,7 @@ export type ComponentGeneratorOptions = {
   layer: ComponentLayerArg;
   category: ComponentCategoryArg;
   profile: ComponentProfileArg;
-  control: FormControlKindArg;
+  control?: FormControlKindArg;
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
