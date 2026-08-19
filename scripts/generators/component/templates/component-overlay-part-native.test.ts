@@ -65,7 +65,9 @@ describe('native overlay part templates', () => {
       });
 
       expect(result).toContain('accessibilityElementsHidden');
-      expect(result).toContain("importantForAccessibility='no-hide-descendants'");
+      expect(result).toContain(
+        "importantForAccessibility='no-hide-descendants'"
+      );
       expect(result).not.toContain('aria-hidden');
     }
   );

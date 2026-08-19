@@ -72,8 +72,8 @@ describe('component baseline test contracts', () => {
       isNative: false,
     });
 
-    expect(contract.requirements.filter((item) => item === 'portal')).toHaveLength(
-      1
-    );
+    expect(
+      contract.requirements.filter((item) => item === 'portal')
+    ).toHaveLength(1);
   });
 });
