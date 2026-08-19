@@ -18,6 +18,7 @@ describe('component generator CLI', () => {
       category: 'data-display',
       profile: 'base',
       control: 'value',
+      capabilities: [],
       parts: [],
       force: false,
       dryRun: false,
@@ -170,6 +171,51 @@ describe('component generator CLI', () => {
     ]);
 
     expect(result.control).toBe('text');
+  });
+
+  it('parses explicit metadata capabilities', () => {
+    const result = parseComponentGeneratorArgs([
+      'Accordion',
+      'both',
+      'components',
+      'navigation',
+      '--profile=compound',
+      '--capabilities=controlled,uncontrolled,disabled,keyboard',
+      '--parts=Root,Item,Trigger,Content',
+    ]);
+
+    expect(result.capabilities).toEqual([
+      'controlled',
+      'uncontrolled',
+      'disabled',
+      'keyboard',
+    ]);
+  });
+
+  it('rejects invalid metadata capabilities', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--profile=compound',
+        '--capabilities=keyboard,gesture',
+      ])
+    ).toThrow('Invalid component capabilities: gesture.');
+  });
+
+  it('rejects duplicate metadata capabilities', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--profile=compound',
+        '--capabilities=keyboard,keyboard',
+      ])
+    ).toThrow('Component capabilities must not contain duplicates.');
   });
 
   it('rejects unsupported form-control intent', () => {
