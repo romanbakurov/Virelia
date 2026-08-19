@@ -151,6 +151,8 @@ function writeTarget(params: {
       componentName,
       layer: plan.layer,
       isNative: target.isNative,
+      profile: plan.profile,
+      control: plan.control,
     }),
     createdFiles: result.createdFiles,
   });
@@ -160,6 +162,8 @@ function writeTarget(params: {
     content: renderTestTemplate({
       componentName,
       isNative: target.isNative,
+      profile: plan.profile,
+      control: plan.control,
     }),
     createdFiles: result.createdFiles,
   });
