@@ -25,6 +25,12 @@ export type ComponentGenerationResult = {
   updatedFiles: string[];
 };
 
+function resolvePlanCapabilities(plan: ComponentGenerationPlan) {
+  const profile = getComponentProfile(plan.profile);
+
+  return [...new Set([...profile.capabilities, ...plan.capabilities])];
+}
+
 function writeFile(params: {
   filePath: string;
   content: string;
@@ -103,6 +109,7 @@ function writeTarget(params: {
 }) {
   const { plan, target, result } = params;
   const { componentName } = plan;
+  const capabilities = resolvePlanCapabilities(plan);
 
   if (fs.existsSync(target.componentDir)) {
     fs.rmSync(target.componentDir, {
@@ -164,6 +171,7 @@ function writeTarget(params: {
       isNative: target.isNative,
       profile: plan.profile,
       control: plan.control,
+      capabilities,
     }),
     createdFiles: result.createdFiles,
   });
@@ -273,10 +281,7 @@ function writeMetadata(params: {
       : ('react-native' as const)
   );
 
-  const profile = getComponentProfile(plan.profile);
-  const capabilities = [
-    ...new Set([...profile.capabilities, ...plan.capabilities]),
-  ];
+  const capabilities = resolvePlanCapabilities(plan);
 
   writeFile({
     filePath: plan.metadataFile,
