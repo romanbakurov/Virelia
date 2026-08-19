@@ -13,10 +13,7 @@ export type ComponentCategoryArg =
   | 'utility';
 
 export type ComponentProfileArg =
-  | 'base'
-  | 'form-control'
-  | 'compound'
-  | 'overlay';
+  'base' | 'form-control' | 'compound' | 'overlay';
 
 export type FormControlKindArg = 'value' | 'boolean' | 'text';
 
