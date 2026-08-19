@@ -12,6 +12,8 @@ const plan: ComponentGenerationPlan = {
   layer: 'components',
   category: 'navigation',
   profile: 'compound',
+  control: 'value',
+  capabilities: [],
   parts: ['Root', 'Trigger'],
   force: false,
   targets: [],
@@ -27,7 +29,7 @@ const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
 });
 
 describe('component part template resolver', () => {
-  it('resolves web part templates', () => {
+  it('resolves interactive web Trigger templates', () => {
     const result = resolvePartTemplates({
       plan,
       target: createTarget(false),
@@ -37,10 +39,10 @@ describe('component part template resolver', () => {
     expect(result.types).toContain('TabsTriggerProps');
     expect(result.index).toContain("export * from './TabsTrigger'");
     expect(result.component).toContain('export function TabsTrigger');
-    expect(result.component).toContain('<div>');
+    expect(result.component).toContain('<button');
   });
 
-  it('resolves native part templates', () => {
+  it('resolves native Content templates', () => {
     const result = resolvePartTemplates({
       plan,
       target: createTarget(true),
