@@ -23,6 +23,7 @@ const createPlan = (
   category: 'utility',
   profile,
   control,
+  capabilities: [],
   parts: profile === 'compound' ? ['Root', 'Trigger', 'Content'] : [],
   force: false,
   targets: [],
