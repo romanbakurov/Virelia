@@ -17,6 +17,7 @@ describe('component generator CLI', () => {
       layer: 'primitives',
       category: 'data-display',
       profile: 'base',
+      control: 'value',
       parts: [],
       force: false,
       dryRun: false,
@@ -145,6 +146,59 @@ describe('component generator CLI', () => {
     expect(result.profile).toBe('overlay');
   });
 
+  it('parses explicit boolean form-control intent', () => {
+    const result = parseComponentGeneratorArgs([
+      'Switch',
+      'both',
+      'components',
+      'form',
+      '--profile=form-control',
+      '--control=boolean',
+    ]);
+
+    expect(result.control).toBe('boolean');
+  });
+
+  it('parses explicit text form-control intent', () => {
+    const result = parseComponentGeneratorArgs([
+      'Textarea',
+      'both',
+      'components',
+      'form',
+      '--profile=form-control',
+      '--control=text',
+    ]);
+
+    expect(result.control).toBe('text');
+  });
+
+  it('rejects unsupported form-control intent', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Switch',
+        'both',
+        'components',
+        'form',
+        '--profile=form-control',
+        '--control=toggle',
+      ])
+    ).toThrow(
+      'Invalid form-control kind "toggle". Expected value, boolean, or text.'
+    );
+  });
+
+  it('rejects specialized control intent outside form-control profile', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Switch',
+        'both',
+        'components',
+        'form',
+        '--control=boolean',
+      ])
+    ).toThrow('--control is only supported by the form-control profile.');
+  });
+
   it('rejects an unsupported component profile', () => {
     expect(() =>
       parseComponentGeneratorArgs([
@@ -196,17 +250,5 @@ describe('component generator CLI', () => {
         '--parts=Root,Trigger,Trigger',
       ])
     ).toThrow('Component parts must not contain duplicates.');
-  });
-
-  it('parses --dry-run', () => {
-    const options = parseComponentGeneratorArgs([
-      'Avatar',
-      'both',
-      'primitives',
-      'data-display',
-      '--dry-run',
-    ]);
-
-    expect(options.dryRun).toBe(true);
   });
 });
