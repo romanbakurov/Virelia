@@ -11,6 +11,10 @@ import {
   renderTestTemplate,
 } from './templates';
 
+import {
+  createComponentTestCoverageContract,
+  renderComponentTestCoverageContract,
+} from './coverage-contract';
 import { getComponentProfile } from './profiles';
 import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
@@ -173,6 +177,20 @@ function writeTarget(params: {
       control: plan.control,
       capabilities,
     }),
+    createdFiles: result.createdFiles,
+  });
+
+  const coverageContract = createComponentTestCoverageContract({
+    componentName,
+    profile: plan.profile,
+    control: plan.control,
+    capabilities,
+    isNative: target.isNative,
+  });
+
+  writeFile({
+    filePath: path.join(target.componentDir, `${componentName}.test-contract.json`),
+    content: renderComponentTestCoverageContract(coverageContract),
     createdFiles: result.createdFiles,
   });
 
