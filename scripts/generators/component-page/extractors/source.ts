@@ -265,11 +265,23 @@ function extractPropSymbols(params: {
     const unionOptions = getLiteralUnionOptions(type);
     const nonNullableType = checker.getNonNullableType(type);
 
-    let kind: ExtractedProp['kind'] = 'other';
-
     if (unionOptions) {
-      kind = 'select';
-    } else if (nonNullableType.flags & ts.TypeFlags.Boolean) {
+      extracted.push({
+        name: propSymbol.name,
+        kind: 'select',
+        required: (propSymbol.flags & ts.SymbolFlags.Optional) === 0,
+        type: typeText,
+        description,
+        sourceFilePath: declaration.getSourceFile().fileName,
+        options: unionOptions,
+      });
+
+      continue;
+    }
+
+    let kind: Exclude<ExtractedProp['kind'], 'select'> = 'other';
+
+    if (nonNullableType.flags & ts.TypeFlags.Boolean) {
       kind = 'boolean';
     } else if (
       nonNullableType.flags & ts.TypeFlags.String ||
@@ -290,7 +302,6 @@ function extractPropSymbols(params: {
       type: typeText,
       description,
       sourceFilePath: declaration.getSourceFile().fileName,
-      ...(unionOptions ? { options: unionOptions } : {}),
     });
   }
 

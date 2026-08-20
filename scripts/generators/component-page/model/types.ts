@@ -8,15 +8,23 @@ export type GeneratedPlatformImports = Partial<
   Record<Platform, readonly string[]>
 >;
 
-export type ExtractedProp = {
+type ExtractedPropBase = {
   name: string;
-  kind: 'boolean' | 'string' | 'number' | 'select' | 'other';
   required: boolean;
   type: string;
   description: string;
   sourceFilePath?: string;
-  options?: string[];
 };
+
+export type ExtractedProp =
+  | (ExtractedPropBase & {
+      kind: 'select';
+      options: string[];
+    })
+  | (ExtractedPropBase & {
+      kind: 'boolean' | 'string' | 'number' | 'other';
+      options?: never;
+    });
 
 export type GeneratedExample = {
   title: string;

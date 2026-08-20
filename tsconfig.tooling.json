@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": false,
+    "lib": ["ES2023"],
+    "noEmit": true,
+    "skipLibCheck": false,
+    "types": ["node"],
+    "paths": {
+      "@vellira-ui/metadata": ["packages/metadata/src/index.ts"]
+    }
+  },
+  "include": ["scripts/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scripts/**/*.test.ts",
+    "scripts/**/fixtures/**/*.ts"
+  ]
+}

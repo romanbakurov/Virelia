@@ -10,6 +10,8 @@ const orientation: ExtractedProp = {
   kind: 'select',
   options: ['horizontal', 'vertical'],
   required: false,
+  type: "'horizontal' | 'vertical'",
+  description: '',
 };
 
 const activationMode: ExtractedProp = {
@@ -17,6 +19,8 @@ const activationMode: ExtractedProp = {
   kind: 'select',
   options: ['automatic', 'manual'],
   required: false,
+  type: "'automatic' | 'manual'",
+  description: '',
 };
 
 const dir: ExtractedProp = {
@@ -24,12 +28,16 @@ const dir: ExtractedProp = {
   kind: 'select',
   options: ['ltr', 'rtl'],
   required: false,
+  type: "'ltr' | 'rtl'",
+  description: '',
 };
 
 const loop: ExtractedProp = {
   name: 'loop',
   kind: 'boolean',
   required: false,
+  type: 'boolean',
+  description: '',
 };
 
 const playgroundProps = [

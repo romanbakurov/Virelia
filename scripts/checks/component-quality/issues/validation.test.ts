@@ -64,6 +64,17 @@ describe('component quality issue report validation', () => {
     ).toThrow('invalid finding severity');
   });
 
+  it('accepts design-system findings from the metadata contract', () => {
+    expect(
+      normalizeActionableFindings(
+        malformedFindingReport({
+          ruleId: 'conformity.hardcoded-color',
+          dimension: 'design-system',
+        })
+      )
+    ).toHaveLength(1);
+  });
+
   it('rejects malformed message and evidence fields', () => {
     expect(() =>
       normalizeActionableFindings(malformedFindingReport({ message: 42 }))

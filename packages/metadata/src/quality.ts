@@ -6,19 +6,24 @@ import type { ComponentPlatform } from './component';
  * Dimensions describe why a rule exists. They do not imply that every rule is
  * applicable to every component or platform.
  */
+export const componentQualityDimensions = [
+  'implementation-completeness',
+  'public-api',
+  'type-quality',
+  'behavior',
+  'accessibility',
+  'interaction',
+  'tests',
+  'storybook',
+  'documentation',
+  'tokens-theming',
+  'design-system',
+  'exports-package',
+  'platform-quality',
+] as const;
+
 export type ComponentQualityDimension =
-  | 'implementation-completeness'
-  | 'public-api'
-  | 'type-quality'
-  | 'behavior'
-  | 'accessibility'
-  | 'interaction'
-  | 'tests'
-  | 'storybook'
-  | 'documentation'
-  | 'tokens-theming'
-  | 'exports-package'
-  | 'platform-quality';
+  (typeof componentQualityDimensions)[number];
 
 /** Required rules block readiness; recommended rules surface improvements. */
 export type ComponentQualityRuleSeverity = 'required' | 'recommended';

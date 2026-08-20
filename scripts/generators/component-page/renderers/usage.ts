@@ -155,9 +155,15 @@ ${playgroundProps
   }`;
     }
 
-    return `  if (${platformGuard}value.${prop.name} !== ${toTsLiteral(
-      initialValue ?? prop.options[0] ?? ''
-    )}) {
+    if (prop.kind === 'select') {
+      return `  if (${platformGuard}value.${prop.name} !== ${toTsLiteral(
+        initialValue ?? prop.options[0] ?? ''
+      )}) {
+    props.push(\`${prop.name}='\${value.${prop.name}}'\`);
+  }`;
+    }
+
+    return `  if (${platformGuard}value.${prop.name}) {
     props.push(\`${prop.name}='\${value.${prop.name}}'\`);
   }`;
   })
