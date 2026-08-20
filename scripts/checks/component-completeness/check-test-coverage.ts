@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import type {
   ComponentMetadata,
@@ -6,6 +7,7 @@ import type {
 } from '@vellira-ui/metadata';
 import {
   componentTestCoverageContractVersion,
+  splitComponentTestRequirements,
   type ComponentTestCoverageContract,
 } from '../../generators/component/coverage-contract';
 import { createBaselineTestContract } from '../../generators/component/test-contract';
@@ -24,6 +26,68 @@ function sameRequirements(
     actual.length === expected.length &&
     actual.every((requirement, index) => requirement === expected[index])
   );
+}
+
+function collectManualTestFiles(directory: string): string[] {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  const files: string[] = [];
+
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...collectManualTestFiles(entryPath));
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith('.manual.test.tsx')) {
+      files.push(entryPath);
+    }
+  }
+
+  return files.sort();
+}
+
+function validateManualCoverage(params: {
+  componentDir: string;
+  requirements: readonly string[];
+  platform: ComponentPlatform;
+}): ComponentCheckResult | undefined {
+  const { componentDir, requirements, platform } = params;
+
+  if (requirements.length === 0) {
+    return undefined;
+  }
+
+  const manualTests = collectManualTestFiles(componentDir);
+
+  if (manualTests.length === 0) {
+    return {
+      name: 'tests',
+      platform,
+      ok: false,
+      details: `Missing manual component-specific tests for: ${requirements.join(', ')}. Add a *.manual.test.tsx file with the coverage contract marker.`,
+    };
+  }
+
+  const combinedSource = manualTests
+    .map((file) => fs.readFileSync(file, 'utf8'))
+    .join('\n');
+  const expectedMarker = `// Coverage contract: ${requirements.join(', ')}`;
+
+  if (!combinedSource.includes(expectedMarker)) {
+    return {
+      name: 'tests',
+      platform,
+      ok: false,
+      details: `Manual test coverage is missing the required marker: ${expectedMarker}`,
+    };
+  }
+
+  return undefined;
 }
 
 export function checkTestCoverageContract(params: {
@@ -105,17 +169,21 @@ export function checkTestCoverageContract(params: {
     };
   }
 
-  const expectedBaseline = createBaselineTestContract({
+  const expectedContract = createBaselineTestContract({
     profile: metadata.profile,
     control: contract.control,
     capabilities: metadata.capabilities ?? [],
+    parts: contract.parts ?? [],
     isNative: platform === 'react-native',
   });
+  const expectedRequirements = splitComponentTestRequirements(
+    expectedContract.requirements
+  );
 
   if (
     !sameRequirements(
       contract.baseline.requirements,
-      expectedBaseline.requirements
+      expectedRequirements.baseline
     )
   ) {
     return {
@@ -126,8 +194,22 @@ export function checkTestCoverageContract(params: {
     };
   }
 
+  if (
+    !sameRequirements(
+      contract.componentSpecific.requirements ?? [],
+      expectedRequirements.componentSpecific
+    )
+  ) {
+    return {
+      name: 'tests',
+      platform,
+      ok: false,
+      details: `Manual test coverage requirements drift in ${contractFile}. Regenerate the coverage contract for ${metadata.name}.`,
+    };
+  }
+
   const testSource = fs.readFileSync(testFile, 'utf8');
-  const expectedMarker = `// Baseline contract: ${expectedBaseline.requirements.join(', ')}`;
+  const expectedMarker = `// Baseline contract: ${expectedRequirements.baseline.join(', ')}`;
 
   if (!testSource.includes(expectedMarker)) {
     return {
@@ -136,6 +218,16 @@ export function checkTestCoverageContract(params: {
       ok: false,
       details: `Generated baseline test contract is stale in ${testFile}. Expected marker: ${expectedMarker}`,
     };
+  }
+
+  const manualCoverageFailure = validateManualCoverage({
+    componentDir: path.dirname(testFile),
+    requirements: expectedRequirements.componentSpecific,
+    platform,
+  });
+
+  if (manualCoverageFailure) {
+    return manualCoverageFailure;
   }
 
   return {
