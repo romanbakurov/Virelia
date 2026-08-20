@@ -25,29 +25,40 @@ export type ComponentTestCoverageContract = {
   };
 };
 
-const manualRequirements = new Set<BaselineTestRequirement>([
-  'focus-management',
-  'portal',
-]);
-
 export function splitComponentTestRequirements(
   requirements: readonly BaselineTestRequirement[]
 ) {
-  const baseline: BaselineTestRequirement[] = [];
-  const componentSpecific: BaselineTestRequirement[] = [];
+  return {
+    baseline: [...requirements],
+    componentSpecific: [] as BaselineTestRequirement[],
+  };
+}
 
-  for (const requirement of requirements) {
-    if (manualRequirements.has(requirement)) {
-      componentSpecific.push(requirement);
-    } else {
-      baseline.push(requirement);
-    }
+function createManualRequirements(params: {
+  capabilities: readonly ComponentCapability[];
+  parts: readonly string[];
+  isNative: boolean;
+}) {
+  const { capabilities, parts, isNative } = params;
+  const requirements: BaselineTestRequirement[] = [];
+
+  if (capabilities.includes('focus-management')) {
+    requirements.push('focus-management');
   }
 
-  return {
-    baseline,
-    componentSpecific,
-  };
+  if (capabilities.includes('portal')) {
+    requirements.push('portal');
+  }
+
+  if (
+    capabilities.includes('keyboard') &&
+    !isNative &&
+    !parts.includes('Trigger')
+  ) {
+    requirements.push('keyboard');
+  }
+
+  return requirements;
 }
 
 export function createComponentTestCoverageContract(params: {
@@ -73,7 +84,11 @@ export function createComponentTestCoverageContract(params: {
     parts,
     isNative,
   });
-  const requirements = splitComponentTestRequirements(baseline.requirements);
+  const manualRequirements = createManualRequirements({
+    capabilities,
+    parts,
+    isNative,
+  });
 
   return {
     version: componentTestCoverageContractVersion,
@@ -84,12 +99,12 @@ export function createComponentTestCoverageContract(params: {
     parts,
     baseline: {
       ownership: 'generated',
-      requirements: requirements.baseline,
+      requirements: baseline.requirements,
     },
     componentSpecific: {
       ownership: 'manual',
-      required: requirements.componentSpecific.length > 0,
-      requirements: requirements.componentSpecific,
+      required: manualRequirements.length > 0,
+      requirements: manualRequirements,
     },
   };
 }
