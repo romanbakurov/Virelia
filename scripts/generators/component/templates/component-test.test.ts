@@ -32,10 +32,28 @@ describe('component test templates', () => {
     });
 
     expect(result).toContain('callback');
+    expect(result).toContain("it('renders the controlled baseline contract'");
+    expect(result).toContain("it('renders the uncontrolled baseline contract'");
+    expect(result).toContain('<Switch checked />');
+    expect(result).toContain('<Switch defaultChecked />');
     expect(result).toContain("it('renders the disabled baseline state'");
     expect(result).toContain("it('renders the required baseline state'");
     expect(result).toContain("it('renders the invalid baseline state'");
     expect(result).toContain('onCheckedChange');
+  });
+
+  it('generates value form-control controlled and uncontrolled contracts', () => {
+    const result = renderTestTemplate({
+      componentName: 'Textarea',
+      isNative: true,
+      profile: 'form-control',
+      control: 'text',
+      capabilities: ['controlled', 'uncontrolled'],
+    });
+
+    expect(result).toContain("describe('Native Textarea'");
+    expect(result).toContain("value='Controlled value'");
+    expect(result).toContain("defaultValue='Default value'");
   });
 
   it('records compound capabilities in the generated baseline contract', () => {
