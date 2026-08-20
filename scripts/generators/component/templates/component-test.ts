@@ -47,6 +47,40 @@ function renderFormControlStateTests(params: {
   return tests.length > 0 ? `\n\n${tests.join('\n\n')}` : '';
 }
 
+function renderFormControlContractTests(params: {
+  componentName: string;
+  control: FormControlKindArg;
+  requirements: readonly string[];
+}) {
+  const { componentName, control, requirements } = params;
+  const tests: string[] = [];
+  const isBoolean = control === 'boolean';
+
+  if (requirements.includes('controlled')) {
+    tests.push(`  it('renders the controlled baseline contract', () => {
+    const { container, unmount } = render(
+      <${componentName} ${isBoolean ? 'checked' : "value='Controlled value'"} />
+    );
+
+    expect(container.firstChild).not.toBeNull();
+    unmount();
+  });`);
+  }
+
+  if (requirements.includes('uncontrolled')) {
+    tests.push(`  it('renders the uncontrolled baseline contract', () => {
+    const { container, unmount } = render(
+      <${componentName} ${isBoolean ? 'defaultChecked' : "defaultValue='Default value'"} />
+    );
+
+    expect(container.firstChild).not.toBeNull();
+    unmount();
+  });`);
+  }
+
+  return tests.length > 0 ? `\n\n${tests.join('\n\n')}` : '';
+}
+
 export function renderTestTemplate({
   componentName,
   isNative,
@@ -64,6 +98,11 @@ export function renderTestTemplate({
   const contractComment = `// Baseline contract: ${contract.requirements.join(', ')}`;
 
   if (profile === 'form-control' && control === 'boolean') {
+    const contractTests = renderFormControlContractTests({
+      componentName,
+      control,
+      requirements: contract.requirements,
+    });
     const stateTests = renderFormControlStateTests({
       componentName,
       requirements: contract.requirements,
@@ -98,12 +137,17 @@ describe('${describeName}', () => {
 
     expect(container.firstChild).not.toBeNull();
     unmount();
-  });${stateTests}
+  });${contractTests}${stateTests}
 });
 `;
   }
 
   if (profile === 'form-control') {
+    const contractTests = renderFormControlContractTests({
+      componentName,
+      control,
+      requirements: contract.requirements,
+    });
     const stateTests = renderFormControlStateTests({
       componentName,
       requirements: contract.requirements,
@@ -138,7 +182,7 @@ describe('${describeName}', () => {
 
     expect(container.firstChild).not.toBeNull();
     unmount();
-  });${stateTests}
+  });${contractTests}${stateTests}
 });
 `;
   }
