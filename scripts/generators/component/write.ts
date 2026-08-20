@@ -183,6 +183,7 @@ function writeTarget(params: {
       profile: plan.profile,
       control: plan.control,
       capabilities,
+      parts: plan.parts,
     }),
     createdFiles: result.createdFiles,
   });
@@ -192,6 +193,7 @@ function writeTarget(params: {
     profile: plan.profile,
     control: plan.control,
     capabilities,
+    parts: plan.parts,
     isNative: target.isNative,
   });
 
