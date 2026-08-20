@@ -15,6 +15,10 @@ import {
   createComponentTestCoverageContract,
   renderComponentTestCoverageContract,
 } from './coverage-contract';
+import {
+  preserveManualComponentTests,
+  restoreManualComponentTests,
+} from './manual-test-ownership';
 import { getComponentProfile } from './profiles';
 import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
@@ -114,6 +118,9 @@ function writeTarget(params: {
   const { plan, target, result } = params;
   const { componentName } = plan;
   const capabilities = resolvePlanCapabilities(plan);
+  const preservedManualTests = preserveManualComponentTests(
+    target.componentDir
+  );
 
   if (fs.existsSync(target.componentDir)) {
     fs.rmSync(target.componentDir, {
@@ -215,6 +222,19 @@ function writeTarget(params: {
     content: renderReadmeTemplate({ componentName }),
     createdFiles: result.createdFiles,
   });
+
+  restoreManualComponentTests({
+    componentDir: target.componentDir,
+    tests: preservedManualTests,
+  });
+
+  for (const test of preservedManualTests) {
+    const restoredPath = path.join(target.componentDir, test.relativePath);
+
+    if (!result.updatedFiles.includes(restoredPath)) {
+      result.updatedFiles.push(restoredPath);
+    }
+  }
 
   updateBarrel({
     barrelFile: target.barrelFile,
