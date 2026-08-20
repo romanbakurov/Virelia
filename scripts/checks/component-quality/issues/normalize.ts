@@ -5,6 +5,8 @@ import type {
   ComponentQualityRuleSeverity,
 } from '@vellira-ui/metadata';
 
+import { componentQualityDimensions } from '../../../../packages/metadata/src/quality';
+
 import { componentQualityFindingKey } from './identity';
 import type {
   FindingNormalizationOptions,
@@ -17,20 +19,9 @@ const componentPlatforms = new Set<ComponentPlatform>([
   'react-native',
 ]);
 
-const qualityDimensions = new Set<ComponentQualityDimension>([
-  'implementation-completeness',
-  'public-api',
-  'type-quality',
-  'behavior',
-  'accessibility',
-  'interaction',
-  'tests',
-  'storybook',
-  'documentation',
-  'tokens-theming',
-  'exports-package',
-  'platform-quality',
-]);
+const qualityDimensions = new Set<ComponentQualityDimension>(
+  componentQualityDimensions
+);
 
 const qualitySeverities = new Set<ComponentQualityRuleSeverity>([
   'required',
