@@ -28,6 +28,7 @@ describe('component test coverage contracts', () => {
       platform: 'web',
       profile: 'form-control',
       control: 'boolean',
+      parts: [],
       baseline: {
         ownership: 'generated',
         requirements: [
@@ -44,8 +45,59 @@ describe('component test coverage contracts', () => {
       componentSpecific: {
         ownership: 'manual',
         required: false,
+        requirements: [],
       },
     });
+  });
+
+  it('keeps deep overlay behavior explicitly manual', () => {
+    const contract = createComponentTestCoverageContract({
+      componentName: 'Dialog',
+      profile: 'overlay',
+      control: 'value',
+      capabilities: [
+        'controlled',
+        'uncontrolled',
+        'keyboard',
+        'focus-management',
+        'compound-api',
+        'portal',
+      ],
+      parts: ['Root', 'Trigger', 'Content'],
+      isNative: false,
+    });
+
+    expect(contract.baseline.requirements).toEqual(
+      expect.arrayContaining([
+        'render',
+        'accessibility',
+        'accessible-name',
+        'interaction',
+        'controlled',
+        'uncontrolled',
+        'keyboard',
+        'compound-api',
+      ])
+    );
+    expect(contract.componentSpecific).toEqual({
+      ownership: 'manual',
+      required: true,
+      requirements: ['focus-management', 'portal'],
+    });
+  });
+
+  it('does not require browser keyboard coverage on native targets', () => {
+    const contract = createComponentTestCoverageContract({
+      componentName: 'Accordion',
+      profile: 'compound',
+      control: 'value',
+      capabilities: ['compound-api', 'keyboard'],
+      parts: ['Root', 'Trigger', 'Content'],
+      isNative: true,
+    });
+
+    expect(contract.baseline.requirements).toContain('interaction');
+    expect(contract.baseline.requirements).not.toContain('keyboard');
   });
 
   it('serializes deterministically with a trailing newline', () => {
@@ -54,6 +106,7 @@ describe('component test coverage contracts', () => {
       profile: 'compound',
       control: 'value',
       capabilities: ['compound-api', 'keyboard'],
+      parts: ['Root', 'Trigger', 'Content'],
       isNative: true,
     });
 
