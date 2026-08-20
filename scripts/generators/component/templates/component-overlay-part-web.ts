@@ -29,10 +29,26 @@ export type ${componentName}TriggerProps = {
 };
 `;
 
-    case 'Content':
+    case 'Close':
       return `import type { ReactNode } from 'react';
 
-export type ${componentName}ContentProps = {
+export type ${componentName}CloseProps = {
+  children?: ReactNode;
+  disabled?: boolean;
+  onActivate?: () => void;
+};
+`;
+
+    case 'Content':
+    case 'Overlay':
+    case 'Backdrop':
+    case 'Title':
+    case 'Description':
+    case 'Anchor':
+    case 'Arrow':
+      return `import type { ReactNode } from 'react';
+
+export type ${componentName}${partName}Props = {
   children?: ReactNode;
 };
 `;
@@ -81,6 +97,22 @@ export function ${componentName}Trigger({
 }
 `;
 
+    case 'Close':
+      return `import type { ${componentName}CloseProps } from './types';
+
+export function ${componentName}Close({
+  children,
+  disabled = false,
+  onActivate,
+}: ${componentName}CloseProps) {
+  return (
+    <button type='button' disabled={disabled} onClick={onActivate}>
+      {children}
+    </button>
+  );
+}
+`;
+
     case 'Content':
       return `import type { ${componentName}ContentProps } from './types';
 
@@ -92,6 +124,57 @@ export function ${componentName}Content({
       {children}
     </div>
   );
+}
+`;
+
+    case 'Overlay':
+    case 'Backdrop':
+      return `import type { ${componentName}${partName}Props } from './types';
+
+export function ${componentName}${partName}({
+  children,
+}: ${componentName}${partName}Props) {
+  return <div aria-hidden='true'>{children}</div>;
+}
+`;
+
+    case 'Title':
+      return `import type { ${componentName}TitleProps } from './types';
+
+export function ${componentName}Title({
+  children,
+}: ${componentName}TitleProps) {
+  return <h2>{children}</h2>;
+}
+`;
+
+    case 'Description':
+      return `import type { ${componentName}DescriptionProps } from './types';
+
+export function ${componentName}Description({
+  children,
+}: ${componentName}DescriptionProps) {
+  return <p>{children}</p>;
+}
+`;
+
+    case 'Anchor':
+      return `import type { ${componentName}AnchorProps } from './types';
+
+export function ${componentName}Anchor({
+  children,
+}: ${componentName}AnchorProps) {
+  return <span>{children}</span>;
+}
+`;
+
+    case 'Arrow':
+      return `import type { ${componentName}ArrowProps } from './types';
+
+export function ${componentName}Arrow({
+  children,
+}: ${componentName}ArrowProps) {
+  return <span aria-hidden='true'>{children}</span>;
 }
 `;
 

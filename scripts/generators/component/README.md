@@ -2,6 +2,11 @@
 
 Scaffolds runtime Vellira components in package source trees.
 
+Generator V2 extends the existing safe generation pipeline with richer explicit
+intent. The writer/preflight/barrel workflow remains the same; V2 behavior is
+selected through profiles, control kinds, compound parts, and optional metadata
+capabilities.
+
 ## Command
 
 ```bash
@@ -11,8 +16,11 @@ pnpm create:component \
   <layer> \
   <category> \
   [--profile=<profile>] \
+  [--control=value|boolean|text] \
+  [--capabilities=controlled,keyboard,...] \
   [--parts=Root,Trigger,Content] \
-  [--force]
+  [--force] \
+  [--dry-run]
 ```
 
 ### Basic example
@@ -21,12 +29,29 @@ pnpm create:component \
 pnpm create:component Avatar both primitives data-display
 ```
 
-### Compound example
+### Switch pilot example
 
 ```bash
-pnpm create:component Tabs both components navigation \
+pnpm create:component Switch both components form \
+  --profile=form-control \
+  --control=boolean
+```
+
+### Textarea example
+
+```bash
+pnpm create:component Textarea both components form \
+  --profile=form-control \
+  --control=text
+```
+
+### Accordion pilot example
+
+```bash
+pnpm create:component Accordion both components navigation \
   --profile=compound \
-  --parts=Root,List,Trigger,Content
+  --capabilities=controlled,uncontrolled,disabled,keyboard \
+  --parts=Root,Item,Trigger,Content
 ```
 
 ### Overlay example
@@ -63,7 +88,7 @@ pnpm create:component Dialog both components overlay \
 ## Profiles
 
 The generator supports component profiles that describe the intended component
-architecture and capabilities.
+architecture and default metadata capabilities.
 
 ### `base`
 
@@ -75,15 +100,31 @@ pnpm create:component Avatar both primitives data-display
 
 ### `form-control`
 
-Form-oriented scaffold with controlled and uncontrolled state and common field
+Form-oriented scaffold with controlled/uncontrolled intent and common field
 states.
+
+Generator V2 adds explicit control kinds:
+
+- `value` — preserves the existing V1 value-oriented scaffold and remains the
+  default for backward compatibility
+- `boolean` — generates Switch-like checked/defaultChecked APIs with Web switch
+  semantics and React Native switch accessibility/touch semantics
+- `text` — generates multiline text-entry scaffolding with a Web `textarea` and
+  React Native multiline `TextInput`
+
+Examples:
 
 ```bash
 pnpm create:component Switch both components form \
-  --profile=form-control
+  --profile=form-control \
+  --control=boolean
+
+pnpm create:component Textarea both components form \
+  --profile=form-control \
+  --control=text
 ```
 
-The profile establishes capabilities such as:
+The profile establishes baseline capabilities such as:
 
 - controlled state
 - uncontrolled state
@@ -91,15 +132,25 @@ The profile establishes capabilities such as:
 - required state
 - invalid state
 
+Generated tests and starter stories are selected from the same profile/control
+intent instead of always receiving a generic children-only scaffold.
+
 ### `compound`
 
-Compound component scaffold composed from a root and public child parts.
+Compound component scaffold composed from a root and explicitly declared public
+parts.
 
 ```bash
-pnpm create:component Tabs both components navigation \
+pnpm create:component Accordion both components navigation \
   --profile=compound \
-  --parts=Root,List,Trigger,Content
+  --parts=Root,Item,Trigger,Content
 ```
+
+Generator V2 keeps `Object.assign(Root, parts)` as the public composition model
+but allows part-specific templates. `Trigger` receives an interactive
+button/Pressable starting point and `Content` receives platform-aware visibility
+behavior; neutral parts remain generic. This is intentionally a starting point,
+not an attempt to invent the entire component API.
 
 ### `overlay`
 
@@ -116,6 +167,23 @@ Web and React Native overlay implementations intentionally use different
 platform contracts where appropriate.
 
 The default profile is `base`.
+
+## Explicit metadata capabilities
+
+Profiles define baseline metadata capabilities. Components can add deterministic
+component-specific capabilities without creating a new profile:
+
+```bash
+--capabilities=controlled,uncontrolled,disabled,keyboard
+```
+
+Explicit capabilities are validated against the canonical metadata capability
+set and merged with the selected profile capabilities without duplicates.
+
+This is useful for production components such as Accordion, where the generic
+`compound` profile should not claim keyboard or controlled-state behavior for
+every compound component, while the real component metadata still needs to
+state those capabilities explicitly.
 
 ## Parts
 
@@ -150,7 +218,7 @@ The public component intent can remain aligned across platforms while the
 generated Web and React Native implementations differ according to platform
 interaction, accessibility, and presentation requirements.
 
-## Overwriting
+## Overwriting and dry runs
 
 Existing component targets are rejected by default.
 
@@ -162,11 +230,13 @@ Use:
 
 to explicitly overwrite an existing generated component.
 
-Example:
+Use:
 
 ```bash
-pnpm create:component Avatar both primitives data-display --force
+--dry-run
 ```
+
+to validate and inspect the generation plan without writing component files.
 
 The generator performs preflight validation before writing files so invalid or
 conflicting generation plans fail before partial component output is created.
@@ -222,8 +292,8 @@ Dialog/
 └── README.md
 ```
 
-The exact generated implementation depends on the selected profile and target
-platform.
+The exact generated implementation depends on the selected profile, explicit
+intent, and target platform.
 
 ## Responsibility
 
@@ -263,6 +333,8 @@ Examples of acceptable platform divergence include:
 - browser keyboard behavior vs native back handling
 - pointer and hover behavior on web vs touch-first interaction on native
 - web focus management vs native accessibility focus behavior
+- DOM `textarea` behavior vs native multiline `TextInput`
+- Web switch semantics vs native switch/touch accessibility behavior
 - platform-specific presentation, spacing, motion, and control affordances
 
 For overlays specifically, Web scaffolding may include browser-specific
@@ -272,6 +344,64 @@ instead.
 
 The generator should preserve cross-platform API intent without treating React
 Native as a visual copy of the web implementation.
+
+## Generator V2 migration notes
+
+Generator V2 is additive:
+
+- commands without new flags keep the existing V1 `base` behavior
+- `form-control` without `--control` keeps the existing value-oriented scaffold
+- overwrite protection, preflight validation, metadata registration, and barrel
+  safety remain unchanged
+- richer behavior requires explicit generator intent rather than component-name
+  guessing
+- component-specific engineering remains expected after generation; templates
+  remove repeated repository plumbing, not design/API review
+
+The production validation path is tracked by #552. Switch (#557) is the
+`form-control` pilot and Accordion (#559) is the `compound` pilot. Reusable gaps
+found while implementing those components should be fixed in the generator or
+#502 rather than repeated manually in later launch components.
+
+## Baseline test contract and #502 boundary
+
+Generator V2 owns the deterministic input contract for baseline test generation.
+The contract is derived from the same generator intent used for component
+scaffolding and metadata:
+
+```text
+profile + control kind + effective capabilities + target platform
+                              ↓
+                  baseline test contract V1
+                              ↓
+                 generated baseline tests
+```
+
+`test-contract.ts` defines the machine-readable V1 requirements and exports an
+explicit contract version. Generated test templates consume that contract, so
+changes to generator capabilities cannot silently use an unrelated test-only
+taxonomy.
+
+Generator V2 is responsible for:
+
+- producing the baseline contract from canonical profile/capability intent
+- distinguishing Web and React Native contracts
+- using the contract when selecting generated baseline test states
+- keeping contract output deterministic and versioned
+- preserving the contract as the integration seam for #502
+
+Issue #502 remains responsible for the broader testing system built on this
+foundation:
+
+- richer reusable test profiles and capability-specific behavioral templates
+- generated/manual test ownership and safe regeneration rules
+- machine-readable coverage validation against implemented tests
+- completeness-checker integration and missing-test diagnostics
+- CI enforcement of required test capabilities
+
+This boundary intentionally keeps #510 focused on Generator V2. Completing #502
+must not require a second component taxonomy or replacing the generator profile
+and capability model established here.
 
 ## Safety
 
@@ -283,6 +413,7 @@ The generation pipeline is designed to avoid partial or destructive writes.
 - runtime and metadata barrels are updated without duplicate exports
 - cross-platform generation is planned before writes begin
 - component profile and parts constraints are validated during preflight
+- explicit capabilities are validated before the plan is written
 
 ## Validation
 
@@ -292,9 +423,11 @@ The generator is covered by tests for:
 - generation planning
 - preflight validation
 - component profiles
-- profile-driven templates
-- compound component templates
-- form-control templates
+- form-control control kinds
+- explicit metadata capabilities
+- profile-driven tests and stories
+- deterministic versioned baseline test contracts
+- compound part-specific templates
 - Web overlay templates
 - React Native overlay templates
 - Web overlay part templates
@@ -303,26 +436,19 @@ The generator is covered by tests for:
 - part template resolution
 - writer behavior
 - full generation pipeline behavior
-- cross-platform overlay generation
+- cross-platform generation
 - metadata generation and validation
 
 Before merging generator changes, run:
 
 ```bash
-pnpm exec vitest run scripts/generators/component
+pnpm exec prettier scripts/generators/component --check
 pnpm eslint scripts/generators/component
+pnpm exec vitest run scripts/generators/component
 pnpm typecheck
 ```
 
-## Current V1 profiles
-
-- `base`
-- `form-control`
-- `compound`
-- `overlay`
-
-Profiles establish generator intent, metadata capabilities, structural
-requirements, and profile-specific scaffolding.
-
-Future profiles and more specialized scaffolding can build on this foundation
-without changing the core generation pipeline.
+Generator V2 itself is complete when these contracts and safeguards pass the
+repository validation pipeline. Mass launch-component expansion is a separate
+production validation step in #552 and should only proceed after the Switch and
+Accordion pilots pass the full repository pipeline.

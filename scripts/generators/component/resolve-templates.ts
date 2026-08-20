@@ -33,10 +33,12 @@ export function resolveComponentTemplates(params: {
       return {
         types: renderFormControlTypesTemplate({
           componentName,
+          control: plan.control,
         }),
         component: renderFormControlComponentTemplate({
           componentName,
           isNative: target.isNative,
+          control: plan.control,
         }),
       };
 
