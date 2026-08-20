@@ -46,13 +46,7 @@ export function createBaselineTestContract(params: {
   parts?: readonly string[];
   isNative: boolean;
 }): ComponentBaselineTestContract {
-  const {
-    profile,
-    control,
-    capabilities,
-    parts = [],
-    isNative,
-  } = params;
+  const { profile, control, capabilities, parts = [], isNative } = params;
   const requirements: BaselineTestRequirement[] = ['render', 'accessibility'];
   const hasTrigger = parts.includes('Trigger');
 

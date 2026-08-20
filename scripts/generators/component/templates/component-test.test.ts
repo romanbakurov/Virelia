@@ -38,7 +38,7 @@ describe('component test templates', () => {
     expect(result).toContain("it('renders the required baseline state'");
     expect(result).toContain("it('renders the invalid baseline state'");
     expect(result).toContain('web switch semantics');
-    expect(result).toContain("[role=\"switch\"]");
+    expect(result).toContain('[role="switch"]');
     expect(result).toContain('onCheckedChange');
   });
 

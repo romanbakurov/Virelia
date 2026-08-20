@@ -256,7 +256,8 @@ export function renderTestTemplate({
       control,
       isNative,
     });
-    const callbackName = control === 'boolean' ? 'onCheckedChange' : 'onValueChange';
+    const callbackName =
+      control === 'boolean' ? 'onCheckedChange' : 'onValueChange';
 
     return `${contractComment}
 import { afterEach, describe, expect, it, vi } from 'vitest';
