@@ -20,11 +20,7 @@ function fixtureDirectory(packageRoot: string) {
   return path.join(packageRoot, 'src', 'components', fixtureName);
 }
 
-function runCommand(params: {
-  cwd: string;
-  args: string[];
-  label: string;
-}) {
+function runCommand(params: { cwd: string; args: string[]; label: string }) {
   const result = spawnSync('pnpm', params.args, {
     cwd: params.cwd,
     encoding: 'utf8',
@@ -91,34 +87,30 @@ afterEach(() => {
 });
 
 describe('generated component baseline tests', () => {
-  it(
-    'compile and execute for React and React Native',
-    () => {
-      for (const packageRoot of packageRoots) {
-        const isNative = packageRoot.endsWith('react-native');
+  it('compile and execute for React and React Native', () => {
+    for (const packageRoot of packageRoots) {
+      const isNative = packageRoot.endsWith('react-native');
 
-        writeFixture({ packageRoot, isNative });
+      writeFixture({ packageRoot, isNative });
 
-        runCommand({
-          cwd: packageRoot,
-          args: ['exec', 'tsc', '-p', 'tsconfig.typecheck.json', '--noEmit'],
-          label: `${isNative ? 'React Native' : 'React'} generated test typecheck`,
-        });
+      runCommand({
+        cwd: packageRoot,
+        args: ['exec', 'tsc', '-p', 'tsconfig.typecheck.json', '--noEmit'],
+        label: `${isNative ? 'React Native' : 'React'} generated test typecheck`,
+      });
 
-        runCommand({
-          cwd: packageRoot,
-          args: [
-            'exec',
-            'vitest',
-            'run',
-            `src/components/${fixtureName}/${fixtureName}.test.tsx`,
-            '--config',
-            'vitest.config.ts',
-          ],
-          label: `${isNative ? 'React Native' : 'React'} generated test execution`,
-        });
-      }
-    },
-    120_000
-  );
+      runCommand({
+        cwd: packageRoot,
+        args: [
+          'exec',
+          'vitest',
+          'run',
+          `src/components/${fixtureName}/${fixtureName}.test.tsx`,
+          '--config',
+          'vitest.config.ts',
+        ],
+        label: `${isNative ? 'React Native' : 'React'} generated test execution`,
+      });
+    }
+  }, 120_000);
 });
