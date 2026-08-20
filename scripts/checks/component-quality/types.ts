@@ -12,7 +12,7 @@ export type QualityPlatformSelection = 'all' | 'web' | 'native';
 export interface ComponentQualityRuleContext {
   metadata: ComponentMetadata;
   platform: ComponentPlatform;
-  rootDir: string;
+  rootDir?: string;
 }
 
 export interface ComponentQualityRule {
