@@ -1,8 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { createBaselineTestContract } from './test-contract';
+import {
+  componentBaselineTestContractVersion,
+  createBaselineTestContract,
+} from './test-contract';
 
 describe('component baseline test contracts', () => {
+  it('pins the machine-readable contract version', () => {
+    expect(componentBaselineTestContractVersion).toBe(1);
+  });
+
   it('creates a minimal base contract', () => {
     expect(
       createBaselineTestContract({
@@ -12,7 +19,7 @@ describe('component baseline test contracts', () => {
         isNative: false,
       })
     ).toEqual({
-      version: 1,
+      version: componentBaselineTestContractVersion,
       profile: 'base',
       control: 'value',
       platform: 'web',
