@@ -363,6 +363,45 @@ The production validation path is tracked by #552. Switch (#557) is the
 found while implementing those components should be fixed in the generator or
 #502 rather than repeated manually in later launch components.
 
+## Baseline test contract and #502 boundary
+
+Generator V2 owns the deterministic input contract for baseline test generation.
+The contract is derived from the same generator intent used for component
+scaffolding and metadata:
+
+```text
+profile + control kind + effective capabilities + target platform
+                              ↓
+                  baseline test contract V1
+                              ↓
+                 generated baseline tests
+```
+
+`test-contract.ts` defines the machine-readable V1 requirements. Generated test
+templates consume that contract, so changes to generator capabilities cannot
+silently use an unrelated test-only taxonomy.
+
+Generator V2 is responsible for:
+
+- producing the baseline contract from canonical profile/capability intent
+- distinguishing Web and React Native contracts
+- using the contract when selecting generated baseline test states
+- keeping contract output deterministic
+- preserving the contract as the integration seam for #502
+
+Issue #502 remains responsible for the broader testing system built on this
+foundation:
+
+- richer reusable test profiles and capability-specific behavioral templates
+- generated/manual test ownership and safe regeneration rules
+- machine-readable coverage validation against implemented tests
+- completeness-checker integration and missing-test diagnostics
+- CI enforcement of required test capabilities
+
+This boundary intentionally keeps #510 focused on Generator V2. Completing #502
+must not require a second component taxonomy or replacing the generator profile
+and capability model established here.
+
 ## Safety
 
 The generation pipeline is designed to avoid partial or destructive writes.
@@ -386,6 +425,7 @@ The generator is covered by tests for:
 - form-control control kinds
 - explicit metadata capabilities
 - profile-driven tests and stories
+- deterministic baseline test contracts
 - compound part-specific templates
 - Web overlay templates
 - React Native overlay templates
