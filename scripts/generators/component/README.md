@@ -377,16 +377,17 @@ profile + control kind + effective capabilities + target platform
                  generated baseline tests
 ```
 
-`test-contract.ts` defines the machine-readable V1 requirements. Generated test
-templates consume that contract, so changes to generator capabilities cannot
-silently use an unrelated test-only taxonomy.
+`test-contract.ts` defines the machine-readable V1 requirements and exports an
+explicit contract version. Generated test templates consume that contract, so
+changes to generator capabilities cannot silently use an unrelated test-only
+taxonomy.
 
 Generator V2 is responsible for:
 
 - producing the baseline contract from canonical profile/capability intent
 - distinguishing Web and React Native contracts
 - using the contract when selecting generated baseline test states
-- keeping contract output deterministic
+- keeping contract output deterministic and versioned
 - preserving the contract as the integration seam for #502
 
 Issue #502 remains responsible for the broader testing system built on this
@@ -425,7 +426,7 @@ The generator is covered by tests for:
 - form-control control kinds
 - explicit metadata capabilities
 - profile-driven tests and stories
-- deterministic baseline test contracts
+- deterministic versioned baseline test contracts
 - compound part-specific templates
 - Web overlay templates
 - React Native overlay templates
@@ -447,5 +448,7 @@ pnpm exec vitest run scripts/generators/component
 pnpm typecheck
 ```
 
-Generator V2 should only be considered ready for mass launch-component
-expansion after the production pilots in #552 pass the full repository pipeline.
+Generator V2 itself is complete when these contracts and safeguards pass the
+repository validation pipeline. Mass launch-component expansion is a separate
+production validation step in #552 and should only proceed after the Switch and
+Accordion pilots pass the full repository pipeline.
