@@ -90,9 +90,11 @@ function renderFormControlAccessibilityTests(params: {
   const { componentName, control, isNative } = params;
 
   if (control === 'boolean') {
+    const selector = isNative ? '[aria-checked]' : '[role="switch"]';
+
     return `\n\n  it('exposes ${isNative ? 'native' : 'web'} switch semantics', () => {
     const { container, unmount } = render(<${componentName} />);
-    const control = container.querySelector('[role="switch"]');
+    const control = container.querySelector('${selector}');
 
     expect(control).not.toBeNull();
     unmount();
