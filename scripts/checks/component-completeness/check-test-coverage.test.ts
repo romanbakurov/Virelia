@@ -60,7 +60,10 @@ describe('test coverage contract completeness validation', () => {
       isNative: false,
     });
 
-    fs.writeFileSync(contractFile, renderComponentTestCoverageContract(contract));
+    fs.writeFileSync(
+      contractFile,
+      renderComponentTestCoverageContract(contract)
+    );
     fs.writeFileSync(
       testFile,
       `// Baseline contract: ${contract.baseline.requirements.join(', ')}\n`
@@ -88,7 +91,10 @@ describe('test coverage contract completeness validation', () => {
       isNative: false,
     });
 
-    fs.writeFileSync(contractFile, renderComponentTestCoverageContract(contract));
+    fs.writeFileSync(
+      contractFile,
+      renderComponentTestCoverageContract(contract)
+    );
     fs.writeFileSync(
       testFile,
       `// Baseline contract: ${contract.baseline.requirements.join(', ')}\n`
@@ -117,7 +123,10 @@ describe('test coverage contract completeness validation', () => {
       isNative: false,
     });
 
-    fs.writeFileSync(contractFile, renderComponentTestCoverageContract(contract));
+    fs.writeFileSync(
+      contractFile,
+      renderComponentTestCoverageContract(contract)
+    );
     fs.writeFileSync(testFile, '// Baseline contract: render\n');
 
     const result = checkTestCoverageContract({

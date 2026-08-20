@@ -189,7 +189,10 @@ function writeTarget(params: {
   });
 
   writeFile({
-    filePath: path.join(target.componentDir, `${componentName}.test-contract.json`),
+    filePath: path.join(
+      target.componentDir,
+      `${componentName}.test-contract.json`
+    ),
     content: renderComponentTestCoverageContract(coverageContract),
     createdFiles: result.createdFiles,
   });
