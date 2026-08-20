@@ -7,10 +7,9 @@ import type {
 } from '@vellira-ui/metadata';
 import {
   componentTestCoverageContractVersion,
-  splitComponentTestRequirements,
+  createComponentTestCoverageContract,
   type ComponentTestCoverageContract,
 } from '../../generators/component/coverage-contract';
-import { createBaselineTestContract } from '../../generators/component/test-contract';
 
 import type { ComponentCheckResult } from './types';
 
@@ -169,21 +168,19 @@ export function checkTestCoverageContract(params: {
     };
   }
 
-  const expectedContract = createBaselineTestContract({
+  const expectedContract = createComponentTestCoverageContract({
+    componentName: metadata.name,
     profile: metadata.profile,
     control: contract.control,
     capabilities: metadata.capabilities ?? [],
     parts: contract.parts ?? [],
     isNative: platform === 'react-native',
   });
-  const expectedRequirements = splitComponentTestRequirements(
-    expectedContract.requirements
-  );
 
   if (
     !sameRequirements(
       contract.baseline.requirements,
-      expectedRequirements.baseline
+      expectedContract.baseline.requirements
     )
   ) {
     return {
@@ -197,7 +194,7 @@ export function checkTestCoverageContract(params: {
   if (
     !sameRequirements(
       contract.componentSpecific.requirements ?? [],
-      expectedRequirements.componentSpecific
+      expectedContract.componentSpecific.requirements
     )
   ) {
     return {
@@ -209,7 +206,7 @@ export function checkTestCoverageContract(params: {
   }
 
   const testSource = fs.readFileSync(testFile, 'utf8');
-  const expectedMarker = `// Baseline contract: ${expectedRequirements.baseline.join(', ')}`;
+  const expectedMarker = `// Baseline contract: ${expectedContract.baseline.requirements.join(', ')}`;
 
   if (!testSource.includes(expectedMarker)) {
     return {
@@ -222,7 +219,7 @@ export function checkTestCoverageContract(params: {
 
   const manualCoverageFailure = validateManualCoverage({
     componentDir: path.dirname(testFile),
-    requirements: expectedRequirements.componentSpecific,
+    requirements: expectedContract.componentSpecific.requirements,
     platform,
   });
 
