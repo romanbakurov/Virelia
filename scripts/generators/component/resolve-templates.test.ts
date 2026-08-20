@@ -15,12 +15,15 @@ const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
 });
 
 const createPlan = (
-  profile: ComponentGenerationPlan['profile']
+  profile: ComponentGenerationPlan['profile'],
+  control: ComponentGenerationPlan['control'] = 'value'
 ): ComponentGenerationPlan => ({
   componentName: 'Example',
   layer: 'components',
   category: 'utility',
   profile,
+  control,
+  capabilities: [],
   parts: profile === 'compound' ? ['Root', 'Trigger', 'Content'] : [],
   force: false,
   targets: [],
@@ -47,7 +50,7 @@ describe('component template resolver', () => {
     expect(result.component).toContain('<View');
   });
 
-  it('resolves form-control web templates', () => {
+  it('preserves value form-control templates by default', () => {
     const result = resolveComponentTemplates({
       plan: createPlan('form-control'),
       target: createTarget(false),
@@ -57,13 +60,34 @@ describe('component template resolver', () => {
     expect(result.component).toContain('<button');
   });
 
-  it('resolves form-control native templates', () => {
-    const result = resolveComponentTemplates({
-      plan: createPlan('form-control'),
+  it('resolves boolean form-control templates for Switch-like components', () => {
+    const web = resolveComponentTemplates({
+      plan: createPlan('form-control', 'boolean'),
+      target: createTarget(false),
+    });
+    const native = resolveComponentTemplates({
+      plan: createPlan('form-control', 'boolean'),
       target: createTarget(true),
     });
 
-    expect(result.component).toContain('<Pressable');
+    expect(web.types).toContain('onCheckedChange');
+    expect(web.component).toContain("role='switch'");
+    expect(native.component).toContain("accessibilityRole='switch'");
+  });
+
+  it('resolves text form-control templates for multiline controls', () => {
+    const web = resolveComponentTemplates({
+      plan: createPlan('form-control', 'text'),
+      target: createTarget(false),
+    });
+    const native = resolveComponentTemplates({
+      plan: createPlan('form-control', 'text'),
+      target: createTarget(true),
+    });
+
+    expect(web.component).toContain('<textarea');
+    expect(native.component).toContain('<TextInput');
+    expect(native.component).toContain('multiline');
   });
 
   it('resolves compound templates', () => {

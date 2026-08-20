@@ -7,45 +7,88 @@ import {
 } from './component-part';
 
 describe('component part templates', () => {
-  it('renders a web part', () => {
+  it('renders an interactive web Trigger part', () => {
     const result = renderPartComponentTemplate({
-      componentName: 'Tabs',
+      componentName: 'Accordion',
       partName: 'Trigger',
       isNative: false,
     });
 
-    expect(result).toContain('export function TabsTrigger');
-    expect(result).toContain('<div>{children}</div>');
+    expect(result).toContain('export function AccordionTrigger');
+    expect(result).toContain('<button');
+    expect(result).toContain('onClick={onActivate}');
   });
 
-  it('renders a native part', () => {
+  it('renders an interactive native Trigger part', () => {
     const result = renderPartComponentTemplate({
-      componentName: 'Tabs',
+      componentName: 'Accordion',
+      partName: 'Trigger',
+      isNative: true,
+    });
+
+    expect(result).toContain('<Pressable');
+    expect(result).toContain("accessibilityRole='button'");
+    expect(result).toContain('onPress={onActivate}');
+  });
+
+  it('renders a platform-aware Content part', () => {
+    const web = renderPartComponentTemplate({
+      componentName: 'Accordion',
+      partName: 'Content',
+      isNative: false,
+    });
+    const native = renderPartComponentTemplate({
+      componentName: 'Accordion',
       partName: 'Content',
       isNative: true,
     });
 
-    expect(result).toContain('export function TabsContent');
-    expect(result).toContain('<View>{children}</View>');
+    expect(web).toContain('<div hidden={hidden}>');
+    expect(native).toContain('if (hidden)');
+    expect(native).toContain('<View>{children}</View>');
   });
 
-  it('renders part types', () => {
-    const result = renderPartTypesTemplate({
-      componentName: 'Tabs',
-      partName: 'Root',
+  it('keeps neutral parts generic', () => {
+    const result = renderPartComponentTemplate({
+      componentName: 'Accordion',
+      partName: 'Item',
       isNative: false,
     });
 
-    expect(result).toContain('export type TabsRootProps');
+    expect(result).toContain('export function AccordionItem');
+    expect(result).toContain('<div>{children}</div>');
+  });
+
+  it('renders specialized Trigger types', () => {
+    const result = renderPartTypesTemplate({
+      componentName: 'Accordion',
+      partName: 'Trigger',
+      isNative: false,
+    });
+
+    expect(result).toContain('export type AccordionTriggerProps');
+    expect(result).toContain('disabled?: boolean');
+    expect(result).toContain('onActivate?: () => void');
+  });
+
+  it('renders specialized Content types', () => {
+    const result = renderPartTypesTemplate({
+      componentName: 'Accordion',
+      partName: 'Content',
+      isNative: false,
+    });
+
+    expect(result).toContain('export type AccordionContentProps');
+    expect(result).toContain('hidden?: boolean');
   });
 
   it('renders part index', () => {
     const result = renderPartIndexTemplate({
-      componentName: 'Tabs',
-      partName: 'List',
+      componentName: 'Accordion',
+      partName: 'Item',
       isNative: false,
     });
 
-    expect(result).toContain("export * from './TabsList';");
+    expect(result).toContain("export * from './AccordionItem';");
   });
 });

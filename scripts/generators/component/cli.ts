@@ -1,3 +1,5 @@
+import type { ComponentCapability } from '@vellira-ui/metadata';
+
 export type ComponentPlatformArg = 'web' | 'native' | 'both';
 
 export type ComponentLayerArg = 'primitives' | 'components' | 'patterns';
@@ -15,12 +17,16 @@ export type ComponentCategoryArg =
 export type ComponentProfileArg =
   'base' | 'form-control' | 'compound' | 'overlay';
 
+export type FormControlKindArg = 'value' | 'boolean' | 'text';
+
 export type ComponentGeneratorOptions = {
   componentName: string;
   platform: ComponentPlatformArg;
   layer: ComponentLayerArg;
   category: ComponentCategoryArg;
   profile: ComponentProfileArg;
+  control?: FormControlKindArg;
+  capabilities?: readonly ComponentCapability[];
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
@@ -45,10 +51,24 @@ const categories: readonly ComponentCategoryArg[] = [
   'utility',
 ];
 
+const capabilities: readonly ComponentCapability[] = [
+  'controlled',
+  'uncontrolled',
+  'disabled',
+  'required',
+  'invalid',
+  'loading',
+  'keyboard',
+  'focus-management',
+  'compound-api',
+  'portal',
+  'responsive',
+];
+
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -57,6 +77,8 @@ export function parseComponentGeneratorArgs(
   const flags = args.filter((arg) => arg.startsWith('--'));
 
   let profile: ComponentProfileArg = 'base';
+  let control: FormControlKindArg = 'value';
+  let explicitCapabilities: ComponentCapability[] = [];
   let force = false;
   let dryRun = false;
   let parts: string[] = [];
@@ -90,6 +112,52 @@ export function parseComponentGeneratorArgs(
       }
 
       profile = value;
+      continue;
+    }
+
+    if (flag.startsWith('--control=')) {
+      const value = flag.slice('--control='.length);
+
+      if (value !== 'value' && value !== 'boolean' && value !== 'text') {
+        throw new Error(
+          `Invalid form-control kind "${value}". Expected value, boolean, or text.`
+        );
+      }
+
+      control = value;
+      continue;
+    }
+
+    if (flag.startsWith('--capabilities=')) {
+      const value = flag.slice('--capabilities='.length);
+
+      if (!value.trim()) {
+        throw new Error(
+          '--capabilities must contain at least one component capability.'
+        );
+      }
+
+      const parsed = value
+        .split(',')
+        .map((capability) => capability.trim())
+        .filter(Boolean);
+
+      const invalid = parsed.filter(
+        (capability) =>
+          !capabilities.includes(capability as ComponentCapability)
+      );
+
+      if (invalid.length > 0) {
+        throw new Error(
+          `Invalid component capabilities: ${invalid.join(', ')}. Expected: ${capabilities.join(', ')}.`
+        );
+      }
+
+      if (new Set(parsed).size !== parsed.length) {
+        throw new Error('Component capabilities must not contain duplicates.');
+      }
+
+      explicitCapabilities = parsed as ComponentCapability[];
       continue;
     }
 
@@ -153,12 +221,18 @@ export function parseComponentGeneratorArgs(
     );
   }
 
+  if (control !== 'value' && profile !== 'form-control') {
+    throw new Error('--control is only supported by the form-control profile.');
+  }
+
   return {
     componentName,
     platform: platformArg as ComponentPlatformArg,
     layer: layerArg as ComponentLayerArg,
     category: categoryArg as ComponentCategoryArg,
     profile,
+    control,
+    capabilities: explicitCapabilities,
     parts,
     force,
     dryRun,
