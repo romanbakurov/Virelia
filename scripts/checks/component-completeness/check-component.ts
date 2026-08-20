@@ -6,6 +6,7 @@ import type {
   ComponentPlatform,
 } from '@vellira-ui/metadata';
 
+import { checkTestCoverageContract } from './check-test-coverage';
 import type {
   ComponentCheckResult,
   ComponentCompletenessResult,
@@ -152,12 +153,21 @@ export function checkComponentCompleteness(params: {
     );
 
     if (metadata.requirements.tests) {
+      const testFile = path.join(componentDir, `${metadata.name}.test.tsx`);
+      const contractFile = path.join(
+        componentDir,
+        `${metadata.name}.test-contract.json`
+      );
+
       checks.push(
-        checkFile(
-          path.join(componentDir, `${metadata.name}.test.tsx`),
-          'tests',
-          platform
-        )
+        fs.existsSync(contractFile)
+          ? checkTestCoverageContract({
+              contractFile,
+              testFile,
+              metadata,
+              platform,
+            })
+          : checkFile(testFile, 'tests', platform)
       );
     }
 
