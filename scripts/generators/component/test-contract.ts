@@ -1,6 +1,8 @@
 import type { ComponentCapability } from '@vellira-ui/metadata';
 import type { ComponentProfileArg, FormControlKindArg } from './cli';
 
+export const componentBaselineTestContractVersion = 1 as const;
+
 export type BaselineTestRequirement =
   | 'render'
   | 'accessibility'
@@ -16,7 +18,7 @@ export type BaselineTestRequirement =
   | 'portal';
 
 export type ComponentBaselineTestContract = {
-  version: 1;
+  version: typeof componentBaselineTestContractVersion;
   profile: ComponentProfileArg;
   control: FormControlKindArg;
   platform: 'web' | 'native';
@@ -59,7 +61,7 @@ export function createBaselineTestContract(params: {
   }
 
   return {
-    version: 1,
+    version: componentBaselineTestContractVersion,
     profile,
     control,
     platform: isNative ? 'native' : 'web',
