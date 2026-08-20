@@ -25,11 +25,7 @@ function createComponentFixture(params: {
   root: string;
   componentName: string;
   contractCapabilities?: readonly (
-    | 'controlled'
-    | 'uncontrolled'
-    | 'disabled'
-    | 'required'
-    | 'invalid'
+    'controlled' | 'uncontrolled' | 'disabled' | 'required' | 'invalid'
   )[];
 }) {
   const { root, componentName, contractCapabilities = [] } = params;
@@ -147,11 +143,7 @@ describe('component completeness test coverage integration', () => {
 
     const result = checkComponentCompleteness({
       root,
-      metadata: createMetadata([
-        'controlled',
-        'uncontrolled',
-        'disabled',
-      ]),
+      metadata: createMetadata(['controlled', 'uncontrolled', 'disabled']),
     });
 
     expect(result.ready).toBe(false);
