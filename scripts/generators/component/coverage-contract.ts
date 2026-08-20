@@ -13,6 +13,7 @@ export type ComponentTestCoverageContract = {
   platform: 'web' | 'native';
   profile: ComponentProfileArg;
   control: FormControlKindArg;
+  parts: readonly string[];
   baseline: {
     ownership: 'generated';
     requirements: readonly BaselineTestRequirement[];
@@ -20,23 +21,59 @@ export type ComponentTestCoverageContract = {
   componentSpecific: {
     ownership: 'manual';
     required: boolean;
+    requirements: readonly BaselineTestRequirement[];
   };
 };
+
+const manualRequirements = new Set<BaselineTestRequirement>([
+  'focus-management',
+  'portal',
+]);
+
+export function splitComponentTestRequirements(
+  requirements: readonly BaselineTestRequirement[]
+) {
+  const baseline: BaselineTestRequirement[] = [];
+  const componentSpecific: BaselineTestRequirement[] = [];
+
+  for (const requirement of requirements) {
+    if (manualRequirements.has(requirement)) {
+      componentSpecific.push(requirement);
+    } else {
+      baseline.push(requirement);
+    }
+  }
+
+  return {
+    baseline,
+    componentSpecific,
+  };
+}
 
 export function createComponentTestCoverageContract(params: {
   componentName: string;
   profile: ComponentProfileArg;
   control: FormControlKindArg;
   capabilities: readonly ComponentCapability[];
+  parts?: readonly string[];
   isNative: boolean;
 }): ComponentTestCoverageContract {
-  const { componentName, profile, control, capabilities, isNative } = params;
+  const {
+    componentName,
+    profile,
+    control,
+    capabilities,
+    parts = [],
+    isNative,
+  } = params;
   const baseline = createBaselineTestContract({
     profile,
     control,
     capabilities,
+    parts,
     isNative,
   });
+  const requirements = splitComponentTestRequirements(baseline.requirements);
 
   return {
     version: componentTestCoverageContractVersion,
@@ -44,13 +81,15 @@ export function createComponentTestCoverageContract(params: {
     platform: baseline.platform,
     profile,
     control,
+    parts,
     baseline: {
       ownership: 'generated',
-      requirements: baseline.requirements,
+      requirements: requirements.baseline,
     },
     componentSpecific: {
       ownership: 'manual',
-      required: false,
+      required: requirements.componentSpecific.length > 0,
+      requirements: requirements.componentSpecific,
     },
   };
 }
