@@ -36,9 +36,7 @@ const capabilityRequirements: Partial<
   required: 'required',
   invalid: 'invalid',
   keyboard: 'keyboard',
-  'focus-management': 'focus-management',
   'compound-api': 'compound-api',
-  portal: 'portal',
 };
 
 export function createBaselineTestContract(params: {
