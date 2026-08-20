@@ -42,6 +42,7 @@ describe('component baseline test contracts', () => {
     });
 
     expect(contract.platform).toBe('native');
+    expect(contract.version).toBe(componentBaselineTestContractVersion);
     expect(contract.requirements).toEqual([
       'render',
       'accessibility',
