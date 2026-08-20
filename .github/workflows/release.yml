@@ -66,7 +66,38 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm exec semantic-release
 
+      - name: Detect version sync changes
+        id: version-sync
+        shell: bash
+        run: |
+          release_paths=(
+            package.json
+            pnpm-lock.yaml
+            packages/*/package.json
+          )
+
+          if git diff --quiet -- "${release_paths[@]}"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No release-managed files changed; skipping version sync PR."
+            exit 0
+          fi
+
+          version="$(node -p "require('./package.json').version")"
+
+          if [ -z "$version" ]; then
+            echo "Unable to determine the prepared release version."
+            exit 1
+          fi
+
+          git diff --check -- "${release_paths[@]}"
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "branch=chore/sync-release-$version" >> "$GITHUB_OUTPUT"
+          echo "Release-managed files changed for version $version."
+
       - name: Verify release sync token
+        if: steps.version-sync.outputs.changed == 'true'
         env:
           RELEASE_SYNC_TOKEN: ${{ secrets.RELEASE_SYNC_TOKEN }}
         run: |
@@ -76,6 +107,7 @@ jobs:
           fi
 
       - name: Create version sync PR
+        if: steps.version-sync.outputs.changed == 'true'
         id: version-sync-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
@@ -84,15 +116,25 @@ jobs:
             package.json
             pnpm-lock.yaml
             packages/*/package.json
-          branch: chore/sync-release-versions
+          branch: ${{ steps.version-sync.outputs.branch }}
           commit-message: 'chore(release): sync package versions'
           delete-branch: true
           title: 'chore(release): sync package versions'
           body: |
-            Sync package manifests and lockfile with the version prepared by semantic-release.
+            Sync package manifests and lockfile with version ${{ steps.version-sync.outputs.version }} prepared by semantic-release.
+
+      - name: Verify version sync PR creation
+        if: steps.version-sync.outputs.changed == 'true'
+        env:
+          VERSION_SYNC_PR: ${{ steps.version-sync-pr.outputs.pull-request-number }}
+        run: |
+          if [ -z "$VERSION_SYNC_PR" ]; then
+            echo "Release-managed files changed, but no version sync PR was created or found."
+            exit 1
+          fi
 
       - name: Enable auto-merge for version sync PR
-        if: steps.version-sync-pr.outputs.pull-request-number != ''
+        if: steps.version-sync.outputs.changed == 'true' && steps.version-sync-pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.RELEASE_SYNC_TOKEN }}
         run: |
