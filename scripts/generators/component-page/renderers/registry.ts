@@ -7,6 +7,7 @@ import {
   objectPropertyKey,
 } from '../helpers/format';
 import type { GeneratedPageModel } from '../model/types';
+import type { ComponentProfile } from '../profiles/profiles';
 
 export function insertAfterMarker(params: {
   root: string;
@@ -199,18 +200,19 @@ ${demoEntries}
 `;
 }
 
-function catalogCategoryForProfile(
-  profile: 'base' | 'form-control' | 'compound' | 'overlay'
-) {
-  if (profile === 'form-control') return 'forms';
+function catalogCategoryForProfile(profile: ComponentProfile) {
+  if (profile === 'form-control' || profile === 'selection-control') {
+    return 'forms';
+  }
+
   if (profile === 'overlay') return 'overlays';
-  if (profile === 'compound') return 'navigation';
+  if (profile === 'compound' || profile === 'navigation') return 'navigation';
   return 'general';
 }
 
 export function renderCatalogEntry(params: {
   model: GeneratedPageModel;
-  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
+  componentProfile: ComponentProfile;
 }) {
   const { model, componentProfile } = params;
   const docsEntries = model.platforms
@@ -241,7 +243,7 @@ export function updateCatalogRegistry(params: {
   checkFailures: string[];
   componentsRegistryFile: string;
   model: GeneratedPageModel;
-  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
+  componentProfile: ComponentProfile;
 }) {
   const {
     root,
@@ -287,7 +289,7 @@ export function updateComponentRegistry(params: {
   componentCatalogDir: string;
   componentPagesFile: string;
   componentsRegistryFile: string;
-  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
+  componentProfile: ComponentProfile;
   model: GeneratedPageModel;
 }) {
   const {
