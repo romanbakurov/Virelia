@@ -199,6 +199,84 @@ ${demoEntries}
 `;
 }
 
+function catalogCategoryForProfile(
+  profile: 'base' | 'form-control' | 'compound' | 'overlay'
+) {
+  if (profile === 'form-control') return 'forms';
+  if (profile === 'overlay') return 'overlays';
+  if (profile === 'compound') return 'navigation';
+  return 'general';
+}
+
+export function renderCatalogEntry(params: {
+  model: GeneratedPageModel;
+  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
+}) {
+  const { model, componentProfile } = params;
+  const docsEntries = model.platforms
+    .map(
+      (platform) =>
+        `      '${platform}': 'https://docs.vellira.dev/${platform}/${model.slug}',`
+    )
+    .join('\n');
+
+  return `  {
+    slug: '${model.slug}',
+    name: '${model.componentName}',
+    description: '${model.componentName} component for Vellira applications.',
+    category: '${catalogCategoryForProfile(componentProfile)}',
+    status: 'beta',
+    order: 999,
+    platforms: [${model.platforms.map((platform) => `'${platform}'`).join(', ')}],
+    docs: {
+${docsEntries}
+    },
+  },
+`;
+}
+
+export function updateCatalogRegistry(params: {
+  root: string;
+  check: boolean;
+  checkFailures: string[];
+  componentsRegistryFile: string;
+  model: GeneratedPageModel;
+  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
+}) {
+  const {
+    root,
+    check,
+    checkFailures,
+    componentsRegistryFile,
+    model,
+    componentProfile,
+  } = params;
+  const source = fs.readFileSync(componentsRegistryFile, 'utf8');
+
+  if (source.includes(`slug: '${model.slug}'`)) {
+    console.log(`⏭ Skipped component catalog registration: ${model.slug}`);
+    return;
+  }
+
+  const marker = '] as const satisfies readonly ComponentCatalogEntry[];';
+
+  if (!source.includes(marker)) {
+    console.error(`Component catalog marker not found in ${componentsRegistryFile}`);
+    process.exit(1);
+  }
+
+  const entry = renderCatalogEntry({ model, componentProfile });
+  const nextSource = source.replace(marker, `${entry}${marker}`);
+
+  if (check) {
+    checkFailures.push(path.relative(root, componentsRegistryFile));
+    return;
+  }
+
+  fs.writeFileSync(componentsRegistryFile, nextSource);
+  console.log(`✅ Updated: ${path.relative(root, componentsRegistryFile)}`);
+}
+
 export function updateComponentRegistry(params: {
   root: string;
   force: boolean;
@@ -206,6 +284,8 @@ export function updateComponentRegistry(params: {
   checkFailures: string[];
   componentCatalogDir: string;
   componentPagesFile: string;
+  componentsRegistryFile: string;
+  componentProfile: 'base' | 'form-control' | 'compound' | 'overlay';
   model: GeneratedPageModel;
 }) {
   const {
@@ -215,6 +295,8 @@ export function updateComponentRegistry(params: {
     checkFailures,
     componentCatalogDir,
     componentPagesFile,
+    componentsRegistryFile,
+    componentProfile,
     model,
   } = params;
 
@@ -279,5 +361,14 @@ ${registryImportNames.map((name) => `  ${name},`).join('\n')}
     content: renderPageConfigSnippet(model).trimEnd().replace(/^\n/, ''),
     existsCheck: `${objectPropertyKey(model.slug)}: {`,
     slug: model.slug,
+  });
+
+  updateCatalogRegistry({
+    root,
+    check,
+    checkFailures,
+    componentsRegistryFile,
+    model,
+    componentProfile,
   });
 }
