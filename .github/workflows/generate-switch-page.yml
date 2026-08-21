@@ -36,5 +36,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add apps/website
+
+          if git diff --cached --quiet; then
+            echo "No generated website changes to commit."
+            exit 0
+          fi
+
           git commit -m "feat(website): generate Switch component page"
           git push
