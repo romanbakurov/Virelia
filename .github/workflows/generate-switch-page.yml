@@ -31,16 +31,43 @@ jobs:
       - name: Generate Switch website page through canonical generator
         run: pnpm create:component-page Switch
 
-      - name: Commit generated page
+      - name: Sync Switch public API contract
+        run: |
+          node --input-type=module <<'EOF'
+          import fs from 'node:fs';
+
+          const file = 'scripts/check-public-api.mjs';
+          let source = fs.readFileSync(file, 'utf8');
+
+          const nativeMarker = "    'SelectVirtualConfig',\n    'Tabs',";
+          if (!source.includes("    'Switch',\n    'SwitchProps',\n    'Tabs',")) {
+            source = source.replace(
+              nativeMarker,
+              "    'SelectVirtualConfig',\n    'Switch',\n    'SwitchProps',\n    'Tabs',"
+            );
+          }
+
+          const reactMarker = "    'SelectRenderValueContext',\n    'Tabs',";
+          if (!source.includes("    'SelectRenderValueContext',\n    'Switch',\n    'SwitchProps',\n    'Tabs',")) {
+            source = source.replace(
+              reactMarker,
+              "    'SelectRenderValueContext',\n    'Switch',\n    'SwitchProps',\n    'Tabs',"
+            );
+          }
+
+          fs.writeFileSync(file, source);
+          EOF
+
+      - name: Commit generated updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/website
+          git add apps/website scripts/check-public-api.mjs
 
           if git diff --cached --quiet; then
-            echo "No generated website changes to commit."
+            echo "No generated updates to commit."
             exit 0
           fi
 
-          git commit -m "feat(website): generate Switch component page"
+          git commit -m "fix(tooling): sync Switch generated contracts"
           git push
