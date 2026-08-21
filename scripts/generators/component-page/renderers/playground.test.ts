@@ -94,4 +94,22 @@ describe('buildPlaygroundArtifacts', () => {
     expect(result.nativePropBindings).not.toContain('dir=');
     expect(result.nativePropBindings).not.toContain('loop=');
   });
+
+  it('uses a lint-safe value type when a component has no playground controls', () => {
+    const result = buildPlaygroundArtifacts({
+      componentName: 'Switch',
+      slug: 'switch',
+      componentConfig: {},
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getChangeHandlerName: () => null,
+    });
+
+    expect(result.content).toContain(
+      'export type SwitchPlaygroundValue = Record<never, never>;'
+    );
+    expect(result.content).not.toContain('export type SwitchPlaygroundValue = {\n};');
+  });
 });
