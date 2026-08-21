@@ -60,28 +60,30 @@ describe('component baseline test contracts', () => {
       profile: 'compound',
       control: 'value',
       capabilities: ['compound-api', 'keyboard', 'focus-management'],
+      parts: ['Root', 'Trigger', 'Content'],
       isNative: false,
     });
 
     expect(contract.requirements).toEqual([
       'render',
       'accessibility',
+      'accessible-name',
+      'interaction',
       'compound-api',
       'keyboard',
-      'focus-management',
     ]);
   });
 
   it('does not duplicate repeated capability requirements', () => {
     const contract = createBaselineTestContract({
-      profile: 'overlay',
+      profile: 'compound',
       control: 'value',
-      capabilities: ['portal', 'portal'],
+      capabilities: ['compound-api', 'compound-api'],
       isNative: false,
     });
 
     expect(
-      contract.requirements.filter((item) => item === 'portal')
+      contract.requirements.filter((item) => item === 'compound-api')
     ).toHaveLength(1);
   });
 });
