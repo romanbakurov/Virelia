@@ -40,12 +40,8 @@ const loop: ExtractedProp = {
   description: '',
 };
 
-const playgroundProps = [
-  orientation,
-  activationMode,
-  dir,
-  loop,
-] satisfies ExtractedProp[];
+const playgroundProps = [orientation, activationMode, dir, loop] satisfies
+  ExtractedProp[];
 
 const componentConfig = {
   demo: {
@@ -83,7 +79,7 @@ describe('renderUsage', () => {
     expect(result.content).toContain("if (value.orientation !== 'horizontal')");
   });
 
-  it('omits the value parameter when there are no playground props', () => {
+  it('does not emit an unused playground value when there are no controls', () => {
     const result = renderUsage({
       componentName: 'Switch',
       componentConfig: {},
@@ -95,11 +91,9 @@ describe('renderUsage', () => {
     });
 
     expect(result.content).toContain(
-      'function createSwitchCode(\n  platform: ComponentPlatform\n)'
+      'function createSwitchCode(platform: ComponentPlatform)'
     );
     expect(result.content).toContain('const code = createSwitchCode(platform);');
-    expect(result.content).not.toContain(
-      'value: SwitchPlaygroundValue\n)'
-    );
+    expect(result.content).not.toContain('const [value] =');
   });
 });
