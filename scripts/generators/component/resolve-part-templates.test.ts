@@ -25,6 +25,7 @@ const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
   packageName: isNative ? 'react-native' : 'react',
   componentDir: '/repo/Tabs',
   barrelFile: '/repo/index.ts',
+  packageBarrelFile: '/repo/package-index.ts',
   isNative,
 });
 
