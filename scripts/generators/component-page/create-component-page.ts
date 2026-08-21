@@ -71,6 +71,7 @@ const {
   catalogRoot,
   catalogComponentsRoot,
   catalogRegistryFile,
+  componentsRegistryFile,
   componentCatalogDir,
   slug,
 } = getCatalogPaths({ root, componentName });
@@ -304,6 +305,8 @@ updateComponentRegistry({
   checkFailures,
   componentCatalogDir,
   componentPagesFile: catalogRegistryFile,
+  componentsRegistryFile,
+  componentProfile,
   model: generatedPageModel,
 });
 
