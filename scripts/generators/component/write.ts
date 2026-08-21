@@ -110,6 +110,27 @@ function updateBarrel(params: {
   updatedFiles.push(barrelFile);
 }
 
+function registerPackageRootExports(params: {
+  plan: ComponentGenerationPlan;
+  target: ComponentGenerationTarget;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, target, result } = params;
+  const exportPath = `./${plan.layer}/${plan.componentName}`;
+
+  updateBarrel({
+    barrelFile: target.packageBarrelFile,
+    exportLine: `export type { ${plan.componentName}Props } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+
+  updateBarrel({
+    barrelFile: target.packageBarrelFile,
+    exportLine: `export { ${plan.componentName} } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+}
+
 function writeTarget(params: {
   plan: ComponentGenerationPlan;
   target: ComponentGenerationTarget;
@@ -243,6 +264,8 @@ function writeTarget(params: {
     exportLine: `export * from './${componentName}';`,
     updatedFiles: result.updatedFiles,
   });
+
+  registerPackageRootExports({ plan, target, result });
 }
 
 function registerMetadata(params: {
