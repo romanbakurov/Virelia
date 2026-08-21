@@ -76,7 +76,7 @@ describe('component generator', () => {
       },
     });
 
-    expect(result.createdFiles).toHaveLength(15);
+    expect(result.createdFiles).toHaveLength(17);
 
     const webDir = path.join(root, 'packages/react/src/primitives/Avatar');
 
