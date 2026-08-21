@@ -99,6 +99,9 @@ jobs:
       - name: Typecheck
         run: pnpm ci:typecheck
 
+      - name: Tooling tests
+        run: pnpm test:tooling
+
       - name: Tests and coverage
         run: pnpm ci:test
 
