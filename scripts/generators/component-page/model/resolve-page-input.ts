@@ -1,10 +1,7 @@
-import fs from 'node:fs';
-
 import {
   existsInPackage,
   extractComponentProps,
   extractPlatformProps,
-  findTypeSourceFile,
 } from '../extractors/source';
 import { capitalize } from '../helpers/format';
 import {
@@ -12,11 +9,31 @@ import {
   mergeComponentMetadata,
   validateComponentMetadata,
 } from '../metadata/metadata';
-import type { Platform } from './types';
+import type { ExtractedProp, Platform } from './types';
 import {
   getProfileMetadata,
   inferComponentProfile,
 } from '../profiles/profiles';
+
+export function resolveExtractedProps(params: {
+  sharedProps: readonly ExtractedProp[];
+  reactApiProps: readonly ExtractedProp[];
+  nativeApiProps: readonly ExtractedProp[];
+}) {
+  if (params.sharedProps.length > 0) {
+    return [...params.sharedProps];
+  }
+
+  const propsByName = new Map<string, ExtractedProp>();
+
+  for (const prop of [...params.reactApiProps, ...params.nativeApiProps]) {
+    if (!propsByName.has(prop.name)) {
+      propsByName.set(prop.name, prop);
+    }
+  }
+
+  return [...propsByName.values()];
+}
 
 export async function resolvePageInput(params: {
   root: string;
@@ -53,7 +70,30 @@ export async function resolvePageInput(params: {
     return componentConfig.native?.demoProps ?? '';
   }
 
-  const extractedProps = extractComponentProps({ root, componentName });
+  const platforms: Platform[] = [];
+
+  if (existsInPackage({ root, packageName: 'react', componentName })) {
+    platforms.push('react');
+  }
+
+  if (existsInPackage({ root, packageName: 'react-native', componentName })) {
+    platforms.push('react-native');
+  }
+
+  const reactApiProps = platforms.includes('react')
+    ? extractPlatformProps({ root, componentName, platform: 'react' })
+    : [];
+
+  const nativeApiProps = platforms.includes('react-native')
+    ? extractPlatformProps({ root, componentName, platform: 'react-native' })
+    : [];
+
+  const sharedProps = extractComponentProps({ root, componentName });
+  const extractedProps = resolveExtractedProps({
+    sharedProps,
+    reactApiProps,
+    nativeApiProps,
+  });
 
   const excludedControls = new Set(componentConfig.demo?.excludeControls ?? []);
 
@@ -87,38 +127,15 @@ export async function resolvePageInput(params: {
     );
   }
 
-  const componentTypeFile = findTypeSourceFile({
-    root,
-    name: componentName.charAt(0).toLowerCase() + componentName.slice(1),
-  });
-
-  const componentTypeSource = componentTypeFile
-    ? fs.readFileSync(componentTypeFile, 'utf8')
-    : '';
+  const apiPropNames = new Set(
+    [...reactApiProps, ...nativeApiProps].map((prop) => prop.name)
+  );
 
   function getChangeHandlerName(propName: string) {
     const handlerName = `on${capitalize(propName)}Change`;
 
-    return componentTypeSource.includes(handlerName) ? handlerName : null;
+    return apiPropNames.has(handlerName) ? handlerName : null;
   }
-
-  const platforms: Platform[] = [];
-
-  if (existsInPackage({ root, packageName: 'react', componentName })) {
-    platforms.push('react');
-  }
-
-  if (existsInPackage({ root, packageName: 'react-native', componentName })) {
-    platforms.push('react-native');
-  }
-
-  const reactApiProps = platforms.includes('react')
-    ? extractPlatformProps({ root, componentName, platform: 'react' })
-    : [];
-
-  const nativeApiProps = platforms.includes('react-native')
-    ? extractPlatformProps({ root, componentName, platform: 'react-native' })
-    : [];
 
   return {
     componentConfig,
