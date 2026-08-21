@@ -4,32 +4,43 @@ import path from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import type { GeneratedPageModel } from '../model/types';
 import { updateCatalogRegistry } from './registry';
 
-const model = {
+const model: GeneratedPageModel = {
   componentName: 'Switch',
   slug: 'switch',
   platforms: ['react', 'react-native'],
-  reactStaticDemoProps: '',
-  nativeStaticDemoProps: '',
-  reactDemoChildren: '',
-  nativeDemoChildren: '',
-  reactImports: [],
-  nativeImports: [],
-  nativeResponsivePresentation: false,
-  playgroundProps: [],
-  playgroundInitialValues: {},
-  reactUsageChildren: '',
-  nativeUsageChildren: '',
+  demo: {
+    staticProps: {},
+    children: {},
+    imports: {},
+    responsivePresentation: false,
+  },
+  playground: {
+    props: [],
+    initialValues: {},
+  },
+  usage: {
+    children: {},
+  },
   examples: [],
-  reactAccessibilityItems: [],
-  nativeAccessibilityItems: [],
-  reactApiSections: [],
-  nativeApiSections: [],
-  reactInheritedProps: [],
-  nativeInheritedProps: [],
+  accessibility: {
+    react: [],
+    'react-native': [],
+  },
+  api: {
+    react: {
+      sections: [],
+      inheritedProps: [],
+    },
+    'react-native': {
+      sections: [],
+      inheritedProps: [],
+    },
+  },
   related: [],
-} as const;
+};
 
 describe('component catalog registration', () => {
   it('adds a generated page to the website component catalog once', () => {
