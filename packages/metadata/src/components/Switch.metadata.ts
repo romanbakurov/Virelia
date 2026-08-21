@@ -1,4 +1,4 @@
-import { defineComponentMetadata } from '@vellira-ui/metadata';
+import { defineComponentMetadata } from '../defineComponentMetadata';
 
 export const switchMetadata = defineComponentMetadata({
   name: 'Switch',
