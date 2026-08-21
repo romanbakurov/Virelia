@@ -261,7 +261,9 @@ export function updateCatalogRegistry(params: {
   const marker = '] as const satisfies readonly ComponentCatalogEntry[];';
 
   if (!source.includes(marker)) {
-    console.error(`Component catalog marker not found in ${componentsRegistryFile}`);
+    console.error(
+      `Component catalog marker not found in ${componentsRegistryFile}`
+    );
     process.exit(1);
   }
 

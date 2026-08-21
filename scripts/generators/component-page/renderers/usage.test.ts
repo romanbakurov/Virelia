@@ -40,8 +40,12 @@ const loop: ExtractedProp = {
   description: '',
 };
 
-const playgroundProps = [orientation, activationMode, dir, loop] satisfies
-  ExtractedProp[];
+const playgroundProps = [
+  orientation,
+  activationMode,
+  dir,
+  loop,
+] satisfies ExtractedProp[];
 
 const componentConfig = {
   demo: {
@@ -93,7 +97,9 @@ describe('renderUsage', () => {
     expect(result.content).toContain(
       'function createSwitchCode(platform: ComponentPlatform)'
     );
-    expect(result.content).toContain('const code = createSwitchCode(platform);');
+    expect(result.content).toContain(
+      'const code = createSwitchCode(platform);'
+    );
     expect(result.content).not.toContain('const [value] =');
   });
 });

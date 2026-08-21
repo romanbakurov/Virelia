@@ -40,8 +40,12 @@ const loop: ExtractedProp = {
   description: '',
 };
 
-const playgroundProps = [orientation, activationMode, dir, loop] satisfies
-  ExtractedProp[];
+const playgroundProps = [
+  orientation,
+  activationMode,
+  dir,
+  loop,
+] satisfies ExtractedProp[];
 
 const componentConfig = {
   demo: {
