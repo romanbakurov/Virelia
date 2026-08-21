@@ -25,6 +25,11 @@ export function getCatalogPaths(params: {
     'registry',
     'componentPages.ts'
   );
+  const componentsRegistryFile = path.join(
+    catalogRoot,
+    'registry',
+    'components.ts'
+  );
   const componentCatalogDir = path.join(catalogComponentsRoot, componentName);
   const slug = slugify(componentName);
 
@@ -32,6 +37,7 @@ export function getCatalogPaths(params: {
     catalogRoot,
     catalogComponentsRoot,
     catalogRegistryFile,
+    componentsRegistryFile,
     componentCatalogDir,
     slug,
   };
