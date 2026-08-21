@@ -6,7 +6,6 @@ describe('renderMetadataTemplate', () => {
   it('uses a source-safe relative import inside the metadata package', () => {
     const result = renderMetadataTemplate({
       componentName: 'Switch',
-      isNative: false,
       layer: 'primitives',
       category: 'form',
       platforms: ['react', 'react-native'],
