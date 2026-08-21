@@ -82,4 +82,24 @@ describe('renderUsage', () => {
 
     expect(result.content).toContain("if (value.orientation !== 'horizontal')");
   });
+
+  it('omits the value parameter when there are no playground props', () => {
+    const result = renderUsage({
+      componentName: 'Switch',
+      componentConfig: {},
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(result.content).toContain(
+      'function createSwitchCode(\n  platform: ComponentPlatform\n)'
+    );
+    expect(result.content).toContain('const code = createSwitchCode(platform);');
+    expect(result.content).not.toContain(
+      'value: SwitchPlaygroundValue\n)'
+    );
+  });
 });
