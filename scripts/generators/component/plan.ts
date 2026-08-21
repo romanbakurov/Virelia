@@ -15,6 +15,7 @@ export type ComponentGenerationTarget = {
   packageName: ComponentTargetPackage;
   componentDir: string;
   barrelFile: string;
+  packageBarrelFile: string;
   isNative: boolean;
 };
 
@@ -68,6 +69,13 @@ export function createComponentGenerationPlan(params: {
       packageName,
       'src',
       options.layer,
+      'index.ts'
+    ),
+    packageBarrelFile: path.join(
+      root,
+      'packages',
+      packageName,
+      'src',
       'index.ts'
     ),
   }));
