@@ -79,6 +79,11 @@ export function renderUsage(params: {
   const nativePlatformImports = createPlatformImports('react-native');
   const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
   const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
+  const usageValueParameter =
+    playgroundProps.length > 0
+      ? `,\n  value: ${componentName}PlaygroundValue`
+      : '';
+  const usageValueArgument = playgroundProps.length > 0 ? ', value' : '';
 
   const content = `${generatedFileHeader}'use client';
 
@@ -99,8 +104,7 @@ type ${componentName}UsageProps = {
 };
 
 function create${componentName}Code(
-  platform: ComponentPlatform,
-  value: ${componentName}PlaygroundValue
+  platform: ComponentPlatform${usageValueParameter}
 ) {
   const packageName =
     platform === 'react'
@@ -195,7 +199,7 @@ export function ${componentName}Usage({
       initial${componentName}PlaygroundValue
     );
 
-  const code = create${componentName}Code(platform, value);
+  const code = create${componentName}Code(platform${usageValueArgument});
 
   return (
     <section className={styles.root}>
