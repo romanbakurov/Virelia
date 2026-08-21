@@ -103,4 +103,6 @@ export type { PortalProps, PortalProviderProps } from './primitives/Portal';
 export { Portal, PortalProvider } from './primitives/Portal';
 export type { RadioProps } from './primitives/Radio';
 export { Radio } from './primitives/Radio';
+export type { SwitchProps } from './primitives/Switch';
+export { Switch } from './primitives/Switch';
 export * from './theme';
