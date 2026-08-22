@@ -16,7 +16,15 @@ export type RunComponentGeneratorResult = {
 function getPlannedCreatedFiles(
   plan: ReturnType<typeof createComponentGenerationPlan>
 ) {
-  const files: string[] = [];
+  const files: string[] = [
+    plan.metadataFile,
+    plan.tokenFactoryFile,
+    ...plan.tokenThemeTargets.map((target) => target.componentFile),
+  ];
+
+  if (plan.profile === 'form-control') {
+    files.push(plan.sharedTypesFile);
+  }
 
   for (const target of plan.targets) {
     const { componentDir, isNative } = target;
@@ -28,6 +36,7 @@ function getPlannedCreatedFiles(
       path.join(componentDir, `${componentName}.tsx`),
       path.join(componentDir, `${componentName}.stories.tsx`),
       path.join(componentDir, `${componentName}.test.tsx`),
+      path.join(componentDir, `${componentName}.test-contract.json`),
       path.join(
         componentDir,
         isNative ? `${componentName}.styles.ts` : `${componentName}.module.scss`
@@ -46,18 +55,27 @@ function getPlannedCreatedFiles(
     }
   }
 
-  files.push(plan.metadataFile);
-
   return files;
 }
 
 function getPlannedUpdatedFiles(
   plan: ReturnType<typeof createComponentGenerationPlan>
 ) {
-  return [
-    ...plan.targets.map((target) => target.barrelFile),
+  const files = [
+    ...plan.targets.flatMap((target) => [
+      target.barrelFile,
+      target.packageBarrelFile,
+    ]),
     plan.metadataBarrelFile,
+    plan.tokenFactoryBarrelFile,
+    ...plan.tokenThemeTargets.map((target) => target.barrelFile),
   ];
+
+  if (plan.profile === 'form-control') {
+    files.push(plan.sharedTypesBarrelFile);
+  }
+
+  return [...new Set(files)];
 }
 
 export function runComponentGenerator(params: {
