@@ -6,6 +6,7 @@ import {
   renderMetadataTemplate,
   renderNativeStylesTemplate,
   renderReadmeTemplate,
+  renderSharedFormControlTypesTemplate,
   renderStoryTemplate,
   renderStylesTemplate,
   renderTestTemplate,
@@ -46,6 +47,7 @@ function writeFile(params: {
 }) {
   const { filePath, content, createdFiles } = params;
 
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
   createdFiles.push(filePath);
 }
@@ -130,6 +132,34 @@ function registerPackageRootExports(params: {
   updateBarrel({
     barrelFile: target.packageBarrelFile,
     exportLine: `export { ${plan.componentName} } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+}
+
+function writeSharedTypes(params: {
+  plan: ComponentGenerationPlan;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, result } = params;
+
+  if (plan.profile !== 'form-control') {
+    return;
+  }
+
+  writeFile({
+    filePath: plan.sharedTypesFile,
+    content: renderSharedFormControlTypesTemplate({
+      componentName: plan.componentName,
+      control: plan.control,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  const sharedFileName = path.basename(plan.sharedTypesFile, '.ts');
+
+  updateBarrel({
+    barrelFile: plan.sharedTypesBarrelFile,
+    exportLine: `export * from './${sharedFileName}';`,
     updatedFiles: result.updatedFiles,
   });
 }
@@ -238,8 +268,16 @@ function writeTarget(params: {
         : `${componentName}.module.scss`
     ),
     content: target.isNative
-      ? renderNativeStylesTemplate({ componentName })
-      : renderStylesTemplate({ componentName }),
+      ? renderNativeStylesTemplate({
+          componentName,
+          profile: plan.profile,
+          control: plan.control,
+        })
+      : renderStylesTemplate({
+          componentName,
+          profile: plan.profile,
+          control: plan.control,
+        }),
     createdFiles: result.createdFiles,
   });
 
@@ -379,6 +417,8 @@ export function writeComponentGenerationPlan(
     createdFiles: [],
     updatedFiles: [],
   };
+
+  writeSharedTypes({ plan, result });
 
   for (const target of plan.targets) {
     writeTarget({
