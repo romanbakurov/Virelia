@@ -22,7 +22,7 @@ describe('form-control component templates', () => {
     expect(result).toContain('onValueChange?: (value: string) => void');
   });
 
-  it('makes platform types extend the generated shared contract', () => {
+  it('makes platform types alias the generated shared contract', () => {
     const result = renderFormControlTypesTemplate({
       componentName: 'Switch',
       control: 'boolean',
@@ -31,9 +31,8 @@ describe('form-control component templates', () => {
     expect(result).toContain(
       "import type { BaseSwitchProps } from '@vellira-ui/types';"
     );
-    expect(result).toContain(
-      'export interface SwitchProps extends BaseSwitchProps {}'
-    );
+    expect(result).toContain('export type SwitchProps = BaseSwitchProps;');
+    expect(result).not.toContain('interface SwitchProps extends');
   });
 
   it('renders a web value-control scaffold', () => {
