@@ -39,6 +39,7 @@ function generateVariables(
   prefix: string,
   options?: {
     numberUnit?: string;
+    unitlessNumberKeys?: readonly string[];
   }
 ): string {
   let css = '';
@@ -52,7 +53,11 @@ function generateVariables(
     }
 
     if (typeof value === 'number') {
-      css += `  --${name}: ${value}${options?.numberUnit ?? ''};\n`;
+      const numberUnit = options?.unitlessNumberKeys?.includes(key)
+        ? ''
+        : (options?.numberUnit ?? '');
+
+      css += `  --${name}: ${value}${numberUnit};\n`;
       continue;
     }
 
@@ -126,6 +131,7 @@ function generateThemeBlock(
     ''
   )}${generateVariables(theme.components, '', {
     numberUnit: 'px',
+    unitlessNumberKeys: ['pressScale'],
   })}}\n`;
 }
 
