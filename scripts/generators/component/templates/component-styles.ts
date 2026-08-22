@@ -15,13 +15,12 @@ export function renderStylesTemplate({
     return `.root {
   position: relative;
   display: inline-flex;
-  width: calc(var(--switch-geometry-track-width) * 1px);
-  height: calc(var(--switch-geometry-track-height) * 1px);
+  width: var(--switch-geometry-track-width);
+  height: var(--switch-geometry-track-height);
   flex-shrink: 0;
   align-items: center;
-  padding: calc(var(--switch-geometry-padding) * 1px);
-  border: calc(var(--switch-geometry-border-width) * 1px) solid
-    var(--switch-off-track-border);
+  padding: var(--switch-geometry-padding);
+  border: var(--switch-geometry-border-width) solid var(--switch-off-track-border);
   border-radius: var(--radius-full);
   background: var(--switch-off-track-bg);
   cursor: pointer;
@@ -51,9 +50,8 @@ export function renderStylesTemplate({
 }
 
 .root:focus-visible {
-  outline: calc(var(--switch-geometry-focus-ring-width) * 1px) solid
-    var(--switch-focus-ring);
-  outline-offset: calc(var(--switch-geometry-focus-ring-offset) * 1px);
+  outline: var(--switch-geometry-focus-ring-width) solid var(--switch-focus-ring);
+  outline-offset: var(--switch-geometry-focus-ring-offset);
 }
 
 .root[aria-invalid='true'] {
@@ -72,8 +70,8 @@ export function renderStylesTemplate({
 
 .thumb {
   display: block;
-  width: calc(var(--switch-geometry-thumb-size) * 1px);
-  height: calc(var(--switch-geometry-thumb-size) * 1px);
+  width: var(--switch-geometry-thumb-size);
+  height: var(--switch-geometry-thumb-size);
   border-radius: var(--radius-full);
   background: var(--switch-off-thumb-bg);
   transform: translateX(0);
@@ -84,7 +82,7 @@ export function renderStylesTemplate({
 
 .root[data-state='checked'] .thumb {
   background: var(--switch-on-default-thumb-bg);
-  transform: translateX(calc(var(--switch-geometry-thumb-travel) * 1px));
+  transform: translateX(var(--switch-geometry-thumb-travel));
 }
 
 .root[data-state='checked']:hover:not(:disabled) .thumb {
