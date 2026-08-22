@@ -19,14 +19,15 @@ export function renderStylesTemplate({
   height: 24px;
   flex-shrink: 0;
   align-items: center;
-  padding: var(--space-0-5);
+  padding: 1px;
   border: 2px solid var(--checkbox-default-border);
   border-radius: var(--radius-full);
   background: var(--checkbox-default-bg);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    transform 0.18s ease;
 }
 
 .root[data-state='checked'] {
@@ -76,7 +77,7 @@ export function renderStylesTemplate({
   width: 18px;
   height: 18px;
   border-radius: var(--radius-full);
-  background: var(--checkbox-default-fg);
+  background: var(--checkbox-primary-default-fg);
   transform: translateX(0);
   transition:
     background-color 0.2s ease,
@@ -84,7 +85,6 @@ export function renderStylesTemplate({
 }
 
 .root[data-state='checked'] .thumb {
-  background: var(--checkbox-primary-default-fg);
   transform: translateX(20px);
 }
 
