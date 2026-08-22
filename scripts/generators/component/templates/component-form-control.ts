@@ -54,7 +54,7 @@ export function renderFormControlTypesTemplate({
 }: FormControlTypesTemplateParams) {
   return `import type { Base${componentName}Props } from '@vellira-ui/types';
 
-export interface ${componentName}Props extends Base${componentName}Props {}
+export type ${componentName}Props = Base${componentName}Props;
 `;
 }
 
@@ -64,6 +64,7 @@ function renderBooleanFormControlComponent({
 }: FormControlTemplateParams) {
   if (isNative) {
     return `import { useState } from 'react';
+
 import { Pressable, View } from 'react-native';
 
 import { useThemeStyles } from '../../theme';
@@ -139,8 +140,9 @@ export function ${componentName}({
 
   return `import { useState } from 'react';
 
-import styles from './${componentName}.module.scss';
 import type { ${componentName}Props } from './types';
+
+import styles from './${componentName}.module.scss';
 
 export function ${componentName}({
   checked,
