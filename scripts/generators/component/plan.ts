@@ -19,6 +19,12 @@ export type ComponentGenerationTarget = {
   isNative: boolean;
 };
 
+export type ComponentTokenThemeTarget = {
+  theme: 'light' | 'dark' | 'highContrast';
+  componentFile: string;
+  barrelFile: string;
+};
+
 export type ComponentGenerationPlan = {
   componentName: string;
   layer: ComponentLayerArg;
@@ -33,6 +39,9 @@ export type ComponentGenerationPlan = {
   sharedTypesBarrelFile: string;
   metadataFile: string;
   metadataBarrelFile: string;
+  tokenFactoryFile: string;
+  tokenFactoryBarrelFile: string;
+  tokenThemeTargets: readonly ComponentTokenThemeTarget[];
 };
 
 function getTargetPackages(
@@ -83,6 +92,33 @@ export function createComponentGenerationPlan(params: {
   }));
 
   const sharedTypesFileName = `${options.componentName[0].toLowerCase()}${options.componentName.slice(1)}.ts`;
+  const tokenComponentFileName = `${options.componentName[0].toLowerCase()}${options.componentName.slice(1)}.ts`;
+
+  const tokenThemeTargets: ComponentTokenThemeTarget[] = [
+    'light',
+    'dark',
+    'highContrast',
+  ].map((theme) => ({
+    theme: theme as ComponentTokenThemeTarget['theme'],
+    componentFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      theme,
+      'components',
+      tokenComponentFileName
+    ),
+    barrelFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      theme,
+      'components',
+      'index.ts'
+    ),
+  }));
 
   return {
     componentName: options.componentName,
@@ -128,5 +164,25 @@ export function createComponentGenerationPlan(params: {
       'components',
       'index.ts'
     ),
+
+    tokenFactoryFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      'factories',
+      `create${options.componentName}Tokens.ts`
+    ),
+
+    tokenFactoryBarrelFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      'factories',
+      'index.ts'
+    ),
+
+    tokenThemeTargets,
   };
 }
