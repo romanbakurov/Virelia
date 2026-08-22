@@ -5,11 +5,12 @@
   "scripts": {
     "sync:brand": "pnpm --filter @vellira-ui/assets sync-brand apps/website/public/brand",
     "sync:tokens": "pnpm --filter @vellira-ui/tokens build:tokens",
-    "predev": "pnpm run sync:brand && pnpm run sync:tokens",
+    "sync:components": "pnpm --filter @vellira-ui/react build && pnpm --filter @vellira-ui/react-native build",
+    "predev": "pnpm run sync:brand && pnpm run sync:tokens && pnpm run sync:components",
     "dev": "next dev",
-    "prebuild": "pnpm run sync:brand && pnpm run sync:tokens",
+    "prebuild": "pnpm run sync:brand && pnpm run sync:tokens && pnpm run sync:components",
     "build": "next build",
-    "prestart": "pnpm run sync:brand && pnpm run sync:tokens",
+    "prestart": "pnpm run sync:brand && pnpm run sync:tokens && pnpm run sync:components",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
