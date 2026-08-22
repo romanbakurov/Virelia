@@ -95,8 +95,13 @@ describe('form-control component templates', () => {
     expect(native).toContain("accessibilityRole='switch'");
     expect(native).toContain('useState(defaultChecked)');
     expect(native).toContain('setUncontrolledChecked(nextChecked)');
-    expect(native).toContain("import { styles } from './Switch.styles';");
+    expect(native).toContain(
+      "import { useThemeStyles } from '../../theme';"
+    );
+    expect(native).toContain("import { createStyles } from './Switch.styles';");
+    expect(native).toContain('const styles = useThemeStyles(createStyles);');
     expect(native).toContain('checked: resolvedChecked');
+    expect(native).toContain('styles.checkedPressed');
     expect(native).not.toContain('aria-checked');
   });
 
