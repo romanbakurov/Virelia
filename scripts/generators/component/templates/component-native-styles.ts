@@ -19,11 +19,11 @@ import type { NativeTheme } from '../../theme';
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     root: {
-      width: 44,
-      height: 24,
+      width: theme.components.switch.geometry.trackWidth,
+      height: theme.components.switch.geometry.trackHeight,
       borderRadius: theme.tokens.radius.full,
-      borderWidth: 2,
-      padding: 1,
+      borderWidth: theme.components.switch.geometry.borderWidth,
+      padding: theme.components.switch.geometry.padding,
       justifyContent: 'center',
       backgroundColor: theme.components.switch.off.trackBg,
       borderColor: theme.components.switch.off.trackBorder,
@@ -33,7 +33,7 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.switch.on.default.trackBorder,
     },
     pressed: {
-      transform: [{ scale: 0.98 }],
+      transform: [{ scale: theme.components.switch.geometry.pressScale }],
     },
     checkedPressed: {
       backgroundColor: theme.components.switch.on.pressed.trackBg,
@@ -47,15 +47,17 @@ export const createStyles = (theme: NativeTheme) =>
       borderColor: theme.components.switch.disabled.trackBorder,
     },
     thumb: {
-      width: 18,
-      height: 18,
+      width: theme.components.switch.geometry.thumbSize,
+      height: theme.components.switch.geometry.thumbSize,
       borderRadius: theme.tokens.radius.full,
       backgroundColor: theme.components.switch.off.thumbBg,
       transform: [{ translateX: 0 }],
     },
     thumbChecked: {
       backgroundColor: theme.components.switch.on.default.thumbBg,
-      transform: [{ translateX: 20 }],
+      transform: [
+        { translateX: theme.components.switch.geometry.thumbTravel },
+      ],
     },
     thumbCheckedPressed: {
       backgroundColor: theme.components.switch.on.pressed.thumbBg,
