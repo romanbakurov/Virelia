@@ -8,7 +8,6 @@ import {
   renderIndexTemplate,
   renderMetadataTemplate,
   renderNativeStylesTemplate,
-  renderReadmeTemplate,
   renderSharedFormControlTypesTemplate,
   renderStoryTemplate,
   renderStylesTemplate,
@@ -323,12 +322,6 @@ function writeTarget(params: {
           profile: plan.profile,
           control: plan.control,
         }),
-    createdFiles: result.createdFiles,
-  });
-
-  writeFile({
-    filePath: path.join(target.componentDir, 'README.md'),
-    content: renderReadmeTemplate({ componentName }),
     createdFiles: result.createdFiles,
   });
 
