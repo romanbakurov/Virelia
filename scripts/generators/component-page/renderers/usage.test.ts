@@ -94,8 +94,8 @@ describe('renderUsage', () => {
       getDemoProps: () => '',
     });
 
-    expect(result.content).toContain(
-      'function createSwitchCode(platform: ComponentPlatform)'
+    expect(result.content).toMatch(
+      /function createSwitchCode\(\s*platform: ComponentPlatform\s*\)/
     );
     expect(result.content).toContain(
       'const code = createSwitchCode(platform);'
