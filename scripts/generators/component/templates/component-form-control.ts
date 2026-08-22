@@ -10,30 +10,51 @@ export type FormControlTypesTemplateParams = ComponentTemplateParams & {
   control: FormControlKindArg;
 };
 
-export function renderFormControlTypesTemplate({
+export function renderSharedFormControlTypesTemplate({
   componentName,
   control,
 }: FormControlTypesTemplateParams) {
   if (control === 'boolean') {
-    return `export type ${componentName}Props = {
+    return `export interface Base${componentName}Props {
+  /** Controlled checked state. */
   checked?: boolean;
+  /** Initial checked state for uncontrolled usage. */
   defaultChecked?: boolean;
+  /** Disables interaction. */
   disabled?: boolean;
+  /** Marks the control as required. */
   required?: boolean;
+  /** Marks the control as invalid. */
   invalid?: boolean;
+  /** Called when the checked state changes. */
   onCheckedChange?: (checked: boolean) => void;
-};
+}
 `;
   }
 
-  return `export type ${componentName}Props = {
+  return `export interface Base${componentName}Props {
+  /** Controlled value. */
   value?: string;
+  /** Initial value for uncontrolled usage. */
   defaultValue?: string;
+  /** Disables interaction. */
   disabled?: boolean;
+  /** Marks the control as required. */
   required?: boolean;
+  /** Marks the control as invalid. */
   invalid?: boolean;
+  /** Called when the value changes. */
   onValueChange?: (value: string) => void;
-};
+}
+`;
+}
+
+export function renderFormControlTypesTemplate({
+  componentName,
+}: FormControlTypesTemplateParams) {
+  return `import type { Base${componentName}Props } from '@vellira-ui/types';
+
+export interface ${componentName}Props extends Base${componentName}Props {}
 `;
 }
 
@@ -42,8 +63,10 @@ function renderBooleanFormControlComponent({
   isNative,
 }: FormControlTemplateParams) {
   if (isNative) {
-    return `import { Pressable } from 'react-native';
+    return `import { useState } from 'react';
+import { Pressable, View } from 'react-native';
 
+import { styles } from './${componentName}.styles';
 import type { ${componentName}Props } from './types';
 
 export function ${componentName}({
@@ -54,7 +77,19 @@ export function ${componentName}({
   invalid = false,
   onCheckedChange,
 }: ${componentName}Props) {
-  const resolvedChecked = checked ?? defaultChecked;
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
+  const isControlled = checked !== undefined;
+  const resolvedChecked = isControlled ? checked : uncontrolledChecked;
+
+  const handlePress = () => {
+    const nextChecked = !resolvedChecked;
+
+    if (!isControlled) {
+      setUncontrolledChecked(nextChecked);
+    }
+
+    onCheckedChange?.(nextChecked);
+  };
 
   return (
     <Pressable
@@ -70,14 +105,25 @@ export function ${componentName}({
       ]
         .filter(Boolean)
         .join(' ') || undefined}
-      onPress={() => onCheckedChange?.(!resolvedChecked)}
-    />
+      onPress={handlePress}
+      style={[
+        styles.root,
+        resolvedChecked && styles.checked,
+        invalid && styles.invalid,
+        disabled && styles.disabled,
+      ]}
+    >
+      <View style={[styles.thumb, resolvedChecked && styles.thumbChecked]} />
+    </Pressable>
   );
 }
 `;
   }
 
-  return `import type { ${componentName}Props } from './types';
+  return `import { useState } from 'react';
+
+import styles from './${componentName}.module.scss';
+import type { ${componentName}Props } from './types';
 
 export function ${componentName}({
   checked,
@@ -87,7 +133,19 @@ export function ${componentName}({
   invalid = false,
   onCheckedChange,
 }: ${componentName}Props) {
-  const resolvedChecked = checked ?? defaultChecked;
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
+  const isControlled = checked !== undefined;
+  const resolvedChecked = isControlled ? checked : uncontrolledChecked;
+
+  const handleClick = () => {
+    const nextChecked = !resolvedChecked;
+
+    if (!isControlled) {
+      setUncontrolledChecked(nextChecked);
+    }
+
+    onCheckedChange?.(nextChecked);
+  };
 
   return (
     <button
@@ -97,8 +155,12 @@ export function ${componentName}({
       disabled={disabled}
       aria-required={required || undefined}
       aria-invalid={invalid || undefined}
-      onClick={() => onCheckedChange?.(!resolvedChecked)}
-    />
+      data-state={resolvedChecked ? 'checked' : 'unchecked'}
+      className={styles.root}
+      onClick={handleClick}
+    >
+      <span className={styles.thumb} aria-hidden='true' />
+    </button>
   );
 }
 `;
