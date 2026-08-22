@@ -65,6 +65,14 @@ describe('component generation plan', () => {
       },
     });
 
+    expect(plan.sharedTypesFile).toBe(
+      path.join(root, 'packages/types/src/avatar.ts')
+    );
+
+    expect(plan.sharedTypesBarrelFile).toBe(
+      path.join(root, 'packages/types/src/index.ts')
+    );
+
     expect(plan.metadataFile).toBe(
       path.join(root, 'packages/metadata/src/components/Avatar.metadata.ts')
     );
