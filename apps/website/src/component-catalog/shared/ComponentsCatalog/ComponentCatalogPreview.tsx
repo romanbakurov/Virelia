@@ -11,7 +11,7 @@ import {
   Tabs,
 } from '@vellira-ui/react';
 
-import { ChevronDown, Edit, Info, Search, Settings, Trash } from '@vellira-ui/icons';
+import { ChevronDown, Edit, Settings, Trash, Info } from '@vellira-ui/icons';
 
 import styles from './ComponentsCatalog.module.css';
 
