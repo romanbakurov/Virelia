@@ -29,6 +29,8 @@ export type ComponentGenerationPlan = {
   force: boolean;
   parts: readonly string[];
   targets: readonly ComponentGenerationTarget[];
+  sharedTypesFile: string;
+  sharedTypesBarrelFile: string;
   metadataFile: string;
   metadataBarrelFile: string;
 };
@@ -80,6 +82,8 @@ export function createComponentGenerationPlan(params: {
     ),
   }));
 
+  const sharedTypesFileName = `${options.componentName[0].toLowerCase()}${options.componentName.slice(1)}.ts`;
+
   return {
     componentName: options.componentName,
     layer: options.layer,
@@ -90,6 +94,22 @@ export function createComponentGenerationPlan(params: {
     parts: options.parts,
     force: options.force,
     targets,
+
+    sharedTypesFile: path.join(
+      root,
+      'packages',
+      'types',
+      'src',
+      sharedTypesFileName
+    ),
+
+    sharedTypesBarrelFile: path.join(
+      root,
+      'packages',
+      'types',
+      'src',
+      'index.ts'
+    ),
 
     metadataFile: path.join(
       root,
