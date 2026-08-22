@@ -66,7 +66,9 @@ function renderBooleanFormControlComponent({
     return `import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { styles } from './${componentName}.styles';
+import { useThemeStyles } from '../../theme';
+
+import { createStyles } from './${componentName}.styles';
 import type { ${componentName}Props } from './types';
 
 export function ${componentName}({
@@ -77,6 +79,7 @@ export function ${componentName}({
   invalid = false,
   onCheckedChange,
 }: ${componentName}Props) {
+  const styles = useThemeStyles(createStyles);
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
   const isControlled = checked !== undefined;
   const resolvedChecked = isControlled ? checked : uncontrolledChecked;
@@ -106,14 +109,28 @@ export function ${componentName}({
         .filter(Boolean)
         .join(' ') || undefined}
       onPress={handlePress}
-      style={[
+      style={({ pressed }) => [
         styles.root,
         resolvedChecked && styles.checked,
+        pressed && !disabled && styles.pressed,
+        resolvedChecked && pressed && !disabled && styles.checkedPressed,
         invalid && styles.invalid,
         disabled && styles.disabled,
       ]}
     >
-      <View style={[styles.thumb, resolvedChecked && styles.thumbChecked]} />
+      {({ pressed }) => (
+        <View
+          style={[
+            styles.thumb,
+            resolvedChecked && styles.thumbChecked,
+            resolvedChecked &&
+              pressed &&
+              !disabled &&
+              styles.thumbCheckedPressed,
+            disabled && styles.thumbDisabled,
+          ]}
+        />
+      )}
     </Pressable>
   );
 }
@@ -287,13 +304,13 @@ export function ${componentName}({
 
 export function ${componentName}({
   value,
-  defaultValue,
+  defaultValue = '',
   disabled = false,
   required = false,
   invalid = false,
   onValueChange,
 }: ${componentName}Props) {
-  const resolvedValue = value ?? defaultValue ?? '';
+  const resolvedValue = value ?? defaultValue;
 
   return (
     <button
