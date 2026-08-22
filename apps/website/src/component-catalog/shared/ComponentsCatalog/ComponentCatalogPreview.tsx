@@ -7,10 +7,11 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Switch,
   Tabs,
 } from '@vellira-ui/react';
 
-import { ChevronDown, Edit, Settings, Trash, Info } from '@vellira-ui/icons';
+import { ChevronDown, Edit, Info, Search, Settings, Trash } from '@vellira-ui/icons';
 
 import styles from './ComponentsCatalog.module.css';
 
@@ -42,6 +43,9 @@ export function ComponentCatalogPreview({
 
     case 'form-field':
       return <FormFieldPreview />;
+
+    case 'switch':
+      return <SwitchPreview />;
 
     case 'tabs':
       return <TabsPreview />;
@@ -152,6 +156,15 @@ function FormFieldPreview() {
       <span className={styles.previewHelper}>
         Used for account notifications.
       </span>
+    </div>
+  );
+}
+
+function SwitchPreview() {
+  return (
+    <div className={styles.previewColumn}>
+      <Switch defaultChecked accessibilityLabel='Email notifications' />
+      <Switch accessibilityLabel='Product updates' />
     </div>
   );
 }
