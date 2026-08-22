@@ -14,6 +14,7 @@ export * from './component-overlay-web';
 export * from './component-overlay-native';
 export * from './component-overlay-part-native';
 export * from './component-overlay-part-web';
+export * from './component-tokens';
 
 import type { ComponentTemplateParams } from './component-types';
 
