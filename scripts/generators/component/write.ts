@@ -2,6 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  renderComponentTokenBarrelExport,
+  renderComponentTokenFactoryBarrelExport,
+  renderComponentTokenFactoryTemplate,
   renderIndexTemplate,
   renderMetadataTemplate,
   renderNativeStylesTemplate,
@@ -10,6 +13,7 @@ import {
   renderStoryTemplate,
   renderStylesTemplate,
   renderTestTemplate,
+  renderThemeComponentTokensTemplate,
 } from './templates';
 
 import {
@@ -162,6 +166,47 @@ function writeSharedTypes(params: {
     exportLine: `export * from './${sharedFileName}';`,
     updatedFiles: result.updatedFiles,
   });
+}
+
+function writeComponentTokens(params: {
+  plan: ComponentGenerationPlan;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, result } = params;
+
+  writeFile({
+    filePath: plan.tokenFactoryFile,
+    content: renderComponentTokenFactoryTemplate({
+      componentName: plan.componentName,
+      profile: plan.profile,
+      control: plan.control,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  updateBarrel({
+    barrelFile: plan.tokenFactoryBarrelFile,
+    exportLine: renderComponentTokenFactoryBarrelExport(plan.componentName),
+    updatedFiles: result.updatedFiles,
+  });
+
+  for (const tokenTarget of plan.tokenThemeTargets) {
+    writeFile({
+      filePath: tokenTarget.componentFile,
+      content: renderThemeComponentTokensTemplate({
+        componentName: plan.componentName,
+        profile: plan.profile,
+        control: plan.control,
+      }),
+      createdFiles: result.createdFiles,
+    });
+
+    updateBarrel({
+      barrelFile: tokenTarget.barrelFile,
+      exportLine: renderComponentTokenBarrelExport(plan.componentName),
+      updatedFiles: result.updatedFiles,
+    });
+  }
 }
 
 function writeTarget(params: {
@@ -419,6 +464,7 @@ export function writeComponentGenerationPlan(
   };
 
   writeSharedTypes({ plan, result });
+  writeComponentTokens({ plan, result });
 
   for (const target of plan.targets) {
     writeTarget({
