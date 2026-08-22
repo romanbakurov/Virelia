@@ -16,6 +16,8 @@ export function renderSharedFormControlTypesTemplate({
 }: FormControlTypesTemplateParams) {
   if (control === 'boolean') {
     return `export interface Base${componentName}Props {
+  /** Accessible name announced by assistive technology. */
+  accessibilityLabel?: string;
   /** Controlled checked state. */
   checked?: boolean;
   /** Initial checked state for uncontrolled usage. */
@@ -73,6 +75,7 @@ import { createStyles } from './${componentName}.styles';
 import type { ${componentName}Props } from './types';
 
 export function ${componentName}({
+  accessibilityLabel = '${componentName}',
   checked,
   defaultChecked = false,
   disabled = false,
@@ -98,11 +101,9 @@ export function ${componentName}({
   return (
     <Pressable
       disabled={disabled}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole='switch'
-      accessibilityState={{
-        checked: resolvedChecked,
-        disabled,
-      }}
+      accessibilityState={{ checked: resolvedChecked, disabled }}
       accessibilityHint={[
         required ? 'Required.' : undefined,
         invalid ? 'Invalid.' : undefined,
@@ -124,10 +125,7 @@ export function ${componentName}({
           style={[
             styles.thumb,
             resolvedChecked && styles.thumbChecked,
-            resolvedChecked &&
-              pressed &&
-              !disabled &&
-              styles.thumbCheckedPressed,
+            resolvedChecked && pressed && !disabled && styles.thumbCheckedPressed,
             disabled && styles.thumbDisabled,
           ]}
         />
@@ -145,6 +143,7 @@ import type { ${componentName}Props } from './types';
 import styles from './${componentName}.module.scss';
 
 export function ${componentName}({
+  accessibilityLabel = '${componentName}',
   checked,
   defaultChecked = false,
   disabled = false,
@@ -170,6 +169,7 @@ export function ${componentName}({
     <button
       type='button'
       role='switch'
+      aria-label={accessibilityLabel}
       aria-checked={resolvedChecked}
       disabled={disabled}
       aria-required={required || undefined}
@@ -255,13 +255,8 @@ export function ${componentName}({
 export function renderFormControlComponentTemplate(
   params: FormControlTemplateParams
 ) {
-  if (params.control === 'boolean') {
-    return renderBooleanFormControlComponent(params);
-  }
-
-  if (params.control === 'text') {
-    return renderTextFormControlComponent(params);
-  }
+  if (params.control === 'boolean') return renderBooleanFormControlComponent(params);
+  if (params.control === 'text') return renderTextFormControlComponent(params);
 
   const { componentName, isNative } = params;
 
@@ -284,9 +279,7 @@ export function ${componentName}({
     <Pressable
       disabled={disabled}
       accessibilityRole='button'
-      accessibilityState={{
-        disabled,
-      }}
+      accessibilityState={{ disabled }}
       accessibilityHint={[
         required ? 'Required.' : undefined,
         invalid ? 'Invalid.' : undefined,
