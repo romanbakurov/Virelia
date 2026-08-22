@@ -14,36 +14,56 @@ export function renderNativeStylesTemplate({
   if (profile === 'form-control' && control === 'boolean') {
     return `import { StyleSheet } from 'react-native';
 
-export const styles = StyleSheet.create({
-  root: {
-    width: 44,
-    height: 24,
-    borderRadius: 12,
-    padding: 2,
-    justifyContent: 'center',
-    backgroundColor: '#6b7280',
-  },
-  checked: {
-    backgroundColor: '#2563eb',
-  },
-  invalid: {
-    borderWidth: 2,
-    borderColor: '#dc2626',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  thumb: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-    transform: [{ translateX: 0 }],
-  },
-  thumbChecked: {
-    transform: [{ translateX: 20 }],
-  },
-});
+import type { NativeTheme } from '../../theme';
+
+export const createStyles = (theme: NativeTheme) =>
+  StyleSheet.create({
+    root: {
+      width: 44,
+      height: 24,
+      borderRadius: theme.tokens.radius.full,
+      borderWidth: 2,
+      padding: 1,
+      justifyContent: 'center',
+      backgroundColor: theme.components.checkbox.default.bg,
+      borderColor: theme.components.checkbox.default.border,
+    },
+    checked: {
+      backgroundColor: theme.components.checkbox.primary.default.bg,
+      borderColor: theme.components.checkbox.primary.default.border,
+    },
+    pressed: {
+      transform: [{ scale: 0.98 }],
+    },
+    checkedPressed: {
+      backgroundColor: theme.components.checkbox.primary.pressed.bg,
+      borderColor: theme.components.checkbox.primary.pressed.border,
+    },
+    invalid: {
+      borderColor: theme.components.checkbox.error.border,
+    },
+    disabled: {
+      backgroundColor: theme.components.checkbox.disabled.bg,
+      borderColor: theme.components.checkbox.disabled.border,
+    },
+    thumb: {
+      width: 18,
+      height: 18,
+      borderRadius: theme.tokens.radius.full,
+      backgroundColor: theme.components.checkbox.default.fg,
+      transform: [{ translateX: 0 }],
+    },
+    thumbChecked: {
+      backgroundColor: theme.components.checkbox.primary.default.fg,
+      transform: [{ translateX: 20 }],
+    },
+    thumbCheckedPressed: {
+      backgroundColor: theme.components.checkbox.primary.pressed.fg,
+    },
+    thumbDisabled: {
+      backgroundColor: theme.components.checkbox.disabled.fg,
+    },
+  });
 `;
   }
 
