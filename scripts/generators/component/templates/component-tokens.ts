@@ -22,7 +22,20 @@ export function renderComponentTokenFactoryTemplate({
   thumbBg: string;
 };
 
+export type ${componentName}Geometry = {
+  trackWidth: number;
+  trackHeight: number;
+  borderWidth: number;
+  padding: number;
+  thumbSize: number;
+  thumbTravel: number;
+  focusRingWidth: number;
+  focusRingOffset: number;
+  pressScale: number;
+};
+
 export type ${componentName}TokensConfig = {
+  geometry: ${componentName}Geometry;
   off: ${componentName}VisualState;
   on: {
     default: ${componentName}VisualState;
@@ -80,6 +93,17 @@ import { focus } from '../semantic/focus.js';
 import { status } from '../semantic/status.js';
 
 export const ${tokenName} = create${componentName}Tokens({
+  geometry: {
+    trackWidth: 44,
+    trackHeight: 24,
+    borderWidth: 2,
+    padding: 1,
+    thumbSize: 18,
+    thumbTravel: 20,
+    focusRingWidth: 2,
+    focusRingOffset: 2,
+    pressScale: 0.98,
+  },
   off: {
     trackBg: control.default.bg,
     trackBorder: control.default.border,
