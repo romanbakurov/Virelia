@@ -85,6 +85,16 @@ export function validateComponentGenerationPlan(
     existingTargets.push(plan.metadataFile);
   }
 
+  if (fs.existsSync(plan.tokenFactoryFile)) {
+    existingTargets.push(plan.tokenFactoryFile);
+  }
+
+  for (const tokenTarget of plan.tokenThemeTargets) {
+    if (fs.existsSync(tokenTarget.componentFile)) {
+      existingTargets.push(tokenTarget.componentFile);
+    }
+  }
+
   if (existingTargets.length > 0 && !plan.force) {
     errors.push(
       `Component already exists:\n${existingTargets
