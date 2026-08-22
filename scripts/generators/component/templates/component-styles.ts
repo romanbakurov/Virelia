@@ -15,12 +15,13 @@ export function renderStylesTemplate({
     return `.root {
   position: relative;
   display: inline-flex;
-  width: 44px;
-  height: 24px;
+  width: calc(var(--switch-geometry-track-width) * 1px);
+  height: calc(var(--switch-geometry-track-height) * 1px);
   flex-shrink: 0;
   align-items: center;
-  padding: 1px;
-  border: 2px solid var(--switch-off-track-border);
+  padding: calc(var(--switch-geometry-padding) * 1px);
+  border: calc(var(--switch-geometry-border-width) * 1px) solid
+    var(--switch-off-track-border);
   border-radius: var(--radius-full);
   background: var(--switch-off-track-bg);
   cursor: pointer;
@@ -41,7 +42,7 @@ export function renderStylesTemplate({
 }
 
 .root:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(var(--switch-geometry-press-scale));
 }
 
 .root[data-state='checked']:active:not(:disabled) {
@@ -50,8 +51,9 @@ export function renderStylesTemplate({
 }
 
 .root:focus-visible {
-  outline: 2px solid var(--switch-focus-ring);
-  outline-offset: 2px;
+  outline: calc(var(--switch-geometry-focus-ring-width) * 1px) solid
+    var(--switch-focus-ring);
+  outline-offset: calc(var(--switch-geometry-focus-ring-offset) * 1px);
 }
 
 .root[aria-invalid='true'] {
@@ -70,8 +72,8 @@ export function renderStylesTemplate({
 
 .thumb {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: calc(var(--switch-geometry-thumb-size) * 1px);
+  height: calc(var(--switch-geometry-thumb-size) * 1px);
   border-radius: var(--radius-full);
   background: var(--switch-off-thumb-bg);
   transform: translateX(0);
@@ -82,7 +84,7 @@ export function renderStylesTemplate({
 
 .root[data-state='checked'] .thumb {
   background: var(--switch-on-default-thumb-bg);
-  transform: translateX(20px);
+  transform: translateX(calc(var(--switch-geometry-thumb-travel) * 1px));
 }
 
 .root[data-state='checked']:hover:not(:disabled) .thumb {
