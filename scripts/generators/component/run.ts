@@ -40,8 +40,7 @@ function getPlannedCreatedFiles(
       path.join(
         componentDir,
         isNative ? `${componentName}.styles.ts` : `${componentName}.module.scss`
-      ),
-      path.join(componentDir, 'README.md')
+      )
     );
 
     for (const partName of plan.parts) {
