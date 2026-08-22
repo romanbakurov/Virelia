@@ -6,7 +6,6 @@ export * from './component-styles';
 export * from './component-native-styles';
 export * from './component-test';
 export * from './component-metadata';
-export * from './component-readme';
 export * from './component-part';
 export * from './component-compound';
 export * from './component-form-control';
