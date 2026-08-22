@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "sync:brand": "pnpm --filter @vellira-ui/assets sync-brand apps/website/public/brand",
-    "predev": "pnpm run sync:brand",
+    "sync:tokens": "pnpm --filter @vellira-ui/tokens build:tokens",
+    "predev": "pnpm run sync:brand && pnpm run sync:tokens",
     "dev": "next dev",
-    "prebuild": "pnpm run sync:brand",
+    "prebuild": "pnpm run sync:brand && pnpm run sync:tokens",
     "build": "next build",
-    "prestart": "pnpm run sync:brand",
+    "prestart": "pnpm run sync:brand && pnpm run sync:tokens",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
