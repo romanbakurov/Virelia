@@ -95,7 +95,9 @@ function updateBarrel(params: {
 }) {
   const { barrelFile, exportLine, updatedFiles } = params;
 
-  const content = fs.readFileSync(barrelFile, 'utf8');
+  const content = fs.existsSync(barrelFile)
+    ? fs.readFileSync(barrelFile, 'utf8')
+    : '';
 
   if (content.includes(exportLine)) {
     return;
@@ -106,6 +108,7 @@ function updateBarrel(params: {
       ? `${exportLine}\n`
       : `${content.trimEnd()}\n${exportLine}\n`;
 
+  fs.mkdirSync(path.dirname(barrelFile), { recursive: true });
   fs.writeFileSync(barrelFile, nextContent);
   updatedFiles.push(barrelFile);
 }
