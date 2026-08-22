@@ -67,7 +67,7 @@ describe('component generator writer', () => {
 
     const result = writeComponentGenerationPlan(plan);
 
-    expect(result.createdFiles).toHaveLength(17);
+    expect(result.createdFiles).toHaveLength(21);
 
     for (const packageName of ['react', 'react-native']) {
       const componentDir = path.join(
