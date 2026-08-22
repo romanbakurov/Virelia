@@ -25,43 +25,43 @@ export const createStyles = (theme: NativeTheme) =>
       borderWidth: 2,
       padding: 1,
       justifyContent: 'center',
-      backgroundColor: theme.components.checkbox.default.bg,
-      borderColor: theme.components.checkbox.default.border,
+      backgroundColor: theme.components.switch.off.trackBg,
+      borderColor: theme.components.switch.off.trackBorder,
     },
     checked: {
-      backgroundColor: theme.components.checkbox.primary.default.bg,
-      borderColor: theme.components.checkbox.primary.default.border,
+      backgroundColor: theme.components.switch.on.default.trackBg,
+      borderColor: theme.components.switch.on.default.trackBorder,
     },
     pressed: {
       transform: [{ scale: 0.98 }],
     },
     checkedPressed: {
-      backgroundColor: theme.components.checkbox.primary.pressed.bg,
-      borderColor: theme.components.checkbox.primary.pressed.border,
+      backgroundColor: theme.components.switch.on.pressed.trackBg,
+      borderColor: theme.components.switch.on.pressed.trackBorder,
     },
     invalid: {
-      borderColor: theme.components.checkbox.error.border,
+      borderColor: theme.components.switch.errorBorder,
     },
     disabled: {
-      backgroundColor: theme.components.checkbox.disabled.bg,
-      borderColor: theme.components.checkbox.disabled.border,
+      backgroundColor: theme.components.switch.disabled.trackBg,
+      borderColor: theme.components.switch.disabled.trackBorder,
     },
     thumb: {
       width: 18,
       height: 18,
       borderRadius: theme.tokens.radius.full,
-      backgroundColor: theme.components.checkbox.default.fg,
+      backgroundColor: theme.components.switch.off.thumbBg,
       transform: [{ translateX: 0 }],
     },
     thumbChecked: {
-      backgroundColor: theme.components.checkbox.primary.default.fg,
+      backgroundColor: theme.components.switch.on.default.thumbBg,
       transform: [{ translateX: 20 }],
     },
     thumbCheckedPressed: {
-      backgroundColor: theme.components.checkbox.primary.pressed.fg,
+      backgroundColor: theme.components.switch.on.pressed.thumbBg,
     },
     thumbDisabled: {
-      backgroundColor: theme.components.checkbox.disabled.fg,
+      backgroundColor: theme.components.switch.disabled.thumbBg,
     },
   });
 `;
