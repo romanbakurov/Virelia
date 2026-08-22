@@ -2,7 +2,9 @@
   "name": "@vellira-ui/react-storybook",
   "private": true,
   "scripts": {
+    "predev": "pnpm --filter @vellira-ui/tokens build:tokens",
     "dev": "storybook dev -p 6006",
+    "prebuild": "pnpm --filter @vellira-ui/tokens build:tokens",
     "build": "storybook build",
     "build-storybook": "storybook build",
     "playwright:install": "playwright install --with-deps chromium",
