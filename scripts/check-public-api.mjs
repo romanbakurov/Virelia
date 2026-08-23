@@ -461,6 +461,7 @@ const publicSymbolContracts = {
     'BaseSelectSharedProps',
     'BaseSelectSingleProps',
     'BaseSelectTriggerProps',
+    'BaseSwitchProps',
     'BaseTabsContentProps',
     'BaseTabsListProps',
     'BaseTabsProps',
