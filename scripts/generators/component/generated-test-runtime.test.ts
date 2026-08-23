@@ -74,9 +74,7 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
   fs.writeFileSync(
     path.join(
       directory,
-      isNative
-        ? `${fixtureName}.styles.ts`
-        : `${fixtureName}.module.scss`
+      isNative ? `${fixtureName}.styles.ts` : `${fixtureName}.module.scss`
     ),
     isNative
       ? renderNativeStylesTemplate({
