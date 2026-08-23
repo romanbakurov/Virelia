@@ -76,7 +76,7 @@ describe('component generator', () => {
       },
     });
 
-    expect(result.createdFiles).toHaveLength(21);
+    expect(result.createdFiles).toHaveLength(19);
 
     const webDir = path.join(root, 'packages/react/src/primitives/Avatar');
 
@@ -92,7 +92,6 @@ describe('component generator', () => {
       'Avatar.stories.tsx',
       'types.ts',
       'index.ts',
-      'README.md',
     ]) {
       expect(fs.existsSync(path.join(webDir, file))).toBe(true);
     }
@@ -104,7 +103,6 @@ describe('component generator', () => {
       'Avatar.stories.tsx',
       'types.ts',
       'index.ts',
-      'README.md',
     ]) {
       expect(fs.existsSync(path.join(nativeDir, file))).toBe(true);
     }
