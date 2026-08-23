@@ -255,7 +255,8 @@ export function ${componentName}({
 export function renderFormControlComponentTemplate(
   params: FormControlTemplateParams
 ) {
-  if (params.control === 'boolean') return renderBooleanFormControlComponent(params);
+  if (params.control === 'boolean')
+    return renderBooleanFormControlComponent(params);
   if (params.control === 'text') return renderTextFormControlComponent(params);
 
   const { componentName, isNative } = params;

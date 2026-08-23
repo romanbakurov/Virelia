@@ -272,7 +272,9 @@ export function updateCatalogRegistry(params: {
     const entryStart = entryStartMatch?.index ?? -1;
 
     if (entryStart === -1) {
-      console.error(`Existing component catalog entry not found: ${model.slug}`);
+      console.error(
+        `Existing component catalog entry not found: ${model.slug}`
+      );
       process.exit(1);
     }
 
