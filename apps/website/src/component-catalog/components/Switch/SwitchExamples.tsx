@@ -17,7 +17,7 @@ export function SwitchExamples({ platform }: SwitchExamplesProps) {
   const reactExamples = [
     {
       title: 'Basic',
-      description: 'Basic component usage.',
+      description: 'Basic form control usage.',
       preview: <ReactSwitch />,
       code: `import { Switch } from '@vellira-ui/react';
 
@@ -58,7 +58,7 @@ export function SwitchExamples({ platform }: SwitchExamplesProps) {
   const nativeExamples = [
     {
       title: 'Basic',
-      description: 'Basic component usage.',
+      description: 'Basic form control usage.',
       preview: <NativeSwitch />,
       code: `import { Switch } from '@vellira-ui/react-native';
 

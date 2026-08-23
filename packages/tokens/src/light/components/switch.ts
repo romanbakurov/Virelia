@@ -1,10 +1,20 @@
 import { createSwitchTokens } from '../../factories/createSwitchTokens.js';
-import { colors } from '../../primitives/colors.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { status } from '../semantic/status.js';
 
 export const switchTokens = createSwitchTokens({
+  geometry: {
+    trackWidth: 44,
+    trackHeight: 24,
+    borderWidth: 2,
+    padding: 1,
+    thumbSize: 18,
+    thumbTravel: 20,
+    focusRingWidth: 2,
+    focusRingOffset: 2,
+    pressScale: 0.98,
+  },
   off: {
     trackBg: control.default.bg,
     trackBorder: control.default.border,
@@ -12,19 +22,19 @@ export const switchTokens = createSwitchTokens({
   },
   on: {
     default: {
-      trackBg: colors.primary[600],
-      trackBorder: colors.primary[600],
-      thumbBg: colors.primary[50],
+      trackBg: control.selected.default.bg,
+      trackBorder: control.selected.default.border,
+      thumbBg: control.selected.default.fg,
     },
     hover: {
-      trackBg: colors.primary[700],
-      trackBorder: colors.primary[700],
-      thumbBg: colors.primary[200],
+      trackBg: control.selected.hover.bg,
+      trackBorder: control.selected.hover.border,
+      thumbBg: control.selected.hover.fg,
     },
     pressed: {
-      trackBg: colors.primary[800],
-      trackBorder: colors.primary[800],
-      thumbBg: colors.primary[300],
+      trackBg: control.selected.active.bg,
+      trackBorder: control.selected.active.border,
+      thumbBg: control.selected.active.fg,
     },
   },
   focusRing: focus.ring.color,

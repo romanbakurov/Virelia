@@ -7,6 +7,11 @@ import type { SwitchPlaygroundValue } from './SwitchPlayground';
 
 export const switchPlaygroundControls = [
   {
+    type: 'text',
+    key: 'accessibilityLabel',
+    label: 'Accessibility Label',
+  },
+  {
     type: 'toggle',
     key: 'checked',
     label: 'Checked',

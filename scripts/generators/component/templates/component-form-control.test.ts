@@ -88,15 +88,17 @@ describe('form-control component templates', () => {
     expect(web).toContain('useState(defaultChecked)');
     expect(web).toContain('setUncontrolledChecked(nextChecked)');
     expect(web).toContain("import styles from './Switch.module.scss';");
-    expect(web).toContain("data-state={resolvedChecked ? 'checked' : 'unchecked'}");
-    expect(web).toContain("<span className={styles.thumb} aria-hidden='true' />");
+    expect(web).toContain(
+      "data-state={resolvedChecked ? 'checked' : 'unchecked'}"
+    );
+    expect(web).toContain(
+      "<span className={styles.thumb} aria-hidden='true' />"
+    );
 
     expect(native).toContain("accessibilityRole='switch'");
     expect(native).toContain('useState(defaultChecked)');
     expect(native).toContain('setUncontrolledChecked(nextChecked)');
-    expect(native).toContain(
-      "import { useThemeStyles } from '../../theme';"
-    );
+    expect(native).toContain("import { useThemeStyles } from '../../theme';");
     expect(native).toContain("import { createStyles } from './Switch.styles';");
     expect(native).toContain('const styles = useThemeStyles(createStyles);');
     expect(native).toContain('checked: resolvedChecked');

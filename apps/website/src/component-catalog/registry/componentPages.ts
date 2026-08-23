@@ -154,7 +154,7 @@ export const componentPages = {
     Examples: SwitchExamples,
     Accessibility: SwitchAccessibility,
     api: switchApi,
-    related: [],
+    related: ['checkbox', 'radio', 'form-field'],
   },
   'radio-group': {
     name: 'RadioGroup',

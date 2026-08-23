@@ -29,7 +29,9 @@ describe('component token templates', () => {
       control: 'boolean',
     });
 
-    expect(result).toContain("import { control } from '../semantic/control.js';");
+    expect(result).toContain(
+      "import { control } from '../semantic/control.js';"
+    );
     expect(result).toContain('control.default.bg');
     expect(result).toContain('control.selected.default.bg');
     expect(result).toContain('control.selected.hover.bg');

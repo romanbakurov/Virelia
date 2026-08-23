@@ -12,6 +12,7 @@ import { PlaygroundControlsFromSchema } from '../../shared/PlaygroundControls';
 import { switchPlaygroundControls } from './switchPlaygroundSchema';
 
 export type SwitchPlaygroundValue = {
+  accessibilityLabel: string;
   checked: boolean;
   disabled: boolean;
   required: boolean;
@@ -30,6 +31,7 @@ type SwitchPlaygroundProps = {
 };
 
 export const initialSwitchPlaygroundValue: SwitchPlaygroundValue = {
+  accessibilityLabel: '',
   checked: false,
   disabled: false,
   required: false,
@@ -56,7 +58,7 @@ export function SwitchPlayground({
 
   return (
     <ComponentPlayground
-      previewWidth='auto'
+      previewWidth='field'
       controls={
         <PlaygroundControlsFromSchema
           platform={platform}

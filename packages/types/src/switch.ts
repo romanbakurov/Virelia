@@ -1,4 +1,6 @@
 export interface BaseSwitchProps {
+  /** Accessible name announced by assistive technology. */
+  accessibilityLabel?: string;
   /** Controlled checked state. */
   checked?: boolean;
   /** Initial checked state for uncontrolled usage. */

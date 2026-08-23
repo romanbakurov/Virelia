@@ -13,6 +13,7 @@ export function NativeSwitchDemo() {
       platform='react-native'
       renderSwitch={(value, onChange) => (
         <Switch
+          accessibilityLabel={value.accessibilityLabel || undefined}
           checked={value.checked}
           onCheckedChange={(nextValue) => onChange('checked', nextValue)}
           disabled={value.disabled}

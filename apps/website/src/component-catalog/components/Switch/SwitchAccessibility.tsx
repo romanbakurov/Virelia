@@ -14,6 +14,11 @@ type SwitchAccessibilityProps = {
 export function SwitchAccessibility({ platform }: SwitchAccessibilityProps) {
   const reactItems = [
     {
+      title: 'Accessible naming',
+      description:
+        'Provide a visible label or another accessible name that clearly identifies the control.',
+    },
+    {
       title: 'State communication',
       description:
         'Expose the current interactive state through the appropriate native semantics and keep it synchronized with the visual state.',
@@ -39,6 +44,12 @@ export function SwitchAccessibility({ platform }: SwitchAccessibilityProps) {
   ] as const;
 
   const nativeItems = [
+    {
+      title: 'Accessible naming',
+      description:
+        'Provide a visible label or accessibilityLabel so screen readers can identify the control.',
+      props: ['accessibilityLabel'],
+    },
     {
       title: 'State communication',
       description:

@@ -175,7 +175,7 @@ export const webComponents = [
     slug: 'switch',
     name: 'Switch',
     description: 'Switch component for Vellira applications.',
-    category: 'general',
+    category: 'forms',
     status: 'beta',
     order: 999,
     platforms: ['react', 'react-native'],

@@ -11,34 +11,39 @@ const reactSwitchApiSections: readonly ComponentApiSection[] = [
     name: 'Switch',
     props: [
       {
+        name: 'accessibilityLabel',
+        type: 'string',
+        description: 'Accessible name announced by assistive technology.',
+      },
+      {
         name: 'checked',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Controlled checked state.',
       },
       {
         name: 'defaultChecked',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Initial checked state for uncontrolled usage.',
       },
       {
         name: 'disabled',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Disables interaction.',
       },
       {
         name: 'required',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Marks the control as required.',
       },
       {
         name: 'invalid',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Marks the control as invalid.',
       },
       {
         name: 'onCheckedChange',
         type: '((checked: boolean) => void)',
-        description: 'Prop for Switch.',
+        description: 'Called when the checked state changes.',
       },
     ],
   },
@@ -49,34 +54,39 @@ const nativeSwitchApiSections: readonly ComponentApiSection[] = [
     name: 'Switch',
     props: [
       {
+        name: 'accessibilityLabel',
+        type: 'string',
+        description: 'Accessible name announced by assistive technology.',
+      },
+      {
         name: 'checked',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Controlled checked state.',
       },
       {
         name: 'defaultChecked',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Initial checked state for uncontrolled usage.',
       },
       {
         name: 'disabled',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Disables interaction.',
       },
       {
         name: 'required',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Marks the control as required.',
       },
       {
         name: 'invalid',
         type: 'boolean',
-        description: 'Prop for Switch.',
+        description: 'Marks the control as invalid.',
       },
       {
         name: 'onCheckedChange',
         type: '((checked: boolean) => void)',
-        description: 'Prop for Switch.',
+        description: 'Called when the checked state changes.',
       },
     ],
   },

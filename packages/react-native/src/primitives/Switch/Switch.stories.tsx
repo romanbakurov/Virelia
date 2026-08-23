@@ -38,9 +38,28 @@ export const Default: Story = {
   },
 };
 
+export const Checked: Story = {
+  args: {
+    checked: true,
+  },
+};
+
+export const Controlled: Story = {
+  args: {
+    checked: true,
+    onCheckedChange: () => undefined,
+  },
+};
+
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+};
+
+export const Required: Story = {
+  args: {
+    required: true,
   },
 };
 

@@ -30,6 +30,10 @@ function createSwitchCode(
 
   const children = platform === 'react' ? `` : ``;
 
+  if (value.accessibilityLabel) {
+    props.push(`accessibilityLabel='${value.accessibilityLabel}'`);
+  }
+
   if (value.checked) {
     props.push('checked');
   }
