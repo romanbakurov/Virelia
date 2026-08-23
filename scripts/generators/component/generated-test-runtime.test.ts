@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   renderFormControlComponentTemplate,
   renderFormControlTypesTemplate,
+  renderSharedFormControlTypesTemplate,
 } from './templates/component-form-control';
 import { renderTestTemplate } from './templates/component-test';
 
@@ -42,12 +43,21 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
 
   fs.mkdirSync(directory, { recursive: true });
 
+  const sharedTypes = renderSharedFormControlTypesTemplate({
+    componentName: fixtureName,
+    control: 'boolean',
+  });
+  const platformTypes = renderFormControlTypesTemplate({
+    componentName: fixtureName,
+    control: 'boolean',
+  }).replace(
+    `import type { Base${fixtureName}Props } from '@vellira-ui/types';`,
+    ''
+  );
+
   fs.writeFileSync(
     path.join(directory, 'types.ts'),
-    renderFormControlTypesTemplate({
-      componentName: fixtureName,
-      control: 'boolean',
-    })
+    `${sharedTypes}\n${platformTypes.replace(`Base${fixtureName}Props`, `Base${fixtureName}Props`)}`
   );
 
   fs.writeFileSync(
