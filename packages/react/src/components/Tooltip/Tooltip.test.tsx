@@ -2,8 +2,8 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Portal } from '../../primitives/Portal';
-import { render } from '../../test-utils/render';
+import { Portal } from '@/primitives/Portal';
+import { render } from '@/test-utils/render';
 
 import { Tooltip } from './Tooltip';
 
@@ -42,7 +42,7 @@ describe('Tooltip', () => {
     expect(tooltip?.getAttribute('data-state')).toBe('open');
     expect(tooltip?.textContent).toContain('Helpful text');
     expect((tooltip as HTMLElement).style.zIndex).toBe('300');
-    expect(tooltip?.style.maxWidth).toBe('18rem');
+    expect((tooltip as HTMLElement).style.maxWidth).toBe('18rem');
     expect(arrow?.style.bottom).toBe('calc(var(--tooltip-arrow-size) / -2)');
 
     unmount();

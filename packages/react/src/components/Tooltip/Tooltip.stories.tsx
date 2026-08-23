@@ -117,6 +117,7 @@ tooltip.
     },
   },
   args: {
+    children: null,
     placement: 'top',
     delay: 300,
     disabled: false,

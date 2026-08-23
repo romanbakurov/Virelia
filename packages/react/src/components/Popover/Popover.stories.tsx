@@ -73,6 +73,7 @@ Floating interactive content attached to a trigger.
     },
   },
   args: {
+    children: null,
     side: 'bottom',
     align: 'center',
     sideOffset: 8,
@@ -125,6 +126,11 @@ Floating interactive content attached to a trigger.
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+type PopoverDemoProps = Omit<ComponentProps<typeof Popover>, 'children'> & {
+  trigger?: ReactNode;
+  children?: ReactNode;
+};
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section style={sectionStyle}>
@@ -138,7 +144,7 @@ function Demo({
   trigger = 'Open popover',
   children,
   ...args
-}: ComponentProps<typeof Popover>) {
+}: PopoverDemoProps) {
   return (
     <Popover {...args}>
       <Popover.Trigger asChild>

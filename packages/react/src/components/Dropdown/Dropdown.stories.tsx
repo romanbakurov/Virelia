@@ -286,6 +286,7 @@ Action menu for commands, toggles, radio choices, links, and submenus.
     },
   },
   args: {
+    children: null,
     color: 'primary',
     size: 'md',
     placement: 'bottom-start',
@@ -590,7 +591,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-type DropdownStoryProps = ComponentProps<typeof Dropdown>;
+type DropdownStoryProps = Omit<ComponentProps<typeof Dropdown>, 'children'> & {
+  children?: ReactNode;
+};
 type StoryAction = {
   label: string;
   icon?: ReactNode;

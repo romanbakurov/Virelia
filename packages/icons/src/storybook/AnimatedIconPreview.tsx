@@ -11,6 +11,12 @@ type AnimatedIconPreviewProps = {
   play?: 'hover' | 'loop';
 };
 
+type AnimatedIconAssetInspection = {
+  readonly assets?: readonly {
+    readonly p?: string;
+  }[];
+};
+
 function cloneAnimationData(data: AnimatedIconData): object {
   return JSON.parse(JSON.stringify(data)) as object;
 }
@@ -39,7 +45,7 @@ function applyCurrentColor(container: HTMLElement) {
 }
 
 function getEmbeddedSvg(data: AnimatedIconData): string | undefined {
-  const assets = (data as { assets?: Array<{ p?: string }> }).assets ?? [];
+  const assets = (data as AnimatedIconAssetInspection).assets ?? [];
   const image = assets.find((asset) =>
     asset.p?.startsWith('data:image/svg+xml;utf8,')
   );

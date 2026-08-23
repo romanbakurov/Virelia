@@ -2,10 +2,9 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
-import { expectNoA11yViolations } from '../../test-utils/a11y';
-import { render } from '../../test-utils/render';
+import { Button, Portal } from '@/primitives';
+import { expectNoA11yViolations } from '@/test-utils/a11y';
+import { render } from '@/test-utils/render';
 
 import { Modal } from './Modal';
 
@@ -303,7 +302,9 @@ describe('Modal', () => {
     expect(document.activeElement).toBe(opener);
 
     rerender(<ModalHarness open />);
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     const closeButton = document.querySelector<HTMLButtonElement>(
       'button[aria-label="Close dialog"]'
@@ -312,7 +313,9 @@ describe('Modal', () => {
     expect(document.activeElement).toBe(closeButton);
 
     rerender(<ModalHarness open={false} />);
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(document.activeElement).toBe(opener);
 
@@ -372,7 +375,9 @@ describe('Modal', () => {
       </Modal>
     );
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     const buttons = Array.from(
       document.querySelectorAll<HTMLButtonElement>('button')

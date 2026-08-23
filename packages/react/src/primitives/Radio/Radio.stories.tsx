@@ -66,8 +66,8 @@ Group usage:
   },
   args: {
     name: 'country',
+    value: 'country',
     label: 'Country',
-    orientation: 'vertical',
     size: 'md',
     color: 'primary',
     disabled: false,

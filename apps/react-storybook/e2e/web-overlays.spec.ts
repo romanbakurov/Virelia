@@ -77,10 +77,11 @@ test.describe('web overlays', () => {
     await expect(listbox).toBeVisible();
     await expect(trigger).toBeFocused();
     await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-    await expect(listbox).toHaveAttribute(
-      'aria-labelledby',
-      await trigger.getAttribute('id')
-    );
+    const triggerId = await trigger.getAttribute('id');
+
+    expect(triggerId).not.toBeNull();
+
+    await expect(listbox).toHaveAttribute('aria-labelledby', triggerId!);
     await expectPortaled(page, '[role="listbox"]');
 
     const triggerBox = await trigger.boundingBox();
@@ -145,10 +146,11 @@ test.describe('web overlays', () => {
 
     const tooltip = page.getByRole('tooltip');
     await expect(tooltip).toBeVisible();
-    await expect(trigger).toHaveAttribute(
-      'aria-describedby',
-      await tooltip.getAttribute('id')
-    );
+    const tooltipId = await tooltip.getAttribute('id');
+
+    expect(tooltipId).not.toBeNull();
+
+    await expect(trigger).toHaveAttribute('aria-describedby', tooltipId!);
     await expectPortaled(page, '[role="tooltip"]');
 
     const box = await tooltip.boundingBox();

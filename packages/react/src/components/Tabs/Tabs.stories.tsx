@@ -166,6 +166,7 @@ In \`mode='navigation'\`, Tabs switches away from the WAI-ARIA tabs pattern:
   },
 
   args: {
+    children: null,
     defaultValue: 'home',
     mode: 'tabs',
     orientation: 'horizontal',

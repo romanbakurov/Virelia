@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps, CSSProperties, ReactNode } from 'react';
+import type {
+  ComponentProps,
+  CSSProperties,
+  ReactNode,
+  RefObject,
+} from 'react';
 
 import { Button } from '../../primitives/Button';
 import { Input } from '../../primitives/Input';
@@ -77,6 +82,7 @@ Compound-first dialog for focused tasks and confirmations.
     },
   },
   args: {
+    children: null,
     animation: 'scale',
     duration: {
       close: 150,
@@ -210,7 +216,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-type ModalStoryProps = ComponentProps<typeof Modal>;
+type ModalStoryProps = Omit<ComponentProps<typeof Modal>, 'children'> & {
+  children?: ReactNode;
+};
 
 function ProductModal({
   trigger = 'Open modal',
@@ -429,7 +437,7 @@ function InitialFocusDemo() {
 
   return (
     <Section title='Initial focus'>
-      <Modal initialFocus={inputRef}>
+      <Modal initialFocus={inputRef as RefObject<HTMLElement>}>
         <Modal.Trigger asChild>
           <Button>Edit profile</Button>
         </Modal.Trigger>

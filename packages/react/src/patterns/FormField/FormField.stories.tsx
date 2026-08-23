@@ -3,12 +3,12 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Button } from '../../primitives/Button';
-import { Input } from '../../primitives/Input';
-
 import { FormField } from './FormField';
 
 import styles from './FormField.stories.module.scss';
+
+import { Button } from '#primitives/Button';
+import { Input } from '#primitives/Input';
 
 const sectionStyle = {
   display: 'flex',
@@ -147,6 +147,7 @@ For common fields, use the shorthand API on Input:
     required: false,
     disabled: false,
     invalid: false,
+    children: null,
     size: 'md',
     orientation: 'vertical',
     labelPosition: 'top',

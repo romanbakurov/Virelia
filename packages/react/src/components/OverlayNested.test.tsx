@@ -64,15 +64,10 @@ describe('nested overlays', () => {
         <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Profile settings'>
-            <Select
-              open
-              id='country'
-              onOpenChange={onSelectOpenChange}
-              options={[
-                { label: 'France', value: 'fr' },
-                { label: 'Germany', value: 'de' },
-              ]}
-            />
+            <Select open id='country' onOpenChange={onSelectOpenChange}>
+              <Select.Item value='fr'>France</Select.Item>
+              <Select.Item value='de'>Germany</Select.Item>
+            </Select>
           </Modal.Content>
         </Portal>
       </Modal>
@@ -192,15 +187,10 @@ describe('nested overlays', () => {
         <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Profile settings'>
-            <Select
-              open
-              id='country'
-              onOpenChange={onSelectOpenChange}
-              options={[
-                { label: 'France', value: 'fr' },
-                { label: 'Germany', value: 'de' },
-              ]}
-            />
+            <Select open id='country' onOpenChange={onSelectOpenChange}>
+              <Select.Item value='fr'>France</Select.Item>
+              <Select.Item value='de'>Germany</Select.Item>
+            </Select>
           </Modal.Content>
         </Portal>
       </Modal>

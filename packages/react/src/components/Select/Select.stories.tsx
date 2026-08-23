@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Check, Info, Search, User, Users } from '@vellira-ui/icons';
-import type { ComponentProps, CSSProperties, ReactNode } from 'react';
-const noop = () => undefined;
-
-import { FormField } from '../../patterns/FormField';
+import type { CSSProperties, ReactNode } from 'react';
 
 import { Select } from './Select';
+import type {
+  SelectMultipleProps,
+  SelectProps,
+  SelectSingleProps,
+} from './types';
+
+import { FormField } from '#patterns/FormField';
+
+const noop = () => undefined;
 
 const defaultOptions = [
   { label: 'France', value: 'fr' },
@@ -606,7 +612,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-type SelectStoryProps = ComponentProps<typeof Select>;
+type SelectStoryProps = SelectProps;
+type SingleSelectStoryProps = SelectSingleProps;
+type MultipleSelectStoryProps = SelectMultipleProps;
+
 type StoryOption = {
   label: string;
   value: string;
@@ -652,8 +661,10 @@ const SelectWithState = ({
   children,
   storyOptions = defaultOptions,
   ...args
-}: SelectStoryProps & { storyOptions?: StoryOption[] }) => {
-  const [value, setValue] = useState(args.value ?? args.defaultValue ?? '');
+}: SingleSelectStoryProps & { storyOptions?: StoryOption[] }) => {
+  const [value, setValue] = useState<string | null>(
+    args.value ?? args.defaultValue ?? ''
+  );
 
   useEffect(() => {
     setValue(args.value ?? args.defaultValue ?? '');
@@ -662,6 +673,34 @@ const SelectWithState = ({
   return (
     <Select
       {...args}
+      value={value}
+      onValueChange={(newValue) => {
+        setValue(newValue);
+        args.onValueChange?.(newValue);
+      }}
+    >
+      {children ?? renderSelectItems(storyOptions)}
+    </Select>
+  );
+};
+
+const SelectWithMultipleState = ({
+  children,
+  storyOptions = defaultOptions,
+  ...args
+}: MultipleSelectStoryProps & { storyOptions?: StoryOption[] }) => {
+  const [value, setValue] = useState<string[]>(
+    args.value ?? args.defaultValue ?? []
+  );
+
+  useEffect(() => {
+    setValue(args.value ?? args.defaultValue ?? []);
+  }, [args.value, args.defaultValue]);
+
+  return (
+    <Select
+      {...args}
+      multiple
       value={value}
       onValueChange={(newValue) => {
         setValue(newValue);
@@ -698,8 +737,8 @@ const SelectWithOpenState = ({
   );
 };
 
-const AsyncSearchSelect = (args: SelectStoryProps) => {
-  const [value, setValue] = useState('');
+const AsyncSearchSelect = (args: SingleSelectStoryProps) => {
+  const [value, setValue] = useState<string | null>('');
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState(asyncOptions);
 
@@ -738,7 +777,7 @@ const AsyncSearchSelect = (args: SelectStoryProps) => {
 };
 
 const AdvancedUsageSelect = () => {
-  const [value, setValue] = useState('fr');
+  const [value, setValue] = useState<string | null>('fr');
 
   return (
     <FormField label='Country' description='Shipping destination'>
@@ -750,7 +789,7 @@ const AdvancedUsageSelect = () => {
         variant='outline'
         placeholder='Country'
         onValueChange={(nextValue) => {
-          setValue(Array.isArray(nextValue) ? (nextValue[0] ?? '') : nextValue);
+          setValue(nextValue);
         }}
         renderOption={({ option }) => (
           <span
@@ -777,8 +816,10 @@ const AdvancedUsageSelect = () => {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+type SingleSelectStory = StoryObj<SingleSelectStoryProps>;
+type MultipleSelectStory = StoryObj<MultipleSelectStoryProps>;
 
-export const Playground: Story = {
+export const Playground: SingleSelectStory = {
   render: (args) => (
     <Section title='Playground'>
       <SelectWithState {...args} />
@@ -881,7 +922,7 @@ export const FormFieldIntegration: Story = {
   ),
 };
 
-export const Searchable: Story = {
+export const Searchable: SingleSelectStory = {
   args: {
     searchable: true,
     clearable: true,
@@ -895,7 +936,7 @@ export const Searchable: Story = {
   ),
 };
 
-export const Clearable: Story = {
+export const Clearable: SingleSelectStory = {
   args: {
     defaultValue: 'fr',
     clearable: true,
@@ -907,7 +948,7 @@ export const Clearable: Story = {
   ),
 };
 
-export const Multiple: Story = {
+export const Multiple: MultipleSelectStory = {
   args: {
     multiple: true,
     defaultValue: ['fr', 'de'],
@@ -917,12 +958,12 @@ export const Multiple: Story = {
   },
   render: (args) => (
     <Section title='Multiple'>
-      <SelectWithState {...args} storyOptions={richOptions} />
+      <SelectWithMultipleState {...args} storyOptions={richOptions} />
     </Section>
   ),
 };
 
-export const MultipleGroupedLarge: Story = {
+export const MultipleGroupedLarge: MultipleSelectStory = {
   args: {
     multiple: true,
     defaultValue: ['design-systems', 'frontend-platform', 'authentication'],
@@ -931,18 +972,18 @@ export const MultipleGroupedLarge: Story = {
   },
   render: (args) => (
     <Section title='Multiple grouped large'>
-      <SelectWithState {...args}>
+      <SelectWithMultipleState {...args}>
         {renderSelectableGroup('Core', groupedTeamOptions.core)}
         <Select.Separator />
         {renderSelectableGroup('Operations', groupedTeamOptions.operations)}
         <Select.Separator />
         {renderSelectableGroup('Platform', groupedTeamOptions.platform)}
-      </SelectWithState>
+      </SelectWithMultipleState>
     </Section>
   ),
 };
 
-export const Loading: Story = {
+export const Loading: SingleSelectStory = {
   args: {
     defaultOpen: true,
     loading: true,
@@ -955,7 +996,7 @@ export const Loading: Story = {
   ),
 };
 
-export const Groups: Story = {
+export const Groups: SingleSelectStory = {
   args: {
     defaultOpen: true,
   },
@@ -977,7 +1018,7 @@ export const Groups: Story = {
   ),
 };
 
-export const DisabledItems: Story = {
+export const DisabledItems: SingleSelectStory = {
   args: {
     defaultOpen: true,
   },
@@ -988,7 +1029,7 @@ export const DisabledItems: Story = {
   ),
 };
 
-export const AsyncSearch: Story = {
+export const AsyncSearch: SingleSelectStory = {
   args: {
     placeholder: 'Search countries',
     startIcon: <Search />,
@@ -1000,7 +1041,7 @@ export const AsyncSearch: Story = {
   ),
 };
 
-export const LongList: Story = {
+export const LongList: SingleSelectStory = {
   args: {
     placeholder: 'Choose country',
   },
@@ -1011,7 +1052,7 @@ export const LongList: Story = {
   ),
 };
 
-export const VirtualizedList: Story = {
+export const VirtualizedList: SingleSelectStory = {
   args: {
     virtual: { itemHeight: 40, maxHeight: 360, overscan: 3 },
     placeholder: 'Choose workspace',
@@ -1023,7 +1064,7 @@ export const VirtualizedList: Story = {
   ),
 };
 
-export const CustomRender: Story = {
+export const CustomRender: SingleSelectStory = {
   args: {
     defaultOpen: true,
     renderOption: ({ option }) => (
@@ -1144,7 +1185,7 @@ export const Description: Story = {
   ),
 };
 
-export const KeyboardNavigation: Story = {
+export const KeyboardNavigation: SingleSelectStory = {
   args: {
     defaultOpen: true,
     searchable: true,
@@ -1158,7 +1199,7 @@ export const KeyboardNavigation: Story = {
   ),
 };
 
-export const ControlledOpen: Story = {
+export const ControlledOpen: SingleSelectStory = {
   args: {
     defaultOpen: true,
     defaultValue: 'fr',
@@ -1190,7 +1231,7 @@ export const Validation: Story = {
   ),
 };
 
-export const Mobile: Story = {
+export const Mobile: SingleSelectStory = {
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

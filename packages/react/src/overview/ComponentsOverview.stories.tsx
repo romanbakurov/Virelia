@@ -26,12 +26,13 @@ import { RadioGroup } from '../components/RadioGroup';
 import { Select } from '../components/Select';
 import { Tabs } from '../components/Tabs';
 import { Tooltip } from '../components/Tooltip';
-import { FormField } from '../patterns/FormField';
-import { Button } from '../primitives/Button';
-import { Checkbox } from '../primitives/Checkbox';
-import { Input } from '../primitives/Input';
-import { Portal } from '../primitives/Portal';
-import { Radio } from '../primitives/Radio';
+
+import { FormField } from '#patterns/FormField';
+import { Button } from '#primitives/Button';
+import { Checkbox } from '#primitives/Checkbox';
+import { Input } from '#primitives/Input';
+import { Portal } from '#primitives/Portal';
+import { Radio } from '#primitives/Radio';
 
 const noop = () => undefined;
 
@@ -427,7 +428,7 @@ function WorkspaceFormFieldDemo() {
 function WebComponentsOverview() {
   const [accepted, setAccepted] = useState(true);
   const [plan, setPlan] = useState('pro');
-  const [team, setTeam] = useState('engineering');
+  const [team, setTeam] = useState<string | null>('engineering');
   const [teams, setTeams] = useState<string[]>(['product']);
   const [manyTeams, setManyTeams] = useState<string[]>([
     'product',
@@ -1250,7 +1251,7 @@ function WebComponentsOverview() {
               <Select
                 label='Archived team'
                 placeholder='No archived team'
-                noOptionsText='No archived teams available'
+                empty='No archived teams available'
                 defaultOpen
               />
             </div>
