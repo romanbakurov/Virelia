@@ -3,11 +3,11 @@
 
 'use client';
 
-import Link from 'next/link';
-
 import { Button as ReactButton } from '@vellira-ui/react';
 import { Button as NativeButton } from '@vellira-ui/react-native';
-import { ArrowRight, Plus } from '@vellira-ui/icons';
+import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
+import Link from 'next/link';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -74,7 +74,8 @@ import { Plus } from '@vellira-ui/icons';
         </ReactButton>
       ),
       code: `import { Button } from '@vellira-ui/react';
-import { ArrowRight, Plus } from '@vellira-ui/icons';
+import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
 
 <Button
   iconStart={<Plus />}
@@ -266,7 +267,8 @@ import { Plus } from '@vellira-ui/icons';
         </NativeButton>
       ),
       code: `import { Button } from '@vellira-ui/react-native';
-import { ArrowRight, Plus } from '@vellira-ui/icons';
+import { Plus } from '@vellira-ui/icons';
+import { ArrowRight } from '@vellira-ui/icons';
 
 <Button
   iconStart={<Plus />}
