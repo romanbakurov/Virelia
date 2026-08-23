@@ -80,14 +80,12 @@ describe('component catalog registration', () => {
     expect(content).toContain("'react-native'");
   });
 
-  it('refreshes an existing generated catalog entry with --force', () => {
+  it('preserves an existing curated catalog entry with --force', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-catalog-'));
     const componentsRegistryFile = path.join(root, 'components.ts');
+    const curatedSource = `import type { ComponentCatalogEntry } from '../types';\n\nexport const webComponents = [\n  {\n    slug: 'switch',\n    name: 'Switch',\n    description: 'Curated description.',\n    category: 'general',\n    status: 'stable',\n    order: 42,\n    platforms: ['react'],\n    docs: {\n      react: 'https://docs.vellira.dev/react/switch',\n    },\n  },\n] as const satisfies readonly ComponentCatalogEntry[];\n`;
 
-    fs.writeFileSync(
-      componentsRegistryFile,
-      `import type { ComponentCatalogEntry } from '../types';\n\nexport const webComponents = [\n  {\n    slug: 'switch',\n    name: 'Switch',\n    description: 'Old description.',\n    category: 'general',\n    status: 'beta',\n    order: 999,\n    platforms: ['react'],\n    docs: {\n      react: 'https://docs.vellira.dev/react/switch',\n    },\n  },\n] as const satisfies readonly ComponentCatalogEntry[];\n`
-    );
+    fs.writeFileSync(componentsRegistryFile, curatedSource);
 
     updateCatalogRegistry({
       root,
@@ -101,10 +99,9 @@ describe('component catalog registration', () => {
 
     const content = fs.readFileSync(componentsRegistryFile, 'utf8');
 
-    expect(content.match(/slug: 'switch'/g)).toHaveLength(1);
-    expect(content).toContain("category: 'forms'");
-    expect(content).toContain("platforms: ['react', 'react-native']");
-    expect(content).not.toContain("category: 'general'");
-    expect(content).not.toContain('Old description.');
+    expect(content).toBe(curatedSource);
+    expect(content).toContain('Curated description.');
+    expect(content).toContain("status: 'stable'");
+    expect(content).toContain('order: 42');
   });
 });
