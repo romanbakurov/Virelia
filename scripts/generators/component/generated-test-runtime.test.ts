@@ -9,6 +9,8 @@ import {
   renderFormControlTypesTemplate,
   renderSharedFormControlTypesTemplate,
 } from './templates/component-form-control';
+import { renderNativeStylesTemplate } from './templates/component-native-styles';
+import { renderStylesTemplate } from './templates/component-styles';
 import { renderTestTemplate } from './templates/component-test';
 
 const fixtureName = '__GeneratedContractSwitch';
@@ -57,7 +59,7 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
 
   fs.writeFileSync(
     path.join(directory, 'types.ts'),
-    `${sharedTypes}\n${platformTypes.replace(`Base${fixtureName}Props`, `Base${fixtureName}Props`)}`
+    `${sharedTypes}\n${platformTypes}`
   );
 
   fs.writeFileSync(
@@ -67,6 +69,26 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
       isNative,
       control: 'boolean',
     })
+  );
+
+  fs.writeFileSync(
+    path.join(
+      directory,
+      isNative
+        ? `${fixtureName}.styles.ts`
+        : `${fixtureName}.module.scss`
+    ),
+    isNative
+      ? renderNativeStylesTemplate({
+          componentName: fixtureName,
+          profile: 'form-control',
+          control: 'boolean',
+        })
+      : renderStylesTemplate({
+          componentName: fixtureName,
+          profile: 'form-control',
+          control: 'boolean',
+        })
   );
 
   fs.writeFileSync(
