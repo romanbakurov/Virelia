@@ -62,7 +62,10 @@ describe('component template resolver', () => {
       target: createTarget(false),
     });
 
-    expect(result.types).toContain('onValueChange');
+    expect(result.types).toContain(
+      "import type { BaseExampleProps } from '@vellira-ui/types';"
+    );
+    expect(result.types).toContain('export type ExampleProps = BaseExampleProps;');
     expect(result.component).toContain('<button');
   });
 
@@ -76,7 +79,10 @@ describe('component template resolver', () => {
       target: createTarget(true),
     });
 
-    expect(web.types).toContain('onCheckedChange');
+    expect(web.types).toContain(
+      "import type { BaseExampleProps } from '@vellira-ui/types';"
+    );
+    expect(web.types).toContain('export type ExampleProps = BaseExampleProps;');
     expect(web.component).toContain("role='switch'");
     expect(native.component).toContain("accessibilityRole='switch'");
   });
