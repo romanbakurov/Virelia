@@ -248,7 +248,6 @@ export function updateCatalogRegistry(params: {
 }) {
   const {
     root,
-    force,
     check,
     checkFailures,
     componentsRegistryFile,
@@ -260,46 +259,7 @@ export function updateCatalogRegistry(params: {
   const slugMarker = `slug: '${model.slug}'`;
 
   if (source.includes(slugMarker)) {
-    if (!force) {
-      console.log(`⏭ Skipped component catalog registration: ${model.slug}`);
-      return;
-    }
-
-    const entryStartPattern = new RegExp(
-      `\\n  \\{\\n    slug: '${escapeRegExp(model.slug)}',`
-    );
-    const entryStartMatch = source.match(entryStartPattern);
-    const entryStart = entryStartMatch?.index ?? -1;
-
-    if (entryStart === -1) {
-      console.error(
-        `Existing component catalog entry not found: ${model.slug}`
-      );
-      process.exit(1);
-    }
-
-    const entryEndOffset = source.slice(entryStart + 1).indexOf('\n  },\n');
-
-    if (entryEndOffset === -1) {
-      console.error(
-        `Could not determine component catalog entry boundary: ${model.slug}`
-      );
-      process.exit(1);
-    }
-
-    const entryEnd = entryStart + 1 + entryEndOffset + '\n  },\n'.length;
-    const nextSource =
-      source.slice(0, entryStart) + `\n${entry}` + source.slice(entryEnd);
-
-    if (check) {
-      if (nextSource !== source) {
-        checkFailures.push(path.relative(root, componentsRegistryFile));
-      }
-      return;
-    }
-
-    fs.writeFileSync(componentsRegistryFile, nextSource);
-    console.log(`♻️ Updated component catalog registration: ${model.slug}`);
+    console.log(`⏭ Skipped component catalog registration: ${model.slug}`);
     return;
   }
 
