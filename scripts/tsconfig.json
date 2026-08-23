@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.tooling.json",
+  "compilerOptions": {
+    "composite": false
+  },
+  "include": ["**/*.ts"],
+  "exclude": [
+    "../node_modules",
+    "../dist",
+    "**/*.test.ts",
+    "**/fixtures/**/*.ts"
+  ]
+}

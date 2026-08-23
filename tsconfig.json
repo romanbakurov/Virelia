@@ -5,6 +5,7 @@
     { "path": "./packages/icons" },
     { "path": "./packages/react-native" },
     { "path": "./packages/tokens" },
+    { "path": "./packages/tokens/tsconfig.scripts.json" },
     { "path": "./packages/types" },
     { "path": "./packages/react" },
     { "path": "./apps/react-playground" },

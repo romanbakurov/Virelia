@@ -51,6 +51,7 @@ export function renderDemoFiles(params: {
   const staticDemoProps = Object.entries(
     componentConfig.demo?.staticProps ?? {}
   )
+    .filter(([name]) => !isPlaygroundProp(name))
     .map(([name, value]) => `${name}={${value}}`)
     .join('\n          ');
 

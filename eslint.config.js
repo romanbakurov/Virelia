@@ -34,6 +34,7 @@ export default [
       '**/*.jar',
       '**/*.aar',
       '**/.next/**',
+      '**/.vitepress/cache/**',
     ],
   },
 
@@ -159,7 +160,11 @@ export default [
    * =====================================================
    */
   {
-    files: ['**/*.test.*', '**/*.spec.*', '**/*.stories.*'],
+    files: [
+      '**/*.test.{js,jsx,ts,tsx,mjs,mts,cjs,cts}',
+      '**/*.spec.{js,jsx,ts,tsx,mjs,mts,cjs,cts}',
+      '**/*.stories.{js,jsx,ts,tsx,mjs,mts,cjs,cts}',
+    ],
 
     languageOptions: {
       globals: {

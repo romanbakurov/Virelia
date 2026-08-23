@@ -1,5 +1,9 @@
 **/normalize.css
-    **/normalize.min.css
-    **/fonts/
-    **/images/
-    **/img/
+**/normalize.min.css
+**/fonts/
+**/images/
+**/img/
+**/coverage/
+**/dist/
+**/storybook-static/
+packages/tokens/src/generated/
