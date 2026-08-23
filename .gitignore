@@ -53,3 +53,4 @@ lighthouse-results/
 # Turborepo
 .turbo/
 **/.turbo/
+packages/tokens/src/generated/tokens.css
