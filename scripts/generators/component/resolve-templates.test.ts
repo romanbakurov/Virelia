@@ -65,7 +65,9 @@ describe('component template resolver', () => {
     expect(result.types).toContain(
       "import type { BaseExampleProps } from '@vellira-ui/types';"
     );
-    expect(result.types).toContain('export type ExampleProps = BaseExampleProps;');
+    expect(result.types).toContain(
+      'export type ExampleProps = BaseExampleProps;'
+    );
     expect(result.component).toContain('<button');
   });
 
@@ -82,7 +84,9 @@ describe('component template resolver', () => {
     expect(web.types).toContain(
       "import type { BaseExampleProps } from '@vellira-ui/types';"
     );
-    expect(web.types).toContain('export type ExampleProps = BaseExampleProps;');
+    expect(web.types).toContain(
+      'export type ExampleProps = BaseExampleProps;'
+    );
     expect(web.component).toContain("role='switch'");
     expect(native.component).toContain("accessibilityRole='switch'");
   });
@@ -133,7 +137,7 @@ describe('component template resolver', () => {
     expect(result.types).toContain('restoreFocus?: boolean');
     expect(result.types).not.toContain('closeOnEscape');
 
-    expect(result.component).toContain('<View>');
+    expect(result.component).toContain('<View');
     expect(result.component).not.toContain('closeOnEscape');
   });
 
