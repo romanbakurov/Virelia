@@ -21,7 +21,7 @@ export interface ButtonProps
   iconEnd?: ReactNode;
   /** Custom loading indicator rendered while loading. */
   spinner?: ReactNode;
-  /** HTML title tooltip text for the button or composed child. */
+  /** Advisory tooltip text forwarded to the rendered button or composed child. */
   tooltip?: string;
   /** Compact badge rendered after the label when not icon-only. */
   badge?: ReactNode;
