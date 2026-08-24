@@ -82,4 +82,24 @@ describe('renderUsage', () => {
 
     expect(result.content).toContain("if (value.orientation !== 'horizontal')");
   });
+
+  it('does not emit an unused playground value when there are no controls', () => {
+    const result = renderUsage({
+      componentName: 'Switch',
+      componentConfig: {},
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(result.content).toMatch(
+      /function createSwitchCode\(\s*platform: ComponentPlatform\s*\)/
+    );
+    expect(result.content).toContain(
+      'const code = createSwitchCode(platform);'
+    );
+    expect(result.content).not.toContain('const [value] =');
+  });
 });

@@ -51,10 +51,56 @@ export function renderStoryTemplate({
 
   const additionalStories =
     profile === 'form-control'
-      ? `
+      ? control === 'boolean'
+        ? `
+export const Checked: Story = {
+  args: {
+    checked: true,
+  },
+};
+
+export const Controlled: Story = {
+  args: {
+    checked: true,
+    onCheckedChange: () => undefined,
+  },
+};
+
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+};
+
+export const Required: Story = {
+  args: {
+    required: true,
+  },
+};
+
+export const Invalid: Story = {
+  args: {
+    invalid: true,
+  },
+};
+`
+        : `
+export const Controlled: Story = {
+  args: {
+    value: 'Controlled value',
+    onValueChange: () => undefined,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const Required: Story = {
+  args: {
+    required: true,
   },
 };
 

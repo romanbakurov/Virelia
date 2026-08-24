@@ -134,6 +134,10 @@ export function buildPlaygroundArtifacts(params: {
       return `  ${prop.name}: string;`;
     })
     .join('\n');
+  const playgroundValueType =
+    playgroundProps.length > 0
+      ? `{\n${playgroundValueFields}\n}`
+      : 'Record<never, never>';
 
   const playgroundInitialValues = playgroundProps
     .map(
@@ -202,9 +206,7 @@ import { PlaygroundControlsFromSchema } from '../../shared/PlaygroundControls';
 
 import { ${slugIdentifier}PlaygroundControls } from './${slug}PlaygroundSchema';
 
-export type ${componentName}PlaygroundValue = {
-${playgroundValueFields}
-};
+export type ${componentName}PlaygroundValue = ${playgroundValueType};
 
 type ${componentName}PlaygroundProps = {
   platform: 'react' | 'react-native';
@@ -230,7 +232,7 @@ export function ${componentName}Playground({
       initial${componentName}PlaygroundValue
     );
 
-    const update = (
+  const update = (
     key: keyof ${componentName}PlaygroundValue,
     nextValue: ${componentName}PlaygroundValue[keyof ${componentName}PlaygroundValue]
   ) => {

@@ -11,6 +11,7 @@ const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
   packageName: isNative ? 'react-native' : 'react',
   componentDir: '/repo/component',
   barrelFile: '/repo/index.ts',
+  packageBarrelFile: '/repo/package-index.ts',
   isNative,
 });
 
@@ -27,8 +28,13 @@ const createPlan = (
   parts: profile === 'compound' ? ['Root', 'Trigger', 'Content'] : [],
   force: false,
   targets: [],
+  sharedTypesFile: '/repo/types/example.ts',
+  sharedTypesBarrelFile: '/repo/types/index.ts',
   metadataFile: '/repo/metadata.ts',
   metadataBarrelFile: '/repo/metadata/index.ts',
+  tokenFactoryFile: '/repo/tokens/factories/createExampleTokens.ts',
+  tokenFactoryBarrelFile: '/repo/tokens/factories/index.ts',
+  tokenThemeTargets: [],
 });
 
 describe('component template resolver', () => {
@@ -56,7 +62,12 @@ describe('component template resolver', () => {
       target: createTarget(false),
     });
 
-    expect(result.types).toContain('onValueChange');
+    expect(result.types).toContain(
+      "import type { BaseExampleProps } from '@vellira-ui/types';"
+    );
+    expect(result.types).toContain(
+      'export type ExampleProps = BaseExampleProps;'
+    );
     expect(result.component).toContain('<button');
   });
 
@@ -70,7 +81,10 @@ describe('component template resolver', () => {
       target: createTarget(true),
     });
 
-    expect(web.types).toContain('onCheckedChange');
+    expect(web.types).toContain(
+      "import type { BaseExampleProps } from '@vellira-ui/types';"
+    );
+    expect(web.types).toContain('export type ExampleProps = BaseExampleProps;');
     expect(web.component).toContain("role='switch'");
     expect(native.component).toContain("accessibilityRole='switch'");
   });
@@ -168,7 +182,7 @@ describe('component template resolver', () => {
     expect(web.component).toContain('<div');
     expect(web.component).not.toContain('Object.assign');
 
-    expect(native.component).toContain('<View>');
+    expect(native.component).toContain('<View');
     expect(native.component).not.toContain('Object.assign');
   });
 });

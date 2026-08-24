@@ -4,5 +4,6 @@ export * from './createInputPalette.js';
 export * from './createModalTokens.js';
 export * from './createRadioGroupTokens.js';
 export * from './createRadioPalette.js';
+export * from './createSwitchTokens.js';
 export * from './createTabsTokens.js';
 export * from './createTooltipTokens.js';

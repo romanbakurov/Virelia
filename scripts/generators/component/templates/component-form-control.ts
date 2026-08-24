@@ -10,30 +10,53 @@ export type FormControlTypesTemplateParams = ComponentTemplateParams & {
   control: FormControlKindArg;
 };
 
-export function renderFormControlTypesTemplate({
+export function renderSharedFormControlTypesTemplate({
   componentName,
   control,
 }: FormControlTypesTemplateParams) {
   if (control === 'boolean') {
-    return `export type ${componentName}Props = {
+    return `export interface Base${componentName}Props {
+  /** Accessible name announced by assistive technology. */
+  accessibilityLabel?: string;
+  /** Controlled checked state. */
   checked?: boolean;
+  /** Initial checked state for uncontrolled usage. */
   defaultChecked?: boolean;
+  /** Disables interaction. */
   disabled?: boolean;
+  /** Marks the control as required. */
   required?: boolean;
+  /** Marks the control as invalid. */
   invalid?: boolean;
+  /** Called when the checked state changes. */
   onCheckedChange?: (checked: boolean) => void;
-};
+}
 `;
   }
 
-  return `export type ${componentName}Props = {
+  return `export interface Base${componentName}Props {
+  /** Controlled value. */
   value?: string;
+  /** Initial value for uncontrolled usage. */
   defaultValue?: string;
+  /** Disables interaction. */
   disabled?: boolean;
+  /** Marks the control as required. */
   required?: boolean;
+  /** Marks the control as invalid. */
   invalid?: boolean;
+  /** Called when the value changes. */
   onValueChange?: (value: string) => void;
-};
+}
+`;
+}
+
+export function renderFormControlTypesTemplate({
+  componentName,
+}: FormControlTypesTemplateParams) {
+  return `import type { Base${componentName}Props } from '@vellira-ui/types';
+
+export type ${componentName}Props = Base${componentName}Props;
 `;
 }
 
@@ -42,11 +65,17 @@ function renderBooleanFormControlComponent({
   isNative,
 }: FormControlTemplateParams) {
   if (isNative) {
-    return `import { Pressable } from 'react-native';
+    return `import { useState } from 'react';
 
+import { Pressable, View } from 'react-native';
+
+import { useThemeStyles } from '../../theme';
+
+import { createStyles } from './${componentName}.styles';
 import type { ${componentName}Props } from './types';
 
 export function ${componentName}({
+  accessibilityLabel = '${componentName}',
   checked,
   defaultChecked = false,
   disabled = false,
@@ -54,32 +83,67 @@ export function ${componentName}({
   invalid = false,
   onCheckedChange,
 }: ${componentName}Props) {
-  const resolvedChecked = checked ?? defaultChecked;
+  const styles = useThemeStyles(createStyles);
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
+  const isControlled = checked !== undefined;
+  const resolvedChecked = isControlled ? checked : uncontrolledChecked;
+
+  const handlePress = () => {
+    const nextChecked = !resolvedChecked;
+
+    if (!isControlled) {
+      setUncontrolledChecked(nextChecked);
+    }
+
+    onCheckedChange?.(nextChecked);
+  };
 
   return (
     <Pressable
       disabled={disabled}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole='switch'
-      accessibilityState={{
-        checked: resolvedChecked,
-        disabled,
-      }}
+      accessibilityState={{ checked: resolvedChecked, disabled }}
       accessibilityHint={[
         required ? 'Required.' : undefined,
         invalid ? 'Invalid.' : undefined,
       ]
         .filter(Boolean)
         .join(' ') || undefined}
-      onPress={() => onCheckedChange?.(!resolvedChecked)}
-    />
+      onPress={handlePress}
+      style={({ pressed }) => [
+        styles.root,
+        resolvedChecked && styles.checked,
+        pressed && !disabled && styles.pressed,
+        resolvedChecked && pressed && !disabled && styles.checkedPressed,
+        invalid && styles.invalid,
+        disabled && styles.disabled,
+      ]}
+    >
+      {({ pressed }) => (
+        <View
+          style={[
+            styles.thumb,
+            resolvedChecked && styles.thumbChecked,
+            resolvedChecked && pressed && !disabled && styles.thumbCheckedPressed,
+            disabled && styles.thumbDisabled,
+          ]}
+        />
+      )}
+    </Pressable>
   );
 }
 `;
   }
 
-  return `import type { ${componentName}Props } from './types';
+  return `import { useState } from 'react';
+
+import type { ${componentName}Props } from './types';
+
+import styles from './${componentName}.module.scss';
 
 export function ${componentName}({
+  accessibilityLabel = '${componentName}',
   checked,
   defaultChecked = false,
   disabled = false,
@@ -87,18 +151,35 @@ export function ${componentName}({
   invalid = false,
   onCheckedChange,
 }: ${componentName}Props) {
-  const resolvedChecked = checked ?? defaultChecked;
+  const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
+  const isControlled = checked !== undefined;
+  const resolvedChecked = isControlled ? checked : uncontrolledChecked;
+
+  const handleClick = () => {
+    const nextChecked = !resolvedChecked;
+
+    if (!isControlled) {
+      setUncontrolledChecked(nextChecked);
+    }
+
+    onCheckedChange?.(nextChecked);
+  };
 
   return (
     <button
       type='button'
       role='switch'
+      aria-label={accessibilityLabel}
       aria-checked={resolvedChecked}
       disabled={disabled}
       aria-required={required || undefined}
       aria-invalid={invalid || undefined}
-      onClick={() => onCheckedChange?.(!resolvedChecked)}
-    />
+      data-state={resolvedChecked ? 'checked' : 'unchecked'}
+      className={styles.root}
+      onClick={handleClick}
+    >
+      <span className={styles.thumb} aria-hidden='true' />
+    </button>
   );
 }
 `;
@@ -174,13 +255,9 @@ export function ${componentName}({
 export function renderFormControlComponentTemplate(
   params: FormControlTemplateParams
 ) {
-  if (params.control === 'boolean') {
+  if (params.control === 'boolean')
     return renderBooleanFormControlComponent(params);
-  }
-
-  if (params.control === 'text') {
-    return renderTextFormControlComponent(params);
-  }
+  if (params.control === 'text') return renderTextFormControlComponent(params);
 
   const { componentName, isNative } = params;
 
@@ -203,9 +280,7 @@ export function ${componentName}({
     <Pressable
       disabled={disabled}
       accessibilityRole='button'
-      accessibilityState={{
-        disabled,
-      }}
+      accessibilityState={{ disabled }}
       accessibilityHint={[
         required ? 'Required.' : undefined,
         invalid ? 'Invalid.' : undefined,
@@ -225,13 +300,13 @@ export function ${componentName}({
 
 export function ${componentName}({
   value,
-  defaultValue,
+  defaultValue = '',
   disabled = false,
   required = false,
   invalid = false,
   onValueChange,
 }: ${componentName}Props) {
-  const resolvedValue = value ?? defaultValue ?? '';
+  const resolvedValue = value ?? defaultValue;
 
   return (
     <button

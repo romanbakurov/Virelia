@@ -133,7 +133,9 @@ describe('Select', () => {
     expect(trigger?.getAttribute('aria-controls')).toBe('country-listbox');
     expect(listbox?.id).toBe('country-listbox');
     await act(async () => {
-      await new Promise((resolve) => queueMicrotask(resolve));
+      await new Promise<void>((resolve) => {
+        queueMicrotask(() => resolve());
+      });
     });
     expect((listbox?.parentElement as HTMLElement).style.zIndex).toBe('100');
     expect(listbox?.getAttribute('aria-labelledby')).toBe('country');

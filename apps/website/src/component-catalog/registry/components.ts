@@ -171,4 +171,17 @@ export const webComponents = [
       'react-native': 'https://docs.vellira.dev/react-native/tooltip',
     },
   },
+  {
+    slug: 'switch',
+    name: 'Switch',
+    description: 'Switch component for Vellira applications.',
+    category: 'forms',
+    status: 'beta',
+    order: 999,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/switch',
+      'react-native': 'https://docs.vellira.dev/react-native/switch',
+    },
+  },
 ] as const satisfies readonly ComponentCatalogEntry[];

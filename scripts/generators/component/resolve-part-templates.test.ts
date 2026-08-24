@@ -17,14 +17,20 @@ const plan: ComponentGenerationPlan = {
   parts: ['Root', 'Trigger'],
   force: false,
   targets: [],
+  sharedTypesFile: '/repo/types/tabs.ts',
+  sharedTypesBarrelFile: '/repo/types/index.ts',
   metadataFile: '/repo/metadata.ts',
   metadataBarrelFile: '/repo/metadata/index.ts',
+  tokenFactoryFile: '/repo/tokens/factories/createTabsTokens.ts',
+  tokenFactoryBarrelFile: '/repo/tokens/factories/index.ts',
+  tokenThemeTargets: [],
 };
 
 const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
   packageName: isNative ? 'react-native' : 'react',
   componentDir: '/repo/Tabs',
   barrelFile: '/repo/index.ts',
+  packageBarrelFile: '/repo/package-index.ts',
   isNative,
 });
 

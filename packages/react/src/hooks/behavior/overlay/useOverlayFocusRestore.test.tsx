@@ -34,7 +34,9 @@ function TestOverlay({
 
 async function flushMicrotasks() {
   await act(async () => {
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
   });
 }
 

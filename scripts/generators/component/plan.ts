@@ -15,7 +15,14 @@ export type ComponentGenerationTarget = {
   packageName: ComponentTargetPackage;
   componentDir: string;
   barrelFile: string;
+  packageBarrelFile: string;
   isNative: boolean;
+};
+
+export type ComponentTokenThemeTarget = {
+  theme: 'light' | 'dark' | 'highContrast';
+  componentFile: string;
+  barrelFile: string;
 };
 
 export type ComponentGenerationPlan = {
@@ -28,8 +35,13 @@ export type ComponentGenerationPlan = {
   force: boolean;
   parts: readonly string[];
   targets: readonly ComponentGenerationTarget[];
+  sharedTypesFile: string;
+  sharedTypesBarrelFile: string;
   metadataFile: string;
   metadataBarrelFile: string;
+  tokenFactoryFile: string;
+  tokenFactoryBarrelFile: string;
+  tokenThemeTargets: readonly ComponentTokenThemeTarget[];
 };
 
 function getTargetPackages(
@@ -70,6 +82,42 @@ export function createComponentGenerationPlan(params: {
       options.layer,
       'index.ts'
     ),
+    packageBarrelFile: path.join(
+      root,
+      'packages',
+      packageName,
+      'src',
+      'index.ts'
+    ),
+  }));
+
+  const sharedTypesFileName = `${options.componentName[0].toLowerCase()}${options.componentName.slice(1)}.ts`;
+  const tokenComponentFileName = `${options.componentName[0].toLowerCase()}${options.componentName.slice(1)}.ts`;
+
+  const tokenThemeTargets: ComponentTokenThemeTarget[] = [
+    'light',
+    'dark',
+    'highContrast',
+  ].map((theme) => ({
+    theme: theme as ComponentTokenThemeTarget['theme'],
+    componentFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      theme,
+      'components',
+      tokenComponentFileName
+    ),
+    barrelFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      theme,
+      'components',
+      'index.ts'
+    ),
   }));
 
   return {
@@ -82,6 +130,22 @@ export function createComponentGenerationPlan(params: {
     parts: options.parts,
     force: options.force,
     targets,
+
+    sharedTypesFile: path.join(
+      root,
+      'packages',
+      'types',
+      'src',
+      sharedTypesFileName
+    ),
+
+    sharedTypesBarrelFile: path.join(
+      root,
+      'packages',
+      'types',
+      'src',
+      'index.ts'
+    ),
 
     metadataFile: path.join(
       root,
@@ -100,5 +164,25 @@ export function createComponentGenerationPlan(params: {
       'components',
       'index.ts'
     ),
+
+    tokenFactoryFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      'factories',
+      `create${options.componentName}Tokens.ts`
+    ),
+
+    tokenFactoryBarrelFile: path.join(
+      root,
+      'packages',
+      'tokens',
+      'src',
+      'factories',
+      'index.ts'
+    ),
+
+    tokenThemeTargets,
   };
 }

@@ -8,6 +8,14 @@ import type { ComponentPlatform } from '../types';
 
 // component-page-imports
 import {
+  SwitchAccessibility,
+  SwitchDemo,
+  SwitchExamples,
+  SwitchUsage,
+  NativeSwitchDemo,
+  switchApi,
+} from '../components/Switch';
+import {
   RadioGroupAccessibility,
   RadioGroupDemo,
   RadioGroupExamples,
@@ -136,6 +144,18 @@ type ComponentPageConfig = {
 
 export const componentPages = {
   // component-page-entries
+  switch: {
+    name: 'Switch',
+    demos: {
+      react: SwitchDemo,
+      'react-native': NativeSwitchDemo,
+    },
+    Usage: SwitchUsage,
+    Examples: SwitchExamples,
+    Accessibility: SwitchAccessibility,
+    api: switchApi,
+    related: ['checkbox', 'radio', 'form-field'],
+  },
   'radio-group': {
     name: 'RadioGroup',
     demos: {

@@ -8,6 +8,7 @@ import { popoverMetadata } from './Popover.metadata';
 import { radioMetadata } from './Radio.metadata';
 import { radioGroupMetadata } from './RadioGroup.metadata';
 import { selectMetadata } from './Select.metadata';
+import { switchMetadata } from './Switch.metadata';
 import { tabsMetadata } from './Tabs.metadata';
 import { tooltipMetadata } from './Tooltip.metadata';
 
@@ -39,4 +40,5 @@ export const componentMetadata = [
   modalMetadata,
   popoverMetadata,
   tooltipMetadata,
+  switchMetadata,
 ] as const;

@@ -2,8 +2,8 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Portal } from '../primitives/Portal';
-import { render } from '../test-utils/render';
+import { Portal } from '@/primitives';
+import { render } from '@/test-utils/render';
 
 import { Dropdown } from './Dropdown';
 import { Modal } from './Modal';
@@ -64,15 +64,10 @@ describe('nested overlays', () => {
         <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Profile settings'>
-            <Select
-              open
-              id='country'
-              onOpenChange={onSelectOpenChange}
-              options={[
-                { label: 'France', value: 'fr' },
-                { label: 'Germany', value: 'de' },
-              ]}
-            />
+            <Select open id='country' onOpenChange={onSelectOpenChange}>
+              <Select.Item value='fr'>France</Select.Item>
+              <Select.Item value='de'>Germany</Select.Item>
+            </Select>
           </Modal.Content>
         </Portal>
       </Modal>
@@ -192,15 +187,10 @@ describe('nested overlays', () => {
         <Portal>
           <Modal.Overlay />
           <Modal.Content ariaLabel='Profile settings'>
-            <Select
-              open
-              id='country'
-              onOpenChange={onSelectOpenChange}
-              options={[
-                { label: 'France', value: 'fr' },
-                { label: 'Germany', value: 'de' },
-              ]}
-            />
+            <Select open id='country' onOpenChange={onSelectOpenChange}>
+              <Select.Item value='fr'>France</Select.Item>
+              <Select.Item value='de'>Germany</Select.Item>
+            </Select>
           </Modal.Content>
         </Portal>
       </Modal>

@@ -39,6 +39,7 @@ function generateVariables(
   prefix: string,
   options?: {
     numberUnit?: string;
+    unitlessNumberKeys?: readonly string[];
   }
 ): string {
   let css = '';
@@ -52,7 +53,11 @@ function generateVariables(
     }
 
     if (typeof value === 'number') {
-      css += `  --${name}: ${value}${options?.numberUnit ?? ''};\n`;
+      const numberUnit = options?.unitlessNumberKeys?.includes(key)
+        ? ''
+        : (options?.numberUnit ?? '');
+
+      css += `  --${name}: ${value}${numberUnit};\n`;
       continue;
     }
 
@@ -117,15 +122,15 @@ function generateBaseVariables(): string {
   return css;
 }
 
-function generateThemeBlock(
-  selector: string,
-  theme: typeof lightTheme
-): string {
+type Theme = typeof lightTheme | typeof darkTheme | typeof highContrastTheme;
+
+function generateThemeBlock(selector: string, theme: Theme): string {
   return `${selector} {\n${generateVariables(theme.colors, 'color')}${generateVariables(
     theme.semantic,
     ''
   )}${generateVariables(theme.components, '', {
     numberUnit: 'px',
+    unitlessNumberKeys: ['pressScale'],
   })}}\n`;
 }
 
@@ -159,13 +164,21 @@ css += generateThemeBlock(
   highContrastTheme
 );
 
-const outputPath = path.resolve(__dirname, '../dist/css/tokens.css');
+const outputPaths = [
+  path.resolve(__dirname, '../src/generated/tokens.css'),
+  path.resolve(__dirname, '../dist/css/tokens.css'),
+];
 
-fs.mkdirSync(path.dirname(outputPath), {
-  recursive: true,
-});
+for (const outputPath of outputPaths) {
+  fs.mkdirSync(path.dirname(outputPath), {
+    recursive: true,
+  });
 
-writeFileIfChanged(outputPath, css);
+  writeFileIfChanged(outputPath, css);
+}
 
 console.log('✅ tokens.css generated');
-console.log(outputPath);
+
+for (const outputPath of outputPaths) {
+  console.log(outputPath);
+}

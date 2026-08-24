@@ -7,6 +7,7 @@ import { Button as ReactButton } from '@vellira-ui/react';
 import { Button as NativeButton } from '@vellira-ui/react-native';
 import { Plus } from '@vellira-ui/icons';
 import { ArrowRight } from '@vellira-ui/icons';
+import Link from 'next/link';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
@@ -192,18 +193,19 @@ import { Plus } from '@vellira-ui/icons';
       description: 'Composes button styling onto a custom React link.',
       preview: (
         <ReactButton iconStart={<Plus />} aria-label='Add item' asChild>
-          <a href='/components/button'>Button</a>
+          <Link href='/components/button'>Button</Link>
         </ReactButton>
       ),
       code: `import { Button } from '@vellira-ui/react';
 import { Plus } from '@vellira-ui/icons';
+import Link from 'next/link';
 
 <Button
   iconStart={<Plus />}
   aria-label='Add item'
   asChild
 >
-  <a href='/components/button'>Button</a>
+  <Link href='/components/button'>Button</Link>
 </Button>`,
     },
   ] as const;

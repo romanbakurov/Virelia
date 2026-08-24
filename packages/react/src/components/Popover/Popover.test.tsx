@@ -215,7 +215,9 @@ describe('Popover', () => {
 
     pressDocumentKey('Escape');
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(onOpenChange).toHaveBeenCalledWith(
       false,
@@ -412,7 +414,9 @@ describe('Popover', () => {
       </Popover>
     );
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     const trigger = container.querySelector<HTMLButtonElement>('button');
     const actions = document.querySelectorAll<HTMLButtonElement>(
@@ -481,13 +485,17 @@ describe('Popover', () => {
 
     const trigger = container.querySelector<HTMLButtonElement>('button');
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(document.activeElement).toBe(initialFocusRef.current);
 
     pressDocumentKey('Escape');
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     expect(document.activeElement).not.toBe(trigger);
@@ -644,7 +652,9 @@ describe('Popover', () => {
     trigger?.focus();
     pressDocumentKey('Escape');
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     expect(document.activeElement).toBe(trigger);
@@ -694,7 +704,9 @@ describe('Popover', () => {
     trigger?.focus();
     pressDocumentKey('Escape');
 
-    await new Promise((resolve) => queueMicrotask(resolve));
+    await new Promise<void>((resolve) => {
+      queueMicrotask(() => resolve());
+    });
 
     expect(document.querySelector('[role="dialog"]')).toBeNull();
     expect(document.activeElement).toBe(trigger);

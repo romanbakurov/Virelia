@@ -67,7 +67,7 @@ describe('component generator writer', () => {
 
     const result = writeComponentGenerationPlan(plan);
 
-    expect(result.createdFiles).toHaveLength(17);
+    expect(result.createdFiles).toHaveLength(19);
 
     for (const packageName of ['react', 'react-native']) {
       const componentDir = path.join(
@@ -94,7 +94,6 @@ describe('component generator writer', () => {
       expect(fs.existsSync(path.join(componentDir, 'Avatar.test.tsx'))).toBe(
         true
       );
-      expect(fs.existsSync(path.join(componentDir, 'README.md'))).toBe(true);
     }
 
     expect(
@@ -260,27 +259,21 @@ describe('component generator writer', () => {
 
     expect(metadata).toContain("name: 'Avatar'");
     expect(metadata).toContain("status: 'experimental'");
-    expect(metadata).toContain("name: 'Avatar'");
     expect(metadata).toContain("layer: 'primitives'");
     expect(metadata).toContain("category: 'data-display'");
     expect(metadata).toContain("'react'");
     expect(metadata).toContain("'react-native'");
-    expect(metadata).toContain("status: 'experimental'");
 
     const barrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
 
     expect(barrel).toContain(
       "import { avatarMetadata } from './Avatar.metadata';"
     );
-
     expect(barrel).toContain('export const componentMetadata = [');
-
     expect(barrel).toContain('  avatarMetadata,');
-
     expect(
       barrel.match(/import \{ avatarMetadata \} from '\.\/Avatar\.metadata';/g)
     ).toHaveLength(1);
-
     expect(barrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
@@ -303,11 +296,9 @@ describe('component generator writer', () => {
     });
 
     const result = writeComponentGenerationPlan(plan);
-
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
 
     expect(result.createdFiles).toContain(plan.metadataFile);
-
     expect(metadata).toContain("profile: 'overlay'");
     expect(metadata).toContain("'controlled'");
     expect(metadata).toContain("'uncontrolled'");
@@ -395,7 +386,6 @@ describe('component generator writer', () => {
       expect(componentSource).toContain(
         'export const Tabs = Object.assign(TabsRoot, {'
       );
-
       expect(componentSource).toContain('List: TabsList');
       expect(componentSource).toContain('Trigger: TabsTrigger');
       expect(componentSource).toContain('Content: TabsContent');
@@ -462,6 +452,8 @@ describe('component generator writer', () => {
       'utf8'
     );
 
+    const sharedTypes = fs.readFileSync(plan.sharedTypesFile, 'utf8');
+
     expect(webSource).toContain('<button');
     expect(webSource).toContain('aria-required');
     expect(webSource).toContain('aria-invalid');
@@ -470,11 +462,21 @@ describe('component generator writer', () => {
     expect(nativeSource).toContain("accessibilityRole='button'");
     expect(nativeSource).toContain('accessibilityState');
 
-    expect(webTypes).toContain('value?: string');
-    expect(nativeTypes).toContain('value?: string');
+    expect(webTypes).toContain(
+      "import type { BaseFieldControlProps } from '@vellira-ui/types';"
+    );
+    expect(nativeTypes).toContain(
+      "import type { BaseFieldControlProps } from '@vellira-ui/types';"
+    );
+    expect(webTypes).toContain(
+      'export type FieldControlProps = BaseFieldControlProps;'
+    );
+    expect(nativeTypes).toContain(
+      'export type FieldControlProps = BaseFieldControlProps;'
+    );
 
-    expect(webTypes).toContain('onValueChange?: (value: string) => void');
-    expect(nativeTypes).toContain('onValueChange?: (value: string) => void');
+    expect(sharedTypes).toContain('value?: string');
+    expect(sharedTypes).toContain('onValueChange?: (value: string) => void');
   });
 
   it('generates composed platform-specific overlay parts', () => {
@@ -565,11 +567,9 @@ describe('component generator writer', () => {
     );
 
     expect(barrel).toContain('  dialogMetadata,');
-
     expect(
       barrel.match(/import \{ dialogMetadata \} from '\.\/Dialog\.metadata';/g)
     ).toHaveLength(1);
-
     expect(barrel.match(/ {2}dialogMetadata,/g)).toHaveLength(1);
   });
 });

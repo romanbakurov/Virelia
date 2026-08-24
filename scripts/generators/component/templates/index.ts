@@ -6,7 +6,6 @@ export * from './component-styles';
 export * from './component-native-styles';
 export * from './component-test';
 export * from './component-metadata';
-export * from './component-readme';
 export * from './component-part';
 export * from './component-compound';
 export * from './component-form-control';
@@ -14,6 +13,7 @@ export * from './component-overlay-web';
 export * from './component-overlay-native';
 export * from './component-overlay-part-native';
 export * from './component-overlay-part-web';
+export * from './component-tokens';
 
 import type { ComponentTemplateParams } from './component-types';
 

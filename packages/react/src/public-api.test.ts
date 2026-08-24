@@ -17,6 +17,7 @@ describe('public API', () => {
       'Radio',
       'RadioGroup',
       'Select',
+      'Switch',
       'Tabs',
       'ThemeProvider',
       'Tooltip',

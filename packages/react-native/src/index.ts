@@ -97,5 +97,7 @@ export type { PortalProps, PortalProviderProps } from './primitives/Portal';
 export { Portal, PortalProvider } from './primitives/Portal';
 export type { RadioProps } from './primitives/Radio';
 export { Radio } from './primitives/Radio';
+export type { SwitchProps } from './primitives/Switch';
+export { Switch } from './primitives/Switch';
 export type { NativeThemeName, ThemeProviderProps } from './theme';
 export { nativeThemes, ThemeProvider, useTheme } from './theme';

@@ -79,28 +79,31 @@ export function renderUsage(params: {
   const nativePlatformImports = createPlatformImports('react-native');
   const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
   const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
+  const hasPlaygroundState = playgroundProps.length > 0;
+  const usageValueParameter = hasPlaygroundState
+    ? `,\n  value: ${componentName}PlaygroundValue`
+    : '';
+  const usageValueArgument = hasPlaygroundState ? ', value' : '';
+  const demoStateImport = hasPlaygroundState
+    ? `import { useComponentDemoState } from '../../shared/ComponentDemoStateProvider';\n\nimport {\n  initial${componentName}PlaygroundValue,\n  type ${componentName}PlaygroundValue,\n} from './${componentName}Playground';\n\n`
+    : '';
+  const demoStateUsage = hasPlaygroundState
+    ? `  const [value] =\n    useComponentDemoState<${componentName}PlaygroundValue>(\n      initial${componentName}PlaygroundValue\n    );\n\n`
+    : '';
 
   const content = `${generatedFileHeader}'use client';
 
 import type { ComponentPlatform } from '../../types';
 
 import { ComponentCodeBlock } from '../../shared/ComponentCodeBlock';
-import { useComponentDemoState } from '../../shared/ComponentDemoStateProvider';
-
-import {
-  initial${componentName}PlaygroundValue,
-  type ${componentName}PlaygroundValue,
-} from './${componentName}Playground';
-
-import styles from '../../shared/ComponentUsage.module.css';
+${demoStateImport}import styles from '../../shared/ComponentUsage.module.css';
 
 type ${componentName}UsageProps = {
   platform: ComponentPlatform;
 };
 
 function create${componentName}Code(
-  platform: ComponentPlatform,
-  value: ${componentName}PlaygroundValue
+  platform: ComponentPlatform${usageValueParameter}
 ) {
   const packageName =
     platform === 'react'
@@ -190,12 +193,7 @@ ${playgroundProps
 export function ${componentName}Usage({
   platform,
 }: ${componentName}UsageProps) {
-  const [value] =
-    useComponentDemoState<${componentName}PlaygroundValue>(
-      initial${componentName}PlaygroundValue
-    );
-
-  const code = create${componentName}Code(platform, value);
+${demoStateUsage}  const code = create${componentName}Code(platform${usageValueArgument});
 
   return (
     <section className={styles.root}>

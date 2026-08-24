@@ -2,13 +2,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  renderComponentTokenBarrelExport,
+  renderComponentTokenFactoryBarrelExport,
+  renderComponentTokenFactoryTemplate,
   renderIndexTemplate,
   renderMetadataTemplate,
   renderNativeStylesTemplate,
-  renderReadmeTemplate,
+  renderSharedFormControlTypesTemplate,
   renderStoryTemplate,
   renderStylesTemplate,
   renderTestTemplate,
+  renderThemeComponentTokensTemplate,
 } from './templates';
 
 import {
@@ -46,6 +50,7 @@ function writeFile(params: {
 }) {
   const { filePath, content, createdFiles } = params;
 
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
   createdFiles.push(filePath);
 }
@@ -95,7 +100,9 @@ function updateBarrel(params: {
 }) {
   const { barrelFile, exportLine, updatedFiles } = params;
 
-  const content = fs.readFileSync(barrelFile, 'utf8');
+  const content = fs.existsSync(barrelFile)
+    ? fs.readFileSync(barrelFile, 'utf8')
+    : '';
 
   if (content.includes(exportLine)) {
     return;
@@ -106,8 +113,99 @@ function updateBarrel(params: {
       ? `${exportLine}\n`
       : `${content.trimEnd()}\n${exportLine}\n`;
 
+  fs.mkdirSync(path.dirname(barrelFile), { recursive: true });
   fs.writeFileSync(barrelFile, nextContent);
   updatedFiles.push(barrelFile);
+}
+
+function registerPackageRootExports(params: {
+  plan: ComponentGenerationPlan;
+  target: ComponentGenerationTarget;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, target, result } = params;
+  const exportPath = `./${plan.layer}/${plan.componentName}`;
+
+  updateBarrel({
+    barrelFile: target.packageBarrelFile,
+    exportLine: `export type { ${plan.componentName}Props } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+
+  updateBarrel({
+    barrelFile: target.packageBarrelFile,
+    exportLine: `export { ${plan.componentName} } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+}
+
+function writeSharedTypes(params: {
+  plan: ComponentGenerationPlan;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, result } = params;
+
+  if (plan.profile !== 'form-control') {
+    return;
+  }
+
+  writeFile({
+    filePath: plan.sharedTypesFile,
+    content: renderSharedFormControlTypesTemplate({
+      componentName: plan.componentName,
+      control: plan.control,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  const sharedFileName = path.basename(plan.sharedTypesFile, '.ts');
+
+  updateBarrel({
+    barrelFile: plan.sharedTypesBarrelFile,
+    exportLine: `export * from './${sharedFileName}';`,
+    updatedFiles: result.updatedFiles,
+  });
+}
+
+function writeComponentTokens(params: {
+  plan: ComponentGenerationPlan;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, result } = params;
+
+  writeFile({
+    filePath: plan.tokenFactoryFile,
+    content: renderComponentTokenFactoryTemplate({
+      componentName: plan.componentName,
+      profile: plan.profile,
+      control: plan.control,
+    }),
+    createdFiles: result.createdFiles,
+  });
+
+  updateBarrel({
+    barrelFile: plan.tokenFactoryBarrelFile,
+    exportLine: renderComponentTokenFactoryBarrelExport(plan.componentName),
+    updatedFiles: result.updatedFiles,
+  });
+
+  for (const tokenTarget of plan.tokenThemeTargets) {
+    writeFile({
+      filePath: tokenTarget.componentFile,
+      content: renderThemeComponentTokensTemplate({
+        componentName: plan.componentName,
+        profile: plan.profile,
+        control: plan.control,
+      }),
+      createdFiles: result.createdFiles,
+    });
+
+    updateBarrel({
+      barrelFile: tokenTarget.barrelFile,
+      exportLine: renderComponentTokenBarrelExport(plan.componentName),
+      updatedFiles: result.updatedFiles,
+    });
+  }
 }
 
 function writeTarget(params: {
@@ -214,14 +312,16 @@ function writeTarget(params: {
         : `${componentName}.module.scss`
     ),
     content: target.isNative
-      ? renderNativeStylesTemplate({ componentName })
-      : renderStylesTemplate({ componentName }),
-    createdFiles: result.createdFiles,
-  });
-
-  writeFile({
-    filePath: path.join(target.componentDir, 'README.md'),
-    content: renderReadmeTemplate({ componentName }),
+      ? renderNativeStylesTemplate({
+          componentName,
+          profile: plan.profile,
+          control: plan.control,
+        })
+      : renderStylesTemplate({
+          componentName,
+          profile: plan.profile,
+          control: plan.control,
+        }),
     createdFiles: result.createdFiles,
   });
 
@@ -243,6 +343,8 @@ function writeTarget(params: {
     exportLine: `export * from './${componentName}';`,
     updatedFiles: result.updatedFiles,
   });
+
+  registerPackageRootExports({ plan, target, result });
 }
 
 function registerMetadata(params: {
@@ -353,6 +455,9 @@ export function writeComponentGenerationPlan(
     createdFiles: [],
     updatedFiles: [],
   };
+
+  writeSharedTypes({ plan, result });
+  writeComponentTokens({ plan, result });
 
   for (const target of plan.targets) {
     writeTarget({

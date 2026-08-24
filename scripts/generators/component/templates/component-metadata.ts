@@ -33,7 +33,7 @@ export function renderMetadataTemplate({
 ${capabilities.map((capability) => `    '${capability}',`).join('\n')}
   ]`;
 
-  return `import { defineComponentMetadata } from '@vellira-ui/metadata';
+  return `import { defineComponentMetadata } from '../defineComponentMetadata';
 
 export const ${metadataName} = defineComponentMetadata({
   name: '${componentName}',

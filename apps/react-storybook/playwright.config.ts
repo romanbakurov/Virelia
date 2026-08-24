@@ -13,7 +13,9 @@ export default defineConfig({
   use: {
     baseURL,
     trace: 'retain-on-failure',
-    reducedMotion: 'reduce',
+    contextOptions: {
+      reducedMotion: 'reduce',
+    },
   },
   webServer: {
     command: `pnpm exec storybook dev -p ${port} --host 127.0.0.1`,

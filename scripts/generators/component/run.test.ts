@@ -76,7 +76,7 @@ describe('component generator', () => {
       },
     });
 
-    expect(result.createdFiles).toHaveLength(17);
+    expect(result.createdFiles).toHaveLength(19);
 
     const webDir = path.join(root, 'packages/react/src/primitives/Avatar');
 
@@ -92,7 +92,6 @@ describe('component generator', () => {
       'Avatar.stories.tsx',
       'types.ts',
       'index.ts',
-      'README.md',
     ]) {
       expect(fs.existsSync(path.join(webDir, file))).toBe(true);
     }
@@ -104,12 +103,16 @@ describe('component generator', () => {
       'Avatar.stories.tsx',
       'types.ts',
       'index.ts',
-      'README.md',
     ]) {
       expect(fs.existsSync(path.join(nativeDir, file))).toBe(true);
     }
 
     expect(fs.existsSync(result.plan.metadataFile)).toBe(true);
+    expect(fs.existsSync(result.plan.tokenFactoryFile)).toBe(true);
+
+    for (const tokenTarget of result.plan.tokenThemeTargets) {
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(true);
+    }
 
     expect(fs.readFileSync(result.plan.metadataFile, 'utf8')).toContain(
       "name: 'Avatar'"
@@ -232,6 +235,25 @@ describe('component generator', () => {
     ).toHaveLength(1);
 
     expect(metadataBarrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
+
+    const tokenFactoryBarrel = fs.readFileSync(
+      result.plan.tokenFactoryBarrelFile,
+      'utf8'
+    );
+
+    expect(
+      tokenFactoryBarrel.match(/export \* from '\.\/createAvatarTokens\.js';/g)
+    ).toHaveLength(1);
+
+    for (const tokenTarget of result.plan.tokenThemeTargets) {
+      const tokenBarrel = fs.readFileSync(tokenTarget.barrelFile, 'utf8');
+
+      expect(
+        tokenBarrel.match(
+          /export \{ avatarTokens as avatar \} from '\.\/avatar\.js';/g
+        )
+      ).toHaveLength(1);
+    }
   });
 
   it('generates platform-specific overlay scaffolds through the full pipeline', () => {
@@ -438,10 +460,13 @@ describe('component generator', () => {
     expect(result.dryRun).toBe(true);
 
     expect(result.createdFiles).toContain(result.plan.metadataFile);
+    expect(result.createdFiles).toContain(result.plan.tokenFactoryFile);
 
     expect(result.updatedFiles).toContain(result.plan.metadataBarrelFile);
+    expect(result.updatedFiles).toContain(result.plan.tokenFactoryBarrelFile);
 
     expect(fs.existsSync(result.plan.metadataFile)).toBe(false);
+    expect(fs.existsSync(result.plan.tokenFactoryFile)).toBe(false);
 
     for (const target of result.plan.targets) {
       expect(fs.existsSync(target.componentDir)).toBe(false);

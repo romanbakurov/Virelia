@@ -9,5 +9,6 @@ export * from './popover';
 export * from './radio';
 export * from './radioGroup';
 export * from './select';
+export * from './switch';
 export * from './tabs';
 export * from './tooltip';

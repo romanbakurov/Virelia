@@ -308,10 +308,8 @@ describe('Tabs', () => {
     });
 
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
-
-        if (element.id.includes('trigger-settings')) {
+      function getBoundingClientRect(this: HTMLElement) {
+        if (this.id.includes('trigger-settings')) {
           return rect({ left: 24, right: 88, top: 12, width: 64, height: 32 });
         }
 
@@ -357,14 +355,12 @@ describe('Tabs', () => {
     });
 
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
-
-        if (element.id.includes('trigger-general')) {
+      function getBoundingClientRect(this: HTMLElement) {
+        if (this.id.includes('trigger-general')) {
           return rect({ left: 16, right: 80, top: 0, width: 64, height: 32 });
         }
 
-        if (element.id.includes('trigger-settings')) {
+        if (this.id.includes('trigger-settings')) {
           return rect({ left: 120, right: 216, top: 0, width: 96, height: 32 });
         }
 
@@ -430,10 +426,8 @@ describe('Tabs', () => {
 
   it('positions the indicator under the active trigger in rtl', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
-
-        if (element.id.includes('trigger-settings')) {
+      function getBoundingClientRect(this: HTMLElement) {
+        if (this.id.includes('trigger-settings')) {
           return rect({ left: 96, right: 176, top: 0, width: 80, height: 32 });
         }
 
@@ -468,10 +462,8 @@ describe('Tabs', () => {
 
   it('renders a vertical indicator using trigger height', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
-
-        if (element.id.includes('trigger-settings')) {
+      function getBoundingClientRect(this: HTMLElement) {
+        if (this.id.includes('trigger-settings')) {
           return rect({ left: 0, right: 120, top: 42, width: 120, height: 36 });
         }
 
@@ -506,14 +498,12 @@ describe('Tabs', () => {
 
   it('moves selection and indicator when the active trigger is removed', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
-
-        if (element.id.includes('trigger-profile')) {
+      function getBoundingClientRect(this: HTMLElement) {
+        if (this.id.includes('trigger-profile')) {
           return rect({ left: 64, right: 144, top: 0, width: 80, height: 32 });
         }
 
-        if (element.id.includes('trigger-settings')) {
+        if (this.id.includes('trigger-settings')) {
           return rect({ left: 144, right: 232, top: 0, width: 88, height: 32 });
         }
 
@@ -557,19 +547,18 @@ describe('Tabs', () => {
 
   it('repositions the indicator when a sibling trigger is removed', async () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
-      function getBoundingClientRect() {
-        const element = this as HTMLElement;
+      function getBoundingClientRect(this: HTMLElement) {
         const profileExists = Boolean(
           document.querySelector('[id*="trigger-profile"]')
         );
 
-        if (element.id.includes('trigger-settings')) {
+        if (this.id.includes('trigger-settings')) {
           return profileExists
             ? rect({ left: 144, right: 232, top: 0, width: 88, height: 32 })
             : rect({ left: 64, right: 152, top: 0, width: 88, height: 32 });
         }
 
-        if (element.id.includes('trigger-profile')) {
+        if (this.id.includes('trigger-profile')) {
           return rect({ left: 64, right: 144, top: 0, width: 80, height: 32 });
         }
 

@@ -7,7 +7,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import {
   renderFormControlComponentTemplate,
   renderFormControlTypesTemplate,
+  renderSharedFormControlTypesTemplate,
 } from './templates/component-form-control';
+import { renderNativeStylesTemplate } from './templates/component-native-styles';
+import { renderStylesTemplate } from './templates/component-styles';
 import { renderTestTemplate } from './templates/component-test';
 
 const fixtureName = '__GeneratedContractSwitch';
@@ -42,12 +45,21 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
 
   fs.mkdirSync(directory, { recursive: true });
 
+  const sharedTypes = renderSharedFormControlTypesTemplate({
+    componentName: fixtureName,
+    control: 'boolean',
+  });
+  const platformTypes = renderFormControlTypesTemplate({
+    componentName: fixtureName,
+    control: 'boolean',
+  }).replace(
+    `import type { Base${fixtureName}Props } from '@vellira-ui/types';`,
+    ''
+  );
+
   fs.writeFileSync(
     path.join(directory, 'types.ts'),
-    renderFormControlTypesTemplate({
-      componentName: fixtureName,
-      control: 'boolean',
-    })
+    `${sharedTypes}\n${platformTypes}`
   );
 
   fs.writeFileSync(
@@ -57,6 +69,24 @@ function writeFixture(params: { packageRoot: string; isNative: boolean }) {
       isNative,
       control: 'boolean',
     })
+  );
+
+  fs.writeFileSync(
+    path.join(
+      directory,
+      isNative ? `${fixtureName}.styles.ts` : `${fixtureName}.module.scss`
+    ),
+    isNative
+      ? renderNativeStylesTemplate({
+          componentName: fixtureName,
+          profile: 'form-control',
+          control: 'boolean',
+        })
+      : renderStylesTemplate({
+          componentName: fixtureName,
+          profile: 'form-control',
+          control: 'boolean',
+        })
   );
 
   fs.writeFileSync(

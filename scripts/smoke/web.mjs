@@ -108,6 +108,7 @@ const expectedWebApi = [
   'Radio',
   'RadioGroup',
   'Select',
+  'Switch',
   'Tabs',
   'ThemeProvider',
   'Tooltip',
