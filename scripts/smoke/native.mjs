@@ -299,6 +299,7 @@ const expectedNativeApi = [
   'Radio',
   'RadioGroup',
   'Select',
+  'Switch',
   'Tabs',
   'ThemeProvider',
   'Tooltip',
