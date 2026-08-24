@@ -41,11 +41,12 @@ function createFixtureRepo() {
     'pnpm-lock.yaml',
     'pnpm-workspace.yaml',
     'tsconfig.json',
+    'tsconfig.base.json',
     'tsconfig.tooling.json',
     'tsconfig.tooling.test.json',
     'vitest.config.ts',
     'vitest.tooling.config.ts',
-    '.prettierrc',
+    '.prettierrc.js',
     '.prettierignore',
   ]) {
     copyIfExists(root, fixture, relativePath);
@@ -88,6 +89,47 @@ function generatedButtonApiPath(fixture: string) {
   );
 }
 
+function generatedButtonFiles(fixture: string) {
+  const root = path.join(
+    fixture,
+    'apps/website/src/component-catalog/components/Button'
+  );
+
+  return [
+    'ButtonAccessibility.tsx',
+    'ButtonDemo.tsx',
+    'ButtonExamples.tsx',
+    'ButtonPlayground.tsx',
+    'ButtonUsage.tsx',
+    'NativeButtonDemo.tsx',
+    'buttonApi.ts',
+    'buttonPlaygroundSchema.ts',
+    'index.ts',
+  ].map((fileName) => path.join(root, fileName));
+}
+
+function snapshotFiles(filePaths: readonly string[]) {
+  return new Map(
+    filePaths.map((filePath) => [filePath, fs.readFileSync(filePath, 'utf8')])
+  );
+}
+
+function expectFilesUnchanged(snapshot: Map<string, string>) {
+  for (const [filePath, content] of snapshot) {
+    expect(fs.readFileSync(filePath, 'utf8')).toBe(content);
+  }
+}
+
+function createCanonicalFixtureRepo() {
+  const fixture = createFixtureRepo();
+  const result = runGenerator(fixture, ['Button', '--force']);
+
+  expect(result.status).toBe(0);
+  expect(result.stderr).toBe('');
+
+  return fixture;
+}
+
 afterEach(() => {
   for (const fixture of fixtureRoots.splice(0)) {
     fs.rmSync(fixture, { recursive: true, force: true });
@@ -96,8 +138,8 @@ afterEach(() => {
 
 describe('component page CLI check modes', () => {
   it('keeps human-readable check compatible with registry validation', () => {
-    const fixture = createFixtureRepo();
-    const before = fs.readFileSync(generatedButtonApiPath(fixture), 'utf8');
+    const fixture = createCanonicalFixtureRepo();
+    const before = snapshotFiles(generatedButtonFiles(fixture));
 
     const result = runGenerator(fixture, ['Button', '--force', '--check']);
 
@@ -109,14 +151,12 @@ describe('component page CLI check modes', () => {
       'Skipped component catalog registration: button'
     );
     expect(result.stderr).toBe('');
-    expect(fs.readFileSync(generatedButtonApiPath(fixture), 'utf8')).toBe(
-      before
-    );
-  });
+    expectFilesUnchanged(before);
+  }, 60_000);
 
   it('emits structured JSON check output with valid registry paths', () => {
-    const fixture = createFixtureRepo();
-    const before = fs.readFileSync(generatedButtonApiPath(fixture), 'utf8');
+    const fixture = createCanonicalFixtureRepo();
+    const before = snapshotFiles(generatedButtonFiles(fixture));
 
     const result = runGenerator(fixture, [
       'Button',
@@ -133,16 +173,15 @@ describe('component page CLI check modes', () => {
       status: 'up-to-date',
       staleFiles: [],
     });
-    expect(fs.readFileSync(generatedButtonApiPath(fixture), 'utf8')).toBe(
-      before
-    );
-  });
+    expectFilesUnchanged(before);
+  }, 60_000);
 
   it('reports stale generated files in JSON check mode without mutating them', () => {
-    const fixture = createFixtureRepo();
+    const fixture = createCanonicalFixtureRepo();
     const apiFile = generatedButtonApiPath(fixture);
     const staleContent = `${fs.readFileSync(apiFile, 'utf8')}\n// stale fixture drift\n`;
     fs.writeFileSync(apiFile, staleContent);
+    const before = snapshotFiles(generatedButtonFiles(fixture));
 
     const result = runGenerator(fixture, [
       'Button',
@@ -153,7 +192,8 @@ describe('component page CLI check modes', () => {
 
     expect(result.status).toBe(1);
     expect(result.stderr).toBe('');
-    expect(JSON.parse(result.stdout)).toEqual({
+    const payload = JSON.parse(result.stdout);
+    expect(payload).toEqual({
       schemaVersion: '1',
       componentName: 'Button',
       status: 'stale',
@@ -161,6 +201,7 @@ describe('component page CLI check modes', () => {
         'apps/website/src/component-catalog/components/Button/buttonApi.ts',
       ],
     });
-    expect(fs.readFileSync(apiFile, 'utf8')).toBe(staleContent);
-  });
+    expect(payload.staleFiles).toEqual([...payload.staleFiles].sort());
+    expectFilesUnchanged(before);
+  }, 60_000);
 });
