@@ -24,6 +24,7 @@ const [, , componentName, ...args] = process.argv;
 
 const force = args.includes('--force');
 const check = args.includes('--check');
+const json = args.includes('--json');
 const help =
   componentName === '--help' ||
   componentName === '-h' ||
@@ -39,6 +40,7 @@ Usage:
 Options:
   --force    Overwrite existing generated files
   --check    Check whether generated files are up to date without writing
+  --json     Emit a machine-readable check result
   --help     Show this help message
   -h         Alias for --help
 
@@ -67,11 +69,31 @@ if (!componentName) {
 
 const root = process.cwd();
 
+const writeJsonResult = (result: {
+  componentName: string;
+  status: 'up-to-date' | 'stale';
+  staleFiles: string[];
+}) => {
+  process.stdout.write(
+    `${JSON.stringify(
+      {
+        schemaVersion: '1',
+        ...result,
+      },
+      null,
+      2
+    )}\n`
+  );
+};
+
+if (json) {
+  console.log = () => {};
+}
+
 const {
   catalogRoot,
   catalogComponentsRoot,
   catalogRegistryFile,
-  componentsRegistryFile,
   componentCatalogDir,
   slug,
 } = getCatalogPaths({ root, componentName });
@@ -305,13 +327,20 @@ updateComponentRegistry({
   checkFailures,
   componentCatalogDir,
   componentPagesFile: catalogRegistryFile,
-  componentsRegistryFile,
-  componentProfile,
   model: generatedPageModel,
 });
 
 if (check) {
   if (checkFailures.length > 0) {
+    if (json) {
+      writeJsonResult({
+        componentName,
+        status: 'stale',
+        staleFiles: [...new Set(checkFailures)].sort(),
+      });
+      process.exit(1);
+    }
+
     console.error('Generated component page files are out of date:');
 
     for (const filePath of [...new Set(checkFailures)].sort()) {
@@ -319,6 +348,15 @@ if (check) {
     }
 
     process.exit(1);
+  }
+
+  if (json) {
+    writeJsonResult({
+      componentName,
+      status: 'up-to-date',
+      staleFiles: [],
+    });
+    process.exit(0);
   }
 
   console.log(`Generated component page is up to date: ${componentName}`);
