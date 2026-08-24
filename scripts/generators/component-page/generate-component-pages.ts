@@ -5,6 +5,7 @@ import { generatedComponentPageComponents } from './component-page-components';
 const args = process.argv.slice(2);
 
 const check = args.includes('--check');
+const json = args.includes('--json');
 const help = args.includes('--help') || args.includes('-h');
 
 const helpText = `
@@ -15,6 +16,7 @@ Usage:
 
 Options:
   --check    Check all generated component pages without writing files
+  --json     Emit a machine-readable check result
   --help     Show this help message
   -h         Alias for --help
 
@@ -28,7 +30,7 @@ if (help) {
   process.exit(0);
 }
 
-const supportedArgs = new Set(['--check', '--help', '-h']);
+const supportedArgs = new Set(['--check', '--json', '--help', '-h']);
 const unknownArgs = args.filter((arg) => !supportedArgs.has(arg));
 
 if (unknownArgs.length > 0) {
@@ -39,25 +41,58 @@ if (unknownArgs.length > 0) {
 }
 
 const failures: string[] = [];
+const componentResults: {
+  componentName: string;
+  status: 'up-to-date' | 'stale';
+  staleFiles: string[];
+}[] = [];
 
 for (const componentName of generatedComponentPageComponents) {
-  console.log(
-    check
-      ? `=== Checking ${componentName} ===`
-      : `=== Generating ${componentName} ===`
-  );
+  if (!json) {
+    console.log(
+      check
+        ? `=== Checking ${componentName} ===`
+        : `=== Generating ${componentName} ===`
+    );
+  }
 
-  const commandArgs = [
-    'create:component-page',
-    componentName,
-    '--force',
-    ...(check ? ['--check'] : []),
-  ];
+  const command = json ? 'pnpm' : 'pnpm';
+  const commandArgs = json
+    ? [
+        'exec',
+        'tsx',
+        'scripts/generators/component-page/create-component-page.ts',
+        componentName,
+        '--force',
+        ...(check ? ['--check'] : []),
+        '--json',
+      ]
+    : [
+        'create:component-page',
+        componentName,
+        '--force',
+        ...(check ? ['--check'] : []),
+      ];
 
-  const result = spawnSync('pnpm', commandArgs, {
+  const result = spawnSync(command, commandArgs, {
     encoding: 'utf8',
-    stdio: 'inherit',
+    stdio: json ? 'pipe' : 'inherit',
   });
+
+  if (json && check) {
+    try {
+      const payload = JSON.parse(result.stdout);
+      componentResults.push({
+        componentName: payload.componentName,
+        status: payload.status,
+        staleFiles: payload.staleFiles,
+      });
+    } catch {
+      console.error(result.stderr || result.stdout);
+      failures.push(componentName);
+      continue;
+    }
+  }
 
   if (result.status !== 0) {
     failures.push(componentName);
@@ -65,6 +100,21 @@ for (const componentName of generatedComponentPageComponents) {
 }
 
 if (failures.length > 0) {
+  if (json && check) {
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          schemaVersion: '1',
+          status: 'stale',
+          components: componentResults,
+        },
+        null,
+        2
+      )}\n`
+    );
+    process.exit(1);
+  }
+
   console.error('');
   console.error(
     `${check ? 'Component page check' : 'Component page generation'} failed for: ${failures.join(', ')}`
@@ -72,9 +122,26 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log('');
+if (!json) {
+  console.log('');
+}
 
 if (check) {
+  if (json) {
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          schemaVersion: '1',
+          status: 'up-to-date',
+          components: componentResults,
+        },
+        null,
+        2
+      )}\n`
+    );
+    process.exit(0);
+  }
+
   console.log(
     `All ${generatedComponentPageComponents.length} generated component pages are up to date.`
   );
