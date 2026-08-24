@@ -38,6 +38,7 @@ test.describe('web Button', () => {
   });
 
   test('pseudo states render distinct visual styles', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
     await openStory(page, 'primitives-button--matrix');
 
     const primarySolid = page.getByRole('button', { name: 'primary solid' });
