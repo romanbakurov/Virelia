@@ -34,7 +34,7 @@ const reactButtonApiSections: readonly ComponentApiSection[] = [
         name: 'tooltip',
         type: 'string',
         description:
-          'HTML title tooltip text for the button or composed child.',
+          'Advisory tooltip text forwarded to the rendered button or composed child.',
       },
       {
         name: 'badge',
