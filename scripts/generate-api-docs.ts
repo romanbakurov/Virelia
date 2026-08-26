@@ -223,6 +223,7 @@ const sections: ApiSection[] = [
     'CheckboxProps',
     'src/primitives/Checkbox/types.ts'
   ),
+  section('web', '## Switch', 'SwitchProps', 'src/primitives/Switch/types.ts'),
   section('web', '## Input', 'InputProps', 'src/primitives/Input/types.ts'),
   section(
     'web',
@@ -331,6 +332,12 @@ const sections: ApiSection[] = [
     '## Checkbox',
     'CheckboxProps',
     'src/primitives/Checkbox/types.ts'
+  ),
+  section(
+    'native',
+    '## Switch',
+    'SwitchProps',
+    'src/primitives/Switch/types.ts'
   ),
   section('native', '## Input', 'InputProps', 'src/primitives/Input/types.ts'),
   section(
