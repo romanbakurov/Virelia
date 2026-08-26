@@ -10,6 +10,7 @@
     "sync:brand": "pnpm --filter @vellira-ui/assets sync-brand apps/docs/src/public/brand",
     "predev": "pnpm run sync:brand",
     "dev": "vitepress dev src",
+    "test": "vitest run --config vitest.config.ts",
     "prebuild": "pnpm run sync:brand",
     "build": "vitepress build src",
     "prepreview": "pnpm run sync:brand",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@vellira-ui/assets": "workspace:*",
+    "@vellira-ui/metadata": "workspace:*",
     "vitepress": "^1.6.4"
   }
 }
