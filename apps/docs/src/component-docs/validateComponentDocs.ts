@@ -234,7 +234,7 @@ export function validateComponentDocs(
   return {
     valid: true,
     errors: [],
-    value: input as ComponentDocsContract,
+    value: input as unknown as ComponentDocsContract,
   };
 }
 

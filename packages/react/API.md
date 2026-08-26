@@ -14,6 +14,7 @@ Then import public components from the package root:
 import {
   Button,
   Checkbox,
+  Switch,
   Dropdown,
   FormField,
   Input,
@@ -31,6 +32,7 @@ import {
 
 - Button
 - Checkbox
+- Switch
 - Input
 - FormField
 - RadioGroup
@@ -186,6 +188,30 @@ and native `size`). `className` styles the root container; use
 rendered, provide `aria-label` or `aria-labelledby`; the icon-only hit target
 remains at least 44px square. `description` and `error` are associated through
 `aria-describedby`.
+
+## Switch
+
+Boolean setting control for immediate on/off preferences.
+
+```tsx
+import { Switch } from '@vellira-ui/react';
+
+<Switch accessibilityLabel='Enable notifications' defaultChecked />;
+```
+
+<!-- api-docgen:start web.SwitchProps.Switch -->
+
+| Prop                 | Type                         | Required | Description                                        |
+| -------------------- | ---------------------------- | -------- | -------------------------------------------------- |
+| `accessibilityLabel` | `string`                     | No       | Accessible name announced by assistive technology. |
+| `checked`            | `boolean`                    | No       | Controlled checked state.                          |
+| `defaultChecked`     | `boolean`                    | No       | Initial checked state for uncontrolled usage.      |
+| `disabled`           | `boolean`                    | No       | Disables interaction.                              |
+| `required`           | `boolean`                    | No       | Marks the control as required.                     |
+| `invalid`            | `boolean`                    | No       | Marks the control as invalid.                      |
+| `onCheckedChange`    | `(checked: boolean) => void` | No       | Called when the checked state changes.             |
+
+<!-- api-docgen:end web.SwitchProps.Switch -->
 
 ## Input
 

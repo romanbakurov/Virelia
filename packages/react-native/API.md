@@ -8,6 +8,7 @@ Import public components from the package root:
 import {
   Button,
   Checkbox,
+  Switch,
   Input,
   Modal,
   Portal,
@@ -23,6 +24,7 @@ The native package uses React Native `StyleSheet` styles and consumes shared des
 
 - Button
 - Checkbox
+- Switch
 - Input
 - FormField
 - RadioGroup
@@ -159,6 +161,30 @@ rendered, provide `accessibilityLabel`; the icon-only touch target remains at
 least 44px square. `description`, `error`, and any explicit
 `accessibilityHint` are merged into the resolved accessibility hint so
 settings-style rows remain useful without wrapping the checkbox in `FormField`.
+
+## Switch
+
+Boolean setting control for immediate on/off preferences.
+
+```tsx
+import { Switch } from '@vellira-ui/react-native';
+
+<Switch accessibilityLabel='Enable notifications' defaultChecked />;
+```
+
+<!-- api-docgen:start native.SwitchProps.Switch -->
+
+| Prop                 | Type                         | Required | Description                                        |
+| -------------------- | ---------------------------- | -------- | -------------------------------------------------- |
+| `accessibilityLabel` | `string`                     | No       | Accessible name announced by assistive technology. |
+| `checked`            | `boolean`                    | No       | Controlled checked state.                          |
+| `defaultChecked`     | `boolean`                    | No       | Initial checked state for uncontrolled usage.      |
+| `disabled`           | `boolean`                    | No       | Disables interaction.                              |
+| `required`           | `boolean`                    | No       | Marks the control as required.                     |
+| `invalid`            | `boolean`                    | No       | Marks the control as invalid.                      |
+| `onCheckedChange`    | `(checked: boolean) => void` | No       | Called when the checked state changes.             |
+
+<!-- api-docgen:end native.SwitchProps.Switch -->
 
 ## Input
 
