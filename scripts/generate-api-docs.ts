@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import prettier from 'prettier';
 import ts from 'typescript';
 
-type ApiSection = {
+export type ApiSection = {
   docPath: string;
   heading: string;
   id: string;
@@ -18,9 +19,6 @@ type PropRow = {
   required: boolean;
   description: string;
 };
-
-const rootDir = process.cwd();
-const shouldCheck = process.argv.includes('--check');
 
 const fallbackDescriptions: Record<string, string> = {
   accessibilityLabel: 'Accessible label for screen readers.',
@@ -215,7 +213,7 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   },
 };
 
-const sections: ApiSection[] = [
+const defaultSections: ApiSection[] = [
   section('web', '## Button', 'ButtonProps', 'src/primitives/Button/types.ts'),
   section(
     'web',
@@ -438,90 +436,122 @@ const sections: ApiSection[] = [
   ),
 ];
 
-const sourceFiles = Array.from(
-  new Set(sections.map((item) => item.sourceFile))
-).map((sourceFile) => path.join(rootDir, sourceFile));
+export type GenerateApiDocsResult = {
+  status: 'updated' | 'up-to-date' | 'stale';
+  changedFiles: string[];
+};
 
-const program = ts.createProgram(sourceFiles, {
-  baseUrl: rootDir,
-  target: ts.ScriptTarget.ES2022,
-  module: ts.ModuleKind.ESNext,
-  moduleResolution: ts.ModuleResolutionKind.Bundler,
-  jsx: ts.JsxEmit.ReactJSX,
-  skipLibCheck: true,
-  strict: true,
-  esModuleInterop: true,
-  allowSyntheticDefaultImports: true,
-  paths: {
-    '@vellira-ui/core': ['packages/core/src/index.ts'],
-    '@vellira-ui/icons': ['packages/icons/src/web.ts'],
-    '@vellira-ui/icons/native': ['packages/icons/src/native.ts'],
-    '@vellira-ui/icons/web': ['packages/icons/src/web.ts'],
-    '@vellira-ui/react': ['packages/react/src/index.ts'],
-    '@vellira-ui/react-native': ['packages/react-native/src/index.ts'],
-    '@vellira-ui/tokens': ['packages/tokens/src/index.ts'],
-    '@vellira-ui/types': ['packages/types/src/index.ts'],
-  },
-});
+type ApiDocsContext = {
+  rootDir: string;
+  checker: ts.TypeChecker;
+  sourceFileByName: Map<string, ts.SourceFile>;
+};
 
-const checker = program.getTypeChecker();
-const docs = new Map<string, string>();
-const sourceFileByName = new Map(
-  program
-    .getSourceFiles()
-    .map((sourceFile) => [normalizePath(sourceFile.fileName), sourceFile])
-);
+export async function generateApiDocs(
+  params: {
+    rootDir?: string;
+    check?: boolean;
+    sections?: readonly ApiSection[];
+  } = {}
+): Promise<GenerateApiDocsResult> {
+  const {
+    rootDir = process.cwd(),
+    check = false,
+    sections = defaultSections,
+  } = params;
+  const sourceFiles = Array.from(
+    new Set(sections.map((item) => item.sourceFile))
+  ).map((sourceFile) => path.join(rootDir, sourceFile));
 
-for (const item of sections) {
-  const docPath = path.join(rootDir, item.docPath);
-  const currentDoc = docs.get(item.docPath) ?? fs.readFileSync(docPath, 'utf8');
-  const descriptions = readExistingDescriptions(currentDoc, item);
-  const rows = sortRows(
-    readInterfaceRows(item).map((row) => ({
-      ...row,
-      description: getDescription(row.name, descriptions, item),
-    })),
-    descriptions
-  );
-
-  docs.set(
-    item.docPath,
-    replaceGeneratedTable(currentDoc, item, renderPropsTable(rows))
-  );
-}
-
-let hasChanges = false;
-
-for (const [relativePath, generatedContent] of docs) {
-  const docPath = path.join(rootDir, relativePath);
-  const currentContent = fs.readFileSync(docPath, 'utf8');
-  const prettierConfig = await prettier.resolveConfig(docPath);
-  const nextContent = await prettier.format(generatedContent, {
-    ...prettierConfig,
-    filepath: docPath,
-    parser: 'markdown',
+  const program = ts.createProgram(sourceFiles, {
+    baseUrl: rootDir,
+    target: ts.ScriptTarget.ES2022,
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    jsx: ts.JsxEmit.ReactJSX,
+    skipLibCheck: true,
+    strict: true,
+    esModuleInterop: true,
+    allowSyntheticDefaultImports: true,
+    paths: {
+      '@vellira-ui/core': ['packages/core/src/index.ts'],
+      '@vellira-ui/icons': ['packages/icons/src/web.ts'],
+      '@vellira-ui/icons/native': ['packages/icons/src/native.ts'],
+      '@vellira-ui/icons/web': ['packages/icons/src/web.ts'],
+      '@vellira-ui/react': ['packages/react/src/index.ts'],
+      '@vellira-ui/react-native': ['packages/react-native/src/index.ts'],
+      '@vellira-ui/tokens': ['packages/tokens/src/index.ts'],
+      '@vellira-ui/types': ['packages/types/src/index.ts'],
+    },
   });
+  const context: ApiDocsContext = {
+    rootDir,
+    checker: program.getTypeChecker(),
+    sourceFileByName: new Map(
+      program
+        .getSourceFiles()
+        .map((sourceFile) => [normalizePath(sourceFile.fileName), sourceFile])
+    ),
+  };
+  const docs = new Map<string, string>();
 
-  if (currentContent !== nextContent) {
-    hasChanges = true;
+  for (const item of sections) {
+    const docPath = path.join(rootDir, item.docPath);
+    const currentDoc =
+      docs.get(item.docPath) ?? fs.readFileSync(docPath, 'utf8');
+    const descriptions = readExistingDescriptions(currentDoc, item);
+    const rows = sortRows(
+      readInterfaceRows(item, context).map((row) => ({
+        ...row,
+        description: getDescription(row.name, descriptions, item),
+      })),
+      descriptions
+    );
 
-    if (!shouldCheck) {
-      fs.writeFileSync(docPath, nextContent);
-      console.log(`Updated ${relativePath}`);
+    docs.set(
+      item.docPath,
+      replaceGeneratedTable(currentDoc, item, renderPropsTable(rows))
+    );
+  }
+
+  const changedFiles: string[] = [];
+
+  for (const [relativePath, generatedContent] of docs) {
+    const docPath = path.join(rootDir, relativePath);
+    const currentContent = fs.readFileSync(docPath, 'utf8');
+    const prettierConfig = await prettier.resolveConfig(docPath);
+    const nextContent = await prettier.format(generatedContent, {
+      ...prettierConfig,
+      filepath: docPath,
+      parser: 'markdown',
+    });
+
+    if (currentContent !== nextContent) {
+      changedFiles.push(relativePath);
+
+      if (!check) {
+        fs.writeFileSync(docPath, nextContent);
+        console.log(`Updated ${relativePath}`);
+      }
     }
   }
+
+  if (check && changedFiles.length > 0) {
+    console.error('API docs are out of date. Run `pnpm docs:api`.');
+  }
+
+  if (changedFiles.length === 0) {
+    console.log('API docs are up to date.');
+  }
+
+  return {
+    status:
+      changedFiles.length === 0 ? 'up-to-date' : check ? 'stale' : 'updated',
+    changedFiles: changedFiles.sort(),
+  };
 }
 
-if (shouldCheck && hasChanges) {
-  console.error('API docs are out of date. Run `pnpm docs:api`.');
-  process.exit(1);
-}
-
-if (!hasChanges) {
-  console.log('API docs are up to date.');
-}
-
-function section(
+export function section(
   packageName: 'web' | 'native',
   heading: string,
   interfaceName: string,
@@ -562,9 +592,12 @@ function getDescription(
   return fallbackDescriptions[propName] ?? '—';
 }
 
-function readInterfaceRows(item: ApiSection): PropRow[] {
-  const sourceFile = sourceFileByName.get(
-    normalizePath(path.join(rootDir, item.sourceFile))
+function readInterfaceRows(
+  item: ApiSection,
+  context: ApiDocsContext
+): PropRow[] {
+  const sourceFile = context.sourceFileByName.get(
+    normalizePath(path.join(context.rootDir, item.sourceFile))
   );
 
   if (!sourceFile) {
@@ -579,9 +612,9 @@ function readInterfaceRows(item: ApiSection): PropRow[] {
     );
   }
 
-  const type = checker.getTypeAtLocation(declaration.name);
+  const type = context.checker.getTypeAtLocation(declaration.name);
 
-  return checker
+  return context.checker
     .getPropertiesOfType(type)
     .filter((property) => {
       const declaration =
@@ -597,7 +630,7 @@ function readInterfaceRows(item: ApiSection): PropRow[] {
         throw new Error(`Cannot resolve declaration for ${property.name}`);
       }
 
-      const propertyType = checker.getTypeOfSymbolAtLocation(
+      const propertyType = context.checker.getTypeOfSymbolAtLocation(
         property,
         declaration
       );
@@ -605,7 +638,7 @@ function readInterfaceRows(item: ApiSection): PropRow[] {
 
       return {
         name: property.name,
-        type: formatType(propertyType, declaration, optional),
+        type: formatType(propertyType, declaration, optional, context.checker),
         required: !optional,
         description: '',
       };
@@ -635,7 +668,8 @@ function findTypeDeclaration(sourceFile: ts.SourceFile, interfaceName: string) {
 function formatType(
   type: ts.Type,
   declaration: ts.Declaration,
-  optional: boolean
+  optional: boolean,
+  checker: ts.TypeChecker
 ) {
   const formatted = checker.typeToString(
     type,
@@ -837,4 +871,19 @@ function normalizePath(filePath: string) {
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const isCli =
+  process.argv[1] &&
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
+if (isCli) {
+  const result = await generateApiDocs({
+    rootDir: process.cwd(),
+    check: process.argv.includes('--check'),
+  });
+
+  if (result.status === 'stale') {
+    process.exit(1);
+  }
 }

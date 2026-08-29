@@ -26,6 +26,7 @@ export type ComponentTokenThemeTarget = {
 };
 
 export type ComponentGenerationPlan = {
+  root: string;
   componentName: string;
   layer: ComponentLayerArg;
   category: ComponentGeneratorOptions['category'];
@@ -42,6 +43,9 @@ export type ComponentGenerationPlan = {
   tokenFactoryFile: string;
   tokenFactoryBarrelFile: string;
   tokenThemeTargets: readonly ComponentTokenThemeTarget[];
+  docsRoot: string;
+  docsContractFile: string;
+  docsContractRegistryFile: string;
 };
 
 function getTargetPackages(
@@ -121,6 +125,7 @@ export function createComponentGenerationPlan(params: {
   }));
 
   return {
+    root,
     componentName: options.componentName,
     layer: options.layer,
     category: options.category,
@@ -184,5 +189,25 @@ export function createComponentGenerationPlan(params: {
     ),
 
     tokenThemeTargets,
+
+    docsRoot: path.join(root, 'apps', 'docs', 'src'),
+
+    docsContractFile: path.join(
+      root,
+      'apps',
+      'docs',
+      'src',
+      'component-docs',
+      `${options.componentName}.docs.ts`
+    ),
+
+    docsContractRegistryFile: path.join(
+      root,
+      'apps',
+      'docs',
+      'src',
+      'component-docs',
+      'index.ts'
+    ),
   };
 }

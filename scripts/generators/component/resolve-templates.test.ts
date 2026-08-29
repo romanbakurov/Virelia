@@ -19,6 +19,7 @@ const createPlan = (
   profile: ComponentGenerationPlan['profile'],
   control: ComponentGenerationPlan['control'] = 'value'
 ): ComponentGenerationPlan => ({
+  root: '/repo',
   componentName: 'Example',
   layer: 'components',
   category: 'utility',
@@ -32,6 +33,9 @@ const createPlan = (
   sharedTypesBarrelFile: '/repo/types/index.ts',
   metadataFile: '/repo/metadata.ts',
   metadataBarrelFile: '/repo/metadata/index.ts',
+  docsRoot: '/repo/apps/docs/src',
+  docsContractFile: '/repo/apps/docs/src/component-docs/Example.docs.ts',
+  docsContractRegistryFile: '/repo/apps/docs/src/component-docs/index.ts',
   tokenFactoryFile: '/repo/tokens/factories/createExampleTokens.ts',
   tokenFactoryBarrelFile: '/repo/tokens/factories/index.ts',
   tokenThemeTargets: [],

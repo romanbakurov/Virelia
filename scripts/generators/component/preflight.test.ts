@@ -45,6 +45,22 @@ function createLayerBarrels(
 ] as const;
 `
   );
+
+  const docsContractDir = path.join(
+    root,
+    'apps',
+    'docs',
+    'src',
+    'component-docs'
+  );
+
+  fs.mkdirSync(docsContractDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(docsContractDir, 'index.ts'),
+    `export const componentDocsContracts = [
+] as const;
+`
+  );
 }
 
 afterEach(() => {

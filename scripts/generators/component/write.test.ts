@@ -28,6 +28,7 @@ function createLayerBarrels(
 
     fs.mkdirSync(layerDir, { recursive: true });
     fs.writeFileSync(path.join(layerDir, 'index.ts'), '');
+    fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');
   }
 
   const metadataDir = path.join(
@@ -45,10 +46,26 @@ function createLayerBarrels(
 ] as const;
 `
   );
+
+  const docsContractDir = path.join(
+    root,
+    'apps',
+    'docs',
+    'src',
+    'component-docs'
+  );
+
+  fs.mkdirSync(docsContractDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(docsContractDir, 'index.ts'),
+    `export const componentDocsContracts = [
+] as const;
+`
+  );
 }
 
 describe('component generator writer', () => {
-  it('writes canonical React and React Native component files', () => {
+  it('writes canonical React and React Native component files', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
 
@@ -65,9 +82,9 @@ describe('component generator writer', () => {
       },
     });
 
-    const result = writeComponentGenerationPlan(plan);
+    const result = await writeComponentGenerationPlan(plan);
 
-    expect(result.createdFiles).toHaveLength(19);
+    expect(result.createdFiles).toHaveLength(22);
 
     for (const packageName of ['react', 'react-native']) {
       const componentDir = path.join(
@@ -115,7 +132,7 @@ describe('component generator writer', () => {
     ).toBe(true);
   });
 
-  it('registers package layer exports once', () => {
+  it('registers package layer exports once', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
 
@@ -132,7 +149,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     for (const packageName of ['react', 'react-native']) {
       const barrelFile = path.join(
@@ -160,7 +177,7 @@ describe('component generator writer', () => {
     expect(metadataBarrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
-  it('overwrites component files without duplicating barrel exports', () => {
+  it('overwrites component files without duplicating barrel exports', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
 
@@ -177,8 +194,8 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     for (const packageName of ['react', 'react-native']) {
       const barrelFile = path.join(
@@ -196,7 +213,7 @@ describe('component generator writer', () => {
     }
   });
 
-  it('generates platform-specific style files', () => {
+  it('generates platform-specific style files', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
 
@@ -213,7 +230,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     expect(
       fs.readFileSync(
@@ -236,7 +253,7 @@ describe('component generator writer', () => {
     ).toContain('StyleSheet.create');
   });
 
-  it('writes and registers component metadata', () => {
+  it('writes and registers component metadata', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
 
@@ -253,7 +270,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
 
@@ -277,7 +294,7 @@ describe('component generator writer', () => {
     expect(barrel.match(/ {2}avatarMetadata,/g)).toHaveLength(1);
   });
 
-  it('generates capabilities from the selected profile', () => {
+  it('generates capabilities from the selected profile', async () => {
     const root = createTempRoot();
 
     createLayerBarrels(root, 'components');
@@ -295,7 +312,7 @@ describe('component generator writer', () => {
       },
     });
 
-    const result = writeComponentGenerationPlan(plan);
+    const result = await writeComponentGenerationPlan(plan);
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
 
     expect(result.createdFiles).toContain(plan.metadataFile);
@@ -308,7 +325,7 @@ describe('component generator writer', () => {
     expect(metadata).toContain("'portal'");
   });
 
-  it('generates form-control capabilities in metadata', () => {
+  it('generates form-control capabilities in metadata', async () => {
     const root = createTempRoot();
 
     createLayerBarrels(root, 'primitives');
@@ -326,7 +343,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
 
@@ -338,7 +355,7 @@ describe('component generator writer', () => {
     expect(metadata).toContain("'invalid'");
   });
 
-  it('generates compound component parts for each target platform', () => {
+  it('generates compound component parts for each target platform', async () => {
     const root = createTempRoot();
 
     createLayerBarrels(root, 'components');
@@ -356,7 +373,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     for (const packageName of ['react', 'react-native']) {
       const componentDir = path.join(
@@ -403,7 +420,7 @@ describe('component generator writer', () => {
     }
   });
 
-  it('generates platform-specific form-control implementations', () => {
+  it('generates platform-specific form-control implementations', async () => {
     const root = createTempRoot();
 
     createLayerBarrels(root, 'primitives');
@@ -421,7 +438,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     const webSource = fs.readFileSync(
       path.join(
@@ -479,7 +496,7 @@ describe('component generator writer', () => {
     expect(sharedTypes).toContain('onValueChange?: (value: string) => void');
   });
 
-  it('generates composed platform-specific overlay parts', () => {
+  it('generates composed platform-specific overlay parts', async () => {
     const root = createTempRoot();
 
     createLayerBarrels(root, 'components');
@@ -497,7 +514,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     const webComponent = fs.readFileSync(
       path.join(root, 'packages/react/src/components/Dialog/Dialog.tsx'),
@@ -536,7 +553,7 @@ describe('component generator writer', () => {
     expect(nativeTrigger).toContain("accessibilityRole='button'");
   });
 
-  it('writes and registers single-platform component metadata', () => {
+  it('writes and registers single-platform component metadata', async () => {
     const root = createTempRoot();
     createLayerBarrels(root, 'components');
 
@@ -553,7 +570,7 @@ describe('component generator writer', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     const metadata = fs.readFileSync(plan.metadataFile, 'utf8');
     const barrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
