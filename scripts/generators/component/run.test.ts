@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   createComponentDocsContractFromPlan,
@@ -10,10 +10,15 @@ import {
   getComponentDocsTargets,
 } from './docs';
 import { runComponentGenerator } from './run';
+import { generateComponentWebsitePage } from './website';
 import { checkGeneratedComponentDocsCompleteness } from '../../checks/component-completeness/check-generated-component-docs';
 import { checkComponentCompleteness } from '../../checks/component-completeness/check-component';
 import { validateComponentDocs } from '../../../apps/docs/src/component-docs';
 import type { ComponentMetadata } from '@vellira-ui/metadata';
+
+vi.mock('./website', () => ({
+  generateComponentWebsitePage: vi.fn(),
+}));
 
 const tempRoots: string[] = [];
 
@@ -94,6 +99,10 @@ function countOccurrences(source: string, pattern: RegExp) {
   return source.match(pattern)?.length ?? 0;
 }
 
+beforeEach(() => {
+  vi.mocked(generateComponentWebsitePage).mockClear();
+});
+
 afterEach(() => {
   for (const root of tempRoots.splice(0)) {
     fs.rmSync(root, {
@@ -123,6 +132,12 @@ describe('component generator', () => {
     });
 
     expect(result.createdFiles).toHaveLength(22);
+
+    expect(generateComponentWebsitePage).toHaveBeenCalledTimes(1);
+    expect(generateComponentWebsitePage).toHaveBeenCalledWith({
+      root,
+      componentName: 'Avatar',
+    });
 
     const webDir = path.join(root, 'packages/react/src/primitives/Avatar');
 
@@ -654,6 +669,7 @@ export { switchDocs };
     });
 
     expect(result.dryRun).toBe(true);
+    expect(generateComponentWebsitePage).not.toHaveBeenCalled();
 
     expect(result.createdFiles).toContain(result.plan.metadataFile);
     expect(result.createdFiles).toContain(result.plan.docsContractFile);

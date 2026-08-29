@@ -1,12 +1,14 @@
 import { spawnSync } from 'node:child_process';
 
-import { generatedComponentPageComponents } from './component-page-components';
+import { getGeneratedComponentPageComponents } from './component-page-components';
 
 const args = process.argv.slice(2);
 
 const check = args.includes('--check');
 const json = args.includes('--json');
 const help = args.includes('--help') || args.includes('-h');
+
+const generatedComponentPageComponents = getGeneratedComponentPageComponents();
 
 const helpText = `
 Vellira component pages generator

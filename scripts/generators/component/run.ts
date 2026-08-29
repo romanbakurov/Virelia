@@ -4,6 +4,7 @@ import { getComponentApiDocsTargets, getComponentDocsTargets } from './docs';
 import { createComponentGenerationPlan } from './plan';
 import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
+import { generateComponentWebsitePage } from './website';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -104,6 +105,11 @@ export async function runComponentGenerator(params: {
   }
 
   const result = await writeComponentGenerationPlan(plan);
+
+  generateComponentWebsitePage({
+    root: params.root,
+    componentName: plan.componentName,
+  });
 
   return {
     plan,
