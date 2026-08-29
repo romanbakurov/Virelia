@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { generatedComponentPageComponents } from './component-page-components';
+import { getGeneratedComponentPageComponents } from './component-page-components';
 import {
   loadComponentMetadata,
   validateComponentMetadata,
@@ -13,6 +13,8 @@ type AuditFailure = {
 };
 
 const root = process.cwd();
+const generatedComponentPageComponents =
+  getGeneratedComponentPageComponents(root);
 const catalogRoot = path.join(
   root,
   'apps',
