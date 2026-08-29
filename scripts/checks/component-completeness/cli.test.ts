@@ -102,14 +102,14 @@ afterEach(() => {
 });
 
 describe('component completeness CLI', () => {
-  it('checks one component by name', () => {
+  it('checks one component by name', async () => {
     const root = createTempRoot();
 
     createCompleteButtonFixture(root);
 
     const log = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-    const results = runComponentCompletenessCli(['Button'], root);
+    const results = await runComponentCompletenessCli(['Button'], root);
 
     expect(results).toHaveLength(1);
     expect(results[0]?.componentName).toBe('Button');
@@ -120,45 +120,47 @@ describe('component completeness CLI', () => {
     expect(process.exitCode).toBeUndefined();
   });
 
-  it('accepts component names case-insensitively', () => {
+  it('accepts component names case-insensitively', async () => {
     const root = createTempRoot();
 
     createCompleteButtonFixture(root);
 
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-    const results = runComponentCompletenessCli(['button'], root);
+    const results = await runComponentCompletenessCli(['button'], root);
 
     expect(results[0]?.componentName).toBe('Button');
     expect(results[0]?.ready).toBe(true);
   });
 
-  it('rejects an unknown component', () => {
+  it('rejects an unknown component', async () => {
     const root = createTempRoot();
 
-    expect(() => runComponentCompletenessCli(['DoesNotExist'], root)).toThrow(
+    await expect(
+      runComponentCompletenessCli(['DoesNotExist'], root)
+    ).rejects.toThrow(
       'Unknown component "DoesNotExist". No component metadata found.'
     );
   });
 
-  it('sets a non-zero exit code for incomplete components', () => {
+  it('sets a non-zero exit code for incomplete components', async () => {
     const root = createTempRoot();
 
     vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
-    const results = runComponentCompletenessCli(['Button'], root);
+    const results = await runComponentCompletenessCli(['Button'], root);
 
     expect(results[0]?.ready).toBe(false);
     expect(process.exitCode).toBe(1);
   });
 
-  it('rejects invalid CLI usage', () => {
-    expect(() => runComponentCompletenessCli([])).toThrow(
+  it('rejects invalid CLI usage', async () => {
+    await expect(runComponentCompletenessCli([])).rejects.toThrow(
       'Usage: pnpm check:component <ComponentName|--all>'
     );
 
-    expect(() => runComponentCompletenessCli(['Button', 'unexpected'])).toThrow(
-      'Usage: pnpm check:component <ComponentName|--all>'
-    );
+    await expect(
+      runComponentCompletenessCli(['Button', 'unexpected'])
+    ).rejects.toThrow('Usage: pnpm check:component <ComponentName|--all>');
   });
 });
