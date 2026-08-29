@@ -193,13 +193,23 @@ export function registerComponentDocsContract(params: {
     );
   }
 
-  const registryContent = content.slice(registryStart, registryEnd);
-  const registryEntry = `  ${variableName},`;
+  const registryBodyStart = registryStart + registryMarker.length;
+  const registryBody = content.slice(registryBodyStart, registryEnd);
+  const registryEntries = registryBody
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
 
-  if (!registryContent.includes(registryEntry)) {
+  if (!registryEntries.includes(variableName)) {
+    registryEntries.push(variableName);
+
+    const normalizedRegistry = `${registryMarker}\n${registryEntries
+      .map((entry) => `  ${entry},`)
+      .join('\n')}\n`;
+
     content =
-      content.slice(0, registryEnd) +
-      `${registryEntry}\n` +
+      content.slice(0, registryStart) +
+      normalizedRegistry +
       content.slice(registryEnd);
   }
 
