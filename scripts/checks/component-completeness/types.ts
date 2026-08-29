@@ -8,6 +8,7 @@ export type ComponentCheckName =
   | 'storybook'
   | 'website'
   | 'api-docs'
+  | 'component-docs'
   | 'tokens'
   | 'accessibility';
 

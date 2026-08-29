@@ -1,6 +1,11 @@
 import { checkComponentCompleteness } from './check-component';
+import { checkGeneratedComponentDocsCompleteness } from './check-generated-component-docs';
 
 import type { ComponentMetadata } from '@vellira-ui/metadata';
+import {
+  componentDocsContracts as defaultComponentDocsContracts,
+  type ComponentDocsContract,
+} from '../../../apps/docs/src/component-docs';
 import type { ComponentCompletenessResult } from './types';
 
 export function formatComponentCompletenessResult(
@@ -68,16 +73,41 @@ export function formatComponentCompletenessResult(
   return lines.join('\n');
 }
 
-export function runComponentCompletenessCheck(params: {
+export async function runComponentCompletenessCheck(params: {
   root: string;
   metadata: readonly ComponentMetadata[];
+  componentDocsContracts?: readonly ComponentDocsContract[];
 }) {
-  const { root, metadata } = params;
+  const {
+    root,
+    metadata,
+    componentDocsContracts = defaultComponentDocsContracts,
+  } = params;
 
-  return metadata.map((component) =>
+  const results = metadata.map((component) =>
     checkComponentCompleteness({
       root,
       metadata: component,
     })
   );
+
+  const metadataNames = new Set(metadata.map((component) => component.name));
+  const docsContracts =
+    metadata.length > 1
+      ? componentDocsContracts
+      : componentDocsContracts.filter((contract) =>
+          metadataNames.has(contract.component)
+        );
+
+  if (docsContracts.length > 0) {
+    results.push(
+      await checkGeneratedComponentDocsCompleteness({
+        root,
+        metadata,
+        contracts: docsContracts,
+      })
+    );
+  }
+
+  return results;
 }

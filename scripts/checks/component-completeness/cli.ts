@@ -13,7 +13,7 @@ function findComponentMetadata(componentName: string) {
   );
 }
 
-export function runComponentCompletenessCli(
+export async function runComponentCompletenessCli(
   args: readonly string[],
   root = process.cwd()
 ) {
@@ -38,7 +38,7 @@ export function runComponentCompletenessCli(
           return [component];
         })();
 
-  const results = runComponentCompletenessCheck({
+  const results = await runComponentCompletenessCheck({
     root: path.resolve(root),
     metadata,
   });
