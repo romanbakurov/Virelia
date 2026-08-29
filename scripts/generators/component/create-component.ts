@@ -11,7 +11,7 @@ try {
 }
 
 try {
-  const result = runComponentGenerator({
+  const result = await runComponentGenerator({
     root: process.cwd(),
     options,
   });

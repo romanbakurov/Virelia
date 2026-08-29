@@ -23,7 +23,13 @@ import {
   preserveManualComponentTests,
   restoreManualComponentTests,
 } from './manual-test-ownership';
-import { getComponentProfile } from './profiles';
+import {
+  createComponentMetadataFromPlan,
+  generateComponentDocumentation,
+  registerComponentDocsContract,
+  renderComponentDocsContract,
+  resolvePlanCapabilities,
+} from './docs';
 import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
 
@@ -37,12 +43,6 @@ export type ComponentGenerationResult = {
   updatedFiles: string[];
 };
 
-function resolvePlanCapabilities(plan: ComponentGenerationPlan) {
-  const profile = getComponentProfile(plan.profile);
-
-  return [...new Set([...profile.capabilities, ...plan.capabilities])];
-}
-
 function writeFile(params: {
   filePath: string;
   content: string;
@@ -52,6 +52,29 @@ function writeFile(params: {
 
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, content);
+  createdFiles.push(filePath);
+}
+
+function writeGeneratedFile(params: {
+  filePath: string;
+  content: string;
+  createdFiles: string[];
+  updatedFiles: string[];
+}) {
+  const { filePath, content, createdFiles, updatedFiles } = params;
+  const exists = fs.existsSync(filePath);
+
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content);
+
+  if (exists) {
+    if (!updatedFiles.includes(filePath)) {
+      updatedFiles.push(filePath);
+    }
+
+    return;
+  }
+
   createdFiles.push(filePath);
 }
 
@@ -448,9 +471,37 @@ function writeMetadata(params: {
   });
 }
 
-export function writeComponentGenerationPlan(
+async function writeComponentDocs(params: {
+  plan: ComponentGenerationPlan;
+  result: ComponentGenerationResult;
+}) {
+  const { plan, result } = params;
+
+  writeGeneratedFile({
+    filePath: plan.docsContractFile,
+    content: renderComponentDocsContract(plan),
+    createdFiles: result.createdFiles,
+    updatedFiles: result.updatedFiles,
+  });
+
+  registerComponentDocsContract({
+    registryFile: plan.docsContractRegistryFile,
+    componentName: plan.componentName,
+    updatedFiles: result.updatedFiles,
+  });
+
+  await generateComponentDocumentation({
+    root: plan.root,
+    plan,
+    metadata: createComponentMetadataFromPlan(plan),
+    createdFiles: result.createdFiles,
+    updatedFiles: result.updatedFiles,
+  });
+}
+
+export async function writeComponentGenerationPlan(
   plan: ComponentGenerationPlan
-): ComponentGenerationResult {
+): Promise<ComponentGenerationResult> {
   const result: ComponentGenerationResult = {
     createdFiles: [],
     updatedFiles: [],
@@ -468,6 +519,11 @@ export function writeComponentGenerationPlan(
   }
 
   writeMetadata({
+    plan,
+    result,
+  });
+
+  await writeComponentDocs({
     plan,
     result,
   });
