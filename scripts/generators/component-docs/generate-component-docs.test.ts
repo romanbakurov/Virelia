@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
@@ -11,6 +12,10 @@ import type {
 
 import type { ComponentDocsContract } from '../../../apps/docs/src/component-docs';
 
+import {
+  createGeneratedComponentDocsSidebarItems,
+  resolveComponentDocsRoot,
+} from '../../../apps/docs/src/component-docs';
 import {
   authoredRegionEndMarker,
   defaultAuthoredRegionPlaceholder,
@@ -96,6 +101,274 @@ describe('generateComponentDocs', () => {
       'apps/docs/src/react/fixture-switch.md',
     ]);
     expect(fs.existsSync(fixture.nativeDoc)).toBe(false);
+  });
+
+  it('includes a React generated page in React navigation', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([
+      {
+        text: 'FixtureSwitch',
+        link: '/react/fixture-switch',
+      },
+    ]);
+  });
+
+  it('includes a React Native generated page in React Native navigation', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react-native'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react-native',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([
+      {
+        text: 'FixtureSwitch',
+        link: '/react-native/fixture-switch',
+      },
+    ]);
+  });
+
+  it('includes cross-platform generated pages in both navigation groups', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react', 'react-native'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([{ text: 'FixtureSwitch', link: '/react/fixture-switch' }]);
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react-native',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([
+      { text: 'FixtureSwitch', link: '/react-native/fixture-switch' },
+    ]);
+  });
+
+  it('omits React-only generated pages from React Native navigation', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react-native',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([]);
+  });
+
+  it('omits React Native-only generated pages from React navigation', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react-native'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toEqual([]);
+  });
+
+  it('never emits navigation links to nonexistent generated pages', () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+    });
+
+    expect(() =>
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: fixture.docsRoot,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).toThrow(
+      'Cannot create component docs navigation for FixtureSwitch react: missing generated docs page react/fixture-switch.md.'
+    );
+  });
+
+  it('orders generated navigation by canonical metadata order', async () => {
+    const zulu = createFixture({
+      componentName: 'FixtureZulu',
+      platforms: ['react'],
+    });
+    const alpha = createFixture({
+      componentName: 'FixtureAlpha',
+      platforms: ['react'],
+      root: zulu.root,
+      docsRoot: zulu.docsRoot,
+    });
+
+    await generateComponentDocs({
+      root: zulu.root,
+      docsRoot: zulu.docsRoot,
+      metadata: [zulu.metadata, alpha.metadata],
+      contracts: [alpha.contract, zulu.contract],
+    });
+
+    expect(
+      createGeneratedComponentDocsSidebarItems({
+        docsRoot: zulu.docsRoot,
+        platform: 'react',
+        metadata: [zulu.metadata, alpha.metadata],
+        contracts: [alpha.contract, zulu.contract],
+      })
+    ).toEqual([
+      { text: 'FixtureZulu', link: '/react/fixture-zulu' },
+      { text: 'FixtureAlpha', link: '/react/fixture-alpha' },
+    ]);
+  });
+
+  it('resolves generated navigation independently of process cwd', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react', 'react-native'],
+    });
+    const otherCwd = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'vellira-component-docs-cwd-')
+    );
+    tempRoots.push(otherCwd);
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const configModuleUrl = pathToFileURL(
+      path.join(fixture.docsRoot, '.vitepress', 'config.ts')
+    ).href;
+    const originalCwd = process.cwd();
+
+    try {
+      process.chdir(fixture.root);
+      const rootResolvedFromFixtureRoot =
+        resolveComponentDocsRoot(configModuleUrl);
+      const reactFromFixtureRoot = createGeneratedComponentDocsSidebarItems({
+        docsRoot: rootResolvedFromFixtureRoot,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      });
+      const nativeFromFixtureRoot = createGeneratedComponentDocsSidebarItems({
+        docsRoot: rootResolvedFromFixtureRoot,
+        platform: 'react-native',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      });
+
+      process.chdir(otherCwd);
+      const rootResolvedFromOtherCwd =
+        resolveComponentDocsRoot(configModuleUrl);
+      const reactFromOtherCwd = createGeneratedComponentDocsSidebarItems({
+        docsRoot: rootResolvedFromOtherCwd,
+        platform: 'react',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      });
+      const nativeFromOtherCwd = createGeneratedComponentDocsSidebarItems({
+        docsRoot: rootResolvedFromOtherCwd,
+        platform: 'react-native',
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      });
+
+      expect(rootResolvedFromOtherCwd).toBe(rootResolvedFromFixtureRoot);
+      expect(reactFromOtherCwd).toEqual(reactFromFixtureRoot);
+      expect(nativeFromOtherCwd).toEqual(nativeFromFixtureRoot);
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  it('check mode detects missing generated pages needed by navigation without writing', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+    });
+
+    await expect(
+      generateComponentDocs({
+        root: fixture.root,
+        docsRoot: fixture.docsRoot,
+        check: true,
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).rejects.toThrow(
+      'Cannot create component docs navigation for FixtureSwitch react: missing generated docs page react/fixture-switch.md.'
+    );
+    expect(fs.existsSync(fixture.reactDoc)).toBe(false);
   });
 
   it('does not invent Switch-specific usage for other components', async () => {
@@ -409,12 +682,16 @@ function createFixture(params: {
   componentName: string;
   platforms: readonly ComponentPlatform[];
   contractPlatforms?: readonly ComponentPlatform[];
+  root?: string;
+  docsRoot?: string;
 }) {
-  const { componentName, platforms, contractPlatforms = platforms } = params;
-  const root = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'vellira-component-docs-')
-  );
-  const docsRoot = path.join(root, 'apps', 'docs', 'src');
+  const {
+    componentName,
+    platforms,
+    contractPlatforms = platforms,
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-component-docs-')),
+    docsRoot = path.join(root, 'apps', 'docs', 'src'),
+  } = params;
   const slug = slugifyComponentName(componentName);
   const metadata: ComponentMetadata = {
     name: componentName,
@@ -464,7 +741,9 @@ function createFixture(params: {
     ),
   };
 
-  tempRoots.push(root);
+  if (!tempRoots.includes(root)) {
+    tempRoots.push(root);
+  }
   writeApiFixtures(root, componentName, platforms);
 
   return {
@@ -490,11 +769,14 @@ function writeApiFixtures(
     const apiId = `${apiPrefix}.${componentName}Props.${componentName}`;
 
     fs.mkdirSync(path.dirname(apiFile), { recursive: true });
+    const existingContent = fs.existsSync(apiFile)
+      ? fs.readFileSync(apiFile, 'utf8')
+      : `# ${platform} API\n\n`;
+
     fs.writeFileSync(
       apiFile,
       [
-        `# ${platform} API`,
-        '',
+        existingContent.trimEnd(),
         `<!-- api-docgen:start ${apiId} -->`,
         '',
         '| Prop | Type | Required | Description |',

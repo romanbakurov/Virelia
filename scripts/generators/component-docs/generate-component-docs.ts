@@ -10,6 +10,7 @@ import prettier from 'prettier';
 
 import {
   componentDocsContracts,
+  createGeneratedComponentDocsSidebarItems,
   validateComponentDocs,
   type ComponentDocsContract,
 } from '../../../apps/docs/src/component-docs';
@@ -183,6 +184,25 @@ export async function generateComponentDocs(
 
   if (errors.length > 0) {
     throw new Error(errors.sort().join('\n'));
+  }
+
+  for (const platform of supportedPlatforms) {
+    createGeneratedComponentDocsSidebarItems({
+      docsRoot,
+      platform,
+      metadata,
+      contracts: selectedComponentNames.map((selectedComponentName) => {
+        const contract = contractsByName.get(selectedComponentName);
+
+        if (!contract) {
+          throw new Error(
+            `Cannot validate component docs navigation for ${selectedComponentName}: missing ComponentDocsContract.`
+          );
+        }
+
+        return contract;
+      }),
+    });
   }
 
   return {

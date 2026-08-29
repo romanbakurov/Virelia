@@ -3,6 +3,13 @@ import { resolve } from 'node:path';
 
 import { defineConfig } from 'vitepress';
 
+import {
+  componentDocsContracts,
+  createGeneratedComponentDocsSidebarItems,
+  resolveComponentDocsRoot,
+} from '../component-docs';
+import { componentMetadata } from '../../../../packages/metadata/src/components';
+
 const siteUrl = 'https://docs.vellira.dev';
 const siteDescription =
   'TypeScript-first design system documentation for React and React Native applications.';
@@ -22,6 +29,21 @@ const pageUrl = (relativePath: string) => {
 
   return new URL(path, `${siteUrl}/`).toString();
 };
+
+const docsRoot = resolveComponentDocsRoot(import.meta.url);
+const reactGeneratedComponentItems = createGeneratedComponentDocsSidebarItems({
+  docsRoot,
+  platform: 'react',
+  metadata: componentMetadata,
+  contracts: componentDocsContracts,
+});
+const reactNativeGeneratedComponentItems =
+  createGeneratedComponentDocsSidebarItems({
+    docsRoot,
+    platform: 'react-native',
+    metadata: componentMetadata,
+    contracts: componentDocsContracts,
+  });
 
 export default defineConfig({
   title: 'Vellira Docs',
@@ -139,7 +161,7 @@ export default defineConfig({
           { text: 'Button', link: '/react/button' },
           { text: 'Input', link: '/react/input' },
           { text: 'Checkbox', link: '/react/checkbox' },
-          { text: 'Switch', link: '/react/switch' },
+          ...reactGeneratedComponentItems,
           { text: 'RadioGroup', link: '/react/radio-group' },
           { text: 'Select', link: '/react/select' },
           { text: 'FormField', link: '/react/form-field' },
@@ -159,7 +181,7 @@ export default defineConfig({
           { text: 'Button', link: '/react-native/button' },
           { text: 'Input', link: '/react-native/input' },
           { text: 'Checkbox', link: '/react-native/checkbox' },
-          { text: 'Switch', link: '/react-native/switch' },
+          ...reactNativeGeneratedComponentItems,
           { text: 'RadioGroup', link: '/react-native/radio-group' },
           { text: 'Select', link: '/react-native/select' },
           { text: 'FormField', link: '/react-native/form-field' },
