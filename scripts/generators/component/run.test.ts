@@ -219,6 +219,57 @@ describe('component generator', () => {
     }
   });
 
+  it('preserves and normalizes an existing populated docs contract registry', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+
+    const docsContractRegistryFile = path.join(
+      root,
+      'apps',
+      'docs',
+      'src',
+      'component-docs',
+      'index.ts'
+    );
+
+    fs.writeFileSync(
+      docsContractRegistryFile,
+      `import { switchDocs } from './Switch.docs';
+
+export const componentDocsContracts = [switchDocs] as const;
+
+export { switchDocs };
+`
+    );
+
+    await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(readFile(docsContractRegistryFile)).toBe(
+      `import { switchDocs } from './Switch.docs';
+import { avatarDocs } from './Avatar.docs';
+
+export const componentDocsContracts = [
+  switchDocs,
+  avatarDocs,
+] as const;
+
+export { switchDocs };
+`
+    );
+  });
+
   it('rejects a repeated run without --force', async () => {
     const root = createTempRoot();
 
