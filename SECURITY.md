@@ -62,4 +62,12 @@ We ask reporters to:
 We appreciate responsible security research and thank everyone who helps improve
 the security of Vellira.
 
+## Temporary Dependency Exceptions
+
+Temporary vulnerability exceptions for non-reachable transitive tooling
+dependencies are documented in
+[docs/SECURITY_VULNERABILITY_EXCEPTIONS.md](docs/SECURITY_VULNERABILITY_EXCEPTIONS.md).
+Each exception must include dependency paths, exposure analysis, upstream
+tracking, and removal conditions.
+
 Thank you for helping keep Vellira and its users secure.
