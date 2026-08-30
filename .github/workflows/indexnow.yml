@@ -2,6 +2,7 @@ name: Submit URLs to IndexNow
 
 on:
   deployment_status:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -9,8 +10,9 @@ permissions:
 jobs:
   submit:
     if: >
-      github.event.deployment_status.state == 'success' &&
-      github.event.deployment_status.environment == 'Production'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment == 'Production')
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
