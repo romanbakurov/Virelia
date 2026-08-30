@@ -27,6 +27,19 @@ function createLayerBarrels(
     const layerDir = path.join(root, 'packages', packageName, 'src', layer);
 
     fs.mkdirSync(layerDir, { recursive: true });
+
+    const sourceRoot = path.join(root, 'packages', packageName, 'src');
+
+    fs.writeFileSync(path.join(sourceRoot, 'index.ts'), '');
+    fs.writeFileSync(
+      path.join(sourceRoot, 'public-api.test.ts'),
+      `import * as api from './index';
+
+expect(Object.keys(api).sort()).toEqual([
+      'Button',
+    ]);
+`
+    );
     fs.writeFileSync(path.join(layerDir, 'index.ts'), '');
     fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');
   }

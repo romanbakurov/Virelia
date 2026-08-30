@@ -16,7 +16,11 @@ try {
     options,
   });
 
-  if (result.dryRun) {
+  if (result.check) {
+    console.log(
+      `Component generator check passed for ${result.plan.componentName}.`
+    );
+  } else if (result.dryRun) {
     console.log('DRY RUN');
     console.log('');
 

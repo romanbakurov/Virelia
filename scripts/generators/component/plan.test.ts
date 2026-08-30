@@ -29,6 +29,10 @@ describe('component generation plan', () => {
       componentDir: path.join(root, 'packages/react/src/primitives/Avatar'),
       barrelFile: path.join(root, 'packages/react/src/primitives/index.ts'),
       packageBarrelFile: path.join(root, 'packages/react/src/index.ts'),
+      publicApiTestFile: path.join(
+        root,
+        'packages/react/src/public-api.test.ts'
+      ),
     });
   });
 

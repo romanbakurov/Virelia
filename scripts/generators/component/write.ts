@@ -32,6 +32,7 @@ import {
 } from './docs';
 import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
+import { renderSynchronizedPublicApiContract } from './public-api-contract';
 
 import type {
   ComponentGenerationPlan,
@@ -141,6 +142,30 @@ function updateBarrel(params: {
   updatedFiles.push(barrelFile);
 }
 
+function synchronizePublicApiContract(params: {
+  componentName: string;
+  publicApiTestFile: string;
+  updatedFiles: string[];
+}) {
+  const { componentName, publicApiTestFile, updatedFiles } = params;
+
+  const nextContent = renderSynchronizedPublicApiContract({
+    componentName,
+    publicApiTestFile,
+  });
+  const content = fs.readFileSync(publicApiTestFile, 'utf8');
+
+  if (content === nextContent) {
+    return;
+  }
+
+  fs.writeFileSync(publicApiTestFile, nextContent);
+
+  if (!updatedFiles.includes(publicApiTestFile)) {
+    updatedFiles.push(publicApiTestFile);
+  }
+}
+
 function registerPackageRootExports(params: {
   plan: ComponentGenerationPlan;
   target: ComponentGenerationTarget;
@@ -158,6 +183,12 @@ function registerPackageRootExports(params: {
   updateBarrel({
     barrelFile: target.packageBarrelFile,
     exportLine: `export { ${plan.componentName} } from '${exportPath}';`,
+    updatedFiles: result.updatedFiles,
+  });
+
+  synchronizePublicApiContract({
+    componentName: plan.componentName,
+    publicApiTestFile: target.publicApiTestFile,
     updatedFiles: result.updatedFiles,
   });
 }
