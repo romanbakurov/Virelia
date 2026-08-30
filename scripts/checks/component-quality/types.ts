@@ -15,8 +15,16 @@ export interface ComponentQualityRuleContext {
   rootDir?: string;
 }
 
+export interface ComponentQualityCompletionGuidance {
+  summary: string;
+  evidence?: readonly string[];
+}
+
 export interface ComponentQualityRule {
   definition: ComponentQualityRuleDefinition;
+  completionGuidance?: (
+    context: ComponentQualityRuleContext
+  ) => ComponentQualityCompletionGuidance | undefined;
   evaluate(
     context: ComponentQualityRuleContext
   ): ComponentQualityFinding | Promise<ComponentQualityFinding>;

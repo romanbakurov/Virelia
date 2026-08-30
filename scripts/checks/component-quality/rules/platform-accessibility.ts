@@ -128,6 +128,29 @@ export const accessibilitySemanticsRule: ComponentQualityRule = {
     description:
       'Checks platform-appropriate deterministic accessibility semantics when accessibility is required.',
   },
+  completionGuidance(context) {
+    return context.platform === 'react'
+      ? {
+          summary:
+            'Provide deterministic web accessibility semantics appropriate to the component.',
+          evidence: [
+            'semantic HTML element such as button, input, select, textarea, or anchor',
+            'role attribute',
+            'ARIA attribute',
+          ],
+        }
+      : {
+          summary:
+            'Provide deterministic React Native accessibility semantics appropriate to the component.',
+          evidence: [
+            'accessibilityRole',
+            'accessibilityLabel',
+            'accessibilityState',
+            'accessibilityHint',
+            'accessible',
+          ],
+        };
+  },
   evaluate(context) {
     if (!context.metadata.requirements.accessibility) {
       return finding(accessibilitySemanticsRule, context, 'not-applicable');
