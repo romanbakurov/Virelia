@@ -1,6 +1,9 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
 import { validateComponentMetadata } from './validateComponentMetadata';
+
+const propertyTestOptions = { numRuns: 80, seed: 615 } as const;
 
 const validMetadata = {
   name: 'Button',
@@ -22,6 +25,68 @@ const validMetadata = {
     tokens: ['button'],
   },
 } as const;
+
+const nonEmptyMetadataString = fc
+  .string({ unit: 'binary', minLength: 1, maxLength: 48 })
+  .filter((value) => value.trim().length > 0);
+
+const metadataStringArray = fc.uniqueArray(nonEmptyMetadataString, {
+  maxLength: 4,
+});
+
+const validGeneratedMetadata = fc.record({
+  name: nonEmptyMetadataString,
+  layer: fc.constantFrom('primitives', 'components', 'patterns'),
+  category: fc.constantFrom(
+    'action',
+    'form',
+    'navigation',
+    'overlay',
+    'feedback',
+    'data-display',
+    'layout',
+    'utility'
+  ),
+  platforms: fc.uniqueArray(fc.constantFrom('react', 'react-native'), {
+    minLength: 1,
+    maxLength: 2,
+  }),
+  profile: fc.constantFrom('base', 'form-control', 'compound', 'overlay'),
+  status: fc.constantFrom('experimental', 'stable', 'deprecated'),
+  capabilities: fc.option(
+    fc.uniqueArray(
+      fc.constantFrom(
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'required',
+        'invalid',
+        'loading',
+        'keyboard',
+        'focus-management',
+        'compound-api',
+        'portal',
+        'responsive'
+      ),
+      { maxLength: 4 }
+    ),
+    { nil: undefined }
+  ),
+  dependencies: fc.option(
+    fc.record({
+      packages: fc.option(metadataStringArray, { nil: undefined }),
+      components: fc.option(metadataStringArray, { nil: undefined }),
+    }),
+    { nil: undefined }
+  ),
+  requirements: fc.record({
+    tests: fc.boolean(),
+    storybook: fc.boolean(),
+    docs: fc.boolean(),
+    accessibility: fc.boolean(),
+    tokens: fc.option(metadataStringArray, { nil: undefined }),
+  }),
+});
 
 describe('validateComponentMetadata', () => {
   it('accepts valid component metadata', () => {
@@ -130,5 +195,54 @@ describe('validateComponentMetadata', () => {
         'profile must be one of: base, form-control, compound, overlay.'
       );
     }
+  });
+
+  it('rejects arbitrary malformed strings without crashing or drifting', () => {
+    fc.assert(
+      fc.property(fc.string({ unit: 'binary', maxLength: 256 }), (input) => {
+        const first = validateComponentMetadata(input);
+        const second = validateComponentMetadata(input);
+
+        expect(first).toEqual({
+          valid: false,
+          errors: ['Component metadata must be an object.'],
+        });
+        expect(second).toEqual(first);
+      }),
+      propertyTestOptions
+    );
+  });
+
+  it('handles arbitrary JSON-like input deterministically', () => {
+    fc.assert(
+      fc.property(fc.jsonValue({ maxDepth: 3 }), (input) => {
+        const first = validateComponentMetadata(input);
+        const second = validateComponentMetadata(input);
+
+        expect(second).toEqual(first);
+
+        if (!first.valid) {
+          expect(first.errors.length).toBeGreaterThan(0);
+          expect(first.errors.every((error) => error.length > 0)).toBe(true);
+        }
+      }),
+      propertyTestOptions
+    );
+  });
+
+  it('accepts generated valid metadata after JSON serialization', () => {
+    fc.assert(
+      fc.property(validGeneratedMetadata, (metadata) => {
+        const serializedMetadata = JSON.parse(JSON.stringify(metadata));
+        const result = validateComponentMetadata(serializedMetadata);
+
+        expect(result.valid).toBe(true);
+
+        if (result.valid) {
+          expect(result.value).toEqual(serializedMetadata);
+        }
+      }),
+      propertyTestOptions
+    );
   });
 });
