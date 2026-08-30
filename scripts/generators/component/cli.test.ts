@@ -22,6 +22,7 @@ describe('component generator CLI', () => {
       parts: [],
       force: false,
       dryRun: false,
+      check: false,
     });
   });
 
@@ -296,5 +297,33 @@ describe('component generator CLI', () => {
         '--parts=Root,Trigger,Trigger',
       ])
     ).toThrow('Component parts must not contain duplicates.');
+  });
+});
+
+describe('component generator check mode', () => {
+  it('parses --check as a read-only generator mode', () => {
+    const result = parseComponentGeneratorArgs([
+      'Avatar',
+      'both',
+      'primitives',
+      'data-display',
+      '--check',
+    ]);
+
+    expect(result.check).toBe(true);
+    expect(result.dryRun).toBe(false);
+  });
+
+  it('rejects combining --check with --dry-run', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Avatar',
+        'both',
+        'primitives',
+        'data-display',
+        '--check',
+        '--dry-run',
+      ])
+    ).toThrow('--dry-run and --check cannot be used together.');
   });
 });

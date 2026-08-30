@@ -5,6 +5,7 @@ import { createComponentGenerationPlan } from './plan';
 import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
+import { checkPublicApiContractSynchronization } from './public-api-contract';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -13,6 +14,7 @@ export type RunComponentGeneratorResult = {
   createdFiles: string[];
   updatedFiles: string[];
   dryRun: boolean;
+  check: boolean;
 };
 
 function getPlannedCreatedFiles(
@@ -68,6 +70,7 @@ function getPlannedUpdatedFiles(
     ...plan.targets.flatMap((target) => [
       target.barrelFile,
       target.packageBarrelFile,
+      target.publicApiTestFile,
     ]),
     plan.metadataBarrelFile,
     plan.docsContractRegistryFile,
@@ -89,10 +92,40 @@ export async function runComponentGenerator(params: {
 }): Promise<RunComponentGeneratorResult> {
   const plan = createComponentGenerationPlan(params);
 
-  const preflight = validateComponentGenerationPlan(plan);
+  const preflight = validateComponentGenerationPlan(
+    plan,
+    params.options.check
+      ? {
+          allowExistingTargets: true,
+        }
+      : undefined
+  );
 
   if (!preflight.ok) {
     throw new Error(preflight.errors.join('\n'));
+  }
+
+  if (params.options.check) {
+    const driftedFiles = checkPublicApiContractSynchronization({
+      componentName: plan.componentName,
+      targets: plan.targets,
+    });
+
+    if (driftedFiles.length > 0) {
+      throw new Error(
+        `Component generator check detected public API contract drift:\n${driftedFiles.join(
+          '\n'
+        )}`
+      );
+    }
+
+    return {
+      plan,
+      createdFiles: [],
+      updatedFiles: [],
+      dryRun: false,
+      check: true,
+    };
   }
 
   if (params.options.dryRun) {
@@ -101,6 +134,7 @@ export async function runComponentGenerator(params: {
       createdFiles: getPlannedCreatedFiles(plan),
       updatedFiles: getPlannedUpdatedFiles(plan),
       dryRun: true,
+      check: false,
     };
   }
 
@@ -115,5 +149,6 @@ export async function runComponentGenerator(params: {
     plan,
     ...result,
     dryRun: false,
+    check: false,
   };
 }

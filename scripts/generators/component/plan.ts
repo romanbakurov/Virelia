@@ -16,6 +16,7 @@ export type ComponentGenerationTarget = {
   componentDir: string;
   barrelFile: string;
   packageBarrelFile: string;
+  publicApiTestFile: string;
   isNative: boolean;
 };
 
@@ -92,6 +93,13 @@ export function createComponentGenerationPlan(params: {
       packageName,
       'src',
       'index.ts'
+    ),
+    publicApiTestFile: path.join(
+      root,
+      'packages',
+      packageName,
+      'src',
+      'public-api.test.ts'
     ),
   }));
 

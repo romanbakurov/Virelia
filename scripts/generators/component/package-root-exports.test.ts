@@ -16,6 +16,15 @@ function createFixtureRoot() {
 
     fs.mkdirSync(layerRoot, { recursive: true });
     fs.writeFileSync(path.join(sourceRoot, 'index.ts'), '');
+    fs.writeFileSync(
+      path.join(sourceRoot, 'public-api.test.ts'),
+      `import * as api from './index';
+
+expect(Object.keys(api).sort()).toEqual([
+      'Button',
+    ]);
+`
+    );
     fs.writeFileSync(path.join(layerRoot, 'index.ts'), '');
     fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');
   }

@@ -37,9 +37,24 @@ function createRequiredRepositoryStructure(
   layer: 'primitives' | 'components' | 'patterns' = 'primitives'
 ) {
   for (const packageName of ['react', 'react-native']) {
-    const layerDir = path.join(root, 'packages', packageName, 'src', layer);
+    const sourceRoot = path.join(root, 'packages', packageName, 'src');
+    const layerDir = path.join(sourceRoot, layer);
 
     fs.mkdirSync(layerDir, { recursive: true });
+    fs.writeFileSync(path.join(sourceRoot, 'index.ts'), '');
+    fs.writeFileSync(
+      path.join(sourceRoot, 'public-api.test.ts'),
+      `import * as api from './index';
+
+describe('public API', () => {
+  it('exports only documented runtime entries', () => {
+    expect(Object.keys(api).sort()).toEqual([
+      'Button',
+    ]);
+  });
+});
+`
+    );
     fs.writeFileSync(path.join(layerDir, 'index.ts'), '');
     fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');
   }
@@ -1014,5 +1029,129 @@ export { switchDocs };
     });
 
     expect(completeness.ready).toBe(true);
+  });
+});
+
+describe('component generator check mode', () => {
+  it('remains fail-closed when required repository structure is missing', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    fs.rmSync(path.join(root, 'packages/react/src/primitives/index.ts'), {
+      force: true,
+    });
+
+    await expect(
+      runComponentGenerator({
+        root,
+        options: {
+          componentName: 'Avatar',
+          platform: 'both',
+          layer: 'primitives',
+          category: 'data-display',
+          profile: 'base',
+          control: 'value',
+          capabilities: [],
+          parts: [],
+          force: false,
+          dryRun: false,
+          check: true,
+        },
+      })
+    ).rejects.toThrow('Missing layer barrel file:');
+  });
+
+  const options = {
+    componentName: 'Avatar',
+    platform: 'both',
+    layer: 'primitives',
+    category: 'data-display',
+    profile: 'base',
+    parts: [],
+    force: false,
+  } as const;
+
+  it('passes without mutation when public API contracts are synchronized', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+
+    await runComponentGenerator({
+      root,
+      options,
+    });
+
+    const webContract = path.join(
+      root,
+      'packages/react/src/public-api.test.ts'
+    );
+    const nativeContract = path.join(
+      root,
+      'packages/react-native/src/public-api.test.ts'
+    );
+
+    const webBefore = readFile(webContract);
+    const nativeBefore = readFile(nativeContract);
+
+    const result = await runComponentGenerator({
+      root,
+      options: {
+        ...options,
+        check: true,
+      },
+    });
+
+    expect(result.check).toBe(true);
+    expect(result.dryRun).toBe(false);
+    expect(result.createdFiles).toEqual([]);
+    expect(result.updatedFiles).toEqual([]);
+
+    expect(readFile(webContract)).toBe(webBefore);
+    expect(readFile(nativeContract)).toBe(nativeBefore);
+
+    expect(generateComponentWebsitePage).toHaveBeenCalledTimes(1);
+  });
+
+  it('detects a missing public API contract entry without mutation', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+
+    await runComponentGenerator({
+      root,
+      options,
+    });
+
+    const webContract = path.join(
+      root,
+      'packages/react/src/public-api.test.ts'
+    );
+    const nativeContract = path.join(
+      root,
+      'packages/react-native/src/public-api.test.ts'
+    );
+
+    const webDrift = readFile(webContract).replace("      'Avatar',\n", '');
+
+    fs.writeFileSync(webContract, webDrift);
+
+    const nativeBefore = readFile(nativeContract);
+
+    await expect(
+      runComponentGenerator({
+        root,
+        options: {
+          ...options,
+          check: true,
+        },
+      })
+    ).rejects.toThrow(
+      'Component generator check detected public API contract drift'
+    );
+
+    expect(readFile(webContract)).toBe(webDrift);
+    expect(readFile(nativeContract)).toBe(nativeBefore);
+
+    expect(generateComponentWebsitePage).toHaveBeenCalledTimes(1);
   });
 });

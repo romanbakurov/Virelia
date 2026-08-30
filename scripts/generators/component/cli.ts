@@ -30,6 +30,7 @@ export type ComponentGeneratorOptions = {
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
+  check?: boolean;
 };
 
 const platforms: readonly ComponentPlatformArg[] = ['web', 'native', 'both'];
@@ -68,7 +69,7 @@ const capabilities: readonly ComponentCapability[] = [
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--force] [--dry-run]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--force] [--dry-run] [--check]';
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -81,6 +82,7 @@ export function parseComponentGeneratorArgs(
   let explicitCapabilities: ComponentCapability[] = [];
   let force = false;
   let dryRun = false;
+  let check = false;
   let parts: string[] = [];
 
   const [componentName, platformArg, layerArg, categoryArg, ...extraArgs] =
@@ -94,6 +96,11 @@ export function parseComponentGeneratorArgs(
 
     if (flag === '--dry-run') {
       dryRun = true;
+      continue;
+    }
+
+    if (flag === '--check') {
+      check = true;
       continue;
     }
 
@@ -189,6 +196,10 @@ export function parseComponentGeneratorArgs(
     throw new Error(`Unknown option: ${flag}`);
   }
 
+  if (dryRun && check) {
+    throw new Error('--dry-run and --check cannot be used together.');
+  }
+
   if (extraArgs.length > 0) {
     throw new Error(`Unexpected arguments: ${extraArgs.join(', ')}`);
   }
@@ -236,5 +247,6 @@ export function parseComponentGeneratorArgs(
     parts,
     force,
     dryRun,
+    check,
   };
 }

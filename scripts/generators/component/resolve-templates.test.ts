@@ -12,6 +12,7 @@ const createTarget = (isNative: boolean): ComponentGenerationTarget => ({
   componentDir: '/repo/component',
   barrelFile: '/repo/index.ts',
   packageBarrelFile: '/repo/package-index.ts',
+  publicApiTestFile: '/repo/public-api.test.ts',
   isNative,
 });
 

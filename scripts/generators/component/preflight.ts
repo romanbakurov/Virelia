@@ -14,7 +14,10 @@ export type ComponentPreflightResult =
     };
 
 export function validateComponentGenerationPlan(
-  plan: ComponentGenerationPlan
+  plan: ComponentGenerationPlan,
+  options: {
+    allowExistingTargets?: boolean;
+  } = {}
 ): ComponentPreflightResult {
   const errors: string[] = [];
   const existingTargets: string[] = [];
@@ -117,7 +120,11 @@ export function validateComponentGenerationPlan(
     }
   }
 
-  if (existingTargets.length > 0 && !plan.force) {
+  if (
+    existingTargets.length > 0 &&
+    !plan.force &&
+    !options.allowExistingTargets
+  ) {
     errors.push(
       `Component already exists:\n${existingTargets
         .map((target) => `- ${target}`)
