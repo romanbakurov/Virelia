@@ -221,6 +221,23 @@ export const tokenIntegrationRule: ComponentQualityRule = {
     description:
       'Checks platform-appropriate Vellira token/theme integration in styled components.',
   },
+  completionGuidance(context) {
+    return context.platform === 'react'
+      ? {
+          summary:
+            'Use Vellira token/style integration for styled web component surfaces.',
+          evidence: ['CSS custom property via var(--...)', '@use from @styles'],
+        }
+      : {
+          summary:
+            'Use NativeTheme values for token-relevant React Native styling.',
+          evidence: [
+            'theme.tokens.*',
+            'theme.components.*',
+            'theme.semantic.*',
+          ],
+        };
+  },
   evaluate(context) {
     const files = readFiles(context);
     const styleFiles = files.filter((file) =>

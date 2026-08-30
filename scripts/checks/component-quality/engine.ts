@@ -37,7 +37,7 @@ function aggregateStatus(statuses: readonly ComponentQualityStatus[]) {
   );
 }
 
-function selectedPlatforms(
+export function selectedComponentQualityPlatforms(
   metadata: ComponentMetadata,
   selection: QualityPlatformSelection
 ): ComponentPlatform[] {
@@ -105,18 +105,15 @@ async function evaluatePlatform(
   };
 }
 
-export async function runComponentQualityCheck(
-  options: ComponentQualityRunOptions = {}
-): Promise<ComponentQualityRunResult> {
-  const selection = options.platform ?? 'all';
-  const rules = options.rules ?? componentQualityRules;
-  const metadataRegistry = options.metadataRegistry ?? componentMetadata;
-  const rootDir = options.rootDir ?? process.cwd();
-
+export function resolveComponentQualityMetadata(
+  metadataRegistry: readonly unknown[],
+  componentName?: string
+): ComponentMetadata[] {
   const validatedMetadata = metadataRegistry.map((metadata) => {
     const validation = validateComponentMetadata(metadata);
+
     if (!validation.valid) {
-      const componentName =
+      const invalidComponentName =
         typeof metadata === 'object' &&
         metadata !== null &&
         'name' in metadata &&
@@ -125,29 +122,46 @@ export async function runComponentQualityCheck(
           : '<unknown>';
 
       throw new ComponentQualityRuntimeError(
-        `Invalid metadata for ${componentName}: ${validation.errors.join('; ')}`
+        `Invalid metadata for ${invalidComponentName}: ${validation.errors.join('; ')}`
       );
     }
+
     return validation.value;
   });
 
-  const components = options.componentName
+  const components = componentName
     ? validatedMetadata.filter(
         (metadata) =>
-          metadata.name.toLowerCase() === options.componentName?.toLowerCase()
+          metadata.name.toLowerCase() === componentName.toLowerCase()
       )
     : validatedMetadata;
 
-  if (options.componentName && components.length === 0) {
+  if (componentName && components.length === 0) {
     throw new ComponentQualityRuntimeError(
-      `Unknown component "${options.componentName}".`
+      `Unknown component "${componentName}".`
     );
   }
+
+  return components;
+}
+
+export async function runComponentQualityCheck(
+  options: ComponentQualityRunOptions = {}
+): Promise<ComponentQualityRunResult> {
+  const selection = options.platform ?? 'all';
+  const rules = options.rules ?? componentQualityRules;
+  const metadataRegistry = options.metadataRegistry ?? componentMetadata;
+  const rootDir = options.rootDir ?? process.cwd();
+
+  const components = resolveComponentQualityMetadata(
+    metadataRegistry,
+    options.componentName
+  );
 
   const results: ComponentQualityResult[] = [];
 
   for (const metadata of components) {
-    const platforms = selectedPlatforms(metadata, selection);
+    const platforms = selectedComponentQualityPlatforms(metadata, selection);
 
     if (selection !== 'all' && platforms.length === 0) {
       throw new ComponentQualityRuntimeError(
@@ -156,6 +170,7 @@ export async function runComponentQualityCheck(
     }
 
     const platformResults: ComponentPlatformQualityResult[] = [];
+
     for (const platform of platforms) {
       platformResults.push(
         await evaluatePlatform(metadata, platform, rules, rootDir)
@@ -163,6 +178,7 @@ export async function runComponentQualityCheck(
     }
 
     const findings = platformResults.flatMap((result) => result.findings);
+
     results.push({
       componentName: metadata.name,
       status: aggregateStatus(platformResults.map((result) => result.status)),
