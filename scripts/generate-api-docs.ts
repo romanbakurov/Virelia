@@ -451,12 +451,14 @@ export async function generateApiDocs(
   params: {
     rootDir?: string;
     check?: boolean;
+    silent?: boolean;
     sections?: readonly ApiSection[];
   } = {}
 ): Promise<GenerateApiDocsResult> {
   const {
     rootDir = process.cwd(),
     check = false,
+    silent = false,
     sections = defaultSections,
   } = params;
   const sourceFiles = Array.from(
@@ -531,16 +533,19 @@ export async function generateApiDocs(
 
       if (!check) {
         fs.writeFileSync(docPath, nextContent);
-        console.log(`Updated ${relativePath}`);
+
+        if (!silent) {
+          console.log(`Updated ${relativePath}`);
+        }
       }
     }
   }
 
-  if (check && changedFiles.length > 0) {
+  if (!silent && check && changedFiles.length > 0) {
     console.error('API docs are out of date. Run `pnpm docs:api`.');
   }
 
-  if (changedFiles.length === 0) {
+  if (!silent && changedFiles.length === 0) {
     console.log('API docs are up to date.');
   }
 
