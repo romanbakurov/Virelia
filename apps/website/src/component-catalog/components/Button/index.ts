@@ -13,3 +13,5 @@ export { NativeButtonDemo } from './NativeButtonDemo';
 export { buttonApi } from './buttonApi';
 
 export type { ButtonPlaygroundValue } from './ButtonPlayground';
+
+// maintenance-agent production validation drift
