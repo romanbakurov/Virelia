@@ -102,6 +102,9 @@ jobs:
       - name: Tooling tests
         run: pnpm test:tooling
 
+      - name: IndexNow tests
+        run: node --test scripts/submit-indexnow.test.mjs
+
       - name: Tests and coverage
         run: pnpm ci:test
 
