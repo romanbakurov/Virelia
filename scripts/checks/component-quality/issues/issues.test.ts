@@ -1,3 +1,4 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
 import type { ComponentQualityReportV1 } from '@vellira-ui/metadata';
@@ -16,6 +17,8 @@ import {
   qualityIssueLabelPolicyForAvailableLabels,
 } from './render';
 import type { ManagedQualityIssue, NormalizedQualityFinding } from './types';
+
+const propertyTestOptions = { numRuns: 80, seed: 615 } as const;
 
 const report: ComponentQualityReportV1 = {
   schemaVersion: '1',
@@ -116,6 +119,21 @@ function createMockClient(existing: readonly ManagedQualityIssue[] = []) {
   return { client, mutations };
 }
 
+function expectedNormalizedPart(value: string) {
+  return value.trim().replace(/\s+/g, '-');
+}
+
+const arbitraryIdentityPart = fc.string({
+  unit: 'binary',
+  maxLength: 128,
+});
+
+const supportedMarkerKey = fc
+  .string({ unit: 'binary', minLength: 1, maxLength: 128 })
+  .filter(
+    (key) => key.trim() === key && !/\s/.test(key) && !key.includes('-->')
+  );
+
 describe('component quality issue synchronization', () => {
   it('normalizes FAIL findings by default and ignores WARN/PASS/not-applicable', () => {
     const findings = normalizeActionableFindings(report);
@@ -157,6 +175,83 @@ describe('component quality issue synchronization', () => {
     const body = `Generated\n\n${componentQualityIssueMarker(key)}`;
 
     expect(extractComponentQualityIssueKey(body)).toBe(key);
+  });
+
+  it('normalizes whitespace in finding key parts', () => {
+    expect(
+      componentQualityFindingKey(
+        '  Select \n Menu\tTrigger  ',
+        'react-native',
+        '  api. public \n surface  '
+      )
+    ).toBe(
+      'component-quality:Select-Menu-Trigger:react-native:api.-public-surface'
+    );
+  });
+
+  it('generates deterministic finding keys for arbitrary inputs', () => {
+    fc.assert(
+      fc.property(
+        arbitraryIdentityPart,
+        fc.constantFrom('react', 'react-native'),
+        arbitraryIdentityPart,
+        (componentName, platform, ruleId) => {
+          const first = componentQualityFindingKey(
+            componentName,
+            platform,
+            ruleId
+          );
+          const second = componentQualityFindingKey(
+            componentName,
+            platform,
+            ruleId
+          );
+
+          expect(second).toBe(first);
+          expect(first).toBe(
+            [
+              'component-quality',
+              expectedNormalizedPart(componentName),
+              expectedNormalizedPart(platform),
+              expectedNormalizedPart(ruleId),
+            ].join(':')
+          );
+        }
+      ),
+      propertyTestOptions
+    );
+  });
+
+  it('round-trips supported arbitrary marker keys', () => {
+    fc.assert(
+      fc.property(supportedMarkerKey, (key) => {
+        const marker = componentQualityIssueMarker(key);
+
+        expect(marker).toBe(`<!-- component-quality-key:${key} -->`);
+        expect(extractComponentQualityIssueKey(marker)).toBe(key);
+        expect(
+          extractComponentQualityIssueKey(`Before\n${marker}\nAfter`)
+        ).toBe(key);
+      }),
+      propertyTestOptions
+    );
+  });
+
+  it('extracts issue keys from arbitrary bodies deterministically', () => {
+    fc.assert(
+      fc.property(fc.string({ unit: 'binary', maxLength: 512 }), (body) => {
+        const first = extractComponentQualityIssueKey(body);
+        const second = extractComponentQualityIssueKey(body);
+
+        expect(second).toBe(first);
+
+        if (first !== undefined) {
+          expect(first.length).toBeGreaterThan(0);
+          expect(/\s/.test(first)).toBe(false);
+        }
+      }),
+      propertyTestOptions
+    );
   });
 
   it('rejects malformed reports safely', () => {
