@@ -87,6 +87,8 @@
     "docker:e2e:update": "docker compose --profile test run --rm -e PLAYWRIGHT_ARGS=--update-snapshots playwright",
     "indexnow": "node scripts/submit-indexnow.mjs",
     "component-expansion:json": "tsx scripts/metadata/component-expansion-report.ts",
+    "component-production:json": "tsx scripts/component-production/cli.ts",
+    "component-production:validate:json": "tsx scripts/component-production/validate-cli.ts",
     "check:component-quality:contract": "tsx scripts/checks/component-quality/completion-contract-cli.ts"
   },
   "devDependencies": {
