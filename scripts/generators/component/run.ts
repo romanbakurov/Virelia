@@ -1,8 +1,10 @@
 import path from 'node:path';
 
+import { getComponentApiDocsTargets, getComponentDocsTargets } from './docs';
 import { createComponentGenerationPlan } from './plan';
 import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
+import { generateComponentWebsitePage } from './website';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -18,8 +20,10 @@ function getPlannedCreatedFiles(
 ) {
   const files: string[] = [
     plan.metadataFile,
+    plan.docsContractFile,
     plan.tokenFactoryFile,
     ...plan.tokenThemeTargets.map((target) => target.componentFile),
+    ...getComponentDocsTargets(plan).map((target) => target.docsFile),
   ];
 
   if (plan.profile === 'form-control') {
@@ -66,6 +70,8 @@ function getPlannedUpdatedFiles(
       target.packageBarrelFile,
     ]),
     plan.metadataBarrelFile,
+    plan.docsContractRegistryFile,
+    ...getComponentApiDocsTargets(plan).map((target) => target.apiFile),
     plan.tokenFactoryBarrelFile,
     ...plan.tokenThemeTargets.map((target) => target.barrelFile),
   ];
@@ -77,10 +83,10 @@ function getPlannedUpdatedFiles(
   return [...new Set(files)];
 }
 
-export function runComponentGenerator(params: {
+export async function runComponentGenerator(params: {
   root: string;
   options: ComponentGeneratorOptions;
-}): RunComponentGeneratorResult {
+}): Promise<RunComponentGeneratorResult> {
   const plan = createComponentGenerationPlan(params);
 
   const preflight = validateComponentGenerationPlan(plan);
@@ -98,7 +104,12 @@ export function runComponentGenerator(params: {
     };
   }
 
-  const result = writeComponentGenerationPlan(plan);
+  const result = await writeComponentGenerationPlan(plan);
+
+  generateComponentWebsitePage({
+    root: params.root,
+    componentName: plan.componentName,
+  });
 
   return {
     plan,

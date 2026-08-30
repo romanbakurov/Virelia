@@ -17,6 +17,7 @@ function createFixtureRoot() {
     fs.mkdirSync(layerRoot, { recursive: true });
     fs.writeFileSync(path.join(sourceRoot, 'index.ts'), '');
     fs.writeFileSync(path.join(layerRoot, 'index.ts'), '');
+    fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');
   }
 
   const metadataRoot = path.join(
@@ -35,11 +36,27 @@ function createFixtureRoot() {
 `
   );
 
+  const docsContractRoot = path.join(
+    root,
+    'apps',
+    'docs',
+    'src',
+    'component-docs'
+  );
+
+  fs.mkdirSync(docsContractRoot, { recursive: true });
+  fs.writeFileSync(
+    path.join(docsContractRoot, 'index.ts'),
+    `export const componentDocsContracts = [
+] as const;
+`
+  );
+
   return root;
 }
 
 describe('component generator package root exports', () => {
-  it('registers public value and type exports exactly once for each target', () => {
+  it('registers public value and type exports exactly once for each target', async () => {
     const root = createFixtureRoot();
     const plan = createComponentGenerationPlan({
       root,
@@ -55,8 +72,8 @@ describe('component generator package root exports', () => {
       },
     });
 
-    writeComponentGenerationPlan(plan);
-    writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
+    await writeComponentGenerationPlan(plan);
 
     for (const packageName of ['react', 'react-native']) {
       const source = fs.readFileSync(

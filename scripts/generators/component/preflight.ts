@@ -81,8 +81,30 @@ export function validateComponentGenerationPlan(
     }
   }
 
+  if (!fs.existsSync(plan.docsContractRegistryFile)) {
+    errors.push(
+      `Missing component docs registry file: ${plan.docsContractRegistryFile}`
+    );
+  } else {
+    const docsRegistry = fs.readFileSync(plan.docsContractRegistryFile, 'utf8');
+
+    if (!docsRegistry.includes('export const componentDocsContracts = [')) {
+      errors.push(
+        `Missing componentDocsContracts registry in ${plan.docsContractRegistryFile}`
+      );
+    } else if (!docsRegistry.includes('] as const;')) {
+      errors.push(
+        `Invalid componentDocsContracts registry in ${plan.docsContractRegistryFile}`
+      );
+    }
+  }
+
   if (fs.existsSync(plan.metadataFile)) {
     existingTargets.push(plan.metadataFile);
+  }
+
+  if (fs.existsSync(plan.docsContractFile)) {
+    existingTargets.push(plan.docsContractFile);
   }
 
   if (fs.existsSync(plan.tokenFactoryFile)) {

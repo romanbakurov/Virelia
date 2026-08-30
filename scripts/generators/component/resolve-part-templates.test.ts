@@ -8,6 +8,7 @@ import type {
 } from './plan';
 
 const plan: ComponentGenerationPlan = {
+  root: '/repo',
   componentName: 'Tabs',
   layer: 'components',
   category: 'navigation',
@@ -21,6 +22,9 @@ const plan: ComponentGenerationPlan = {
   sharedTypesBarrelFile: '/repo/types/index.ts',
   metadataFile: '/repo/metadata.ts',
   metadataBarrelFile: '/repo/metadata/index.ts',
+  docsRoot: '/repo/apps/docs/src',
+  docsContractFile: '/repo/apps/docs/src/component-docs/Tabs.docs.ts',
+  docsContractRegistryFile: '/repo/apps/docs/src/component-docs/index.ts',
   tokenFactoryFile: '/repo/tokens/factories/createTabsTokens.ts',
   tokenFactoryBarrelFile: '/repo/tokens/factories/index.ts',
   tokenThemeTargets: [],

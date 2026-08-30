@@ -1,7 +1,7 @@
 {
   "name": "vellira",
   "private": true,
-  "version": "2.79.0",
+  "version": "2.82.0",
   "description": "Vellira Design System monorepo",
   "type": "module",
   "author": "Roman Bakurov",
@@ -85,7 +85,8 @@
     "docker:shell": "docker compose run --rm workspace bash",
     "docker:e2e": "docker compose --profile test run --rm playwright",
     "docker:e2e:update": "docker compose --profile test run --rm -e PLAYWRIGHT_ARGS=--update-snapshots playwright",
-    "indexnow": "node scripts/submit-indexnow.mjs"
+    "indexnow": "node scripts/submit-indexnow.mjs",
+    "component-expansion:json": "tsx scripts/metadata/component-expansion-report.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.1",
