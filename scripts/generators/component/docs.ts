@@ -239,6 +239,7 @@ export async function generateComponentDocumentation(params: {
 
   const apiResult = await generateApiDocs({
     rootDir: root,
+    silent: true,
     sections: plan.targets.map((target) =>
       section(
         apiPackageByPlatform[target.packageName],
