@@ -50,6 +50,11 @@ function createManualRequirements(params: {
   };
 
   if (profile === 'compound') {
+    if (parts.includes('Item') && parts.includes('Trigger')) {
+      pushRequirement('accessible-name');
+      pushRequirement('interaction');
+    }
+
     if (capabilities.includes('controlled')) {
       pushRequirement('controlled');
     }

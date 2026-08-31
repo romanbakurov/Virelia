@@ -64,15 +64,15 @@ describe('component test templates', () => {
       isNative: false,
       profile: 'compound',
       capabilities: ['compound-api', 'keyboard'],
-      parts: ['Root', 'Trigger', 'Content'],
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
     });
 
     expect(result).toContain(
-      '// Baseline contract: render, accessibility, accessible-name, interaction, compound-api'
+      '// Baseline contract: render, accessibility, compound-api'
     );
     expect(result).toContain('exposes the declared compound API');
-    expect(result).toContain('gives the trigger an accessible name');
-    expect(result).toContain('forwards trigger activation');
+    expect(result).not.toContain('gives the trigger an accessible name');
+    expect(result).not.toContain('forwards trigger activation');
     expect(result).not.toContain('keyboard-focusable');
   });
 
@@ -82,11 +82,14 @@ describe('component test templates', () => {
       isNative: true,
       profile: 'compound',
       capabilities: ['compound-api', 'keyboard'],
-      parts: ['Root', 'Trigger', 'Content'],
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
     });
 
-    expect(result).toContain('accessible-name');
-    expect(result).toContain('interaction');
+    expect(result).toContain(
+      '// Baseline contract: render, accessibility, compound-api'
+    );
+    expect(result).not.toContain('gives the trigger an accessible name');
+    expect(result).not.toContain('forwards trigger activation');
     expect(result).not.toContain('keyboard-focusable');
     expect(result).toContain("describe('Native Accordion'");
   });
