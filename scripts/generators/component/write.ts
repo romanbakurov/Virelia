@@ -169,6 +169,15 @@ function synchronizePublicApiContract(params: {
   }
 }
 
+function getPackageRootPropTypeNames(plan: ComponentGenerationPlan) {
+  return [
+    `${plan.componentName}Props`,
+    ...plan.parts
+      .filter((partName) => partName !== 'Root')
+      .map((partName) => `${plan.componentName}${partName}Props`),
+  ];
+}
+
 function registerPackageRootExports(params: {
   plan: ComponentGenerationPlan;
   target: ComponentGenerationTarget;
@@ -177,11 +186,13 @@ function registerPackageRootExports(params: {
   const { plan, target, result } = params;
   const exportPath = `./${plan.layer}/${plan.componentName}`;
 
-  updateBarrel({
-    barrelFile: target.packageBarrelFile,
-    exportLine: `export type { ${plan.componentName}Props } from '${exportPath}';`,
-    updatedFiles: result.updatedFiles,
-  });
+  for (const propTypeName of getPackageRootPropTypeNames(plan)) {
+    updateBarrel({
+      barrelFile: target.packageBarrelFile,
+      exportLine: `export type { ${propTypeName} } from '${exportPath}';`,
+      updatedFiles: result.updatedFiles,
+    });
+  }
 
   updateBarrel({
     barrelFile: target.packageBarrelFile,
