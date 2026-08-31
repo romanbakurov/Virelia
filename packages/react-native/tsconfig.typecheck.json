@@ -11,7 +11,8 @@
       "@vellira-ui/icons/lottie": ["../icons/src/lottie.ts"],
       "@vellira-ui/icons/web": ["../icons/src/web.ts"],
       "@vellira-ui/tokens": ["../tokens/src/index.ts"],
-      "@vellira-ui/types": ["../types/src/index.ts"]
+      "@vellira-ui/types": ["../types/src/index.ts"],
+      "@test-utils/*": ["src/test-utils/*"]
     }
   }
 }

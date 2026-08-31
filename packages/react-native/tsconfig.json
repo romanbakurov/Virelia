@@ -4,6 +4,10 @@
     "rootDir": "src",
     "noEmit": true,
     "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@test-utils/*": ["test-utils/*"]
+    },
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

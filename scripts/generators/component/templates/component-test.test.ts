@@ -12,6 +12,7 @@ describe('component test templates', () => {
     });
 
     expect(result).toContain('// Baseline contract: render, accessibility');
+    expect(result).toContain("import { render } from '@test-utils/render';");
     expect(result).toContain("it('renders children'");
     expect(result).not.toContain('renders the disabled baseline state');
   });

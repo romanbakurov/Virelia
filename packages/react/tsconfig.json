@@ -10,6 +10,7 @@
 
     "paths": {
       "@/*": ["*"],
+      "@test-utils/*": ["test-utils/*"],
       "@components/*": ["components/*"],
       "@patterns/*": ["patterns/*"],
       "@primitives/*": ["primitives/*"],
