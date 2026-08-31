@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import prettier from 'prettier';
 import { describe, expect, it } from 'vitest';
 
 import { createComponentGenerationPlan } from './plan';
@@ -601,5 +602,51 @@ describe('component generator writer', () => {
       barrel.match(/import \{ dialogMetadata \} from '\.\/Dialog\.metadata';/g)
     ).toHaveLength(1);
     expect(barrel.match(/ {2}dialogMetadata,/g)).toHaveLength(1);
+  });
+
+  it('writes Prettier-clean owned artifacts and docs registry', async () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = await writeComponentGenerationPlan(plan);
+
+    const formattedFiles = [
+      ...new Set([...result.createdFiles, plan.docsContractRegistryFile]),
+    ].filter((filePath) => /\.(?:css|json|scss|ts|tsx)$/.test(filePath));
+
+    const repositoryConfig = await prettier.resolveConfig(
+      path.join(process.cwd(), 'package.json')
+    );
+
+    expect(repositoryConfig).not.toBeNull();
+    expect(formattedFiles.length).toBeGreaterThan(0);
+
+    for (const filePath of formattedFiles) {
+      const content = fs.readFileSync(filePath, 'utf8');
+
+      expect(
+        await prettier.check(content, {
+          ...(repositoryConfig ?? {}),
+          filepath: filePath,
+        })
+      ).toBe(true);
+    }
+
+    const metadataBarrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+    expect(metadataBarrel).toContain('  avatarMetadata,');
   });
 });

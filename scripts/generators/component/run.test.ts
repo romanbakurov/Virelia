@@ -231,15 +231,17 @@ describe('component generator', () => {
     expect(docsContractRegistry).toContain(
       "import { avatarDocs } from './Avatar.docs';"
     );
-    expect(docsContractRegistry).toContain('  avatarDocs,');
+    expect(docsContractRegistry).toContain(
+      'export const componentDocsContracts = [avatarDocs] as const;'
+    );
 
     const docsContract = readFile(result.plan.docsContractFile);
 
-    expect(docsContract).toContain('component: "Avatar"');
-    expect(docsContract).toContain('"react"');
-    expect(docsContract).toContain('"react-native"');
+    expect(docsContract).toContain("component: 'Avatar'");
+    expect(docsContract).toContain('react: {');
+    expect(docsContract).toContain("'react-native': {");
     expect(docsContract).toContain("story: 'Default'");
-    expect(docsContract).toContain('title: "Primitives/Avatar"');
+    expect(docsContract).toContain("title: 'Primitives/Avatar'");
 
     for (const target of getComponentDocsTargets(result.plan)) {
       expect(fs.existsSync(target.docsFile)).toBe(true);
@@ -290,10 +292,7 @@ export { switchDocs };
       `import { switchDocs } from './Switch.docs';
 import { avatarDocs } from './Avatar.docs';
 
-export const componentDocsContracts = [
-  switchDocs,
-  avatarDocs,
-] as const;
+export const componentDocsContracts = [switchDocs, avatarDocs] as const;
 
 export { switchDocs };
 `
@@ -413,7 +412,9 @@ export { switchDocs };
         /import \{ avatarDocs \} from '\.\/Avatar\.docs';/g
       )
     ).toBe(1);
-    expect(countOccurrences(docsContractRegistry, / {2}avatarDocs,/g)).toBe(1);
+    expect(docsContractRegistry).toContain(
+      'export const componentDocsContracts = [avatarDocs] as const;'
+    );
   });
 
   it('plans and generates only React documentation for React-only components', async () => {
@@ -443,10 +444,10 @@ export { switchDocs };
     expect(
       fs.existsSync(path.join(root, 'apps/docs/src/react-native/avatar.md'))
     ).toBe(false);
-    expect(readFile(result.plan.docsContractFile)).toContain('"react"');
-    expect(readFile(result.plan.docsContractFile)).not.toContain(
-      '"react-native"'
-    );
+    const docsContract = readFile(result.plan.docsContractFile);
+
+    expect(docsContract).toContain('react: {');
+    expect(docsContract).not.toContain("'react-native': {");
   });
 
   it('plans and generates only React Native documentation for React Native-only components', async () => {
@@ -478,8 +479,10 @@ export { switchDocs };
     expect(
       fs.existsSync(path.join(root, 'apps/docs/src/react-native/avatar.md'))
     ).toBe(true);
-    expect(readFile(result.plan.docsContractFile)).not.toContain('"react"');
-    expect(readFile(result.plan.docsContractFile)).toContain('"react-native"');
+    const docsContract = readFile(result.plan.docsContractFile);
+
+    expect(docsContract).not.toMatch(/\n\s+react:\s*\{/);
+    expect(docsContract).toContain("'react-native': {");
   });
 
   it('generates platform-specific overlay scaffolds through the full pipeline', async () => {

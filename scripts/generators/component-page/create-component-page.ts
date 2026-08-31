@@ -1,4 +1,7 @@
+import fs from 'node:fs';
 import path from 'node:path';
+
+import { formatGeneratedFiles } from '../format-generated-files';
 
 import {
   generatedFileHeader,
@@ -321,6 +324,17 @@ const componentIndexContent = renderComponentIndex({
 
 await writeIfMissing(componentIndexFile, componentIndexContent);
 
+const registryFiles = [catalogRegistryFile, componentsRegistryFile];
+
+const registrySourcesBefore = check
+  ? null
+  : new Map(
+      registryFiles.map((filePath) => [
+        filePath,
+        fs.readFileSync(filePath, 'utf8'),
+      ])
+    );
+
 updateComponentRegistry({
   root,
   force,
@@ -332,6 +346,15 @@ updateComponentRegistry({
   componentProfile,
   model: generatedPageModel,
 });
+
+if (registrySourcesBefore) {
+  const changedRegistryFiles = registryFiles.filter(
+    (filePath) =>
+      fs.readFileSync(filePath, 'utf8') !== registrySourcesBefore.get(filePath)
+  );
+
+  await formatGeneratedFiles(changedRegistryFiles);
+}
 
 if (check) {
   if (checkFailures.length > 0) {
