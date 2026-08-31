@@ -15,6 +15,8 @@ import {
   renderThemeComponentTokensTemplate,
 } from './templates';
 
+import { formatGeneratedFiles } from '../format-generated-files';
+
 import {
   createComponentTestCoverageContract,
   renderComponentTestCoverageContract,
@@ -558,6 +560,11 @@ export async function writeComponentGenerationPlan(
     plan,
     result,
   });
+
+  await formatGeneratedFiles([
+    ...result.createdFiles,
+    plan.docsContractRegistryFile,
+  ]);
 
   return result;
 }
