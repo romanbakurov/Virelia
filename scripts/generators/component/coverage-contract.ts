@@ -35,27 +35,56 @@ export function splitComponentTestRequirements(
 }
 
 function createManualRequirements(params: {
+  profile: ComponentProfileArg;
   capabilities: readonly ComponentCapability[];
   parts: readonly string[];
   isNative: boolean;
 }) {
-  const { capabilities, parts, isNative } = params;
+  const { profile, capabilities, parts, isNative } = params;
   const requirements: BaselineTestRequirement[] = [];
 
+  const pushRequirement = (requirement: BaselineTestRequirement) => {
+    if (!requirements.includes(requirement)) {
+      requirements.push(requirement);
+    }
+  };
+
+  if (profile === 'compound') {
+    if (capabilities.includes('controlled')) {
+      pushRequirement('controlled');
+    }
+
+    if (capabilities.includes('uncontrolled')) {
+      pushRequirement('uncontrolled');
+    }
+
+    if (capabilities.includes('disabled')) {
+      pushRequirement('disabled');
+    }
+
+    if (capabilities.includes('required')) {
+      pushRequirement('required');
+    }
+
+    if (capabilities.includes('invalid')) {
+      pushRequirement('invalid');
+    }
+  }
+
   if (capabilities.includes('focus-management')) {
-    requirements.push('focus-management');
+    pushRequirement('focus-management');
   }
 
   if (capabilities.includes('portal')) {
-    requirements.push('portal');
+    pushRequirement('portal');
   }
 
   if (
     capabilities.includes('keyboard') &&
     !isNative &&
-    !parts.includes('Trigger')
+    (profile === 'compound' || !parts.includes('Trigger'))
   ) {
-    requirements.push('keyboard');
+    pushRequirement('keyboard');
   }
 
   return requirements;
@@ -85,6 +114,7 @@ export function createComponentTestCoverageContract(params: {
     isNative,
   });
   const manualRequirements = createManualRequirements({
+    profile,
     capabilities,
     parts,
     isNative,

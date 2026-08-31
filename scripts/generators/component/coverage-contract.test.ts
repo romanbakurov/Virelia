@@ -86,18 +86,66 @@ describe('component test coverage contracts', () => {
     });
   });
 
-  it('does not require browser keyboard coverage on native targets', () => {
+  it('moves Web compound state and keyboard behavior to manual ownership', () => {
     const contract = createComponentTestCoverageContract({
       componentName: 'Accordion',
       profile: 'compound',
       control: 'value',
-      capabilities: ['compound-api', 'keyboard'],
-      parts: ['Root', 'Trigger', 'Content'],
+      capabilities: [
+        'compound-api',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'keyboard',
+      ],
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
+      isNative: false,
+    });
+
+    expect(contract.baseline.requirements).toEqual([
+      'render',
+      'accessibility',
+      'accessible-name',
+      'interaction',
+      'compound-api',
+    ]);
+
+    expect(contract.componentSpecific).toEqual({
+      ownership: 'manual',
+      required: true,
+      requirements: ['controlled', 'uncontrolled', 'disabled', 'keyboard'],
+    });
+  });
+
+  it('moves Native compound state behavior to manual ownership without Web keyboard coverage', () => {
+    const contract = createComponentTestCoverageContract({
+      componentName: 'Accordion',
+      profile: 'compound',
+      control: 'value',
+      capabilities: [
+        'compound-api',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'keyboard',
+      ],
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
       isNative: true,
     });
 
-    expect(contract.baseline.requirements).toContain('interaction');
-    expect(contract.baseline.requirements).not.toContain('keyboard');
+    expect(contract.baseline.requirements).toEqual([
+      'render',
+      'accessibility',
+      'accessible-name',
+      'interaction',
+      'compound-api',
+    ]);
+
+    expect(contract.componentSpecific).toEqual({
+      ownership: 'manual',
+      required: true,
+      requirements: ['controlled', 'uncontrolled', 'disabled'],
+    });
   });
 
   it('serializes deterministically with a trailing newline', () => {

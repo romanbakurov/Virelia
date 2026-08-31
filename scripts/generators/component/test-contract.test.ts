@@ -55,11 +55,18 @@ describe('component baseline test contracts', () => {
     ]);
   });
 
-  it('derives richer compound requirements without a separate taxonomy', () => {
+  it('keeps component-specific compound behavior out of the generated baseline', () => {
     const contract = createBaselineTestContract({
       profile: 'compound',
       control: 'value',
-      capabilities: ['compound-api', 'keyboard', 'focus-management'],
+      capabilities: [
+        'compound-api',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'keyboard',
+        'focus-management',
+      ],
       parts: ['Root', 'Trigger', 'Content'],
       isNative: false,
     });
@@ -70,7 +77,6 @@ describe('component baseline test contracts', () => {
       'accessible-name',
       'interaction',
       'compound-api',
-      'keyboard',
     ]);
   });
 

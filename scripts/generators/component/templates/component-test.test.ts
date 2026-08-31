@@ -57,7 +57,7 @@ describe('component test templates', () => {
     expect(result).toContain("querySelector('textarea, input')");
   });
 
-  it('generates accessible trigger, interaction, and keyboard templates for web compound components', () => {
+  it('keeps component-specific Web compound keyboard behavior out of generated tests', () => {
     const result = renderTestTemplate({
       componentName: 'Accordion',
       isNative: false,
@@ -66,13 +66,13 @@ describe('component test templates', () => {
       parts: ['Root', 'Trigger', 'Content'],
     });
 
-    expect(result).toContain('accessible-name');
-    expect(result).toContain('interaction');
-    expect(result).toContain('keyboard');
+    expect(result).toContain(
+      '// Baseline contract: render, accessibility, accessible-name, interaction, compound-api'
+    );
     expect(result).toContain('exposes the declared compound API');
     expect(result).toContain('gives the trigger an accessible name');
     expect(result).toContain('forwards trigger activation');
-    expect(result).toContain('keeps the trigger keyboard-focusable');
+    expect(result).not.toContain('keyboard-focusable');
   });
 
   it('does not generate browser keyboard coverage for native compound components', () => {
