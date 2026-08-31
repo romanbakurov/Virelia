@@ -105,15 +105,20 @@ describe('component test coverage contracts', () => {
     expect(contract.baseline.requirements).toEqual([
       'render',
       'accessibility',
-      'accessible-name',
-      'interaction',
       'compound-api',
     ]);
 
     expect(contract.componentSpecific).toEqual({
       ownership: 'manual',
       required: true,
-      requirements: ['controlled', 'uncontrolled', 'disabled', 'keyboard'],
+      requirements: [
+        'accessible-name',
+        'interaction',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'keyboard',
+      ],
     });
   });
 
@@ -136,15 +141,19 @@ describe('component test coverage contracts', () => {
     expect(contract.baseline.requirements).toEqual([
       'render',
       'accessibility',
-      'accessible-name',
-      'interaction',
       'compound-api',
     ]);
 
     expect(contract.componentSpecific).toEqual({
       ownership: 'manual',
       required: true,
-      requirements: ['controlled', 'uncontrolled', 'disabled'],
+      requirements: [
+        'accessible-name',
+        'interaction',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+      ],
     });
   });
 

@@ -67,6 +67,22 @@ describe('component baseline test contracts', () => {
         'keyboard',
         'focus-management',
       ],
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
+      isNative: false,
+    });
+
+    expect(contract.requirements).toEqual([
+      'render',
+      'accessibility',
+      'compound-api',
+    ]);
+  });
+
+  it('keeps simple compound Trigger behavior in the generated baseline', () => {
+    const contract = createBaselineTestContract({
+      profile: 'compound',
+      control: 'value',
+      capabilities: ['compound-api'],
       parts: ['Root', 'Trigger', 'Content'],
       isNative: false,
     });
