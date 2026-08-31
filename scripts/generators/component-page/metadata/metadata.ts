@@ -6,6 +6,76 @@ import type { ComponentPageMetadata } from '../../../../apps/website/src/compone
 
 export type { ComponentPageMetadata };
 
+export type ComponentPageProfile = NonNullable<
+  ComponentPageMetadata['profile']
+>;
+
+export function loadGeneratedComponentProfile(params: {
+  root: string;
+  componentName: string;
+}): ComponentPageProfile | undefined {
+  const metadataFile = path.join(
+    params.root,
+    'packages',
+    'metadata',
+    'src',
+    'components',
+    `${params.componentName}.metadata.ts`
+  );
+
+  if (!fs.existsSync(metadataFile)) {
+    return undefined;
+  }
+
+  const source = fs.readFileSync(metadataFile, 'utf8');
+  const match = source.match(
+    /\bprofile:\s*['"](base|form-control|compound|overlay)['"]/
+  );
+
+  const profile = match?.[1];
+
+  if (!profile) {
+    return undefined;
+  }
+
+  return profile === 'base' ? 'primitive' : (profile as ComponentPageProfile);
+}
+
+export type GeneratedComponentCategory =
+  | 'action'
+  | 'form'
+  | 'navigation'
+  | 'overlay'
+  | 'feedback'
+  | 'data-display'
+  | 'layout'
+  | 'utility';
+
+export function loadGeneratedComponentCategory(params: {
+  root: string;
+  componentName: string;
+}): GeneratedComponentCategory | undefined {
+  const metadataFile = path.join(
+    params.root,
+    'packages',
+    'metadata',
+    'src',
+    'components',
+    `${params.componentName}.metadata.ts`
+  );
+
+  if (!fs.existsSync(metadataFile)) {
+    return undefined;
+  }
+
+  const source = fs.readFileSync(metadataFile, 'utf8');
+  const match = source.match(
+    /\bcategory:\s*['"](action|form|navigation|overlay|feedback|data-display|layout|utility)['"]/
+  );
+
+  return match?.[1] as GeneratedComponentCategory | undefined;
+}
+
 export function getComponentCatalogDir(params: {
   catalogComponentsRoot: string;
   componentName: string;

@@ -143,6 +143,8 @@ export async function runComponentGenerator(params: {
   generateComponentWebsitePage({
     root: params.root,
     componentName: plan.componentName,
+    profile: plan.profile,
+    category: plan.category,
   });
 
   return {

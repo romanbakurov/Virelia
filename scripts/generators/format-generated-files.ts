@@ -30,6 +30,22 @@ async function resolveGeneratedFileConfig(filePath: string) {
   return repositoryConfig;
 }
 
+export async function formatGeneratedContent(
+  filePath: string,
+  content: string
+): Promise<string> {
+  if (!PRETTIER_EXTENSIONS.has(path.extname(filePath))) {
+    return content;
+  }
+
+  const config = await resolveGeneratedFileConfig(filePath);
+
+  return prettier.format(content, {
+    ...config,
+    filepath: filePath,
+  });
+}
+
 export async function formatGeneratedFiles(
   filePaths: readonly string[]
 ): Promise<string[]> {

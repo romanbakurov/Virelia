@@ -42,8 +42,8 @@ const model: GeneratedPageModel = {
   related: [],
 };
 
-describe('component catalog registration', () => {
-  it('adds a generated page to the website component catalog once', () => {
+describe('component catalog registration', async () => {
+  it('adds a generated page to the website component catalog once', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-catalog-'));
     const componentsRegistryFile = path.join(root, 'components.ts');
 
@@ -52,24 +52,24 @@ describe('component catalog registration', () => {
       `import type { ComponentCatalogEntry } from '../types';\n\nexport const webComponents = [\n] as const satisfies readonly ComponentCatalogEntry[];\n`
     );
 
-    updateCatalogRegistry({
+    await updateCatalogRegistry({
       root,
       force: false,
       check: false,
       checkFailures: [],
       componentsRegistryFile,
       model,
-      componentProfile: 'form-control',
+      catalogCategory: 'forms',
     });
 
-    updateCatalogRegistry({
+    await updateCatalogRegistry({
       root,
       force: false,
       check: false,
       checkFailures: [],
       componentsRegistryFile,
       model,
-      componentProfile: 'form-control',
+      catalogCategory: 'forms',
     });
 
     const content = fs.readFileSync(componentsRegistryFile, 'utf8');
@@ -80,21 +80,21 @@ describe('component catalog registration', () => {
     expect(content).toContain("'react-native'");
   });
 
-  it('preserves an existing curated catalog entry with --force', () => {
+  it('preserves an existing curated catalog entry with --force', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-catalog-'));
     const componentsRegistryFile = path.join(root, 'components.ts');
     const curatedSource = `import type { ComponentCatalogEntry } from '../types';\n\nexport const webComponents = [\n  {\n    slug: 'switch',\n    name: 'Switch',\n    description: 'Curated description.',\n    category: 'general',\n    status: 'stable',\n    order: 42,\n    platforms: ['react'],\n    docs: {\n      react: 'https://docs.vellira.dev/react/switch',\n    },\n  },\n] as const satisfies readonly ComponentCatalogEntry[];\n`;
 
     fs.writeFileSync(componentsRegistryFile, curatedSource);
 
-    updateCatalogRegistry({
+    await updateCatalogRegistry({
       root,
       force: true,
       check: false,
       checkFailures: [],
       componentsRegistryFile,
       model,
-      componentProfile: 'form-control',
+      catalogCategory: 'forms',
     });
 
     const content = fs.readFileSync(componentsRegistryFile, 'utf8');
@@ -103,5 +103,50 @@ describe('component catalog registration', () => {
     expect(content).toContain('Curated description.');
     expect(content).toContain("status: 'stable'");
     expect(content).toContain('order: 42');
+  });
+});
+
+describe('generated component catalog correction', async () => {
+  it('updates an existing generated entry when its resolved category changes', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-catalog-'));
+    const componentsRegistryFile = path.join(root, 'components.ts');
+
+    fs.writeFileSync(
+      componentsRegistryFile,
+      `import type { ComponentCatalogEntry } from '../types';
+
+export const webComponents = [
+  {
+    slug: 'switch',
+    name: 'Switch',
+    description: 'Switch component for Vellira applications.',
+    category: 'general',
+    status: 'beta',
+    order: 999,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/switch',
+      'react-native': 'https://docs.vellira.dev/react-native/switch',
+    },
+  },
+] as const satisfies readonly ComponentCatalogEntry[];
+`
+    );
+
+    await updateCatalogRegistry({
+      root,
+      force: true,
+      check: false,
+      checkFailures: [],
+      componentsRegistryFile,
+      model,
+      catalogCategory: 'navigation',
+    });
+
+    const content = fs.readFileSync(componentsRegistryFile, 'utf8');
+
+    expect(content.match(/slug: 'switch'/g)).toHaveLength(1);
+    expect(content).toContain("category: 'navigation'");
+    expect(content).not.toContain("category: 'general'");
   });
 });

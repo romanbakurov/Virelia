@@ -2,18 +2,41 @@ import {
   existsInPackage,
   extractComponentProps,
   extractPlatformProps,
+  listComponentParts,
 } from '../extractors/source';
 import { capitalize } from '../helpers/format';
 import {
   loadComponentMetadata,
+  loadGeneratedComponentCategory,
+  loadGeneratedComponentProfile,
   mergeComponentMetadata,
   validateComponentMetadata,
 } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from './types';
 import {
+  getGeneratedCompositionMetadata,
   getProfileMetadata,
   inferComponentProfile,
+  resolveCatalogCategory,
+  type ComponentProfile,
+  type GeneratorComponentCategory,
 } from '../profiles/profiles';
+
+export function resolveComponentPageProfile(params: {
+  componentName: string;
+  metadataProfile?: ComponentProfile;
+  requestedProfile?: ComponentProfile;
+  generatedProfile?: ComponentProfile;
+}): ComponentProfile {
+  const legacyProfile = inferComponentProfile(params.componentName);
+
+  return (
+    params.metadataProfile ??
+    (legacyProfile !== 'primitive'
+      ? legacyProfile
+      : (params.requestedProfile ?? params.generatedProfile ?? legacyProfile))
+  );
+}
 
 export function resolveExtractedProps(params: {
   sharedProps: readonly ExtractedProp[];
@@ -39,6 +62,8 @@ export async function resolvePageInput(params: {
   root: string;
   catalogComponentsRoot: string;
   componentName: string;
+  requestedProfile?: ComponentProfile;
+  requestedCategory?: GeneratorComponentCategory;
 }) {
   const { root, catalogComponentsRoot, componentName } = params;
 
@@ -47,11 +72,56 @@ export async function resolvePageInput(params: {
     componentName,
   });
 
-  const inferredComponentProfile =
-    componentMetadata.profile ?? inferComponentProfile(componentName);
+  const platforms: Platform[] = [];
+
+  if (existsInPackage({ root, packageName: 'react', componentName })) {
+    platforms.push('react');
+  }
+
+  if (existsInPackage({ root, packageName: 'react-native', componentName })) {
+    platforms.push('react-native');
+  }
+
+  const generatedComponentProfile = loadGeneratedComponentProfile({
+    root,
+    componentName,
+  });
+
+  const generatedComponentCategory = loadGeneratedComponentCategory({
+    root,
+    componentName,
+  });
+
+  const inferredComponentProfile = resolveComponentPageProfile({
+    componentName,
+    metadataProfile: componentMetadata.profile,
+    requestedProfile: params.requestedProfile,
+    generatedProfile: generatedComponentProfile,
+  });
+
+  const parts = Array.from(
+    new Set(
+      platforms.flatMap((platform) =>
+        listComponentParts({
+          root,
+          platform,
+          componentName,
+        })
+      )
+    )
+  ).sort((left, right) => left.localeCompare(right));
+
+  const generatedComposition = getGeneratedCompositionMetadata({
+    profile: inferredComponentProfile,
+    componentName,
+    parts,
+  });
 
   const componentConfig = mergeComponentMetadata(
-    getProfileMetadata(inferredComponentProfile),
+    mergeComponentMetadata(
+      getProfileMetadata(inferredComponentProfile),
+      generatedComposition
+    ),
     componentMetadata
   );
 
@@ -62,22 +132,18 @@ export async function resolvePageInput(params: {
 
   const componentProfile = componentConfig.profile ?? inferredComponentProfile;
 
+  const catalogCategory = resolveCatalogCategory({
+    profile: componentProfile,
+    requestedCategory: params.requestedCategory,
+    generatedCategory: generatedComponentCategory,
+  });
+
   function getDemoProps(platform: Platform) {
     if (platform === 'react') {
       return componentConfig.react?.demoProps ?? '';
     }
 
     return componentConfig.native?.demoProps ?? '';
-  }
-
-  const platforms: Platform[] = [];
-
-  if (existsInPackage({ root, packageName: 'react', componentName })) {
-    platforms.push('react');
-  }
-
-  if (existsInPackage({ root, packageName: 'react-native', componentName })) {
-    platforms.push('react-native');
   }
 
   const reactApiProps = platforms.includes('react')
@@ -140,6 +206,8 @@ export async function resolvePageInput(params: {
   return {
     componentConfig,
     componentProfile,
+    catalogCategory,
+    parts,
     extractedProps,
     playgroundProps,
     platforms,

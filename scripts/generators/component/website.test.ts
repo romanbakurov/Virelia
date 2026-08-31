@@ -2,7 +2,10 @@ import { spawnSync } from 'node:child_process';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { generateComponentWebsitePage } from './website';
+import {
+  generateComponentWebsitePage,
+  resolveWebsiteComponentProfile,
+} from './website';
 
 vi.mock('node:child_process', () => ({
   spawnSync: vi.fn(),
@@ -13,7 +16,7 @@ describe('generateComponentWebsitePage', () => {
     vi.mocked(spawnSync).mockReset();
   });
 
-  it('runs the component page generator for the generated component', () => {
+  it('passes the canonical component profile to the page generator', () => {
     vi.mocked(spawnSync).mockReturnValue({
       pid: 1,
       output: [],
@@ -25,19 +28,31 @@ describe('generateComponentWebsitePage', () => {
 
     generateComponentWebsitePage({
       root: '/repo',
-      componentName: 'Avatar',
+      componentName: 'Accordion',
+      profile: 'compound',
+      category: 'navigation',
     });
 
     expect(spawnSync).toHaveBeenCalledTimes(1);
     expect(spawnSync).toHaveBeenCalledWith(
       'pnpm',
-      ['create:component-page', 'Avatar', '--force'],
+      [
+        'create:component-page',
+        'Accordion',
+        '--force',
+        '--profile=compound',
+        '--category=navigation',
+      ],
       {
         cwd: '/repo',
         encoding: 'utf8',
         stdio: 'pipe',
       }
     );
+  });
+
+  it('maps the base generator profile to primitive website profile', () => {
+    expect(resolveWebsiteComponentProfile('base')).toBe('primitive');
   });
 
   it('fails when the component page generator exits unsuccessfully', () => {
@@ -54,6 +69,8 @@ describe('generateComponentWebsitePage', () => {
       generateComponentWebsitePage({
         root: '/repo',
         componentName: 'Avatar',
+        profile: 'base',
+        category: 'data-display',
       })
     ).toThrow('Website component page generation failed for Avatar.');
   });
@@ -73,6 +90,8 @@ describe('generateComponentWebsitePage', () => {
       generateComponentWebsitePage({
         root: '/repo',
         componentName: 'Avatar',
+        profile: 'base',
+        category: 'data-display',
       })
     ).toThrow(
       'Website component page generation failed for Avatar: spawn failed'

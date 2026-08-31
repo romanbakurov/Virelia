@@ -152,6 +152,8 @@ describe('component generator', () => {
     expect(generateComponentWebsitePage).toHaveBeenCalledWith({
       root,
       componentName: 'Avatar',
+      profile: 'base',
+      category: 'data-display',
     });
 
     const webDir = path.join(root, 'packages/react/src/primitives/Avatar');
