@@ -39,6 +39,15 @@ const capabilityRequirements: Partial<
   'compound-api': 'compound-api',
 };
 
+const compoundManualRequirements = new Set<BaselineTestRequirement>([
+  'controlled',
+  'uncontrolled',
+  'disabled',
+  'required',
+  'invalid',
+  'keyboard',
+]);
+
 export function createBaselineTestContract(params: {
   profile: ComponentProfileArg;
   control: FormControlKindArg;
@@ -62,6 +71,10 @@ export function createBaselineTestContract(params: {
     const requirement = capabilityRequirements[capability];
 
     if (!requirement) {
+      continue;
+    }
+
+    if (profile === 'compound' && compoundManualRequirements.has(requirement)) {
       continue;
     }
 
