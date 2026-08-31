@@ -192,6 +192,74 @@ describe('generated component docs completeness', () => {
     );
   });
 
+  it('ignores generated docs for unrelated components in targeted completeness checks', async () => {
+    const accordion = createFixture({
+      componentName: 'FixtureAccordion',
+      platforms: ['react'],
+    });
+    const switchFixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+      root: accordion.root,
+      docsRoot: accordion.docsRoot,
+    });
+
+    await generateComponentDocs({
+      root: accordion.root,
+      docsRoot: accordion.docsRoot,
+      metadata: [accordion.metadata, switchFixture.metadata],
+      contracts: [accordion.contract, switchFixture.contract],
+    });
+
+    const results = await runComponentCompletenessCheck({
+      root: accordion.root,
+      metadata: [accordion.metadata],
+      componentDocsContracts: [accordion.contract, switchFixture.contract],
+      generatedDocsScope: 'targeted',
+    });
+
+    const generatedDocsResult = results.at(-1)!;
+
+    expect(generatedDocsResult.componentName).toBe('Generated Component Docs');
+    expect(generatedDocsResult.ready).toBe(true);
+    expect(details(generatedDocsResult)).not.toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('fixture-switch.md: orphaned generated page'),
+      ])
+    );
+  });
+
+  it('still detects an orphan generated page for the targeted component', async () => {
+    const accordion = createFixture({
+      componentName: 'FixtureAccordion',
+      platforms: ['react'],
+      contractPlatforms: ['react'],
+    });
+
+    await generateComponentDocs({
+      root: accordion.root,
+      docsRoot: accordion.docsRoot,
+      metadata: [accordion.metadata],
+      contracts: [accordion.contract],
+    });
+
+    writeGeneratedPage(accordion.nativeDoc);
+
+    const results = await runComponentCompletenessCheck({
+      root: accordion.root,
+      metadata: [accordion.metadata],
+      componentDocsContracts: [accordion.contract],
+      generatedDocsScope: 'targeted',
+    });
+
+    const generatedDocsResult = results.at(-1)!;
+
+    expect(generatedDocsResult.ready).toBe(false);
+    expect(details(generatedDocsResult)).toContain(
+      'apps/docs/src/react-native/fixture-accordion.md: orphaned generated page because ComponentMetadata.platforms does not include react-native.'
+    );
+  });
+
   it('does not treat unrelated hand-authored docs pages as orphans', async () => {
     const fixture = createFixture({
       componentName: 'FixtureSwitch',

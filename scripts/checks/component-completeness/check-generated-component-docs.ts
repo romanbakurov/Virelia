@@ -38,8 +38,14 @@ export async function checkGeneratedComponentDocsCompleteness(params: {
   root: string;
   metadata: readonly ComponentMetadata[];
   contracts?: readonly ComponentDocsContract[];
+  orphanComponentNames?: readonly string[];
 }): Promise<ComponentCompletenessResult> {
-  const { root, metadata, contracts = componentDocsContracts } = params;
+  const {
+    root,
+    metadata,
+    contracts = componentDocsContracts,
+    orphanComponentNames,
+  } = params;
   const checks: ComponentCheckResult[] = [];
 
   checks.push(...checkExpectedDocs({ root, metadata, contracts }));
@@ -47,7 +53,14 @@ export async function checkGeneratedComponentDocsCompleteness(params: {
   checks.push(
     ...(await checkGeneratedDocsFreshness({ root, metadata, contracts }))
   );
-  checks.push(...checkOrphanedGeneratedDocs({ root, metadata, contracts }));
+  checks.push(
+    ...checkOrphanedGeneratedDocs({
+      root,
+      metadata,
+      contracts,
+      orphanComponentNames,
+    })
+  );
 
   const orderedChecks = checks.sort(compareChecks);
 
@@ -162,14 +175,18 @@ function checkOrphanedGeneratedDocs(params: {
   root: string;
   metadata: readonly ComponentMetadata[];
   contracts: readonly ComponentDocsContract[];
+  orphanComponentNames?: readonly string[];
 }) {
-  const { root, metadata, contracts } = params;
+  const { root, metadata, contracts, orphanComponentNames } = params;
   const metadataBySlug = new Map(
     metadata.map((item) => [slugifyComponentName(item.name), item] as const)
   );
   const contractSlugs = new Set(
     contracts.map((contract) => slugifyComponentName(contract.component))
   );
+  const orphanScopeSlugs = orphanComponentNames
+    ? new Set(orphanComponentNames.map(slugifyComponentName))
+    : undefined;
   const expectedFiles = new Set<string>();
   const checks: ComponentCheckResult[] = [];
 
@@ -225,6 +242,11 @@ function checkOrphanedGeneratedDocs(params: {
 
       const relativePath = path.relative(root, absolutePath);
       const componentSlug = fileName.replace(/\.md$/, '');
+
+      if (orphanScopeSlugs && !orphanScopeSlugs.has(componentSlug)) {
+        continue;
+      }
+
       const componentMetadata = metadataBySlug.get(componentSlug);
 
       checks.push({

@@ -41,6 +41,7 @@ export async function runComponentCompletenessCli(
   const results = await runComponentCompletenessCheck({
     root: path.resolve(root),
     metadata,
+    generatedDocsScope: target === '--all' ? 'all' : 'targeted',
   });
 
   console.log(results.map(formatComponentCompletenessResult).join('\n\n'));
