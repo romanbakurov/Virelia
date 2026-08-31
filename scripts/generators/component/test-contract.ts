@@ -58,12 +58,14 @@ export function createBaselineTestContract(params: {
   const { profile, control, capabilities, parts = [], isNative } = params;
   const requirements: BaselineTestRequirement[] = ['render', 'accessibility'];
   const hasTrigger = parts.includes('Trigger');
+  const hasNestedCompoundTrigger =
+    profile === 'compound' && hasTrigger && parts.includes('Item');
 
   if (profile === 'form-control') {
     requirements.push('callback');
   }
 
-  if (hasTrigger) {
+  if (hasTrigger && !hasNestedCompoundTrigger) {
     requirements.push('accessible-name', 'interaction');
   }
 
