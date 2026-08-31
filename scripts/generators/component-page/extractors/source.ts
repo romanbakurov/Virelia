@@ -319,7 +319,6 @@ export function extractComponentProps(params: {
   });
 
   if (!sourceFilePath) {
-    console.log(`⚠️ Types source not found for ${componentName}`);
     return [];
   }
 
