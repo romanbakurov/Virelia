@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 
-import type { ComponentGenerationPlan } from './plan';
+import {
+  shouldGenerateVisualScaffold,
+  type ComponentGenerationPlan,
+} from './plan';
 import { getComponentProfile } from './profiles';
 
 export type ComponentPreflightResult =
@@ -110,13 +113,15 @@ export function validateComponentGenerationPlan(
     existingTargets.push(plan.docsContractFile);
   }
 
-  if (fs.existsSync(plan.tokenFactoryFile)) {
-    existingTargets.push(plan.tokenFactoryFile);
-  }
+  if (shouldGenerateVisualScaffold(plan)) {
+    if (fs.existsSync(plan.tokenFactoryFile)) {
+      existingTargets.push(plan.tokenFactoryFile);
+    }
 
-  for (const tokenTarget of plan.tokenThemeTargets) {
-    if (fs.existsSync(tokenTarget.componentFile)) {
-      existingTargets.push(tokenTarget.componentFile);
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      if (fs.existsSync(tokenTarget.componentFile)) {
+        existingTargets.push(tokenTarget.componentFile);
+      }
     }
   }
 
