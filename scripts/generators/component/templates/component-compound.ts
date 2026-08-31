@@ -30,9 +30,8 @@ export function renderCompoundComponentTemplate({
   return `${imports}
 
 export const ${componentName} = Object.assign(${componentName}Root, {
+  displayName: '${componentName}',
 ${assignments}
 });
-
-${componentName}.displayName = '${componentName}';
 `;
 }
