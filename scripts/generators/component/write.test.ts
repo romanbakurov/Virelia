@@ -144,6 +144,12 @@ describe('component generator writer', () => {
         )
       )
     ).toBe(true);
+
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(true);
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(true);
+    }
   });
 
   it('registers package layer exports once', async () => {
@@ -431,6 +437,19 @@ describe('component generator writer', () => {
       expect(componentIndex).toContain("export * from './List';");
       expect(componentIndex).toContain("export * from './Trigger';");
       expect(componentIndex).toContain("export * from './Content';");
+
+      const styleFile = path.join(
+        componentDir,
+        packageName === 'react' ? 'Tabs.module.scss' : 'Tabs.styles.ts'
+      );
+
+      expect(fs.existsSync(styleFile)).toBe(false);
+    }
+
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(false);
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(false);
     }
   });
 
@@ -508,6 +527,12 @@ describe('component generator writer', () => {
 
     expect(sharedTypes).toContain('value?: string');
     expect(sharedTypes).toContain('onValueChange?: (value: string) => void');
+
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(true);
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(true);
+    }
   });
 
   it('generates composed platform-specific overlay parts', async () => {
@@ -565,6 +590,30 @@ describe('component generator writer', () => {
 
     expect(webTrigger).toContain("aria-haspopup='dialog'");
     expect(nativeTrigger).toContain("accessibilityRole='button'");
+
+    expect(
+      fs.existsSync(
+        path.join(
+          root,
+          'packages/react/src/components/Dialog/Dialog.module.scss'
+        )
+      )
+    ).toBe(false);
+
+    expect(
+      fs.existsSync(
+        path.join(
+          root,
+          'packages/react-native/src/components/Dialog/Dialog.styles.ts'
+        )
+      )
+    ).toBe(false);
+
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(false);
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(false);
+    }
   });
 
   it('writes and registers single-platform component metadata', async () => {

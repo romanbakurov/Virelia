@@ -265,6 +265,71 @@ describe('component generator preflight', () => {
     }
   });
 
+  it('does not treat token files as generator-owned targets for compound profiles', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root, 'components');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    fs.mkdirSync(path.dirname(plan.tokenFactoryFile), { recursive: true });
+    fs.writeFileSync(plan.tokenFactoryFile, 'hand-authored token factory');
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      fs.mkdirSync(path.dirname(tokenTarget.componentFile), {
+        recursive: true,
+      });
+      fs.writeFileSync(tokenTarget.componentFile, 'hand-authored tokens');
+    }
+
+    expect(validateComponentGenerationPlan(plan)).toEqual({
+      ok: true,
+      existingTargets: [],
+    });
+  });
+
+  it('still treats token files as generator-owned targets for base profiles', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    fs.mkdirSync(path.dirname(plan.tokenFactoryFile), { recursive: true });
+    fs.writeFileSync(plan.tokenFactoryFile, 'existing generated token factory');
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors.join('\n')).toContain(plan.tokenFactoryFile);
+      expect(result.errors.join('\n')).toContain(
+        'Use --force to overwrite existing component files.'
+      );
+    }
+  });
+
   it('rejects compound components without a Root part', () => {
     const root = createTempRoot();
 

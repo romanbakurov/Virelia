@@ -295,6 +295,12 @@ Dialog/
 The exact generated implementation depends on the selected profile, explicit
 intent, and target platform.
 
+`compound` and `overlay` profiles intentionally do not emit generic top-level
+style files or component-token factories/theme files. Their generated runtime
+scaffolds do not consume those artifacts, and component-specific visual
+semantics belong to the production implementation rather than the generic
+structural scaffold.
+
 ## Responsibility
 
 This generator owns library/runtime scaffolding:
@@ -304,7 +310,7 @@ This generator owns library/runtime scaffolding:
 - local `index.ts`
 - unit test scaffolding
 - Storybook story scaffolding
-- platform styles
+- platform styles when the selected profile generates a styled runtime scaffold
 - component README documentation
 - component metadata
 - package layer barrel exports

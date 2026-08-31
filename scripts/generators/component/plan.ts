@@ -49,6 +49,12 @@ export type ComponentGenerationPlan = {
   docsContractRegistryFile: string;
 };
 
+export function shouldGenerateVisualScaffold(
+  plan: Pick<ComponentGenerationPlan, 'profile'>
+) {
+  return plan.profile !== 'compound' && plan.profile !== 'overlay';
+}
+
 function getTargetPackages(
   platform: ComponentPlatformArg
 ): ComponentTargetPackage[] {

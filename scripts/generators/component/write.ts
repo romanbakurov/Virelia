@@ -36,9 +36,10 @@ import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
 import { renderSynchronizedPublicApiContract } from './public-api-contract';
 
-import type {
-  ComponentGenerationPlan,
-  ComponentGenerationTarget,
+import {
+  shouldGenerateVisualScaffold,
+  type ComponentGenerationPlan,
+  type ComponentGenerationTarget,
 } from './plan';
 
 export type ComponentGenerationResult = {
@@ -229,6 +230,10 @@ function writeComponentTokens(params: {
 }) {
   const { plan, result } = params;
 
+  if (!shouldGenerateVisualScaffold(plan)) {
+    return;
+  }
+
   writeFile({
     filePath: plan.tokenFactoryFile,
     content: renderComponentTokenFactoryTemplate({
@@ -360,26 +365,28 @@ function writeTarget(params: {
     createdFiles: result.createdFiles,
   });
 
-  writeFile({
-    filePath: path.join(
-      target.componentDir,
-      target.isNative
-        ? `${componentName}.styles.ts`
-        : `${componentName}.module.scss`
-    ),
-    content: target.isNative
-      ? renderNativeStylesTemplate({
-          componentName,
-          profile: plan.profile,
-          control: plan.control,
-        })
-      : renderStylesTemplate({
-          componentName,
-          profile: plan.profile,
-          control: plan.control,
-        }),
-    createdFiles: result.createdFiles,
-  });
+  if (shouldGenerateVisualScaffold(plan)) {
+    writeFile({
+      filePath: path.join(
+        target.componentDir,
+        target.isNative
+          ? `${componentName}.styles.ts`
+          : `${componentName}.module.scss`
+      ),
+      content: target.isNative
+        ? renderNativeStylesTemplate({
+            componentName,
+            profile: plan.profile,
+            control: plan.control,
+          })
+        : renderStylesTemplate({
+            componentName,
+            profile: plan.profile,
+            control: plan.control,
+          }),
+      createdFiles: result.createdFiles,
+    });
+  }
 
   restoreManualComponentTests({
     componentDir: target.componentDir,
