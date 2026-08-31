@@ -19,6 +19,12 @@ import { buildApiFile } from './renderers/api';
 import { renderComponentIndex } from './renderers/component-index';
 import { renderDemoFiles } from './renderers/demo';
 import { buildExamples, renderExamples } from './renderers/examples';
+import {
+  componentPageProfiles,
+  generatorComponentCategories,
+  type ComponentProfile,
+  type GeneratorComponentCategory,
+} from './profiles/profiles';
 import { buildPlaygroundArtifacts } from './renderers/playground';
 import { updateComponentRegistry } from './renderers/registry';
 import { renderUsage } from './renderers/usage';
@@ -28,6 +34,39 @@ const [, , componentName, ...args] = process.argv;
 const force = args.includes('--force');
 const check = args.includes('--check');
 const json = args.includes('--json');
+const profileFlag = args.find((arg) => arg.startsWith('--profile='));
+const profileValue = profileFlag?.slice('--profile='.length);
+
+if (
+  profileValue &&
+  !componentPageProfiles.includes(profileValue as ComponentProfile)
+) {
+  console.error(
+    `Invalid component page profile "${profileValue}". Expected: ${componentPageProfiles.join(', ')}.`
+  );
+  process.exit(1);
+}
+
+const requestedProfile = profileValue as ComponentProfile | undefined;
+
+const categoryFlag = args.find((arg) => arg.startsWith('--category='));
+const categoryValue = categoryFlag?.slice('--category='.length);
+
+if (
+  categoryValue &&
+  !generatorComponentCategories.includes(
+    categoryValue as GeneratorComponentCategory
+  )
+) {
+  console.error(
+    `Invalid component category "${categoryValue}". Expected: ${generatorComponentCategories.join(', ')}.`
+  );
+  process.exit(1);
+}
+
+const requestedCategory = categoryValue as
+  GeneratorComponentCategory | undefined;
+
 const help =
   componentName === '--help' ||
   componentName === '-h' ||
@@ -44,12 +83,15 @@ Options:
   --force    Overwrite existing generated files
   --check    Check whether generated files are up to date without writing
   --json     Emit a machine-readable check result
+  --profile  Override inferred component profile
+  --category Override inferred catalog category
   --help     Show this help message
   -h         Alias for --help
 
 Examples:
   pnpm create:component-page Button
   pnpm create:component-page Tabs --force
+  pnpm create:component-page Accordion --force --profile=compound
   pnpm create:component-page Select --check
 `;
 
@@ -110,6 +152,7 @@ const { checkFailures, writeIfMissing } = fileWriter;
 const {
   componentConfig,
   componentProfile,
+  catalogCategory,
   extractedProps,
   playgroundProps,
   platforms,
@@ -121,6 +164,8 @@ const {
   root,
   catalogComponentsRoot,
   componentName,
+  requestedProfile,
+  requestedCategory,
 });
 
 if (platforms.length === 0) {
@@ -254,7 +299,9 @@ const reactDemoChildren = componentConfig.react?.children ?? '';
 const nativeDemoChildren = componentConfig.native?.children ?? '';
 const nativeResponsivePresentation =
   componentConfig.native?.responsivePresentation === true;
-const relatedComponents = componentConfig.related ?? [];
+const relatedComponents = (componentConfig.related ?? []).filter(
+  (relatedSlug) => relatedSlug !== slug
+);
 const generatedPageModel = buildGeneratedPageModel({
   componentName,
   slug,
@@ -335,7 +382,7 @@ const registrySourcesBefore = check
       ])
     );
 
-updateComponentRegistry({
+await await updateComponentRegistry({
   root,
   force,
   check,
@@ -343,7 +390,7 @@ updateComponentRegistry({
   componentCatalogDir,
   componentPagesFile: catalogRegistryFile,
   componentsRegistryFile,
-  componentProfile,
+  catalogCategory,
   model: generatedPageModel,
 });
 

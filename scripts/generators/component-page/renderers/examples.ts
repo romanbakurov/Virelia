@@ -111,14 +111,6 @@ export function buildExamples(params: {
     });
   }
 
-  if (componentProfile === 'compound' && hasExtractedProp('children')) {
-    examples.push({
-      title: 'Compound usage',
-      description: 'Composes the root with public child slots.',
-      props: [],
-    });
-  }
-
   return examples;
 }
 

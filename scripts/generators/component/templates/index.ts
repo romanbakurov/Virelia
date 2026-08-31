@@ -21,11 +21,16 @@ export function renderIndexTemplate({
   componentName,
   parts = [],
 }: ComponentTemplateParams) {
-  const partExports = parts
-    .map((partName) => `export * from './${partName}';`)
-    .join('\n');
+  const exportPaths = [
+    `./${componentName}`,
+    ...parts.map((partName) => `./${partName}`),
+    './types',
+  ].sort((left, right) =>
+    left.localeCompare(right, 'en', { sensitivity: 'base' })
+  );
 
-  return `export * from './${componentName}';
-export * from './types';${partExports ? `\n${partExports}` : ''}
+  return `${exportPaths
+    .map((exportPath) => `export * from '${exportPath}';`)
+    .join('\n')}
 `;
 }

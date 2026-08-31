@@ -1,13 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { formatGeneratedContent } from '../../format-generated-files';
+
 import {
   escapeRegExp,
   identifierFromSlug,
   objectPropertyKey,
 } from '../helpers/format';
 import type { GeneratedPageModel } from '../model/types';
-import type { ComponentProfile } from '../profiles/profiles';
+import type { CatalogCategory } from '../profiles/profiles';
 
 export function insertAfterMarker(params: {
   root: string;
@@ -200,21 +202,11 @@ ${demoEntries}
 `;
 }
 
-function catalogCategoryForProfile(profile: ComponentProfile) {
-  if (profile === 'form-control' || profile === 'selection-control') {
-    return 'forms';
-  }
-
-  if (profile === 'overlay') return 'overlays';
-  if (profile === 'compound' || profile === 'navigation') return 'navigation';
-  return 'general';
-}
-
 export function renderCatalogEntry(params: {
   model: GeneratedPageModel;
-  componentProfile: ComponentProfile;
+  catalogCategory: CatalogCategory;
 }) {
-  const { model, componentProfile } = params;
+  const { model, catalogCategory } = params;
   const docsEntries = model.platforms
     .map(
       (platform) =>
@@ -226,7 +218,7 @@ export function renderCatalogEntry(params: {
     slug: '${model.slug}',
     name: '${model.componentName}',
     description: '${model.componentName} component for Vellira applications.',
-    category: '${catalogCategoryForProfile(componentProfile)}',
+    category: '${catalogCategory}',
     status: 'beta',
     order: 999,
     platforms: [${model.platforms.map((platform) => `'${platform}'`).join(', ')}],
@@ -237,29 +229,100 @@ ${docsEntries}
 `;
 }
 
-export function updateCatalogRegistry(params: {
+export async function updateCatalogRegistry(params: {
   root: string;
   force: boolean;
   check: boolean;
   checkFailures: string[];
   componentsRegistryFile: string;
   model: GeneratedPageModel;
-  componentProfile: ComponentProfile;
+  catalogCategory: CatalogCategory;
 }) {
   const {
     root,
+    force,
     check,
     checkFailures,
     componentsRegistryFile,
     model,
-    componentProfile,
+    catalogCategory,
   } = params;
   const source = fs.readFileSync(componentsRegistryFile, 'utf8');
-  const entry = renderCatalogEntry({ model, componentProfile });
+  const entry = renderCatalogEntry({ model, catalogCategory });
   const slugMarker = `slug: '${model.slug}'`;
 
   if (source.includes(slugMarker)) {
-    console.log(`⏭ Skipped component catalog registration: ${model.slug}`);
+    const slugIndex = source.indexOf(slugMarker);
+    const entryStart = source.lastIndexOf('\n  {', slugIndex);
+
+    if (entryStart < 0) {
+      console.error(
+        `Could not determine component catalog entry start for ${model.slug}`
+      );
+      process.exit(1);
+    }
+
+    let depth = 0;
+    let entryEnd = -1;
+
+    for (let index = entryStart + 1; index < source.length; index += 1) {
+      if (source[index] === '{') depth += 1;
+
+      if (source[index] === '}') {
+        depth -= 1;
+
+        if (depth === 0) {
+          entryEnd = index + 1;
+
+          if (source[entryEnd] === ',') entryEnd += 1;
+          if (source[entryEnd] === '\n') entryEnd += 1;
+
+          break;
+        }
+      }
+    }
+
+    if (entryEnd < 0) {
+      console.error(
+        `Could not determine component catalog entry end for ${model.slug}`
+      );
+      process.exit(1);
+    }
+
+    const existingEntry = source.slice(entryStart + 1, entryEnd);
+
+    const isGeneratedEntry =
+      existingEntry.includes(
+        `description: '${model.componentName} component for Vellira applications.'`
+      ) &&
+      existingEntry.includes("status: 'beta'") &&
+      existingEntry.includes('order: 999');
+
+    if (!force || !isGeneratedEntry) {
+      console.log(`⏭ Skipped component catalog registration: ${model.slug}`);
+      return;
+    }
+
+    const nextSource =
+      source.slice(0, entryStart + 1) + entry + source.slice(entryEnd);
+
+    const formattedNextSource = await formatGeneratedContent(
+      componentsRegistryFile,
+      nextSource
+    );
+
+    if (check) {
+      if (formattedNextSource !== source) {
+        checkFailures.push(path.relative(root, componentsRegistryFile));
+      }
+
+      return;
+    }
+
+    fs.writeFileSync(componentsRegistryFile, formattedNextSource);
+
+    console.log(`♻️ Updated component catalog registration: ${model.slug}`);
+
     return;
   }
 
@@ -273,17 +336,24 @@ export function updateCatalogRegistry(params: {
   }
 
   const nextSource = source.replace(marker, `${entry}${marker}`);
+  const formattedNextSource = await formatGeneratedContent(
+    componentsRegistryFile,
+    nextSource
+  );
 
   if (check) {
-    checkFailures.push(path.relative(root, componentsRegistryFile));
+    if (formattedNextSource !== source) {
+      checkFailures.push(path.relative(root, componentsRegistryFile));
+    }
+
     return;
   }
 
-  fs.writeFileSync(componentsRegistryFile, nextSource);
+  fs.writeFileSync(componentsRegistryFile, formattedNextSource);
   console.log(`✅ Updated: ${path.relative(root, componentsRegistryFile)}`);
 }
 
-export function updateComponentRegistry(params: {
+export async function updateComponentRegistry(params: {
   root: string;
   force: boolean;
   check: boolean;
@@ -291,7 +361,7 @@ export function updateComponentRegistry(params: {
   componentCatalogDir: string;
   componentPagesFile: string;
   componentsRegistryFile: string;
-  componentProfile: ComponentProfile;
+  catalogCategory: CatalogCategory;
   model: GeneratedPageModel;
 }) {
   const {
@@ -302,7 +372,7 @@ export function updateComponentRegistry(params: {
     componentCatalogDir,
     componentPagesFile,
     componentsRegistryFile,
-    componentProfile,
+    catalogCategory,
     model,
   } = params;
 
@@ -369,13 +439,13 @@ ${registryImportNames.map((name) => `  ${name},`).join('\n')}
     slug: model.slug,
   });
 
-  updateCatalogRegistry({
+  await updateCatalogRegistry({
     root,
     force,
     check,
     checkFailures,
     componentsRegistryFile,
     model,
-    componentProfile,
+    catalogCategory,
   });
 }

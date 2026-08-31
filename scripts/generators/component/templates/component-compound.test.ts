@@ -22,7 +22,8 @@ describe('compound component template', () => {
 
     expect(result).not.toContain('Root: TabsRoot');
 
-    expect(result).toContain("Tabs.displayName = 'Tabs';");
+    expect(result).toContain("displayName: 'Tabs'");
+    expect(result).not.toContain("Tabs.displayName = 'Tabs';");
   });
 
   it('requires a Root part', () => {

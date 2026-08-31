@@ -319,7 +319,6 @@ export function extractComponentProps(params: {
   });
 
   if (!sourceFilePath) {
-    console.log(`⚠️ Types source not found for ${componentName}`);
     return [];
   }
 
@@ -389,6 +388,39 @@ export function extractExportedProps(params: {
   const propSymbols = checker.getPropertiesOfType(declaredType);
 
   return extractPropSymbols({ checker, propSymbols });
+}
+
+export function listComponentParts(params: {
+  root: string;
+  platform: Platform;
+  componentName: string;
+}) {
+  const typeSource = findPlatformTypeSourceFile({
+    root: params.root,
+    platform: params.platform,
+    name: params.componentName,
+  });
+
+  if (!typeSource) {
+    return [];
+  }
+
+  const componentDir = path.dirname(typeSource);
+
+  return fs
+    .readdirSync(componentDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) =>
+      fs.existsSync(
+        path.join(
+          componentDir,
+          entry.name,
+          `${params.componentName}${entry.name}.tsx`
+        )
+      )
+    )
+    .map((entry) => entry.name)
+    .sort((left, right) => left.localeCompare(right));
 }
 
 export function existsInPackage(params: {

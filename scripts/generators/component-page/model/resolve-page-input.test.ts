@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveExtractedProps } from './resolve-page-input';
+import {
+  resolveComponentPageProfile,
+  resolveExtractedProps,
+} from './resolve-page-input';
 
 import type { ExtractedProp } from './types';
 
@@ -40,5 +43,35 @@ describe('resolveExtractedProps', () => {
         nativeApiProps: [checked, required],
       }).map((item) => item.name)
     ).toEqual(['checked', 'disabled', 'required']);
+  });
+});
+
+describe('resolveComponentPageProfile', () => {
+  it('uses the explicit Generator V2 profile before name inference', () => {
+    expect(
+      resolveComponentPageProfile({
+        componentName: 'Accordion',
+        requestedProfile: 'compound',
+      })
+    ).toBe('compound');
+  });
+
+  it('uses canonical Generator V2 metadata before legacy name inference', () => {
+    expect(
+      resolveComponentPageProfile({
+        componentName: 'Accordion',
+        generatedProfile: 'compound',
+      })
+    ).toBe('compound');
+  });
+
+  it('preserves curated component page metadata over the requested profile', () => {
+    expect(
+      resolveComponentPageProfile({
+        componentName: 'Accordion',
+        metadataProfile: 'navigation',
+        requestedProfile: 'compound',
+      })
+    ).toBe('navigation');
   });
 });
