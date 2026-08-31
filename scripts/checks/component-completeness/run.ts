@@ -77,11 +77,13 @@ export async function runComponentCompletenessCheck(params: {
   root: string;
   metadata: readonly ComponentMetadata[];
   componentDocsContracts?: readonly ComponentDocsContract[];
+  generatedDocsScope?: 'all' | 'targeted';
 }) {
   const {
     root,
     metadata,
     componentDocsContracts = defaultComponentDocsContracts,
+    generatedDocsScope = 'all',
   } = params;
 
   const results = metadata.map((component) =>
@@ -93,7 +95,7 @@ export async function runComponentCompletenessCheck(params: {
 
   const metadataNames = new Set(metadata.map((component) => component.name));
   const docsContracts =
-    metadata.length > 1
+    generatedDocsScope === 'all'
       ? componentDocsContracts
       : componentDocsContracts.filter((contract) =>
           metadataNames.has(contract.component)
@@ -105,6 +107,8 @@ export async function runComponentCompletenessCheck(params: {
         root,
         metadata,
         contracts: docsContracts,
+        orphanComponentNames:
+          generatedDocsScope === 'targeted' ? [...metadataNames] : undefined,
       })
     );
   }
