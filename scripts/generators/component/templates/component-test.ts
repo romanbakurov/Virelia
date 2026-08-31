@@ -264,7 +264,7 @@ export function renderTestTemplate({
     return `${contractComment}
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { render } from '../../test-utils/render';
+import { render } from '@test-utils/render';
 
 import { ${componentName} } from './${componentName}';
 
@@ -313,7 +313,7 @@ describe('${describeName}', () => {
     return `${contractComment}
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { render } from '../../test-utils/render';
+import { render } from '@test-utils/render';
 
 import { ${componentName} } from './${componentName}';
 
@@ -337,7 +337,7 @@ describe('${describeName}', () => {
   return `${contractComment}
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { render } from '../../test-utils/render';
+import { render } from '@test-utils/render';
 
 import { ${componentName} } from './${componentName}';
 

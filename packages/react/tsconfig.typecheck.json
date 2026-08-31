@@ -5,6 +5,7 @@
     "composite": false,
     "paths": {
       "@/*": ["*"],
+      "@test-utils/*": ["test-utils/*"],
       "@vellira-ui/core": ["../../core/src/index.ts"],
       "@vellira-ui/icons": ["../../icons/src/web.ts"],
       "@vellira-ui/icons/native": ["../../icons/src/native.ts"],
