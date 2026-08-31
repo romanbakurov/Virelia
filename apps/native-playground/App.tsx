@@ -22,6 +22,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Switch,
   Tabs,
   ThemeProvider,
   useTheme,
@@ -315,6 +316,19 @@ function PreviewContent({
             checked={notificationsEnabled}
             onCheckedChange={onNotificationsChange}
           />
+
+          <View style={styles.switchRow}>
+            <View style={styles.switchCopy}>
+              <Text style={styles.panelLabel}>Switch QA</Text>
+              <Text style={styles.modalQaStatus}>Enable notifications</Text>
+            </View>
+
+            <Switch
+              accessibilityLabel='Enable notifications with Switch'
+              checked={notificationsEnabled}
+              onCheckedChange={onNotificationsChange}
+            />
+          </View>
 
           <RadioGroup
             label='Density'
@@ -674,6 +688,18 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       borderColor: theme.semantic.border.muted,
       borderRadius: theme.tokens.radius.xl,
       backgroundColor: theme.semantic.surface.subtle,
+    },
+
+    switchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 12,
+    },
+
+    switchCopy: {
+      flex: 1,
+      gap: 4,
     },
 
     panel: {
