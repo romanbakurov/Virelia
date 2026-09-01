@@ -1,6 +1,8 @@
 import {
+  createPackageProgram,
   existsInPackage,
   extractComponentProps,
+  extractPlatformPartProps,
   extractPlatformProps,
   listComponentParts,
 } from '../extractors/source';
@@ -111,10 +113,43 @@ export async function resolvePageInput(params: {
     )
   ).sort((left, right) => left.localeCompare(right));
 
+  const partProps =
+    inferredComponentProfile === 'compound' && parts.length > 0
+      ? (Object.fromEntries(
+          platforms.map((platform) => {
+            const program = createPackageProgram({ root, platform });
+
+            return [
+              platform,
+              Object.fromEntries(
+                parts.map((partName) => [
+                  partName,
+                  extractPlatformPartProps({
+                    root,
+                    componentName,
+                    platform,
+                    partName,
+                    program,
+                  }),
+                ])
+              ),
+            ];
+          })
+        ) as Partial<
+          Record<Platform, Record<string, readonly ExtractedProp[]>>
+        >)
+      : undefined;
+
   const generatedComposition = getGeneratedCompositionMetadata({
     profile: inferredComponentProfile,
     componentName,
     parts,
+    partProps,
+    platforms: platforms.filter((platform) =>
+      platform === 'react'
+        ? !componentMetadata.react?.children
+        : !componentMetadata.native?.children
+    ),
   });
 
   const componentConfig = mergeComponentMetadata(

@@ -51,6 +51,31 @@ export function findPlatformTypeSourceFile(params: {
   return undefined;
 }
 
+export function findPlatformPartTypeSourceFile(params: {
+  root: string;
+  platform: Platform;
+  componentName: string;
+  partName: string;
+}): string | undefined {
+  const componentTypeSource = findPlatformTypeSourceFile({
+    root: params.root,
+    platform: params.platform,
+    name: params.componentName,
+  });
+
+  if (!componentTypeSource) {
+    return undefined;
+  }
+
+  const candidate = path.join(
+    path.dirname(componentTypeSource),
+    params.partName,
+    'types.ts'
+  );
+
+  return fs.existsSync(candidate) ? candidate : undefined;
+}
+
 export function listPlatformTypeSourceFiles(params: {
   root: string;
   platform: Platform;
@@ -481,5 +506,31 @@ export function extractPlatformProps(params: {
     sourceFilePath,
     exportName: `${componentName}Props`,
     program: createPackageProgram({ root, platform }),
+  });
+}
+
+export function extractPlatformPartProps(params: {
+  root: string;
+  componentName: string;
+  platform: Platform;
+  partName: string;
+  program?: ts.Program;
+}) {
+  const { root, componentName, platform, partName } = params;
+  const sourceFilePath = findPlatformPartTypeSourceFile({
+    root,
+    platform,
+    componentName,
+    partName,
+  });
+
+  if (!sourceFilePath) {
+    return [];
+  }
+
+  return extractExportedProps({
+    sourceFilePath,
+    exportName: `${componentName}${partName}Props`,
+    program: params.program ?? createPackageProgram({ root, platform }),
   });
 }

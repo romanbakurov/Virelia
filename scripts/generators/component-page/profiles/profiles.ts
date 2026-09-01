@@ -1,4 +1,5 @@
 import type { ComponentPageMetadata } from '../../../../apps/website/src/component-catalog/metadata';
+import type { ExtractedProp, Platform } from '../model/types';
 
 export type ComponentProfile = NonNullable<ComponentPageMetadata['profile']>;
 
@@ -125,6 +126,10 @@ export function getGeneratedCompositionMetadata(params: {
   profile: ComponentProfile;
   componentName: string;
   parts: readonly string[];
+  partProps?: Partial<
+    Record<Platform, Record<string, readonly ExtractedProp[]>>
+  >;
+  platforms?: readonly Platform[];
 }): ComponentPageMetadata {
   if (params.profile !== 'compound') {
     return {};
@@ -132,26 +137,113 @@ export function getGeneratedCompositionMetadata(params: {
 
   const parts = new Set(params.parts);
 
-  let children = '';
-
-  if (parts.has('Item') && parts.has('Trigger') && parts.has('Content')) {
-    children = `<${params.componentName}.Item>
-  <${params.componentName}.Trigger>Section</${params.componentName}.Trigger>
-  <${params.componentName}.Content>Section content</${params.componentName}.Content>
-</${params.componentName}.Item>`;
-  } else if (parts.has('Trigger') && parts.has('Content')) {
-    children = `<${params.componentName}.Trigger>Open</${params.componentName}.Trigger>
-<${params.componentName}.Content>Content</${params.componentName}.Content>`;
+  function getPartProps(platform: Platform, partName: string) {
+    return params.partProps?.[platform]?.[partName] ?? [];
   }
 
-  if (!children) {
+  function renderJsxStringExpression(value: string) {
+    return `{${JSON.stringify(value)}}`;
+  }
+
+  function renderSynthesizedProp(prop: ExtractedProp) {
+    if (prop.name === 'children' || !prop.required) {
+      return null;
+    }
+
+    switch (prop.kind) {
+      case 'string':
+        return `${prop.name}='${prop.name}-1'`;
+
+      case 'number':
+        return `${prop.name}={1}`;
+
+      case 'boolean':
+        return `${prop.name}={false}`;
+
+      case 'select':
+        return `${prop.name}=${renderJsxStringExpression(prop.options[0])}`;
+
+      case 'other':
+        return null;
+    }
+  }
+
+  function getUnsupportedRequiredProps(platform: Platform, partName: string) {
+    return getPartProps(platform, partName).filter(
+      (prop) =>
+        prop.required && prop.name !== 'children' && prop.kind === 'other'
+    );
+  }
+
+  function renderOpeningTag(platform: Platform, partName: string) {
+    const synthesizedProps = getPartProps(platform, partName)
+      .map(renderSynthesizedProp)
+      .filter((prop): prop is string => Boolean(prop));
+
+    return synthesizedProps.length > 0
+      ? `<${params.componentName}.${partName} ${synthesizedProps.join(' ')}>`
+      : `<${params.componentName}.${partName}>`;
+  }
+
+  function renderChildren(platform: Platform) {
+    const renderedParts = parts.has('Item')
+      ? ['Item', 'Trigger', 'Content']
+      : ['Trigger', 'Content'];
+
+    const unsupportedRequiredProps = renderedParts.flatMap((partName) =>
+      getUnsupportedRequiredProps(platform, partName).map(
+        (prop) => `${partName}.${prop.name}`
+      )
+    );
+
+    if (unsupportedRequiredProps.length > 0) {
+      console.warn(
+        `⚠️ ${params.componentName} ${platform} compound composition requires explicit metadata for complex part props: ${unsupportedRequiredProps.join(
+          ', '
+        )}`
+      );
+
+      return '';
+    }
+
+    if (parts.has('Item') && parts.has('Trigger') && parts.has('Content')) {
+      return `${renderOpeningTag(platform, 'Item')}
+  ${renderOpeningTag(platform, 'Trigger')}Section</${params.componentName}.Trigger>
+  ${renderOpeningTag(platform, 'Content')}Section content</${params.componentName}.Content>
+</${params.componentName}.Item>`;
+    }
+
+    if (parts.has('Trigger') && parts.has('Content')) {
+      return `${renderOpeningTag(platform, 'Trigger')}Open</${params.componentName}.Trigger>
+${renderOpeningTag(platform, 'Content')}Content</${params.componentName}.Content>`;
+    }
+
+    return '';
+  }
+
+  const targetPlatforms = params.platforms ?? ['react', 'react-native'];
+  const reactChildren = targetPlatforms.includes('react')
+    ? renderChildren('react')
+    : '';
+  const nativeChildren = targetPlatforms.includes('react-native')
+    ? renderChildren('react-native')
+    : '';
+
+  if (!reactChildren && !nativeChildren) {
     return {};
   }
 
-  return {
-    react: { children },
-    native: { children },
-  };
+  const metadata: ComponentPageMetadata = {};
+
+  if (reactChildren) {
+    metadata.react = { children: reactChildren };
+  }
+
+  if (nativeChildren) {
+    metadata.native = { children: nativeChildren };
+  }
+
+  return metadata;
 }
 
 export function getProfileMetadata(
