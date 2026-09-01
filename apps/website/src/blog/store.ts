@@ -29,7 +29,9 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && 'code' in error;
 }
 
-async function assertArticleBodyExists(articleDirectory: string): Promise<void> {
+async function assertArticleBodyExists(
+  articleDirectory: string
+): Promise<void> {
   const articlePath = path.join(articleDirectory, ARTICLE_FILE);
 
   try {
@@ -92,7 +94,9 @@ export async function readBlogArticleMetadataFromDirectory(
     entries = await readdir(contentDirectory, { withFileTypes: true });
   } catch (error) {
     if (isNodeError(error) && error.code === 'ENOENT') {
-      throw new Error(`${contentDirectory}: blog content directory does not exist`);
+      throw new Error(
+        `${contentDirectory}: blog content directory does not exist`
+      );
     }
 
     throw error;

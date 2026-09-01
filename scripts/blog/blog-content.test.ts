@@ -59,9 +59,9 @@ async function writeArticle(
 
 afterEach(async () => {
   await Promise.all(
-    temporaryDirectories.splice(0).map((directory) =>
-      rm(directory, { recursive: true, force: true })
-    )
+    temporaryDirectories
+      .splice(0)
+      .map((directory) => rm(directory, { recursive: true, force: true }))
   );
 });
 
@@ -99,9 +99,7 @@ describe('Blog V1 metadata schema', () => {
 
   it('rejects invalid publication dates', () => {
     expect(() =>
-      parseBlogArticleMetadata(
-        createMetadata({ publishedAt: '2026-02-30' })
-      )
+      parseBlogArticleMetadata(createMetadata({ publishedAt: '2026-02-30' }))
     ).toThrow('publishedAt must be a valid calendar date');
 
     expect(() =>
@@ -126,7 +124,11 @@ describe('Blog V1 metadata schema', () => {
 describe('Blog V1 filesystem content boundary', () => {
   it('requires directory and metadata slugs to agree', async () => {
     const contentDirectory = await createTemporaryCorpus();
-    await writeArticle(contentDirectory, 'different-directory', createMetadata());
+    await writeArticle(
+      contentDirectory,
+      'different-directory',
+      createMetadata()
+    );
 
     await expect(
       readBlogArticleMetadataFromDirectory(contentDirectory)
@@ -172,9 +174,8 @@ describe('Blog V1 filesystem content boundary', () => {
       })
     );
 
-    const published = await readPublishedBlogArticleMetadataFromDirectory(
-      contentDirectory
-    );
+    const published =
+      await readPublishedBlogArticleMetadataFromDirectory(contentDirectory);
 
     expect(published.map((article) => article.slug)).toEqual([
       'alpha-article',
