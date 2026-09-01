@@ -6,6 +6,10 @@ on:
 
 permissions: read-all
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -105,6 +109,41 @@ jobs:
             echo "RELEASE_SYNC_TOKEN secret is required to create the version sync PR as a maintainer."
             exit 1
           fi
+
+      - name: Close superseded version sync PRs
+        if: steps.version-sync.outputs.changed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_SYNC_TOKEN }}
+          CURRENT_VERSION: ${{ steps.version-sync.outputs.version }}
+          CURRENT_BRANCH: ${{ steps.version-sync.outputs.branch }}
+        run: |
+          set -euo pipefail
+
+          while IFS=$'\t' read -r pr_number head_branch; do
+            if [ -z "$pr_number" ] || [ -z "$head_branch" ]; then
+              continue
+            fi
+
+            if [ "$head_branch" = "$CURRENT_BRANCH" ]; then
+              echo "Keeping current release sync PR #$pr_number ($head_branch)."
+              continue
+            fi
+
+            echo "Closing superseded release sync PR #$pr_number ($head_branch)."
+
+            gh pr close "$pr_number" \
+              --comment "Superseded by release sync for v${CURRENT_VERSION}."
+          done < <(
+            gh pr list \
+              --state open \
+              --base main \
+              --json number,headRefName \
+              --jq '.[] |
+                select(.headRefName | startswith("chore/sync-release-")) |
+                [.number, .headRefName] |
+                @tsv'
+          )
 
       - name: Create version sync PR
         if: steps.version-sync.outputs.changed == 'true'
