@@ -3,7 +3,12 @@ import path from 'node:path';
 
 import ts from 'typescript';
 
-import type { ApiSectionConfig, ExtractedProp, Platform } from '../model/types';
+import type {
+  ApiSectionConfig,
+  ExtractedDiscriminatedUnion,
+  ExtractedProp,
+  Platform,
+} from '../model/types';
 
 export function findTypeSourceFile(params: { root: string; name: string }) {
   const typesRoot = path.join(params.root, 'packages', 'types', 'src');
@@ -260,14 +265,66 @@ function getLiteralUnionOptions(type: ts.Type) {
   return options.length > 0 ? options : null;
 }
 
+function getSingleStringLiteralValue(checker: ts.TypeChecker, type: ts.Type) {
+  const nonNullableType = checker.getNonNullableType(type);
+
+  if (nonNullableType.isStringLiteral()) {
+    return nonNullableType.value;
+  }
+
+  if (!nonNullableType.isUnion()) {
+    return null;
+  }
+
+  const literals = nonNullableType.types.filter((item) =>
+    item.isStringLiteral()
+  );
+
+  return literals.length === 1 &&
+    literals.length === nonNullableType.types.length
+    ? literals[0].value
+    : null;
+}
+
+function isNeverProp(params: {
+  checker: ts.TypeChecker;
+  propSymbol: ts.Symbol;
+}) {
+  const declaration =
+    params.propSymbol.valueDeclaration ?? params.propSymbol.declarations?.[0];
+
+  if (!declaration) {
+    return false;
+  }
+
+  const type = params.checker.getTypeOfSymbolAtLocation(
+    params.propSymbol,
+    declaration
+  );
+  const nonNullableType = params.checker.getNonNullableType(type);
+
+  return (nonNullableType.flags & ts.TypeFlags.Never) !== 0;
+}
+
 function extractPropSymbols(params: {
   checker: ts.TypeChecker;
   propSymbols: readonly ts.Symbol[];
+  excludeNever?: boolean;
 }) {
   const { checker, propSymbols } = params;
   const extracted: ExtractedProp[] = [];
 
   for (const propSymbol of propSymbols) {
+    if (
+      params.excludeNever &&
+      isNeverProp({
+        checker,
+        propSymbol,
+      })
+    ) {
+      continue;
+    }
+
     const declaration =
       propSymbol.valueDeclaration ?? propSymbol.declarations?.[0];
 
@@ -415,6 +472,114 @@ export function extractExportedProps(params: {
   return extractPropSymbols({ checker, propSymbols });
 }
 
+export function extractExportedDiscriminatedUnion(params: {
+  sourceFilePath: string;
+  exportName: string;
+  program: ts.Program;
+}): ExtractedDiscriminatedUnion | null {
+  const { sourceFilePath, exportName, program } = params;
+
+  const checker = program.getTypeChecker();
+  const sourceFile = program.getSourceFile(sourceFilePath);
+
+  if (!sourceFile) {
+    return null;
+  }
+
+  const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
+
+  if (!moduleSymbol) {
+    return null;
+  }
+
+  const exportedSymbol = checker
+    .getExportsOfModule(moduleSymbol)
+    .find((symbol) => symbol.name === exportName);
+
+  if (!exportedSymbol) {
+    return null;
+  }
+
+  const declaredType = checker.getDeclaredTypeOfSymbol(exportedSymbol);
+
+  if (!declaredType.isUnion()) {
+    return null;
+  }
+
+  const branches = declaredType.types;
+
+  if (branches.length < 2) {
+    return null;
+  }
+
+  const branchPropMaps = branches.map((branch) => {
+    const entries = checker
+      .getPropertiesOfType(branch)
+      .map((propSymbol) => [propSymbol.name, propSymbol] as const);
+
+    return new Map(entries);
+  });
+  const candidateNames = [...branchPropMaps[0].keys()]
+    .filter((name) => branchPropMaps.every((props) => props.has(name)))
+    .sort((left, right) => left.localeCompare(right));
+
+  for (const candidateName of candidateNames) {
+    const values: string[] = [];
+
+    for (const branchProps of branchPropMaps) {
+      const propSymbol = branchProps.get(candidateName);
+      const declaration =
+        propSymbol?.valueDeclaration ?? propSymbol?.declarations?.[0];
+
+      if (!propSymbol || !declaration) {
+        values.length = 0;
+        break;
+      }
+
+      const value = getSingleStringLiteralValue(
+        checker,
+        checker.getTypeOfSymbolAtLocation(propSymbol, declaration)
+      );
+
+      if (!value) {
+        values.length = 0;
+        break;
+      }
+
+      values.push(value);
+    }
+
+    if (
+      values.length !== branches.length ||
+      new Set(values).size !== values.length
+    ) {
+      continue;
+    }
+
+    return {
+      discriminator: candidateName,
+      branches: branches.map((branch, index) => {
+        const propSymbol = branchPropMaps[index].get(candidateName);
+        const discriminatorRequired = propSymbol
+          ? (propSymbol.flags & ts.SymbolFlags.Optional) === 0
+          : false;
+
+        return {
+          discriminatorValue: values[index],
+          discriminatorRequired,
+          props: extractPropSymbols({
+            checker,
+            propSymbols: checker.getPropertiesOfType(branch),
+            excludeNever: true,
+          }),
+        };
+      }),
+    };
+  }
+
+  return null;
+}
+
 export function listComponentParts(params: {
   root: string;
   platform: Platform;
@@ -506,6 +671,30 @@ export function extractPlatformProps(params: {
     sourceFilePath,
     exportName: `${componentName}Props`,
     program: createPackageProgram({ root, platform }),
+  });
+}
+
+export function extractPlatformDiscriminatedUnion(params: {
+  root: string;
+  componentName: string;
+  platform: Platform;
+  program?: ts.Program;
+}) {
+  const { root, componentName, platform } = params;
+  const sourceFilePath = findPlatformTypeSourceFile({
+    root,
+    platform,
+    name: componentName,
+  });
+
+  if (!sourceFilePath) {
+    return null;
+  }
+
+  return extractExportedDiscriminatedUnion({
+    sourceFilePath,
+    exportName: `${componentName}Props`,
+    program: params.program ?? createPackageProgram({ root, platform }),
   });
 }
 

@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   createPackageProgram,
   extractComponentProps,
+  extractPlatformDiscriminatedUnion,
   extractPlatformPartProps,
 } from './source';
 
@@ -97,6 +98,25 @@ type ReactNode = string;
 `
   );
   fs.writeFileSync(path.join(partRoot, 'types.ts'), params.types);
+}
+
+function writeFixtureComponentTypes(params: {
+  root: string;
+  packageName: 'react' | 'react-native';
+  componentName: string;
+  types: string;
+}) {
+  const componentRoot = path.join(
+    params.root,
+    'packages',
+    params.packageName,
+    'src',
+    'components',
+    params.componentName
+  );
+
+  fs.mkdirSync(componentRoot, { recursive: true });
+  fs.writeFileSync(path.join(componentRoot, 'types.ts'), params.types);
 }
 
 afterEach(() => {
@@ -223,6 +243,114 @@ export interface ExampleItemProps {
         required: false,
         kind: 'string',
         options: undefined,
+      },
+    ]);
+  });
+});
+
+describe('extractPlatformDiscriminatedUnion', () => {
+  it('preserves branch order and branch-specific props for discriminated unions', () => {
+    const root = createFixtureRoot();
+
+    writeFixtureComponentTypes({
+      root,
+      packageName: 'react',
+      componentName: 'Example',
+      types: `export type ExampleProps =
+  | {
+      mode?: 'single';
+      value?: string;
+      collapsible?: boolean;
+      disabled?: boolean;
+    }
+  | {
+      mode: 'multiple';
+      value?: string[];
+      collapsible?: never;
+      multipleOnly?: boolean;
+      disabled?: boolean;
+    };
+`,
+    });
+
+    const union = extractPlatformDiscriminatedUnion({
+      root,
+      componentName: 'Example',
+      platform: 'react',
+    });
+
+    expect(union?.discriminator).toBe('mode');
+    expect(
+      union?.branches.map((branch) => ({
+        value: branch.discriminatorValue,
+        required: branch.discriminatorRequired,
+        props: branch.props.map((prop) => ({
+          name: prop.name,
+          kind: prop.kind,
+          required: prop.required,
+          type: prop.type,
+        })),
+      }))
+    ).toEqual([
+      {
+        value: 'single',
+        required: false,
+        props: [
+          {
+            name: 'mode',
+            kind: 'select',
+            required: false,
+            type: '"single" | undefined',
+          },
+          {
+            name: 'value',
+            kind: 'string',
+            required: false,
+            type: 'string | undefined',
+          },
+          {
+            name: 'collapsible',
+            kind: 'boolean',
+            required: false,
+            type: 'boolean | undefined',
+          },
+          {
+            name: 'disabled',
+            kind: 'boolean',
+            required: false,
+            type: 'boolean | undefined',
+          },
+        ],
+      },
+      {
+        value: 'multiple',
+        required: true,
+        props: [
+          {
+            name: 'mode',
+            kind: 'string',
+            required: true,
+            type: '"multiple"',
+          },
+          {
+            name: 'value',
+            kind: 'other',
+            required: false,
+            type: 'string[] | undefined',
+          },
+          {
+            name: 'multipleOnly',
+            kind: 'boolean',
+            required: false,
+            type: 'boolean | undefined',
+          },
+          {
+            name: 'disabled',
+            kind: 'boolean',
+            required: false,
+            type: 'boolean | undefined',
+          },
+        ],
       },
     ]);
   });

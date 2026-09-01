@@ -26,6 +26,17 @@ export type ExtractedProp =
       options?: never;
     });
 
+export type ExtractedPropBranch = {
+  discriminatorValue: string;
+  discriminatorRequired: boolean;
+  props: ExtractedProp[];
+};
+
+export type ExtractedDiscriminatedUnion = {
+  discriminator: string;
+  branches: ExtractedPropBranch[];
+};
+
 export type GeneratedExample = {
   title: string;
   description: string;

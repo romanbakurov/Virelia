@@ -10,6 +10,7 @@ import {
   resolveComponentPageProfile,
   resolveExtractedProps,
 } from './resolve-page-input';
+import { buildPlaygroundArtifacts } from '../renderers/playground';
 
 import type { ExtractedProp } from './types';
 
@@ -114,6 +115,40 @@ type ReactNode = string;
   }
 }
 
+function writeComponentFixture(params: {
+  root: string;
+  packageName: 'react' | 'react-native';
+  componentName?: string;
+  types: string;
+}) {
+  const componentName = params.componentName ?? 'Example';
+  const componentRoot = path.join(
+    params.root,
+    'packages',
+    params.packageName,
+    'src',
+    'components',
+    componentName
+  );
+
+  fs.mkdirSync(componentRoot, { recursive: true });
+  fs.writeFileSync(path.join(componentRoot, 'types.ts'), params.types);
+}
+
+function writeMetadata(params: {
+  root: string;
+  componentName?: string;
+  source: string;
+}) {
+  const metadataRoot = path.join(
+    getCatalogComponentsRoot(params.root),
+    params.componentName ?? 'Example'
+  );
+
+  fs.mkdirSync(metadataRoot, { recursive: true });
+  fs.writeFileSync(path.join(metadataRoot, 'metadata.ts'), params.source);
+}
+
 function getCatalogComponentsRoot(root: string) {
   return path.join(
     root,
@@ -154,6 +189,74 @@ const generated = (
   <>
     ${params.children}
   </>
+);
+void generated;
+`
+  );
+
+  const program = ts.createProgram({
+    rootNames: [filePath],
+    options: {
+      jsx: ts.JsxEmit.Preserve,
+      strict: true,
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.NodeNext,
+      moduleResolution: ts.ModuleResolutionKind.NodeNext,
+      skipLibCheck: true,
+      noEmit: true,
+    },
+  });
+  const diagnostics = ts.getPreEmitDiagnostics(program);
+
+  expect(
+    diagnostics.map((diagnostic) =>
+      ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
+    )
+  ).toEqual([]);
+}
+
+function buildResolvedPlaygroundArtifacts(
+  input: Awaited<ReturnType<typeof resolvePageInput>>
+) {
+  return buildPlaygroundArtifacts({
+    componentName: 'Example',
+    slug: 'example',
+    componentConfig: input.componentConfig,
+    playgroundProps: input.playgroundProps,
+    reactApiProps: input.reactPlaygroundApiProps,
+    nativeApiProps: input.nativePlaygroundApiProps,
+    generatedFileHeader: '',
+    getChangeHandlerName: input.getChangeHandlerName,
+  });
+}
+
+function expectGeneratedDemoToTypeCheck(params: {
+  root: string;
+  componentPropsSource: string;
+  playgroundValueSource: string;
+  playgroundValueInitializer: string;
+  staticProps: string;
+  propBindings: string;
+}) {
+  const filePath = path.join(params.root, 'generated-demo.tsx');
+
+  fs.writeFileSync(
+    filePath,
+    `declare namespace JSX {
+  type Element = unknown;
+  interface IntrinsicElements {}
+}
+
+${params.componentPropsSource}
+declare const Example: (props: ExampleProps) => JSX.Element;
+type PlaygroundValue = ${params.playgroundValueSource};
+const value: PlaygroundValue = ${params.playgroundValueInitializer};
+
+const generated = (
+  <Example
+    ${params.staticProps}
+    ${params.propBindings}
+  />
 );
 void generated;
 `
@@ -254,6 +357,705 @@ describe('resolveComponentPageProfile', () => {
         requestedProfile: 'compound',
       })
     ).toBe('navigation');
+  });
+});
+
+const discriminatedExampleProps = `export type ExampleProps =
+  | {
+      mode?: 'single';
+      value?: string;
+      collapsible?: boolean;
+      disabled?: boolean;
+    }
+  | {
+      mode: 'multiple';
+      value?: string[];
+      collapsible?: never;
+      multipleOnly?: boolean;
+      disabled?: boolean;
+    };
+`;
+
+describe('resolvePageInput discriminated playgrounds', () => {
+  it('selects the optional default branch and excludes the discriminator control', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'value',
+      'collapsible',
+      'disabled',
+    ]);
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'mode'
+    );
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'multipleOnly'
+    );
+    expect(artifacts.reactPropBindings).toContain(
+      'collapsible={value.collapsible}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('mode=');
+    expect(input.getDemoProps('react')).toBe('');
+
+    expectGeneratedDemoToTypeCheck({
+      root,
+      componentPropsSource: discriminatedExampleProps,
+      playgroundValueSource:
+        '{ value: string; collapsible: boolean; disabled: boolean }',
+      playgroundValueInitializer:
+        "{ value: '', collapsible: false, disabled: false }",
+      staticProps: input.getDemoProps('react'),
+      propBindings: artifacts.reactPropBindings,
+    });
+  });
+
+  it('uses explicit metadata to select a required branch and emits a static discriminator', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    initialValues: {
+      mode: 'multiple',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'mode'
+    );
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'collapsible'
+    );
+    expect(input.getDemoProps('react')).toBe('mode={"multiple"}');
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+
+    expectGeneratedDemoToTypeCheck({
+      root,
+      componentPropsSource: discriminatedExampleProps,
+      playgroundValueSource: '{ multipleOnly: boolean; disabled: boolean }',
+      playgroundValueInitializer: '{ multipleOnly: false, disabled: false }',
+      staticProps: input.getDemoProps('react'),
+      propBindings: artifacts.reactPropBindings,
+    });
+  });
+
+  it('uses demo.staticProps to select a required branch rendered by shared static props', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: "'multiple'",
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'mode'
+    );
+    expect(input.playgroundProps.map((prop) => prop.name)).not.toContain(
+      'collapsible'
+    );
+    expect(input.getDemoProps('react')).toBe('');
+
+    expectGeneratedDemoToTypeCheck({
+      root,
+      componentPropsSource: discriminatedExampleProps,
+      playgroundValueSource: '{ multipleOnly: boolean; disabled: boolean }',
+      playgroundValueInitializer: '{ multipleOnly: false, disabled: false }',
+      staticProps: "mode={'multiple'}",
+      propBindings: artifacts.reactPropBindings,
+    });
+  });
+
+  it('uses platform demoProps to select the platform branch', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  react: {
+    demoProps: "mode='multiple'",
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.getDemoProps('react')).toBe("mode='multiple'");
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+  });
+
+  it('lets valid platform demoProps ignore unresolved lower staticProps', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  react: {
+    demoProps: "mode='multiple'",
+  },
+  demo: {
+    staticProps: {
+      mode: 'someComplexExpression()',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.getDemoProps('react')).toBe("mode='multiple'");
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('lets valid platform demoProps ignore invalid lower staticProps', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  react: {
+    demoProps: "mode='multiple'",
+  },
+  demo: {
+    staticProps: {
+      mode: "'does-not-exist'",
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.getDemoProps('react')).toBe("mode='multiple'");
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('allows platform demoProps to select divergent React and Native branches', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeComponentFixture({
+      root,
+      packageName: 'react-native',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  react: {
+    demoProps: "mode='multiple'",
+  },
+  native: {
+    demoProps: "mode='single'",
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.reactPlaygroundApiProps.map((prop) => prop.name)).toEqual([
+      'mode',
+      'value',
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.nativePlaygroundApiProps.map((prop) => prop.name)).toEqual([
+      'mode',
+      'value',
+      'collapsible',
+      'disabled',
+    ]);
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+    expect(artifacts.nativePropBindings).toContain(
+      'collapsible={value.collapsible}'
+    );
+    expect(artifacts.nativePropBindings).not.toContain('multipleOnly=');
+  });
+
+  it('warns and avoids flattened playground fallback for invalid configured discriminator values', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    initialValues: {
+      mode: 'invalid',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps).toEqual([]);
+    expect(input.getDemoProps('react')).toBe('');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example react playground demo.initialValues.mode requested mode="invalid", but no matching discriminated-union branch exists.'
+    );
+  });
+
+  it('warns and avoids branch controls for invalid curated static discriminator values', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: "'invalid'",
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps).toEqual([]);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example react playground demo.staticProps.mode requested mode="invalid", but no matching discriminated-union branch exists.'
+    );
+  });
+
+  it('fails safe when unresolved staticProps precede valid initialValues', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: 'someComplexExpression()',
+    },
+    initialValues: {
+      mode: 'multiple',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps).toEqual([]);
+    expect(input.getDemoProps('react')).toBe('');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example playground could not safely resolve demo.staticProps.mode.'
+    );
+  });
+
+  it('fails safe when invalid staticProps precede valid initialValues', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: "'does-not-exist'",
+    },
+    initialValues: {
+      mode: 'multiple',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps).toEqual([]);
+    expect(input.getDemoProps('react')).toBe('');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example react playground demo.staticProps.mode requested mode="does-not-exist", but no matching discriminated-union branch exists.'
+    );
+  });
+
+  it('uses staticProps before initialValues and warns when lower precedence conflicts', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: "'multiple'",
+    },
+    initialValues: {
+      mode: 'single',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.getDemoProps('react')).toBe('');
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example react playground ignored demo.initialValues.mode="single" because demo.staticProps.mode="multiple" has higher precedence.'
+    );
+  });
+
+  it('lets valid staticProps ignore invalid lower initialValues', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    staticProps: {
+      mode: "'multiple'",
+    },
+    initialValues: {
+      mode: 'does-not-exist',
+    },
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'multipleOnly',
+      'disabled',
+    ]);
+    expect(input.getDemoProps('react')).toBe('');
+    expect(artifacts.reactPropBindings).toContain(
+      'multipleOnly={value.multipleOnly}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('collapsible=');
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps platform-divergent selected branch props separate', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeComponentFixture({
+      root,
+      packageName: 'react-native',
+      types: `export type ExampleProps =
+  | {
+      mode?: 'single';
+      nativeOnly?: boolean;
+      disabled?: boolean;
+    }
+  | {
+      mode: 'expanded';
+      expandedOnly?: boolean;
+      disabled?: boolean;
+    };
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+    const artifacts = buildResolvedPlaygroundArtifacts(input);
+
+    expect(input.reactPlaygroundApiProps.map((prop) => prop.name)).toEqual([
+      'mode',
+      'value',
+      'collapsible',
+      'disabled',
+    ]);
+    expect(input.nativePlaygroundApiProps.map((prop) => prop.name)).toEqual([
+      'mode',
+      'nativeOnly',
+      'disabled',
+    ]);
+    expect(artifacts.reactPropBindings).toContain(
+      'collapsible={value.collapsible}'
+    );
+    expect(artifacts.reactPropBindings).not.toContain('nativeOnly=');
+    expect(artifacts.nativePropBindings).toContain(
+      'nativeOnly={value.nativeOnly}'
+    );
+    expect(artifacts.nativePropBindings).not.toContain('collapsible=');
+  });
+
+  it('preserves curated excludeControls for branch-selected controls', async () => {
+    const root = createFixtureRoot();
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: discriminatedExampleProps,
+    });
+    writeMetadata({
+      root,
+      source: `export default {
+  demo: {
+    excludeControls: ['disabled'],
+  },
+};
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'value',
+      'collapsible',
+    ]);
+  });
+
+  it('omits incompatible same-name cross-platform selected-branch props', async () => {
+    const root = createFixtureRoot();
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    writeComponentFixture({
+      root,
+      packageName: 'react',
+      types: `export type ExampleProps =
+  | {
+      mode?: 'single';
+      value?: string;
+      collapsible?: boolean;
+    }
+  | {
+      mode: 'multiple';
+      value?: string[];
+    };
+`,
+    });
+    writeComponentFixture({
+      root,
+      packageName: 'react-native',
+      types: `export type ExampleProps =
+  | {
+      mode?: 'single';
+      value?: number;
+      nativeOnly?: boolean;
+    }
+  | {
+      mode: 'multiple';
+      value?: number[];
+    };
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+    });
+
+    expect(input.playgroundProps.map((prop) => prop.name)).toEqual([
+      'collapsible',
+      'nativeOnly',
+    ]);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '⚠️ Example playground omitted cross-platform props with incompatible selected-branch types: value'
+    );
   });
 });
 
