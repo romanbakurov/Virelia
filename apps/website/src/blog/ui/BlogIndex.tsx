@@ -23,19 +23,20 @@ interface BlogIndexProps {
 export function BlogIndex({ articles }: BlogIndexProps) {
   return (
     <main className={styles.page}>
-      <section className={styles.hero} aria-labelledby='blog-heading'>
+      <header className={styles.hero}>
         <Container size='wide'>
           <div className={styles.heroContent}>
-            <p className={styles.eyebrow}>Vellira Engineering Blog</p>
-            <h1 id='blog-heading'>Notes from building Vellira.</h1>
+            <div className={styles.heroEyebrow}>Blog</div>
+
+            <h1>Blog</h1>
+
             <p className={styles.heroDescription}>
-              Practical writing about design systems, cross-platform component
-              architecture, accessibility, developer tooling, and the
-              engineering decisions behind Vellira.
+              Practical engineering notes on design systems, React, React
+              Native, and developer tooling.
             </p>
           </div>
         </Container>
-      </section>
+      </header>
 
       <section className={styles.indexSection} aria-label='Published articles'>
         <Container size='wide'>
