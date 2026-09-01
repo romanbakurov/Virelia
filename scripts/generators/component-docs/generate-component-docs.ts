@@ -16,7 +16,7 @@ import {
 } from '../../../apps/docs/src/component-docs';
 import { componentMetadata } from '../../../packages/metadata/src/components';
 
-import { readComponentApiSection } from './api';
+import { readComponentApiSections } from './api';
 import { readAuthoredRegion } from './authored-region';
 import { renderComponentDocPage } from './render';
 
@@ -148,7 +148,7 @@ export async function generateComponentDocs(
         continue;
       }
 
-      const apiSection = readComponentApiSection({
+      const apiSections = readComponentApiSections({
         root,
         componentName: selectedComponentName,
         platform,
@@ -159,8 +159,7 @@ export async function generateComponentDocs(
           componentName: selectedComponentName,
           platform,
           docs: platformDocs,
-          apiBlock: apiSection.block,
-          apiSourcePath: apiSection.relativeApiPath,
+          apiSections,
           authoredContent: authoredRegion?.content ?? '',
         })
       );

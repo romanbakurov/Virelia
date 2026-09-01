@@ -499,16 +499,70 @@ function writeApiFixtures(
   platforms: readonly ComponentPlatform[]
 ) {
   for (const platform of platforms) {
-    const apiFile = path.join(
-      root,
-      'packages',
-      platform === 'react' ? 'react' : 'react-native',
-      'API.md'
+    const packageName = platform === 'react' ? 'react' : 'react-native';
+    const packageDir = path.join(root, 'packages', packageName);
+    const sourceRoot = path.join(packageDir, 'src');
+    const packageIndexFile = path.join(sourceRoot, 'index.ts');
+    const componentDir = path.join(sourceRoot, 'primitives', componentName);
+    const componentFile = path.join(componentDir, `${componentName}.tsx`);
+    const componentBarrelFile = path.join(componentDir, 'index.ts');
+    const exportPath = `./primitives/${componentName}`;
+
+    fs.mkdirSync(componentDir, { recursive: true });
+
+    if (!fs.existsSync(componentFile)) {
+      fs.writeFileSync(
+        componentFile,
+        [
+          `export type ${componentName}Props = {`,
+          '  checked?: boolean;',
+          '};',
+          '',
+          `export function ${componentName}(_props: ${componentName}Props) {`,
+          '  return null;',
+          '}',
+          '',
+        ].join('\n')
+      );
+    }
+
+    if (!fs.existsSync(componentBarrelFile)) {
+      fs.writeFileSync(
+        componentBarrelFile,
+        [
+          `export { ${componentName} } from './${componentName}';`,
+          `export type { ${componentName}Props } from './${componentName}';`,
+          '',
+        ].join('\n')
+      );
+    }
+
+    fs.mkdirSync(path.dirname(packageIndexFile), { recursive: true });
+
+    const packageIndexContent = fs.existsSync(packageIndexFile)
+      ? fs.readFileSync(packageIndexFile, 'utf8')
+      : '';
+    const publicExportLines = [
+      `export { ${componentName} } from '${exportPath}';`,
+      `export type { ${componentName}Props } from '${exportPath}';`,
+    ];
+    const missingPublicExports = publicExportLines.filter(
+      (line) => !packageIndexContent.includes(line)
     );
+
+    if (missingPublicExports.length > 0) {
+      fs.writeFileSync(
+        packageIndexFile,
+        [packageIndexContent.trimEnd(), ...missingPublicExports, '']
+          .filter(Boolean)
+          .join('\n')
+      );
+    }
+
+    const apiFile = path.join(packageDir, 'API.md');
     const apiPrefix = platform === 'react' ? 'web' : 'native';
     const apiId = `${apiPrefix}.${componentName}Props.${componentName}`;
 
-    fs.mkdirSync(path.dirname(apiFile), { recursive: true });
     const existingContent = fs.existsSync(apiFile)
       ? fs.readFileSync(apiFile, 'utf8')
       : `# ${platform} API\n\n`;

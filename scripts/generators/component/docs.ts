@@ -13,6 +13,7 @@ import { generateComponentDocs } from '../component-docs/generate-component-docs
 
 import type { ComponentGenerationPlan } from './plan';
 import { getComponentProfile } from './profiles';
+import { getGeneratedPublicPartPropTypeNames } from './public-api';
 
 export type ComponentDocsGenerationTarget = {
   platform: ComponentPlatform;
@@ -22,6 +23,12 @@ export type ComponentDocsGenerationTarget = {
 export type ComponentApiDocsTarget = {
   platform: ComponentPlatform;
   apiFile: string;
+};
+
+type GeneratedApiDocSectionSpec = {
+  typeName: string;
+  heading: string;
+  sourceFile: string;
 };
 
 const docsDirectoryByPlatform = {
@@ -240,12 +247,14 @@ export async function generateComponentDocumentation(params: {
   const apiResult = await generateApiDocs({
     rootDir: root,
     silent: true,
-    sections: plan.targets.map((target) =>
-      section(
-        apiPackageByPlatform[target.packageName],
-        `## ${plan.componentName}`,
-        `${plan.componentName}Props`,
-        `src/${plan.layer}/${plan.componentName}/types.ts`
+    sections: plan.targets.flatMap((target) =>
+      getGeneratedApiDocSectionSpecs(plan).map((apiSection) =>
+        section(
+          apiPackageByPlatform[target.packageName],
+          apiSection.heading,
+          apiSection.typeName,
+          apiSection.sourceFile
+        )
       )
     ),
   });
@@ -268,6 +277,48 @@ export async function generateComponentDocumentation(params: {
     ...docsResult.changedFiles
       .map((filePath) => path.join(root, filePath))
       .filter((filePath) => !createdFiles.includes(filePath))
+  );
+}
+
+function getGeneratedApiDocSectionSpecs(
+  plan: ComponentGenerationPlan
+): GeneratedApiDocSectionSpec[] {
+  const rootSection: GeneratedApiDocSectionSpec = {
+    typeName: `${plan.componentName}Props`,
+    heading:
+      getGeneratedPublicPartPropTypeNames(plan).length > 0
+        ? `### ${plan.componentName} Props`
+        : `## ${plan.componentName}`,
+    sourceFile: `src/${plan.layer}/${plan.componentName}/types.ts`,
+  };
+  const partSections = getGeneratedPublicPartPropTypeNames(plan).map(
+    (typeName) => {
+      const partName = typeName.slice(
+        plan.componentName.length,
+        -'Props'.length
+      );
+
+      return {
+        typeName,
+        heading: `### ${plan.componentName}.${partName} Props`,
+        sourceFile: `src/${plan.layer}/${plan.componentName}/${partName}/types.ts`,
+      };
+    }
+  );
+
+  return [rootSection, ...partSections];
+}
+
+function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
+  return plan.targets.flatMap((target) =>
+    getGeneratedApiDocSectionSpecs(plan).map((apiSection) =>
+      section(
+        apiPackageByPlatform[target.packageName],
+        apiSection.heading,
+        apiSection.typeName,
+        apiSection.sourceFile
+      )
+    )
   );
 }
 
@@ -297,27 +348,49 @@ function ensureApiDocPlaceholders(plan: ComponentGenerationPlan) {
     const apiDocPath = getComponentApiDocsTargets(plan).find(
       (apiTarget) => apiTarget.platform === platform
     )?.apiFile;
-    const apiSection = section(
-      apiPackageByPlatform[platform],
-      `## ${plan.componentName}`,
-      `${plan.componentName}Props`,
-      `src/${plan.layer}/${plan.componentName}/types.ts`
-    );
-    const startMarker = `<!-- api-docgen:start ${apiSection.id} -->`;
 
     if (!apiDocPath || !fs.existsSync(apiDocPath)) {
       throw new Error(`Missing API documentation file: ${apiDocPath}`);
     }
 
     const content = fs.readFileSync(apiDocPath, 'utf8');
+    const sections = getGeneratedApiDocSections({
+      ...plan,
+      targets: [target],
+    });
+    const missingSections = sections.filter(
+      (apiSection) =>
+        !content.includes(`<!-- api-docgen:start ${apiSection.id} -->`)
+    );
 
-    if (content.includes(startMarker)) {
+    if (missingSections.length === 0) {
       continue;
     }
 
+    const hasComponentHeading = content
+      .split(/\\r?\\n/)
+      .some((line) => line.trim() === `## ${plan.componentName}`);
+    const hasHeading = (heading: string) =>
+      content.split(/\\r?\\n/).some((line) => line.trim() === heading);
+
+    const placeholderContent = [
+      hasComponentHeading ? '' : `## ${plan.componentName}`,
+      ...missingSections.map((apiSection) =>
+        [
+          hasHeading(apiSection.heading) ? '' : apiSection.heading,
+          `<!-- api-docgen:start ${apiSection.id} -->`,
+          `<!-- api-docgen:end ${apiSection.id} -->`,
+        ]
+          .filter(Boolean)
+          .join('\n')
+      ),
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
     fs.writeFileSync(
       apiDocPath,
-      `${content.trimEnd()}\n\n## ${plan.componentName}\n\n${startMarker}\n<!-- api-docgen:end ${apiSection.id} -->\n`
+      `${content.trimEnd()}\n\n${placeholderContent}\n`
     );
   }
 }

@@ -103,6 +103,333 @@ describe('generateComponentDocs', () => {
     expect(fs.existsSync(fixture.nativeDoc)).toBe(false);
   });
 
+  it('keeps simple generated API output to one root block', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureSwitch',
+      platforms: ['react'],
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const content = fs.readFileSync(fixture.reactDoc, 'utf8');
+
+    expect(content.match(/api-docgen:start/g)).toHaveLength(1);
+    expect(content).toContain(
+      '<!-- api-docgen:start web.FixtureSwitchProps.FixtureSwitch -->'
+    );
+    expect(content).not.toContain('### FixtureSwitch Props');
+  });
+
+  it('renders compound React API sections in public docgen order', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List', 'Trigger', 'Content'],
+      },
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const content = fs.readFileSync(fixture.reactDoc, 'utf8');
+
+    expect(markerOrder(content)).toEqual([
+      'web.FixtureTabsProps.FixtureTabsProps',
+      'web.FixtureTabsListProps.FixtureTabsListProps',
+      'web.FixtureTabsTriggerProps.FixtureTabsTriggerProps',
+      'web.FixtureTabsContentProps.FixtureTabsContentProps',
+    ]);
+    expect(content).toContain('### FixtureTabs Props');
+    expect(content).toContain('### FixtureTabs.List Props');
+    expect(content).toContain('### FixtureTabs.Trigger Props');
+    expect(content).toContain('### FixtureTabs.Content Props');
+  });
+
+  it('discovers compound prop types exported from a separate public types module', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureDropdown',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'overlay',
+      profile: 'compound',
+      compoundParts: {
+        react: ['Trigger', 'Content', 'Item'],
+      },
+      apiParts: {
+        react: ['Trigger', 'Content'],
+      },
+      typeExportSuffix: '/types',
+      extraApiBlocks: {
+        react: [
+          renderApiFixtureBlock({
+            apiId: 'web.FixtureDropdownItemProps.FixtureDropdownItemProps',
+            propName: 'item',
+            description: 'Non-public item API.',
+          }),
+          renderApiFixtureBlock({
+            apiId:
+              'web.FixtureDropdownInternalProps.FixtureDropdownInternalProps',
+            propName: 'internal',
+            description: 'Internal API.',
+          }),
+        ],
+      },
+    });
+    const packageIndexFile = path.join(
+      fixture.root,
+      'packages/react/src/index.ts'
+    );
+
+    fs.writeFileSync(
+      packageIndexFile,
+      fs
+        .readFileSync(packageIndexFile, 'utf8')
+        .replace('FixtureDropdownItemProps, ', '')
+    );
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const content = fs.readFileSync(fixture.reactDoc, 'utf8');
+
+    expect(markerOrder(content)).toEqual([
+      'web.FixtureDropdownProps.FixtureDropdownProps',
+      'web.FixtureDropdownTriggerProps.FixtureDropdownTriggerProps',
+      'web.FixtureDropdownContentProps.FixtureDropdownContentProps',
+    ]);
+    expect(content).not.toContain('FixtureDropdownItemProps');
+    expect(content).not.toContain('FixtureDropdownInternalProps');
+  });
+
+  it('renders compound React Native API sections where native part APIs exist', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react-native'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        'react-native': ['List', 'Trigger', 'Content'],
+      },
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const content = fs.readFileSync(fixture.nativeDoc, 'utf8');
+
+    expect(markerOrder(content)).toEqual([
+      'native.FixtureTabsProps.FixtureTabsProps',
+      'native.FixtureTabsListProps.FixtureTabsListProps',
+      'native.FixtureTabsTriggerProps.FixtureTabsTriggerProps',
+      'native.FixtureTabsContentProps.FixtureTabsContentProps',
+    ]);
+  });
+
+  it('allows platform-divergent compound part API sections', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react', 'react-native'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List', 'Trigger', 'Content'],
+        'react-native': ['List', 'Content'],
+      },
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    expect(markerOrder(fs.readFileSync(fixture.reactDoc, 'utf8'))).toEqual([
+      'web.FixtureTabsProps.FixtureTabsProps',
+      'web.FixtureTabsListProps.FixtureTabsListProps',
+      'web.FixtureTabsTriggerProps.FixtureTabsTriggerProps',
+      'web.FixtureTabsContentProps.FixtureTabsContentProps',
+    ]);
+    expect(markerOrder(fs.readFileSync(fixture.nativeDoc, 'utf8'))).toEqual([
+      'native.FixtureTabsProps.FixtureTabsProps',
+      'native.FixtureTabsListProps.FixtureTabsListProps',
+      'native.FixtureTabsContentProps.FixtureTabsContentProps',
+    ]);
+  });
+
+  it('fails clearly when an expected public compound part API block is missing', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List', 'Trigger', 'Content'],
+      },
+      apiParts: {
+        react: ['List', 'Content'],
+      },
+    });
+
+    await expect(
+      generateComponentDocs({
+        root: fixture.root,
+        docsRoot: fixture.docsRoot,
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).rejects.toThrow(
+      'Cannot resolve API information for FixtureTabs react: expected exactly one public FixtureTabsTriggerProps API block in packages/react/API.md.'
+    );
+  });
+
+  it('fails clearly when an expected public API block marker is duplicated', async () => {
+    const duplicateBlock = renderApiFixtureBlock({
+      apiId: 'web.FixtureTabsTriggerProps.FixtureTabsTriggerProps',
+      propName: 'duplicate',
+      description: 'Duplicate trigger API.',
+    });
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List', 'Trigger'],
+      },
+      extraApiBlocks: {
+        react: [duplicateBlock],
+      },
+    });
+
+    await expect(
+      generateComponentDocs({
+        root: fixture.root,
+        docsRoot: fixture.docsRoot,
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).rejects.toThrow(
+      'Cannot resolve API information for FixtureTabs react: expected exactly one web.FixtureTabsTriggerProps.FixtureTabsTriggerProps block in packages/react/API.md.'
+    );
+  });
+
+  it('fails clearly when an expected public API block marker is malformed', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List'],
+      },
+    });
+    const apiFile = path.join(fixture.root, 'packages/react/API.md');
+    const content = fs.readFileSync(apiFile, 'utf8');
+    const validBlock = renderApiFixtureBlock({
+      apiId: 'web.FixtureTabsListProps.FixtureTabsListProps',
+      propName: 'list',
+      description: 'List public API.',
+    });
+
+    fs.writeFileSync(
+      apiFile,
+      content.replace(
+        validBlock,
+        [
+          '<!-- api-docgen:end web.FixtureTabsListProps.FixtureTabsListProps -->',
+          '',
+          '| Prop | Type | Required | Description |',
+          '| ---- | ---- | -------- | ----------- |',
+          '| `list` | `boolean` | No | List public API. |',
+          '',
+          '<!-- api-docgen:start web.FixtureTabsListProps.FixtureTabsListProps -->',
+        ].join('\n')
+      )
+    );
+
+    await expect(
+      generateComponentDocs({
+        root: fixture.root,
+        docsRoot: fixture.docsRoot,
+        metadata: [fixture.metadata],
+        contracts: [fixture.contract],
+      })
+    ).rejects.toThrow(
+      'Cannot resolve API information for FixtureTabs react: malformed web.FixtureTabsListProps.FixtureTabsListProps block in packages/react/API.md.'
+    );
+  });
+
+  it('does not sweep unrelated public or internal API blocks into compound docs', async () => {
+    const fixture = createFixture({
+      componentName: 'FixtureTabs',
+      platforms: ['react'],
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      compoundParts: {
+        react: ['List'],
+      },
+      extraApiBlocks: {
+        react: [
+          renderApiFixtureBlock({
+            apiId: 'web.FixtureTabsSlotProps.FixtureTabsSlotProps',
+            propName: 'slot',
+            description: 'Slot helper API.',
+          }),
+          renderApiFixtureBlock({
+            apiId:
+              'web.FixtureTabsListInternalProps.FixtureTabsListInternalProps',
+            propName: 'internal',
+            description: 'Internal API.',
+          }),
+        ],
+      },
+    });
+
+    await generateComponentDocs({
+      root: fixture.root,
+      docsRoot: fixture.docsRoot,
+      metadata: [fixture.metadata],
+      contracts: [fixture.contract],
+    });
+
+    const content = fs.readFileSync(fixture.reactDoc, 'utf8');
+
+    expect(markerOrder(content)).toEqual([
+      'web.FixtureTabsProps.FixtureTabsProps',
+      'web.FixtureTabsListProps.FixtureTabsListProps',
+    ]);
+    expect(content).not.toContain('FixtureTabsSlotProps');
+    expect(content).not.toContain('FixtureTabsListInternalProps');
+  });
+
   it('includes a React generated page in React navigation', async () => {
     const fixture = createFixture({
       componentName: 'FixtureSwitch',
@@ -682,6 +1009,13 @@ function createFixture(params: {
   componentName: string;
   platforms: readonly ComponentPlatform[];
   contractPlatforms?: readonly ComponentPlatform[];
+  layer?: ComponentMetadata['layer'];
+  category?: ComponentMetadata['category'];
+  profile?: ComponentMetadata['profile'];
+  compoundParts?: Partial<Record<ComponentPlatform, readonly string[]>>;
+  apiParts?: Partial<Record<ComponentPlatform, readonly string[]>>;
+  extraApiBlocks?: Partial<Record<ComponentPlatform, readonly string[]>>;
+  typeExportSuffix?: string;
   root?: string;
   docsRoot?: string;
 }) {
@@ -689,16 +1023,23 @@ function createFixture(params: {
     componentName,
     platforms,
     contractPlatforms = platforms,
+    layer = 'primitives',
+    category = 'form',
+    profile = 'form-control',
+    compoundParts = {},
+    apiParts = {},
+    extraApiBlocks = {},
+    typeExportSuffix = '',
     root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-component-docs-')),
     docsRoot = path.join(root, 'apps', 'docs', 'src'),
   } = params;
   const slug = slugifyComponentName(componentName);
   const metadata: ComponentMetadata = {
     name: componentName,
-    layer: 'primitives',
-    category: 'form',
+    layer,
+    category,
     platforms,
-    profile: 'form-control',
+    profile,
     status: 'experimental',
     capabilities: ['controlled'],
     requirements: {
@@ -744,7 +1085,16 @@ function createFixture(params: {
   if (!tempRoots.includes(root)) {
     tempRoots.push(root);
   }
-  writeApiFixtures(root, componentName, platforms);
+  writeApiFixtures({
+    root,
+    componentName,
+    layer,
+    platforms,
+    compoundParts,
+    apiParts,
+    extraApiBlocks,
+    typeExportSuffix,
+  });
 
   return {
     root,
@@ -756,17 +1106,38 @@ function createFixture(params: {
   };
 }
 
-function writeApiFixtures(
-  root: string,
-  componentName: string,
-  platforms: readonly ComponentPlatform[]
-) {
+function writeApiFixtures(params: {
+  root: string;
+  componentName: string;
+  layer: ComponentMetadata['layer'];
+  platforms: readonly ComponentPlatform[];
+  compoundParts: Partial<Record<ComponentPlatform, readonly string[]>>;
+  apiParts: Partial<Record<ComponentPlatform, readonly string[]>>;
+  extraApiBlocks: Partial<Record<ComponentPlatform, readonly string[]>>;
+  typeExportSuffix: string;
+}) {
+  const {
+    root,
+    componentName,
+    layer,
+    platforms,
+    compoundParts,
+    apiParts,
+    extraApiBlocks,
+    typeExportSuffix,
+  } = params;
+
   for (const platform of platforms) {
     const packageDir =
       platform === 'react' ? 'packages/react' : 'packages/react-native';
     const apiPrefix = platform === 'react' ? 'web' : 'native';
+    const platformCompoundParts = compoundParts[platform] ?? [];
+    const platformApiParts = apiParts[platform] ?? platformCompoundParts;
     const apiFile = path.join(root, packageDir, 'API.md');
-    const apiId = `${apiPrefix}.${componentName}Props.${componentName}`;
+    const rootApiId =
+      platformApiParts.length > 0
+        ? `${apiPrefix}.${componentName}Props.${componentName}Props`
+        : `${apiPrefix}.${componentName}Props.${componentName}`;
 
     fs.mkdirSync(path.dirname(apiFile), { recursive: true });
     const existingContent = fs.existsSync(apiFile)
@@ -777,17 +1148,113 @@ function writeApiFixtures(
       apiFile,
       [
         existingContent.trimEnd(),
-        `<!-- api-docgen:start ${apiId} -->`,
-        '',
-        '| Prop | Type | Required | Description |',
-        '| ---- | ---- | -------- | ----------- |',
-        '| `checked` | `boolean` | No | Controlled checked state. |',
-        '',
-        `<!-- api-docgen:end ${apiId} -->`,
+        renderApiFixtureBlock({
+          apiId: rootApiId,
+          propName: 'checked',
+          description: 'Controlled checked state.',
+        }),
+        ...platformApiParts.map((partName) =>
+          renderApiFixtureBlock({
+            apiId: `${apiPrefix}.${componentName}${partName}Props.${componentName}${partName}Props`,
+            propName: partName.toLowerCase(),
+            description: `${partName} public API.`,
+          })
+        ),
+        ...(extraApiBlocks[platform] ?? []),
         '',
       ].join('\n')
     );
+
+    writePublicComponentSource({
+      root,
+      packageDir,
+      componentName,
+      layer,
+      compoundParts: platformCompoundParts,
+      typeExportSuffix,
+    });
   }
+}
+
+function renderApiFixtureBlock(params: {
+  apiId: string;
+  propName: string;
+  description: string;
+}) {
+  return [
+    `<!-- api-docgen:start ${params.apiId} -->`,
+    '',
+    '| Prop | Type | Required | Description |',
+    '| ---- | ---- | -------- | ----------- |',
+    `| \`${params.propName}\` | \`boolean\` | No | ${params.description} |`,
+    '',
+    `<!-- api-docgen:end ${params.apiId} -->`,
+  ].join('\n');
+}
+
+function writePublicComponentSource(params: {
+  root: string;
+  packageDir: string;
+  componentName: string;
+  layer: ComponentMetadata['layer'];
+  compoundParts: readonly string[];
+  typeExportSuffix: string;
+}) {
+  const {
+    root,
+    packageDir,
+    componentName,
+    layer,
+    compoundParts,
+    typeExportSuffix,
+  } = params;
+  const packageSourceRoot = path.join(root, packageDir, 'src');
+  const componentRoot = path.join(packageSourceRoot, layer, componentName);
+  const componentExportPath = `./${layer}/${componentName}`;
+  const typeExportPath = `${componentExportPath}${typeExportSuffix}`;
+  const publicTypeNames = [
+    `${componentName}Props`,
+    ...compoundParts.map((partName) => `${componentName}${partName}Props`),
+    `${componentName}InternalProps`,
+  ];
+
+  fs.mkdirSync(componentRoot, { recursive: true });
+  fs.writeFileSync(
+    path.join(packageSourceRoot, 'index.ts'),
+    [
+      fs.existsSync(path.join(packageSourceRoot, 'index.ts'))
+        ? fs
+            .readFileSync(path.join(packageSourceRoot, 'index.ts'), 'utf8')
+            .trimEnd()
+        : '',
+      `export type { ${publicTypeNames.join(', ')} } from '${typeExportPath}';`,
+      `export { ${componentName} } from '${componentExportPath}';`,
+      '',
+    ]
+      .filter(Boolean)
+      .join('\n')
+  );
+  fs.writeFileSync(
+    path.join(componentRoot, `${componentName}.tsx`),
+    compoundParts.length > 0
+      ? [
+          `const ${componentName}Root = () => null;`,
+          ...compoundParts.map(
+            (partName) => `const ${componentName}${partName} = () => null;`
+          ),
+          '',
+          `export const ${componentName} = Object.assign(${componentName}Root, {`,
+          ...compoundParts.map(
+            (partName) => `  ${partName}: ${componentName}${partName},`
+          ),
+          '});',
+          '',
+        ].join('\n')
+      : `export function ${componentName}() {
+  return null;
+}
+`
+  );
 }
 
 function slugifyComponentName(componentName: string) {
@@ -796,4 +1263,10 @@ function slugifyComponentName(componentName: string) {
     .replace(/[^a-zA-Z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .toLowerCase();
+}
+
+function markerOrder(content: string) {
+  return [...content.matchAll(/<!-- api-docgen:start ([^ ]+) -->/g)].map(
+    (match) => match[1]
+  );
 }
