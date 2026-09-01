@@ -429,7 +429,7 @@ export function SiteHeader({
 
           {variant === 'marketing' && (
             <Button asChild size='sm' className={styles.ctaButton}>
-              <a href='https://https://docs.vellira.dev/start/getting-started'>
+              <a href='https://docs.vellira.dev/start/getting-started'>
                 Get started
               </a>
             </Button>
