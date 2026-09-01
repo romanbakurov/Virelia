@@ -40,7 +40,7 @@ describe('Blog V1 metadata', () => {
     expect(articleMetadata.alternates?.canonical).toBe(
       getBlogArticleUrl('building-reliable-component-apis')
     );
-    expect(articleMetadata.openGraph?.type).toBe('article');
+    expect(articleMetadata.openGraph).toMatchObject({ type: 'article' });
   });
 
   it('falls back to the Vellira social image without inventing article data', () => {
