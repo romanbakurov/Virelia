@@ -21,9 +21,7 @@ function toRssDate(date: string): string {
   return new Date(`${date}T00:00:00.000Z`).toUTCString();
 }
 
-export function buildBlogRss(
-  articles: readonly BlogArticleMetadata[]
-): string {
+export function buildBlogRss(articles: readonly BlogArticleMetadata[]): string {
   const publishedArticles = sortBlogArticleMetadata(
     articles.filter((article) => !article.draft)
   );
