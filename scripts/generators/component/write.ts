@@ -35,6 +35,7 @@ import {
 import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
 import { renderSynchronizedPublicApiContract } from './public-api-contract';
+import { getGeneratedPublicPropTypeNames } from './public-api';
 
 import {
   shouldGenerateVisualScaffold,
@@ -169,15 +170,6 @@ function synchronizePublicApiContract(params: {
   }
 }
 
-function getPackageRootPropTypeNames(plan: ComponentGenerationPlan) {
-  return [
-    `${plan.componentName}Props`,
-    ...plan.parts
-      .filter((partName) => partName !== 'Root')
-      .map((partName) => `${plan.componentName}${partName}Props`),
-  ];
-}
-
 function registerPackageRootExports(params: {
   plan: ComponentGenerationPlan;
   target: ComponentGenerationTarget;
@@ -186,7 +178,7 @@ function registerPackageRootExports(params: {
   const { plan, target, result } = params;
   const exportPath = `./${plan.layer}/${plan.componentName}`;
 
-  for (const propTypeName of getPackageRootPropTypeNames(plan)) {
+  for (const propTypeName of getGeneratedPublicPropTypeNames(plan)) {
     updateBarrel({
       barrelFile: target.packageBarrelFile,
       exportLine: `export type { ${propTypeName} } from '${exportPath}';`,
