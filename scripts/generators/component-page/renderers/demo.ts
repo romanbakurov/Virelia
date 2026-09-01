@@ -37,6 +37,10 @@ export function renderDemoFiles(params: {
     return playgroundProps.some((prop) => prop.name === name);
   }
 
+  function hasPropBinding(source: string, propName: string) {
+    return new RegExp(`(^|\\s)${propName}\\s*=`).test(source);
+  }
+
   const demoPresentationProps = [
     componentConfig.demo?.label && !isPlaygroundProp('label')
       ? `label=${toTsString(componentConfig.demo.label)}`
@@ -48,12 +52,15 @@ export function renderDemoFiles(params: {
     .filter(Boolean)
     .join('\n          ');
 
-  const staticDemoProps = Object.entries(
-    componentConfig.demo?.staticProps ?? {}
-  )
-    .filter(([name]) => !isPlaygroundProp(name))
-    .map(([name, value]) => `${name}={${value}}`)
-    .join('\n          ');
+  function createStaticDemoProps(platformStaticProps: string) {
+    return Object.entries(componentConfig.demo?.staticProps ?? {})
+      .filter(
+        ([name]) =>
+          !isPlaygroundProp(name) && !hasPropBinding(platformStaticProps, name)
+      )
+      .map(([name, value]) => `${name}={${value}}`)
+      .join('\n          ');
+  }
 
   const nativeResponsiveImport = nativeResponsivePresentation
     ? `import { useWindowDimensions } from 'react-native';\n`
@@ -82,10 +89,11 @@ export function renderDemoFiles(params: {
 
     const staticProps =
       platform === 'react' ? reactStaticDemoProps : nativeStaticDemoProps;
+    const sharedStaticDemoProps = createStaticDemoProps(staticProps);
 
     const props = [
       staticProps,
-      staticDemoProps,
+      sharedStaticDemoProps,
       platform === 'react-native' && nativeResponsivePresentation
         ? 'presentation={presentation}'
         : '',
