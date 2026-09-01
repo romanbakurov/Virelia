@@ -1,4 +1,6 @@
+import { SiteFooter } from '@/components/layout/SiteFooter';
 import { BackToTop } from '@/components/navigation/BackToTop';
+import { homepageProductFacts } from '@/config/homepageProductFacts';
 import { CodeShowcase } from '@/sections/home/CodeShowcase';
 import { ComponentShowcase } from '@/sections/home/ComponentShowcase';
 import { FinalCta } from '@/sections/home/FinalCta';
@@ -11,7 +13,6 @@ import { QuickStart } from '@/sections/home/QuickStart';
 import { Roadmap } from '@/sections/home/Roadmap';
 import { SocialProof } from '@/sections/home/SocialProof';
 import { ThemeStudio } from '@/sections/home/ThemeStudio';
-import { SiteFooter } from '@/components/layout/SiteFooter';
 
 export default function HomePage() {
   return (
@@ -24,7 +25,7 @@ export default function HomePage() {
       <CodeShowcase />
       <ProductionWorkflow />
       <QuickStart />
-      <SocialProof />
+      <SocialProof productFacts={homepageProductFacts} />
       <Roadmap />
       <Pro />
       <FinalCta />
