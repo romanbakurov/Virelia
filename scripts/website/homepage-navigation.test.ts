@@ -10,7 +10,9 @@ const heroSource = readFileSync(
 
 describe('homepage navigation', () => {
   it('routes Explore components to the website component catalog', () => {
-    expect(heroSource).toContain("<Link href='/components'>Explore components</Link>");
+    expect(heroSource).toContain(
+      "<Link href='/components'>Explore components</Link>"
+    );
     expect(heroSource).not.toContain(
       "<Link href='https://docs.vellira.dev/components'>"
     );
