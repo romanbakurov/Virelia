@@ -76,7 +76,7 @@ describe('Blog V1 metadata schema', () => {
   });
 
   it('rejects missing required fields', () => {
-    const metadata = createMetadata() as Record<string, unknown>;
+    const metadata: Record<string, unknown> = { ...createMetadata() };
     delete metadata.description;
 
     expect(() => parseBlogArticleMetadata(metadata)).toThrow(
