@@ -17,6 +17,11 @@ type PackageManifest = {
   private?: boolean;
 };
 
+const socialProofSource = readFileSync(
+  resolve('apps/website/src/sections/home/SocialProof/SocialProof.tsx'),
+  'utf8'
+);
+
 function getPublishableWorkspacePackages() {
   const packagesDirectory = resolve('packages');
 
@@ -83,5 +88,13 @@ describe('homepage product facts', () => {
     expect(productionPlatformNames).toEqual(['react', 'react-native']);
     expect(homepageProductFacts.builtInThemes).toBeGreaterThan(0);
     expect(homepageProductFacts.productionPlatforms).toBeGreaterThan(0);
+  });
+
+  it('renders known facts directly and uses a neutral unavailable state', () => {
+    expect(socialProofSource).not.toContain('AnimatedMetric');
+    expect(socialProofSource).toContain("{value ?? '—'}");
+    expect(socialProofSource).toContain(
+      "{productFacts.stableRelease ?? '—'}"
+    );
   });
 });
