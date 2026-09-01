@@ -11,9 +11,8 @@ export type BlogMDXModuleLoader = () => Promise<BlogMDXModule>;
  *
  * #649 will automate updates to this registry when generating articles.
  */
-const blogArticleModuleLoaders: Readonly<
-  Record<string, BlogMDXModuleLoader>
-> = {};
+const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
+  {};
 
 export function getBlogArticleModuleLoader(
   slug: string
