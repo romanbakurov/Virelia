@@ -1,7 +1,7 @@
 export type MarketingNavigationItem =
   | {
       label: string;
-      href: '/components';
+      href: '/components' | '/blog';
       type: 'page';
       badge?: string;
     }
@@ -13,10 +13,15 @@ export type MarketingNavigationItem =
       badge?: string;
     };
 
-const componentNavigation: readonly MarketingNavigationItem[] = [
+const pageNavigation: readonly MarketingNavigationItem[] = [
   {
     label: 'Components',
     href: '/components',
+    type: 'page',
+  },
+  {
+    label: 'Blog',
+    href: '/blog',
     type: 'page',
   },
 ];
@@ -50,7 +55,7 @@ const sectionNavigation = [
 ] as const satisfies readonly MarketingNavigationItem[];
 
 export const marketingNavigation: readonly MarketingNavigationItem[] = [
-  ...componentNavigation,
+  ...pageNavigation,
   ...sectionNavigation,
 ];
 
