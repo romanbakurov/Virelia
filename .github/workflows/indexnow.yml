@@ -1,5 +1,11 @@
 name: Submit URLs to IndexNow
 
+run-name: >-
+  IndexNow —
+  ${{ github.event_name == 'workflow_dispatch'
+    && 'manual main'
+    || format('{0} / {1}', github.event.deployment_status.environment, github.event.deployment_status.state) }}
+
 on:
   deployment_status:
   workflow_dispatch:
@@ -9,6 +15,7 @@ permissions:
 
 jobs:
   submit:
+    name: Submit production URLs
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event.deployment_status.state == 'success' &&
@@ -19,7 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.sha }}
 
       - name: Submit URLs to IndexNow
-        continue-on-error: true
         run: node scripts/submit-indexnow.mjs
