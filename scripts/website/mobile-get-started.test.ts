@@ -17,7 +17,9 @@ const gettingStartedHref =
 
 describe('mobile Get started CTA', () => {
   it('keeps the same Getting Started destination in desktop and mobile navigation', () => {
-    expect(headerSource.match(new RegExp(gettingStartedHref, 'g'))).toHaveLength(2);
+    expect(
+      headerSource.match(new RegExp(gettingStartedHref, 'g'))
+    ).toHaveLength(2);
     expect(headerSource).toContain('className={styles.mobileNavigationCta}');
     expect(headerSource).toContain(
       'onClick={() => setResolvedMobileMenuOpen(false)}'
