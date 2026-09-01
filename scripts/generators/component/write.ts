@@ -573,6 +573,7 @@ export async function writeComponentGenerationPlan(
 
   await formatGeneratedFiles([
     ...result.createdFiles,
+    plan.docsContractFile,
     plan.docsContractRegistryFile,
   ]);
 

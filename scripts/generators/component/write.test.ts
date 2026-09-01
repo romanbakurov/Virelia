@@ -233,6 +233,34 @@ describe('component generator writer', () => {
     }
   });
 
+  it('keeps the docs contract byte-identical across force regeneration', async () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: true,
+      },
+    });
+
+    await writeComponentGenerationPlan(plan);
+
+    const firstDocsContract = fs.readFileSync(plan.docsContractFile, 'utf8');
+
+    await writeComponentGenerationPlan(plan);
+
+    const secondDocsContract = fs.readFileSync(plan.docsContractFile, 'utf8');
+
+    expect(secondDocsContract).toBe(firstDocsContract);
+  });
+
   it('generates platform-specific style files', async () => {
     const root = createTempRoot();
     createLayerBarrels(root);
