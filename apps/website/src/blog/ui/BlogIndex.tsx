@@ -61,7 +61,9 @@ export function BlogIndex({ articles }: BlogIndexProps) {
                   </div>
 
                   <h2>{article.title}</h2>
-                  <p className={styles.cardDescription}>{article.description}</p>
+                  <p className={styles.cardDescription}>
+                    {article.description}
+                  </p>
 
                   <div className={styles.tags} aria-label='Article tags'>
                     {article.tags.map((tag) => (
