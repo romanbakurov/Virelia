@@ -36,7 +36,7 @@
     "test": "pnpm test:unit && pnpm test:storybook",
     "test:unit": "pnpm test:tokens && pnpm test:web && pnpm test:native",
     "test:tooling": "vitest run --config vitest.tooling.config.ts",
-    "test:blog": "vitest run scripts/blog/**/*.test.ts",
+    "test:blog": "vitest run --config vitest.tooling.config.ts scripts/blog",
     "test:web": "pnpm --filter @vellira-ui/react test",
     "test:tokens": "pnpm --filter @vellira-ui/tokens test",
     "test:native": "pnpm --filter @vellira-ui/react-native test",
