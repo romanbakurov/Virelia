@@ -158,6 +158,8 @@ const {
   platforms,
   reactApiProps,
   nativeApiProps,
+  reactPlaygroundApiProps,
+  nativePlaygroundApiProps,
   getDemoProps,
   getChangeHandlerName,
 } = await resolvePageInput({
@@ -181,8 +183,8 @@ const { content: usageContent, children: usageChildren } = renderUsage({
   componentName,
   componentConfig,
   playgroundProps,
-  reactApiProps,
-  nativeApiProps,
+  reactApiProps: reactPlaygroundApiProps,
+  nativeApiProps: nativePlaygroundApiProps,
   generatedFileHeader,
   getDemoProps,
 });
@@ -284,8 +286,8 @@ const playgroundArtifacts = buildPlaygroundArtifacts({
   slug,
   componentConfig,
   playgroundProps,
-  reactApiProps,
-  nativeApiProps,
+  reactApiProps: reactPlaygroundApiProps,
+  nativeApiProps: nativePlaygroundApiProps,
   generatedFileHeader,
   getChangeHandlerName,
 });
