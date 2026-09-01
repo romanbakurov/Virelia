@@ -1,7 +1,11 @@
+import createMDX from '@next/mdx';
 import type { NextConfig } from 'next';
+
+const withMDX = createMDX({});
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   transpilePackages: [
     '@vellira-ui/react',
     '@vellira-ui/react-native',
@@ -19,4 +23,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

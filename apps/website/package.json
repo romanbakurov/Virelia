@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@mdx-js/react": "^3.1.1",
     "@vellira-ui/assets": "workspace:*",
     "@vellira-ui/icons": "workspace:*",
     "@vellira-ui/react": "workspace:*",
@@ -31,6 +32,9 @@
     "shiki": "^4.4.2"
   },
   "devDependencies": {
+    "@mdx-js/loader": "^3.1.1",
+    "@next/mdx": "16.2.11",
+    "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
