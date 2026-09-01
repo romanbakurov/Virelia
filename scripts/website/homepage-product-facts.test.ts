@@ -70,17 +70,14 @@ describe('homepage product facts', () => {
     expect(formatStableRelease('not-a-version')).toBeNull();
   });
 
-  it(
-    'keeps the published package source aligned with publishable workspace manifests',
-    () => {
-      expect([...publishedPackageNames].sort()).toEqual(
-        getPublishableWorkspacePackages()
-      );
-      expect(homepageProductFacts.publishedPackages).toBe(
-        publishedPackageNames.length
-      );
-    }
-  );
+  it('keeps the published package source aligned with publishable workspace manifests', () => {
+    expect([...publishedPackageNames].sort()).toEqual(
+      getPublishableWorkspacePackages()
+    );
+    expect(homepageProductFacts.publishedPackages).toBe(
+      publishedPackageNames.length
+    );
+  });
 
   it('keeps the theme and platform facts explicit and non-zero', () => {
     expect([...builtInThemeNames].sort()).toEqual(getBuiltInThemeDirectories());
@@ -93,14 +90,9 @@ describe('homepage product facts', () => {
     expect(homepageProductFacts.productionPlatforms).toBeGreaterThan(0);
   });
 
-  it(
-    'renders known facts directly and uses a neutral unavailable state',
-    () => {
-      expect(socialProofSource).not.toContain('AnimatedMetric');
-      expect(socialProofSource).toContain("{value ?? '—'}");
-      expect(socialProofSource).toContain(
-        "{productFacts.stableRelease ?? '—'}"
-      );
-    }
-  );
+  it('renders known facts directly and uses a neutral unavailable state', () => {
+    expect(socialProofSource).not.toContain('AnimatedMetric');
+    expect(socialProofSource).toContain("{value ?? '—'}");
+    expect(socialProofSource).toContain("{productFacts.stableRelease ?? '—'}");
+  });
 });
