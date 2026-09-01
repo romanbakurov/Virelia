@@ -73,7 +73,9 @@ describe('Blog V1 authoring tooling', () => {
       slug: 'building-component-apis',
       today: '2026-09-02',
     });
-    const metadata = JSON.parse(await readFile(result.metadataPath, 'utf8')) as {
+    const metadata = JSON.parse(
+      await readFile(result.metadataPath, 'utf8')
+    ) as {
       draft: boolean;
       slug: string;
     };
@@ -166,7 +168,9 @@ describe('Blog V1 authoring tooling', () => {
 
     const result = await checkBlogCorpus(root);
 
-    expect(result.issues.some((issue) => issue.includes('publishedAt'))).toBe(true);
+    expect(result.issues.some((issue) => issue.includes('publishedAt'))).toBe(
+      true
+    );
   });
 
   it('detects duplicate metadata slugs across article directories', async () => {

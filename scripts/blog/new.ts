@@ -28,7 +28,9 @@ try {
   console.log(`Created Blog V1 draft: ${result.articleDirectory}`);
   console.log(`Metadata: ${result.metadataPath}`);
   console.log(`Article: ${result.articlePath}`);
-  console.log('The article remains draft:true until a reviewed commit publishes it.');
+  console.log(
+    'The article remains draft:true until a reviewed commit publishes it.'
+  );
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);

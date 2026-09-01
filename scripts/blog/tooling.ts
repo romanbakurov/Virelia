@@ -142,12 +142,16 @@ function buildDraftBody(slug: string): string {
   return `# ${titleFromSlug(slug)}\n\nTODO: Write the article.\n`;
 }
 
-async function listArticleDirectorySlugs(contentDirectory: string): Promise<string[]> {
+async function listArticleDirectorySlugs(
+  contentDirectory: string
+): Promise<string[]> {
   const entries = await readdir(contentDirectory, { withFileTypes: true });
 
   return entries
     .filter((entry) => entry.isDirectory())
-    .map((entry) => assertBlogSlug(entry.name, path.join(contentDirectory, entry.name)))
+    .map((entry) =>
+      assertBlogSlug(entry.name, path.join(contentDirectory, entry.name))
+    )
     .sort((left, right) => left.localeCompare(right));
 }
 
@@ -164,7 +168,9 @@ export async function createBlogArticle(
   parseBlogArticleMetadata(buildDraftMetadata(slug, options.today), 'blog:new');
 
   if (!(await pathExists(contentDirectory))) {
-    throw new Error(`${contentDirectory}: blog content directory does not exist`);
+    throw new Error(
+      `${contentDirectory}: blog content directory does not exist`
+    );
   }
 
   if (!(await pathExists(registryPath))) {
@@ -172,7 +178,9 @@ export async function createBlogArticle(
   }
 
   if (await pathExists(articleDirectory)) {
-    throw new Error(`${articleDirectory}: article already exists; refusing to overwrite`);
+    throw new Error(
+      `${articleDirectory}: article already exists; refusing to overwrite`
+    );
   }
 
   const existingSlugs = await listArticleDirectorySlugs(contentDirectory);
@@ -248,12 +256,16 @@ async function validateSocialImage(
   const relativePath = path.relative(publicDirectory, imagePath);
 
   if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
-    issues.push(`${entry.metadata.slug}: socialImage escapes website public directory`);
+    issues.push(
+      `${entry.metadata.slug}: socialImage escapes website public directory`
+    );
     return;
   }
 
   if (!(await pathExists(imagePath))) {
-    issues.push(`${entry.metadata.slug}: socialImage does not exist: ${socialImage}`);
+    issues.push(
+      `${entry.metadata.slug}: socialImage does not exist: ${socialImage}`
+    );
   }
 }
 
@@ -308,9 +320,13 @@ export async function checkBlogCorpus(root: string): Promise<BlogCheckResult> {
       const target = articlesBySlug.get(targetSlug);
 
       if (target === undefined) {
-        issues.push(`${entry.metadata.slug}: internal blog link target does not exist: ${targetSlug}`);
+        issues.push(
+          `${entry.metadata.slug}: internal blog link target does not exist: ${targetSlug}`
+        );
       } else if (!entry.metadata.draft && target.draft) {
-        issues.push(`${entry.metadata.slug}: published article links to draft article: ${targetSlug}`);
+        issues.push(
+          `${entry.metadata.slug}: published article links to draft article: ${targetSlug}`
+        );
       }
     }
 
@@ -332,6 +348,8 @@ export async function checkBlogCorpus(root: string): Promise<BlogCheckResult> {
 
   return {
     articleCount: directorySlugs.length,
-    issues: [...new Set(issues)].sort((left, right) => left.localeCompare(right)),
+    issues: [...new Set(issues)].sort((left, right) =>
+      left.localeCompare(right)
+    ),
   };
 }
