@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   componentPageProfiles,
@@ -7,6 +7,43 @@ import {
   mapGeneratorCategory,
   resolveCatalogCategory,
 } from './profiles';
+
+import type { ExtractedProp, Platform } from '../model/types';
+
+function extractedProp(params: {
+  name: string;
+  kind: ExtractedProp['kind'];
+  required?: boolean;
+  options?: string[];
+}): ExtractedProp {
+  if (params.kind === 'select') {
+    return {
+      name: params.name,
+      kind: params.kind,
+      required: params.required ?? true,
+      type: params.options?.map((option) => `'${option}'`).join(' | ') ?? '',
+      description: '',
+      options: params.options ?? [],
+    };
+  }
+
+  return {
+    name: params.name,
+    kind: params.kind,
+    required: params.required ?? true,
+    type: params.kind,
+    description: '',
+  };
+}
+
+function partProps(
+  platform: Platform,
+  propsByPart: Record<string, readonly ExtractedProp[]>
+) {
+  return {
+    [platform]: propsByPart,
+  };
+}
 
 describe('component page profiles', () => {
   it('exposes the supported profile contract', () => {
@@ -32,19 +69,108 @@ describe('component page profiles', () => {
     ]);
   });
 
-  it('generates meaningful nested compound children', () => {
+  it('generates meaningful nested compound children with required simple part props', () => {
     const metadata = getGeneratedCompositionMetadata({
       profile: 'compound',
-      componentName: 'Accordion',
+      componentName: 'Example',
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
+      partProps: partProps('react', {
+        Item: [
+          extractedProp({ name: 'value', kind: 'string' }),
+          extractedProp({ name: 'count', kind: 'number' }),
+          extractedProp({ name: 'disabled', kind: 'boolean' }),
+          extractedProp({
+            name: 'mode',
+            kind: 'select',
+            options: ['single', 'multiple'],
+          }),
+          extractedProp({
+            name: 'optional',
+            kind: 'string',
+            required: false,
+          }),
+          extractedProp({
+            name: 'children',
+            kind: 'other',
+            required: true,
+          }),
+        ],
+      }),
+    });
+
+    expect(metadata.react?.children).toContain(
+      '<Example.Item value=\'value-1\' count={1} disabled={false} mode={"single"}>'
+    );
+    expect(metadata.react?.children).toContain(
+      '<Example.Trigger>Section</Example.Trigger>'
+    );
+    expect(metadata.react?.children).toContain(
+      '<Example.Content>Section content</Example.Content>'
+    );
+    expect(metadata.react?.children).not.toContain('optional=');
+    expect(metadata.react?.children).not.toContain('children=');
+    expect(metadata.react?.children).not.toContain('<Example.Root');
+  });
+
+  it('generates platform-specific compound children from platform part props', () => {
+    const metadata = getGeneratedCompositionMetadata({
+      profile: 'compound',
+      componentName: 'Example',
+      parts: ['Root', 'Item', 'Trigger', 'Content'],
+      partProps: {
+        react: {
+          Item: [extractedProp({ name: 'webValue', kind: 'string' })],
+        },
+        'react-native': {
+          Item: [extractedProp({ name: 'nativeCount', kind: 'number' })],
+        },
+      },
+    });
+
+    expect(metadata.react?.children).toContain(
+      "<Example.Item webValue='webValue-1'>"
+    );
+    expect(metadata.native?.children).toContain(
+      '<Example.Item nativeCount={1}>'
+    );
+    expect(metadata.react?.children).not.toBe(metadata.native?.children);
+  });
+
+  it('warns and omits generated compound children for unsupported required complex props', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    try {
+      const metadata = getGeneratedCompositionMetadata({
+        profile: 'compound',
+        componentName: 'Example',
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        partProps: partProps('react', {
+          Item: [extractedProp({ name: 'renderItem', kind: 'other' })],
+        }),
+      });
+
+      expect(metadata.react?.children).toBeUndefined();
+      expect(warnSpy).toHaveBeenCalledWith(
+        '⚠️ Example react compound composition requires explicit metadata for complex part props: Item.renderItem'
+      );
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
+  it('preserves existing nested compound children when parts have no required props', () => {
+    const metadata = getGeneratedCompositionMetadata({
+      profile: 'compound',
+      componentName: 'Example',
       parts: ['Root', 'Item', 'Trigger', 'Content'],
     });
 
-    expect(metadata.react?.children).toContain('<Accordion.Item>');
+    expect(metadata.react?.children).toContain('<Example.Item>');
     expect(metadata.react?.children).toContain(
-      '<Accordion.Trigger>Section</Accordion.Trigger>'
+      '<Example.Trigger>Section</Example.Trigger>'
     );
     expect(metadata.react?.children).toContain(
-      '<Accordion.Content>Section content</Accordion.Content>'
+      '<Example.Content>Section content</Example.Content>'
     );
 
     expect(metadata.native?.children).toBe(metadata.react?.children);
