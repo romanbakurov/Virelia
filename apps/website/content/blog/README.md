@@ -67,6 +67,8 @@ The public server-side surface is intentionally small:
 
 Filesystem and JSON details stay behind this boundary. Blog V1 does **not** introduce a generic repository/provider abstraction, CMS adapter, or backend interface. If a real product requirement later moves storage to a backend/content API, that migration should happen behind these helpers rather than leaking storage concerns into routes and rendering.
 
+MDX module imports are kept in `apps/website/src/blog/article-modules.ts`. The registry uses literal import paths so Next.js/Turbopack can analyze article modules deterministically, including when the repository contains zero published articles. This registry is implementation wiring rather than a second content source of truth; #649 is expected to maintain it automatically when article generation is added.
+
 ## Creating an article manually
 
 Until the Blog V1 generator from #649 exists:
@@ -74,10 +76,11 @@ Until the Blog V1 generator from #649 exists:
 1. Create `apps/website/content/blog/<slug>/`.
 2. Add a valid `metadata.json` with `draft: true` while writing.
 3. Add the body in `article.mdx`.
-4. Run focused tooling tests plus the website typecheck/build.
-5. Open a pull request and review the rendered result once the Blog V1 routes exist.
-6. Change `draft` to `false` only when the article is intentionally ready to publish.
-7. Merge the reviewed pull request to publish.
+4. Add the article's literal MDX import loader to `apps/website/src/blog/article-modules.ts`.
+5. Run focused tooling tests plus the website typecheck/build.
+6. Open a pull request and review the rendered result once the Blog V1 routes exist.
+7. Change `draft` to `false` only when the article is intentionally ready to publish.
+8. Merge the reviewed pull request to publish.
 
 ## Automation boundary
 
