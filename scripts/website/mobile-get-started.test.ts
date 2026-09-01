@@ -5,11 +5,11 @@ import { describe, expect, it } from 'vitest';
 
 const headerSource = readFileSync(
   resolve('apps/website/src/components/layout/SiteHeader/SiteHeader.tsx'),
-  'utf8'
+  'utf8',
 );
 const headerStyles = readFileSync(
   resolve('apps/website/src/components/layout/SiteHeader/SiteHeader.module.css'),
-  'utf8'
+  'utf8',
 );
 
 const gettingStartedHref =
@@ -18,11 +18,11 @@ const gettingStartedHref =
 describe('mobile Get started CTA', () => {
   it('keeps the same Getting Started destination in desktop and mobile navigation', () => {
     expect(
-      headerSource.match(new RegExp(gettingStartedHref, 'g'))
+      headerSource.match(new RegExp(gettingStartedHref, 'g')),
     ).toHaveLength(2);
     expect(headerSource).toContain('className={styles.mobileNavigationCta}');
     expect(headerSource).toContain(
-      'onClick={() => setResolvedMobileMenuOpen(false)}'
+      'onClick={() => setResolvedMobileMenuOpen(false)}',
     );
   });
 
@@ -30,7 +30,7 @@ describe('mobile Get started CTA', () => {
     expect(headerStyles).toContain('.mobileNavigationCta {');
     expect(headerStyles).toContain('min-height: 44px;');
     expect(headerStyles).toMatch(
-      /\.actions,\s*\.externalActions,\s*\.ctaButton\s*{\s*display:\s*none;/
+      /\.actions,\s*\.externalActions,\s*\.ctaButton\s*{\s*display:\s*none;/,
     );
   });
 });
