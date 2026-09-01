@@ -32,28 +32,30 @@ export function getBlogArticleUrl(slug: string): string {
 }
 
 export function buildBlogIndexMetadata(): Metadata {
+  const socialImage = resolveAbsoluteUrl(DEFAULT_SOCIAL_IMAGE);
+
   return {
     title: 'Blog',
     description: BLOG_DESCRIPTION,
     alternates: {
-      canonical: '/blog',
+      canonical: BLOG_URL,
       types: {
-        'application/rss+xml': '/blog/rss.xml',
+        'application/rss+xml': BLOG_RSS_URL,
       },
     },
     openGraph: {
       title: BLOG_TITLE,
       description: BLOG_DESCRIPTION,
-      url: '/blog',
+      url: BLOG_URL,
       siteName: 'Vellira',
       type: 'website',
-      images: [DEFAULT_SOCIAL_IMAGE],
+      images: [socialImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: BLOG_TITLE,
       description: BLOG_DESCRIPTION,
-      images: [DEFAULT_SOCIAL_IMAGE],
+      images: [socialImage],
     },
   };
 }
@@ -61,8 +63,10 @@ export function buildBlogIndexMetadata(): Metadata {
 export function buildBlogArticleMetadata(
   article: BlogArticleMetadata
 ): Metadata {
-  const canonicalPath = `/blog/${article.slug}`;
-  const socialImage = article.socialImage ?? DEFAULT_SOCIAL_IMAGE;
+  const canonicalUrl = getBlogArticleUrl(article.slug);
+  const socialImage = resolveAbsoluteUrl(
+    article.socialImage ?? DEFAULT_SOCIAL_IMAGE
+  );
 
   return {
     title: article.title,
@@ -70,15 +74,15 @@ export function buildBlogArticleMetadata(
     authors: [{ name: article.author }],
     keywords: article.tags,
     alternates: {
-      canonical: canonicalPath,
+      canonical: canonicalUrl,
       types: {
-        'application/rss+xml': '/blog/rss.xml',
+        'application/rss+xml': BLOG_RSS_URL,
       },
     },
     openGraph: {
       title: article.title,
       description: article.description,
-      url: canonicalPath,
+      url: canonicalUrl,
       siteName: 'Vellira',
       type: 'article',
       publishedTime: toIsoDateTime(article.publishedAt),
