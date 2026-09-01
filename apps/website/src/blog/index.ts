@@ -4,7 +4,6 @@ import { getPublishedBlogArticleMetadata } from './store';
 import type { BlogArticle } from './types';
 
 export {
-  BLOG_CONTENT_DIRECTORY,
   getPublishedBlogArticleMetadata,
   getPublishedBlogArticles,
 } from './store';
