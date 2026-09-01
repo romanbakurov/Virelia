@@ -40,9 +40,7 @@ export function Hero() {
             </Button>
 
             <Button appearance='outline' color='neutral' asChild>
-              <Link href='https://docs.vellira.dev/components'>
-                Explore components
-              </Link>
+              <Link href='/components'>Explore components</Link>
             </Button>
 
             <Button appearance='ghost' color='neutral' asChild>

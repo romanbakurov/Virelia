@@ -1,5 +1,4 @@
-import type { ComponentType } from 'react';
-
+import { getBlogArticleModuleLoader } from './article-modules';
 import { getPublishedBlogArticleMetadata } from './store';
 import type { BlogArticle } from './types';
 
@@ -8,10 +7,6 @@ export {
   getPublishedBlogArticles,
 } from './store';
 export type { BlogArticle, BlogArticleMetadata } from './types';
-
-interface BlogMDXModule {
-  default: ComponentType;
-}
 
 export async function getPublishedBlogArticle(
   slug: string
@@ -22,9 +17,15 @@ export async function getPublishedBlogArticle(
     return null;
   }
 
-  const module = (await import(
-    `../../content/blog/${metadata.slug}/article.mdx`
-  )) as BlogMDXModule;
+  const loadModule = getBlogArticleModuleLoader(metadata.slug);
+
+  if (loadModule === null) {
+    throw new Error(
+      `Blog article ${metadata.slug}: MDX module is not registered`
+    );
+  }
+
+  const module = await loadModule();
 
   if (typeof module.default !== 'function') {
     throw new Error(

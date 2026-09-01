@@ -12,11 +12,12 @@ import { Container } from '@/components/layout/Container';
 import styles from './SiteFooter.module.css';
 
 const productLinks = [
-  { label: 'Components', href: '#components' },
-  { label: 'Platforms', href: '#platforms' },
-  { label: 'Themes', href: '#themes' },
-  { label: 'Pro', href: '#pro' },
-  { label: 'Roadmap', href: '#roadmap' },
+  { label: 'Components', href: '/components' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Platforms', href: '/#platforms' },
+  { label: 'Themes', href: '/#themes' },
+  { label: 'Pro', href: '/#pro' },
+  { label: 'Roadmap', href: '/#roadmap' },
 ] as const;
 
 const resourceLinks = [
@@ -104,10 +105,10 @@ export function SiteFooter() {
               <h2>Product</h2>
 
               {productLinks.map((link) => (
-                <a key={link.label} href={link.href}>
+                <Link key={link.label} href={link.href}>
                   <span className={styles.linkMarker} aria-hidden='true' />
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 
