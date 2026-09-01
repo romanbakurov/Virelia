@@ -8,6 +8,8 @@ import {
   authoredRegionStartMarker,
 } from './authored-region';
 
+import type { ComponentApiSection } from './api';
+
 const packageNameByPlatform = {
   react: '@vellira-ui/react',
   'react-native': '@vellira-ui/react-native',
@@ -25,18 +27,11 @@ export function renderComponentDocPage(params: {
   componentName: string;
   platform: ComponentPlatform;
   docs: PlatformDocsContract;
-  apiBlock: string;
-  apiSourcePath: string;
+  apiSections: readonly ComponentApiSection[];
   authoredContent: string;
 }) {
-  const {
-    componentName,
-    platform,
-    docs,
-    apiBlock,
-    apiSourcePath,
-    authoredContent,
-  } = params;
+  const { componentName, platform, docs, apiSections, authoredContent } =
+    params;
   const sections = [
     renderFrontmatter(docs),
     generatedComponentDocsHeader,
@@ -44,7 +39,7 @@ export function renderComponentDocPage(params: {
     docs.summary,
     renderImportSection(componentName, platform),
     renderStorybookSection(docs),
-    renderApiSection(apiBlock, apiSourcePath),
+    renderApiSection(apiSections),
     renderListSection('When To Use', docs.whenToUse),
     renderListSection('Accessibility', docs.accessibility),
     renderRelatedComponentsSection(platform, docs),
@@ -93,11 +88,23 @@ function renderStorybookSection(docs: PlatformDocsContract) {
   ].join('\n');
 }
 
-function renderApiSection(apiBlock: string, apiSourcePath: string) {
+function renderApiSection(apiSections: readonly ComponentApiSection[]) {
+  const apiSourcePath = apiSections[0]?.relativeApiPath;
+
+  if (!apiSourcePath) {
+    return '';
+  }
+
   return [
     '## API',
     `API details are generated from \`${apiSourcePath}\`.`,
-    apiBlock,
+    apiSections.length === 1
+      ? apiSections[0].block
+      : apiSections
+          .map((section) =>
+            [`### ${section.title}`, section.block].join('\n\n')
+          )
+          .join('\n\n'),
   ].join('\n\n');
 }
 
