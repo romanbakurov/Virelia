@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { animate, motion, useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import Image from 'next/image';
 
 import {
@@ -15,21 +15,22 @@ import {
 } from '@vellira-ui/icons';
 import { Button } from '@vellira-ui/react';
 
+import type { HomepageProductFacts } from '@/config/homepageProductFacts';
 import styles from './SocialProof.module.css';
 
 const proofMetrics = [
   {
-    value: '6',
+    key: 'publishedPackages',
     label: 'Published packages',
     detail: 'React, Native, tokens, icons, types and build outputs.',
   },
   {
-    value: '3',
+    key: 'builtInThemes',
     label: 'Built-in themes',
     detail: 'Light, dark and high contrast.',
   },
   {
-    value: '2',
+    key: 'productionPlatforms',
     label: 'Production platforms',
     detail: 'React and React Native.',
   },
@@ -79,47 +80,13 @@ const footerItems = [
 
 const workflowStartDelay = 760;
 const workflowStepDelay = 520;
-const metricStartDelay = 1000;
-const metricAnimationDuration = 2600;
 const qualityRevealDelay = 1500;
 
-function AnimatedMetric({
-  enabled,
-  value,
-  delay = 0,
+export function SocialProof({
+  productFacts,
 }: {
-  enabled: boolean;
-  value: number;
-  delay?: number;
+  productFacts: HomepageProductFacts;
 }) {
-  const [displayValue, setDisplayValue] = useState(enabled ? value : 0);
-
-  useEffect(() => {
-    if (!enabled) {
-      return;
-    }
-
-    let controls: ReturnType<typeof animate> | undefined;
-    const timer = window.setTimeout(() => {
-      controls = animate(0, value, {
-        duration: metricAnimationDuration / 1000,
-        ease: [0.16, 1, 0.16, 1],
-        onUpdate: (latest) => {
-          setDisplayValue(Math.round(latest));
-        },
-      });
-    }, delay);
-
-    return () => {
-      window.clearTimeout(timer);
-      controls?.stop();
-    };
-  }, [delay, enabled, value]);
-
-  return displayValue;
-}
-
-export function SocialProof() {
   const dashboardRef = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   const isDashboardInView = useInView(dashboardRef, {
@@ -555,41 +522,47 @@ export function SocialProof() {
 
             <aside className={styles.insightsColumn}>
               <div className={styles.metrics}>
-                {proofMetrics.map((metric, index) => (
-                  <motion.article
-                    key={metric.label}
-                    className={styles.metricCard}
-                    initial={
-                      shouldReduceMotion
-                        ? false
-                        : { opacity: 0, x: 24, scale: 0.97 }
-                    }
-                    animate={
-                      isDashboardInView
-                        ? { opacity: 1, x: 0, scale: 1 }
-                        : { opacity: 0, x: 24, scale: 0.97 }
-                    }
-                    transition={{
-                      delay: shouldReduceMotion ? 0 : 0.12 + index * 0.16,
-                      duration: shouldReduceMotion ? 0 : 0.82,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                  >
-                    <div className={styles.metricTop}>
-                      <span>{metric.label}</span>
-                      <ArrowRight size={13} aria-hidden='true' />
-                    </div>
+                {proofMetrics.map((metric, index) => {
+                  const value = productFacts[metric.key];
 
-                    <strong>
-                      <AnimatedMetric
-                        delay={shouldReduceMotion ? 0 : metricStartDelay}
-                        enabled={isDashboardInView}
-                        value={Number(metric.value)}
-                      />
-                    </strong>
-                    <p>{metric.detail}</p>
-                  </motion.article>
-                ))}
+                  return (
+                    <motion.article
+                      key={metric.label}
+                      className={styles.metricCard}
+                      initial={
+                        shouldReduceMotion
+                          ? false
+                          : { opacity: 0, x: 24, scale: 0.97 }
+                      }
+                      animate={
+                        isDashboardInView
+                          ? { opacity: 1, x: 0, scale: 1 }
+                          : { opacity: 0, x: 24, scale: 0.97 }
+                      }
+                      transition={{
+                        delay: shouldReduceMotion ? 0 : 0.12 + index * 0.16,
+                        duration: shouldReduceMotion ? 0 : 0.82,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    >
+                      <div className={styles.metricTop}>
+                        <span>{metric.label}</span>
+                        <ArrowRight size={13} aria-hidden='true' />
+                      </div>
+
+                      <strong
+                        aria-label={
+                          value === null
+                            ? `${metric.label} unavailable`
+                            : undefined
+                        }
+                      >
+                        {value ?? '—'}
+                      </strong>
+                      <p>{metric.detail}</p>
+                    </motion.article>
+                  );
+                })}
               </div>
 
               <article className={styles.accessibilityCard}>
@@ -614,7 +587,15 @@ export function SocialProof() {
                   <Package size={16} aria-hidden='true' />
                   <div>
                     <span>Latest stable release</span>
-                    <strong>v2.18.4</strong>
+                    <strong
+                      aria-label={
+                        productFacts.stableRelease === null
+                          ? 'Latest stable release unavailable'
+                          : undefined
+                      }
+                    >
+                      {productFacts.stableRelease ?? '—'}
+                    </strong>
                   </div>
                 </div>
 

@@ -240,6 +240,14 @@
     background: var(--surface-subtle);
   }
 
+  .mobileNavigationCta {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    margin-top: var(--space-3);
+  }
+
   .mobileNavigationFooter {
     display: flex;
     justify-content: space-between;
@@ -332,6 +340,7 @@
 
 @media (width > 640px) and (width <= 1100px) {
   .mobileNavigationLinks,
+  .mobileNavigationCta,
   .mobileNavigationFooter {
     width: min(100%, 720px);
     margin-inline: auto;

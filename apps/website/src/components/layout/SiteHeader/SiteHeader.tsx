@@ -362,6 +362,19 @@ export function SiteHeader({
                   ))}
                 </nav>
 
+                <Button
+                  asChild
+                  size='sm'
+                  className={styles.mobileNavigationCta}
+                >
+                  <a
+                    href='https://docs.vellira.dev/start/getting-started'
+                    onClick={() => setResolvedMobileMenuOpen(false)}
+                  >
+                    Get started
+                  </a>
+                </Button>
+
                 <div className={styles.mobileNavigationFooter}>
                   <ThemeSwitcher />
 
