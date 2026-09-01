@@ -1,10 +1,12 @@
 import type { MetadataRoute } from 'next';
 
+import { getPublishedBlogArticles } from '@/blog';
+import { buildBlogSitemapEntries } from '@/blog/seo';
 import { webComponents } from '@/component-catalog';
 
 const SITE_URL = 'https://vellira.dev';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const componentPages: MetadataRoute.Sitemap = webComponents.map(
     (component) => ({
       url: `${SITE_URL}/components/${component.slug}`,
@@ -13,6 +15,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })
   );
+  const blogArticles = await getPublishedBlogArticles();
+  const blogPages = buildBlogSitemapEntries(blogArticles);
 
   return [
     {
@@ -30,5 +34,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
 
     ...componentPages,
+    ...blogPages,
   ];
 }
