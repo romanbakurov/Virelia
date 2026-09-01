@@ -1,9 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import {
-  getPublishedBlogArticle,
-  getPublishedBlogArticles,
-} from '@/blog';
+import { getPublishedBlogArticle, getPublishedBlogArticles } from '@/blog';
 import { BlogArticleView } from '@/blog/ui';
 
 interface BlogArticlePageProps {
