@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactNode } from 'react';
 
 import { codeToHtml } from 'shiki';
 
-import styles from './BlogExperience.module.css';
+import styles from './BlogCodeBlock.module.css';
 
 interface CodeElementProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
