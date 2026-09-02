@@ -3,11 +3,17 @@ import { describe, expect, it } from 'vitest';
 import type { ExtractedProp, GeneratedExample } from '../model/types';
 import { buildExamples, renderExamples } from './examples';
 
-function prop(
-  name: string,
-  kind: ExtractedProp['kind'],
-  type: string,
-): ExtractedProp {
+type PropKind = ExtractedProp['kind'];
+type RenderConfig = Parameters<typeof renderExamples>[0]['componentConfig'];
+
+type RenderParams = {
+  generatedExamples?: readonly GeneratedExample[];
+  reactApiProps?: readonly ExtractedProp[];
+  nativeApiProps?: readonly ExtractedProp[];
+  componentConfig?: RenderConfig;
+};
+
+function prop(name: string, kind: PropKind, type: string): ExtractedProp {
   if (kind === 'select') {
     return {
       name,
@@ -28,24 +34,20 @@ function prop(
   };
 }
 
-function render(params: {
-  generatedExamples?: readonly GeneratedExample[];
-  reactApiProps?: readonly ExtractedProp[];
-  nativeApiProps?: readonly ExtractedProp[];
-  componentConfig?: Parameters<typeof renderExamples>[0]['componentConfig'];
-}) {
+function render(params: RenderParams) {
+  const generatedExamples: readonly GeneratedExample[] =
+    params.generatedExamples ?? [
+      {
+        title: 'Basic',
+        description: 'Basic example.',
+        props: [],
+      },
+    ];
+
   return renderExamples({
     componentName: 'Accordion',
     componentConfig: params.componentConfig ?? {},
-    generatedExamples:
-      params.generatedExamples ??
-      ([
-        {
-          title: 'Basic',
-          description: 'Basic example.',
-          props: [],
-        },
-      ] satisfies readonly GeneratedExample[]),
+    generatedExamples,
     generatedFileHeader: '',
     reactApiProps: params.reactApiProps ?? [],
     nativeApiProps: params.nativeApiProps ?? [],
@@ -89,7 +91,7 @@ describe('buildExamples', () => {
     expect(examples.map((example) => example.title)).toEqual(['Basic']);
   });
 
-  it('only generates bare shorthand examples for boolean props', () => {
+  it('only generates bare shorthand for boolean props', () => {
     const examples = buildExamples({
       componentName: 'Accordion',
       componentConfig: {},
@@ -103,43 +105,36 @@ describe('buildExamples', () => {
 });
 
 describe('renderExamples', () => {
-  it(
-    'does not inherit label or description shortcuts missing from the platform API',
-    () => {
-      const content = render({
-        componentConfig: {
-          demo: {
-            label: 'Order information',
-            description: 'Expandable details.',
-          },
-        },
-      });
-
-      expect(content).not.toContain("label='Order information'");
-      expect(content).not.toContain("description='Expandable details.'");
-    },
-  );
-
-  it('keeps a demo shortcut when the target platform exposes that prop', () => {
+  it('filters unavailable demo shortcuts', () => {
     const content = render({
       componentConfig: {
         demo: {
-          label: 'Order information',
+          label: 'Label',
+          description: 'Help',
+        },
+      },
+    });
+
+    expect(content).not.toContain("label='Label'");
+    expect(content).not.toContain("description='Help'");
+  });
+
+  it('keeps shortcuts exposed by the platform API', () => {
+    const content = render({
+      componentConfig: {
+        demo: {
+          label: 'Email',
         },
       },
       reactApiProps: [prop('label', 'string', 'string')],
     });
 
-    expect(content).toContain(
-      "<ReactAccordion\n          label='Order information'",
-    );
-    expect(content).not.toContain(
-      "<NativeAccordion\n          label='Order information'",
-    );
+    expect(content).toContain("<ReactAccordion\n          label='Email'");
+    expect(content).not.toContain("<NativeAccordion\n          label='Email'");
   });
 
-  it('rejects bare JSX shorthand for a non-boolean prop', () => {
-    expect(() =>
+  it('rejects bare non-boolean props', () => {
+    const renderInvalid = () =>
       render({
         generatedExamples: [
           {
@@ -152,11 +147,12 @@ describe('renderExamples', () => {
         reactApiProps: [
           prop('defaultValue', 'other', 'string | string[] | undefined'),
         ],
-      }),
-    ).toThrow(/bare JSX syntax for non-boolean prop "defaultValue"/);
+      });
+
+    expect(renderInvalid).toThrow(/non-boolean prop/);
   });
 
-  it('allows bare JSX shorthand for a boolean prop', () => {
+  it('allows bare boolean props', () => {
     const content = render({
       generatedExamples: [
         {
@@ -172,24 +168,22 @@ describe('renderExamples', () => {
     expect(content).toContain('collapsible');
   });
 
-  it(
-    'rejects platform children that re-wrap the generated component root',
-    () => {
-      expect(() =>
-        render({
-          generatedExamples: [
-            {
-              title: 'Controlled',
-              description: 'Example.',
-              props: [],
-              reactChildren: `<Accordion value='billing'>
+  it('rejects nested component roots in children', () => {
+    const renderInvalid = () =>
+      render({
+        generatedExamples: [
+          {
+            title: 'Controlled',
+            description: 'Example.',
+            props: [],
+            reactChildren: `<Accordion value='billing'>
   <Accordion.Item value='billing'>Billing</Accordion.Item>
 </Accordion>`,
-              platforms: ['react'],
-            },
-          ],
-        }),
-      ).toThrow(/must contain inner child markup, not a second <Accordion> root/);
-    },
-  );
+            platforms: ['react'],
+          },
+        ],
+      });
+
+    expect(renderInvalid).toThrow(/second <Accordion> root/);
+  });
 });
