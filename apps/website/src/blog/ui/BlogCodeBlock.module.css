@@ -10,6 +10,10 @@
   box-shadow: var(--shadow-inset);
 }
 
+:global([data-vellira-theme='light']) .codeBlock {
+  background: var(--surface-default);
+}
+
 .codeBlockToolbar {
   display: flex;
   align-items: center;
@@ -30,16 +34,11 @@
   padding: clamp(18px, 3vw, 26px);
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-  color: var(--shiki-light) !important;
   background: transparent !important;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   -webkit-overflow-scrolling: touch;
-}
-
-.codeBlock :global(.shiki span) {
-  color: var(--shiki-light) !important;
 }
 
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki),
