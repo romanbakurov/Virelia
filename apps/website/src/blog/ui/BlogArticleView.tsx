@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { Container } from '@/components/layout/Container';
-import type { BlogArticle } from '../types';
+import type { BlogArticle } from '@/blog';
 import { BlogArticleActions } from './BlogArticleActions';
 import { formatBlogDate } from './BlogIndex';
 

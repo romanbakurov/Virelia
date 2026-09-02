@@ -1,7 +1,9 @@
 import Link from 'next/link';
 
 import { Container } from '@/components/layout/Container';
-import type { BlogArticleMetadata } from '../types';
+import type { BlogMetricsBySlug } from '../metrics';
+import type { BlogArticleMetadata } from '@/blog';
+import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 
 import styles from './BlogExperience.module.css';
 
@@ -18,9 +20,10 @@ export function formatBlogDate(date: string): string {
 
 interface BlogIndexProps {
   articles: readonly BlogArticleMetadata[];
+  metricsBySlug?: BlogMetricsBySlug;
 }
 
-export function BlogIndex({ articles }: BlogIndexProps) {
+export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
@@ -65,6 +68,8 @@ export function BlogIndex({ articles }: BlogIndexProps) {
                   <p className={styles.cardDescription}>
                     {article.description}
                   </p>
+
+                  <BlogMetricsDisplay metrics={metricsBySlug[article.slug]} />
 
                   <div className={styles.tags} aria-label='Article tags'>
                     {article.tags.map((tag) => (
