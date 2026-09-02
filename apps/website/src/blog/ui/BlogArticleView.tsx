@@ -44,9 +44,7 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
               {metadata.description}
             </p>
 
-            <div
-              className={`${styles.articleMeta} ${responsive.articleMeta}`}
-            >
+            <div className={`${styles.articleMeta} ${responsive.articleMeta}`}>
               <span>{metadata.author}</span>
               <span
                 className={`${styles.metaDivider} ${responsive.metaDivider}`}
