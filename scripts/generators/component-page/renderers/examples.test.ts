@@ -6,7 +6,7 @@ import { buildExamples, renderExamples } from './examples';
 function prop(
   name: string,
   kind: ExtractedProp['kind'],
-  type: string
+  type: string,
 ): ExtractedProp {
   if (kind === 'select') {
     return {
@@ -117,7 +117,7 @@ describe('renderExamples', () => {
 
       expect(content).not.toContain("label='Order information'");
       expect(content).not.toContain("description='Expandable details.'");
-    }
+    },
   );
 
   it('keeps a demo shortcut when the target platform exposes that prop', () => {
@@ -131,10 +131,10 @@ describe('renderExamples', () => {
     });
 
     expect(content).toContain(
-      "<ReactAccordion\n          label='Order information'"
+      "<ReactAccordion\n          label='Order information'",
     );
     expect(content).not.toContain(
-      "<NativeAccordion\n          label='Order information'"
+      "<NativeAccordion\n          label='Order information'",
     );
   });
 
@@ -152,7 +152,7 @@ describe('renderExamples', () => {
         reactApiProps: [
           prop('defaultValue', 'other', 'string | string[] | undefined'),
         ],
-      })
+      }),
     ).toThrow(/bare JSX syntax for non-boolean prop "defaultValue"/);
   });
 
@@ -188,8 +188,8 @@ describe('renderExamples', () => {
               platforms: ['react'],
             },
           ],
-        })
+        }),
       ).toThrow(/must contain inner child markup, not a second <Accordion> root/);
-    }
+    },
   );
 });
