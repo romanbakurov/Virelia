@@ -212,6 +212,8 @@ const examplesContent = renderExamples({
   componentConfig,
   generatedExamples,
   generatedFileHeader,
+  reactApiProps,
+  nativeApiProps,
   getDemoProps,
 });
 
