@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { Check, Copy, Heart, Share } from '@vellira-ui/icons';
+import {
+  Check,
+  Copy,
+  Eye,
+  Heart,
+  HeartFilled,
+  Share,
+} from '@vellira-ui/icons';
 
 import {
   fetchBlogArticleLike,
@@ -12,7 +19,6 @@ import {
   unlikeBlogArticle,
   type BlogMetrics,
 } from '../metrics';
-import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 
 import styles from './BlogArticleActions.module.css';
 
@@ -32,6 +38,10 @@ function buildShareUrl(baseUrl: string, params: Record<string, string>) {
   }
 
   return url.toString();
+}
+
+function formatMetricCount(value: number): string {
+  return new Intl.NumberFormat('en-US').format(value);
 }
 
 async function registerArticleViewOnce(
@@ -186,6 +196,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     await copyArticleLink();
   }
 
+  const likes = metrics ? formatMetricCount(metrics.likes) : null;
+  const views = metrics ? formatMetricCount(metrics.views) : null;
+
   return (
     <aside className={styles.articleActions} aria-label='Article actions'>
       <div className={styles.articleActionsIntro}>
@@ -194,14 +207,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       </div>
 
       <div className={styles.articleActionRow}>
-        <BlogMetricsDisplay
-          metrics={metrics}
-          className={styles.actionMetrics}
-        />
-
         <button
           type='button'
-          className={`${styles.articleActionButton} ${
+          className={`${styles.articleActionButton} ${styles.articleMetricButton} ${
             liked ? styles.articleActionButtonActive : ''
           }`}
           aria-label={liked ? 'Unlike this article' : 'Like this article'}
@@ -209,9 +217,30 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
           disabled={likePending}
           onClick={toggleLike}
         >
-          <Heart size={17} aria-hidden='true' />
-          {liked ? 'Liked' : 'Like'}
+          {liked ? (
+            <HeartFilled size={17} aria-hidden='true' />
+          ) : (
+            <Heart size={17} aria-hidden='true' />
+          )}
+          {likes !== null ? (
+            <span aria-label={`${likes} likes`} aria-live='polite'>
+              {likes}
+            </span>
+          ) : null}
+          <span className={styles.visuallyHidden}>
+            {liked ? 'Liked' : 'Like'}
+          </span>
         </button>
+
+        {views !== null ? (
+          <span
+            className={styles.articleMetricPill}
+            aria-label={`${views} views`}
+          >
+            <Eye size={17} aria-hidden='true' />
+            <span aria-hidden='true'>{views}</span>
+          </span>
+        ) : null}
 
         <button
           type='button'
