@@ -24,7 +24,9 @@ function readCodeBlock(children: ReactNode) {
     return null;
   }
 
-  const languageMatch = /language-([\w-]+)/.exec(children.props.className ?? '');
+  const languageMatch = /language-([\w-]+)/.exec(
+    children.props.className ?? ''
+  );
 
   return {
     code: code.replace(/\n$/, ''),
@@ -32,7 +34,10 @@ function readCodeBlock(children: ReactNode) {
   };
 }
 
-export async function BlogCodeBlock({ children, ...props }: BlogCodeBlockProps) {
+export async function BlogCodeBlock({
+  children,
+  ...props
+}: BlogCodeBlockProps) {
   const codeBlock = readCodeBlock(children);
 
   if (!codeBlock) {
