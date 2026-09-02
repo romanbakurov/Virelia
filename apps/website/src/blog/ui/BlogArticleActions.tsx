@@ -34,15 +34,17 @@ interface BlogArticleActionsProps {
 
 const SITE_URL = 'https://vellira.dev';
 const ICON_SIZES = {
-  heart: 18,
-  eye: 17,
-  share: 17,
-  linkedin: 16,
-  x: 16,
-  facebook: 18,
-  reddit: 18,
-  copy: 16,
-  check: 16,
+  heart: 20,
+  eye: 18,
+  share: 18,
+
+  linkedin: 14,
+  x: 13,
+  facebook: 15,
+  reddit: 15,
+
+  copy: 22,
+  check: 22,
 } as const;
 const pendingViewRegistrations = new Map<string, Promise<BlogMetrics | null>>();
 
