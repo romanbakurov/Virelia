@@ -1,5 +1,3 @@
-'use server';
-
 import { isValidElement } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 
