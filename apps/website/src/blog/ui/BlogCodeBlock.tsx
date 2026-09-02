@@ -52,6 +52,7 @@ export async function BlogCodeBlock({
         dark: 'github-dark',
         highContrast: 'github-dark-high-contrast',
       },
+      defaultColor: false,
     });
 
     return (
