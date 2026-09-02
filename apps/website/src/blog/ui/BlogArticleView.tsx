@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Container } from '@/components/layout/Container';
 import type { BlogArticle } from '../types';
+import { BlogArticleActions } from './BlogArticleActions';
 import { formatBlogDate } from './BlogIndex';
 
 import styles from './BlogExperience.module.css';
@@ -16,7 +17,7 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
   return (
     <main className={styles.page}>
       <article className={styles.articlePage}>
-        <Container size='content' className={styles.articleShell}>
+        <Container size='wide' className={styles.articleShell}>
           <header className={styles.articleHeader}>
             <Link href='/blog' className={styles.backLink}>
               Back to blog
@@ -60,6 +61,8 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
           <div className={styles.articleBody}>
             <Content />
           </div>
+
+          <BlogArticleActions slug={metadata.slug} title={metadata.title} />
         </Container>
       </article>
     </main>
