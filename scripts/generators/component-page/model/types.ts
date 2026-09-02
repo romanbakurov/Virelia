@@ -46,6 +46,9 @@ export type GeneratedExample = {
   imports?: readonly string[];
   reactImports?: readonly string[];
   nativeImports?: readonly string[];
+  setup?: readonly string[];
+  reactSetup?: readonly string[];
+  nativeSetup?: readonly string[];
   reactProps?: readonly string[];
   nativeProps?: readonly string[];
   reactChildren?: string;
