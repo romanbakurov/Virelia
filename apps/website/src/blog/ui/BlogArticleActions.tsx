@@ -6,9 +6,13 @@ import {
   Check,
   Copy,
   Eye,
+  Facebook,
   Heart,
   HeartFilled,
+  LinkedIn,
+  Reddit,
   Share,
+  X,
 } from '@vellira-ui/icons';
 
 import {
@@ -121,12 +125,14 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     () => [
       {
         label: 'LinkedIn',
+        icon: <LinkedIn size={17} aria-hidden='true' />,
         href: buildShareUrl('https://www.linkedin.com/sharing/share-offsite/', {
           url: articleUrl,
         }),
       },
       {
         label: 'X',
+        icon: <X size={17} aria-hidden='true' />,
         href: buildShareUrl('https://twitter.com/intent/tweet', {
           text: title,
           url: articleUrl,
@@ -134,12 +140,14 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       },
       {
         label: 'Facebook',
+        icon: <Facebook size={17} aria-hidden='true' />,
         href: buildShareUrl('https://www.facebook.com/sharer/sharer.php', {
           u: articleUrl,
         }),
       },
       {
         label: 'Reddit',
+        icon: <Reddit size={17} aria-hidden='true' />,
         href: buildShareUrl('https://www.reddit.com/submit', {
           title,
           url: articleUrl,
@@ -209,11 +217,12 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       <div className={styles.articleActionRow}>
         <button
           type='button'
-          className={`${styles.articleActionButton} ${styles.articleMetricButton} ${
+          className={`${styles.articleActionButton} ${styles.articleMetricButton} ${styles.articleTooltip} ${
             liked ? styles.articleActionButtonActive : ''
           }`}
           aria-label={liked ? 'Unlike this article' : 'Like this article'}
           aria-pressed={liked === true}
+          data-tooltip={liked ? 'Unlike' : 'Like'}
           disabled={likePending}
           onClick={toggleLike}
         >
@@ -234,8 +243,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
 
         {views !== null ? (
           <span
-            className={styles.articleMetricPill}
+            className={`${styles.articleMetricPill} ${styles.articleTooltip}`}
             aria-label={`${views} views`}
+            data-tooltip='Views'
           >
             <Eye size={17} aria-hidden='true' />
             <span aria-hidden='true'>{views}</span>
@@ -244,11 +254,12 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
 
         <button
           type='button'
-          className={styles.articleActionButton}
+          className={`${styles.articleActionButton} ${styles.articleIconButton} ${styles.articleTooltip}`}
+          aria-label='Share'
+          data-tooltip='Share'
           onClick={shareArticle}
         >
           <Share size={17} aria-hidden='true' />
-          Share
         </button>
 
         <div
@@ -258,21 +269,29 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
           {shareLinks.map((link) => (
             <a
               key={link.label}
+              className={`${styles.articleIconButton} ${styles.articleTooltip}`}
               href={link.href}
               target='_blank'
               rel='noreferrer noopener'
+              aria-label={link.label}
+              data-tooltip={link.label}
             >
-              {link.label}
+              {link.icon}
             </a>
           ))}
 
-          <button type='button' onClick={copyArticleLink}>
+          <button
+            type='button'
+            className={`${styles.articleIconButton} ${styles.articleTooltip}`}
+            aria-label={copied ? 'Copied' : 'Copy link'}
+            data-tooltip={copied ? 'Copied' : 'Copy link'}
+            onClick={copyArticleLink}
+          >
             {copied ? (
               <Check size={15} aria-hidden='true' />
             ) : (
               <Copy size={15} aria-hidden='true' />
             )}
-            {copied ? 'Copied' : 'Copy link'}
           </button>
         </div>
       </div>
