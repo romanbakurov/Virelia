@@ -47,7 +47,11 @@ export async function BlogCodeBlock({
   try {
     const highlightedHtml = await codeToHtml(codeBlock.code, {
       lang: codeBlock.language,
-      theme: 'github-light',
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+        highContrast: 'github-dark-high-contrast',
+      },
     });
 
     return (
