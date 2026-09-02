@@ -7,6 +7,8 @@ export function renderDemoFiles(params: {
   componentConfig: ComponentPageMetadata;
   platforms: readonly Platform[];
   playgroundProps: readonly ExtractedProp[];
+  reactApiProps: readonly ExtractedProp[];
+  nativeApiProps: readonly ExtractedProp[];
   reactPlaygroundPropBindings: string;
   nativePlaygroundPropBindings: string;
   reactStaticDemoProps: string;
@@ -22,6 +24,8 @@ export function renderDemoFiles(params: {
     componentConfig,
     platforms,
     playgroundProps,
+    reactApiProps,
+    nativeApiProps,
     reactPlaygroundPropBindings,
     nativePlaygroundPropBindings,
     reactStaticDemoProps,
@@ -41,16 +45,28 @@ export function renderDemoFiles(params: {
     return new RegExp(`(^|\\s)${propName}\\s*=`).test(source);
   }
 
-  const demoPresentationProps = [
-    componentConfig.demo?.label && !isPlaygroundProp('label')
-      ? `label=${toTsString(componentConfig.demo.label)}`
-      : null,
-    componentConfig.demo?.description && !isPlaygroundProp('description')
-      ? `description=${toTsString(componentConfig.demo.description)}`
-      : null,
-  ]
-    .filter(Boolean)
-    .join('\n          ');
+  function hasApiProp(platform: Platform, propName: string) {
+    const apiProps = platform === 'react' ? reactApiProps : nativeApiProps;
+
+    return apiProps.some((prop) => prop.name === propName);
+  }
+
+  function createDemoShortcutProps(platform: Platform, propBindings: string) {
+    return [
+      componentConfig.demo?.label &&
+      hasApiProp(platform, 'label') &&
+      !hasPropBinding(propBindings, 'label')
+        ? `label=${toTsString(componentConfig.demo.label)}`
+        : null,
+      componentConfig.demo?.description &&
+      hasApiProp(platform, 'description') &&
+      !hasPropBinding(propBindings, 'description')
+        ? `description=${toTsString(componentConfig.demo.description)}`
+        : null,
+    ]
+      .filter(Boolean)
+      .join('\n          ');
+  }
 
   function createStaticDemoProps(platformStaticProps: string) {
     return Object.entries(componentConfig.demo?.staticProps ?? {})
@@ -90,6 +106,7 @@ export function renderDemoFiles(params: {
     const staticProps =
       platform === 'react' ? reactStaticDemoProps : nativeStaticDemoProps;
     const sharedStaticDemoProps = createStaticDemoProps(staticProps);
+    const demoShortcutProps = createDemoShortcutProps(platform, propBindings);
 
     const props = [
       staticProps,
@@ -98,7 +115,7 @@ export function renderDemoFiles(params: {
         ? 'presentation={presentation}'
         : '',
       propBindings,
-      demoPresentationProps,
+      demoShortcutProps,
     ]
       .filter(Boolean)
       .join('\n          ');
