@@ -9,6 +9,7 @@ import {
   getVelliraApiSourceRoots,
 } from './helpers/paths';
 import { createFileWriter } from './helpers/writer';
+import { validateComponentMetadataAgainstApi } from './metadata/metadata';
 import { buildGeneratedPageModel } from './model/build-page-model';
 import { resolvePageInput } from './model/resolve-page-input';
 import {
@@ -176,6 +177,14 @@ if (platforms.length === 0) {
   );
   process.exit(1);
 }
+
+validateComponentMetadataAgainstApi({
+  componentName,
+  metadata: componentConfig,
+  platforms,
+  reactApiProps,
+  nativeApiProps,
+});
 
 const usageFile = path.join(componentCatalogDir, `${componentName}Usage.tsx`);
 
