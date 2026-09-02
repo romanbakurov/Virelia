@@ -81,7 +81,12 @@ export function SiteFooter() {
           </p>
 
           <div className={styles.brandColumn}>
-            <Link className={styles.brand} href='/' aria-label='Vellira home'>
+            <Link
+              className={styles.brand}
+              href='/'
+              prefetch={false}
+              aria-label='Vellira home'
+            >
               <Image src={logoSrc} alt='Vellira' width={96} height={25} />
             </Link>
 
@@ -105,7 +110,11 @@ export function SiteFooter() {
               <h2>Product</h2>
 
               {productLinks.map((link) => (
-                <Link key={link.label} href={link.href}>
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  prefetch={link.href.startsWith('/#') ? false : undefined}
+                >
                   <span className={styles.linkMarker} aria-hidden='true' />
                   {link.label}
                 </Link>
