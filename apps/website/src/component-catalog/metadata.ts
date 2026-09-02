@@ -34,15 +34,27 @@ export type ComponentDemoMetadata = {
 export type ComponentExampleMetadata = {
   title: string;
   description: string;
+  /**
+   * JSX prop fragments applied on every supported platform.
+   * Bare identifiers are boolean shorthand only; non-boolean props need an
+   * explicit assignment such as `size='lg'` or `value={value}`.
+   */
   props: readonly string[];
   /** Whether this example inherits the component's configured demo props. */
   inheritDemoProps?: boolean;
   imports?: readonly string[];
   reactImports?: readonly string[];
   nativeImports?: readonly string[];
+  /** React-only JSX prop fragments using the same rules as `props`. */
   reactProps?: readonly string[];
+  /** React Native-only JSX prop fragments using the same rules as `props`. */
   nativeProps?: readonly string[];
+  /** Inner React child markup inserted inside the generated component root. */
   reactChildren?: string;
+  /**
+   * Inner React Native child markup inserted inside the generated component
+   * root.
+   */
   nativeChildren?: string;
   platforms?: readonly ComponentCatalogPlatform[];
 };
