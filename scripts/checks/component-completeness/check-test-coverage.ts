@@ -82,7 +82,7 @@ function validateManualCoverage(params: {
       name: 'tests',
       platform,
       ok: false,
-      details: `Manual test coverage is missing the required marker: ${expectedMarker}`,
+      details: `Manual test coverage is missing the required marker in ${manualTests.join(', ')}. Expected marker: ${expectedMarker}`,
     };
   }
 

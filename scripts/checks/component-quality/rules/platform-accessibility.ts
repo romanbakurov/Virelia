@@ -244,7 +244,7 @@ export const platformInteractionRule: ComponentQualityRule = {
           context.platform === 'react'
             ? 'Keyboard capability is declared, but no deterministic keyboard interaction evidence was found.'
             : 'Keyboard/interaction capability is declared, but no platform-appropriate React Native press/gesture interaction evidence was found.',
-          [path.relative(qualityRoot(context), snapshot.componentDir)]
+          relativeEvidence(context, snapshot.files)
         );
   },
 };

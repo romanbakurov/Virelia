@@ -122,6 +122,20 @@ describe('platform accessibility quality rules', () => {
     ).toBe('pass');
   });
 
+  it('reports exact source evidence when web interaction is missing', async () => {
+    createSource('react', '<div role="tab" />');
+
+    const result = await platformInteractionRule.evaluate({
+      metadata: baseMetadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.evidence).toContain(
+      'packages/react/src/components/Example/Example.tsx'
+    );
+  });
+
   it('uses press interaction instead of web keyboard APIs on native', async () => {
     createSource('react-native', '<Pressable onPress={select} />');
 
