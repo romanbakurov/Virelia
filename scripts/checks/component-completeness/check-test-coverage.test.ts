@@ -197,6 +197,44 @@ describe('test coverage contract completeness validation', () => {
     expect(result.details).toContain('focus-management, portal');
   });
 
+  it('includes the exact manual test path when the coverage marker is stale', () => {
+    const root = createRoot();
+    const contractFile = path.join(root, 'Dialog.test-contract.json');
+    const testFile = path.join(root, 'Dialog.test.tsx');
+    const manualTestFile = path.join(root, 'Dialog.manual.test.tsx');
+    const contract = createComponentTestCoverageContract({
+      componentName: 'Dialog',
+      profile: 'overlay',
+      control: 'value',
+      capabilities: overlayMetadata.capabilities ?? [],
+      parts: ['Root', 'Trigger', 'Content'],
+      isNative: false,
+    });
+
+    fs.writeFileSync(
+      contractFile,
+      renderComponentTestCoverageContract(contract)
+    );
+    fs.writeFileSync(
+      testFile,
+      `// Baseline contract: ${contract.baseline.requirements.join(', ')}\n`
+    );
+    fs.writeFileSync(manualTestFile, '// missing coverage marker\n');
+
+    const result = checkTestCoverageContract({
+      contractFile,
+      testFile,
+      metadata: overlayMetadata,
+      platform: 'react',
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.details).toContain(manualTestFile);
+    expect(result.details).toContain(
+      '// Coverage contract: focus-management, portal'
+    );
+  });
+
   it('passes when required manual overlay coverage is explicitly marked', () => {
     const root = createRoot();
     const contractFile = path.join(root, 'Dialog.test-contract.json');

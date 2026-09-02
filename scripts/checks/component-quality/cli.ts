@@ -74,6 +74,12 @@ function formatHumanReport(report: ComponentQualityReportV1) {
         lines.push(
           `    [${statusLabel(finding.status)}] ${finding.ruleId}${message}`
         );
+
+        if (finding.status === 'fail') {
+          for (const evidence of finding.evidence ?? []) {
+            lines.push(`      evidence: ${evidence}`);
+          }
+        }
       }
     }
   }

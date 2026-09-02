@@ -21,6 +21,7 @@ describe('component quality CLI', () => {
     expect(report).toContain('[PASS] api.public-surface');
     expect(report).toContain('[NOT-APPLICABLE] api.controlled-contract');
     expect(report).toContain('[PASS] api.declared-capabilities');
+    expect(report).not.toContain('evidence:');
   });
 
   it('prints the V1 report as JSON', async () => {
@@ -69,23 +70,53 @@ describe('component quality CLI', () => {
     expect(exitCode).toBe(0);
   });
 
-  it('returns exit code 1 for blocking quality failures', async () => {
+  it('returns exit code 1 and prints exact evidence for blocking quality failures', async () => {
+    const output: string[] = [];
     const runCheck = async (): Promise<ComponentQualityRunResult> => ({
       status: 'fail',
       report: {
         schemaVersion: '1',
-        components: [],
+        components: [
+          {
+            componentName: 'Example',
+            status: 'fail',
+            platforms: [
+              {
+                platform: 'react',
+                status: 'fail',
+                findings: [
+                  {
+                    ruleId: 'platform.interaction',
+                    dimension: 'interaction',
+                    severity: 'required',
+                    evaluation: 'automated',
+                    status: 'fail',
+                    platform: 'react',
+                    message: 'Missing deterministic keyboard interaction.',
+                    evidence: [
+                      'packages/react/src/components/Example/Example.tsx',
+                    ],
+                  },
+                ],
+              },
+            ],
+            findings: [],
+          },
+        ],
       },
     });
 
     const exitCode = await runCli(
-      ['--all'],
-      () => undefined,
+      ['Example'],
+      (message) => output.push(message),
       () => undefined,
       runCheck
     );
 
     expect(exitCode).toBe(1);
+    expect(output.join('\n')).toContain(
+      'evidence: packages/react/src/components/Example/Example.tsx'
+    );
   });
 
   it('returns exit code 2 for checker runtime failures', async () => {
