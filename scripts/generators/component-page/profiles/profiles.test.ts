@@ -69,6 +69,122 @@ describe('component page profiles', () => {
     ]);
   });
 
+  it('scopes selection-control defaults to the target component APIs', () => {
+    const checkboxProps = [
+      extractedProp({ name: 'checked', kind: 'boolean' }),
+      extractedProp({ name: 'disabled', kind: 'boolean' }),
+      extractedProp({ name: 'required', kind: 'boolean' }),
+      extractedProp({ name: 'indeterminate', kind: 'boolean' }),
+      extractedProp({
+        name: 'size',
+        kind: 'select',
+        options: ['sm', 'md', 'lg'],
+      }),
+      extractedProp({
+        name: 'color',
+        kind: 'select',
+        options: ['primary', 'success'],
+      }),
+      extractedProp({
+        name: 'labelPosition',
+        kind: 'select',
+        options: ['start', 'end'],
+      }),
+      extractedProp({ name: 'error', kind: 'string' }),
+      extractedProp({ name: 'defaultChecked', kind: 'boolean' }),
+    ];
+
+    const radioProps = checkboxProps.filter(
+      (prop) => prop.name !== 'indeterminate' && prop.name !== 'labelPosition'
+    );
+
+    const checkboxMetadata = getProfileMetadata('selection-control', {
+      reactApiProps: checkboxProps,
+      nativeApiProps: checkboxProps,
+    });
+
+    const radioMetadata = getProfileMetadata('selection-control', {
+      reactApiProps: radioProps,
+      nativeApiProps: radioProps,
+    });
+
+    expect(checkboxMetadata.demo?.initialValues).toMatchObject({
+      indeterminate: false,
+      labelPosition: 'end',
+    });
+    expect(checkboxMetadata.defaults?.shared).toMatchObject({
+      indeterminate: false,
+      labelPosition: 'end',
+    });
+
+    expect(radioMetadata.demo?.initialValues).not.toHaveProperty(
+      'indeterminate'
+    );
+    expect(radioMetadata.demo?.initialValues).not.toHaveProperty(
+      'labelPosition'
+    );
+    expect(radioMetadata.defaults?.shared).not.toHaveProperty('indeterminate');
+    expect(radioMetadata.defaults?.shared).not.toHaveProperty('labelPosition');
+  });
+
+  it('scopes selection-control defaults to the target component APIs', () => {
+    const checkboxProps = [
+      extractedProp({ name: 'checked', kind: 'boolean' }),
+      extractedProp({ name: 'disabled', kind: 'boolean' }),
+      extractedProp({ name: 'required', kind: 'boolean' }),
+      extractedProp({ name: 'indeterminate', kind: 'boolean' }),
+      extractedProp({
+        name: 'size',
+        kind: 'select',
+        options: ['sm', 'md', 'lg'],
+      }),
+      extractedProp({
+        name: 'color',
+        kind: 'select',
+        options: ['primary', 'success'],
+      }),
+      extractedProp({
+        name: 'labelPosition',
+        kind: 'select',
+        options: ['start', 'end'],
+      }),
+      extractedProp({ name: 'error', kind: 'string' }),
+      extractedProp({ name: 'defaultChecked', kind: 'boolean' }),
+    ];
+
+    const radioProps = checkboxProps.filter(
+      (prop) => prop.name !== 'indeterminate' && prop.name !== 'labelPosition'
+    );
+
+    const checkboxMetadata = getProfileMetadata('selection-control', {
+      reactApiProps: checkboxProps,
+      nativeApiProps: checkboxProps,
+    });
+
+    const radioMetadata = getProfileMetadata('selection-control', {
+      reactApiProps: radioProps,
+      nativeApiProps: radioProps,
+    });
+
+    expect(checkboxMetadata.demo?.initialValues).toMatchObject({
+      indeterminate: false,
+      labelPosition: 'end',
+    });
+    expect(checkboxMetadata.defaults?.shared).toMatchObject({
+      indeterminate: false,
+      labelPosition: 'end',
+    });
+
+    expect(radioMetadata.demo?.initialValues).not.toHaveProperty(
+      'indeterminate'
+    );
+    expect(radioMetadata.demo?.initialValues).not.toHaveProperty(
+      'labelPosition'
+    );
+    expect(radioMetadata.defaults?.shared).not.toHaveProperty('indeterminate');
+    expect(radioMetadata.defaults?.shared).not.toHaveProperty('labelPosition');
+  });
+
   it('generates meaningful nested compound children with required simple part props', () => {
     const metadata = getGeneratedCompositionMetadata({
       profile: 'compound',
