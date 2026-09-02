@@ -1,3 +1,5 @@
+'use server';
+
 import { isValidElement } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 
@@ -52,7 +54,7 @@ export async function BlogCodeBlock({
         dark: 'github-dark',
         highContrast: 'github-dark-high-contrast',
       },
-      defaultColor: false,
+      defaultColor: 'light',
     });
 
     return (
