@@ -33,6 +33,17 @@ interface BlogArticleActionsProps {
 }
 
 const SITE_URL = 'https://vellira.dev';
+const ICON_SIZES = {
+  heart: 18,
+  eye: 17,
+  share: 17,
+  linkedin: 16,
+  x: 16,
+  facebook: 18,
+  reddit: 18,
+  copy: 16,
+  check: 16,
+} as const;
 const pendingViewRegistrations = new Map<string, Promise<BlogMetrics | null>>();
 
 function buildShareUrl(baseUrl: string, params: Record<string, string>) {
@@ -126,14 +137,22 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     () => [
       {
         label: 'LinkedIn',
-        icon: <LinkedIn size={17} aria-hidden='true' />,
+        icon: (
+          <span className={styles.iconSlot}>
+            <LinkedIn size={ICON_SIZES.linkedin} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.linkedin.com/sharing/share-offsite/', {
           url: articleUrl,
         }),
       },
       {
         label: 'X',
-        icon: <X size={17} aria-hidden='true' />,
+        icon: (
+          <span className={styles.iconSlot}>
+            <X size={ICON_SIZES.x} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://twitter.com/intent/tweet', {
           text: title,
           url: articleUrl,
@@ -141,14 +160,22 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       },
       {
         label: 'Facebook',
-        icon: <Facebook size={17} aria-hidden='true' />,
+        icon: (
+          <span className={styles.iconSlot}>
+            <Facebook size={ICON_SIZES.facebook} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.facebook.com/sharer/sharer.php', {
           u: articleUrl,
         }),
       },
       {
         label: 'Reddit',
-        icon: <Reddit size={17} aria-hidden='true' />,
+        icon: (
+          <span className={styles.iconSlot}>
+            <Reddit size={ICON_SIZES.reddit} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.reddit.com/submit', {
           title,
           url: articleUrl,
@@ -230,9 +257,13 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
                 onClick={toggleLike}
               >
                 {liked ? (
-                  <HeartFilled size={17} aria-hidden='true' />
+                  <span className={styles.iconSlot}>
+                    <HeartFilled size={ICON_SIZES.heart} aria-hidden='true' />
+                  </span>
                 ) : (
-                  <Heart size={17} aria-hidden='true' />
+                  <span className={styles.iconSlot}>
+                    <Heart size={ICON_SIZES.heart} aria-hidden='true' />
+                  </span>
                 )}
                 {likes !== null ? (
                   <span aria-label={`${likes} likes`} aria-live='polite'>
@@ -258,7 +289,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
                   className={styles.articleMetricPill}
                   aria-label={`${views} views`}
                 >
-                  <Eye size={17} aria-hidden='true' />
+                  <span className={styles.iconSlot}>
+                    <Eye size={ICON_SIZES.eye} aria-hidden='true' />
+                  </span>
                   <span aria-hidden='true'>{views}</span>
                 </span>
               </Tooltip.Trigger>
@@ -276,7 +309,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
                 aria-label='Share'
                 onClick={shareArticle}
               >
-                <Share size={17} aria-hidden='true' />
+                <span className={styles.iconSlot}>
+                  <Share size={ICON_SIZES.share} aria-hidden='true' />
+                </span>
               </button>
             </Tooltip.Trigger>
             <Portal>
@@ -316,9 +351,13 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
                   onClick={copyArticleLink}
                 >
                   {copied ? (
-                    <Check size={15} aria-hidden='true' />
+                    <span className={styles.iconSlot}>
+                      <Check size={ICON_SIZES.check} aria-hidden='true' />
+                    </span>
                   ) : (
-                    <Copy size={15} aria-hidden='true' />
+                    <span className={styles.iconSlot}>
+                      <Copy size={ICON_SIZES.copy} aria-hidden='true' />
+                    </span>
                   )}
                 </button>
               </Tooltip.Trigger>

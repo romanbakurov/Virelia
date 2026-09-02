@@ -136,12 +136,27 @@
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
+  padding: 0;
   border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.iconSlot {
+  display: inline-flex;
+  flex: 0 0 20px;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  line-height: 0;
+}
+
+.iconSlot > svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 @media (width <= 640px) {
