@@ -119,7 +119,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       <div className={styles.articleActionRow}>
         <button
           type='button'
-          className={`${styles.articleActionButton} ${liked ? styles.articleActionButtonActive : ''}`}
+          className={`${styles.articleActionButton} ${
+            liked ? styles.articleActionButtonActive : ''
+          }`}
           aria-pressed={liked}
           onClick={toggleLike}
         >
@@ -136,7 +138,10 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
           Share
         </button>
 
-        <div className={styles.articleShareLinks} aria-label='Share this article'>
+        <div
+          className={styles.articleShareLinks}
+          aria-label='Share this article'
+        >
           {shareLinks.map((link) => (
             <a
               key={link.label}
