@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import ts from 'typescript';
+
 import type { ComponentPageMetadata } from '../../../../apps/website/src/component-catalog/metadata';
 
 export type { ComponentPageMetadata };
@@ -166,6 +168,42 @@ export function mergeComponentMetadata(
   };
 }
 
+function importLocallyBindsName(source: string, localName: string) {
+  const sourceFile = ts.createSourceFile(
+    'component-page-metadata-import.ts',
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
+  );
+
+  return sourceFile.statements.some((statement) => {
+    if (!ts.isImportDeclaration(statement) || !statement.importClause) {
+      return false;
+    }
+
+    const { importClause } = statement;
+
+    if (importClause.name?.text === localName) {
+      return true;
+    }
+
+    const { namedBindings } = importClause;
+
+    if (!namedBindings) {
+      return false;
+    }
+
+    if (ts.isNamespaceImport(namedBindings)) {
+      return namedBindings.name.text === localName;
+    }
+
+    return namedBindings.elements.some(
+      (element) => element.name.text === localName
+    );
+  });
+}
+
 export function validateComponentMetadata(params: {
   componentName: string;
   metadata: ComponentPageMetadata;
@@ -174,6 +212,19 @@ export function validateComponentMetadata(params: {
   const errors: string[] = [];
   const exampleTitles = new Set<string>();
   const apiSections = new Set<string>();
+
+  for (const [platform, platformMetadata] of [
+    ['react', metadata.react],
+    ['react-native', metadata.native],
+  ] as const) {
+    for (const [index, source] of (platformMetadata?.imports ?? []).entries()) {
+      if (importLocallyBindsName(source, componentName)) {
+        errors.push(
+          `${platform}.imports[${index}] must not bind generated component "${componentName}"`
+        );
+      }
+    }
+  }
 
   for (const [index, example] of (metadata.examples ?? []).entries()) {
     if (exampleTitles.has(example.title)) {
