@@ -4,6 +4,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Check, Copy, Heart, Share } from '@vellira-ui/icons';
 
+import {
+  fetchBlogArticleLike,
+  fetchBlogMetrics,
+  likeBlogArticle,
+  registerBlogArticleView,
+  unlikeBlogArticle,
+  type BlogMetrics,
+} from '../metrics';
+import { BlogMetricsDisplay } from './BlogMetricsDisplay';
+
 import styles from './BlogArticleActions.module.css';
 
 interface BlogArticleActionsProps {
@@ -12,6 +22,7 @@ interface BlogArticleActionsProps {
 }
 
 const SITE_URL = 'https://vellira.dev';
+const pendingViewRegistrations = new Map<string, Promise<BlogMetrics | null>>();
 
 function buildShareUrl(baseUrl: string, params: Record<string, string>) {
   const url = new URL(baseUrl);
@@ -23,19 +34,78 @@ function buildShareUrl(baseUrl: string, params: Record<string, string>) {
   return url.toString();
 }
 
+async function registerArticleViewOnce(
+  slug: string
+): Promise<BlogMetrics | null> {
+  const pendingRegistration = pendingViewRegistrations.get(slug);
+
+  if (pendingRegistration) {
+    return pendingRegistration;
+  }
+
+  const registration = registerBlogArticleView(slug)
+    .then((response) => response.metrics)
+    .catch(() => null)
+    .finally(() => {
+      pendingViewRegistrations.delete(slug);
+    });
+
+  pendingViewRegistrations.set(slug, registration);
+
+  return registration;
+}
+
 export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
   const articleUrl = `${SITE_URL}/blog/${slug}`;
-  const likeStorageKey = `vellira:blog:liked:${slug}`;
-  const [liked, setLiked] = useState(false);
+  const [metrics, setMetrics] = useState<BlogMetrics | null>(null);
+  const [liked, setLiked] = useState<boolean | null>(null);
+  const [likePending, setLikePending] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    try {
-      setLiked(window.localStorage.getItem(likeStorageKey) === '1');
-    } catch {
-      setLiked(false);
+    let cancelled = false;
+
+    async function hydrateMetrics() {
+      try {
+        const likeResult = await fetchBlogArticleLike(slug);
+
+        if (cancelled) {
+          return;
+        }
+
+        setLiked(likeResult.liked);
+      } catch {
+        // Leave actor-specific state unknown when the backend is unavailable.
+      }
+
+      const viewMetrics = await registerArticleViewOnce(slug);
+
+      if (cancelled) {
+        return;
+      }
+
+      if (viewMetrics) {
+        setMetrics(viewMetrics);
+        return;
+      }
+
+      try {
+        const metricsResult = await fetchBlogMetrics(slug);
+
+        if (!cancelled) {
+          setMetrics(metricsResult);
+        }
+      } catch {
+        // Keep the article readable without inventing a metric count.
+      }
     }
-  }, [likeStorageKey]);
+
+    void hydrateMetrics();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   const shareLinks = useMemo(
     () => [
@@ -69,18 +139,25 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     [articleUrl, title]
   );
 
-  function toggleLike() {
-    const nextLiked = !liked;
-    setLiked(nextLiked);
+  async function toggleLike() {
+    if (likePending) {
+      return;
+    }
 
     try {
-      if (nextLiked) {
-        window.localStorage.setItem(likeStorageKey, '1');
-      } else {
-        window.localStorage.removeItem(likeStorageKey);
-      }
+      setLikePending(true);
+
+      const result =
+        liked === true
+          ? await unlikeBlogArticle(slug)
+          : await likeBlogArticle(slug);
+
+      setMetrics(result.metrics);
+      setLiked(result.liked);
     } catch {
-      // Keep the interaction usable even when storage is unavailable.
+      // Preserve the last known state instead of inventing a metric count.
+    } finally {
+      setLikePending(false);
     }
   }
 
@@ -117,12 +194,19 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       </div>
 
       <div className={styles.articleActionRow}>
+        <BlogMetricsDisplay
+          metrics={metrics}
+          className={styles.actionMetrics}
+        />
+
         <button
           type='button'
           className={`${styles.articleActionButton} ${
             liked ? styles.articleActionButtonActive : ''
           }`}
-          aria-pressed={liked}
+          aria-label={liked ? 'Unlike this article' : 'Like this article'}
+          aria-pressed={liked === true}
+          disabled={likePending}
           onClick={toggleLike}
         >
           <Heart size={17} aria-hidden='true' />

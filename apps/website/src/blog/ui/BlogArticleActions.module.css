@@ -29,28 +29,32 @@
   gap: var(--space-3);
 }
 
+.actionMetrics {
+  min-width: 112px;
+}
+
 .articleActionButton,
 .articleShareLinks a,
 .articleShareLinks button {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
   padding: 0 var(--space-4);
   color: var(--text-secondary);
   font: inherit;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
-  text-decoration: none;
   background: color-mix(in srgb, var(--surface-subtle) 76%, transparent);
   border: 1px solid var(--border-muted);
   border-radius: 999px;
-  cursor: pointer;
-  gap: var(--space-2);
   transition:
     color 160ms ease,
     background-color 160ms ease,
     border-color 160ms ease,
     transform 160ms ease;
+  cursor: pointer;
+  min-height: 40px;
+  text-decoration: none;
+  gap: var(--space-2);
 }
 
 .articleActionButton:hover,
@@ -64,6 +68,12 @@
     var(--border-muted)
   );
   transform: translateY(-1px);
+}
+
+.articleActionButton:disabled {
+  opacity: 0.72;
+  transform: none;
+  cursor: progress;
 }
 
 .articleActionButton:focus-visible,
@@ -98,9 +108,14 @@
 
   .articleActionRow {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
     align-items: stretch;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actionMetrics {
+    grid-column: 1 / -1;
+    min-width: 0;
   }
 
   .articleActionButton {
