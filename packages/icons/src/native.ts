@@ -47,6 +47,7 @@ export { default as GitHub } from './generated/GitHub.native.js';
 export { default as Grid } from './generated/Grid.native.js';
 export { default as Headphones } from './generated/Headphones.native.js';
 export { default as Heart } from './generated/Heart.native.js';
+export { default as HeartFilled } from './generated/HeartFilled.native.js';
 export { default as Help } from './generated/Help.native.js';
 export { default as Home } from './generated/Home.native.js';
 export { default as Image } from './generated/Image.native.js';
