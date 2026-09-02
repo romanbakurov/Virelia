@@ -13,6 +13,12 @@ export function buildExamples(params: {
   const { componentConfig, componentProfile, extractedProps, playgroundProps } =
     params;
 
+  function hasBooleanExtractedProp(name: string) {
+    return extractedProps.some(
+      (prop) => prop.name === name && prop.kind === 'boolean'
+    );
+  }
+
   function hasExtractedProp(name: string) {
     return extractedProps.some((prop) => prop.name === name);
   }
@@ -61,7 +67,7 @@ export function buildExamples(params: {
     },
   ];
 
-  if (hasExtractedProp('disabled')) {
+  if (hasBooleanExtractedProp('disabled')) {
     examples.push({
       title: 'Disabled',
       description: 'Disabled state.',
@@ -69,19 +75,19 @@ export function buildExamples(params: {
     });
   }
 
-  if (hasExtractedProp('checked')) {
+  if (hasBooleanExtractedProp('checked')) {
     examples.push({
       title: 'Selected',
       description: 'Selected state.',
       props: ['checked'],
     });
-  } else if (hasExtractedProp('loading')) {
+  } else if (hasBooleanExtractedProp('loading')) {
     examples.push({
       title: 'Loading',
       description: 'Loading state.',
       props: ['loading'],
     });
-  } else if (hasExtractedProp('open')) {
+  } else if (hasBooleanExtractedProp('open')) {
     examples.push({
       title: 'Open',
       description: 'Open state.',
@@ -103,7 +109,7 @@ export function buildExamples(params: {
     examples.push(selectExample);
   }
 
-  if (hasExtractedProp('required')) {
+  if (hasBooleanExtractedProp('required')) {
     examples.push({
       title: 'Required',
       description: 'Required form control.',
@@ -127,11 +133,21 @@ function normalizePropFragments(props: readonly string[]) {
   );
 }
 
+function hasPropBinding(source: string, propName: string) {
+  return new RegExp(`(^|\\s)${propName}\\s*=`).test(source);
+}
+
+function isBarePropFragment(fragment: string) {
+  return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(fragment);
+}
+
 export function renderExamples(params: {
   componentName: string;
   componentConfig: ComponentPageMetadata;
   generatedExamples: readonly GeneratedExample[];
   generatedFileHeader: string;
+  reactApiProps: readonly ExtractedProp[];
+  nativeApiProps: readonly ExtractedProp[];
   getDemoProps(platform: Platform): string;
 }) {
   const {
@@ -139,37 +155,119 @@ export function renderExamples(params: {
     componentConfig,
     generatedExamples,
     generatedFileHeader,
+    reactApiProps,
+    nativeApiProps,
     getDemoProps,
   } = params;
+
+  function getApiProps(platform: Platform) {
+    return platform === 'react' ? reactApiProps : nativeApiProps;
+  }
+
+  function hasApiProp(platform: Platform, propName: string) {
+    return getApiProps(platform).some((prop) => prop.name === propName);
+  }
+
+  function validateMetadataPropFragments(
+    platform: Platform,
+    example: GeneratedExample,
+    fragments: readonly string[]
+  ) {
+    for (const fragment of fragments) {
+      if (!isBarePropFragment(fragment)) {
+        continue;
+      }
+
+      const apiProp = getApiProps(platform).find(
+        (prop) => prop.name === fragment
+      );
+
+      if (!apiProp) {
+        throw new Error(
+          `Example "${example.title}" ${platform} prop fragment "${fragment}" does not match the component API. Use an explicit JSX prop fragment for forwarded attributes.`
+        );
+      }
+
+      if (apiProp.kind !== 'boolean') {
+        throw new Error(
+          `Example "${example.title}" ${platform} prop fragment "${fragment}" uses bare JSX syntax for non-boolean prop "${fragment}". Provide an explicit assignment such as ${fragment}='value' or ${fragment}={value}.`
+        );
+      }
+    }
+  }
+
+  function getExampleMetadataProps(
+    platform: Platform,
+    example: GeneratedExample
+  ) {
+    const fragments = normalizePropFragments([
+      ...example.props,
+      ...(platform === 'react'
+        ? (example.reactProps ?? [])
+        : (example.nativeProps ?? [])),
+    ]);
+
+    validateMetadataPropFragments(platform, example, fragments);
+
+    return fragments;
+  }
+
+  function getExampleChildren(platform: Platform, example: GeneratedExample) {
+    const platformChildren =
+      platform === 'react' ? example.reactChildren : example.nativeChildren;
+
+    if (platformChildren) {
+      const rootPattern = new RegExp(`<${componentName}(?:\\s|>)`);
+
+      if (rootPattern.test(platformChildren)) {
+        const field = platform === 'react' ? 'reactChildren' : 'nativeChildren';
+
+        throw new Error(
+          `Example "${example.title}" ${field} must contain inner child markup, not a second <${componentName}> root. Put root props in ${platform === 'react' ? 'reactProps' : 'nativeProps'}.`
+        );
+      }
+    }
+
+    return platform === 'react'
+      ? (example.reactChildren ?? componentConfig.react?.children ?? '')
+      : (example.nativeChildren ?? componentConfig.native?.children ?? '');
+  }
+
+  function getExampleProps(platform: Platform, example: GeneratedExample) {
+    const inheritedDemoProps =
+      example.inheritDemoProps === false ? '' : getDemoProps(platform);
+    const metadataProps = getExampleMetadataProps(platform, example);
+    const existingBindings = [inheritedDemoProps, ...metadataProps].join('\n');
+
+    const shortcutProps =
+      example.inheritDemoProps === false
+        ? []
+        : [
+            componentConfig.demo?.label &&
+            hasApiProp(platform, 'label') &&
+            !hasPropBinding(existingBindings, 'label')
+              ? `label=${toTsString(componentConfig.demo.label)}`
+              : '',
+            componentConfig.demo?.description &&
+            hasApiProp(platform, 'description') &&
+            !hasPropBinding(existingBindings, 'description')
+              ? `description=${toTsString(componentConfig.demo.description)}`
+              : '',
+          ].filter(Boolean);
+
+    return normalizePropFragments([
+      inheritedDemoProps,
+      ...shortcutProps,
+      ...metadataProps,
+    ]);
+  }
 
   function createExampleJsx(platform: Platform, example: GeneratedExample) {
     const componentAlias =
       platform === 'react' ? `React${componentName}` : `Native${componentName}`;
 
-    const props = normalizePropFragments(
-      [
-        example.inheritDemoProps === false ? '' : getDemoProps(platform),
-        example.inheritDemoProps === false
-          ? ''
-          : componentConfig.demo?.label
-            ? `label=${toTsString(componentConfig.demo.label)}`
-            : '',
-        example.inheritDemoProps === false
-          ? ''
-          : componentConfig.demo?.description
-            ? `description=${toTsString(componentConfig.demo.description)}`
-            : '',
-        ...example.props,
-        ...(platform === 'react'
-          ? (example.reactProps ?? [])
-          : (example.nativeProps ?? [])),
-      ].filter(Boolean)
-    );
-
-    const exampleChildren =
-      platform === 'react'
-        ? (example.reactChildren ?? componentConfig.react?.children ?? '')
-        : (example.nativeChildren ?? componentConfig.native?.children ?? '');
+    const props = getExampleProps(platform, example);
+    const exampleChildren = getExampleChildren(platform, example);
 
     const propsText =
       props.length === 0 ? '' : `\n          ${props.join('\n          ')}`;
@@ -198,32 +296,9 @@ ${formattedChildren}
     const packageName =
       platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
-    const props = normalizePropFragments(
-      [
-        example.inheritDemoProps === false ? '' : getDemoProps(platform),
-        example.inheritDemoProps === false
-          ? ''
-          : componentConfig.demo?.label
-            ? `label=${toTsString(componentConfig.demo.label)}`
-            : '',
-        example.inheritDemoProps === false
-          ? ''
-          : componentConfig.demo?.description
-            ? `description=${toTsString(componentConfig.demo.description)}`
-            : '',
-        ...example.props,
-        ...(platform === 'react'
-          ? (example.reactProps ?? [])
-          : (example.nativeProps ?? [])),
-      ].filter(Boolean)
-    );
-
+    const props = getExampleProps(platform, example);
     const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
-
-    const exampleChildren =
-      platform === 'react'
-        ? (example.reactChildren ?? componentConfig.react?.children ?? '')
-        : (example.nativeChildren ?? componentConfig.native?.children ?? '');
+    const exampleChildren = getExampleChildren(platform, example);
 
     if (!exampleChildren) {
       const imports = uniqueImports([
