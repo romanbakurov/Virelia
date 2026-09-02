@@ -69,6 +69,30 @@ describe('component page profiles', () => {
     ]);
   });
 
+  it('keeps selection-control defaults limited to profile-wide props', () => {
+    const metadata = getProfileMetadata('selection-control');
+
+    expect(metadata.demo?.initialValues).toEqual({
+      checked: false,
+      disabled: false,
+      required: false,
+      size: 'md',
+      color: 'primary',
+      error: '',
+    });
+    expect(metadata.defaults?.shared).toEqual({
+      defaultChecked: false,
+      disabled: false,
+      required: false,
+      size: 'md',
+      color: 'primary',
+    });
+    expect(metadata.demo?.initialValues).not.toHaveProperty('indeterminate');
+    expect(metadata.demo?.initialValues).not.toHaveProperty('labelPosition');
+    expect(metadata.defaults?.shared).not.toHaveProperty('indeterminate');
+    expect(metadata.defaults?.shared).not.toHaveProperty('labelPosition');
+  });
+
   it('generates meaningful nested compound children with required simple part props', () => {
     const metadata = getGeneratedCompositionMetadata({
       profile: 'compound',
