@@ -343,6 +343,8 @@ const demoFiles = renderDemoFiles({
   componentConfig,
   platforms,
   playgroundProps,
+  reactApiProps,
+  nativeApiProps,
   reactPlaygroundPropBindings: playgroundArtifacts.reactPropBindings,
   nativePlaygroundPropBindings: playgroundArtifacts.nativePropBindings,
   reactStaticDemoProps,
