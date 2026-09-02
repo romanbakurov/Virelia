@@ -1,0 +1,244 @@
+A cross-platform design system sounds simple until the first real component forces the platforms apart.
+
+React and React Native can expose the same product concept — a button, checkbox, input, modal — while relying on very different runtime primitives. The web has DOM attributes, anchors, CSS, hover and keyboard behavior. React Native has `Pressable`, native accessibility props, gesture events, and a completely different styling model.
+
+Trying to hide all of those differences behind one implementation usually makes the API worse. In Vellira, I have been taking a different approach: **share the semantic contract, not the runtime implementation**.
+
+That distinction has become one of the most useful architectural rules in the project.
+
+## The real goal is consistency, not identical code
+
+When I started building Vellira, it was tempting to think about cross-platform components mainly as a code-sharing problem.
+
+If a web button and a native button look similar, why not make them use as much of the same component code as possible?
+
+Because the important thing users consume is not the internal component tree. It is the behavior and mental model of the public API.
+
+For a button, developers should be able to learn concepts such as:
+
+- `color`
+- `appearance`
+- `size`
+- `shape`
+- `loading`
+- `disabled`
+- `fullWidth`
+- `iconOnly`
+
+once and carry that knowledge between platforms.
+
+The implementation underneath those concepts does not need to be the same.
+
+This leads to a more useful definition of parity:
+
+> Cross-platform parity means shared semantics where the platforms agree, plus explicit platform-specific capabilities where they do not.
+
+That is much stronger than forcing two different runtimes through the same abstraction.
+
+## Put shared semantics in a platform-neutral contract
+
+Vellira keeps the common Button vocabulary in `@vellira-ui/types`.
+
+A simplified view of the shared contract looks like this:
+
+```ts
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export type ButtonColor =
+  | 'primary'
+  | 'neutral'
+  | 'success'
+  | 'warning'
+  | 'danger';
+
+export type ButtonAppearance =
+  | 'solid'
+  | 'outline'
+  | 'ghost'
+  | 'soft'
+  | 'link';
+
+export interface BaseButtonProps {
+  color?: ButtonColor;
+  appearance?: ButtonAppearance;
+  size?: ButtonSize;
+  shape?: 'square' | 'rounded' | 'pill';
+  fullWidth?: boolean;
+  loading?: boolean;
+  loadingText?: string;
+  disabled?: boolean;
+  iconOnly?: boolean;
+}
+```
+
+There is nothing web-specific or native-specific in that interface. It describes what a Vellira button _means_.
+
+That shared layer gives both implementations a stable semantic center. If `appearance="soft"` exists on both platforms, it should represent the same design intent. If `loading` disables interaction, that rule should be understood consistently too.
+
+This is where I want reuse to be strongest.
+
+## Let each platform extend the contract honestly
+
+Once the common semantics are defined, the platform packages can extend them instead of pretending their runtimes are identical.
+
+On the web, `ButtonProps` extends the shared contract and normal HTML button behavior. It can also expose anchor-related properties such as `href`, `target`, and `rel`.
+
+```ts
+export interface ButtonProps
+  extends
+    BaseButtonProps,
+    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'>,
+    Pick<
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+      'href' | 'target' | 'rel' | 'download'
+    > {
+  children?: ReactNode;
+  iconStart?: ReactNode;
+  iconEnd?: ReactNode;
+  tooltip?: string;
+  badge?: ReactNode;
+  shortcut?: ReactNode;
+  asChild?: boolean;
+}
+```
+
+React Native starts from the same `BaseButtonProps`, but the runtime-specific surface is different. It builds on `PressableProps`, exposes `onPress`, native styles, and accessibility properties that belong to the native platform.
+
+```ts
+export interface ButtonProps
+  extends BaseButtonProps, Omit<PressableProps, /* platform exclusions */> {
+  children?: ReactNode;
+  iconStart?: ButtonIconElement;
+  iconEnd?: ButtonIconElement;
+  iconSize?: number;
+  onPress?: (event: GestureResponderEvent) => void;
+  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  accessibilityLabel?: string;
+  testID?: string;
+}
+```
+
+The two APIs are clearly related, but they are not artificially identical.
+
+That is intentional.
+
+A web developer still gets normal web capabilities. A React Native developer still gets normal native capabilities. The design system owns the common semantics without becoming an abstraction tax on either platform.
+
+## Healthy divergence is part of a good cross-platform API
+
+Some differences should not be normalized away.
+
+For example, a web button can naturally compose with an anchor or another DOM element. That is where properties such as `href` or Vellira's `asChild` capability make sense.
+
+React Native does not have an HTML anchor element. Inventing a fake `href` prop just to make the type signatures look more symmetrical would create parity on paper while making the native API less natural.
+
+The same rule applies in the opposite direction. React Native has concepts such as `StyleProp<ViewStyle>`, `testID`, and native press events. Wrapping every one of those in invented cross-platform names would make the system harder to understand and harder to debug.
+
+So I use a simple test when deciding whether something belongs in the shared contract:
+
+**Does this property describe product-level component behavior, or does it describe the runtime that implements it?**
+
+Product-level behavior is a strong candidate for the shared layer. Runtime behavior usually stays with the platform package.
+
+That distinction keeps the common API small enough to remain meaningful.
+
+## Share design decisions separately from component implementations
+
+Component props are only one layer of cross-platform consistency.
+
+Visual decisions such as spacing, radii, typography scales, colors, and semantic states also need a common source of truth. Those decisions can be represented as tokens and consumed differently by CSS on the web and native style objects in React Native.
+
+The important architectural point is the same: **share the decision, adapt the execution**.
+
+A radius token does not require the web and native styling engines to work the same way. It only requires both implementations to resolve the same design intent.
+
+This is a useful pattern because it prevents "cross-platform" from turning into "lowest common denominator". Shared semantics stay centralized while each renderer remains free to use the platform correctly.
+
+## Test parity at the contract boundary
+
+Once implementations are separate, drift becomes the next problem.
+
+It is easy for the web Button to gain a new appearance or loading rule while the React Native Button silently falls behind. Separate implementations therefore need explicit validation around the things that are supposed to stay aligned.
+
+In Vellira, both Button implementations have their own tests and Storybook coverage. The shared types define a common vocabulary, while platform tests verify actual runtime behavior.
+
+That gives two different kinds of confidence:
+
+1. **Contract confidence** — the shared semantic API is defined in one place.
+2. **Runtime confidence** — each implementation proves that the contract behaves correctly on its own platform.
+
+I prefer this over a large shared implementation with a growing number of platform conditionals. A shared file can look beautifully DRY while still hiding platform-specific bugs.
+
+Separate runtime tests make those differences visible.
+
+## A practical three-layer model
+
+The pattern I am converging on in Vellira can be summarized as three layers.
+
+### 1. Shared semantics
+
+Define the concepts developers should learn once:
+
+```text
+size
+appearance
+color
+loading
+disabled
+shape
+```
+
+These belong in platform-neutral types and design contracts.
+
+### 2. Platform API
+
+Extend those concepts with capabilities developers expect from the runtime:
+
+```text
+Web:          href, target, DOM attributes, asChild
+React Native: onPress, accessibilityLabel, style, testID
+```
+
+Do not disguise real platform differences.
+
+### 3. Platform implementation
+
+Use the native tools of each runtime:
+
+```text
+Web:          DOM + CSS
+React Native: Pressable + native styles
+```
+
+The implementation can diverge significantly as long as the shared semantics remain trustworthy.
+
+## What this changes when designing new components
+
+This architecture also changes how I think about adding components.
+
+Instead of beginning with "How can I reuse the most code?", I begin with questions like:
+
+- What behavior is actually common to both platforms?
+- Which names should mean the same thing everywhere?
+- Which states must have equivalent semantics?
+- Which capabilities are genuinely platform-specific?
+- What should be validated so parity cannot drift accidentally?
+
+Only after those questions are answered does implementation reuse become interesting.
+
+Sometimes there will be useful shared code below the component layer. Sometimes the correct answer is two mostly independent implementations. Both are acceptable if the public contract stays coherent.
+
+This makes the design system easier to evolve because platform differences are treated as architecture inputs, not inconvenient exceptions.
+
+## The rule I keep coming back to
+
+The most useful lesson so far is that cross-platform design systems do not need maximum code sharing. They need **maximum semantic clarity**.
+
+Developers should feel that the React and React Native packages belong to the same system. They should recognize the vocabulary, states, design decisions, and interaction intent. But they should not have to give up the strengths of their platform to get that consistency.
+
+For Vellira, that means sharing contracts aggressively and implementations selectively.
+
+It is a smaller abstraction, but a much more durable one.
+
+You can explore the project in the [Vellira documentation](https://docs.vellira.dev) or browse the implementation on [GitHub](https://github.com/vellira-dev/vellira).
