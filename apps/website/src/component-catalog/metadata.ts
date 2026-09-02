@@ -26,6 +26,10 @@ export type ComponentDemoMetadata = {
   description?: string;
   excludeControls?: readonly string[];
   initialValues?: Record<string, string | boolean | number>;
+  /**
+   * Static root prop expressions shared by generated demos. `children` is not
+   * supported here; put inner JSX in `react.children` / `native.children`.
+   */
   staticProps?: Record<string, string>;
   satisfiedRequiredProps?: readonly string[];
   previewWidth?: 'auto' | 'field' | 'full';
