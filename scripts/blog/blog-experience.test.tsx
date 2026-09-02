@@ -22,7 +22,7 @@ import {
 import type {
   BlogArticle,
   BlogArticleMetadata,
-} from '../../apps/website/src/blog/types';
+} from '../../apps/website/src/blog';
 import {
   fetchBlogMetricsBatch,
   type BlogMetrics,
@@ -132,6 +132,44 @@ describe('Blog V1 index experience', () => {
 
     expect(html).toContain('aria-label="1,234 views"');
     expect(html).toContain('aria-label="56 likes"');
+  });
+
+  it('hydrates actor liked state for blog card metrics', async () => {
+    const article = createMetadata({ slug: 'two-runtimes' });
+
+    const { calls } = installArticleMetricsFetch((call) => {
+      if (
+        call.url.endsWith('/v1/blog/articles/two-runtimes/like') &&
+        !call.init?.method
+      ) {
+        return jsonResponse({
+          slug: 'two-runtimes',
+          liked: true,
+        });
+      }
+
+      return jsonResponse({}, 404);
+    });
+
+    render(
+      <BlogIndex
+        articles={[article]}
+        metricsBySlug={{
+          [article.slug]: createMetrics(article.slug, {
+            views: 2,
+            likes: 1,
+          }),
+        }}
+      />
+    );
+
+    await waitFor(() =>
+      expect(screen.getByLabelText('1 likes, liked by you')).toBeInTheDocument()
+    );
+
+    expect(calls).toHaveLength(1);
+    expect(calls[0]?.url).toContain('/v1/blog/articles/two-runtimes/like');
+    expect(calls[0]?.init?.credentials).toBe('include');
   });
 
   it('does not display fake zero metrics when card metrics are unavailable', () => {
