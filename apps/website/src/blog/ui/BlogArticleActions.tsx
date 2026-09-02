@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Check, Copy, Heart, Share } from '@vellira-ui/icons';
 
-import styles from './BlogExperience.module.css';
+import styles from './BlogArticleActions.module.css';
 
 interface BlogArticleActionsProps {
   slug: string;
