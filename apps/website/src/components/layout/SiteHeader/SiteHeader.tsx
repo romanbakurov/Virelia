@@ -187,7 +187,7 @@ export function SiteHeader({
         .join(' ')}
     >
       <div className={styles.container}>
-        <Link href='/' className={styles.brand}>
+        <Link href='/' prefetch={false} className={styles.brand}>
           <Image
             src='/brand/logos/logo-gradient.svg'
             alt='Vellira'
@@ -235,6 +235,7 @@ export function SiteHeader({
                   <Tabs.Trigger key={item.label} value={item.href} asChild>
                     <Link
                       href={item.href}
+                      prefetch={item.type === 'section' ? false : undefined}
                       className={styles.navigationLink}
                       onClick={(event) => {
                         if (item.type !== 'section' || pathname !== '/') {
@@ -338,6 +339,7 @@ export function SiteHeader({
                     <Link
                       key={item.label}
                       href={item.href}
+                      prefetch={item.type === 'section' ? false : undefined}
                       className={styles.mobileNavigationLink}
                       onClick={(event) => {
                         setResolvedMobileMenuOpen(false);
