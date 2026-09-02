@@ -212,20 +212,36 @@ export function renderExamples(params: {
     return fragments;
   }
 
+  function containsGeneratedComponentRoot(source: string) {
+    const marker = `<${componentName}`;
+    let index = source.indexOf(marker);
+
+    while (index !== -1) {
+      const nextCharacter = source[index + marker.length];
+
+      if (
+        nextCharacter === '>' ||
+        (nextCharacter !== undefined && nextCharacter.trim() === '')
+      ) {
+        return true;
+      }
+
+      index = source.indexOf(marker, index + marker.length);
+    }
+
+    return false;
+  }
+
   function getExampleChildren(platform: Platform, example: GeneratedExample) {
     const platformChildren =
       platform === 'react' ? example.reactChildren : example.nativeChildren;
 
-    if (platformChildren) {
-      const rootPattern = new RegExp(`<${componentName}(?:\\s|>)`);
+    if (platformChildren && containsGeneratedComponentRoot(platformChildren)) {
+      const field = platform === 'react' ? 'reactChildren' : 'nativeChildren';
 
-      if (rootPattern.test(platformChildren)) {
-        const field = platform === 'react' ? 'reactChildren' : 'nativeChildren';
-
-        throw new Error(
-          `Example "${example.title}" ${field} must contain inner child markup, not a second <${componentName}> root. Put root props in ${platform === 'react' ? 'reactProps' : 'nativeProps'}.`
-        );
-      }
+      throw new Error(
+        `Example "${example.title}" ${field} must contain inner child markup, not a second <${componentName}> root. Put root props in ${platform === 'react' ? 'reactProps' : 'nativeProps'}.`
+      );
     }
 
     return platform === 'react'
