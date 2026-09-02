@@ -17,12 +17,11 @@ export function BlogMetricsDisplay({
   metrics,
   className,
 }: BlogMetricsDisplayProps) {
-  const classNames = [styles.metrics, className].filter(Boolean).join(' ');
-
   if (!metrics) {
-    return <div className={classNames} aria-hidden='true' />;
+    return null;
   }
 
+  const classNames = [styles.metrics, className].filter(Boolean).join(' ');
   const views = formatMetricCount(metrics.views);
   const likes = formatMetricCount(metrics.likes);
 
