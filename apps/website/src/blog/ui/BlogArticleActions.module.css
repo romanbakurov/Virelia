@@ -36,7 +36,6 @@
   display: inline-flex;
   align-items: center;
   min-height: 40px;
-  padding: 0 var(--space-4);
   color: var(--text-secondary);
   font: inherit;
   font-size: var(--font-size-sm);
@@ -46,6 +45,12 @@
   border: 1px solid var(--border-muted);
   border-radius: 999px;
   gap: var(--space-2);
+}
+
+.articleActionButton,
+.articleShareLinks a,
+.articleShareLinks button {
+  padding: 0 var(--space-4);
 }
 
 .articleActionButton,
@@ -73,6 +78,14 @@
 
 .articleMetricPill {
   cursor: default;
+}
+
+.articleActionButton.articleIconButton,
+.articleShareLinks .articleIconButton {
+  justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
 }
 
 .articleActionButton:hover,
@@ -119,6 +132,39 @@
   gap: var(--space-2);
 }
 
+.articleTooltip {
+  position: relative;
+}
+
+.articleTooltip::after {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + var(--space-2));
+  left: 50%;
+  padding: 5px 8px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  content: attr(data-tooltip);
+  background: color-mix(in srgb, var(--surface-subtle) 96%, var(--text-primary) 4%);
+  border: 1px solid var(--border-muted);
+  border-radius: 6px;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.articleTooltip:hover::after,
+.articleTooltip:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 .visuallyHidden {
   position: absolute;
   width: 1px;
@@ -137,34 +183,27 @@
   }
 
   .articleActionRow {
-    display: grid;
-    align-items: stretch;
     width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
   }
 
-  .articleActionButton,
+  .articleMetricButton,
   .articleMetricPill {
-    justify-content: center;
-    width: 100%;
+    width: auto;
+    min-width: 64px;
+    min-height: 44px;
+  }
+
+  .articleActionButton.articleIconButton,
+  .articleShareLinks .articleIconButton {
+    width: 44px;
+    min-width: 44px;
     min-height: 44px;
   }
 
   .articleShareLinks {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
-  }
-
-  .articleShareLinks a,
-  .articleShareLinks button {
-    justify-content: center;
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    padding-inline: var(--space-3);
-    white-space: nowrap;
+    width: auto;
+    gap: var(--space-2);
   }
 }
 
@@ -177,17 +216,13 @@
   .articleShareLinks {
     gap: var(--space-2);
   }
-
-  .articleShareLinks a,
-  .articleShareLinks button {
-    font-size: 13px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .articleActionButton,
   .articleShareLinks a,
-  .articleShareLinks button {
+  .articleShareLinks button,
+  .articleTooltip::after {
     transition: none;
   }
 
