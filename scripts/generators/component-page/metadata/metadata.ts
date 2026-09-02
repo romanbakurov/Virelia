@@ -204,6 +204,28 @@ function importLocallyBindsName(source: string, localName: string) {
   });
 }
 
+function validateExampleSetupSyntax(source: string) {
+  const result = ts.transpileModule(
+    `function ComponentExamplePreview() {\n${source}\n}`,
+    {
+      compilerOptions: {
+        jsx: ts.JsxEmit.Preserve,
+        target: ts.ScriptTarget.ES2022,
+      },
+      fileName: 'component-page-example-setup.tsx',
+      reportDiagnostics: true,
+    }
+  );
+
+  const diagnostic = result.diagnostics?.find(
+    (item) => item.category === ts.DiagnosticCategory.Error
+  );
+
+  return diagnostic
+    ? ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')
+    : null;
+}
+
 export function validateComponentMetadata(params: {
   componentName: string;
   metadata: ComponentPageMetadata;
@@ -237,6 +259,27 @@ export function validateComponentMetadata(params: {
       if (platform !== 'react' && platform !== 'react-native') {
         errors.push(
           `examples[${index}] has unsupported platform "${platform}"`
+        );
+      }
+    }
+
+    for (const [platform, platformSetup] of [
+      ['react', example.reactSetup],
+      ['react-native', example.nativeSetup],
+    ] as const) {
+      const setup = [...(example.setup ?? []), ...(platformSetup ?? [])]
+        .map((statement) => statement.trim())
+        .filter(Boolean);
+
+      if (setup.length === 0) {
+        continue;
+      }
+
+      const setupError = validateExampleSetupSyntax(setup.join('\n'));
+
+      if (setupError) {
+        errors.push(
+          `examples[${index}] ${platform} setup has invalid TypeScript syntax: ${setupError}`
         );
       }
     }

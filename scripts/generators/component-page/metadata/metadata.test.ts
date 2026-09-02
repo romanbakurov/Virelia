@@ -111,4 +111,42 @@ describe('validateComponentMetadata', () => {
       })
     ).not.toThrow();
   });
+
+  it('accepts valid shared and platform-specific example setup', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          examples: [
+            {
+              title: 'Controlled',
+              description: 'Controlled example.',
+              props: ['value={value}'],
+              setup: ["const [value, setValue] = useState('account');"],
+              reactSetup: ['void setValue;'],
+              nativeSetup: ['void setValue;'],
+            },
+          ],
+        },
+      })
+    ).not.toThrow();
+  });
+
+  it('rejects invalid example setup syntax', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          examples: [
+            {
+              title: 'Controlled',
+              description: 'Controlled example.',
+              props: [],
+              setup: ["const [value, setValue] = useState('account';"],
+            },
+          ],
+        },
+      })
+    ).toThrow(/setup has invalid TypeScript syntax/);
+  });
 });

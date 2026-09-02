@@ -186,4 +186,56 @@ describe('renderExamples', () => {
 
     expect(renderInvalid).toThrow(/second <Accordion> root/);
   });
+
+  it('renders executable setup in isolated platform preview components', () => {
+    const content = render({
+      generatedExamples: [
+        {
+          title: 'Controlled',
+          description: 'Controlled example.',
+          imports: ["import { useState } from 'react';"],
+          setup: ["const [value, setValue] = useState('account');"],
+          props: ['value={value}', 'onValueChange={setValue}'],
+          reactChildren: `<Accordion.Item value='account'>Account</Accordion.Item>`,
+          nativeChildren: `<Accordion.Item value='account'>Account</Accordion.Item>`,
+        },
+      ],
+    });
+
+    expect(content).toContain('function ReactAccordionExample1Preview()');
+    expect(content).toContain('function NativeAccordionExample1Preview()');
+    expect(content).toContain("const [value, setValue] = useState('account');");
+    expect(content).toContain('preview: <ReactAccordionExample1Preview />');
+    expect(content).toContain('preview: <NativeAccordionExample1Preview />');
+    expect(content).toContain('function Example()');
+    expect(
+      content.indexOf('function ReactAccordionExample1Preview()')
+    ).toBeLessThan(content.indexOf('export function AccordionExamples'));
+  });
+
+  it('keeps platform-specific setup isolated', () => {
+    const content = render({
+      generatedExamples: [
+        {
+          title: 'Platform setup',
+          description: 'Platform-specific example.',
+          props: [],
+          reactSetup: ["const platformValue = 'react';"],
+          nativeSetup: ["const platformValue = 'react-native';"],
+        },
+      ],
+    });
+
+    expect(content).toContain("const platformValue = 'react';");
+    expect(content).toContain("const platformValue = 'react-native';");
+    expect(content).toContain('preview: <ReactAccordionExample1Preview />');
+    expect(content).toContain('preview: <NativeAccordionExample1Preview />');
+  });
+
+  it('preserves inline previews for stateless examples', () => {
+    const content = render({});
+
+    expect(content).not.toContain('AccordionExample1Preview');
+    expect(content).toContain('preview: (');
+  });
 });
