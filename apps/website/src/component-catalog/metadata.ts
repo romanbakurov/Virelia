@@ -45,6 +45,15 @@ export type ComponentExampleMetadata = {
   imports?: readonly string[];
   reactImports?: readonly string[];
   nativeImports?: readonly string[];
+  /**
+   * Executable statements scoped to this example's generated preview
+   * component and included in the displayed code sample.
+   */
+  setup?: readonly string[];
+  /** React-only executable setup statements appended after `setup`. */
+  reactSetup?: readonly string[];
+  /** React Native-only executable setup statements appended after `setup`. */
+  nativeSetup?: readonly string[];
   /** React-only JSX prop fragments using the same rules as `props`. */
   reactProps?: readonly string[];
   /** React Native-only JSX prop fragments using the same rules as `props`. */
