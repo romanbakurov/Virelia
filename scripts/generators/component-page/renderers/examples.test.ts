@@ -208,9 +208,9 @@ describe('renderExamples', () => {
     expect(content).toContain('preview: <ReactAccordionExample1Preview />');
     expect(content).toContain('preview: <NativeAccordionExample1Preview />');
     expect(content).toContain('function Example()');
-    expect(content.indexOf('function ReactAccordionExample1Preview()')).toBeLessThan(
-      content.indexOf('export function AccordionExamples')
-    );
+    expect(
+      content.indexOf('function ReactAccordionExample1Preview()')
+    ).toBeLessThan(content.indexOf('export function AccordionExamples'));
   });
 
   it('keeps platform-specific setup isolated', () => {
