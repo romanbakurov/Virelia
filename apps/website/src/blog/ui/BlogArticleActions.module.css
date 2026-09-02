@@ -1,0 +1,158 @@
+.articleActions {
+  display: grid;
+  width: min(100%, 840px);
+  min-width: 0;
+  padding-top: clamp(28px, 4vw, 40px);
+  border-top: 1px solid var(--border-muted);
+  gap: var(--space-5);
+}
+
+.articleActionsIntro {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.articleActionsIntro strong {
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+}
+
+.articleActionsIntro span {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.articleActionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.articleActionButton,
+.articleShareLinks a,
+.articleShareLinks button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--surface-subtle) 76%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: 999px;
+  cursor: pointer;
+  gap: var(--space-2);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.articleActionButton:hover,
+.articleShareLinks a:hover,
+.articleShareLinks button:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-subtle) 96%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-400) 34%,
+    var(--border-muted)
+  );
+  transform: translateY(-1px);
+}
+
+.articleActionButton:focus-visible,
+.articleShareLinks a:focus-visible,
+.articleShareLinks button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--space-1);
+}
+
+.articleActionButtonActive {
+  color: var(--color-primary-400);
+  background: color-mix(in srgb, var(--color-primary-400) 10%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary-400) 44%,
+    var(--border-muted)
+  );
+}
+
+.articleShareLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+@media (width <= 640px) {
+  .articleActions {
+    gap: var(--space-4);
+  }
+
+  .articleActionRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .articleActionButton {
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .articleShareLinks {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .articleShareLinks a,
+  .articleShareLinks button {
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+  }
+}
+
+@media (width <= 420px) {
+  .articleActionsIntro span {
+    line-height: 1.5;
+  }
+
+  .articleActionRow,
+  .articleShareLinks {
+    gap: var(--space-2);
+  }
+
+  .articleShareLinks a,
+  .articleShareLinks button {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .articleActionButton,
+  .articleShareLinks a,
+  .articleShareLinks button {
+    transition: none;
+  }
+
+  .articleActionButton:hover,
+  .articleShareLinks a:hover,
+  .articleShareLinks button:hover {
+    transform: none;
+  }
+}

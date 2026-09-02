@@ -1,6 +1,10 @@
 import type { MDXComponents } from 'mdx/types';
 
-const blogMDXComponents: MDXComponents = {};
+import { BlogCodeBlock } from './src/blog/ui/BlogCodeBlock';
+
+const blogMDXComponents: MDXComponents = {
+  pre: BlogCodeBlock,
+};
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {

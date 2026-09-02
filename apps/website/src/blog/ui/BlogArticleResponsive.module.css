@@ -1,0 +1,128 @@
+.articleShell,
+.articleHeader,
+.articleBody {
+  min-width: 0;
+}
+
+.articleBody {
+  overflow-wrap: break-word;
+}
+
+@media (width <= 720px) {
+  .articlePage {
+    padding: 32px 0 72px;
+  }
+
+  .articleShell {
+    gap: 32px;
+  }
+
+  .articleHeader {
+    gap: 16px;
+  }
+
+  .articleHeader .articleTitle {
+    max-width: 100%;
+    font-size: clamp(32px, 9vw, 44px);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    overflow-wrap: anywhere;
+  }
+
+  .articleHeader .articleDescription {
+    max-width: 100%;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .articleMeta {
+    font-size: 13px;
+    gap: 6px 10px;
+  }
+
+  .articleBody {
+    width: 100%;
+    max-width: 100%;
+    font-size: 16px;
+    line-height: 1.72;
+  }
+
+  .articleBody h2 {
+    margin-top: 2.35em;
+    font-size: clamp(26px, 7vw, 32px);
+  }
+
+  .articleBody h3 {
+    margin-top: 2em;
+    font-size: clamp(22px, 6vw, 27px);
+  }
+
+  .articleBody blockquote {
+    padding: 14px 16px;
+  }
+
+  .articleBody ul,
+  .articleBody ol {
+    padding-left: 1.25em;
+  }
+
+  .articleBody th,
+  .articleBody td {
+    padding: 10px 12px;
+  }
+}
+
+@media (width <= 420px) {
+  .articlePage {
+    padding: 24px 0 56px;
+  }
+
+  .articleShell {
+    gap: 26px;
+  }
+
+  .articleHeader {
+    gap: 14px;
+  }
+
+  .articleHeader .articleTitle {
+    font-size: clamp(30px, 10vw, 38px);
+    line-height: 1.08;
+  }
+
+  .articleHeader .articleDescription {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .articleMeta {
+    align-items: flex-start;
+    gap: 4px 10px;
+  }
+
+  .metaDivider {
+    display: none;
+  }
+
+  .articleBody {
+    font-size: 16px;
+    line-height: 1.68;
+  }
+
+  .articleBody h2 {
+    font-size: 26px;
+  }
+
+  .articleBody h3 {
+    font-size: 22px;
+  }
+
+  .articleBody p,
+  .articleBody ul,
+  .articleBody ol,
+  .articleBody blockquote,
+  .articleBody pre,
+  .articleBody table {
+    margin-block: 1.15em;
+  }
+}

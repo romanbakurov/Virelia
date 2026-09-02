@@ -2,8 +2,10 @@ import Link from 'next/link';
 
 import { Container } from '@/components/layout/Container';
 import type { BlogArticle } from '../types';
+import { BlogArticleActions } from './BlogArticleActions';
 import { formatBlogDate } from './BlogIndex';
 
+import responsive from './BlogArticleResponsive.module.css';
 import styles from './BlogExperience.module.css';
 
 interface BlogArticleViewProps {
@@ -15,9 +17,14 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
 
   return (
     <main className={styles.page}>
-      <article className={styles.articlePage}>
-        <Container size='content' className={styles.articleShell}>
-          <header className={styles.articleHeader}>
+      <article className={`${styles.articlePage} ${responsive.articlePage}`}>
+        <Container
+          size='wide'
+          className={`${styles.articleShell} ${responsive.articleShell}`}
+        >
+          <header
+            className={`${styles.articleHeader} ${responsive.articleHeader}`}
+          >
             <Link href='/blog' className={styles.backLink}>
               Back to blog
             </Link>
@@ -30,12 +37,19 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
               ))}
             </div>
 
-            <h1>{metadata.title}</h1>
-            <p className={styles.articleDescription}>{metadata.description}</p>
+            <h1 className={responsive.articleTitle}>{metadata.title}</h1>
+            <p
+              className={`${styles.articleDescription} ${responsive.articleDescription}`}
+            >
+              {metadata.description}
+            </p>
 
-            <div className={styles.articleMeta}>
+            <div className={`${styles.articleMeta} ${responsive.articleMeta}`}>
               <span>{metadata.author}</span>
-              <span className={styles.metaDivider} aria-hidden='true' />
+              <span
+                className={`${styles.metaDivider} ${responsive.metaDivider}`}
+                aria-hidden='true'
+              />
               <span>
                 Published{' '}
                 <time dateTime={metadata.publishedAt}>
@@ -45,7 +59,10 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
 
               {metadata.updatedAt && (
                 <>
-                  <span className={styles.metaDivider} aria-hidden='true' />
+                  <span
+                    className={`${styles.metaDivider} ${responsive.metaDivider}`}
+                    aria-hidden='true'
+                  />
                   <span>
                     Updated{' '}
                     <time dateTime={metadata.updatedAt}>
@@ -57,9 +74,11 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
             </div>
           </header>
 
-          <div className={styles.articleBody}>
+          <div className={`${styles.articleBody} ${responsive.articleBody}`}>
             <Content />
           </div>
+
+          <BlogArticleActions slug={metadata.slug} title={metadata.title} />
         </Container>
       </article>
     </main>
