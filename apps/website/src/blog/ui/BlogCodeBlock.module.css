@@ -1,5 +1,7 @@
 .codeBlock {
   width: min(960px, calc(100vw - clamp(32px, 6vw, 96px)));
+  max-width: 100%;
+  min-width: 0;
   margin: 1.6em 0;
   overflow: hidden;
   background: color-mix(in srgb, var(--surface-subtle) 92%, transparent);
@@ -23,13 +25,16 @@
 }
 
 .codeBlock :global(.shiki) {
+  max-width: 100%;
   margin: 0;
   padding: clamp(18px, 3vw, 26px);
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
   background: transparent !important;
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .codeBlock :global(.shiki code) {
@@ -43,5 +48,31 @@
 @media (width <= 640px) {
   .codeBlock {
     width: 100%;
+    margin-block: 1.25em;
+    border-radius: var(--radius-md);
+  }
+
+  .codeBlockToolbar {
+    min-height: 32px;
+    padding-inline: 14px;
+  }
+
+  .codeBlock :global(.shiki) {
+    padding: 16px;
+  }
+
+  .codeBlock :global(.shiki code) {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+}
+
+@media (width <= 420px) {
+  .codeBlock :global(.shiki) {
+    padding: 14px;
+  }
+
+  .codeBlock :global(.shiki code) {
+    font-size: 12.5px;
   }
 }
