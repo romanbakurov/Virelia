@@ -4,7 +4,10 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { loadGeneratedComponentProfile } from './metadata';
+import {
+  loadGeneratedComponentProfile,
+  validateComponentMetadata,
+} from './metadata';
 
 const roots: string[] = [];
 
@@ -64,5 +67,45 @@ describe('loadGeneratedComponentProfile', () => {
         componentName: 'Accordion',
       })
     ).toBe('primitive');
+  });
+});
+
+describe('validateComponentMetadata', () => {
+  it.each([
+    ["import { Accordion } from '@vellira/react';", 'react'],
+    ["import Accordion from '@example/accordion';", 'react'],
+    ["import * as Accordion from '@example/accordion';", 'react-native'],
+    ["import { Other as Accordion } from '@example/other';", 'react-native'],
+  ])('rejects imports that locally bind the generated component', (source, platform) => {
+    const metadata =
+      platform === 'react'
+        ? { react: { imports: [source] } }
+        : { native: { imports: [source] } };
+
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata,
+      })
+    ).toThrow(/must not bind generated component "Accordion"/);
+  });
+
+  it('allows additional imports that do not bind the generated component', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          react: {
+            imports: [
+              "import { Plus } from '@vellira-ui/icons';",
+              "import { Accordion as NestedAccordion } from '@vellira-ui/react';",
+            ],
+          },
+          native: {
+            imports: ["import { useState } from 'react';"],
+          },
+        },
+      })
+    ).not.toThrow();
   });
 });
