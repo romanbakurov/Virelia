@@ -246,83 +246,19 @@ ${renderOpeningTag(platform, 'Content')}Content</${params.componentName}.Content
   return metadata;
 }
 
-type ProfileTargetApi = {
-  reactApiProps: readonly ExtractedProp[];
-  nativeApiProps: readonly ExtractedProp[];
-};
-
-function filterRecordByPropNames<T>(
-  record: Record<string, T> | undefined,
-  propNames: ReadonlySet<string>
-) {
-  if (!record) {
-    return undefined;
-  }
-
-  return Object.fromEntries(
-    Object.entries(record).filter(([name]) => propNames.has(name))
-  ) as Record<string, T>;
-}
-
-function scopeProfileMetadataToTargetApi(
-  metadata: ComponentPageMetadata,
-  targetApi: ProfileTargetApi
-): ComponentPageMetadata {
-  const reactPropNames = new Set(targetApi.reactApiProps.map((prop) => prop.name));
-  const nativePropNames = new Set(
-    targetApi.nativeApiProps.map((prop) => prop.name)
-  );
-  const sharedPropNames = new Set([...reactPropNames, ...nativePropNames]);
-
-  return {
-    ...metadata,
-    demo: metadata.demo
-      ? {
-          ...metadata.demo,
-          initialValues: filterRecordByPropNames(
-            metadata.demo.initialValues,
-            sharedPropNames
-          ),
-        }
-      : undefined,
-    defaults: metadata.defaults
-      ? {
-          ...metadata.defaults,
-          shared: filterRecordByPropNames(
-            metadata.defaults.shared,
-            sharedPropNames
-          ),
-          react: filterRecordByPropNames(
-            metadata.defaults.react,
-            reactPropNames
-          ),
-          native: filterRecordByPropNames(
-            metadata.defaults.native,
-            nativePropNames
-          ),
-        }
-      : undefined,
-  };
-}
-
 export function getProfileMetadata(
-  profile: ComponentProfile,
-  targetApi?: ProfileTargetApi
+  profile: ComponentProfile
 ): ComponentPageMetadata {
-  let metadata: ComponentPageMetadata;
-
   if (profile === 'selection-control') {
-    metadata = {
+    return {
       demo: {
         label: 'Accept terms',
         initialValues: {
           checked: false,
           disabled: false,
           required: false,
-          indeterminate: false,
           size: 'md',
           color: 'primary',
-          labelPosition: 'end',
           error: '',
         },
         previewWidth: 'field',
@@ -332,29 +268,27 @@ export function getProfileMetadata(
           defaultChecked: false,
           disabled: false,
           required: false,
-          indeterminate: false,
           size: 'md',
           color: 'primary',
-          labelPosition: 'end',
         },
       },
       related: ['radio', 'select'],
     };
-  } else if (profile === 'form-control') {
-    metadata = {
+  }
+
+  if (profile === 'form-control') {
+    return {
       demo: {
         previewWidth: 'field',
       },
     };
-  } else if (profile === 'compound') {
-    metadata = {
-      related: ['tabs', 'select', 'dropdown'],
-    };
-  } else {
-    metadata = {};
   }
 
-  return targetApi
-    ? scopeProfileMetadataToTargetApi(metadata, targetApi)
-    : metadata;
+  if (profile === 'compound') {
+    return {
+      related: ['tabs', 'select', 'dropdown'],
+    };
+  }
+
+  return {};
 }
