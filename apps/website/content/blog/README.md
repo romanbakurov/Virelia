@@ -67,20 +67,43 @@ The public server-side surface is intentionally small:
 
 Filesystem and JSON details stay behind this boundary. Blog V1 does **not** introduce a generic repository/provider abstraction, CMS adapter, or backend interface. If a real product requirement later moves storage to a backend/content API, that migration should happen behind these helpers rather than leaking storage concerns into routes and rendering.
 
-MDX module imports are kept in `apps/website/src/blog/article-modules.ts`. The registry uses literal import paths so Next.js/Turbopack can analyze article modules deterministically, including when the repository contains zero published articles. This registry is implementation wiring rather than a second content source of truth; #649 is expected to maintain it automatically when article generation is added.
+MDX module imports are kept in `apps/website/src/blog/article-modules.ts`. The registry uses literal import paths so Next.js/Turbopack can analyze article modules deterministically, including when the repository contains zero published articles. The Blog V1 generator owns this registry; do not edit it manually.
 
-## Creating an article manually
+## Creating an article
 
-Until the Blog V1 generator from #649 exists:
+Start from the repository root:
 
-1. Create `apps/website/content/blog/<slug>/`.
-2. Add a valid `metadata.json` with `draft: true` while writing.
-3. Add the body in `article.mdx`.
-4. Add the article's literal MDX import loader to `apps/website/src/blog/article-modules.ts`.
-5. Run focused tooling tests plus the website typecheck/build.
-6. Open a pull request and review the rendered result once the Blog V1 routes exist.
-7. Change `draft` to `false` only when the article is intentionally ready to publish.
+```bash
+pnpm blog:new <slug>
+```
+
+The generator validates the slug, refuses to overwrite an existing article, creates `metadata.json` and `article.mdx`, defaults the article to `draft: true`, and updates the static MDX registry.
+
+Then follow the normal authoring path:
+
+1. Replace the generated TODO description and article body with reviewed content.
+2. Adjust title, tags, date, optional social image, and other metadata as needed while keeping `draft: true`.
+3. Run deterministic corpus validation:
+
+   ```bash
+   pnpm blog:check
+   ```
+
+4. Preview/typecheck/build the website as appropriate:
+
+   ```bash
+   pnpm website:typecheck
+   pnpm website:build
+   ```
+
+5. Open a pull request and review the rendered article.
+6. Change `draft` to `false` only when the article is intentionally ready to publish.
+7. Re-run `pnpm blog:check` and the relevant website checks.
 8. Merge the reviewed pull request to publish.
+
+`pnpm blog:check` validates the complete Blog V1 corpus without network access. It checks metadata/schema validity, slug/path agreement, duplicate metadata slugs, required article bodies, static registry freshness, obvious internal `/blog/<slug>` links, published-to-draft links, and local `socialImage` references when configured.
+
+Blog validation is part of normal repository CI, so malformed Blog V1 content fails before merge.
 
 ## Automation boundary
 
@@ -91,6 +114,7 @@ Later automation may rely on:
 - the metadata contract above;
 - invalid metadata failing closed;
 - draft content being excluded from published helpers;
+- deterministic `blog:new` and `blog:check` tooling;
 - Git review remaining the publication boundary.
 
 The intended future flow is:
@@ -106,4 +130,4 @@ idea / research
 → publish
 ```
 
-AI-assisted tooling may create or edit a draft in a branch later, but Blog V1 does not provide a path for an LLM to publish directly to production.
+AI-assisted tooling may create or edit a draft in a branch and prepare a Draft PR later, but Blog V1 does not provide a path for an LLM to publish directly to production or bypass deterministic validation.
