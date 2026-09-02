@@ -112,6 +112,43 @@ describe('validateComponentMetadata', () => {
     ).not.toThrow();
   });
 
+  it('accepts ordinary demo static root props', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          demo: {
+            staticProps: {
+              type: "'single'",
+              collapsible: 'true',
+            },
+          },
+          react: {
+            children: '<Accordion.Item />',
+          },
+          native: {
+            children: '<Accordion.Item />',
+          },
+        },
+      })
+    ).not.toThrow();
+  });
+
+  it('rejects demo children in staticProps', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          demo: {
+            staticProps: {
+              children: '<Accordion.Item />',
+            },
+          },
+        },
+      })
+    ).toThrow(/use react\.children\/native\.children for inner JSX/);
+  });
+
   it('accepts valid shared and platform-specific example setup', () => {
     expect(() =>
       validateComponentMetadata({

@@ -235,6 +235,17 @@ export function validateComponentMetadata(params: {
   const exampleTitles = new Set<string>();
   const apiSections = new Set<string>();
 
+  if (
+    Object.prototype.hasOwnProperty.call(
+      metadata.demo?.staticProps ?? {},
+      'children'
+    )
+  ) {
+    errors.push(
+      'demo.staticProps.children is not supported; use react.children/native.children for inner JSX'
+    );
+  }
+
   for (const [platform, platformMetadata] of [
     ['react', metadata.react],
     ['react-native', metadata.native],
