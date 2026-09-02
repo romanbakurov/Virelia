@@ -103,19 +103,22 @@ describe('buildExamples', () => {
 });
 
 describe('renderExamples', () => {
-  it('does not inherit label or description shortcuts missing from the platform API', () => {
-    const content = render({
-      componentConfig: {
-        demo: {
-          label: 'Order information',
-          description: 'Expandable details.',
+  it(
+    'does not inherit label or description shortcuts missing from the platform API',
+    () => {
+      const content = render({
+        componentConfig: {
+          demo: {
+            label: 'Order information',
+            description: 'Expandable details.',
+          },
         },
-      },
-    });
+      });
 
-    expect(content).not.toContain("label='Order information'");
-    expect(content).not.toContain("description='Expandable details.'");
-  });
+      expect(content).not.toContain("label='Order information'");
+      expect(content).not.toContain("description='Expandable details.'");
+    }
+  );
 
   it('keeps a demo shortcut when the target platform exposes that prop', () => {
     const content = render({
@@ -127,8 +130,12 @@ describe('renderExamples', () => {
       reactApiProps: [prop('label', 'string', 'string')],
     });
 
-    expect(content).toContain("<ReactAccordion\n          label='Order information'");
-    expect(content).not.toContain("<NativeAccordion\n          label='Order information'");
+    expect(content).toContain(
+      "<ReactAccordion\n          label='Order information'"
+    );
+    expect(content).not.toContain(
+      "<NativeAccordion\n          label='Order information'"
+    );
   });
 
   it('rejects bare JSX shorthand for a non-boolean prop', () => {
@@ -165,21 +172,24 @@ describe('renderExamples', () => {
     expect(content).toContain('collapsible');
   });
 
-  it('rejects platform children that re-wrap the generated component root', () => {
-    expect(() =>
-      render({
-        generatedExamples: [
-          {
-            title: 'Controlled',
-            description: 'Example.',
-            props: [],
-            reactChildren: `<Accordion value='billing'>
+  it(
+    'rejects platform children that re-wrap the generated component root',
+    () => {
+      expect(() =>
+        render({
+          generatedExamples: [
+            {
+              title: 'Controlled',
+              description: 'Example.',
+              props: [],
+              reactChildren: `<Accordion value='billing'>
   <Accordion.Item value='billing'>Billing</Accordion.Item>
 </Accordion>`,
-            platforms: ['react'],
-          },
-        ],
-      })
-    ).toThrow(/must contain inner child markup, not a second <Accordion> root/);
-  });
+              platforms: ['react'],
+            },
+          ],
+        })
+      ).toThrow(/must contain inner child markup, not a second <Accordion> root/);
+    }
+  );
 });
