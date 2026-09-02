@@ -65,8 +65,7 @@ if (
 }
 
 const requestedCategory = categoryValue as
-  | GeneratorComponentCategory
-  | undefined;
+  GeneratorComponentCategory | undefined;
 
 const help =
   componentName === '--help' ||
