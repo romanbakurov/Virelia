@@ -14,6 +14,7 @@ import {
   loadGeneratedComponentCategory,
   loadGeneratedComponentProfile,
   mergeComponentMetadata,
+  validateComponentMetadataAgainstApi,
   validateComponentMetadata,
 } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from './types';
@@ -484,6 +485,14 @@ export async function resolvePageInput(params: {
     platforms.push('react-native');
   }
 
+  const reactApiProps = platforms.includes('react')
+    ? extractPlatformProps({ root, componentName, platform: 'react' })
+    : [];
+
+  const nativeApiProps = platforms.includes('react-native')
+    ? extractPlatformProps({ root, componentName, platform: 'react-native' })
+    : [];
+
   const generatedComponentProfile = loadGeneratedComponentProfile({
     root,
     componentName,
@@ -554,7 +563,10 @@ export async function resolvePageInput(params: {
 
   const componentConfig = mergeComponentMetadata(
     mergeComponentMetadata(
-      getProfileMetadata(inferredComponentProfile),
+      getProfileMetadata(inferredComponentProfile, {
+        reactApiProps,
+        nativeApiProps,
+      }),
       generatedComposition
     ),
     componentMetadata
@@ -573,13 +585,13 @@ export async function resolvePageInput(params: {
     generatedCategory: generatedComponentCategory,
   });
 
-  const reactApiProps = platforms.includes('react')
-    ? extractPlatformProps({ root, componentName, platform: 'react' })
-    : [];
-
-  const nativeApiProps = platforms.includes('react-native')
-    ? extractPlatformProps({ root, componentName, platform: 'react-native' })
-    : [];
+  validateComponentMetadataAgainstApi({
+    componentName,
+    metadata: componentConfig,
+    platforms,
+    reactApiProps,
+    nativeApiProps,
+  });
 
   const reactProgram = platforms.includes('react')
     ? createPackageProgram({ root, platform: 'react' })
