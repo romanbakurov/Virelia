@@ -12,7 +12,9 @@ export type BlogMDXModuleLoader = () => Promise<BlogMDXModule>;
  * Keep MDX imports statically analyzable for Next.js/Turbopack.
  */
 const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
-  {};
+  {
+    'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),
+  };
 
 export function getBlogArticleModuleLoader(
   slug: string
