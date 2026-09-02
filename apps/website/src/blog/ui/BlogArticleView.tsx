@@ -17,9 +17,7 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
 
   return (
     <main className={styles.page}>
-      <article
-        className={`${styles.articlePage} ${responsive.articlePage}`}
-      >
+      <article className={`${styles.articlePage} ${responsive.articlePage}`}>
         <Container
           size='wide'
           className={`${styles.articleShell} ${responsive.articleShell}`}
@@ -78,9 +76,7 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
             </div>
           </header>
 
-          <div
-            className={`${styles.articleBody} ${responsive.articleBody}`}
-          >
+          <div className={`${styles.articleBody} ${responsive.articleBody}`}>
             <Content />
           </div>
 
