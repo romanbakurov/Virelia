@@ -76,19 +76,22 @@ describe('validateComponentMetadata', () => {
     ["import Accordion from '@example/accordion';", 'react'],
     ["import * as Accordion from '@example/accordion';", 'react-native'],
     ["import { Other as Accordion } from '@example/other';", 'react-native'],
-  ])('rejects imports that locally bind the generated component', (source, platform) => {
-    const metadata =
-      platform === 'react'
-        ? { react: { imports: [source] } }
-        : { native: { imports: [source] } };
+  ])(
+    'rejects imports that locally bind the generated component',
+    (source, platform) => {
+      const metadata =
+        platform === 'react'
+          ? { react: { imports: [source] } }
+          : { native: { imports: [source] } };
 
-    expect(() =>
-      validateComponentMetadata({
-        componentName: 'Accordion',
-        metadata,
-      })
-    ).toThrow(/must not bind generated component "Accordion"/);
-  });
+      expect(() =>
+        validateComponentMetadata({
+          componentName: 'Accordion',
+          metadata,
+        })
+      ).toThrow(/must not bind generated component "Accordion"/);
+    }
+  );
 
   it('allows additional imports that do not bind the generated component', () => {
     expect(() =>
