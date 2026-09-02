@@ -133,6 +133,17 @@ function normalizePropFragments(props: readonly string[]) {
   );
 }
 
+function normalizeSetupStatements(statements: readonly string[]) {
+  return statements.map((statement) => statement.trim()).filter(Boolean);
+}
+
+function indentBlock(source: string, indentation: string) {
+  return source
+    .split('\n')
+    .map((line) => `${indentation}${line}`)
+    .join('\n');
+}
+
 function hasPropBinding(source: string, propName: string) {
   return new RegExp(`(^|\\s)${propName}\\s*=`).test(source);
 }
@@ -212,6 +223,15 @@ export function renderExamples(params: {
     return fragments;
   }
 
+  function getExampleSetup(platform: Platform, example: GeneratedExample) {
+    return normalizeSetupStatements([
+      ...(example.setup ?? []),
+      ...(platform === 'react'
+        ? (example.reactSetup ?? [])
+        : (example.nativeSetup ?? [])),
+    ]);
+  }
+
   function containsGeneratedComponentRoot(source: string) {
     const marker = `<${componentName}`;
     let index = source.indexOf(marker);
@@ -278,19 +298,25 @@ export function renderExamples(params: {
     ]);
   }
 
-  function createExampleJsx(platform: Platform, example: GeneratedExample) {
+  function createExampleJsx(
+    platform: Platform,
+    example: GeneratedExample,
+    indentation: string
+  ) {
     const componentAlias =
       platform === 'react' ? `React${componentName}` : `Native${componentName}`;
 
     const props = getExampleProps(platform, example);
     const exampleChildren = getExampleChildren(platform, example);
+    const childIndentation = `${indentation}  `;
 
     const propsText =
-      props.length === 0 ? '' : `\n          ${props.join('\n          ')}`;
+      props.length === 0
+        ? ''
+        : `\n${childIndentation}${props.join(`\n${childIndentation}`)}`;
 
     if (!exampleChildren) {
-      return `<${componentAlias}${propsText}
-        />`;
+      return `${indentation}<${componentAlias}${propsText}\n${indentation}/>`;
     }
 
     const aliasedChildren = exampleChildren
@@ -299,44 +325,32 @@ export function renderExamples(params: {
 
     const formattedChildren = aliasedChildren
       .split('\n')
-      .map((line) => `          ${line}`)
+      .map((line) => `${childIndentation}${line}`)
       .join('\n');
 
-    return `<${componentAlias}${propsText}
-        >
-${formattedChildren}
-        </${componentAlias}>`;
+    return `${indentation}<${componentAlias}${propsText}\n${indentation}>\n${formattedChildren}\n${indentation}</${componentAlias}>`;
   }
 
-  function createExampleCode(platform: Platform, example: GeneratedExample) {
-    const packageName =
-      platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
-
+  function createExampleCodeJsx(platform: Platform, example: GeneratedExample) {
     const props = getExampleProps(platform, example);
     const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
     const exampleChildren = getExampleChildren(platform, example);
 
     if (!exampleChildren) {
-      const imports = uniqueImports([
-        `import { ${componentName} } from '${packageName}';`,
-        ...(platform === 'react'
-          ? (componentConfig.react?.imports ?? [])
-          : (componentConfig.native?.imports ?? [])),
-        ...(example.imports ?? []),
-        ...(platform === 'react'
-          ? (example.reactImports ?? [])
-          : (example.nativeImports ?? [])),
-      ]).join('\n');
-
-      return `${imports}
-
-<${componentName}${propsText}/>`;
+      return `<${componentName}${propsText}/>`;
     }
 
     const formattedChildren = exampleChildren
       .split('\n')
       .map((line) => `  ${line}`)
       .join('\n');
+
+    return `<${componentName}${propsText}>\n${formattedChildren}\n</${componentName}>`;
+  }
+
+  function createExampleCode(platform: Platform, example: GeneratedExample) {
+    const packageName =
+      platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
     const imports = uniqueImports([
       `import { ${componentName} } from '${packageName}';`,
@@ -349,17 +363,60 @@ ${formattedChildren}
         : (example.nativeImports ?? [])),
     ]).join('\n');
 
-    return `${imports}
+    const jsx = createExampleCodeJsx(platform, example);
+    const setup = getExampleSetup(platform, example);
 
-<${componentName}${propsText}>
-${formattedChildren}
-</${componentName}>`;
+    if (setup.length === 0) {
+      return `${imports}\n\n${jsx}`;
+    }
+
+    const setupText = setup
+      .map((statement) => indentBlock(statement, '  '))
+      .join('\n');
+
+    return `${imports}\n\nfunction Example() {\n${setupText}\n\n  return (\n${indentBlock(jsx, '    ')}\n  );\n}`;
   }
 
   function getExamplesForPlatform(platform: Platform) {
     return generatedExamples.filter(
       (example) => !example.platforms || example.platforms.includes(platform)
     );
+  }
+
+  function getPreviewComponentName(platform: Platform, index: number) {
+    const prefix = platform === 'react' ? 'React' : 'Native';
+    return `${prefix}${componentName}Example${index + 1}Preview`;
+  }
+
+  function createPreviewComponent(
+    platform: Platform,
+    example: GeneratedExample,
+    index: number
+  ) {
+    const setup = getExampleSetup(platform, example);
+
+    if (setup.length === 0) {
+      return '';
+    }
+
+    const setupText = setup
+      .map((statement) => indentBlock(statement, '  '))
+      .join('\n');
+    const previewName = getPreviewComponentName(platform, index);
+
+    return `function ${previewName}() {\n${setupText}\n\n  return (\n${createExampleJsx(platform, example, '    ')}\n  );\n}`;
+  }
+
+  function createPreview(
+    platform: Platform,
+    example: GeneratedExample,
+    index: number
+  ) {
+    if (getExampleSetup(platform, example).length > 0) {
+      return `<${getPreviewComponentName(platform, index)} />`;
+    }
+
+    return `(\n${createExampleJsx(platform, example, '        ')}\n      )`;
   }
 
   const exampleImports = Array.from(
@@ -374,27 +431,37 @@ ${formattedChildren}
     )
   );
 
-  const reactGeneratedExamples = getExamplesForPlatform('react')
+  const reactExamples = getExamplesForPlatform('react');
+  const nativeExamples = getExamplesForPlatform('react-native');
+
+  const previewComponents = [
+    ...reactExamples.map((example, index) =>
+      createPreviewComponent('react', example, index)
+    ),
+    ...nativeExamples.map((example, index) =>
+      createPreviewComponent('react-native', example, index)
+    ),
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+
+  const reactGeneratedExamples = reactExamples
     .map(
-      (example) => `    {
+      (example, index) => `    {
       title: ${toTsString(example.title)},
       description: ${toTsString(example.description)},
-      preview: (
-        ${createExampleJsx('react', example)}
-      ),
+      preview: ${createPreview('react', example, index)},
       code: ${toTemplateLiteral(createExampleCode('react', example))},
     },`
     )
     .join('\n');
 
-  const nativeGeneratedExamples = getExamplesForPlatform('react-native')
+  const nativeGeneratedExamples = nativeExamples
     .map(
-      (example) => `    {
+      (example, index) => `    {
       title: ${toTsString(example.title)},
       description: ${toTsString(example.description)},
-      preview: (
-        ${createExampleJsx('react-native', example)}
-      ),
+      preview: ${createPreview('react-native', example, index)},
       code: ${toTemplateLiteral(createExampleCode('react-native', example))},
     },`
     )
@@ -409,7 +476,7 @@ ${exampleImports.join('\n')}
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
 
-type ${componentName}ExamplesProps = {
+${previewComponents ? `${previewComponents}\n\n` : ''}type ${componentName}ExamplesProps = {
   platform: ComponentPlatform;
 };
 
