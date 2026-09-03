@@ -140,16 +140,27 @@ export async function runComponentGenerator(params: {
 
   const result = await writeComponentGenerationPlan(plan);
 
-  generateComponentWebsitePage({
+  const websiteResult = generateComponentWebsitePage({
     root: params.root,
     componentName: plan.componentName,
     profile: plan.profile,
     category: plan.category,
   });
 
+  const createdFiles = [
+    ...new Set([...result.createdFiles, ...websiteResult.createdFiles]),
+  ];
+
+  const createdFileSet = new Set(createdFiles);
+
+  const updatedFiles = [
+    ...new Set([...result.updatedFiles, ...websiteResult.updatedFiles]),
+  ].filter((filePath) => !createdFileSet.has(filePath));
+
   return {
     plan,
-    ...result,
+    createdFiles,
+    updatedFiles,
     dryRun: false,
     check: false,
   };

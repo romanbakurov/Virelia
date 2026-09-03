@@ -1,6 +1,9 @@
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   generateComponentWebsitePage,
@@ -11,11 +14,32 @@ vi.mock('node:child_process', () => ({
   spawnSync: vi.fn(),
 }));
 
-describe('generateComponentWebsitePage', () => {
-  beforeEach(() => {
-    vi.mocked(spawnSync).mockReset();
-  });
+const tempRoots: string[] = [];
 
+function createTempRoot() {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'vellira-component-website-')
+  );
+
+  tempRoots.push(root);
+
+  return root;
+}
+
+beforeEach(() => {
+  vi.mocked(spawnSync).mockReset();
+});
+
+afterEach(() => {
+  for (const root of tempRoots.splice(0)) {
+    fs.rmSync(root, {
+      recursive: true,
+      force: true,
+    });
+  }
+});
+
+describe('generateComponentWebsitePage', () => {
   it('passes the canonical component profile to the page generator', () => {
     vi.mocked(spawnSync).mockReturnValue({
       pid: 1,
@@ -49,6 +73,64 @@ describe('generateComponentWebsitePage', () => {
         stdio: 'pipe',
       }
     );
+  });
+
+  it('reports created and updated managed website artifacts', () => {
+    const root = createTempRoot();
+
+    const registryDir = path.join(
+      root,
+      'apps/website/src/component-catalog/registry'
+    );
+
+    const componentDir = path.join(
+      root,
+      'apps/website/src/component-catalog/components/Avatar'
+    );
+
+    fs.mkdirSync(registryDir, {
+      recursive: true,
+    });
+
+    const componentPagesFile = path.join(registryDir, 'componentPages.ts');
+
+    const componentsRegistryFile = path.join(registryDir, 'components.ts');
+
+    fs.writeFileSync(componentPagesFile, 'before component pages\n');
+    fs.writeFileSync(componentsRegistryFile, 'before components\n');
+
+    const usageFile = path.join(componentDir, 'AvatarUsage.tsx');
+
+    vi.mocked(spawnSync).mockImplementation(() => {
+      fs.mkdirSync(componentDir, {
+        recursive: true,
+      });
+
+      fs.writeFileSync(usageFile, 'generated usage\n');
+      fs.writeFileSync(componentPagesFile, 'after component pages\n');
+      fs.writeFileSync(componentsRegistryFile, 'after components\n');
+
+      return {
+        pid: 1,
+        output: [],
+        stdout: '',
+        stderr: '',
+        status: 0,
+        signal: null,
+      };
+    });
+
+    const result = generateComponentWebsitePage({
+      root,
+      componentName: 'Avatar',
+      profile: 'base',
+      category: 'data-display',
+    });
+
+    expect(result).toEqual({
+      createdFiles: [usageFile],
+      updatedFiles: [componentPagesFile, componentsRegistryFile].sort(),
+    });
   });
 
   it('maps the base generator profile to primitive website profile', () => {

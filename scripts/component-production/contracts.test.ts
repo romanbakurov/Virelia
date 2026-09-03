@@ -177,6 +177,35 @@ describe('createComponentProductionResult', () => {
     expect(result.readyForReview).toBe(false);
   });
 
+  it('reports website generation from canonical generation artifacts', () => {
+    const websiteArtifacts = [
+      'apps/website/src/component-catalog/components/Avatar/index.ts',
+      'apps/website/src/component-catalog/registry/components.ts',
+    ];
+
+    const result = createComponentProductionResult({
+      input: BASE_INPUT,
+      stages: stages({
+        generation: {
+          artifacts: websiteArtifacts,
+        },
+      }),
+      completeness: [],
+      quality: {
+        status: 'pass',
+        report: {
+          schemaVersion: '1',
+          components: [],
+        },
+      },
+    });
+
+    expect(result.outputs.websiteGeneration).toEqual({
+      generated: true,
+      artifacts: [...websiteArtifacts].sort(),
+    });
+  });
+
   it('requires the complete canonical stage sequence', () => {
     expect(() =>
       createComponentProductionResult({
