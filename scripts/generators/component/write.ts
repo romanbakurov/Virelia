@@ -122,6 +122,149 @@ function writePart(params: {
   });
 }
 
+const EXPORT_FROM_STATEMENT_PATTERN =
+  /export(?:\s+type)?\s+(?:\{[\s\S]*?\}|\*)\s+from\s+['"][^'"]+['"];/g;
+
+const NAMED_IMPORT_STATEMENT_PATTERN =
+  /^import \{[^}\n]+\} from ['"][^'"]+['"];$/gm;
+
+function moduleSpecifierFromStatement(statement: string): string {
+  const match = statement.match(/\bfrom\s+['"]([^'"]+)['"];/);
+
+  if (!match?.[1]) {
+    throw new Error(
+      `Unable to resolve module specifier from generated registration: ${statement}`
+    );
+  }
+
+  return match[1];
+}
+
+function insertSortedModuleStatement(params: {
+  content: string;
+  statement: string;
+  pattern: RegExp;
+}): string {
+  const { content, statement, pattern } = params;
+
+  if (content.includes(statement)) {
+    return content;
+  }
+
+  const source = moduleSpecifierFromStatement(statement);
+  const matches = [...content.matchAll(pattern)];
+
+  if (matches.length === 0) {
+    return content.length === 0
+      ? `${statement}\n`
+      : `${content.trimEnd()}\n${statement}\n`;
+  }
+
+  let previousSource: string | null = null;
+
+  for (const match of matches) {
+    const matchedStatement = match[0];
+    const matchedSource = moduleSpecifierFromStatement(matchedStatement);
+
+    if (previousSource !== null && matchedSource < previousSource) {
+      throw new Error(
+        'Existing generated registration statements are not in canonical module order.'
+      );
+    }
+
+    previousSource = matchedSource;
+
+    if (matchedSource > source) {
+      if (match.index === undefined) {
+        throw new Error(
+          'Unable to resolve generated registration insertion point.'
+        );
+      }
+
+      return (
+        content.slice(0, match.index) +
+        `${statement}\n` +
+        content.slice(match.index)
+      );
+    }
+  }
+
+  const last = matches.at(-1);
+
+  if (!last || last.index === undefined) {
+    throw new Error('Unable to resolve generated registration append point.');
+  }
+
+  const insertAt = last.index + last[0].length;
+
+  const nextContent =
+    content.slice(0, insertAt) + `\n${statement}` + content.slice(insertAt);
+
+  return nextContent.endsWith('\n') ? nextContent : `${nextContent}\n`;
+}
+
+function insertSortedExportStatement(
+  content: string,
+  exportLine: string
+): string {
+  return insertSortedModuleStatement({
+    content,
+    statement: exportLine,
+    pattern: EXPORT_FROM_STATEMENT_PATTERN,
+  });
+}
+
+function insertSortedNamedImport(content: string, importLine: string): string {
+  const source = moduleSpecifierFromStatement(importLine);
+  const matches = [...content.matchAll(NAMED_IMPORT_STATEMENT_PATTERN)];
+
+  if (content.includes(importLine)) {
+    return content;
+  }
+
+  if (matches.length === 0) {
+    return `${importLine}\n\n${content}`;
+  }
+
+  let previousSource: string | null = null;
+
+  for (const match of matches) {
+    const matchedSource = moduleSpecifierFromStatement(match[0]);
+
+    if (previousSource !== null && matchedSource < previousSource) {
+      throw new Error(
+        'Existing metadata imports are not in canonical module order.'
+      );
+    }
+
+    previousSource = matchedSource;
+
+    if (matchedSource > source) {
+      if (match.index === undefined) {
+        throw new Error('Unable to resolve metadata import insertion point.');
+      }
+
+      return (
+        content.slice(0, match.index) +
+        `${importLine}\n` +
+        content.slice(match.index)
+      );
+    }
+  }
+
+  const last = matches.at(-1);
+
+  if (!last || last.index === undefined) {
+    throw new Error('Unable to resolve metadata import append point.');
+  }
+
+  const insertAt = last.index + last[0].length;
+
+  return (
+    content.slice(0, insertAt) + `\n${importLine}` + content.slice(insertAt)
+  );
+}
+
 function updateBarrel(params: {
   barrelFile: string;
   exportLine: string;
@@ -137,10 +280,7 @@ function updateBarrel(params: {
     return;
   }
 
-  const nextContent =
-    content.length === 0
-      ? `${exportLine}\n`
-      : `${content.trimEnd()}\n${exportLine}\n`;
+  const nextContent = insertSortedExportStatement(content, exportLine);
 
   fs.mkdirSync(path.dirname(barrelFile), { recursive: true });
   fs.writeFileSync(barrelFile, nextContent);
@@ -447,24 +587,7 @@ function registerMetadata(params: {
   let content = fs.readFileSync(metadataBarrelFile, 'utf8');
 
   if (!content.includes(importLine)) {
-    const importMatches = [...content.matchAll(/^import .*;$/gm)];
-
-    if (importMatches.length > 0) {
-      const lastImport = importMatches.at(-1);
-
-      if (!lastImport || lastImport.index === undefined) {
-        throw new Error('Unable to locate metadata imports.');
-      }
-
-      const insertAt = lastImport.index + lastImport[0].length;
-
-      content =
-        content.slice(0, insertAt) +
-        `\n${importLine}` +
-        content.slice(insertAt);
-    } else {
-      content = `${importLine}\n\n${content}`;
-    }
+    content = insertSortedNamedImport(content, importLine);
   }
 
   const registryMarker = 'export const componentMetadata = [';

@@ -726,4 +726,117 @@ describe('component generator writer', () => {
 
     expect(metadataBarrel).toContain('  avatarMetadata,');
   });
+
+  it('keeps generated registrations in canonical module order', async () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    for (const packageName of ['react', 'react-native']) {
+      const sourceRoot = path.join(root, 'packages', packageName, 'src');
+
+      fs.writeFileSync(
+        path.join(sourceRoot, 'index.ts'),
+        `export type { ButtonProps } from './primitives/Button';
+export { Button } from './primitives/Button';
+`
+      );
+
+      fs.writeFileSync(
+        path.join(sourceRoot, 'primitives/index.ts'),
+        `export * from './Button';
+`
+      );
+    }
+
+    const metadataBarrelFile = path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'index.ts'
+    );
+
+    fs.writeFileSync(
+      metadataBarrelFile,
+      `import { buttonMetadata } from './Button.metadata';
+
+export const componentMetadata = [
+  buttonMetadata,
+] as const;
+`
+    );
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        parts: [],
+        force: false,
+      },
+    });
+
+    fs.mkdirSync(path.dirname(plan.tokenFactoryBarrelFile), {
+      recursive: true,
+    });
+
+    fs.writeFileSync(
+      plan.tokenFactoryBarrelFile,
+      `export * from './createButtonPalette.js';
+`
+    );
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      fs.mkdirSync(path.dirname(tokenTarget.barrelFile), { recursive: true });
+
+      fs.writeFileSync(
+        tokenTarget.barrelFile,
+        `export { button } from './button.js';
+`
+      );
+    }
+
+    await writeComponentGenerationPlan(plan);
+
+    for (const target of plan.targets) {
+      const layerBarrel = fs.readFileSync(target.barrelFile, 'utf8');
+
+      expect(layerBarrel.indexOf('./Avatar')).toBeLessThan(
+        layerBarrel.indexOf('./Button')
+      );
+
+      const packageBarrel = fs.readFileSync(target.packageBarrelFile, 'utf8');
+
+      expect(packageBarrel.indexOf('./primitives/Avatar')).toBeLessThan(
+        packageBarrel.indexOf('./primitives/Button')
+      );
+    }
+
+    const metadataBarrel = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+    expect(metadataBarrel.indexOf('./Avatar.metadata')).toBeLessThan(
+      metadataBarrel.indexOf('./Button.metadata')
+    );
+
+    const tokenFactoryBarrel = fs.readFileSync(
+      plan.tokenFactoryBarrelFile,
+      'utf8'
+    );
+
+    expect(tokenFactoryBarrel.indexOf('./createAvatarTokens.js')).toBeLessThan(
+      tokenFactoryBarrel.indexOf('./createButtonPalette.js')
+    );
+
+    for (const tokenTarget of plan.tokenThemeTargets) {
+      const tokenBarrel = fs.readFileSync(tokenTarget.barrelFile, 'utf8');
+
+      expect(tokenBarrel.indexOf('./avatar.js')).toBeLessThan(
+        tokenBarrel.indexOf('./button.js')
+      );
+    }
+  });
 });
