@@ -56,6 +56,21 @@ describe('componentProductionValidationCommands', () => {
       'component-pages',
     ]);
   });
+
+  it('builds platform packages with their workspace dependency closure', () => {
+    const commands = componentProductionValidationCommands({
+      ...WEB_INPUT,
+      platform: 'both',
+    });
+
+    expect(
+      commands.find((command) => command.id === 'react-build')?.command
+    ).toEqual(['pnpm', '--filter', '@vellira-ui/react...', 'build']);
+
+    expect(
+      commands.find((command) => command.id === 'react-native-build')?.command
+    ).toEqual(['pnpm', '--filter', '@vellira-ui/react-native...', 'build']);
+  });
 });
 
 describe('runComponentProductionCommandValidation', () => {
