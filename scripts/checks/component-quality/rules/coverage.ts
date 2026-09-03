@@ -66,6 +66,13 @@ function readCorpus(files: readonly string[]): SourceCorpus {
   };
 }
 
+function stripNonBehavioralCoverageMarkers(source: string) {
+  return source
+    .split('\n')
+    .filter((line) => !/^\s*\/\/\s*Coverage contract:/.test(line))
+    .join('\n');
+}
+
 function relativeEvidence(
   context: ComponentQualityRuleContext,
   files: readonly string[]
@@ -210,7 +217,10 @@ export const testCoverageRule: ComponentQualityRule = {
       );
     }
 
-    const missing = missingTestCoverage(context, corpus.source);
+    const missing = missingTestCoverage(
+      context,
+      stripNonBehavioralCoverageMarkers(corpus.source)
+    );
 
     if (missing.length > 0) {
       return finding(
