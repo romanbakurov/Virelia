@@ -47,6 +47,7 @@ export async function runComponentProductionStructuredValidationWorkerTask(param
   const completeness = await runCompleteness({
     root: params.root,
     metadata: [component],
+    generatedDocsScope: 'targeted',
   });
 
   if (completeness.some((result) => !result.ready)) {
