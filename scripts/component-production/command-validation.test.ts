@@ -154,6 +154,39 @@ describe('runComponentProductionCommandValidation', () => {
     ]);
   });
 
+  it('preserves stdout diagnostics when stderr also contains command output', () => {
+    const result = runComponentProductionCommandValidation({
+      root: '/tmp/vellira-production',
+      input: WEB_INPUT,
+      runner: (command) => {
+        if (command.id === 'lint') {
+          return {
+            exitCode: 1,
+            stdout: [
+              '/tmp/vellira-production/packages/react/src/primitives/Avatar/Avatar.tsx',
+              '  1:1  error  Avatar lint failed  example/rule',
+            ].join('\\n'),
+            stderr: "$ eslint 'packages/**/*.{ts,tsx}' 'apps/**/*.{ts,tsx}'",
+            timedOut: false,
+          };
+        }
+
+        return success();
+      },
+    });
+
+    const lint = result.stages.find((stage) => stage.id === 'lint');
+    const message = lint?.findings[0]?.message;
+
+    expect(lint?.status).toBe('blocked');
+    expect(message).toContain(
+      '/tmp/vellira-production/packages/react/src/primitives/Avatar/Avatar.tsx'
+    );
+    expect(message).toContain('Avatar lint failed');
+    expect(message).toContain('example/rule');
+    expect(message).toContain("$ eslint 'packages/**/*.{ts,tsx}'");
+  });
+
   it('continues collecting platform validation after one deterministic failure', () => {
     const calls: string[] = [];
 

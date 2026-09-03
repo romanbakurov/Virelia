@@ -338,7 +338,7 @@ function validationFailureMessage(
   command: ComponentProductionCommand,
   execution: ComponentProductionCommandExecution
 ): string {
-  const detail = summarizeOutput(execution.stderr || execution.stdout);
+  const detail = summarizeExecutionOutput(execution);
 
   return detail
     ? `${command.id} exited with code ${execution.exitCode}: ${detail}`
@@ -358,6 +358,16 @@ function runtimeFailureMessage(
   }
 
   return `${command.id} did not produce a deterministic exit code.`;
+}
+
+function summarizeExecutionOutput(
+  execution: ComponentProductionCommandExecution
+): string {
+  const streams = [execution.stdout, execution.stderr]
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+
+  return summarizeOutput(streams.join('\n'));
 }
 
 function summarizeOutput(value: string): string {
