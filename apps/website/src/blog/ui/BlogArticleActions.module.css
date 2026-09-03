@@ -29,32 +29,63 @@
   gap: var(--space-3);
 }
 
-.actionMetrics {
-  min-width: 112px;
+.articleActionButton,
+.articleMetricPill,
+.articleShareLinks a,
+.articleShareLinks button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  background: color-mix(in srgb, var(--surface-subtle) 76%, transparent);
+  border: 1px solid var(--border-muted);
+  border-radius: 999px;
+  gap: var(--space-2);
 }
 
 .articleActionButton,
 .articleShareLinks a,
 .articleShareLinks button {
-  display: inline-flex;
-  align-items: center;
   padding: 0 var(--space-4);
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  background: color-mix(in srgb, var(--surface-subtle) 76%, transparent);
-  border: 1px solid var(--border-muted);
-  border-radius: 999px;
+}
+
+.articleActionButton,
+.articleShareLinks button {
+  cursor: pointer;
+}
+
+.articleActionButton,
+.articleShareLinks a,
+.articleShareLinks button {
   transition:
     color 160ms ease,
     background-color 160ms ease,
     border-color 160ms ease,
     transform 160ms ease;
-  cursor: pointer;
-  min-height: 40px;
-  text-decoration: none;
-  gap: var(--space-2);
+}
+
+.articleMetricButton,
+.articleMetricPill {
+  justify-content: center;
+  min-width: 64px;
+  padding-inline: var(--space-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.articleMetricPill {
+  cursor: default;
+}
+
+.articleActionButton.articleIconButton,
+.articleShareLinks .articleIconButton {
+  justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  padding: 0;
 }
 
 .articleActionButton:hover,
@@ -101,44 +132,60 @@
   gap: var(--space-2);
 }
 
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.iconSlot {
+  display: inline-flex;
+  flex: 0 0 20px;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  line-height: 0;
+}
+
+.iconSlot > svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 @media (width <= 640px) {
   .articleActions {
     gap: var(--space-4);
   }
 
   .articleActionRow {
-    display: grid;
-    align-items: stretch;
     width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
   }
 
-  .actionMetrics {
-    grid-column: 1 / -1;
-    min-width: 0;
+  .articleMetricButton,
+  .articleMetricPill {
+    width: auto;
+    min-width: 64px;
+    min-height: 44px;
   }
 
-  .articleActionButton {
-    justify-content: center;
-    width: 100%;
+  .articleActionButton.articleIconButton,
+  .articleShareLinks .articleIconButton {
+    width: 44px;
+    min-width: 44px;
     min-height: 44px;
   }
 
   .articleShareLinks {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
-  }
-
-  .articleShareLinks a,
-  .articleShareLinks button {
-    justify-content: center;
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    padding-inline: var(--space-3);
-    white-space: nowrap;
+    width: auto;
+    gap: var(--space-2);
   }
 }
 
@@ -150,11 +197,6 @@
   .articleActionRow,
   .articleShareLinks {
     gap: var(--space-2);
-  }
-
-  .articleShareLinks a,
-  .articleShareLinks button {
-    font-size: 13px;
   }
 }
 
