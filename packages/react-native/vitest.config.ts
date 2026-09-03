@@ -11,6 +11,8 @@ export default defineConfig({
 
       '@test-utils': path.resolve(dirname, 'src/test-utils'),
 
+      '@vellira-ui/react-native': path.resolve(dirname, 'src/index.ts'),
+
       '@vellira-ui/core': path.resolve(dirname, '../core/src/index.ts'),
 
       '@vellira-ui/icons/native': path.resolve(
