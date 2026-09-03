@@ -49,6 +49,35 @@ describe('runComponentProductionStructuredValidationWorkerTask', () => {
     });
   });
 
+  it('scopes generated docs completeness to the target component', async () => {
+    let observedScope: string | undefined;
+    let observedMetadata: readonly ComponentMetadata[] | undefined;
+
+    await runComponentProductionStructuredValidationWorkerTask({
+      root: '/tmp/vellira-production',
+      componentName: 'Avatar',
+      platform: 'all',
+      dependencies: {
+        metadata: [AVATAR_METADATA],
+        runCompleteness: async (params) => {
+          observedScope = params.generatedDocsScope;
+          observedMetadata = params.metadata;
+
+          return [
+            {
+              componentName: 'Avatar',
+              ready: false,
+              checks: [],
+            },
+          ];
+        },
+      },
+    });
+
+    expect(observedScope).toBe('targeted');
+    expect(observedMetadata).toEqual([AVATAR_METADATA]);
+  });
+
   it('runs quality only after completeness passes', async () => {
     let qualityCalled = false;
 
