@@ -2,7 +2,19 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { Check, Copy, Heart, Share } from '@vellira-ui/icons';
+import {
+  Check,
+  Copy,
+  Eye,
+  Facebook,
+  Heart,
+  HeartFilled,
+  LinkedIn,
+  Reddit,
+  Share,
+  X,
+} from '@vellira-ui/icons';
+import { Portal, Tooltip } from '@vellira-ui/react';
 
 import {
   fetchBlogArticleLike,
@@ -12,7 +24,6 @@ import {
   unlikeBlogArticle,
   type BlogMetrics,
 } from '../metrics';
-import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 
 import styles from './BlogArticleActions.module.css';
 
@@ -22,6 +33,19 @@ interface BlogArticleActionsProps {
 }
 
 const SITE_URL = 'https://vellira.dev';
+const ICON_SIZES = {
+  heart: 18,
+  eye: 19,
+  share: 18,
+
+  linkedin: 14,
+  x: 13,
+  facebook: 15,
+  reddit: 15,
+
+  copy: 22,
+  check: 22,
+} as const;
 const pendingViewRegistrations = new Map<string, Promise<BlogMetrics | null>>();
 
 function buildShareUrl(baseUrl: string, params: Record<string, string>) {
@@ -32,6 +56,10 @@ function buildShareUrl(baseUrl: string, params: Record<string, string>) {
   }
 
   return url.toString();
+}
+
+function formatMetricCount(value: number): string {
+  return new Intl.NumberFormat('en-US').format(value);
 }
 
 async function registerArticleViewOnce(
@@ -111,12 +139,22 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     () => [
       {
         label: 'LinkedIn',
+        icon: (
+          <span className={styles.iconSlot}>
+            <LinkedIn size={ICON_SIZES.linkedin} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.linkedin.com/sharing/share-offsite/', {
           url: articleUrl,
         }),
       },
       {
         label: 'X',
+        icon: (
+          <span className={styles.iconSlot}>
+            <X size={ICON_SIZES.x} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://twitter.com/intent/tweet', {
           text: title,
           url: articleUrl,
@@ -124,12 +162,22 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
       },
       {
         label: 'Facebook',
+        icon: (
+          <span className={styles.iconSlot}>
+            <Facebook size={ICON_SIZES.facebook} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.facebook.com/sharer/sharer.php', {
           u: articleUrl,
         }),
       },
       {
         label: 'Reddit',
+        icon: (
+          <span className={styles.iconSlot}>
+            <Reddit size={ICON_SIZES.reddit} aria-hidden='true' />
+          </span>
+        ),
         href: buildShareUrl('https://www.reddit.com/submit', {
           title,
           url: articleUrl,
@@ -186,6 +234,9 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
     await copyArticleLink();
   }
 
+  const likes = metrics ? formatMetricCount(metrics.likes) : null;
+  const views = metrics ? formatMetricCount(metrics.views) : null;
+
   return (
     <aside className={styles.articleActions} aria-label='Article actions'>
       <div className={styles.articleActionsIntro}>
@@ -193,60 +244,134 @@ export function BlogArticleActions({ slug, title }: BlogArticleActionsProps) {
         <span>Like it or share it with another developer.</span>
       </div>
 
-      <div className={styles.articleActionRow}>
-        <BlogMetricsDisplay
-          metrics={metrics}
-          className={styles.actionMetrics}
-        />
+      <Tooltip.Provider delay={250}>
+        <div className={styles.articleActionRow}>
+          <Tooltip placement='top'>
+            <Tooltip.Trigger asChild>
+              <button
+                type='button'
+                className={`${styles.articleActionButton} ${styles.articleMetricButton} ${
+                  liked ? styles.articleActionButtonActive : ''
+                }`}
+                aria-label={liked ? 'Unlike this article' : 'Like this article'}
+                aria-pressed={liked === true}
+                disabled={likePending}
+                onClick={toggleLike}
+              >
+                {liked ? (
+                  <span className={styles.iconSlot}>
+                    <HeartFilled size={ICON_SIZES.heart} aria-hidden='true' />
+                  </span>
+                ) : (
+                  <span className={styles.iconSlot}>
+                    <Heart size={ICON_SIZES.heart} aria-hidden='true' />
+                  </span>
+                )}
+                {likes !== null ? (
+                  <span aria-label={`${likes} likes`} aria-live='polite'>
+                    {likes}
+                  </span>
+                ) : null}
+                <span className={styles.visuallyHidden}>
+                  {liked ? 'Liked' : 'Like'}
+                </span>
+              </button>
+            </Tooltip.Trigger>
+            <Portal>
+              <Tooltip.Content withArrow>
+                {liked ? 'Unlike' : 'Like'}
+              </Tooltip.Content>
+            </Portal>
+          </Tooltip>
 
-        <button
-          type='button'
-          className={`${styles.articleActionButton} ${
-            liked ? styles.articleActionButtonActive : ''
-          }`}
-          aria-label={liked ? 'Unlike this article' : 'Like this article'}
-          aria-pressed={liked === true}
-          disabled={likePending}
-          onClick={toggleLike}
-        >
-          <Heart size={17} aria-hidden='true' />
-          {liked ? 'Liked' : 'Like'}
-        </button>
+          {views !== null ? (
+            <Tooltip placement='top'>
+              <Tooltip.Trigger asChild>
+                <span
+                  className={styles.articleMetricPill}
+                  aria-label={`${views} views`}
+                >
+                  <span className={styles.iconSlot}>
+                    <Eye size={ICON_SIZES.eye} aria-hidden='true' />
+                  </span>
+                  <span aria-hidden='true'>{views}</span>
+                </span>
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Content withArrow>Views</Tooltip.Content>
+              </Portal>
+            </Tooltip>
+          ) : null}
 
-        <button
-          type='button'
-          className={styles.articleActionButton}
-          onClick={shareArticle}
-        >
-          <Share size={17} aria-hidden='true' />
-          Share
-        </button>
+          <Tooltip placement='top'>
+            <Tooltip.Trigger asChild>
+              <button
+                type='button'
+                className={`${styles.articleActionButton} ${styles.articleIconButton}`}
+                aria-label='Share'
+                onClick={shareArticle}
+              >
+                <span className={styles.iconSlot}>
+                  <Share size={ICON_SIZES.share} aria-hidden='true' />
+                </span>
+              </button>
+            </Tooltip.Trigger>
+            <Portal>
+              <Tooltip.Content withArrow>Share</Tooltip.Content>
+            </Portal>
+          </Tooltip>
 
-        <div
-          className={styles.articleShareLinks}
-          aria-label='Share this article'
-        >
-          {shareLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target='_blank'
-              rel='noreferrer noopener'
-            >
-              {link.label}
-            </a>
-          ))}
+          <div
+            className={styles.articleShareLinks}
+            aria-label='Share this article'
+          >
+            {shareLinks.map((link) => (
+              <Tooltip key={link.label} placement='top'>
+                <Tooltip.Trigger asChild>
+                  <a
+                    className={styles.articleIconButton}
+                    href={link.href}
+                    target='_blank'
+                    rel='noreferrer noopener'
+                    aria-label={link.label}
+                  >
+                    {link.icon}
+                  </a>
+                </Tooltip.Trigger>
+                <Portal>
+                  <Tooltip.Content withArrow>{link.label}</Tooltip.Content>
+                </Portal>
+              </Tooltip>
+            ))}
 
-          <button type='button' onClick={copyArticleLink}>
-            {copied ? (
-              <Check size={15} aria-hidden='true' />
-            ) : (
-              <Copy size={15} aria-hidden='true' />
-            )}
-            {copied ? 'Copied' : 'Copy link'}
-          </button>
+            <Tooltip placement='top'>
+              <Tooltip.Trigger asChild>
+                <button
+                  type='button'
+                  className={styles.articleIconButton}
+                  aria-label={copied ? 'Copied' : 'Copy link'}
+                  onClick={copyArticleLink}
+                >
+                  {copied ? (
+                    <span className={styles.iconSlot}>
+                      <Check size={ICON_SIZES.check} aria-hidden='true' />
+                    </span>
+                  ) : (
+                    <span className={styles.iconSlot}>
+                      <Copy size={ICON_SIZES.copy} aria-hidden='true' />
+                    </span>
+                  )}
+                </button>
+              </Tooltip.Trigger>
+              <Portal>
+                <Tooltip.Content withArrow>
+                  {copied ? 'Copied' : 'Copy link'}
+                </Tooltip.Content>
+              </Portal>
+            </Tooltip>
+          </div>
         </div>
-      </div>
+      </Tooltip.Provider>
     </aside>
   );
 }
