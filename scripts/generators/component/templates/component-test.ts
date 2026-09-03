@@ -278,9 +278,8 @@ export function renderTestTemplate({
       control === 'boolean' ? 'onCheckedChange' : 'onValueChange';
 
     return `${contractComment}
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ${componentName} } from './${componentName}';
 
@@ -327,9 +326,8 @@ describe('${describeName}', () => {
         : '';
 
     return `${contractComment}
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ${componentName} } from './${componentName}';
 
@@ -351,9 +349,8 @@ describe('${describeName}', () => {
   }
 
   return `${contractComment}
-import { afterEach, describe, expect, it } from 'vitest';
-
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { ${componentName} } from './${componentName}';
 
