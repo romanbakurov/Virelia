@@ -14,6 +14,33 @@ export default mergeConfig(
           import.meta.dirname,
           '../core/src/index.ts'
         ),
+
+        '@vellira-ui/icons/native': path.resolve(
+          import.meta.dirname,
+          '../icons/src/native.ts'
+        ),
+        '@vellira-ui/icons/lottie': path.resolve(
+          import.meta.dirname,
+          '../icons/src/lottie.ts'
+        ),
+        '@vellira-ui/icons/web': path.resolve(
+          import.meta.dirname,
+          '../icons/src/web.ts'
+        ),
+        '@vellira-ui/icons': path.resolve(
+          import.meta.dirname,
+          '../icons/src/web.source.ts'
+        ),
+
+        '@vellira-ui/tokens': path.resolve(
+          import.meta.dirname,
+          '../tokens/src/index.ts'
+        ),
+
+        '@vellira-ui/types': path.resolve(
+          import.meta.dirname,
+          '../types/src/index.ts'
+        ),
       },
     },
     test: {
