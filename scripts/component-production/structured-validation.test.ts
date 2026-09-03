@@ -150,6 +150,9 @@ describe('runComponentProductionStructuredValidation', () => {
                       status: 'fail',
                       platform: 'react',
                       message: 'Avatar lacks accessibility semantics.',
+                      evidence: [
+                        'packages\\react\\src\\primitives\\Avatar\\Avatar.tsx',
+                      ],
                     },
                     {
                       ruleId: 'conformity.hardcoded-geometry',
@@ -159,6 +162,9 @@ describe('runComponentProductionStructuredValidation', () => {
                       status: 'warn',
                       platform: 'react',
                       message: 'Avatar uses hardcoded geometry.',
+                      evidence: [
+                        'packages/react/src/primitives/Avatar/Avatar.module.scss:3 — padding: 20px',
+                      ],
                     },
                   ],
                 },
@@ -171,8 +177,20 @@ describe('runComponentProductionStructuredValidation', () => {
     expect(result.stages[1].status).toBe('blocked');
 
     expect(
-      result.stages[1].findings.map((finding) => finding.severity)
-    ).toEqual(['blocking', 'warning']);
+      result.stages[1].findings.map((finding) => ({
+        severity: finding.severity,
+        path: finding.path,
+      }))
+    ).toEqual([
+      {
+        severity: 'blocking',
+        path: 'packages/react/src/primitives/Avatar/Avatar.tsx',
+      },
+      {
+        severity: 'warning',
+        path: 'packages/react/src/primitives/Avatar/Avatar.module.scss',
+      },
+    ]);
   });
 
   it('keeps warning-only quality results non-blocking', async () => {
