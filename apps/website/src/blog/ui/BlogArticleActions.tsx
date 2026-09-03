@@ -35,7 +35,7 @@ interface BlogArticleActionsProps {
 const SITE_URL = 'https://vellira.dev';
 const ICON_SIZES = {
   heart: 20,
-  eye: 18,
+  eye: 20,
   share: 18,
 
   linkedin: 14,
