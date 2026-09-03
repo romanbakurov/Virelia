@@ -207,6 +207,40 @@ describe('design-system conformity rules', () => {
     ).toBe('not-applicable');
   });
 
+  it('does not require tokens for layout-only Web styles', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.module.scss'),
+      '.root { display: inline-flex; align-items: center; justify-content: center; }'
+    );
+
+    const result = await tokenIntegrationRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('not-applicable');
+  });
+
+  it('still requires tokens for token-relevant Web styles', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.module.scss'),
+      '.root { padding: 1rem; }'
+    );
+
+    const result = await tokenIntegrationRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+  });
+
   it('does not require theme tokens for layout-only Native styles', async () => {
     const base = createRoot();
     const dir = componentDir(base, 'react-native');

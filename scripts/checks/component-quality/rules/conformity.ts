@@ -206,7 +206,13 @@ function hasNativeTokenEvidence(source: string) {
   );
 }
 
-function hasTokenRelevantDesignProperties(source: string) {
+function hasWebTokenRelevantDesignProperties(source: string) {
+  return /\b(?:color|background(?:-color)?|border(?:-color|-radius)?|font-(?:family|size|weight)|line-height|box-shadow|padding(?:-(?:inline|block|top|right|bottom|left))?|margin(?:-(?:inline|block|top|right|bottom|left))?|gap)\s*:/.test(
+    source
+  );
+}
+
+function hasNativeTokenRelevantDesignProperties(source: string) {
   return /\b(?:color|backgroundColor|borderColor|borderRadius|fontFamily|fontSize|fontWeight|lineHeight|shadowColor|shadowRadius|padding|paddingHorizontal|paddingVertical|margin|gap)\s*:/.test(
     source
   );
@@ -252,10 +258,12 @@ export const tokenIntegrationRule: ComponentQualityRule = {
 
     const source = styleFiles.map((file) => file.source).join('\n');
 
-    if (
-      context.platform === 'react-native' &&
-      !hasTokenRelevantDesignProperties(source)
-    ) {
+    const hasTokenRelevantProperties =
+      context.platform === 'react'
+        ? hasWebTokenRelevantDesignProperties(source)
+        : hasNativeTokenRelevantDesignProperties(source);
+
+    if (!hasTokenRelevantProperties) {
       return finding(tokenIntegrationRule, context, 'not-applicable');
     }
 

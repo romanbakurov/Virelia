@@ -310,6 +310,37 @@ function completenessStageFromResults(
   };
 }
 
+function qualityFindingPath(
+  evidence: readonly string[] | undefined
+): string | undefined {
+  for (const item of evidence ?? []) {
+    const rawCandidate = item.split(' — ', 1)[0]?.trim();
+
+    if (!rawCandidate) {
+      continue;
+    }
+
+    const withoutLocation = rawCandidate.replace(/:\d+(?::\d+)?$/, '');
+    const normalized = path.posix.normalize(
+      withoutLocation.replaceAll('\\', '/')
+    );
+
+    if (
+      normalized === '..' ||
+      normalized.startsWith('../') ||
+      normalized.startsWith('/') ||
+      !normalized.includes('/') ||
+      !/\.[a-z0-9]+$/i.test(normalized)
+    ) {
+      continue;
+    }
+
+    return normalized;
+  }
+
+  return undefined;
+}
+
 function qualityStageFromResult(
   input: ComponentProductionInputV1,
   result: ComponentQualityRunResult
@@ -344,6 +375,8 @@ function qualityStageFromResult(
         return [];
       }
 
+      const findingPath = qualityFindingPath(finding.evidence);
+
       return [
         {
           id: [
@@ -360,6 +393,11 @@ function qualityStageFromResult(
           ...(finding.platform
             ? {
                 platform: finding.platform,
+              }
+            : {}),
+          ...(findingPath
+            ? {
+                path: findingPath,
               }
             : {}),
           ruleId: finding.ruleId,

@@ -104,6 +104,20 @@ describe('platform accessibility quality rules', () => {
     ).toBe('pass');
   });
 
+  it('reports the exact Web implementation when required semantics are missing', async () => {
+    createSource('react', '<div>Content</div>');
+
+    const result = await accessibilitySemanticsRule.evaluate({
+      metadata: baseMetadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.evidence).toEqual([
+      'packages/react/src/components/Example/Example.tsx',
+    ]);
+  });
+
   it('accepts React Native accessibility semantics independently', async () => {
     createSource(
       'react-native',
@@ -133,6 +147,9 @@ describe('platform accessibility quality rules', () => {
 
     expect(result.status).toBe('fail');
     expect(result.message).toContain('React Native');
+    expect(result.evidence).toEqual([
+      'packages/react-native/src/components/Example/Example.tsx',
+    ]);
   });
 
   it('uses keyboard evidence for web interaction', async () => {

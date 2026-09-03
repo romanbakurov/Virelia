@@ -121,6 +121,21 @@ function relativeEvidence(
     .map((file) => path.relative(qualityRoot(context), file));
 }
 
+function primaryImplementationEvidence(
+  context: ComponentQualityRuleContext,
+  files: readonly string[]
+) {
+  const expectedFileName = `${context.metadata.name}.tsx`;
+  const implementationFile =
+    files.find((file) => path.basename(file) === expectedFileName) ??
+    files.find((file) => file.endsWith('.tsx')) ??
+    files[0];
+
+  return implementationFile
+    ? [path.relative(qualityRoot(context), implementationFile)]
+    : [];
+}
+
 const webSemanticEvidence = [
   /<button\b/,
   /<input\b/,
@@ -202,7 +217,7 @@ export const accessibilitySemanticsRule: ComponentQualityRule = {
       context.platform === 'react'
         ? 'Accessibility is required, but no semantic element, role, or ARIA evidence was found.'
         : 'Accessibility is required, but no React Native accessibilityRole/Label/State/accessible evidence was found.',
-      [path.relative(qualityRoot(context), snapshot.componentDir)]
+      primaryImplementationEvidence(context, snapshot.files)
     );
   },
 };
