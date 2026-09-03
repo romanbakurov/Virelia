@@ -115,7 +115,11 @@ function countOccurrences(source: string, pattern: RegExp) {
 }
 
 beforeEach(() => {
-  vi.mocked(generateComponentWebsitePage).mockClear();
+  vi.mocked(generateComponentWebsitePage).mockReset();
+  vi.mocked(generateComponentWebsitePage).mockReturnValue({
+    createdFiles: [],
+    updatedFiles: [],
+  });
 });
 
 afterEach(() => {
@@ -133,6 +137,21 @@ describe('component generator', () => {
 
     createRequiredRepositoryStructure(root);
 
+    const websiteCreatedFile = path.join(
+      root,
+      'apps/website/src/component-catalog/components/Avatar/index.ts'
+    );
+
+    const websiteUpdatedFile = path.join(
+      root,
+      'apps/website/src/component-catalog/registry/components.ts'
+    );
+
+    vi.mocked(generateComponentWebsitePage).mockReturnValue({
+      createdFiles: [websiteCreatedFile],
+      updatedFiles: [websiteUpdatedFile],
+    });
+
     const result = await runComponentGenerator({
       root,
       options: {
@@ -146,7 +165,9 @@ describe('component generator', () => {
       },
     });
 
-    expect(result.createdFiles).toHaveLength(22);
+    expect(result.createdFiles).toHaveLength(23);
+    expect(result.createdFiles).toContain(websiteCreatedFile);
+    expect(result.updatedFiles).toContain(websiteUpdatedFile);
 
     expect(generateComponentWebsitePage).toHaveBeenCalledTimes(1);
     expect(generateComponentWebsitePage).toHaveBeenCalledWith({
