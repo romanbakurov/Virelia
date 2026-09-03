@@ -296,7 +296,7 @@ function platformCommands(
       {
         id: 'react-build',
         stage: 'build',
-        command: ['pnpm', '--filter', '@vellira-ui/react', 'build'],
+        command: ['pnpm', '--filter', '@vellira-ui/react...', 'build'],
         timeoutMs: 300_000,
       },
       {
@@ -325,7 +325,7 @@ function platformCommands(
       {
         id: 'react-native-build',
         stage: 'build',
-        command: ['pnpm', '--filter', '@vellira-ui/react-native', 'build'],
+        command: ['pnpm', '--filter', '@vellira-ui/react-native...', 'build'],
         timeoutMs: 300_000,
       }
     );
