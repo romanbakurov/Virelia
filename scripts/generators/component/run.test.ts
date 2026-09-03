@@ -803,6 +803,144 @@ export { switchDocs };
     expect(story).toContain('export const Default');
   });
 
+  it('emits manual coverage skeletons for compound components that require manual coverage', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root, 'components');
+
+    await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Disclosure',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        capabilities: [
+          'compound-api',
+          'controlled',
+          'uncontrolled',
+          'disabled',
+          'keyboard',
+        ],
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    const webManual = readFile(
+      path.join(
+        root,
+        'packages/react/src/components/Disclosure/Disclosure.manual.test.tsx'
+      )
+    );
+    const nativeManual = readFile(
+      path.join(
+        root,
+        'packages/react-native/src/components/Disclosure/Disclosure.manual.test.tsx'
+      )
+    );
+
+    expect(webManual).toContain(
+      '// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled, keyboard'
+    );
+    expect(nativeManual).toContain(
+      '// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled'
+    );
+    expect(webManual).not.toContain('KeyboardEvent');
+    expect(webManual).not.toContain('expect(');
+  });
+
+  it('preserves authored manual tests when regenerating with force', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root, 'components');
+
+    await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Disclosure',
+        platform: 'web',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        capabilities: ['compound-api', 'keyboard'],
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    const manualFile = path.join(
+      root,
+      'packages/react/src/components/Disclosure/Disclosure.manual.test.tsx'
+    );
+    const authored = [
+      '// Coverage contract: accessible-name, interaction, keyboard',
+      "it('keeps authored keyboard evidence', () => {",
+      "  const event = new KeyboardEvent('keydown', { key: 'Enter' });",
+      "  expect(event.key).toBe('Enter');",
+      '});',
+      '',
+    ].join('\n');
+
+    fs.writeFileSync(manualFile, authored);
+
+    await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Disclosure',
+        platform: 'web',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        capabilities: ['compound-api', 'keyboard'],
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: true,
+      },
+    });
+
+    expect(readFile(manualFile)).toBe(authored);
+  });
+
+  it('derives compound Storybook states only from supported capabilities', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root, 'components');
+
+    await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Disclosure',
+        platform: 'web',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        capabilities: ['compound-api', 'controlled', 'disabled'],
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    const story = readFile(
+      path.join(
+        root,
+        'packages/react/src/components/Disclosure/Disclosure.stories.tsx'
+      )
+    );
+
+    expect(story).toContain('export const Controlled');
+    expect(story).toContain("value: 'item-1'");
+    expect(story).toContain('onValueChange: () => undefined');
+    expect(story).toContain('export const Disabled');
+    expect(story).toContain('disabled: true');
+    expect(story).not.toContain('export const Uncontrolled');
+    expect(story).not.toContain('defaultValue');
+    expect(story).not.toContain('checked');
+    expect(story).not.toContain('onCheckedChange');
+    expect(story).not.toContain('open');
+    expect(story).not.toContain('onOpenChange');
+  });
+
   it('preserves authored docs regions when rerun with --force', async () => {
     const root = createTempRoot();
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { renderTestTemplate } from './component-test';
+import { renderManualTestTemplate, renderTestTemplate } from './component-test';
 
 describe('component test templates', () => {
   it('keeps base output minimal', () => {
@@ -74,6 +74,28 @@ describe('component test templates', () => {
     expect(result).not.toContain('gives the trigger an accessible name');
     expect(result).not.toContain('forwards trigger activation');
     expect(result).not.toContain('keyboard-focusable');
+  });
+
+  it('renders a deterministic manual coverage marker skeleton', () => {
+    const result = renderManualTestTemplate({
+      componentName: 'Disclosure',
+      isNative: false,
+      requirements: [
+        'accessible-name',
+        'interaction',
+        'controlled',
+        'uncontrolled',
+        'disabled',
+        'keyboard',
+      ],
+    });
+
+    expect(result).toContain(
+      '// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled, keyboard'
+    );
+    expect(result).toContain("describe('Disclosure manual behavior coverage'");
+    expect(result).not.toContain('KeyboardEvent');
+    expect(result).not.toContain('expect(');
   });
 
   it('does not generate browser keyboard coverage for native compound components', () => {

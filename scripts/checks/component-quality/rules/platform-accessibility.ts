@@ -40,7 +40,14 @@ function shouldIncludeSourceFile(fileName: string) {
   );
 }
 
-function collectSourceFiles(directory: string): string[] {
+function shouldIncludeManualTestFile(fileName: string) {
+  return /\.manual\.test\.tsx$/.test(fileName);
+}
+
+function collectFiles(
+  directory: string,
+  predicate: (fileName: string) => boolean
+): string[] {
   if (!fs.existsSync(directory)) return [];
 
   return fs
@@ -49,22 +56,35 @@ function collectSourceFiles(directory: string): string[] {
       const fullPath = path.join(directory, entry.name);
 
       if (entry.isDirectory()) {
-        return collectSourceFiles(fullPath);
+        return collectFiles(fullPath, predicate);
       }
 
-      return shouldIncludeSourceFile(entry.name) ? [fullPath] : [];
+      return predicate(entry.name) ? [fullPath] : [];
     })
     .sort((left, right) => left.localeCompare(right));
 }
 
-function readComponentSource(context: ComponentQualityRuleContext) {
+function collectSourceFiles(directory: string): string[] {
+  return collectFiles(directory, shouldIncludeSourceFile);
+}
+
+function readComponentSource(
+  context: ComponentQualityRuleContext,
+  options: { includeManualTests?: boolean } = {}
+) {
   const root = qualityRoot(context);
   const componentDir = componentDirectory(
     root,
     context.metadata,
     context.platform
   );
-  const files = collectSourceFiles(componentDir);
+  const sourceFiles = collectSourceFiles(componentDir);
+  const files = options.includeManualTests
+    ? [
+        ...sourceFiles,
+        ...collectFiles(componentDir, shouldIncludeManualTestFile),
+      ].sort((left, right) => left.localeCompare(right))
+    : sourceFiles;
 
   return {
     componentDir,
@@ -220,7 +240,9 @@ export const platformInteractionRule: ComponentQualityRule = {
       return finding(platformInteractionRule, context, 'not-applicable');
     }
 
-    const snapshot = readComponentSource(context);
+    const snapshot = readComponentSource(context, {
+      includeManualTests: context.platform === 'react',
+    });
     const patterns =
       context.platform === 'react'
         ? webKeyboardEvidence

@@ -6,6 +6,7 @@ import {
   renderComponentTokenFactoryBarrelExport,
   renderComponentTokenFactoryTemplate,
   renderIndexTemplate,
+  renderManualTestTemplate,
   renderMetadataTemplate,
   renderNativeStylesTemplate,
   renderSharedFormControlTypesTemplate,
@@ -333,6 +334,8 @@ function writeTarget(params: {
       isNative: target.isNative,
       profile: plan.profile,
       control: plan.control,
+      capabilities,
+      parts: plan.parts,
     }),
     createdFiles: result.createdFiles,
   });
@@ -367,6 +370,24 @@ function writeTarget(params: {
     content: renderComponentTestCoverageContract(coverageContract),
     createdFiles: result.createdFiles,
   });
+
+  if (
+    coverageContract.componentSpecific.required &&
+    preservedManualTests.length === 0
+  ) {
+    writeFile({
+      filePath: path.join(
+        target.componentDir,
+        `${componentName}.manual.test.tsx`
+      ),
+      content: renderManualTestTemplate({
+        componentName,
+        isNative: target.isNative,
+        requirements: coverageContract.componentSpecific.requirements,
+      }),
+      createdFiles: result.createdFiles,
+    });
+  }
 
   if (shouldGenerateVisualScaffold(plan)) {
     writeFile({

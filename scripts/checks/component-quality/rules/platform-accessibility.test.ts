@@ -54,6 +54,32 @@ function createSource(
   vi.spyOn(process, 'cwd').mockReturnValue(root);
 }
 
+function createSourceWithManualTest(params: {
+  source: string;
+  manualTest: string;
+}) {
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'vellira-platform-quality-')
+  );
+  roots.push(root);
+  const dir = path.join(
+    root,
+    'packages',
+    'react',
+    'src',
+    'components',
+    'Example'
+  );
+
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'Example.tsx'), params.source);
+  fs.writeFileSync(
+    path.join(dir, 'Example.manual.test.tsx'),
+    params.manualTest
+  );
+  vi.spyOn(process, 'cwd').mockReturnValue(root);
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
   for (const root of roots.splice(0)) {
@@ -134,6 +160,44 @@ describe('platform accessibility quality rules', () => {
     expect(result.evidence).toContain(
       'packages/react/src/components/Example/Example.tsx'
     );
+  });
+
+  it('recognizes executable manual keyboard interaction evidence on web', async () => {
+    createSourceWithManualTest({
+      source: '<button>Open</button>',
+      manualTest: `
+        // Coverage contract: keyboard
+        it('handles trigger keyboard activation', () => {
+          const event = new KeyboardEvent('keydown', { key: 'Enter' });
+          document.querySelector('button')?.dispatchEvent(event);
+          expect(event.key).toBe('Enter');
+        });
+      `,
+    });
+
+    const result = await platformInteractionRule.evaluate({
+      metadata: baseMetadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('pass');
+    expect(result.evidence).toContain(
+      'packages/react/src/components/Example/Example.manual.test.tsx'
+    );
+  });
+
+  it('does not treat a manual coverage marker as keyboard behavior', async () => {
+    createSourceWithManualTest({
+      source: '<button>Open</button>',
+      manualTest: '// Coverage contract: keyboard\n',
+    });
+
+    const result = await platformInteractionRule.evaluate({
+      metadata: baseMetadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
   });
 
   it('uses press interaction instead of web keyboard APIs on native', async () => {

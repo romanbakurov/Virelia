@@ -11,6 +11,22 @@ export type TestTemplateParams = ComponentTemplateParams & {
   parts?: readonly string[];
 };
 
+export function renderManualTestTemplate(params: {
+  componentName: string;
+  isNative: boolean;
+  requirements: readonly string[];
+}) {
+  const { componentName, isNative, requirements } = params;
+  const describeName = isNative ? `Native ${componentName}` : componentName;
+
+  return `// Coverage contract: ${requirements.join(', ')}
+import { describe } from 'vitest';
+
+describe('${describeName} manual behavior coverage', () => {
+});
+`;
+}
+
 function renderFormControlStateTests(params: {
   componentName: string;
   requirements: readonly string[];

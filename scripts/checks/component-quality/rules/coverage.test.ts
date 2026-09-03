@@ -157,6 +157,32 @@ describe('coverage quality rules', () => {
     expect(result.status).toBe('pass');
   });
 
+  it('does not treat a manual coverage marker as behavioral capability evidence', async () => {
+    const base = root();
+    const dir = componentDir(base, 'react');
+    fs.writeFileSync(
+      path.join(dir, 'Example.test.tsx'),
+      `
+        it('renders', () => {
+          render(<Example />);
+          expect(screen.getByText('Example')).toBeTruthy();
+        });
+      `
+    );
+    fs.writeFileSync(
+      path.join(dir, 'Example.manual.test.tsx'),
+      '// Coverage contract: controlled, uncontrolled, disabled\n'
+    );
+
+    const result = await testCoverageRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('controlled, uncontrolled, disabled');
+  });
+
   it('warns for partial Storybook coverage', async () => {
     const base = root();
     const dir = componentDir(base, 'react');
