@@ -177,6 +177,8 @@ describe('renderUsage', () => {
     });
 
     expect(deduplicated.content.match(/label='Email'/g)).toHaveLength(2);
-    expect(deduplicated.content.match(/description='Work email'/g)).toHaveLength(2);
+    expect(
+      deduplicated.content.match(/description='Work email'/g)
+    ).toHaveLength(2);
   });
 });
