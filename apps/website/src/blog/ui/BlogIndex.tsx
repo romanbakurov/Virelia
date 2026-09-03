@@ -69,7 +69,10 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                     {article.description}
                   </p>
 
-                  <BlogMetricsDisplay metrics={metricsBySlug[article.slug]} />
+                  <BlogMetricsDisplay
+                    slug={article.slug}
+                    metrics={metricsBySlug[article.slug]}
+                  />
 
                   <div className={styles.tags} aria-label='Article tags'>
                     {article.tags.map((tag) => (

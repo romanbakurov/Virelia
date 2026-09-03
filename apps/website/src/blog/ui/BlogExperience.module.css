@@ -196,11 +196,16 @@
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
   gap: var(--space-2);
+  transition: color 160ms ease;
 }
 
 .cardLink::after {
   content: '→';
   transition: transform 160ms ease;
+}
+
+.cardLink:hover {
+  color: var(--text-brand);
 }
 
 .cardLink:hover::after {
