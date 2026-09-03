@@ -40,6 +40,22 @@ const loop: ExtractedProp = {
   description: '',
 };
 
+const label: ExtractedProp = {
+  name: 'label',
+  kind: 'string',
+  required: false,
+  type: 'string',
+  description: '',
+};
+
+const description: ExtractedProp = {
+  name: 'description',
+  kind: 'string',
+  required: false,
+  type: 'string',
+  description: '',
+};
+
 const playgroundProps = [
   orientation,
   activationMode,
@@ -101,5 +117,66 @@ describe('renderUsage', () => {
       'const code = createSwitchCode(platform);'
     );
     expect(result.content).not.toContain('const [value] =');
+  });
+
+  it('emits demo shortcut props only on platforms whose root API supports them', () => {
+    const result = renderUsage({
+      componentName: 'Accordion',
+      componentConfig: {
+        demo: {
+          label: 'Account settings',
+          description: 'Expand a section to review its settings.',
+        },
+      },
+      playgroundProps: [],
+      reactApiProps: [label],
+      nativeApiProps: [description],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(result.content).toContain(
+      "platform === 'react'\n      ? [\n        `label='Account settings'`,\n        ]\n      : [\n        `description='Expand a section to review its settings.'`,\n        ];"
+    );
+  });
+
+  it('does not emit unsupported or duplicate demo shortcut props', () => {
+    const unsupported = renderUsage({
+      componentName: 'Accordion',
+      componentConfig: {
+        demo: {
+          label: 'Account settings',
+          description: 'Expand a section to review its settings.',
+        },
+      },
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(unsupported.content).not.toContain("label='Account settings'");
+    expect(unsupported.content).not.toContain(
+      "description='Expand a section to review its settings.'"
+    );
+
+    const deduplicated = renderUsage({
+      componentName: 'Input',
+      componentConfig: {
+        demo: {
+          label: 'Email',
+          description: 'Work email',
+        },
+      },
+      playgroundProps: [],
+      reactApiProps: [label, description],
+      nativeApiProps: [label, description],
+      generatedFileHeader: '',
+      getDemoProps: () => "label='Email'\ndescription='Work email'",
+    });
+
+    expect(deduplicated.content.match(/label='Email'/g)).toHaveLength(2);
+    expect(deduplicated.content.match(/description='Work email'/g)).toHaveLength(2);
   });
 });
