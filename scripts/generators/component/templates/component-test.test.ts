@@ -17,6 +17,39 @@ describe('component test templates', () => {
     expect(result).not.toContain('renders the disabled baseline state');
   });
 
+  it('keeps generated test imports in canonical lint order', () => {
+    const results = [
+      renderTestTemplate({
+        componentName: 'Avatar',
+        isNative: false,
+        profile: 'base',
+      }),
+      renderTestTemplate({
+        componentName: 'Switch',
+        isNative: false,
+        profile: 'form-control',
+        control: 'boolean',
+      }),
+      renderTestTemplate({
+        componentName: 'Accordion',
+        isNative: false,
+        profile: 'compound',
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+      }),
+    ];
+
+    for (const result of results) {
+      const testUtilsImport = result.indexOf(
+        "import { render } from '@test-utils/render';"
+      );
+      const vitestImport = result.indexOf(" from 'vitest';");
+
+      expect(testUtilsImport).toBeGreaterThanOrEqual(0);
+      expect(vitestImport).toBeGreaterThanOrEqual(0);
+      expect(testUtilsImport).toBeLessThan(vitestImport);
+    }
+  });
+
   it('generates controlled, state, and accessibility coverage for boolean controls', () => {
     const result = renderTestTemplate({
       componentName: 'Switch',
