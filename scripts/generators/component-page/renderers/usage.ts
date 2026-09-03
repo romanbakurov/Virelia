@@ -30,14 +30,30 @@ export function renderUsage(params: {
     getDemoProps,
   } = params;
 
+  function hasApiProp(platform: Platform, propName: string) {
+    const apiProps = platform === 'react' ? reactApiProps : nativeApiProps;
+
+    return apiProps.some((prop) => prop.name === propName);
+  }
+
+  function hasPropBinding(source: string, propName: string) {
+    return new RegExp(`(^|\\s)${propName}\\s*=`).test(source);
+  }
+
   function createUsageStaticProps(platform: Platform) {
+    const demoProps = getDemoProps(platform);
+
     return normalizePropFragments(
       [
-        getDemoProps(platform) || null,
-        componentConfig.demo?.label
+        demoProps || null,
+        componentConfig.demo?.label &&
+        hasApiProp(platform, 'label') &&
+        !hasPropBinding(demoProps, 'label')
           ? `label='${componentConfig.demo.label}'`
           : null,
-        componentConfig.demo?.description
+        componentConfig.demo?.description &&
+        hasApiProp(platform, 'description') &&
+        !hasPropBinding(demoProps, 'description')
           ? `description='${componentConfig.demo.description}'`
           : null,
       ].filter((prop): prop is string => Boolean(prop))
