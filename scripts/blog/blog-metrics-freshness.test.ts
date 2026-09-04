@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getPublishedBlogArticles } from '../../apps/website/src/blog';
+import { getPublishedBlogArticles } from '../../apps/website/src/blog/store';
 import { fetchBlogMetricsBatch } from '../../apps/website/src/blog/metrics';
 import { GET as getPublishedManifest } from '../../apps/website/src/app/(marketing)/(site)/blog/manifest.json/route';
 
@@ -12,18 +12,19 @@ afterEach(() => {
 describe('Blog V1 metrics freshness', () => {
   it('uses one uncached batch request for index metrics', async () => {
     const fetchMock = vi.fn(
-      async (_input: RequestInfo | URL, init?: RequestInit) =>
-        ({
-          ok: true,
-          status: 200,
-          json: async () => ({
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
+        new Response(
+          JSON.stringify({
             items: [
               { slug: 'one-runtime', views: 4, likes: 1 },
               { slug: 'two-runtimes', views: 7, likes: 2 },
             ],
           }),
-          init,
-        }) as Response
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
     );
 
     vi.stubGlobal('fetch', fetchMock);
