@@ -123,6 +123,21 @@ function mergeObject<T extends Record<string, unknown>>(
   } as T;
 }
 
+function mergePlatformMetadata(
+  base: ComponentPageMetadata['react'],
+  override: ComponentPageMetadata['react']
+) {
+  const imports = Array.from(
+    new Set([...(base?.imports ?? []), ...(override?.imports ?? [])])
+  );
+
+  return {
+    ...(base ?? {}),
+    ...(override ?? {}),
+    ...(imports.length > 0 ? { imports } : {}),
+  };
+}
+
 export function mergeComponentMetadata(
   base: ComponentPageMetadata,
   override: ComponentPageMetadata
@@ -130,8 +145,8 @@ export function mergeComponentMetadata(
   return {
     ...base,
     ...override,
-    react: mergeObject(base.react, override.react),
-    native: mergeObject(base.native, override.native),
+    react: mergePlatformMetadata(base.react, override.react),
+    native: mergePlatformMetadata(base.native, override.native),
     demo: {
       ...(base.demo ?? {}),
       ...(override.demo ?? {}),

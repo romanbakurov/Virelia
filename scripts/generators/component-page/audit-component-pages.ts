@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { getGeneratedComponentPageComponents } from './component-page-components';
+import { resolvePageInput } from './model/resolve-page-input';
 import {
   loadComponentMetadata,
   validateComponentMetadata,
@@ -170,14 +171,35 @@ for (const componentName of generatedComponentPageComponents) {
     componentName,
   });
 
+  let metadataValid = true;
+
   try {
     validateComponentMetadata({ componentName, metadata });
   } catch (error) {
+    metadataValid = false;
     addFailure(
       componentName,
       error instanceof Error ? error.message : 'invalid metadata'
     );
   }
+
+  if (metadataValid) {
+    try {
+      await resolvePageInput({
+        root,
+        catalogComponentsRoot,
+        componentName,
+      });
+    } catch (error) {
+      addFailure(
+        componentName,
+        `effective generator input invalid: ${
+          error instanceof Error ? error.message : 'unknown generator error'
+        }`
+      );
+    }
+  }
+
   auditComponent(componentName, componentPagesSource);
 }
 

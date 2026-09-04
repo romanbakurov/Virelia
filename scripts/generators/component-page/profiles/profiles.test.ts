@@ -289,7 +289,17 @@ describe('component page profiles', () => {
       '<Example.Content>Section content</Example.Content>'
     );
 
-    expect(metadata.native?.children).toBe(metadata.react?.children);
+    expect(metadata.native?.children).not.toBe(metadata.react?.children);
+    expect(metadata.react?.children).not.toContain('NativeText');
+    expect(metadata.native?.children).toContain(
+      '<Example.Trigger><NativeText>Section</NativeText></Example.Trigger>'
+    );
+    expect(metadata.native?.children).toContain(
+      '<Example.Content><NativeText>Section content</NativeText></Example.Content>'
+    );
+    expect(metadata.native?.imports).toEqual([
+      "import { Text as NativeText } from 'react-native';",
+    ]);
   });
 
   it('does not invent compound children for an incomplete composition', () => {

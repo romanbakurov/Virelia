@@ -169,7 +169,7 @@ function expectGeneratedChildrenToTypeCheck(params: {
 
   fs.writeFileSync(
     filePath,
-    `type ReactNode = string;
+    `type ReactNode = string | JSX.Element;
 declare namespace JSX {
   type Element = unknown;
   interface IntrinsicElements {}
@@ -178,6 +178,10 @@ declare namespace JSX {
 ${params.itemPropsSource}
 type ExampleTriggerProps = { children?: ReactNode };
 type ExampleContentProps = { children?: ReactNode };
+
+declare const NativeText: (props: {
+  children?: ReactNode;
+}) => JSX.Element;
 
 declare const Example: {
   Item: (props: ExampleItemProps) => JSX.Element;
@@ -1127,6 +1131,12 @@ ${nativeItemProps}`,
     );
     expect(input.componentConfig.native?.children).toContain(
       '<Example.Item nativeCount={1}>'
+    );
+    expect(input.componentConfig.native?.children).toContain(
+      '<NativeText>Section content</NativeText>'
+    );
+    expect(input.componentConfig.native?.imports).toContain(
+      "import { Text as NativeText } from 'react-native';"
     );
     expect(input.componentConfig.react?.children).not.toBe(
       input.componentConfig.native?.children

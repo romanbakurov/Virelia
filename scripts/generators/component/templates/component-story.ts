@@ -1,4 +1,10 @@
 import type { ComponentCapability } from '@vellira-ui/metadata';
+
+import {
+  assertGeneratedNativeTextHostSafety,
+  NATIVE_TEXT_IMPORT,
+  renderGeneratedNativeText,
+} from '../../native-text-host';
 import type { ComponentProfileArg, FormControlKindArg } from '../cli';
 
 export type StoryTemplateParams = {
@@ -20,29 +26,48 @@ function hasCapability(
 
 function renderCompoundChildren(
   componentName: string,
-  parts: readonly string[]
+  parts: readonly string[],
+  isNative: boolean
 ) {
   if (!parts.includes('Item') || !parts.includes('Trigger')) {
     return undefined;
   }
 
-  return `<${componentName}.Item value='item-1'>
-  <${componentName}.Trigger>Example section</${componentName}.Trigger>
+  const triggerText = isNative
+    ? renderGeneratedNativeText('Example section', 'view-like')
+    : 'Example section';
+  const contentText = isNative
+    ? renderGeneratedNativeText('Example content', 'view-like')
+    : 'Example content';
+
+  const source = `<${componentName}.Item value='item-1'>
+  <${componentName}.Trigger>${triggerText}</${componentName}.Trigger>
   ${
     parts.includes('Content')
-      ? `<${componentName}.Content>Example content</${componentName}.Content>`
-      : 'Example content'
+      ? `<${componentName}.Content>${contentText}</${componentName}.Content>`
+      : contentText
   }
 </${componentName}.Item>`;
+
+  if (isNative) {
+    assertGeneratedNativeTextHostSafety({
+      componentName,
+      surface: 'Storybook generated native compound children',
+      source,
+    });
+  }
+
+  return source;
 }
 
 function renderCompoundStories(params: {
   componentName: string;
   capabilities: readonly ComponentCapability[];
   parts: readonly string[];
+  isNative: boolean;
 }) {
-  const { componentName, capabilities, parts } = params;
-  const children = renderCompoundChildren(componentName, parts);
+  const { componentName, capabilities, parts, isNative } = params;
+  const children = renderCompoundChildren(componentName, parts, isNative);
 
   if (!children) {
     return '';
@@ -117,16 +142,27 @@ export function renderStoryTemplate({
     'Replace this section with a real example before publishing the component.',
   ].join('\n');
 
+  const compoundChildren =
+    profile === 'compound'
+      ? renderCompoundChildren(componentName, parts, isNative)
+      : undefined;
+  const defaultTextChild = isNative
+    ? `(\n      ${renderGeneratedNativeText(
+        'Example content',
+        'view-like'
+      )}\n    )`
+    : "'Example content'";
+
   const defaultArgs =
     profile === 'compound'
-      ? renderCompoundChildren(componentName, parts)
+      ? compoundChildren
         ? `{
     children: (
-      ${renderCompoundChildren(componentName, parts)}
+      ${compoundChildren}
     ),
   }`
         : `{
-    children: 'Example content',
+    children: ${defaultTextChild},
   }`
       : profile === 'form-control'
         ? control === 'boolean'
@@ -137,12 +173,17 @@ export function renderStoryTemplate({
     defaultValue: 'Example value',
   }`
         : `{
-    children: 'Example content',
+    children: ${defaultTextChild},
   }`;
 
   const additionalStories =
     profile === 'compound'
-      ? renderCompoundStories({ componentName, capabilities, parts })
+      ? renderCompoundStories({
+          componentName,
+          capabilities,
+          parts,
+          isNative,
+        })
       : profile === 'form-control'
         ? control === 'boolean'
           ? `
@@ -205,8 +246,11 @@ export const Invalid: Story = {
 `
         : '';
 
-  return `import type { Meta, StoryObj } from '${storybookPackage}';
+  const nativeTextImport =
+    isNative && profile !== 'form-control' ? `${NATIVE_TEXT_IMPORT}\n` : '';
 
+  return `import type { Meta, StoryObj } from '${storybookPackage}';
+${nativeTextImport}
 import { ${componentName} } from './${componentName}';
 
 const meta: Meta<typeof ${componentName}> = {
