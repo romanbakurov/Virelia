@@ -51,11 +51,13 @@ const canonicalReactImports = [
   },
   {
     root: path.join(reactSourceRoot, 'patterns'),
+    rootAlias: '#patterns',
     childAlias: '#patterns',
     kind: 'directory-index',
   },
   {
     root: path.join(reactSourceRoot, 'primitives'),
+    rootAlias: '#primitives',
     childAlias: '#primitives',
     kind: 'directory-index',
   },
@@ -67,7 +69,6 @@ const canonicalReactImports = [
 ];
 
 const toolingOnlyReactPrefixes = [
-  '@/',
   '@assets/',
   '@components/',
   '@patterns/',
@@ -85,6 +86,10 @@ function normalizePath(filePath) {
 function isInside(candidate, parent) {
   const relative = path.relative(parent, candidate);
   return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
+
+function isTestLike(relativePath) {
+  return nonBlockingClonePatterns.some((pattern) => pattern.test(relativePath));
 }
 
 function stripKnownSourceExtension(specifier) {
@@ -142,21 +147,49 @@ function checkReactImportPolicy(filePath, source) {
     return;
   }
 
+  const relativePath = normalizePath(filePath);
+  const isPublicBarrel = relativePath === 'packages/react/src/index.ts';
+
   for (const { specifier, index } of extractImportSpecifiers(source)) {
     const line = lineNumberAt(source, index);
 
-    if (toolingOnlyReactPrefixes.some((prefix) => specifier.startsWith(prefix))) {
+    if (specifier.startsWith('@/test-utils/')) {
+      addFinding({
+        rule: 'imports.react-test-utils-alias',
+        category: 'imports',
+        path: relativePath,
+        line,
+        reason: `Test import '${specifier}' must use the canonical '@test-utils/${specifier.slice('@/test-utils/'.length)}' alias.`,
+      });
+      continue;
+    }
+
+    if (specifier === '@/primitives') {
       addFinding({
         rule: 'imports.react-tooling-alias',
         category: 'imports',
-        path: normalizePath(filePath),
+        path: relativePath,
+        line,
+        reason: `Source import '${specifier}' uses a tooling-only alias. Use '#primitives'.`,
+      });
+      continue;
+    }
+
+    if (
+      specifier.startsWith('@/') ||
+      toolingOnlyReactPrefixes.some((prefix) => specifier.startsWith(prefix))
+    ) {
+      addFinding({
+        rule: 'imports.react-tooling-alias',
+        category: 'imports',
+        path: relativePath,
         line,
         reason: `Source import '${specifier}' uses a tooling-only @ alias. Use the canonical # package import when one exists, otherwise keep the dependency relative.`,
       });
       continue;
     }
 
-    if (!specifier.startsWith('.')) {
+    if (!specifier.startsWith('.') || isPublicBarrel) {
       continue;
     }
 
@@ -175,7 +208,7 @@ function checkReactImportPolicy(filePath, source) {
       addFinding({
         rule: 'imports.react-canonical-package-import',
         category: 'imports',
-        path: normalizePath(filePath),
+        path: relativePath,
         line,
         reason: `Import '${specifier}' crosses a stable package-internal boundary. Use '${expected}'.`,
       });
@@ -185,7 +218,8 @@ function checkReactImportPolicy(filePath, source) {
 
 function checkTokenEsmImportPolicy(filePath, source) {
   const tokensSourceRoot = path.join(root, 'packages/tokens/src');
-  if (!isInside(filePath, tokensSourceRoot)) {
+  const relativePath = normalizePath(filePath);
+  if (!isInside(filePath, tokensSourceRoot) || isTestLike(relativePath)) {
     return;
   }
 
@@ -201,7 +235,7 @@ function checkTokenEsmImportPolicy(filePath, source) {
     addFinding({
       rule: 'imports.tokens-explicit-esm-extension',
       category: 'imports',
-      path: normalizePath(filePath),
+      path: relativePath,
       line: lineNumberAt(source, index),
       reason: `Relative token-package import '${specifier}' must keep an explicit emitted-runtime extension (normally .js). Do not accept IDE directory-import shortening blindly.`,
     });
@@ -270,11 +304,100 @@ function normalizedCloneLines(source) {
   return result;
 }
 
+function isCrossPlatformParityPair(a, b) {
+  return (
+    (a.startsWith('packages/react/src/') && b.startsWith('packages/react-native/src/')) ||
+    (b.startsWith('packages/react/src/') && a.startsWith('packages/react-native/src/'))
+  );
+}
+
+function isGeneratorOwnedPair(a, b) {
+  const generatedWebsiteSurface = /^apps\/website\/src\/component-catalog\/components\/[^/]+\/(?:metadata|.*Api)\.tsx?$/i;
+  const websiteReviewSurface = /^apps\/website\/src\/component-catalog\/components\/[^/]+\/(?:.*Accessibility|.*Demo|Native.*Demo|.*Examples|.*Usage)\.tsx$/;
+  const generatorTemplate = /^scripts\/generators\/.+\/templates\//;
+
+  if (generatedWebsiteSurface.test(a) || generatedWebsiteSurface.test(b)) {
+    return true;
+  }
+
+  if (
+    (websiteReviewSurface.test(a) && generatedWebsiteSurface.test(b)) ||
+    (websiteReviewSurface.test(b) && generatedWebsiteSurface.test(a))
+  ) {
+    return true;
+  }
+
+  return generatorTemplate.test(a) || generatorTemplate.test(b);
+}
+
+function isDeclarativeContractPair(a, b) {
+  if (a.endsWith('/index.ts') && b.endsWith('/index.ts')) {
+    return true;
+  }
+
+  return (
+    a === 'apps/website/src/component-catalog/metadata.ts' &&
+    b === 'scripts/generators/component-page/model/types.ts'
+  ) || (
+    b === 'apps/website/src/component-catalog/metadata.ts' &&
+    a === 'scripts/generators/component-page/model/types.ts'
+  );
+}
+
 function cloneSeverity(fileA, fileB) {
   const a = normalizePath(fileA);
   const b = normalizePath(fileB);
-  const nonBlocking = nonBlockingClonePatterns.some((pattern) => pattern.test(a) || pattern.test(b));
-  return nonBlocking ? 'warning' : 'error';
+
+  if (
+    isTestLike(a) ||
+    isTestLike(b) ||
+    isCrossPlatformParityPair(a, b) ||
+    isGeneratorOwnedPair(a, b) ||
+    isDeclarativeContractPair(a, b)
+  ) {
+    return 'warning';
+  }
+
+  return 'error';
+}
+
+function isThemeComponentFile(relativePath) {
+  return /^packages\/tokens\/src\/(?:light|dark|highContrast)\/components\/[^/]+\.ts$/.test(relativePath);
+}
+
+function checkExactThemeComponentDuplication(files, sources) {
+  const byDigest = new Map();
+
+  for (const filePath of files) {
+    const relative = normalizePath(filePath);
+    if (!isThemeComponentFile(relative) || relative.endsWith('/components/index.ts')) {
+      continue;
+    }
+
+    const digest = crypto.createHash('sha256').update(sources.get(filePath)).digest('hex');
+    const group = byDigest.get(digest) ?? [];
+    group.push(filePath);
+    byDigest.set(digest, group);
+  }
+
+  for (const group of byDigest.values()) {
+    if (group.length < 2) {
+      continue;
+    }
+
+    const [first, ...rest] = group;
+    findings.push({
+      rule: 'duplication.theme-component-matrix',
+      category: 'duplication',
+      severity: 'error',
+      blocking: true,
+      path: normalizePath(first),
+      line: 1,
+      relatedPath: rest.map(normalizePath).join(', '),
+      relatedLine: 1,
+      reason: `Theme component files are byte-identical across themes. Centralize theme-independent mapping/geometry in a shared runtime-safe factory/helper so each theme file only supplies theme-local semantic inputs.`,
+    });
+  }
 }
 
 function checkStructuralDuplication(files, sources) {
@@ -284,7 +407,10 @@ function checkStructuralDuplication(files, sources) {
 
   for (const filePath of files) {
     const relative = normalizePath(filePath);
-    if (generatedPathPatterns.some((pattern) => pattern.test(relative))) {
+    if (
+      generatedPathPatterns.some((pattern) => pattern.test(relative)) ||
+      isThemeComponentFile(relative)
+    ) {
       continue;
     }
 
@@ -345,7 +471,9 @@ function checkStructuralDuplication(files, sources) {
           line: a.line,
           relatedPath: normalizePath(b.filePath),
           relatedLine: b.line,
-          reason: `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or classify a narrow intentional fixture/test exception.`,
+          reason: severity === 'error'
+            ? `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or add a narrow documented classification if the duplication is intentionally declarative.`
+            : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
         });
       }
     }
@@ -366,6 +494,7 @@ for (const filePath of files) {
   checkTokenEsmImportPolicy(filePath, source);
 }
 
+checkExactThemeComponentDuplication(files, sources);
 checkStructuralDuplication(files, sources);
 
 findings.sort((a, b) =>
