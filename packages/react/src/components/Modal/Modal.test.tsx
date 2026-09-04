@@ -1,9 +1,8 @@
 import { act } from 'react';
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { expectNoA11yViolations } from '@test-utils/a11y';
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Modal } from './Modal';
 
