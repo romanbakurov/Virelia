@@ -5,6 +5,7 @@ import * as api from './index';
 describe('public API', () => {
   it('exports only documented runtime entries', () => {
     expect(Object.keys(api).sort()).toEqual([
+      'Accordion',
       'Button',
       'Checkbox',
       'Dropdown',

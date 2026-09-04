@@ -399,6 +399,11 @@
   line-height: 1.4;
 }
 
+.previewAccordion {
+  width: min(100%, 260px);
+  font-size: var(--font-size-xs);
+}
+
 .dropdownPreview {
   display: flex;
   align-items: flex-start;

@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Accordion,
   Button,
   Checkbox,
   Input,
@@ -23,6 +24,9 @@ export function ComponentCatalogPreview({
   slug,
 }: ComponentCatalogPreviewProps) {
   switch (slug) {
+    case 'accordion':
+      return <AccordionPreview />;
+
     case 'button':
       return <ButtonPreview />;
 
@@ -65,6 +69,24 @@ export function ComponentCatalogPreview({
     default:
       return null;
   }
+}
+
+function AccordionPreview() {
+  return (
+    <div className={styles.previewAccordion}>
+      <Accordion defaultValue='billing'>
+        <Accordion.Item value='billing'>
+          <Accordion.Trigger>Billing</Accordion.Trigger>
+          <Accordion.Content>Invoices and payment method.</Accordion.Content>
+        </Accordion.Item>
+
+        <Accordion.Item value='security'>
+          <Accordion.Trigger>Security</Accordion.Trigger>
+          <Accordion.Content>Passkeys and recovery options.</Accordion.Content>
+        </Accordion.Item>
+      </Accordion>
+    </div>
+  );
 }
 
 function ButtonPreview() {

@@ -46,6 +46,7 @@ const getValueByPath = (source: unknown, tokenPath: string) =>
 describe('public API', () => {
   it('exports only documented runtime entries', () => {
     expect(Object.keys(api).sort()).toEqual([
+      'Accordion',
       'Button',
       'Checkbox',
       'Dropdown',

@@ -107,6 +107,12 @@ const checkboxPlaygroundSchema = read(
 const checkboxPlayground = read('components/Checkbox/CheckboxPlayground.tsx');
 const radioGroupUsage = read('components/RadioGroup/RadioGroupUsage.tsx');
 const formFieldUsage = read('components/FormField/FormFieldUsage.tsx');
+const accordionUsage = read('components/Accordion/AccordionUsage.tsx');
+const accordionExamples = read('components/Accordion/AccordionExamples.tsx');
+const nativeAccordionDemo = read(
+  'components/Accordion/NativeAccordionDemo.tsx'
+);
+const accordionApi = read('components/Accordion/accordionApi.ts');
 
 assert.ok(
   !fs.existsSync(checkboxMetadataFile),
@@ -339,6 +345,61 @@ assertIncludes(
   "<ReactInput placeholder='name@company.com'",
   'FormField standalone page includes a composed input child'
 );
+assertIncludes(
+  componentPages,
+  "related: ['tabs', 'dropdown', 'popover']",
+  'Accordion related components use valid catalog slugs'
+);
+assertIncludes(
+  accordionExamples,
+  "title: 'Multiple open items'",
+  'Accordion multiple-open example exists'
+);
+assertIncludes(
+  accordionExamples,
+  "title: 'Controlled state'",
+  'Accordion controlled example exists'
+);
+assertIncludes(
+  accordionExamples,
+  "title: 'Default expanded state'",
+  'Accordion default expanded example exists'
+);
+assertIncludes(
+  accordionApi,
+  "name: 'Accordion.Item'",
+  'Accordion.Item API section exists'
+);
+assertIncludes(
+  accordionApi,
+  "name: 'Accordion.Trigger'",
+  'Accordion.Trigger API section exists'
+);
+assertIncludes(
+  accordionApi,
+  "name: 'Accordion.Content'",
+  'Accordion.Content API section exists'
+);
+assertIncludes(
+  accordionUsage,
+  '<NativeText',
+  'React Native Accordion usage wraps content text in a native Text component'
+);
+assertIncludes(
+  accordionExamples,
+  '<NativeText',
+  'React Native Accordion examples wrap content text in a native Text component'
+);
+assertIncludes(
+  nativeAccordionDemo,
+  '<NativeText',
+  'React Native Accordion demo wraps content text in a native Text component'
+);
+assertNotIncludes(
+  nativeAccordionDemo,
+  '<Accordion.Content>\n              Choose when you want to receive updates.\n            </Accordion.Content>',
+  'React Native Accordion demo does not render raw text directly under Accordion.Content'
+);
 
 const selectUsage = read('components/Select/SelectUsage.tsx');
 const selectExamples = read('components/Select/SelectExamples.tsx');
@@ -479,6 +540,7 @@ for (const [componentName, sections] of Object.entries({
 }
 
 const entrySlugs = [
+  'accordion',
   'button',
   'input',
   'form-field',
@@ -494,6 +556,7 @@ const entrySlugs = [
 ];
 
 const generatedComponentNames = [
+  'Accordion',
   'Button',
   'Input',
   'FormField',

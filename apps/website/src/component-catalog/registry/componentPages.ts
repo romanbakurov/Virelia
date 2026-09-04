@@ -8,6 +8,14 @@ import type { ComponentPlatform } from '../types';
 
 // component-page-imports
 import {
+  AccordionAccessibility,
+  AccordionDemo,
+  AccordionExamples,
+  AccordionUsage,
+  NativeAccordionDemo,
+  accordionApi,
+} from '../components/Accordion';
+import {
   SwitchAccessibility,
   SwitchDemo,
   SwitchExamples,
@@ -144,6 +152,18 @@ type ComponentPageConfig = {
 
 export const componentPages = {
   // component-page-entries
+  accordion: {
+    name: 'Accordion',
+    demos: {
+      react: AccordionDemo,
+      'react-native': NativeAccordionDemo,
+    },
+    Usage: AccordionUsage,
+    Examples: AccordionExamples,
+    Accessibility: AccordionAccessibility,
+    api: accordionApi,
+    related: ['tabs', 'dropdown', 'popover'],
+  },
   switch: {
     name: 'Switch',
     demos: {

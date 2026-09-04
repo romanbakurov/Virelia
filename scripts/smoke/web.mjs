@@ -96,6 +96,7 @@ function isComponentExport(value) {
 }
 
 const expectedWebApi = [
+  'Accordion',
   'Button',
   'Checkbox',
   'Dropdown',

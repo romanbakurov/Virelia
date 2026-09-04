@@ -287,6 +287,7 @@ function isComponentExport(value) {
 }
 
 const expectedNativeApi = [
+  'Accordion',
   'Button',
   'Checkbox',
   'Dropdown',
