@@ -3,6 +3,7 @@ import {
   cloneElement,
   isValidElement,
   useCallback,
+  useId,
   useState,
 } from 'react';
 
@@ -41,6 +42,7 @@ export function AccordionRoot({
   collapsible = false,
   disabled = false,
 }: AccordionRootProps) {
+  const instanceId = useId();
   const isControlled = value !== undefined;
   const [uncontrolledValue, setUncontrolledValue] = useState<string | string[]>(
     defaultValue ?? (type === 'multiple' ? [] : '')
@@ -83,7 +85,7 @@ export function AccordionRoot({
     const item = node as ReactElement<InternalItemProps>;
     const itemDisabled = disabled || Boolean(item.props.disabled);
     const expanded = expandedValues.includes(item.props.value);
-    const contentId = `accordion-content-${item.props.value}`;
+    const contentId = `${instanceId}-accordion-content-${item.props.value}`;
     const itemChildren = Children.map(item.props.children, (child) => {
       if (!isValidElement(child)) return child;
 
