@@ -8,6 +8,7 @@
     { "path": "./packages/tokens/tsconfig.scripts.json" },
     { "path": "./packages/types" },
     { "path": "./packages/react" },
+    { "path": "./packages/react/tsconfig.stories.json" },
     { "path": "./apps/react-playground" },
     { "path": "./apps/native-playground" },
     { "path": "./apps/react-storybook" }
