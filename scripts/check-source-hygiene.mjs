@@ -475,7 +475,7 @@ function checkStructuralDuplication(files, sources) {
         reportedPairs.add(pair);
 
         const severity = cloneSeverity(a.filePath, b.filePath);
-                findings.push({
+      findings.push({
           rule: 'duplication.material-clone',
           category: 'duplication',
           severity,
@@ -486,8 +486,8 @@ function checkStructuralDuplication(files, sources) {
           relatedPath: normalizePath(b.filePath),
           relatedLine: b.line,
           reason: severity === 'error'
-                    ? `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or add a narrow documented classification if the duplication is intentionally declarative.`
-                    : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
+          ? `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or add a narrow documented classification if the duplication is intentionally declarative.`
+          : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
         });
       }
     }
