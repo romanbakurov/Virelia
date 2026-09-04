@@ -2,6 +2,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 
+import { format as formatWithPrettier } from 'prettier';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
@@ -92,6 +93,40 @@ describe('Blog V1 authoring tooling', () => {
       articleCount: 1,
       issues: [],
     });
+  });
+
+  it('accepts Prettier-formatted registry output for long slugs without hiding stale entries', async () => {
+    const root = await createRepositoryFixture();
+    const result = await createBlogArticle({
+      root,
+      slug: 'pr-779-add-production-ready-cross-platform-component',
+      today: '2026-09-04',
+    });
+    const generatedRegistry = await readFile(result.registryPath, 'utf8');
+    const formattedRegistry = await formatWithPrettier(generatedRegistry, {
+      filepath: result.registryPath,
+    });
+
+    expect(formattedRegistry).not.toBe(generatedRegistry);
+
+    await writeFile(result.registryPath, formattedRegistry, 'utf8');
+
+    await expect(checkBlogCorpus(root)).resolves.toEqual({
+      articleCount: 1,
+      issues: [],
+    });
+
+    await writeFile(
+      result.registryPath,
+      formattedRegistry.replace('/article.mdx', '/stale-article.mdx'),
+      'utf8'
+    );
+
+    const staleResult = await checkBlogCorpus(root);
+
+    expect(
+      staleResult.issues.some((issue) => issue.includes('registry is stale'))
+    ).toBe(true);
   });
 
   it('rejects invalid slugs before writing files', async () => {
