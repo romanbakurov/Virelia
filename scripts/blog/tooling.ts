@@ -1,6 +1,8 @@
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+import { format as formatWithPrettier, resolveConfig } from 'prettier';
+
 import {
   assertBlogSlug,
   assertUniqueBlogSlugs,
@@ -336,8 +338,15 @@ export async function checkBlogCorpus(root: string): Promise<BlogCheckResult> {
   try {
     const actualRegistry = await readFile(registryPath, 'utf8');
     const expectedRegistry = buildBlogArticleRegistry(directorySlugs);
+    const prettierConfig = (await resolveConfig(registryPath)) ?? {};
+    const prettierOptions = { ...prettierConfig, filepath: registryPath };
+    const [normalizedActualRegistry, normalizedExpectedRegistry] =
+      await Promise.all([
+        formatWithPrettier(actualRegistry, prettierOptions),
+        formatWithPrettier(expectedRegistry, prettierOptions),
+      ]);
 
-    if (actualRegistry !== expectedRegistry) {
+    if (normalizedActualRegistry !== normalizedExpectedRegistry) {
       issues.push(
         `${registryPath}: registry is stale; run pnpm blog:new for new articles or regenerate it with Blog V1 tooling`
       );
