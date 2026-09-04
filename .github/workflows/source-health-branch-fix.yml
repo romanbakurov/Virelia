@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   repair:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
@@ -24,14 +25,17 @@ jobs:
           import json
           from pathlib import Path
 
-          def replace_exact(path: str, old: str, new: str) -> None:
+          def replace_once(path: str, old: str, new: str) -> None:
               file_path = Path(path)
               text = file_path.read_text()
-              if old not in text:
-                  raise SystemExit(f"Expected block not found in {path}")
-              file_path.write_text(text.replace(old, new, 1))
+              if old in text:
+                  file_path.write_text(text.replace(old, new, 1))
+                  return
+              if new in text:
+                  return
+              raise SystemExit(f"Expected old or repaired block not found in {path}")
 
-          replace_exact(
+          replace_once(
               'packages/react/src/components/Dropdown/Dropdown.stories.tsx',
               """import { Button } from '../../primitives/Button';
           import { Portal } from '../../primitives/Portal';
@@ -45,7 +49,7 @@ jobs:
           """,
           )
 
-          replace_exact(
+          replace_once(
               'packages/react/src/components/Dropdown/Dropdown.test.tsx',
               """import { waitFor } from '@testing-library/react';
           import { copyCompoundSlotMetadata } from '@vellira-ui/core';
@@ -81,7 +85,7 @@ jobs:
           """,
           )
 
-          replace_exact(
+          replace_once(
               'packages/react/src/components/Modal/Modal.stories.tsx',
               """import { Button } from '../../primitives/Button';
           import { Input } from '../../primitives/Input';
@@ -102,7 +106,7 @@ jobs:
           """,
           )
 
-          replace_exact(
+          replace_once(
               'packages/react/src/components/Select/Select.test.tsx',
               """import { copyCompoundSlotMetadata } from '@vellira-ui/core';
           import type { ComponentProps, ReactNode } from 'react';
@@ -132,7 +136,7 @@ jobs:
           """,
           )
 
-          replace_exact(
+          replace_once(
               'packages/react/src/components/Tooltip/Tooltip.stories.tsx',
               """import { Button } from '../../primitives/Button';
           import { Portal } from '../../primitives/Portal';
@@ -146,7 +150,7 @@ jobs:
           """,
           )
 
-          replace_exact(
+          replace_once(
               'packages/react/src/primitives/Input/Input.stories.tsx',
               """import { FormField } from '../../patterns/FormField';
           import { Input } from '../Input';
@@ -191,18 +195,22 @@ jobs:
           for path in rule_files:
               file_path = Path(path)
               text = file_path.read_text()
-              if finding_block not in text:
-                  raise SystemExit(f"Expected finding helper not found in {path}")
-              text = text.replace(finding_block, '\n', 1)
+              repaired_import = "import { createRuleFinding as finding } from './finding';"
+              if finding_block in text:
+                  text = text.replace(finding_block, '\n', 1)
+              elif repaired_import not in text:
+                  raise SystemExit(f"Expected finding helper or repaired import not found in {path}")
+
               text = text.replace('  ComponentQualityFinding,\n', '', 1)
               marker = "} from '../types';\n"
-              if marker not in text:
-                  raise SystemExit(f"Expected types import not found in {path}")
-              text = text.replace(
-                  marker,
-                  marker + "\nimport { createRuleFinding as finding } from './finding';\n",
-                  1,
-              )
+              if repaired_import not in text:
+                  if marker not in text:
+                      raise SystemExit(f"Expected types import not found in {path}")
+                  text = text.replace(
+                      marker,
+                      marker + "\n" + repaired_import + "\n",
+                      1,
+                  )
               file_path.write_text(text)
 
           Path('scripts/checks/component-quality/rules/finding.ts').write_text(
@@ -271,7 +279,7 @@ jobs:
             /(?:^|\\/)fixtures(?:\\/|$)/,
           ];
           """
-          insertion = marker + """
+          baseline_insertion = """
           const cloneBaselinePath = path.join(root, 'scripts/source-hygiene-baseline.json');
           const cloneBaseline = JSON.parse(fs.readFileSync(cloneBaselinePath, 'utf8'));
 
@@ -298,9 +306,10 @@ jobs:
             })
           );
           """
-          if marker not in text:
-              raise SystemExit('Baseline insertion marker missing')
-          text = text.replace(marker, insertion, 1)
+          if 'const cloneBaselinePath =' not in text:
+              if marker not in text:
+                  raise SystemExit('Baseline insertion marker missing')
+              text = text.replace(marker, marker + baseline_insertion, 1)
 
           old_clone = """function cloneSeverity(fileA, fileB) {
             const a = normalizePath(fileA);
@@ -318,9 +327,10 @@ jobs:
 
             if (
           """
-          if old_clone not in text:
-              raise SystemExit('cloneSeverity marker missing')
-          text = text.replace(old_clone, new_clone, 1)
+          if 'intentionalClonePairs.has([a, b].sort().join' not in text:
+              if old_clone not in text:
+                  raise SystemExit('cloneSeverity marker missing')
+              text = text.replace(old_clone, new_clone, 1)
 
           old_reason = """        const severity = cloneSeverity(a.filePath, b.filePath);
                 findings.push({
@@ -329,9 +339,10 @@ jobs:
                 const baselineReason = intentionalClonePairs.get(pair);
                 findings.push({
           """
-          if old_reason not in text:
-              raise SystemExit('clone finding marker missing')
-          text = text.replace(old_reason, new_reason, 1)
+          if 'const baselineReason = intentionalClonePairs.get(pair);' not in text:
+              if old_reason not in text:
+                  raise SystemExit('clone finding marker missing')
+              text = text.replace(old_reason, new_reason, 1)
 
           old_message = """          reason: severity === 'error'
                     ? `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or add a narrow documented classification if the duplication is intentionally declarative.`
@@ -343,9 +354,14 @@ jobs:
                       ? `Material ${windowSize}-line clone is an explicit path-scoped baseline exception: ${baselineReason}`
                       : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
           """
-          if old_message not in text:
-              raise SystemExit('clone reason marker missing')
-          checker.write_text(text.replace(old_message, new_message, 1))
+          if 'explicit path-scoped baseline exception' not in text:
+              if old_message not in text:
+                  raise SystemExit('clone reason marker missing')
+              text = text.replace(old_message, new_message, 1)
+
+          checker.write_text(text)
+
+          Path('.github/workflows/source-health-branch-fix.yml').unlink()
           PY
 
       - name: Commit branch repair
@@ -353,7 +369,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/react/src scripts
+          git add .github/workflows/source-health-branch-fix.yml packages/react/src scripts
           git diff --cached --check
           git commit -m "chore(source): complete hygiene baseline repairs"
           git push origin HEAD:chore/source-health-817
