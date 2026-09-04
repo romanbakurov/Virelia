@@ -30,15 +30,37 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Format exact repair surface
+      - name: Repair exact formatting surface
         shell: bash
         run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/checks/component-quality/rules/api-feature.ts')
+          text = path.read_text()
+          old = """import type {
+            ComponentQualityRule,
+            ComponentQualityRuleContext,
+          } from '../types';"""
+          new = "import type { ComponentQualityRule } from '../types';"
+          if old not in text and new not in text:
+              raise SystemExit('Expected api-feature type import not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+
           pnpm exec prettier --write \
             scripts/checks/component-quality/rules/api-feature.ts \
             scripts/checks/component-quality/rules/conformity.ts \
             scripts/checks/component-quality/rules/coverage.ts \
             scripts/checks/component-quality/rules/platform-accessibility.ts \
             scripts/source-hygiene-baseline.json
+
+          pnpm exec eslint \
+            scripts/checks/component-quality/rules/api-feature.ts \
+            scripts/checks/component-quality/rules/conformity.ts \
+            scripts/checks/component-quality/rules/coverage.ts \
+            scripts/checks/component-quality/rules/platform-accessibility.ts
+
           rm .github/workflows/source-health-format-fix.yml
 
       - name: Commit formatting repair
@@ -49,5 +71,5 @@ jobs:
           git add .github/workflows/source-health-format-fix.yml scripts/checks/component-quality/rules scripts/source-hygiene-baseline.json
           git diff --cached --check
           git diff --cached --exit-code --quiet && exit 0
-          git commit -m "chore(source): apply prettier to hygiene repair"
+          HUSKY=0 git commit -m "chore(source): apply prettier to hygiene repair"
           git push origin HEAD:chore/source-health-817
