@@ -1,20 +1,20 @@
 import { act, memo } from 'react';
 
+import { expectNoA11yViolations } from '@test-utils/a11y';
+import { render } from '@test-utils/render';
 import { waitFor } from '@testing-library/react';
 import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
-import { expectNoA11yViolations } from '../../test-utils/a11y';
-import { render } from '../../test-utils/render';
 
 import { Dropdown } from './Dropdown';
 
 import contentStyles from './Content/DropdownContent.module.scss';
 import itemStyles from './Item/DropdownItem.module.scss';
 import triggerStyles from './Trigger/DropdownTrigger.module.scss';
+
+import { Button } from '#primitives/Button';
+import { Portal } from '#primitives/Portal';
 
 function pressKey(target: EventTarget, key: string) {
   act(() => {

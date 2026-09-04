@@ -35,6 +35,32 @@ const generatedPathPatterns = [
   /(?:^|\/)fixtures(?:\/|$)/,
 ];
 
+const cloneBaselinePath = path.join(root, 'scripts/source-hygiene-baseline.json');
+const cloneBaseline = JSON.parse(fs.readFileSync(cloneBaselinePath, 'utf8'));
+
+if (
+  cloneBaseline.schemaVersion !== 1 ||
+  !Array.isArray(cloneBaseline.intentionalClonePairs)
+) {
+  throw new Error('Invalid source-hygiene baseline contract.');
+}
+
+const intentionalClonePairs = new Map(
+  cloneBaseline.intentionalClonePairs.map((entry) => {
+    if (
+      !Array.isArray(entry.paths) ||
+      entry.paths.length !== 2 ||
+      entry.paths.some((entryPath) => typeof entryPath !== 'string') ||
+      typeof entry.reason !== 'string' ||
+      entry.reason.trim() === ''
+    ) {
+      throw new Error('Invalid intentional clone baseline entry.');
+    }
+
+    return [[...entry.paths].sort().join('::'), entry.reason];
+  })
+);
+
 const reactSourceRoot = path.join(root, 'packages/react/src');
 const canonicalReactImports = [
   {
@@ -352,6 +378,10 @@ function cloneSeverity(fileA, fileB) {
   const a = normalizePath(fileA);
   const b = normalizePath(fileB);
 
+  if (intentionalClonePairs.has([a, b].sort().join('::'))) {
+    return 'warning';
+  }
+
   if (
     isTestLike(a) ||
     isTestLike(b) ||
@@ -475,6 +505,7 @@ function checkStructuralDuplication(files, sources) {
         reportedPairs.add(pair);
 
         const severity = cloneSeverity(a.filePath, b.filePath);
+      const baselineReason = intentionalClonePairs.get(pair);
       findings.push({
           rule: 'duplication.material-clone',
           category: 'duplication',
@@ -487,7 +518,9 @@ function checkStructuralDuplication(files, sources) {
           relatedLine: b.line,
           reason: severity === 'error'
           ? `Material ${windowSize}-line structural clone also appears at ${normalizePath(b.filePath)}:${b.line}. Extract a clear shared abstraction or add a narrow documented classification if the duplication is intentionally declarative.`
-          : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
+          : baselineReason
+            ? `Material ${windowSize}-line clone is an explicit path-scoped baseline exception: ${baselineReason}`
+            : `Material ${windowSize}-line clone is in a classified test/story/cross-platform/generator-owned/declarative surface. Keep explicit unless a clearer shared abstraction exists.`,
         });
       }
     }

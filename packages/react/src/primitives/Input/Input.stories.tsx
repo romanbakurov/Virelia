@@ -5,10 +5,11 @@ import { Check, Search } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
 const noop = () => undefined;
 
-import { FormField } from '../../patterns/FormField';
 import { Input } from '../Input';
 
 import type { InputProps } from './types';
+
+import { FormField } from '#patterns/FormField';
 
 const meta = {
   title: 'Primitives/Input',

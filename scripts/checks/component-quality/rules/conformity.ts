@@ -6,7 +6,6 @@ import ts from 'typescript';
 import type {
   ComponentMetadata,
   ComponentPlatform,
-  ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
 import { qualityRoot } from '../root';
@@ -15,6 +14,8 @@ import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
 } from '../types';
+
+import { createRuleFinding as finding } from './finding';
 import {
   canonicalIconExports as readCanonicalIconExports,
   canonicalIconSourcePath as resolveCanonicalIconSourcePath,
@@ -100,24 +101,6 @@ function readFiles(context: ComponentQualityRuleContext): SourceFile[] {
   }));
 }
 
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
-  };
-}
 
 function isExcepted(params: {
   ruleId: string;

@@ -5,7 +5,6 @@ import type {
   ComponentCapability,
   ComponentMetadata,
   ComponentPlatform,
-  ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
 import { qualityRoot } from '../root';
@@ -14,6 +13,8 @@ import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
 } from '../types';
+
+import { createRuleFinding as finding } from './finding';
 
 type SourceCorpus = {
   files: readonly string[];
@@ -82,24 +83,6 @@ function relativeEvidence(
     .map((file) => path.relative(qualityRoot(context), file));
 }
 
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
-  };
-}
 
 function hasAny(source: string, patterns: readonly RegExp[]) {
   return patterns.some((pattern) => pattern.test(source));

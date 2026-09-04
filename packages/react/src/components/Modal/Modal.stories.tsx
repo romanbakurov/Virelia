@@ -8,13 +8,14 @@ import type {
   RefObject,
 } from 'react';
 
-import { Button } from '../../primitives/Button';
-import { Input } from '../../primitives/Input';
-import { Portal } from '../../primitives/Portal';
-import { Radio } from '../../primitives/Radio';
 import { RadioGroup } from '../RadioGroup';
 
 import { Modal } from './Modal';
+
+import { Button } from '#primitives/Button';
+import { Input } from '#primitives/Input';
+import { Portal } from '#primitives/Portal';
+import { Radio } from '#primitives/Radio';
 
 const noop = () => undefined;
 
