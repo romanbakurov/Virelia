@@ -23,6 +23,7 @@ const validMetadata = {
     docs: true,
     accessibility: true,
     tokens: ['button'],
+    icons: [{ name: 'Search', purpose: 'search action' }],
   },
 } as const;
 
@@ -160,6 +161,50 @@ describe('validateComponentMetadata', () => {
       );
       expect(result.errors).toContain(
         'requirements.tokens must not contain duplicates.'
+      );
+    }
+  });
+
+  it('accepts machine-readable canonical icon requirements', () => {
+    const result = validateComponentMetadata({
+      ...validMetadata,
+      requirements: {
+        ...validMetadata.requirements,
+        icons: [
+          { name: 'ChevronDown', purpose: 'disclosure indicator' },
+          { name: 'Close', purpose: 'dismiss action' },
+        ],
+      },
+    });
+
+    expect(result.valid).toBe(true);
+  });
+
+  it('rejects malformed and duplicate icon requirements', () => {
+    const result = validateComponentMetadata({
+      ...validMetadata,
+      requirements: {
+        ...validMetadata.requirements,
+        icons: [
+          { name: '', purpose: 'disclosure indicator' },
+          { name: 'Close', purpose: '' },
+          { name: 'Search', purpose: 'search action' },
+          { name: 'Search', purpose: 'search action' },
+        ],
+      },
+    });
+
+    expect(result.valid).toBe(false);
+
+    if (!result.valid) {
+      expect(result.errors).toContain(
+        'requirements.icons[0].name must be a non-empty string.'
+      );
+      expect(result.errors).toContain(
+        'requirements.icons[1].purpose must be a non-empty string.'
+      );
+      expect(result.errors).toContain(
+        'requirements.icons must not contain duplicate name/purpose requirements: Search / search action.'
       );
     }
   });

@@ -176,8 +176,7 @@ const requirements = {
 };
 ```
 
-Token requirements can also be declared when a component requires named token
-groups:
+Canonical design-token requirements can be declared with exact token paths:
 
 ```ts
 const requirements = {
@@ -185,7 +184,25 @@ const requirements = {
   storybook: true,
   docs: true,
   accessibility: true,
-  tokens: ['select'],
+  tokens: ['semantic.text.primary'],
+};
+```
+
+Component-owned canonical icon requirements can also declare the expected
+`@vellira-ui/icons` export and its semantic purpose:
+
+```ts
+const requirements = {
+  tests: true,
+  storybook: true,
+  docs: true,
+  accessibility: true,
+  icons: [
+    {
+      name: 'ChevronDown',
+      purpose: 'disclosure indicator',
+    },
+  ],
 };
 ```
 
@@ -203,7 +220,8 @@ if (!result.valid) {
 ```
 
 Validation checks required fields, supported enum values, non-empty platform
-lists, duplicate entries, dependencies, requirements, and token requirements.
+lists, duplicate entries, dependencies, requirements, token requirements, and
+icon requirements.
 
 ## V1 boundaries
 
