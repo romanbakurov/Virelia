@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { render } from '@test-utils/render';
+
+import { useOverlayRegistration } from './useOverlayRegistration';
+
 import {
   createOverlayManager,
   overlayManager,
   OverlayManagerProvider,
-} from '@/managers';
-
-import { render } from '../../../test-utils/render';
-
-import { useOverlayRegistration } from './useOverlayRegistration';
+} from '#managers';
 
 function TestOverlay({
   active = true,
