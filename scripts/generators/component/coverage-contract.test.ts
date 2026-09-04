@@ -114,11 +114,11 @@ describe('component test coverage contracts', () => {
       requirements: [
         'accessible-name',
         'interaction',
-        'instance-isolation',
         'controlled',
         'uncontrolled',
         'disabled',
         'keyboard',
+        'instance-isolation',
       ],
     });
   });
