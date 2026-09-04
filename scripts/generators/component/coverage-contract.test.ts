@@ -86,7 +86,7 @@ describe('component test coverage contracts', () => {
     });
   });
 
-  it('moves Web compound state and keyboard behavior to manual ownership', () => {
+  it('moves Web compound state, instance isolation, and keyboard behavior to manual ownership', () => {
     const contract = createComponentTestCoverageContract({
       componentName: 'Accordion',
       profile: 'compound',
@@ -114,6 +114,7 @@ describe('component test coverage contracts', () => {
       requirements: [
         'accessible-name',
         'interaction',
+        'instance-isolation',
         'controlled',
         'uncontrolled',
         'disabled',
@@ -122,7 +123,7 @@ describe('component test coverage contracts', () => {
     });
   });
 
-  it('moves Native compound state behavior to manual ownership without Web keyboard coverage', () => {
+  it('moves Native compound state behavior to manual ownership without DOM instance isolation or Web keyboard coverage', () => {
     const contract = createComponentTestCoverageContract({
       componentName: 'Accordion',
       profile: 'compound',
@@ -155,6 +156,21 @@ describe('component test coverage contracts', () => {
         'disabled',
       ],
     });
+  });
+
+  it('does not require instance isolation for compound shapes without an Item/Trigger/Content relationship', () => {
+    const contract = createComponentTestCoverageContract({
+      componentName: 'Menu',
+      profile: 'compound',
+      control: 'value',
+      capabilities: ['compound-api'],
+      parts: ['Root', 'Trigger', 'Content'],
+      isNative: false,
+    });
+
+    expect(contract.componentSpecific.requirements).not.toContain(
+      'instance-isolation'
+    );
   });
 
   it('serializes deterministically with a trailing newline', () => {
