@@ -30,7 +30,7 @@ export const createStyles = (theme: NativeTheme) => {
       backgroundColor: accordion.trigger.default.bg,
     },
     triggerExpanded: {
-      backgroundColor: accordion.trigger.hover.bg,
+      backgroundColor: accordion.trigger.expanded.bg,
     },
     triggerPressed: {
       backgroundColor: accordion.trigger.pressed.bg,

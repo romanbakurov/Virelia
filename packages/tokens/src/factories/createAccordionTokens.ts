@@ -11,6 +11,9 @@ export type AccordionTokensConfig = {
   divider: string;
   trigger: {
     default: AccordionTriggerState;
+    expanded: {
+      bg: string;
+    };
     hover: AccordionTriggerState;
     pressed: AccordionTriggerState;
     disabled: AccordionTriggerState;
