@@ -1,11 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type {
-  ComponentMetadata,
-  ComponentPlatform,
-} from '@vellira-ui/metadata';
-
 import { qualityRoot } from '../root';
 
 import type {
@@ -14,25 +9,7 @@ import type {
 } from '../types';
 
 import { createRuleFinding as finding } from './finding';
-
-function platformPackage(platform: ComponentPlatform) {
-  return platform === 'react' ? 'react' : 'react-native';
-}
-
-function componentDirectory(
-  root: string,
-  metadata: ComponentMetadata,
-  platform: ComponentPlatform
-) {
-  return path.join(
-    root,
-    'packages',
-    platformPackage(platform),
-    'src',
-    metadata.layer,
-    metadata.name
-  );
-}
+import { collectFiles, componentDirectory } from './source-files';
 
 function shouldIncludeSourceFile(fileName: string) {
   return (
@@ -43,26 +20,6 @@ function shouldIncludeSourceFile(fileName: string) {
 
 function shouldIncludeManualTestFile(fileName: string) {
   return /\.manual\.test\.tsx$/.test(fileName);
-}
-
-function collectFiles(
-  directory: string,
-  predicate: (fileName: string) => boolean
-): string[] {
-  if (!fs.existsSync(directory)) return [];
-
-  return fs
-    .readdirSync(directory, { withFileTypes: true })
-    .flatMap((entry) => {
-      const fullPath = path.join(directory, entry.name);
-
-      if (entry.isDirectory()) {
-        return collectFiles(fullPath, predicate);
-      }
-
-      return predicate(entry.name) ? [fullPath] : [];
-    })
-    .sort((left, right) => left.localeCompare(right));
 }
 
 function collectSourceFiles(directory: string): string[] {
