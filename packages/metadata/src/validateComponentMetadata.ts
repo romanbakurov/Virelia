@@ -128,6 +128,49 @@ function validateStringArray(params: {
   }
 }
 
+function validateIconRequirements(value: unknown, errors: string[]) {
+  if (!Array.isArray(value)) {
+    errors.push('requirements.icons must be an array.');
+    return;
+  }
+
+  const seen = new Set<string>();
+
+  value.forEach((item, index) => {
+    if (!isRecord(item)) {
+      errors.push(`requirements.icons[${index}] must be an object.`);
+      return;
+    }
+
+    const validName = isNonEmptyString(item.name);
+    const validPurpose = isNonEmptyString(item.purpose);
+
+    if (!validName) {
+      errors.push(
+        `requirements.icons[${index}].name must be a non-empty string.`
+      );
+    }
+
+    if (!validPurpose) {
+      errors.push(
+        `requirements.icons[${index}].purpose must be a non-empty string.`
+      );
+    }
+
+    if (validName && validPurpose) {
+      const key = `${item.name}\u0000${item.purpose}`;
+
+      if (seen.has(key)) {
+        errors.push(
+          `requirements.icons must not contain duplicate name/purpose requirements: ${item.name} / ${item.purpose}.`
+        );
+      }
+
+      seen.add(key);
+    }
+  });
+}
+
 export function validateComponentMetadata(
   input: unknown
 ): ComponentMetadataValidationResult {
@@ -233,6 +276,10 @@ export function validateComponentMetadata(
         field: 'requirements.tokens',
         errors,
       });
+    }
+
+    if (input.requirements.icons !== undefined) {
+      validateIconRequirements(input.requirements.icons, errors);
     }
   }
 

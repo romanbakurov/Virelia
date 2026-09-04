@@ -307,6 +307,7 @@ describe('Input', () => {
 
     expect(input?.value).toBe('Clear me');
     expect(clearButton).not.toBeNull();
+    expect(clearButton?.querySelector('svg')).not.toBeNull();
 
     act(() => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));

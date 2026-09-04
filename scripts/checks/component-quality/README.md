@@ -56,6 +56,33 @@ CI generates the machine-readable report with:
 and uploads `.artifacts/component-quality/report.json` as the
 `component-quality-report` artifact.
 
+## Design resource authority
+
+Generated and completion-owned component code must use canonical Vellira design
+resources instead of inventing local visual substitutes.
+
+For icons:
+
+- use existing exports from `@vellira-ui/icons`;
+- declare component-owned required icons in `requirements.icons` with a canonical
+  export `name` and semantic `purpose`;
+- do not use Unicode/ASCII glyphs as UI icon fallbacks;
+- do not add local/inline SVG icon artwork or direct `react-native-svg` icon
+  implementations when the component requires a Vellira icon.
+
+For colors and other token-owned visual values:
+
+- use the established Vellira CSS token/style path on Web;
+- use `theme.tokens.*`, `theme.components.*`, or `theme.semantic.*` on React
+  Native;
+- do not hardcode a visual fallback because a desired semantic token is absent.
+
+Missing resources fail closed. A `missing-icon-resource` or `missing-design-token` finding
+means the component is not production-ready. Add the required icon or token
+through its canonical Vellira package/factory first, then rerun
+generation/completion and Component Quality. Completion or bounded repair may
+switch to an existing canonical resource, but must not invent a missing one.
+
 ## GitHub issue synchronization
 
 The issue synchronization layer is separate from the checker engine. It consumes

@@ -34,12 +34,18 @@ export interface ComponentDependencies {
   components?: readonly string[];
 }
 
+export interface ComponentIconRequirement {
+  name: string;
+  purpose: string;
+}
+
 export interface ComponentRequirements {
   tests: boolean;
   storybook: boolean;
   docs: boolean;
   accessibility: boolean;
   tokens?: readonly string[];
+  icons?: readonly ComponentIconRequirement[];
 }
 
 export interface ComponentMetadata {

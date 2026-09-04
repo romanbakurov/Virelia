@@ -22,5 +22,11 @@ export const inputMetadata = defineComponentMetadata({
     storybook: true,
     docs: true,
     accessibility: true,
+    icons: [
+      {
+        name: 'Close',
+        purpose: 'clear input action',
+      },
+    ],
   },
 });
