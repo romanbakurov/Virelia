@@ -55,6 +55,15 @@ function createManualRequirements(params: {
       pushRequirement('interaction');
     }
 
+    if (
+      !isNative &&
+      parts.includes('Item') &&
+      parts.includes('Trigger') &&
+      parts.includes('Content')
+    ) {
+      pushRequirement('instance-isolation');
+    }
+
     if (capabilities.includes('controlled')) {
       pushRequirement('controlled');
     }
