@@ -459,19 +459,22 @@ assertIncludes(
   "props: ['label', 'description']",
   'Select accessibility chips exist'
 );
-assertIncludes(
+const nativeTooltipTriggerTextPattern =
+  /<NativeText[\s\S]*?>\s*Press and hold\s*<\/NativeText>/;
+
+assert.match(
   tooltipUsage,
-  '<NativeText>Press and hold</NativeText>',
+  nativeTooltipTriggerTextPattern,
   'React Native Tooltip usage wraps trigger text in a native component'
 );
-assertIncludes(
+assert.match(
   tooltipExamples,
-  '<NativeText>Press and hold</NativeText>',
+  nativeTooltipTriggerTextPattern,
   'React Native Tooltip examples wrap trigger text in a native component'
 );
-assertIncludes(
+assert.match(
   nativeTooltipDemo,
-  '<NativeText>Press and hold</NativeText>',
+  nativeTooltipTriggerTextPattern,
   'React Native Tooltip demo wraps trigger text in a native component'
 );
 assertNotIncludes(
