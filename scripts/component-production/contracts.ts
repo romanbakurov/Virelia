@@ -1,5 +1,6 @@
 import type {
   ComponentCapability,
+  ComponentIconRequirement,
   ComponentPlatform,
 } from '@vellira-ui/metadata';
 
@@ -26,6 +27,8 @@ export type ComponentProductionInputV1 = {
   profile: ComponentProfileArg;
   control?: FormControlKindArg;
   capabilities: readonly ComponentCapability[];
+  icons?: readonly ComponentIconRequirement[];
+  tokens?: readonly string[];
   parts: readonly string[];
 };
 
@@ -131,8 +134,12 @@ const INPUT_KEYS = new Set([
   'profile',
   'control',
   'capabilities',
+  'icons',
+  'tokens',
   'parts',
 ]);
+
+const ICON_REQUIREMENT_KEYS = new Set(['name', 'purpose']);
 
 export function parseComponentProductionInput(
   value: unknown
@@ -162,6 +169,8 @@ export function parseComponentProductionInput(
   const profile = requiredString(value, 'profile');
   const control = optionalString(value, 'control');
   const capabilities = optionalStringArray(value, 'capabilities');
+  const icons = optionalIconRequirements(value, 'icons');
+  const tokens = optionalNonEmptyStringArray(value, 'tokens');
   const parts = optionalStringArray(value, 'parts');
 
   const args = [
@@ -184,6 +193,14 @@ export function parseComponentProductionInput(
     args.push(`--parts=${parts.join(',')}`);
   }
 
+  for (const icon of icons) {
+    args.push(`--icon=${icon.name}:${icon.purpose}`);
+  }
+
+  for (const token of tokens) {
+    args.push(`--token=${token}`);
+  }
+
   const generatorOptions = parseComponentGeneratorArgs(args);
 
   return {
@@ -199,6 +216,12 @@ export function parseComponentProductionInput(
         }
       : {}),
     capabilities: generatorOptions.capabilities ?? [],
+    ...((generatorOptions.icons ?? []).length > 0
+      ? { icons: generatorOptions.icons }
+      : {}),
+    ...((generatorOptions.tokens ?? []).length > 0
+      ? { tokens: generatorOptions.tokens }
+      : {}),
     parts: generatorOptions.parts,
   };
 }
@@ -218,6 +241,8 @@ export function createComponentProductionGeneratorOptions(
         }
       : {}),
     capabilities: input.capabilities,
+    icons: input.icons ?? [],
+    tokens: input.tokens ?? [],
     parts: input.parts,
     force: false,
     dryRun: false,
@@ -453,4 +478,84 @@ function optionalStringArray(
   }
 
   return [...field];
+}
+
+function optionalNonEmptyStringArray(
+  value: Record<string, unknown>,
+  key: string
+): string[] {
+  const field = value[key];
+
+  if (field === undefined) {
+    return [];
+  }
+
+  if (
+    !Array.isArray(field) ||
+    field.some((item) => typeof item !== 'string' || item.length === 0)
+  ) {
+    throw new Error(
+      `Component production input field "${key}" must be an array of non-empty strings.`
+    );
+  }
+
+  return [...field];
+}
+
+function optionalIconRequirements(
+  value: Record<string, unknown>,
+  key: string
+): ComponentIconRequirement[] {
+  const field = value[key];
+
+  if (field === undefined) {
+    return [];
+  }
+
+  if (!Array.isArray(field)) {
+    throw new Error(
+      `Component production input field "${key}" must be an array.`
+    );
+  }
+
+  return field.map((item, index) => {
+    if (!isRecord(item)) {
+      throw new Error(
+        `Component production input field "${key}[${index}]" must be an object.`
+      );
+    }
+
+    for (const itemKey of Object.keys(item)) {
+      if (!ICON_REQUIREMENT_KEYS.has(itemKey)) {
+        throw new Error(
+          `Unknown component production icon requirement field "${itemKey}" at ${key}[${index}].`
+        );
+      }
+    }
+
+    return {
+      name: requiredObjectString(item, 'name', `${key}[${index}].name`),
+      purpose: requiredObjectString(
+        item,
+        'purpose',
+        `${key}[${index}].purpose`
+      ),
+    };
+  });
+}
+
+function requiredObjectString(
+  value: Record<string, unknown>,
+  key: string,
+  label: string
+): string {
+  const field = value[key];
+
+  if (typeof field !== 'string' || field.length === 0) {
+    throw new Error(
+      `Component production input field "${label}" must be a non-empty string.`
+    );
+  }
+
+  return field;
 }
