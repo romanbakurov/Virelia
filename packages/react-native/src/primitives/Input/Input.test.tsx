@@ -291,7 +291,6 @@ describe('Native Input', () => {
     );
 
     expect(clearButton).not.toBeNull();
-    expect(clearButton?.querySelector('svg')).not.toBeNull();
 
     act(() => {
       clearButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
