@@ -229,6 +229,7 @@ const webKeyboardEvidence = [
   /\buseKeyboardNavigation\b/,
   /\bhandleKeyDown\b/,
   /\bcloseOnEscape\s*:\s*true\b/,
+  /\b(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*userEvent\.setup\s*\(\s*\)[\s\S]*?\b\1\.keyboard\s*\(/,
 ];
 
 const nativeInteractionEvidence = [

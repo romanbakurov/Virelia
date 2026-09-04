@@ -1,7 +1,8 @@
-// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled, keyboard
+// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled, keyboard, instance-isolation
 import { act } from 'react';
 
 import { render } from '@test-utils/render';
+import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Accordion } from './Accordion';
@@ -22,7 +23,8 @@ const sections = [
 ];
 
 describe('Accordion manual behavior coverage', () => {
-  it('provides named, keyboard-native triggers and updates uncontrolled state', () => {
+  it('updates uncontrolled state from keyboard activation', async () => {
+    const user = userEvent.setup();
     const onValueChange = vi.fn();
     const { container, unmount } = render(
       <Accordion defaultValue='first' onValueChange={onValueChange}>
@@ -36,18 +38,18 @@ describe('Accordion manual behavior coverage', () => {
     expect(buttons[0].getAttribute('aria-controls')).toBeTruthy();
 
     buttons[1].focus();
-    act(() => {
-      buttons[1].dispatchEvent(
-        new KeyboardEvent('keydown', { bubbles: true, key: 'Enter' })
-      );
-    });
+    await user.keyboard('{Enter}');
+
     expect(document.activeElement).toBe(buttons[1]);
-
-    act(() => buttons[1].click());
-
     expect(buttons[1].getAttribute('aria-expanded')).toBe('true');
     expect(container.textContent).toContain('Second content');
-    expect(onValueChange).toHaveBeenCalledWith('second');
+    expect(onValueChange).toHaveBeenLastCalledWith('second');
+
+    buttons[0].focus();
+    await user.keyboard(' ');
+
+    expect(buttons[0].getAttribute('aria-expanded')).toBe('true');
+    expect(onValueChange).toHaveBeenLastCalledWith('first');
     unmount();
   });
 
@@ -74,6 +76,47 @@ describe('Accordion manual behavior coverage', () => {
 
     rerender(<Accordion disabled>{sections}</Accordion>);
     expect(container.querySelector('button')?.disabled).toBe(true);
+    unmount();
+  });
+
+  it('isolates relationship IDs across Accordion instances', () => {
+    const renderAccordions = () => (
+      <>
+        <Accordion defaultValue='billing'>
+          <Accordion.Item value='billing'>
+            <Accordion.Trigger>First billing</Accordion.Trigger>
+            <Accordion.Content>First billing details</Accordion.Content>
+          </Accordion.Item>
+        </Accordion>
+        <Accordion defaultValue='billing'>
+          <Accordion.Item value='billing'>
+            <Accordion.Trigger>Second billing</Accordion.Trigger>
+            <Accordion.Content>Second billing details</Accordion.Content>
+          </Accordion.Item>
+        </Accordion>
+      </>
+    );
+
+    const { container, rerender, unmount } = render(renderAccordions());
+    const triggers = container.querySelectorAll<HTMLButtonElement>('button');
+    const firstId = triggers[0].getAttribute('aria-controls');
+    const secondId = triggers[1].getAttribute('aria-controls');
+
+    expect(firstId).toBeTruthy();
+    expect(secondId).toBeTruthy();
+    expect(firstId).not.toBe(secondId);
+    expect(document.getElementById(firstId ?? '')?.textContent).toContain(
+      'First billing details'
+    );
+    expect(document.getElementById(secondId ?? '')?.textContent).toContain(
+      'Second billing details'
+    );
+
+    rerender(renderAccordions());
+
+    const rerendered = container.querySelectorAll<HTMLButtonElement>('button');
+    expect(rerendered[0].getAttribute('aria-controls')).toBe(firstId);
+    expect(rerendered[1].getAttribute('aria-controls')).toBe(secondId);
     unmount();
   });
 });

@@ -18,7 +18,8 @@
       "controlled",
       "uncontrolled",
       "disabled",
-      "keyboard"
+      "keyboard",
+      "instance-isolation"
     ]
   }
 }
