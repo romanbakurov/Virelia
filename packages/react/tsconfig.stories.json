@@ -1,22 +1,8 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "./tsconfig.typecheck.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "./src",
-    "skipLibCheck": true,
-    "types": ["node"],
-    "paths": {
-      "@/*": ["*"],
-      "@test-utils/*": ["test-utils/*"],
-      "@components/*": ["components/*"],
-      "@patterns/*": ["patterns/*"],
-      "@primitives/*": ["primitives/*"],
-      "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"],
-      "@assets/*": ["assets/*"]
-    }
+    "types": ["node"]
   },
-  "include": ["src/**/*.stories.ts", "src/**/*.stories.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.test.tsx"]
 }
