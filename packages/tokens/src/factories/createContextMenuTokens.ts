@@ -10,6 +10,13 @@ type ContextMenuDangerStates = {
   readonly disabled: ContextMenuState;
 };
 
+type ContextMenuFocusRing = {
+  readonly color: string;
+  readonly width: string;
+  readonly shadow: string;
+  readonly offset: string;
+};
+
 type ContextMenuTokensConfig = {
   contentBg: string;
   contentBorder: string;
@@ -18,14 +25,14 @@ type ContextMenuTokensConfig = {
   itemHover: ContextMenuState;
   itemActive: ContextMenuState;
   itemPressed: ContextMenuState;
-  itemFocusRing: string;
+  itemFocusRing: ContextMenuFocusRing;
   itemDisabled: ContextMenuState;
   itemDanger: ContextMenuDangerStates;
   triggerDefaultFg: string;
   triggerHoverBg: string;
   triggerHoverFg: string;
   triggerFocusFg: string;
-  triggerFocusRing: string;
+  triggerFocusRing: ContextMenuFocusRing;
   triggerDisabledFg: string;
   groupLabelFg: string;
 };
