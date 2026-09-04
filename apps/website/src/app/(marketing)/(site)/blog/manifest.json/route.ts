@@ -1,4 +1,4 @@
-import { getPublishedBlogArticles } from '@/blog';
+import { getPublishedBlogArticles } from '../../../../../blog/store';
 
 const MANIFEST_SCHEMA_VERSION = 1;
 
