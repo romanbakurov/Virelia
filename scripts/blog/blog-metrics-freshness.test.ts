@@ -2,9 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getPublishedBlogArticles } from '../../apps/website/src/blog';
 import { fetchBlogMetricsBatch } from '../../apps/website/src/blog/metrics';
-import {
-  GET as getPublishedManifest,
-} from '../../apps/website/src/app/(marketing)/(site)/blog/manifest.json/route';
+import { GET as getPublishedManifest } from '../../apps/website/src/app/(marketing)/(site)/blog/manifest.json/route';
 
 afterEach(() => {
   vi.restoreAllMocks();
