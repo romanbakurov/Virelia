@@ -1,5 +1,6 @@
 import { cloneElement, forwardRef, useState } from 'react';
 
+import { Close } from '@vellira-ui/icons';
 import { controlSizes } from '@vellira-ui/tokens';
 import type { TextInputProps } from 'react-native';
 import {
@@ -362,9 +363,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                 size: resolvedIconSize,
               })
             ) : (
-              <Text style={[styles.clearButtonText, { color: clearIconColor }]}>
-                ×
-              </Text>
+              <Close color={clearIconColor} size={resolvedIconSize} />
             )}
           </Pressable>
         ) : showRevealButton ? (

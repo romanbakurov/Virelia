@@ -46,7 +46,7 @@ export interface InputProps
   startIcon?: InputIconElement;
   /** Icon rendered at the end of the control when no action is active. */
   endIcon?: InputIconElement;
-  /** Custom clear action icon. */
+  /** Custom clear action icon. Defaults to the canonical Vellira Close icon. */
   clearIcon?: InputIconElement;
   /** Tone for startIcon. */
   startIconTone?: InputAdornmentTone;

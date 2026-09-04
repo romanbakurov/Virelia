@@ -77,7 +77,8 @@ const reactInputApiSections: readonly ComponentApiSection[] = [
       {
         name: 'clearIcon',
         type: 'ReactNode',
-        description: 'Custom clear action content. Defaults to a compact x.',
+        description:
+          'Custom clear action content. Defaults to the canonical Vellira Close icon.',
       },
       {
         name: 'mask',
@@ -274,7 +275,8 @@ const nativeInputApiSections: readonly ComponentApiSection[] = [
       {
         name: 'clearIcon',
         type: 'InputIconElement',
-        description: 'Custom clear action icon.',
+        description:
+          'Custom clear action icon. Defaults to the canonical Vellira Close icon.',
       },
       {
         name: 'startIconTone',

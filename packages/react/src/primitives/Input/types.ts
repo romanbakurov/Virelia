@@ -40,7 +40,7 @@ export interface InputProps
   prefix?: ReactNode;
   /** Inline suffix rendered inside the input chrome. */
   suffix?: ReactNode;
-  /** Custom clear action content. Defaults to a compact x. */
+  /** Custom clear action content. Defaults to the canonical Vellira Close icon. */
   clearIcon?: ReactNode;
   /** Input mask. String masks use # as a digit placeholder. */
   mask?: InputMask;
