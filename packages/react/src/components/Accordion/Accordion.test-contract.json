@@ -15,6 +15,7 @@
     "requirements": [
       "accessible-name",
       "interaction",
+      "instance-isolation",
       "controlled",
       "uncontrolled",
       "disabled",
