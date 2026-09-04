@@ -13,6 +13,8 @@ export type BlogMDXModuleLoader = () => Promise<BlogMDXModule>;
  */
 const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
   {
+    'pr-779-add-production-ready-cross-platform-component': () =>
+      import('../../content/blog/pr-779-add-production-ready-cross-platform-component/article.mdx'),
     'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),
   };
 

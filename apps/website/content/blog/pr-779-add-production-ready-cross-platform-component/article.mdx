@@ -1,0 +1,22 @@
+Engineering changes become difficult when a public change has to be explained without claiming more than the verified evidence proves. The goal is to show what changed, why the explanation stays bounded to the source, and which constraints still matter.
+
+## Why this approach
+
+We chose to keep the article tied to the verified repository evidence rather than infer behavior that the source does not establish.
+
+{/* vellira-claim:sha256:cd406ef174e64dce3b429f82bd3200ba0f9ed20cfc7d1cd3a178771105677e12 */}
+The merged change includes component implementation paths for both React and React Native.
+
+{/* vellira-claim:sha256:458ce83fff2cafe695c22482424d4775e5974eaac5cf1f2f3ccd26f075aae79d */}
+Merged pull request #779 changed 74 public repository paths at revision a6ca6121004dfbe65551d34b132231f4030dafa0.
+
+## Current limitations
+
+The verified source also preserves the following limitation, so the article keeps it explicit instead of smoothing it away.
+
+{/* vellira-claim:sha256:5a5cfc7b2a843cbe81924c857ccb046f3212ce2c2e231ba234c1d2fb7c45bbcc */}
+This evidence bundle is limited to public merged-change metadata and does not claim runtime behavior beyond the referenced paths.
+
+## Practical takeaway
+
+When engineering evidence is bounded, keep the public explanation bounded too: separate verified facts from editorial interpretation, make the trade-offs visible, and avoid filling gaps with assumptions.
