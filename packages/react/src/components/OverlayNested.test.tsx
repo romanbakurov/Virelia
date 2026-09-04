@@ -1,8 +1,7 @@
 import { act } from 'react';
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
-
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Dropdown } from './Dropdown';
 import { Modal } from './Modal';
