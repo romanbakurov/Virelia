@@ -2,11 +2,12 @@ import { act, useState } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { FormField } from '../../patterns/FormField';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
 import { Input } from './Input';
+
+import { FormField } from '#patterns/FormField';
 
 afterEach(() => {
   document.body.innerHTML = '';
