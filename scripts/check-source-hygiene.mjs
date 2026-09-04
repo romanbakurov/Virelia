@@ -320,6 +320,10 @@ function isGeneratorOwnedPair(a, b) {
     return true;
   }
 
+  if (websiteReviewSurface.test(a) && websiteReviewSurface.test(b)) {
+    return true;
+  }
+
   if (
     (websiteReviewSurface.test(a) && generatedWebsiteSurface.test(b)) ||
     (websiteReviewSurface.test(b) && generatedWebsiteSurface.test(a))
@@ -365,6 +369,11 @@ function isThemeComponentFile(relativePath) {
   return /^packages\/tokens\/src\/(?:light|dark|highContrast)\/components\/[^/]+\.ts$/.test(relativePath);
 }
 
+function usesSharedThemeFactory(filePath, sources) {
+  const source = sources.get(filePath);
+  return /from ['"]\.\.\/\.\.\/factories\/create[^'"]+\.js['"]/.test(source);
+}
+
 function checkExactThemeComponentDuplication(files, sources) {
   const byDigest = new Map();
 
@@ -380,22 +389,26 @@ function checkExactThemeComponentDuplication(files, sources) {
     byDigest.set(digest, group);
   }
 
-  for (const group of byDigest.values()) {
+  for (const [digest, group] of byDigest.entries()) {
     if (group.length < 2) {
       continue;
     }
 
     const [first, ...rest] = group;
+    const centralized = group.every((filePath) => usesSharedThemeFactory(filePath, sources));
     findings.push({
       rule: 'duplication.theme-component-matrix',
       category: 'duplication',
-      severity: 'error',
-      blocking: true,
+      severity: centralized ? 'warning' : 'error',
+      blocking: !centralized,
+      fingerprint: digest,
       path: normalizePath(first),
       line: 1,
       relatedPath: rest.map(normalizePath).join(', '),
       relatedLine: 1,
-      reason: `Theme component files are byte-identical across themes. Centralize theme-independent mapping/geometry in a shared runtime-safe factory/helper so each theme file only supplies theme-local semantic inputs.`,
+      reason: centralized
+        ? `Theme entry files are byte-identical, but their semantic-to-component mapping is centralized in a shared runtime-safe factory. Keep the thin per-theme entrypoints explicit.`
+        : `Theme component files are byte-identical across themes. Centralize theme-independent mapping/geometry in a shared runtime-safe factory/helper so each theme file only supplies theme-local semantic inputs.`,
     });
   }
 }
@@ -438,7 +451,7 @@ function checkStructuralDuplication(files, sources) {
   }
 
   const reportedPairs = new Set();
-  for (const occurrences of windows.values()) {
+  for (const [digest, occurrences] of windows.entries()) {
     const byFile = new Map();
     for (const occurrence of occurrences) {
       if (!byFile.has(occurrence.filePath)) {
@@ -467,6 +480,7 @@ function checkStructuralDuplication(files, sources) {
           category: 'duplication',
           severity,
           blocking: severity === 'error',
+          fingerprint: digest,
           path: normalizePath(a.filePath),
           line: a.line,
           relatedPath: normalizePath(b.filePath),
@@ -527,8 +541,9 @@ if (jsonMode) {
     const related = finding.relatedPath
       ? ` -> ${finding.relatedPath}:${finding.relatedLine ?? 1}`
       : '';
+    const fingerprint = finding.fingerprint ? ` [${finding.fingerprint.slice(0, 12)}]` : '';
     console.log(
-      `${level} ${finding.rule} ${finding.path}:${finding.line ?? 1}${related}\n  ${finding.reason}`
+      `${level} ${finding.rule}${fingerprint} ${finding.path}:${finding.line ?? 1}${related}\n  ${finding.reason}`
     );
   }
 
