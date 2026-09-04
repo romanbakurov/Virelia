@@ -6,6 +6,10 @@ import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
+import {
+  checkComponentTokenContract,
+  ensureComponentTokenContract,
+} from './component-token-contract';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -106,16 +110,19 @@ export async function runComponentGenerator(params: {
   }
 
   if (params.options.check) {
-    const driftedFiles = checkPublicApiContractSynchronization({
-      componentName: plan.componentName,
-      targets: plan.targets,
-    });
+    const driftedFiles = [
+      ...checkPublicApiContractSynchronization({
+        componentName: plan.componentName,
+        targets: plan.targets,
+      }),
+      ...checkComponentTokenContract(plan),
+    ];
 
     if (driftedFiles.length > 0) {
       throw new Error(
-        `Component generator check detected public API contract drift:\n${driftedFiles.join(
-          '\n'
-        )}`
+        `Component generator check detected contract drift:\n${[
+          ...new Set(driftedFiles),
+        ].join('\n')}`
       );
     }
 
@@ -139,6 +146,8 @@ export async function runComponentGenerator(params: {
   }
 
   const result = await writeComponentGenerationPlan(plan);
+
+  ensureComponentTokenContract({ plan, result });
 
   const websiteResult = generateComponentWebsitePage({
     root: params.root,

@@ -44,6 +44,7 @@ export interface ComponentRequirements {
   storybook: boolean;
   docs: boolean;
   accessibility: boolean;
+  componentTokens?: boolean;
   tokens?: readonly string[];
   icons?: readonly ComponentIconRequirement[];
 }

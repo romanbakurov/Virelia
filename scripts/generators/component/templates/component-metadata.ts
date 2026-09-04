@@ -86,7 +86,8 @@ export const ${metadataName} = defineComponentMetadata({
     tests: true,
     storybook: true,
     docs: true,
-    accessibility: true,${requirementsSuffix}
+    accessibility: true,
+    componentTokens: true,${requirementsSuffix}
   },
 });
 `;
