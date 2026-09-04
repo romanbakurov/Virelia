@@ -1,3 +1,4 @@
+export { accordionTokens as accordion } from './accordion.js';
 export { button } from './button.js';
 export { checkbox } from './checkbox.js';
 export { contextMenu } from './contextMenu.js';
