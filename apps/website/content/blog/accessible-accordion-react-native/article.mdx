@@ -1,0 +1,373 @@
+An Accordion looks like a simple component until you try to make it feel natural on both the web and React Native.
+
+The product idea is shared: a group of sections that can expand and collapse in place. But the runtime expectations are not. The web gives us native buttons, DOM relationships, keyboard activation, and ARIA state. React Native gives us `Pressable`, accessibility roles and state, touch interaction, and native layout primitives.
+
+The useful question is not "How do we make the implementations identical?"
+
+It is:
+
+> Which parts of the Accordion contract should developers learn once, and which parts should remain platform-specific?
+
+That is the approach I used for Vellira's Accordion. The public API stays recognizably the same across React and React Native, while each runtime keeps the interaction and accessibility behavior that belongs to it.
+
+## Start with the shared product contract
+
+Vellira exposes the same compound shape on both platforms:
+
+```tsx
+<Accordion defaultValue='billing'>
+  <Accordion.Item value='billing'>
+    <Accordion.Trigger>Billing</Accordion.Trigger>
+    <Accordion.Content>...</Accordion.Content>
+  </Accordion.Item>
+
+  <Accordion.Item value='security'>
+    <Accordion.Trigger>Security</Accordion.Trigger>
+    <Accordion.Content>...</Accordion.Content>
+  </Accordion.Item>
+</Accordion>
+```
+
+There are four public parts:
+
+- `Accordion` owns expansion state and mode.
+- `Accordion.Item` gives each section a stable value.
+- `Accordion.Trigger` is the user-facing control.
+- `Accordion.Content` owns the expandable panel content.
+
+This composition works well across runtimes because it describes the product structure rather than the implementation primitive.
+
+The web version does not need a fake native abstraction, and the native version does not need to imitate DOM structure. Developers still learn the same mental model.
+
+## Make state value-based, not position-based
+
+Each item has a required string `value`.
+
+That decision matters more than it first appears. If expansion state were tied to child position, reordering or conditionally rendering items could change which section is considered open. A stable value gives the state contract its own identity.
+
+For example:
+
+```tsx
+<Accordion defaultValue='security'>
+  <Accordion.Item value='profile'>...</Accordion.Item>
+  <Accordion.Item value='security'>...</Accordion.Item>
+  <Accordion.Item value='billing'>...</Accordion.Item>
+</Accordion>
+```
+
+The open section remains `security` even if the visual order changes later.
+
+The same rule works on React and React Native because it is application semantics, not runtime behavior.
+
+## Use the type system to separate single and multiple modes
+
+Accordion state gets more interesting when the component supports both one open item and several open items.
+
+Vellira models those as two branches of the public TypeScript contract.
+
+In single mode, the value is a string:
+
+```ts
+type SingleAccordionProps = {
+  type?: 'single';
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  collapsible?: boolean;
+};
+```
+
+In multiple mode, the value becomes an array:
+
+```ts
+type MultipleAccordionProps = {
+  type: 'multiple';
+  value?: string[];
+  defaultValue?: string[];
+  onValueChange?: (value: string[]) => void;
+  collapsible?: never;
+};
+```
+
+This is a better API than exposing one loose set of props and expecting developers to remember which combinations make sense.
+
+The `type` prop becomes the discriminator. Once `type='multiple'` is selected, TypeScript can describe `value`, `defaultValue`, and `onValueChange` as collection-based state. In single mode, they stay scalar.
+
+It also makes one product rule explicit: `collapsible` only belongs to single mode. Multiple mode does not need it because each expanded item can already be closed independently.
+
+## Controlled and uncontrolled usage should tell the same story
+
+The Accordion supports both controlled and uncontrolled state on both platforms.
+
+Uncontrolled state is useful when the component can own its expansion locally:
+
+```tsx
+<Accordion defaultValue='profile'>
+  ...
+</Accordion>
+```
+
+Controlled state is useful when expansion belongs to a larger application flow:
+
+```tsx
+const [section, setSection] = useState('profile');
+
+<Accordion value={section} onValueChange={setSection}>
+  ...
+</Accordion>;
+```
+
+The same pattern works in multiple mode with `string[]`:
+
+```tsx
+const [sections, setSections] = useState<string[]>(['profile', 'billing']);
+
+<Accordion
+  type='multiple'
+  value={sections}
+  onValueChange={setSections}
+>
+  ...
+</Accordion>;
+```
+
+This is one of the places where cross-platform parity is genuinely valuable. The surrounding application should not need a different state model just because the renderer changed from DOM to native views.
+
+The rendering primitives can diverge. The state contract does not need to.
+
+## Web accessibility should use native browser semantics first
+
+On the web, `Accordion.Trigger` renders a real `button`.
+
+That gives several useful behaviors without rebuilding them in JavaScript:
+
+- the trigger participates naturally in Tab navigation;
+- Enter and Space activate the control;
+- the browser handles disabled-button interaction correctly;
+- the trigger exposes a familiar control to assistive technology.
+
+Vellira adds expansion state with `aria-expanded` and connects the trigger to its content element with `aria-controls`.
+
+Conceptually, the trigger looks like this:
+
+```tsx
+<button
+  type='button'
+  disabled={disabled}
+  aria-expanded={expanded}
+  aria-controls={contentId}
+  onClick={onActivate}
+>
+  {children}
+</button>
+```
+
+There is an important lesson here: accessibility work does not always mean adding more custom behavior.
+
+Sometimes the strongest accessibility decision is choosing the correct platform primitive and preserving what it already does well.
+
+For this Accordion, native button behavior covers the expected Tab, Enter, and Space interaction. There is no reason to replace that with a generic cross-platform event abstraction.
+
+## React Native needs native accessibility state, not translated ARIA
+
+React Native has a different accessibility surface.
+
+There is no DOM relationship to express with `aria-controls`, so the native implementation does not pretend there is one. Instead, `Accordion.Trigger` uses a `Pressable` with native accessibility information:
+
+```tsx
+<Pressable
+  disabled={disabled}
+  accessibilityRole='button'
+  accessibilityState={{ disabled, expanded }}
+  onPress={onActivate}
+>
+  ...
+</Pressable>
+```
+
+The product meaning remains recognizable:
+
+- this is a button-like control;
+- it may be disabled;
+- it has expanded or collapsed state;
+- activating it changes the matching section.
+
+But the mechanism is native.
+
+That distinction is important for a cross-platform design system. Copying `aria-*` concepts into a native API would create visual symmetry in the source code while making the component less honest about the runtime it actually uses.
+
+## Shared API does not mean shared markup
+
+Even the content of an Accordion exposes a useful platform difference.
+
+On the web, textual children can sit naturally inside normal DOM elements:
+
+```tsx
+<Accordion.Content>
+  Review passkeys, sessions, and recovery options.
+</Accordion.Content>
+```
+
+In React Native, the content host is View-like, so text should be wrapped in a native `Text` component:
+
+```tsx
+import { Text } from 'react-native';
+
+<Accordion.Content>
+  <Text>Review passkeys, sessions, and recovery options.</Text>
+</Accordion.Content>
+```
+
+This is not a flaw in parity. It is the correct consequence of the runtime.
+
+A design system becomes harder to use when it hides these differences until they fail at runtime. It is better to document them directly and let each platform use its normal composition rules.
+
+## Disabled state should work at more than one level
+
+Accordion has two useful disabled boundaries.
+
+The entire control can be disabled:
+
+```tsx
+<Accordion disabled>
+  ...
+</Accordion>
+```
+
+Or one item can be disabled while the rest remain interactive:
+
+```tsx
+<Accordion.Item value='enterprise' disabled>
+  <Accordion.Trigger>Enterprise</Accordion.Trigger>
+  <Accordion.Content>...</Accordion.Content>
+</Accordion.Item>
+```
+
+This sounds small, but it is a good example of why compound components need a clear state ownership model.
+
+The root owns global state. Each item owns its local availability. The trigger receives the effective result and renders the correct platform semantics.
+
+On the web, that ultimately reaches the native `disabled` attribute on the button. On React Native, it reaches the `Pressable` disabled state and `accessibilityState`.
+
+The public behavior is shared; the final representation is not.
+
+## Collapsible single mode is a product decision, not a visual detail
+
+A single-selection Accordion has one subtle question: what happens when the user activates the already-open item?
+
+Vellira keeps it open by default. If the application wants to allow a state where no item is expanded, it can opt into `collapsible`:
+
+```tsx
+<Accordion collapsible defaultValue='notifications'>
+  ...
+</Accordion>
+```
+
+That policy belongs in the shared state contract because it affects what values the component can produce. It is not something that should be decided independently by the web and native renderers.
+
+This is a useful test for cross-platform API design:
+
+> If changing the behavior would change application state or business logic, it probably belongs in the shared semantic contract.
+
+If changing it only changes how the platform performs the interaction, it probably belongs in the platform implementation.
+
+## Mounting behavior is another explicit contract
+
+Collapsed Accordion content is normally removed from the rendered tree. `Accordion.Content` also exposes `forceMount` for cases where the panel needs to remain mounted while hidden.
+
+```tsx
+<Accordion.Content forceMount>
+  <PersistentEditor />
+</Accordion.Content>
+```
+
+That can matter for preserving local state, coordinating measurement, or supporting application-specific animation work.
+
+Again, the important part is that this behavior is explicit. A reusable component should not make developers discover lifecycle behavior accidentally after putting stateful content inside it.
+
+## Test the contract separately on each runtime
+
+Separate implementations create a responsibility: the shared API must not drift silently.
+
+The right answer is not necessarily a single shared test suite. The runtime behavior itself is different, so each platform should prove the semantics that matter there.
+
+For a web Accordion, useful evidence includes things such as:
+
+- controlled and uncontrolled state;
+- single and multiple expansion;
+- disabled behavior;
+- native button activation;
+- expanded state and trigger/content relationships.
+
+For React Native, the state contract is similar, but interaction and accessibility evidence should be native-oriented:
+
+- press behavior;
+- disabled state;
+- `accessibilityRole`;
+- expanded/disabled accessibility state;
+- native text/layout composition.
+
+That gives us a more realistic definition of parity:
+
+**same product promise, independently verified on each runtime.**
+
+## Where parity should stop
+
+There are several things I would not add merely to make the APIs look more symmetrical.
+
+I would not add DOM-only relationship props to React Native.
+
+I would not invent native-style props on the web just because React Native exposes them.
+
+I would not replace browser-native button keyboard behavior with a custom generic event layer.
+
+And I would not force the same internal component tree onto both implementations.
+
+Those choices would optimize for source-code similarity rather than developer experience.
+
+The stronger target is semantic consistency:
+
+```text
+Shared:
+- compound parts
+- item values
+- single / multiple mode
+- controlled / uncontrolled state
+- collapsible single mode
+- disabled behavior
+- forceMount intent
+
+Web:
+- native button semantics
+- Tab / Enter / Space behavior
+- aria-expanded
+- aria-controls
+- DOM content rendering
+
+React Native:
+- Pressable interaction
+- accessibilityRole
+- accessibilityState
+- native Text/View composition
+- platform accessibility testing
+```
+
+That boundary is much easier to reason about than an abstraction that tries to erase the runtimes.
+
+## A practical checklist for cross-platform interactive components
+
+When designing an interactive component for both React and React Native, I now start with a few questions:
+
+1. What state and product behavior should mean the same thing on both platforms?
+2. Can TypeScript prevent invalid prop combinations instead of documenting them only in prose?
+3. Which native primitive gives each platform the strongest default semantics?
+4. Which accessibility states are conceptually shared, and how does each runtime express them?
+5. Which interaction behavior belongs specifically to keyboard, touch, DOM, or native UI?
+6. What differences need to be documented so developers do not discover them by accident?
+7. Can each runtime test the same product promise without pretending the implementation is identical?
+
+That is the model behind Vellira's Accordion.
+
+The component is cross-platform because the API and behavior form one coherent system, not because React and React Native happen to share the same source file.
+
+You can explore the public component on the [Vellira Accordion page](https://vellira.dev/components/accordion), read the [React documentation](https://docs.vellira.dev/react/accordion), or compare it with the [React Native documentation](https://docs.vellira.dev/react-native/accordion).
