@@ -171,7 +171,7 @@ export async function fetchBlogMetricsBatch(
   const json = await requestBlogMetricsJson(
     url,
     {
-      next: { revalidate: BLOG_METRICS_AGGREGATE_REVALIDATE_SECONDS },
+      cache: 'no-store',
     },
     { retries: 1 }
   );
