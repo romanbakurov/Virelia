@@ -1,4 +1,4 @@
-// Coverage contract: accessible-name, interaction, instance-isolation, controlled, uncontrolled, disabled, keyboard
+// Coverage contract: accessible-name, interaction, controlled, uncontrolled, disabled, keyboard, instance-isolation
 import { act } from 'react';
 
 import { render } from '@test-utils/render';
