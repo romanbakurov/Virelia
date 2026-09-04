@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
-import { Button } from '../../primitives/Button';
-
 import { Popover } from './Popover';
+
+import { Button } from '#primitives/Button';
 
 const noop = () => undefined;
 
