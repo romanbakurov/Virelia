@@ -12,8 +12,9 @@ import {
 } from '@vellira-ui/icons';
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Button } from '../../primitives/Button';
 import { Tabs } from '../Tabs';
+
+import { Button } from '#primitives/Button';
 
 const noop = () => undefined;
 
