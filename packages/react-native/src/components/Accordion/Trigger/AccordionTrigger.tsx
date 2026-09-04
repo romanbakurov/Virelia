@@ -19,6 +19,7 @@ export function AccordionTrigger({
 }: InternalAccordionTriggerProps) {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const accordionTokens = theme.components.accordion;
 
   return (
     <Pressable
@@ -52,8 +53,8 @@ export function AccordionTrigger({
             height={16}
             color={
               disabled
-                ? theme.semantic.text.disabled
-                : theme.semantic.text.secondary
+                ? accordionTokens.trigger.disabled.fg
+                : accordionTokens.indicator
             }
           />
         </View>

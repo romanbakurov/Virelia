@@ -3,38 +3,40 @@ import { StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../theme';
 
-export const createStyles = (theme: NativeTheme) =>
-  StyleSheet.create({
+export const createStyles = (theme: NativeTheme) => {
+  const accordion = theme.components.accordion;
+
+  return StyleSheet.create({
     root: {
       width: '100%',
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.semantic.border.muted,
+      borderColor: accordion.root.border,
       borderRadius: theme.tokens.radius.lg,
-      backgroundColor: theme.semantic.surface.default,
+      backgroundColor: accordion.root.bg,
     },
     rootDisabled: {
       opacity: 0.7,
     },
     item: {
       borderBottomWidth: 1,
-      borderBottomColor: theme.semantic.border.muted,
+      borderBottomColor: accordion.divider,
     },
     trigger: {
       minHeight: theme.tokens.spacing[10],
       justifyContent: 'center',
       paddingHorizontal: theme.tokens.spacing[4],
       paddingVertical: theme.tokens.spacing[3],
-      backgroundColor: theme.semantic.surface.default,
+      backgroundColor: accordion.trigger.default.bg,
     },
     triggerExpanded: {
-      backgroundColor: theme.semantic.surface.subtle,
+      backgroundColor: accordion.trigger.hover.bg,
     },
     triggerPressed: {
-      backgroundColor: theme.semantic.surface.muted,
+      backgroundColor: accordion.trigger.pressed.bg,
     },
     triggerDisabled: {
-      backgroundColor: theme.semantic.surface.subtle,
+      backgroundColor: accordion.trigger.disabled.bg,
     },
     triggerContent: {
       flexDirection: 'row',
@@ -44,14 +46,14 @@ export const createStyles = (theme: NativeTheme) =>
     },
     triggerText: {
       flex: 1,
-      color: theme.semantic.text.primary,
+      color: accordion.trigger.default.fg,
       fontSize: theme.tokens.typography.size.md,
       fontWeight: theme.tokens.typography.weight
         .medium as TextStyle['fontWeight'],
       lineHeight: theme.tokens.typography.lineHeight.md,
     },
     triggerTextDisabled: {
-      color: theme.semantic.text.disabled,
+      color: accordion.trigger.disabled.fg,
     },
     indicator: {
       width: theme.tokens.spacing[4],
@@ -64,9 +66,10 @@ export const createStyles = (theme: NativeTheme) =>
     },
     content: {
       padding: theme.tokens.spacing[4],
-      backgroundColor: theme.semantic.surface.subtle,
+      backgroundColor: accordion.content.bg,
     },
     contentHidden: {
       display: 'none',
     },
   });
+};
