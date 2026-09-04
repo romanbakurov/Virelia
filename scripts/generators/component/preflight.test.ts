@@ -63,6 +63,41 @@ function createLayerBarrels(
   );
 }
 
+function createIconRegistry(
+  root: string,
+  platform: 'react' | 'react-native',
+  icons: readonly string[] = ['ChevronDown', 'Close']
+) {
+  const fileName = platform === 'react' ? 'web.source.ts' : 'native.source.ts';
+  const iconDir = path.join(root, 'packages', 'icons', 'src');
+
+  fs.mkdirSync(iconDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(iconDir, fileName),
+    icons
+      .map(
+        (icon) => `export { default as ${icon} } from './generated/${icon}';`
+      )
+      .join('\n') + '\n'
+  );
+}
+
+function createTokenRegistry(
+  root: string,
+  tokens: readonly string[] = ['semantic.text.primary']
+) {
+  const tokenDir = path.join(root, 'packages', 'tokens', 'src', 'generated');
+
+  fs.mkdirSync(tokenDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(tokenDir, 'token-types.ts'),
+    `export const tokenPaths = [
+${tokens.map((token) => `  '${token}',`).join('\n')}
+] as const;
+`
+  );
+}
+
 afterEach(() => {
   for (const root of tempRoots.splice(0)) {
     fs.rmSync(root, { recursive: true, force: true });
@@ -91,6 +126,230 @@ describe('component generator preflight', () => {
       ok: true,
       existingTargets: [],
     });
+  });
+
+  it('accepts an existing canonical Web icon requirement', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createIconRegistry(root, 'react');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        icons: [{ name: 'ChevronDown', purpose: 'disclosure indicator' }],
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(validateComponentGenerationPlan(plan)).toEqual({
+      ok: true,
+      existingTargets: [],
+    });
+  });
+
+  it('accepts an existing canonical Native icon requirement', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createIconRegistry(root, 'react-native');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'native',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        icons: [{ name: 'Close', purpose: 'dismiss action' }],
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(validateComponentGenerationPlan(plan)).toEqual({
+      ok: true,
+      existingTargets: [],
+    });
+  });
+
+  it('requires cross-platform icons to exist in both registries', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createIconRegistry(root, 'react');
+    createIconRegistry(root, 'react-native', ['Close']);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        icons: [{ name: 'ChevronDown', purpose: 'disclosure indicator' }],
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors.join('\n')).toContain(
+        'missing-icon-resource: name="ChevronDown" purpose="disclosure indicator" platform="react-native"'
+      );
+    }
+  });
+
+  it('fails closed for missing icon resources', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createIconRegistry(root, 'react');
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        icons: [{ name: 'MissingIcon', purpose: 'missing affordance' }],
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        'missing-icon-resource: name="MissingIcon" purpose="missing affordance" platform="react" — expected canonical export from @vellira-ui/icons'
+      );
+    }
+  });
+
+  it('fails closed for a missing icon registry', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        icons: [{ name: 'ChevronDown', purpose: 'disclosure indicator' }],
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors.join('\n')).toContain(
+        'missing-icon-resource-registry: component="Tooltip" platform="react"'
+      );
+    }
+  });
+
+  it('accepts an existing canonical token requirement', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createTokenRegistry(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        tokens: ['semantic.text.primary'],
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(validateComponentGenerationPlan(plan)).toEqual({
+      ok: true,
+      existingTargets: [],
+    });
+  });
+
+  it('fails closed for missing token requirements', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+    createTokenRegistry(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        tokens: ['semantic.text.missing'],
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors).toContain(
+        'missing-design-token: path="semantic.text.missing" component="Tooltip" part="component" platform="react" — expected canonical token path in @vellira-ui/tokens'
+      );
+    }
+  });
+
+  it('fails closed for a missing token registry', () => {
+    const root = createTempRoot();
+    createLayerBarrels(root);
+
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Tooltip',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'overlay',
+        profile: 'base',
+        tokens: ['semantic.text.primary'],
+        parts: [],
+        force: false,
+      },
+    });
+
+    const result = validateComponentGenerationPlan(plan);
+
+    expect(result.ok).toBe(false);
+
+    if (!result.ok) {
+      expect(result.errors.join('\n')).toContain(
+        'missing-design-token-registry: component="Tooltip"'
+      );
+    }
   });
 
   it('rejects an existing target without --force', () => {

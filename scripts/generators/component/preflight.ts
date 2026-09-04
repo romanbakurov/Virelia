@@ -5,6 +5,12 @@ import {
   type ComponentGenerationPlan,
 } from './plan';
 import { getComponentProfile } from './profiles';
+import {
+  canonicalIconExports,
+  canonicalIconSourcePath,
+  canonicalTokenPaths,
+  canonicalTokenRegistryPath,
+} from '../../design-resources/authority';
 
 export type ComponentPreflightResult =
   | {
@@ -25,6 +31,56 @@ export function validateComponentGenerationPlan(
   const errors: string[] = [];
   const existingTargets: string[] = [];
   const profile = getComponentProfile(plan.profile);
+
+  if (plan.icons.length > 0) {
+    for (const target of plan.targets) {
+      const platform = target.packageName;
+      const registryPath = canonicalIconSourcePath({
+        root: plan.root,
+        platform,
+      });
+      const exports = canonicalIconExports({
+        root: plan.root,
+        platform,
+      });
+
+      if (!exports) {
+        errors.push(
+          `missing-icon-resource-registry: component="${plan.componentName}" platform="${platform}" registry="${registryPath}"`
+        );
+        continue;
+      }
+
+      for (const requirement of plan.icons) {
+        if (!exports.has(requirement.name)) {
+          errors.push(
+            `missing-icon-resource: name="${requirement.name}" purpose="${requirement.purpose}" platform="${platform}" — expected canonical export from @vellira-ui/icons`
+          );
+        }
+      }
+    }
+  }
+
+  if (plan.tokens.length > 0) {
+    const registryPath = canonicalTokenRegistryPath(plan.root);
+    const tokenPaths = canonicalTokenPaths(plan.root);
+
+    if (!tokenPaths) {
+      errors.push(
+        `missing-design-token-registry: component="${plan.componentName}" registry="${registryPath}"`
+      );
+    } else {
+      for (const target of plan.targets) {
+        for (const token of plan.tokens) {
+          if (!tokenPaths.has(token)) {
+            errors.push(
+              `missing-design-token: path="${token}" component="${plan.componentName}" part="component" platform="${target.packageName}" — expected canonical token path in @vellira-ui/tokens`
+            );
+          }
+        }
+      }
+    }
+  }
 
   for (const target of plan.targets) {
     if (!fs.existsSync(target.barrelFile)) {

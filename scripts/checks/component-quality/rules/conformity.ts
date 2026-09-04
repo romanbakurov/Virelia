@@ -15,6 +15,13 @@ import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
 } from '../types';
+import {
+  canonicalIconExports as readCanonicalIconExports,
+  canonicalIconSourcePath as resolveCanonicalIconSourcePath,
+  canonicalTokenPaths as readCanonicalTokenPaths,
+  canonicalTokenRegistryPath as resolveCanonicalTokenRegistryPath,
+  type DesignResourcePlatform,
+} from '../../../design-resources/authority';
 
 type SourceFile = {
   filePath: string;
@@ -146,29 +153,17 @@ const iconContextPattern =
   /(?:icon|indicator|glyph|chevron|arrow|mark|clear|close)/i;
 
 function canonicalIconSourcePath(context: ComponentQualityRuleContext) {
-  return path.join(
-    qualityRoot(context),
-    'packages',
-    'icons',
-    'src',
-    context.platform === 'react' ? 'web.source.ts' : 'native.source.ts'
-  );
+  return resolveCanonicalIconSourcePath({
+    root: qualityRoot(context),
+    platform: context.platform as DesignResourcePlatform,
+  });
 }
 
 function canonicalIconExports(context: ComponentQualityRuleContext) {
-  const filePath = canonicalIconSourcePath(context);
-
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-
-  const source = fs.readFileSync(filePath, 'utf8');
-
-  return new Set(
-    [
-      ...source.matchAll(/export\s*{\s*default\s+as\s+([A-Za-z_$][\w$]*)\s*}/g),
-    ].map((match) => match[1])
-  );
+  return readCanonicalIconExports({
+    root: qualityRoot(context),
+    platform: context.platform as DesignResourcePlatform,
+  });
 }
 
 function hasIconContext(node: ts.Node, sourceFile: ts.SourceFile) {
@@ -466,88 +461,13 @@ function hasNativeTokenRelevantDesignProperties(source: string) {
 }
 
 function canonicalTokenRegistryPath(context: ComponentQualityRuleContext) {
-  return path.join(
-    qualityRoot(context),
-    'packages',
-    'tokens',
-    'src',
-    'generated',
-    'token-types.ts'
-  );
+  return resolveCanonicalTokenRegistryPath(qualityRoot(context));
 }
 
 function canonicalTokenPaths(
   context: ComponentQualityRuleContext
 ): Set<string> | null {
-  const filePath = canonicalTokenRegistryPath(context);
-
-  if (!fs.existsSync(filePath)) {
-    return null;
-  }
-
-  const source = fs.readFileSync(filePath, 'utf8');
-  const sourceFile = ts.createSourceFile(
-    filePath,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TS
-  );
-
-  let result: Set<string> | null = null;
-
-  function unwrapExpression(expression: ts.Expression): ts.Expression {
-    let current = expression;
-
-    while (
-      ts.isAsExpression(current) ||
-      ts.isTypeAssertionExpression(current) ||
-      ts.isSatisfiesExpression(current)
-    ) {
-      current = current.expression;
-    }
-
-    return current;
-  }
-
-  function visit(node: ts.Node) {
-    if (
-      ts.isVariableDeclaration(node) &&
-      ts.isIdentifier(node.name) &&
-      node.name.text === 'tokenPaths' &&
-      node.initializer
-    ) {
-      const initializer = unwrapExpression(node.initializer);
-
-      if (!ts.isArrayLiteralExpression(initializer)) {
-        result = null;
-        return;
-      }
-
-      const values: string[] = [];
-
-      for (const element of initializer.elements) {
-        if (
-          !ts.isStringLiteral(element) &&
-          !ts.isNoSubstitutionTemplateLiteral(element)
-        ) {
-          result = null;
-          return;
-        }
-
-        values.push(element.text);
-      }
-
-      result = new Set(values);
-      return;
-    }
-
-    ts.forEachChild(node, visit);
-  }
-
-  visit(sourceFile);
-
-  return result;
+  return readCanonicalTokenPaths(qualityRoot(context));
 }
 
 export const tokenIntegrationRule: ComponentQualityRule = {

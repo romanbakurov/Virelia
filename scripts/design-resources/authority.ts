@@ -1,0 +1,121 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+import ts from 'typescript';
+
+export type DesignResourcePlatform = 'react' | 'react-native';
+
+export function canonicalIconSourcePath(params: {
+  root: string;
+  platform: DesignResourcePlatform;
+}) {
+  return path.join(
+    params.root,
+    'packages',
+    'icons',
+    'src',
+    params.platform === 'react' ? 'web.source.ts' : 'native.source.ts'
+  );
+}
+
+export function canonicalIconExports(params: {
+  root: string;
+  platform: DesignResourcePlatform;
+}): Set<string> | null {
+  const filePath = canonicalIconSourcePath(params);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const source = fs.readFileSync(filePath, 'utf8');
+
+  return new Set(
+    [
+      ...source.matchAll(/export\s*{\s*default\s+as\s+([A-Za-z_$][\w$]*)\s*}/g),
+    ].map((match) => match[1])
+  );
+}
+
+export function canonicalTokenRegistryPath(root: string) {
+  return path.join(
+    root,
+    'packages',
+    'tokens',
+    'src',
+    'generated',
+    'token-types.ts'
+  );
+}
+
+export function canonicalTokenPaths(root: string): Set<string> | null {
+  const filePath = canonicalTokenRegistryPath(root);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const source = fs.readFileSync(filePath, 'utf8');
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
+  );
+
+  let result: Set<string> | null = null;
+
+  function unwrapExpression(expression: ts.Expression): ts.Expression {
+    let current = expression;
+
+    while (
+      ts.isAsExpression(current) ||
+      ts.isTypeAssertionExpression(current) ||
+      ts.isSatisfiesExpression(current)
+    ) {
+      current = current.expression;
+    }
+
+    return current;
+  }
+
+  function visit(node: ts.Node) {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === 'tokenPaths' &&
+      node.initializer
+    ) {
+      const initializer = unwrapExpression(node.initializer);
+
+      if (!ts.isArrayLiteralExpression(initializer)) {
+        result = null;
+        return;
+      }
+
+      const values: string[] = [];
+
+      for (const element of initializer.elements) {
+        if (
+          !ts.isStringLiteral(element) &&
+          !ts.isNoSubstitutionTemplateLiteral(element)
+        ) {
+          result = null;
+          return;
+        }
+
+        values.push(element.text);
+      }
+
+      result = new Set(values);
+      return;
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+
+  return result;
+}

@@ -253,6 +253,8 @@ function plan(root: string): ComponentGenerationPlan {
     profile: 'base',
     control: 'value',
     capabilities: [],
+    icons: [],
+    tokens: [],
     force: false,
     parts: [],
     targets: [],

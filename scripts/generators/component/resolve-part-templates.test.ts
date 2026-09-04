@@ -15,6 +15,8 @@ const plan: ComponentGenerationPlan = {
   profile: 'compound',
   control: 'value',
   capabilities: [],
+  icons: [],
+  tokens: [],
   parts: ['Root', 'Trigger'],
   force: false,
   targets: [],
