@@ -229,6 +229,7 @@ const webKeyboardEvidence = [
   /\buseKeyboardNavigation\b/,
   /\bhandleKeyDown\b/,
   /\bcloseOnEscape\s*:\s*true\b/,
+  /\b(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*userEvent\.setup\s*\(\s*\)[\s\S]*?\b\1\.keyboard\s*\(/,
 ];
 
 const nativeInteractionEvidence = [
@@ -315,8 +316,31 @@ export const focusManagementRule: ComponentQualityRule = {
     description:
       'Checks platform-appropriate focus-management evidence when the capability is declared.',
   },
+  completionGuidance(context) {
+    return context.platform === 'react'
+      ? {
+          summary:
+            'Provide deterministic Web focus-management evidence when focus-management is declared.',
+          evidence: [
+            'focus()/autoFocus behavior',
+            'onFocus/onBlur handlers',
+            'focus or trigger refs',
+          ],
+        }
+      : {
+          summary:
+            'Provide deterministic React Native focus-management evidence when focus-management is declared.',
+          evidence: [
+            'focus()/autoFocus behavior',
+            'onFocus/onBlur handlers',
+            'TextInput or ref-based focus control',
+          ],
+        };
+  },
   evaluate(context) {
-    if (!(context.metadata.capabilities ?? []).includes('focus-management')) {
+    const capabilities = context.metadata.capabilities ?? [];
+
+    if (!capabilities.includes('focus-management')) {
       return finding(focusManagementRule, context, 'not-applicable');
     }
 
@@ -339,17 +363,19 @@ export const focusManagementRule: ComponentQualityRule = {
           focusManagementRule,
           context,
           'fail',
-          `Focus-management capability is declared, but no ${context.platform === 'react' ? 'web' : 'React Native'} focus evidence was found.`,
-          [path.relative(qualityRoot(context), snapshot.componentDir)]
+          context.platform === 'react'
+            ? 'Focus-management capability is declared, but no deterministic Web focus evidence was found.'
+            : 'Focus-management capability is declared, but no deterministic React Native focus evidence was found.',
+          relativeEvidence(context, snapshot.files)
         );
   },
 };
 
 const webOverlayEvidence = [
-  /\bcreatePortal\b/,
+  /createPortal/,
   /\bPortal\b/,
-  /\bportal\b/i,
-  /\bObject\.assign\b[\s\S]*\bOverlay\b[\s\S]*\bContent\b/,
+  /role\s*=\s*['"]dialog['"]/,
+  /role\s*=\s*['"]alertdialog['"]/,
 ];
 
 const nativeOverlayEvidence = [
@@ -366,10 +392,28 @@ export const overlayPresentationRule: ComponentQualityRule = {
     severity: 'required',
     evaluation: 'automated',
     description:
-      'Checks platform-appropriate overlay presentation when portal capability is declared.',
+      'Checks platform-appropriate overlay/presentation evidence when portal capability is declared.',
+  },
+  completionGuidance(context) {
+    return context.platform === 'react'
+      ? {
+          summary:
+            'Provide deterministic Web overlay/presentation evidence when portal is declared.',
+          evidence: [
+            'createPortal or Portal usage',
+            'dialog/alertdialog presentation semantics',
+          ],
+        }
+      : {
+          summary:
+            'Provide deterministic React Native presentation evidence when portal is declared.',
+          evidence: ['Modal', 'Presentation', 'Portal'],
+        };
   },
   evaluate(context) {
-    if (!(context.metadata.capabilities ?? []).includes('portal')) {
+    const capabilities = context.metadata.capabilities ?? [];
+
+    if (!capabilities.includes('portal')) {
       return finding(overlayPresentationRule, context, 'not-applicable');
     }
 
@@ -393,9 +437,9 @@ export const overlayPresentationRule: ComponentQualityRule = {
           context,
           'fail',
           context.platform === 'react'
-            ? 'Portal capability is declared, but no web portal or explicit compound overlay-presentation evidence was found.'
-            : 'Portal capability is declared, but no React Native Modal/Presentation/Portal evidence was found.',
-          [path.relative(qualityRoot(context), snapshot.componentDir)]
+            ? 'Portal capability is declared, but no Web portal/presentation evidence was found.'
+            : 'Portal capability is declared, but no React Native presentation evidence was found.',
+          relativeEvidence(context, snapshot.files)
         );
   },
 };
