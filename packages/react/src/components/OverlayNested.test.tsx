@@ -2,14 +2,15 @@ import { act } from 'react';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Portal } from '@/primitives';
-import { render } from '@/test-utils/render';
+import { render } from '@test-utils/render';
 
 import { Dropdown } from './Dropdown';
 import { Modal } from './Modal';
 import { Popover } from './Popover';
 import { Select } from './Select';
 import { Tooltip } from './Tooltip';
+
+import { Portal } from '#primitives';
 
 function pressDocumentKey(key: string) {
   act(() => {
