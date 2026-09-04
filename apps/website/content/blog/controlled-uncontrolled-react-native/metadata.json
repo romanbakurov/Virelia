@@ -1,0 +1,9 @@
+{
+  "title": "Controlled and Uncontrolled State Across React and React Native",
+  "description": "A practical guide to designing predictable controlled and uncontrolled component APIs across React and React Native.",
+  "slug": "controlled-uncontrolled-react-native",
+  "publishedAt": "2026-09-04",
+  "author": "Roman Bakurov",
+  "tags": ["Design Systems", "React", "React Native", "TypeScript"],
+  "draft": false
+}

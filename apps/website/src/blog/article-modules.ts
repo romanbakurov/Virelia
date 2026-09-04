@@ -15,6 +15,8 @@ const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
   {
     'accessible-accordion-react-native': () =>
       import('../../content/blog/accessible-accordion-react-native/article.mdx'),
+    'controlled-uncontrolled-react-native': () =>
+      import('../../content/blog/controlled-uncontrolled-react-native/article.mdx'),
     'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),
   };
 
