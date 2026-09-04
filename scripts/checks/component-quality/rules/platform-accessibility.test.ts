@@ -184,10 +184,10 @@ describe('platform accessibility quality rules', () => {
       source: '<button>Open</button>',
       manualTest: `
         // Coverage contract: keyboard
-        it('handles trigger keyboard activation', () => {
-          const event = new KeyboardEvent('keydown', { key: 'Enter' });
-          document.querySelector('button')?.dispatchEvent(event);
-          expect(event.key).toBe('Enter');
+        it('handles trigger keyboard activation', async () => {
+          const user = userEvent.setup();
+          await user.keyboard('{Enter}');
+          expect(document.activeElement).not.toBeNull();
         });
       `,
     });

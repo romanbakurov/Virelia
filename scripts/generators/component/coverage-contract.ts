@@ -92,6 +92,16 @@ function createManualRequirements(params: {
     pushRequirement('keyboard');
   }
 
+  if (
+    profile === 'compound' &&
+    !isNative &&
+    parts.includes('Item') &&
+    parts.includes('Trigger') &&
+    parts.includes('Content')
+  ) {
+    pushRequirement('instance-isolation');
+  }
+
   return requirements;
 }
 

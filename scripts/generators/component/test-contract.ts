@@ -17,6 +17,7 @@ export type BaselineTestRequirement =
   | 'keyboard'
   | 'focus-management'
   | 'compound-api'
+  | 'instance-isolation'
   | 'portal';
 
 export type ComponentBaselineTestContract = {
