@@ -92,6 +92,23 @@ export function PassingProductionWeb() {
         evidence: expect.arrayContaining([
           'CSS custom property via var(--...)',
           '@use from @styles',
+          'if a required semantic token is missing, add it canonically before rerunning completion; do not hardcode a substitute',
+        ]),
+      },
+    });
+
+    const iconResources = web?.requirements.find(
+      ({ ruleId }) => ruleId === 'conformity.icon-resources'
+    );
+
+    expect(iconResources).toMatchObject({
+      severity: 'required',
+      evaluation: 'automated',
+      guidance: {
+        evidence: expect.arrayContaining([
+          'import existing icons from @vellira-ui/icons',
+          'requirements.icons declares required canonical icon name and semantic purpose when the component owns an icon requirement',
+          'do not substitute Unicode/ASCII glyphs or inline/local SVG markup',
         ]),
       },
     });
@@ -157,6 +174,23 @@ export const styles = StyleSheet.create({
           'theme.tokens.*',
           'theme.components.*',
           'theme.semantic.*',
+          'if a required semantic token is missing, add it canonically before rerunning completion; do not hardcode a substitute',
+        ]),
+      },
+    });
+
+    const iconResources = native?.requirements.find(
+      ({ ruleId }) => ruleId === 'conformity.icon-resources'
+    );
+
+    expect(iconResources).toMatchObject({
+      severity: 'required',
+      evaluation: 'automated',
+      guidance: {
+        evidence: expect.arrayContaining([
+          'import existing icons from @vellira-ui/icons',
+          'requirements.icons declares required canonical icon name and semantic purpose when the component owns an icon requirement',
+          'do not substitute Unicode/ASCII glyphs or inline/local SVG markup',
         ]),
       },
     });

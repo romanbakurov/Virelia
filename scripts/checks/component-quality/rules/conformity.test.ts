@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   hardcodedColorRule,
   hardcodedGeometryRule,
+  iconResourceRule,
   tokenIntegrationRule,
 } from './conformity';
 
@@ -53,6 +54,50 @@ function componentDir(
   return value;
 }
 
+function writeCanonicalIconExports(
+  base: string,
+  names: readonly string[] = ['ChevronDown']
+) {
+  const root = path.join(base, 'packages', 'icons', 'src');
+  fs.mkdirSync(root, { recursive: true });
+
+  fs.writeFileSync(
+    path.join(root, 'web.source.ts'),
+    `${names
+      .map(
+        (name) =>
+          `export { default as ${name} } from './generated/${name}.web';`
+      )
+      .join('\n')}\n`
+  );
+
+  fs.writeFileSync(
+    path.join(root, 'native.source.ts'),
+    `${names
+      .map(
+        (name) =>
+          `export { default as ${name} } from './generated/${name}.native';`
+      )
+      .join('\n')}\n`
+  );
+}
+
+function writeCanonicalTokenPaths(
+  base: string,
+  tokenPaths: readonly string[] = ['semantic.text.primary']
+) {
+  const root = path.join(base, 'packages', 'tokens', 'src', 'generated');
+  fs.mkdirSync(root, { recursive: true });
+
+  fs.writeFileSync(
+    path.join(root, 'token-types.ts'),
+    `export const tokenPaths = [
+${tokenPaths.map((token) => `  '${token}',`).join('\n')}
+] as const;
+`
+  );
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
 
@@ -62,6 +107,253 @@ afterEach(() => {
 });
 
 describe('design-system conformity rules', () => {
+  it('passes a declared canonical Vellira design token', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+    writeCanonicalTokenPaths(base);
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.module.scss'),
+      `.example {
+  color: var(--vellira-text-primary);
+}
+`
+    );
+
+    const result = await tokenIntegrationRule.evaluate({
+      metadata: {
+        ...metadata,
+        requirements: {
+          ...metadata.requirements,
+          tokens: ['semantic.text.primary'],
+        },
+      },
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('pass');
+  });
+
+  it('fails closed when a declared Vellira design token does not exist', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+    writeCanonicalTokenPaths(base, ['semantic.text.primary']);
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.module.scss'),
+      `.example {
+  color: var(--vellira-text-primary);
+}
+`
+    );
+
+    const result = await tokenIntegrationRule.evaluate({
+      metadata: {
+        ...metadata,
+        requirements: {
+          ...metadata.requirements,
+          tokens: ['semantic.text.missing'],
+        },
+      },
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.evidence).toContain(
+      'missing-design-token: path="semantic.text.missing" component="Example" part="component" platform="react" — expected canonical token path in @vellira-ui/tokens'
+    );
+  });
+
+  it('passes a declared canonical Vellira icon resource', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+    writeCanonicalIconExports(base);
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.tsx'),
+      `import { ChevronDown } from '@vellira-ui/icons';
+
+export function Example() {
+  return <ChevronDown />;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata: {
+        ...metadata,
+        requirements: {
+          ...metadata.requirements,
+          icons: [
+            {
+              name: 'ChevronDown',
+              purpose: 'disclosure indicator',
+            },
+          ],
+        },
+      },
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('pass');
+  });
+
+  it('fails closed when a declared canonical icon resource does not exist', async () => {
+    const base = createRoot();
+    componentDir(base, 'react');
+    writeCanonicalIconExports(base, ['Close']);
+
+    const result = await iconResourceRule.evaluate({
+      metadata: {
+        ...metadata,
+        requirements: {
+          ...metadata.requirements,
+          icons: [
+            {
+              name: 'ChevronDown',
+              purpose: 'disclosure indicator',
+            },
+          ],
+        },
+      },
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.evidence).toContain(
+      'missing-icon-resource: name="ChevronDown" purpose="disclosure indicator" — expected canonical export from @vellira-ui/icons'
+    );
+  });
+
+  it('fails when a declared icon exists but canonical usage is missing', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+    writeCanonicalIconExports(base);
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.tsx'),
+      `export function Example() {
+  return null;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata: {
+        ...metadata,
+        requirements: {
+          ...metadata.requirements,
+          icons: [
+            {
+              name: 'ChevronDown',
+              purpose: 'disclosure indicator',
+            },
+          ],
+        },
+      },
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.evidence).toContain(
+      'missing-icon-usage: name="ChevronDown" purpose="disclosure indicator" — import and use the canonical @vellira-ui/icons export'
+    );
+  });
+
+  it('rejects an improvised Unicode glyph in icon context', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.tsx'),
+      `export function Example() {
+  const clearIcon = '×';
+  return <span>{clearIcon}</span>;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(
+      result.evidence?.some((item) => item.includes('prohibited-icon-glyph'))
+    ).toBe(true);
+  });
+
+  it('does not treat an ordinary text multiplication sign as an icon', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+
+    fs.writeFileSync(
+      path.join(dir, 'Example.tsx'),
+      `export function Example() {
+  return <span>3 × 4</span>;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('pass');
+  });
+
+  it('rejects inline SVG used as component-owned icon artwork', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react');
+
+    fs.writeFileSync(
+      path.join(dir, 'ExampleIcon.tsx'),
+      `export function ExampleIcon() {
+  return <svg aria-hidden='true' />;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(
+      result.evidence?.some((item) =>
+        item.includes('prohibited-inline-icon-resource')
+      )
+    ).toBe(true);
+  });
+
+  it('rejects direct react-native-svg icon implementation', async () => {
+    const base = createRoot();
+    const dir = componentDir(base, 'react-native');
+
+    fs.writeFileSync(
+      path.join(dir, 'ExampleIcon.tsx'),
+      `import Svg from 'react-native-svg';
+
+export function ExampleIcon() {
+  return <Svg />;
+}
+`
+    );
+
+    const result = await iconResourceRule.evaluate({
+      metadata,
+      platform: 'react-native',
+    });
+
+    expect(result.status).toBe('fail');
+    expect(
+      result.evidence?.some((item) => item.includes('react-native-svg'))
+    ).toBe(true);
+  });
+
   it('passes Web token integration through CSS custom properties', async () => {
     const base = createRoot();
     const dir = componentDir(base, 'react');

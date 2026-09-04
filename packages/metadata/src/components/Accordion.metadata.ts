@@ -19,5 +19,11 @@ export const accordionMetadata = defineComponentMetadata({
     storybook: true,
     docs: true,
     accessibility: true,
+    icons: [
+      {
+        name: 'ChevronDown',
+        purpose: 'disclosure indicator',
+      },
+    ],
   },
 });

@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useId, useRef, useState } from 'react';
 
-import { Search } from '@vellira-ui/icons';
+import { Close, Search } from '@vellira-ui/icons';
 import { controlSizes } from '@vellira-ui/tokens';
 import type { ChangeEvent, CSSProperties, InputHTMLAttributes } from 'react';
 
@@ -204,7 +204,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       .filter(Boolean)
       .join(' ');
 
-    const clearIconNode = clearIcon ?? '×';
+    const clearIconNode = clearIcon ?? <Close aria-hidden='true' />;
     const hasStartContent = Boolean(resolvedStartIcon || prefix);
     const hasEndContent = Boolean(
       resolvedEndIcon ||

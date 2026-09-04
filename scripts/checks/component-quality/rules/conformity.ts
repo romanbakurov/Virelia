@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import ts from 'typescript';
+
 import type {
   ComponentMetadata,
   ComponentPlatform,
@@ -139,6 +141,240 @@ function sourceEvidence(
   return `${path.relative(rootDir, filePath)}:${line} — ${value}`;
 }
 
+const prohibitedIconGlyphPattern = /^[▾▴▲▼▶◀→←×✕✓✔−]$/u;
+const iconContextPattern =
+  /(?:icon|indicator|glyph|chevron|arrow|mark|clear|close)/i;
+
+function canonicalIconSourcePath(context: ComponentQualityRuleContext) {
+  return path.join(
+    qualityRoot(context),
+    'packages',
+    'icons',
+    'src',
+    context.platform === 'react' ? 'web.source.ts' : 'native.source.ts'
+  );
+}
+
+function canonicalIconExports(context: ComponentQualityRuleContext) {
+  const filePath = canonicalIconSourcePath(context);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const source = fs.readFileSync(filePath, 'utf8');
+
+  return new Set(
+    [
+      ...source.matchAll(/export\s*{\s*default\s+as\s+([A-Za-z_$][\w$]*)\s*}/g),
+    ].map((match) => match[1])
+  );
+}
+
+function hasIconContext(node: ts.Node, sourceFile: ts.SourceFile) {
+  let current: ts.Node | undefined = node.parent;
+
+  for (let depth = 0; current && depth < 8; depth += 1) {
+    let value = '';
+
+    if (ts.isVariableDeclaration(current)) {
+      value = current.name.getText(sourceFile);
+    } else if (
+      ts.isPropertyAssignment(current) ||
+      ts.isPropertyDeclaration(current)
+    ) {
+      value = current.name.getText(sourceFile);
+    } else if (ts.isJsxAttribute(current)) {
+      value = current.name.getText(sourceFile);
+    } else if (
+      (ts.isFunctionDeclaration(current) || ts.isClassDeclaration(current)) &&
+      current.name
+    ) {
+      value = current.name.getText(sourceFile);
+    } else if (ts.isJsxElement(current)) {
+      const opening = current.openingElement.getText(sourceFile);
+
+      if (
+        iconContextPattern.test(opening) ||
+        /\baria-hidden\b/.test(opening) ||
+        /\brole\s*=\s*['"]img['"]/.test(opening)
+      ) {
+        return true;
+      }
+    }
+
+    if (iconContextPattern.test(value)) {
+      return true;
+    }
+
+    current = current.parent;
+  }
+
+  return false;
+}
+
+function iconSourceViolations(
+  context: ComponentQualityRuleContext,
+  file: SourceFile
+) {
+  if (!/\.(?:ts|tsx)$/.test(file.filePath)) {
+    return [];
+  }
+
+  const sourceFile = ts.createSourceFile(
+    file.filePath,
+    file.source,
+    ts.ScriptTarget.Latest,
+    true,
+    file.filePath.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+  );
+  const violations: string[] = [];
+
+  function evidence(node: ts.Node, kind: string, value: string) {
+    const line =
+      sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile)).line +
+      1;
+
+    violations.push(
+      `${kind}: ${sourceEvidence(
+        qualityRoot(context),
+        file.filePath,
+        line,
+        value
+      )}`
+    );
+  }
+
+  function visit(node: ts.Node) {
+    if (
+      ts.isImportDeclaration(node) &&
+      ts.isStringLiteral(node.moduleSpecifier)
+    ) {
+      const moduleName = node.moduleSpecifier.text;
+
+      if (
+        moduleName === 'react-native-svg' ||
+        /\.svg(?:\?react)?$/.test(moduleName)
+      ) {
+        evidence(node, 'prohibited-inline-icon-resource', moduleName);
+      }
+    }
+
+    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+      const tagName = node.tagName.getText(sourceFile);
+
+      if (tagName === 'svg' && hasIconContext(node, sourceFile)) {
+        evidence(node, 'prohibited-inline-icon-resource', '<svg>');
+      }
+    }
+
+    if (ts.isJsxText(node)) {
+      const value = node.getText(sourceFile).trim();
+
+      if (
+        prohibitedIconGlyphPattern.test(value) &&
+        hasIconContext(node, sourceFile)
+      ) {
+        evidence(node, 'prohibited-icon-glyph', JSON.stringify(value));
+      }
+    }
+
+    if (
+      (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+      prohibitedIconGlyphPattern.test(node.text.trim()) &&
+      hasIconContext(node, sourceFile)
+    ) {
+      evidence(node, 'prohibited-icon-glyph', JSON.stringify(node.text.trim()));
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+
+  return violations;
+}
+
+function hasCanonicalIconImport(
+  files: readonly SourceFile[],
+  iconName: string
+) {
+  const escapedName = iconName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(
+    `import\\s*{[^}]*\\b${escapedName}\\b[^}]*}\\s*from\\s*['"]@vellira-ui/icons(?:/(?:web|native))?['"]`
+  );
+
+  return files.some((file) => pattern.test(file.source));
+}
+
+export const iconResourceRule: ComponentQualityRule = {
+  definition: {
+    id: 'conformity.icon-resources',
+    dimension: 'design-system',
+    severity: 'required',
+    evaluation: 'automated',
+    description:
+      'Requires generated/component-owned UI icons to use canonical @vellira-ui/icons resources and rejects improvised glyph or inline SVG fallbacks.',
+  },
+  completionGuidance() {
+    return {
+      summary:
+        'Use only canonical Vellira icon resources. Never invent a Unicode glyph, local SVG, react-native-svg icon, or third-party icon fallback.',
+      evidence: [
+        'import existing icons from @vellira-ui/icons',
+        'requirements.icons declares required canonical icon name and semantic purpose when the component owns an icon requirement',
+        'if a required icon is missing, add the canonical icon resource first and rerun generation/completion',
+        'do not substitute Unicode/ASCII glyphs or inline/local SVG markup',
+      ],
+    };
+  },
+  evaluate(context) {
+    const files = readFiles(context);
+    const violations = files.flatMap((file) =>
+      iconSourceViolations(context, file)
+    );
+    const requiredIcons = context.metadata.requirements.icons ?? [];
+
+    if (requiredIcons.length > 0) {
+      const exports = canonicalIconExports(context);
+
+      if (!exports) {
+        violations.push(
+          `missing-icon-resource-registry: ${path.relative(
+            qualityRoot(context),
+            canonicalIconSourcePath(context)
+          )} is missing`
+        );
+      } else {
+        for (const requirement of requiredIcons) {
+          if (!exports.has(requirement.name)) {
+            violations.push(
+              `missing-icon-resource: name="${requirement.name}" purpose="${requirement.purpose}" — expected canonical export from @vellira-ui/icons`
+            );
+            continue;
+          }
+
+          if (!hasCanonicalIconImport(files, requirement.name)) {
+            violations.push(
+              `missing-icon-usage: name="${requirement.name}" purpose="${requirement.purpose}" — import and use the canonical @vellira-ui/icons export`
+            );
+          }
+        }
+      }
+    }
+
+    return violations.length === 0
+      ? finding(iconResourceRule, context, 'pass')
+      : finding(
+          iconResourceRule,
+          context,
+          'fail',
+          'Non-canonical or missing icon resources found. Use an existing @vellira-ui/icons export; if the required resource does not exist, add it canonically before regenerating.',
+          violations.slice(0, 8)
+        );
+  },
+};
+
 const hardcodedColorPattern =
   /(?<![-\w])(?:#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/g;
 
@@ -150,6 +386,17 @@ export const hardcodedColorRule: ComponentQualityRule = {
     evaluation: 'automated',
     description:
       'Rejects hardcoded color literals in component implementation/style files where Vellira token/theme values should be used.',
+  },
+  completionGuidance() {
+    return {
+      summary:
+        'Use Vellira token/theme colors only. Never hardcode a fallback color when a semantic design token is missing.',
+      evidence: [
+        'Web: CSS custom properties / established @styles token integration',
+        'React Native: theme.tokens.*, theme.components.*, or theme.semantic.*',
+        'if the required semantic token does not exist, add the canonical token first and rerun completion',
+      ],
+    };
   },
   evaluate(context) {
     const violations: string[] = [];
@@ -218,6 +465,91 @@ function hasNativeTokenRelevantDesignProperties(source: string) {
   );
 }
 
+function canonicalTokenRegistryPath(context: ComponentQualityRuleContext) {
+  return path.join(
+    qualityRoot(context),
+    'packages',
+    'tokens',
+    'src',
+    'generated',
+    'token-types.ts'
+  );
+}
+
+function canonicalTokenPaths(
+  context: ComponentQualityRuleContext
+): Set<string> | null {
+  const filePath = canonicalTokenRegistryPath(context);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const source = fs.readFileSync(filePath, 'utf8');
+  const sourceFile = ts.createSourceFile(
+    filePath,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
+  );
+
+  let result: Set<string> | null = null;
+
+  function unwrapExpression(expression: ts.Expression): ts.Expression {
+    let current = expression;
+
+    while (
+      ts.isAsExpression(current) ||
+      ts.isTypeAssertionExpression(current) ||
+      ts.isSatisfiesExpression(current)
+    ) {
+      current = current.expression;
+    }
+
+    return current;
+  }
+
+  function visit(node: ts.Node) {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === 'tokenPaths' &&
+      node.initializer
+    ) {
+      const initializer = unwrapExpression(node.initializer);
+
+      if (!ts.isArrayLiteralExpression(initializer)) {
+        result = null;
+        return;
+      }
+
+      const values: string[] = [];
+
+      for (const element of initializer.elements) {
+        if (
+          !ts.isStringLiteral(element) &&
+          !ts.isNoSubstitutionTemplateLiteral(element)
+        ) {
+          result = null;
+          return;
+        }
+
+        values.push(element.text);
+      }
+
+      result = new Set(values);
+      return;
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+
+  return result;
+}
+
 export const tokenIntegrationRule: ComponentQualityRule = {
   definition: {
     id: 'conformity.token-integration',
@@ -232,7 +564,11 @@ export const tokenIntegrationRule: ComponentQualityRule = {
       ? {
           summary:
             'Use Vellira token/style integration for styled web component surfaces.',
-          evidence: ['CSS custom property via var(--...)', '@use from @styles'],
+          evidence: [
+            'CSS custom property via var(--...)',
+            '@use from @styles',
+            'if a required semantic token is missing, add it canonically before rerunning completion; do not hardcode a substitute',
+          ],
         }
       : {
           summary:
@@ -241,10 +577,50 @@ export const tokenIntegrationRule: ComponentQualityRule = {
             'theme.tokens.*',
             'theme.components.*',
             'theme.semantic.*',
+            'if a required semantic token is missing, add it canonically before rerunning completion; do not hardcode a substitute',
           ],
         };
   },
   evaluate(context) {
+    const requiredTokens = context.metadata.requirements.tokens ?? [];
+
+    if (requiredTokens.length > 0) {
+      const registryPath = canonicalTokenRegistryPath(context);
+      const tokenPaths = canonicalTokenPaths(context);
+
+      if (!tokenPaths) {
+        return finding(
+          tokenIntegrationRule,
+          context,
+          'fail',
+          'Canonical Vellira token registry is missing or unreadable; do not invent local token substitutes.',
+          [
+            `missing-design-token-registry: component="${context.metadata.name}" platform="${context.platform}" registry="${path.relative(
+              qualityRoot(context),
+              registryPath
+            )}"`,
+          ]
+        );
+      }
+
+      const missingTokens = requiredTokens.filter(
+        (token) => !tokenPaths.has(token)
+      );
+
+      if (missingTokens.length > 0) {
+        return finding(
+          tokenIntegrationRule,
+          context,
+          'fail',
+          'Declared Vellira design tokens are missing from the canonical token registry; add the canonical resource before regenerating.',
+          missingTokens.map(
+            (token) =>
+              `missing-design-token: path="${token}" component="${context.metadata.name}" part="component" platform="${context.platform}" — expected canonical token path in @vellira-ui/tokens`
+          )
+        );
+      }
+    }
+
     const files = readFiles(context);
     const styleFiles = files.filter((file) =>
       context.platform === 'react'
@@ -359,6 +735,7 @@ export const hardcodedGeometryRule: ComponentQualityRule = {
 
 export const conformityQualityRules: readonly ComponentQualityRule[] = [
   tokenIntegrationRule,
+  iconResourceRule,
   hardcodedColorRule,
   hardcodedGeometryRule,
 ];
