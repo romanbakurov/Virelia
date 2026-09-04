@@ -1,4 +1,7 @@
-import type { ComponentCapability } from '@vellira-ui/metadata';
+import type {
+  ComponentCapability,
+  ComponentIconRequirement,
+} from '@vellira-ui/metadata';
 
 export type ComponentPlatformArg = 'web' | 'native' | 'both';
 
@@ -27,6 +30,8 @@ export type ComponentGeneratorOptions = {
   profile: ComponentProfileArg;
   control?: FormControlKindArg;
   capabilities?: readonly ComponentCapability[];
+  icons?: readonly ComponentIconRequirement[];
+  tokens?: readonly string[];
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
@@ -67,9 +72,42 @@ const capabilities: readonly ComponentCapability[] = [
 ];
 
 const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
+const iconNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--force] [--dry-run] [--check]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--icon=<IconName>:<semantic purpose>] [--token=<token.path>] [--force] [--dry-run] [--check]';
+
+function parseIconRequirement(value: string): ComponentIconRequirement {
+  const separator = value.indexOf(':');
+
+  if (separator === -1) {
+    throw new Error(
+      '--icon must use the form <CanonicalIconName>:<semantic purpose>.'
+    );
+  }
+
+  const name = value.slice(0, separator).trim();
+  const purpose = value.slice(separator + 1).trim();
+
+  if (!name) {
+    throw new Error('--icon requires a non-empty canonical icon name.');
+  }
+
+  if (!iconNamePattern.test(name)) {
+    throw new Error(
+      '--icon canonical icon name must be PascalCase and contain only letters and numbers.'
+    );
+  }
+
+  if (!purpose) {
+    throw new Error('--icon requires a non-empty semantic purpose.');
+  }
+
+  return {
+    name,
+    purpose,
+  };
+}
 
 export function parseComponentGeneratorArgs(
   args: readonly string[]
@@ -84,6 +122,8 @@ export function parseComponentGeneratorArgs(
   let dryRun = false;
   let check = false;
   let parts: string[] = [];
+  const icons: ComponentIconRequirement[] = [];
+  const tokens: string[] = [];
 
   const [componentName, platformArg, layerArg, categoryArg, ...extraArgs] =
     positionalArgs;
@@ -193,6 +233,28 @@ export function parseComponentGeneratorArgs(
       continue;
     }
 
+    if (flag.startsWith('--icon=')) {
+      icons.push(parseIconRequirement(flag.slice('--icon='.length)));
+      continue;
+    }
+
+    if (flag.startsWith('--token=')) {
+      const token = flag.slice('--token='.length);
+
+      if (!token) {
+        throw new Error('--token requires a non-empty canonical token path.');
+      }
+
+      if (token !== token.trim()) {
+        throw new Error(
+          '--token canonical token path must not include surrounding whitespace.'
+        );
+      }
+
+      tokens.push(token);
+      continue;
+    }
+
     throw new Error(`Unknown option: ${flag}`);
   }
 
@@ -236,6 +298,18 @@ export function parseComponentGeneratorArgs(
     throw new Error('--control is only supported by the form-control profile.');
   }
 
+  const iconKeys = icons.map((icon) => `${icon.name}\u0000${icon.purpose}`);
+
+  if (new Set(iconKeys).size !== iconKeys.length) {
+    throw new Error(
+      'Icon requirements must not contain duplicate name/purpose pairs.'
+    );
+  }
+
+  if (new Set(tokens).size !== tokens.length) {
+    throw new Error('Token requirements must not contain duplicates.');
+  }
+
   return {
     componentName,
     platform: platformArg as ComponentPlatformArg,
@@ -244,6 +318,8 @@ export function parseComponentGeneratorArgs(
     profile,
     control,
     capabilities: explicitCapabilities,
+    icons,
+    tokens,
     parts,
     force,
     dryRun,

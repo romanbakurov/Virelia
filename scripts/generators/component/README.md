@@ -19,8 +19,11 @@ pnpm create:component \
   [--control=value|boolean|text] \
   [--capabilities=controlled,keyboard,...] \
   [--parts=Root,Trigger,Content] \
+  [--icon=<IconName>:<semantic purpose>] \
+  [--token=<token.path>] \
   [--force] \
-  [--dry-run]
+  [--dry-run] \
+  [--check]
 ```
 
 ### Basic example
@@ -184,6 +187,35 @@ This is useful for production components such as Accordion, where the generic
 `compound` profile should not claim keyboard or controlled-state behavior for
 every compound component, while the real component metadata still needs to
 state those capabilities explicitly.
+
+## Explicit design-resource requirements
+
+Generator V2 accepts approved component-owned design resources as repeatable
+CLI flags:
+
+```bash
+--icon="ChevronDown:disclosure indicator"
+--token=semantic.text.primary
+```
+
+`--icon` splits only on the first `:`. The icon name must be a canonical
+PascalCase `@vellira-ui/icons` export name, and the semantic purpose is kept as
+plain text after trimming outer whitespace. Programmatic callers should pass
+the full `--icon=ChevronDown:disclosure indicator` value as one argv entry;
+shell callers should quote the value when the purpose contains spaces.
+`--token` accepts one exact canonical token path. Duplicate icon name/purpose
+pairs and duplicate token paths are rejected.
+
+These inputs are explicit approved requirements. The generator does not infer,
+invent, or substitute resources from component names, profiles, capabilities,
+or implementation text. Requested icons are validated against the canonical
+Vellira web and React Native icon registries for the selected platform target;
+`both` requires the icon to exist for both platforms. Requested tokens are
+validated against the canonical Vellira token registry.
+
+Missing resources block generation before component files are written, including
+`--dry-run`. Add the canonical icon or token resource separately, then rerun the
+generator with the same explicit requirement flags.
 
 ## Parts
 

@@ -325,6 +325,11 @@ function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
 export function createComponentMetadataFromPlan(
   plan: ComponentGenerationPlan
 ): ComponentMetadata {
+  const resourceRequirements = {
+    ...(plan.tokens.length > 0 ? { tokens: plan.tokens } : {}),
+    ...(plan.icons.length > 0 ? { icons: plan.icons } : {}),
+  };
+
   return {
     name: plan.componentName,
     layer: plan.layer,
@@ -338,6 +343,7 @@ export function createComponentMetadataFromPlan(
       storybook: true,
       docs: true,
       accessibility: true,
+      ...resourceRequirements,
     },
   };
 }

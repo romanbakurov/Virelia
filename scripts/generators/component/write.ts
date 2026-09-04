@@ -647,6 +647,8 @@ function writeMetadata(params: {
       platforms,
       profile: plan.profile,
       capabilities,
+      icons: plan.icons,
+      tokens: plan.tokens,
     }),
     createdFiles: result.createdFiles,
   });

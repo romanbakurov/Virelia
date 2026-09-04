@@ -27,6 +27,8 @@ const createPlan = (
   profile,
   control,
   capabilities: [],
+  icons: [],
+  tokens: [],
   parts: profile === 'compound' ? ['Root', 'Trigger', 'Content'] : [],
   force: false,
   targets: [],

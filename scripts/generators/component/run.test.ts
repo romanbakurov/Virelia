@@ -110,6 +110,18 @@ function readFile(filePath: string) {
   return fs.readFileSync(filePath, 'utf8');
 }
 
+function createIconRegistry(root: string, platform: 'react' | 'react-native') {
+  const fileName = platform === 'react' ? 'web.source.ts' : 'native.source.ts';
+  const iconDir = path.join(root, 'packages', 'icons', 'src');
+
+  fs.mkdirSync(iconDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(iconDir, fileName),
+    `export { default as ChevronDown } from './generated/ChevronDown';
+`
+  );
+}
+
 function countOccurrences(source: string, pattern: RegExp) {
   return source.match(pattern)?.length ?? 0;
 }
@@ -132,6 +144,66 @@ afterEach(() => {
 });
 
 describe('component generator', () => {
+  it('fails requested resource preflight before mutating component output', async () => {
+    const root = createTempRoot();
+
+    createRequiredRepositoryStructure(root);
+    createIconRegistry(root, 'react');
+
+    await expect(
+      runComponentGenerator({
+        root,
+        options: {
+          componentName: 'ResourceProbe',
+          platform: 'both',
+          layer: 'primitives',
+          category: 'utility',
+          profile: 'base',
+          icons: [{ name: 'ChevronDown', purpose: 'disclosure indicator' }],
+          parts: [],
+          force: false,
+        },
+      })
+    ).rejects.toThrow('missing-icon-resource-registry');
+
+    expect(
+      fs.existsSync(
+        path.join(
+          root,
+          'packages',
+          'metadata',
+          'src',
+          'components',
+          'ResourceProbe.metadata.ts'
+        )
+      )
+    ).toBe(false);
+    expect(
+      fs.existsSync(
+        path.join(
+          root,
+          'packages',
+          'react',
+          'src',
+          'primitives',
+          'ResourceProbe'
+        )
+      )
+    ).toBe(false);
+    expect(
+      fs.existsSync(
+        path.join(
+          root,
+          'packages',
+          'react-native',
+          'src',
+          'primitives',
+          'ResourceProbe'
+        )
+      )
+    ).toBe(false);
+  });
+
   it('generates a complete cross-platform component scaffold', async () => {
     const root = createTempRoot();
 
