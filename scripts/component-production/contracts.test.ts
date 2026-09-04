@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   COMPONENT_PRODUCTION_STAGE_IDS,
+  createComponentProductionGeneratorOptions,
   createComponentProductionResult,
   parseComponentProductionInput,
   type ComponentProductionFinding,
@@ -61,6 +62,178 @@ describe('parseComponentProductionInput', () => {
     });
   });
 
+  it('omits empty resource arrays from normalized resource-free input', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: [],
+        tokens: [],
+      })
+    ).toEqual({
+      schemaVersion: '1',
+      componentName: 'Avatar',
+      platform: 'both',
+      layer: 'primitives',
+      category: 'data-display',
+      profile: 'base',
+      capabilities: [],
+      parts: [],
+    });
+  });
+
+  it('parses one icon requirement', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        icons: [
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+          },
+        ],
+      })
+    ).toMatchObject({
+      icons: [
+        {
+          name: 'ChevronDown',
+          purpose: 'disclosure indicator',
+        },
+      ],
+    });
+  });
+
+  it('parses icon purposes containing spaces', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        icons: [
+          {
+            name: 'Close',
+            purpose: 'dismiss overlay action',
+          },
+        ],
+      }).icons
+    ).toEqual([
+      {
+        name: 'Close',
+        purpose: 'dismiss overlay action',
+      },
+    ]);
+  });
+
+  it('parses icon purposes containing colons', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        icons: [
+          {
+            name: 'Close',
+            purpose: 'dismiss: overlay action',
+          },
+        ],
+      }).icons
+    ).toEqual([
+      {
+        name: 'Close',
+        purpose: 'dismiss: overlay action',
+      },
+    ]);
+  });
+
+  it('parses multiple icons', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Dialog',
+        platform: 'web',
+        layer: 'components',
+        category: 'overlay',
+        profile: 'overlay',
+        icons: [
+          {
+            name: 'Close',
+            purpose: 'dismiss action',
+          },
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+          },
+        ],
+      }).icons
+    ).toEqual([
+      {
+        name: 'Close',
+        purpose: 'dismiss action',
+      },
+      {
+        name: 'ChevronDown',
+        purpose: 'disclosure indicator',
+      },
+    ]);
+  });
+
+  it('parses token requirements', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        tokens: ['semantic.text.primary'],
+      }).tokens
+    ).toEqual(['semantic.text.primary']);
+  });
+
+  it('parses icon and token requirements together', () => {
+    expect(
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        icons: [
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+          },
+        ],
+        tokens: ['semantic.text.primary'],
+      })
+    ).toMatchObject({
+      icons: [
+        {
+          name: 'ChevronDown',
+          purpose: 'disclosure indicator',
+        },
+      ],
+      tokens: ['semantic.text.primary'],
+    });
+  });
+
   it('rejects unknown production fields', () => {
     expect(() =>
       parseComponentProductionInput({
@@ -86,6 +259,181 @@ describe('parseComponentProductionInput', () => {
         profile: 'base',
       })
     ).toThrow('Component name must be PascalCase');
+  });
+
+  it('rejects malformed icons fields', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: 'ChevronDown',
+      })
+    ).toThrow('Component production input field "icons" must be an array.');
+  });
+
+  it('rejects non-object icon entries', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: ['ChevronDown'],
+      })
+    ).toThrow('Component production input field "icons[0]" must be an object.');
+  });
+
+  it('rejects missing icon names', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: [
+          {
+            purpose: 'disclosure indicator',
+          },
+        ],
+      })
+    ).toThrow(
+      'Component production input field "icons[0].name" must be a non-empty string.'
+    );
+  });
+
+  it('rejects missing icon purposes', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: [
+          {
+            name: 'ChevronDown',
+          },
+        ],
+      })
+    ).toThrow(
+      'Component production input field "icons[0].purpose" must be a non-empty string.'
+    );
+  });
+
+  it('rejects extra icon object keys', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        icons: [
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+            platform: 'web',
+          },
+        ],
+      })
+    ).toThrow(
+      'Unknown component production icon requirement field "platform" at icons[0].'
+    );
+  });
+
+  it('rejects duplicate icon requirements through canonical Generator V2 validation', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        icons: [
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+          },
+          {
+            name: 'ChevronDown',
+            purpose: 'disclosure indicator',
+          },
+        ],
+      })
+    ).toThrow(
+      'Icon requirements must not contain duplicate name/purpose pairs.'
+    );
+  });
+
+  it('rejects duplicate tokens through canonical Generator V2 validation', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        tokens: ['semantic.text.primary', 'semantic.text.primary'],
+      })
+    ).toThrow('Token requirements must not contain duplicates.');
+  });
+
+  it('rejects tokens with surrounding whitespace through canonical Generator V2 validation', () => {
+    expect(() =>
+      parseComponentProductionInput({
+        schemaVersion: '1',
+        componentName: 'Avatar',
+        platform: 'web',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        tokens: [' semantic.text.primary'],
+      })
+    ).toThrow(
+      '--token canonical token path must not include surrounding whitespace.'
+    );
+  });
+});
+
+describe('createComponentProductionGeneratorOptions', () => {
+  it('forwards parsed icons and tokens into Generator V2 options', () => {
+    const input = parseComponentProductionInput({
+      schemaVersion: '1',
+      componentName: 'Accordion',
+      platform: 'both',
+      layer: 'components',
+      category: 'navigation',
+      profile: 'compound',
+      icons: [
+        {
+          name: 'ChevronDown',
+          purpose: 'disclosure indicator',
+        },
+      ],
+      tokens: ['semantic.text.primary'],
+    });
+
+    expect(createComponentProductionGeneratorOptions(input)).toMatchObject({
+      icons: [
+        {
+          name: 'ChevronDown',
+          purpose: 'disclosure indicator',
+        },
+      ],
+      tokens: ['semantic.text.primary'],
+    });
   });
 });
 
