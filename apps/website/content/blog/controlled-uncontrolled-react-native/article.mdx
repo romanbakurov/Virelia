@@ -1,10 +1,10 @@
-Controlled and uncontrolled state is one of those React ideas that sounds simple until you have to make it a stable public API.
+Controlled and uncontrolled state sounds simple until it becomes a stable public API.
 
-At application level, the distinction is familiar. A controlled component receives its current value from a parent. An uncontrolled component owns that value internally and starts from a default.
+At application level, the distinction is familiar: a controlled component receives its current value from a parent, while an uncontrolled component owns that value internally and starts from a default.
 
-In a design system, though, the decision reaches further. It affects prop names, callback shapes, TypeScript types, test cases, migration safety, and whether React and React Native can share one mental model.
+In a design system, that choice affects prop names, callback shapes, TypeScript types, tests, migration safety, and whether React and React Native can share one mental model.
 
-The useful goal is not merely to support both styles. It is to make them predictable enough that developers can look at a new component and already know how state should work.
+The goal is not merely to support both styles. It is to make them predictable enough that developers can look at a new component and already know how state should work.
 
 This article uses public Vellira APIs as concrete examples, but the pattern applies to any reusable React component library.
 
@@ -28,7 +28,7 @@ An uncontrolled component owns the current state internally:
 
 The parent provides the starting point, then the component manages subsequent updates itself.
 
-The most important difference is ownership.
+The key difference is ownership.
 
 A controlled prop answers:
 
@@ -38,13 +38,11 @@ A default prop answers:
 
 > What should the initial internal state be?
 
-Those are different contracts and should not be treated as interchangeable aliases.
+Those are different contracts, not interchangeable aliases.
 
 ## Why a design system needs one explicit convention
 
-A single application can survive inconsistent naming. One component may use `active`, another `selected`, another `isOpen`, and each team can learn the differences locally.
-
-A component library pays that cost repeatedly.
+A single application can survive inconsistent naming. A component library pays that cost repeatedly.
 
 Once developers use dozens of components, state APIs become part of the design language. Consistency lets them transfer knowledge:
 
@@ -54,11 +52,9 @@ initial value     -> defaultValue / defaultChecked / defaultOpen
 change callback   -> onValueChange / onCheckedChange / onOpenChange
 ```
 
-The exact nouns can differ because component state differs. What should stay stable is the relationship between the three concepts.
+The nouns can differ because component state differs. What should stay stable is the relationship between the three concepts.
 
-That gives the API a useful rule:
-
-**controlled state uses a current-value prop; uncontrolled state uses a default-value prop; both report changes through the same semantic callback.**
+**Controlled state uses a current-value prop; uncontrolled state uses a default-value prop; both report changes through the same semantic callback.**
 
 ## Boolean state: the Switch contract
 
@@ -108,17 +104,15 @@ Uncontrolled usage is equally explicit:
 />
 ```
 
-Notice that the callback is useful in both modes.
+The callback is useful in both modes. Uncontrolled does not mean the parent cannot observe changes; it means the parent is not the source of truth for the current value.
 
-Uncontrolled does not mean "the parent can never observe changes." It means the parent is not the source of truth for the current value.
-
-That distinction matters in forms, analytics, settings panels, and progressive integration where an application may want to observe a change without owning every state transition.
+That distinction matters in forms, settings panels, analytics, and progressive integration where an application may want to observe a change without owning every state transition.
 
 ## Controlledness should be deterministic
 
 A reusable component needs one unambiguous rule for deciding which mode it is in.
 
-Vellira's Switch implementations use a simple one:
+Vellira's Switch implementations use:
 
 ```ts
 const isControlled = checked !== undefined;
@@ -127,31 +121,40 @@ const resolvedChecked = isControlled ? checked : uncontrolledChecked;
 
 That means `false` is still a valid controlled value.
 
-This sounds obvious, but code like this would be wrong:
+This would be wrong:
 
 ```ts
 const isControlled = Boolean(checked);
 ```
 
-A controlled Switch with `checked={false}` would suddenly be treated as uncontrolled.
+A Switch with `checked={false}` would suddenly be treated as uncontrolled.
 
 For optional controlled props, `undefined` is usually the meaningful boundary. The value itself may be false, an empty string, zero, or an empty collection and still be fully controlled.
 
-The same rule should remain stable for the lifetime of the component instance. Switching from uncontrolled to controlled halfway through a workflow makes ownership difficult to reason about and is best avoided in application code.
+The same idea applies when internal state exists alongside a controlled prop. Avoid mixing sources with expressions such as:
+
+```ts
+const resolved = value || internalValue;
+```
+
+That breaks valid falsy values and blurs precedence. Prefer an explicit ownership branch:
+
+```ts
+const isControlled = value !== undefined;
+const resolved = isControlled ? value : internalValue;
+```
+
+Controlledness should also remain stable for the lifetime of a component instance. Switching modes halfway through a workflow makes ownership harder to reason about and is best avoided in application code.
 
 ## A callback reports intent, not ownership
 
-The controlled implementation reveals another useful rule.
-
-When the user activates the Switch, the component computes the next value:
+When the user activates a Switch, the component computes the next value:
 
 ```ts
 const nextChecked = !resolvedChecked;
 ```
 
-In uncontrolled mode, it may commit that value internally.
-
-In controlled mode, it should not silently become the source of truth. It reports the change instead:
+In uncontrolled mode, it may commit that value internally. In controlled mode, it reports the change instead:
 
 ```ts
 onCheckedChange?.(nextChecked);
@@ -176,7 +179,7 @@ const [enabled, setEnabled] = useState(false);
 
 The callback is therefore better understood as **proposed next state** rather than an instruction that the component must permanently apply by itself.
 
-This model scales well beyond booleans.
+This is also why controlled and uncontrolled modes usually do not need separate callbacks. The interaction means the same thing in both modes; ownership determines who commits the state.
 
 ## Scalar state: one value at a time
 
@@ -216,7 +219,7 @@ const [section, setSection] = useState('billing');
 
 The pattern is the same as Switch even though the state type changed from `boolean` to `string`.
 
-That is exactly the kind of consistency a design system should aim for. Developers learn the ownership model once and then apply it to different state domains.
+That is exactly the kind of consistency a design system should aim for: developers learn the ownership model once and apply it to different state domains.
 
 ## Collection state changes the type, not the ownership model
 
@@ -257,7 +260,7 @@ const [sections, setSections] = useState<string[]>(['profile']);
 </Accordion>
 ```
 
-The state shape changed from scalar to collection, but the contract did not change conceptually:
+The state shape changed, but the contract did not:
 
 ```text
 single mode
@@ -271,7 +274,7 @@ defaultValue   string[]
 onValueChange  (string[]) => void
 ```
 
-This is a strong API property because developers do not need a second mental model for multiple selection.
+Developers do not need a second mental model just because the state became a collection.
 
 ## TypeScript should prevent impossible combinations
 
@@ -287,9 +290,7 @@ interface LooseAccordionProps {
 }
 ```
 
-That looks flexible, but it pushes correctness onto the caller.
-
-TypeScript can no longer know that `type='multiple'` requires array values, or that a single-mode callback receives a string.
+That looks flexible, but it pushes correctness onto the caller. TypeScript can no longer know that `type='multiple'` requires array values, or that a single-mode callback receives a string.
 
 A discriminated union is stronger:
 
@@ -299,9 +300,7 @@ type AccordionProps =
   | MultipleAccordionProps;
 ```
 
-Now `type` narrows the rest of the contract.
-
-That improves autocomplete, catches mistakes earlier, and makes documentation easier to generate because valid combinations are encoded in types rather than hidden in prose.
+Now `type` narrows the rest of the contract. Autocomplete improves, mistakes are caught earlier, and valid combinations are encoded in types rather than hidden in prose.
 
 Vellira also makes `collapsible` unavailable in multiple mode with:
 
@@ -309,15 +308,11 @@ Vellira also makes `collapsible` unavailable in multiple mode with:
 collapsible?: never;
 ```
 
-That is a useful design-system principle:
-
-**when a prop combination is semantically invalid, prefer making it unrepresentable instead of merely documenting that callers should avoid it.**
+**When a prop combination is semantically invalid, prefer making it unrepresentable instead of merely documenting that callers should avoid it.**
 
 ## Defaults are initialization, not synchronization
 
 Another recurring source of bugs is treating `defaultValue` as if it continued to control the component after mount.
-
-Consider:
 
 ```tsx
 <Accordion defaultValue={initialSection} />
@@ -334,36 +329,9 @@ If the application needs ongoing synchronization, use controlled state:
 />
 ```
 
-This distinction becomes especially important when defaults come from asynchronous data.
-
-If data arrives after the component has already initialized, changing a default prop may be too late. Either delay mounting until the initial value is known, or move to a controlled contract.
+This matters especially when defaults come from asynchronous data. If data arrives after the component has initialized, changing a default prop may be too late. Either delay mounting until the initial value is known, or use a controlled contract.
 
 The same reasoning applies to `defaultChecked`, `defaultOpen`, `defaultSelected`, and similar props.
-
-## Do not create two change channels for one state
-
-A reusable component API becomes harder to understand when controlled and uncontrolled modes use different callbacks.
-
-For example, this would be unnecessarily complex:
-
-```ts
-checked?: boolean;
-defaultChecked?: boolean;
-onControlledChange?: (checked: boolean) => void;
-onInternalChange?: (checked: boolean) => void;
-```
-
-The user interaction means the same thing in both modes: the desired checked state changed.
-
-One semantic callback is enough:
-
-```ts
-onCheckedChange?: (checked: boolean) => void;
-```
-
-The component's ownership mode determines who commits the state, not what the event means.
-
-This also makes refactoring easier. An application can move from uncontrolled to controlled usage without replacing its entire event model.
 
 ## Cross-platform parity should preserve state intent
 
@@ -388,34 +356,23 @@ defaultChecked   initial uncontrolled state
 onCheckedChange  proposed next state
 ```
 
-Cross-platform component design becomes much easier when semantic state is shared while rendering and interaction stay native to each runtime.
+The same principle applies to callback names. A web implementation may receive `onClick`, while React Native receives `onPress`; those are platform events. A design-system callback should describe the semantic result instead:
 
-## Shared semantics do not require shared implementation
+```ts
+onCheckedChange
+onValueChange
+onOpenChange
+```
 
-It can be tempting to create one universal internal abstraction for controlled state and force every component through it.
+This keeps application state portable while rendering and interaction stay native to each runtime.
 
-Sometimes a shared hook is useful. But the public API is the more important contract.
-
-Two implementations can use different internal code and still be consistent if they agree on:
-
-- how controlled mode is detected;
-- what the current value prop means;
-- what the default prop means;
-- when the callback fires;
-- what value the callback receives;
-- how invalid state combinations are represented in types.
-
-This keeps the abstraction boundary practical.
-
-The application does not care whether the web and native Switch share a source file. It cares that moving the same feature between platforms does not require relearning state ownership.
+Shared semantics do not require shared implementation. Two runtimes can use different internal code and still be consistent if they agree on ownership, defaults, callback behavior, and type constraints.
 
 ## Test ownership, not just rendering
 
-Controlled/uncontrolled support is easy to claim and surprisingly easy to implement incorrectly.
+Controlled/uncontrolled support is easy to claim and easy to implement incorrectly. A useful test matrix should prove the ownership contract.
 
-A useful test matrix should prove the ownership contract.
-
-For a boolean control, I want at least these cases:
+For a boolean control:
 
 ```text
 uncontrolled
@@ -444,85 +401,30 @@ multiple
 - callback returns an array
 ```
 
-The important part is proving who owns state after interaction.
-
-A test that only verifies initial rendering does not fully validate the contract.
-
-## Watch for stale internal state
-
-Many implementations keep internal state even when a component is currently controlled:
-
-```ts
-const [internalValue, setInternalValue] = useState(defaultValue);
-```
-
-That is fine as long as controlled rendering always uses the controlled prop and controlled interactions do not silently mutate ownership.
-
-Problems begin when code mixes the two sources:
-
-```ts
-const resolved = value || internalValue;
-```
-
-This is unsafe for valid falsy values and blurs precedence.
-
-Prefer an explicit ownership branch:
-
-```ts
-const isControlled = value !== undefined;
-const resolved = isControlled ? value : internalValue;
-```
-
-This looks slightly more verbose, but reusable component code benefits from boring clarity.
-
-## Name callbacks after the state, not the platform event
-
-Another cross-platform lesson is callback naming.
-
-A web implementation may receive `onClick`. React Native may receive `onPress`.
-
-Those are implementation events.
-
-The public design-system callback should describe the semantic result:
-
-```ts
-onCheckedChange
-onValueChange
-onOpenChange
-```
-
-That gives applications one API while allowing each runtime to use its natural interaction primitive internally.
-
-It also makes the callback more useful for keyboard, touch, pointer, accessibility actions, and programmatic interaction because it is not named after one transport mechanism.
+The important part is proving who owns state after interaction. A test that only verifies initial rendering does not fully validate the contract.
 
 ## A practical API checklist
 
 When I review a stateful component API, I use a small checklist:
 
 1. **What is the state type?** Boolean, scalar, collection, or structured object?
-2. **What prop represents the current controlled value?**
-3. **What prop represents only the initial uncontrolled value?**
-4. **Is controlled mode detected explicitly with `!== undefined` where appropriate?**
-5. **Does one semantic callback report the proposed next value in both modes?**
-6. **Can TypeScript prevent invalid combinations instead of documenting them only in prose?**
-7. **Do Web and React Native share the state meaning without sharing platform-specific events?**
-8. **Do tests prove ownership after interaction, not only initial rendering?**
-9. **Are falsy controlled values such as `false` or `''` handled correctly?**
-10. **Is it clear that defaults initialize state rather than synchronize it forever?**
+2. **Which prop represents the current controlled value, and which one only initializes uncontrolled state?**
+3. **Is controlled mode detected explicitly with `!== undefined` where appropriate?**
+4. **Does one semantic callback report the proposed next value in both modes?**
+5. **Can TypeScript prevent invalid combinations instead of documenting them only in prose?**
+6. **Do Web and React Native share state meaning without sharing platform-specific events?**
+7. **Do tests prove ownership after interaction, not only initial rendering?**
+8. **Are valid falsy controlled values and default-value semantics handled correctly?**
 
 If those answers are clear, the component usually feels predictable before a developer even opens the implementation.
 
 ## The larger design-system payoff
 
-Controlled and uncontrolled state is not mainly about saving a few lines of React code.
+Controlled and uncontrolled state is not mainly about saving a few lines of React code. It is about ownership boundaries.
 
-It is about ownership boundaries.
+A good component can own local state when the application does not care, then hand ownership cleanly to the application when coordination becomes necessary. The API should make that transition unsurprising.
 
-A good component can own local state when the application does not care, then hand ownership cleanly to the application when coordination becomes necessary.
-
-The API should make that transition unsurprising.
-
-For Vellira, the same idea applies across a boolean Switch and a scalar-or-collection Accordion, and the state semantics stay recognizable across React and React Native.
+For Vellira, the same idea applies across a boolean Switch and a scalar-or-collection Accordion, while the state semantics stay recognizable across React and React Native.
 
 That is the standard I want from a cross-platform design system: not identical internals, but a public contract developers can learn once and trust in both runtimes.
 
