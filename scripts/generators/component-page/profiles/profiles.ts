@@ -1,4 +1,9 @@
 import type { ComponentPageMetadata } from '../../../../apps/website/src/component-catalog/metadata';
+import {
+  assertGeneratedNativeTextHostSafety,
+  NATIVE_TEXT_IMPORT,
+  renderGeneratedNativeText,
+} from '../../native-text-host';
 import type { ExtractedProp, Platform } from '../model/types';
 
 export type ComponentProfile = NonNullable<ComponentPageMetadata['profile']>;
@@ -185,6 +190,12 @@ export function getGeneratedCompositionMetadata(params: {
       : `<${params.componentName}.${partName}>`;
   }
 
+  function renderGeneratedText(platform: Platform, value: string) {
+    return platform === 'react-native'
+      ? renderGeneratedNativeText(value, 'view-like')
+      : value;
+  }
+
   function renderChildren(platform: Platform) {
     const renderedParts = parts.has('Item')
       ? ['Item', 'Trigger', 'Content']
@@ -208,14 +219,14 @@ export function getGeneratedCompositionMetadata(params: {
 
     if (parts.has('Item') && parts.has('Trigger') && parts.has('Content')) {
       return `${renderOpeningTag(platform, 'Item')}
-  ${renderOpeningTag(platform, 'Trigger')}Section</${params.componentName}.Trigger>
-  ${renderOpeningTag(platform, 'Content')}Section content</${params.componentName}.Content>
+  ${renderOpeningTag(platform, 'Trigger')}${renderGeneratedText(platform, 'Section')}</${params.componentName}.Trigger>
+  ${renderOpeningTag(platform, 'Content')}${renderGeneratedText(platform, 'Section content')}</${params.componentName}.Content>
 </${params.componentName}.Item>`;
     }
 
     if (parts.has('Trigger') && parts.has('Content')) {
-      return `${renderOpeningTag(platform, 'Trigger')}Open</${params.componentName}.Trigger>
-${renderOpeningTag(platform, 'Content')}Content</${params.componentName}.Content>`;
+      return `${renderOpeningTag(platform, 'Trigger')}${renderGeneratedText(platform, 'Open')}</${params.componentName}.Trigger>
+${renderOpeningTag(platform, 'Content')}${renderGeneratedText(platform, 'Content')}</${params.componentName}.Content>`;
     }
 
     return '';
@@ -240,7 +251,16 @@ ${renderOpeningTag(platform, 'Content')}Content</${params.componentName}.Content
   }
 
   if (nativeChildren) {
-    metadata.native = { children: nativeChildren };
+    assertGeneratedNativeTextHostSafety({
+      componentName: params.componentName,
+      surface: 'component-page generated native composition',
+      source: nativeChildren,
+    });
+
+    metadata.native = {
+      children: nativeChildren,
+      imports: [NATIVE_TEXT_IMPORT],
+    };
   }
 
   return metadata;

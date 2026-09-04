@@ -6,10 +6,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
   loadGeneratedComponentProfile,
+  mergeComponentMetadata,
   validateComponentMetadataAgainstApi,
   validateComponentMetadata,
   validateRelatedComponentSlugs,
 } from './metadata';
+import { NATIVE_TEXT_IMPORT } from '../../native-text-host';
 import type { ExtractedProp } from '../model/types';
 
 const roots: string[] = [];
@@ -94,6 +96,33 @@ describe('loadGeneratedComponentProfile', () => {
         componentName: 'Accordion',
       })
     ).toBe('primitive');
+  });
+});
+
+describe('mergeComponentMetadata', () => {
+  it('preserves and deduplicates generated native imports when authored metadata adds imports', () => {
+    const merged = mergeComponentMetadata(
+      {
+        native: {
+          children:
+            '<Example.Content><NativeText>Content</NativeText></Example.Content>',
+          imports: [NATIVE_TEXT_IMPORT],
+        },
+      },
+      {
+        native: {
+          imports: [NATIVE_TEXT_IMPORT, "import { useState } from 'react';"],
+        },
+      }
+    );
+
+    expect(merged.native?.imports).toEqual([
+      NATIVE_TEXT_IMPORT,
+      "import { useState } from 'react';",
+    ]);
+    expect(merged.native?.children).toContain(
+      '<NativeText>Content</NativeText>'
+    );
   });
 });
 
