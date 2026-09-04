@@ -94,7 +94,6 @@ function readComponentSource(
   };
 }
 
-
 function relativeEvidence(
   context: ComponentQualityRuleContext,
   files: readonly string[]

@@ -101,7 +101,6 @@ function readFiles(context: ComponentQualityRuleContext): SourceFile[] {
   }));
 }
 
-
 function isExcepted(params: {
   ruleId: string;
   context: ComponentQualityRuleContext;

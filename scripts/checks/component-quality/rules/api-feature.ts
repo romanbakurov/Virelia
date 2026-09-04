@@ -9,10 +9,7 @@ import type {
 
 import { qualityRoot } from '../root';
 
-import type {
-  ComponentQualityRule,
-  ComponentQualityRuleContext,
-} from '../types';
+import type { ComponentQualityRule } from '../types';
 
 import { createRuleFinding as finding } from './finding';
 
@@ -120,7 +117,6 @@ function readSourceSnapshot(
     combinedSource,
   };
 }
-
 
 export const publicApiSurfaceRule: ComponentQualityRule = {
   definition: {

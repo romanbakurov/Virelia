@@ -83,7 +83,6 @@ function relativeEvidence(
     .map((file) => path.relative(qualityRoot(context), file));
 }
 
-
 function hasAny(source: string, patterns: readonly RegExp[]) {
   return patterns.some((pattern) => pattern.test(source));
 }
