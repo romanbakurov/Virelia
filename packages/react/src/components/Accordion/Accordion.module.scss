@@ -1,15 +1,15 @@
 .root {
   display: grid;
   width: 100%;
-  background: var(--surface-default);
-  border: 1px solid var(--border-muted);
+  background: var(--accordion-root-bg);
+  border: 1px solid var(--accordion-root-border);
   border-radius: var(--radius-lg);
   min-width: 0;
   overflow: hidden;
 }
 
 .item + .item {
-  border-top: 1px solid var(--border-muted);
+  border-top: 1px solid var(--accordion-divider);
 }
 
 .trigger {
@@ -18,12 +18,12 @@
   align-items: center;
   width: 100%;
   padding: var(--space-3) var(--space-4);
-  color: var(--text-primary);
+  color: var(--accordion-trigger-default-fg);
   font-size: inherit;
   font-weight: var(--font-weight-medium);
   line-height: 1.5;
   text-align: left;
-  background: var(--surface-default);
+  background: var(--accordion-trigger-default-bg);
   border: 0;
   transition:
     background-color 0.2s ease,
@@ -34,23 +34,25 @@
 }
 
 .trigger:hover:not(:disabled) {
-  background: var(--surface-subtle);
+  color: var(--accordion-trigger-hover-fg);
+  background: var(--accordion-trigger-hover-bg);
 }
 
 .trigger:active:not(:disabled) {
-  background: var(--surface-muted);
+  color: var(--accordion-trigger-pressed-fg);
+  background: var(--accordion-trigger-pressed-bg);
 }
 
 .trigger:focus-visible {
   position: relative;
   z-index: 1;
-  outline: 2px solid var(--focus-ring);
+  outline: 2px solid var(--accordion-focus-ring);
   outline-offset: -2px;
 }
 
 .trigger:disabled {
-  color: var(--text-disabled);
-  background: var(--surface-disabled);
+  color: var(--accordion-trigger-disabled-fg);
+  background: var(--accordion-trigger-disabled-bg);
   cursor: not-allowed;
 }
 
@@ -61,7 +63,7 @@
   align-items: center;
   width: var(--space-4);
   height: var(--space-4);
-  color: var(--text-secondary);
+  color: var(--accordion-indicator);
   transition: transform 0.2s ease;
   margin-left: var(--space-3);
 }
@@ -72,13 +74,13 @@
 
 .content {
   overflow: hidden;
-  color: var(--text-secondary);
-  background: var(--surface-subtle);
+  color: var(--accordion-content-fg);
+  background: var(--accordion-content-bg);
 }
 
 .contentInner {
   padding: var(--space-4);
-  border-top: 1px solid var(--border-muted);
+  border-top: 1px solid var(--accordion-divider);
   line-height: 1.5;
 }
 

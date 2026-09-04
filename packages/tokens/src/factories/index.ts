@@ -1,3 +1,4 @@
+export * from './createAccordionTokens.js';
 export * from './createButtonPalette.js';
 export * from './createCheckboxPalette.js';
 export * from './createInputPalette.js';
