@@ -11,6 +11,7 @@ describe('Accordion component tokens', () => {
       expect(accordion.root.border).toBe(theme.semantic.border.muted);
       expect(accordion.divider).toBe(theme.semantic.border.muted);
       expect(accordion.trigger.default.fg).toBe(theme.semantic.text.primary);
+      expect(accordion.trigger.expanded.bg).toBe(theme.semantic.surface.subtle);
       expect(accordion.trigger.hover.bg).toBe(theme.semantic.surface.hover);
       expect(accordion.trigger.pressed.bg).toBe(theme.semantic.surface.pressed);
       expect(accordion.trigger.disabled.fg).toBe(theme.semantic.text.disabled);

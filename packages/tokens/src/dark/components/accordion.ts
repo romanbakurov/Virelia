@@ -15,6 +15,9 @@ export const accordionTokens = createAccordionTokens({
       bg: surface.default,
       fg: text.primary,
     },
+    expanded: {
+      bg: surface.subtle,
+    },
     hover: {
       bg: surface.hover,
       fg: text.primary,
