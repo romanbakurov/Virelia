@@ -1,3 +1,8 @@
+export type { AccordionProps } from './components/Accordion';
+export type { AccordionItemProps } from './components/Accordion';
+export type { AccordionTriggerProps } from './components/Accordion';
+export type { AccordionContentProps } from './components/Accordion';
+export { Accordion } from './components/Accordion';
 export { Dropdown } from './components/Dropdown';
 export type {
   DropdownContentProps,

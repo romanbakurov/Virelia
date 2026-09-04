@@ -211,6 +211,42 @@ const descriptionOverrides: Record<string, Record<string, string>> = {
   'native.TabsContentProps.TabsContentProps': {
     value: 'Stable content value matched with Tabs.Trigger.',
   },
+  'web.AccordionProps.AccordionProps': {
+    type: 'Selection mode: single allows one item, multiple allows several open items.',
+    value: 'Controlled expanded value.',
+    defaultValue: 'Initial expanded value for uncontrolled usage.',
+    onValueChange: 'Called when the expanded value changes.',
+    collapsible: 'Allows the open item to collapse in single mode.',
+    disabled: 'Disables every accordion item.',
+  },
+  'web.AccordionItemProps.AccordionItemProps': {
+    value: 'Stable item value used by root state.',
+    disabled: 'Disables this item.',
+  },
+  'web.AccordionTriggerProps.AccordionTriggerProps': {
+    disabled: 'Disables this trigger.',
+  },
+  'web.AccordionContentProps.AccordionContentProps': {
+    forceMount: 'Keeps this content mounted even when its item is collapsed.',
+  },
+  'native.AccordionProps.AccordionProps': {
+    type: 'Selection mode: single allows one item, multiple allows several open items.',
+    value: 'Controlled expanded value.',
+    defaultValue: 'Initial expanded value for uncontrolled usage.',
+    onValueChange: 'Called when the expanded value changes.',
+    collapsible: 'Allows the open item to collapse in single mode.',
+    disabled: 'Disables every accordion item.',
+  },
+  'native.AccordionItemProps.AccordionItemProps': {
+    value: 'Stable item value used by root state.',
+    disabled: 'Disables this item.',
+  },
+  'native.AccordionTriggerProps.AccordionTriggerProps': {
+    disabled: 'Disables this trigger.',
+  },
+  'native.AccordionContentProps.AccordionContentProps': {
+    forceMount: 'Keeps this content mounted even when its item is collapsed.',
+  },
 };
 
 const defaultSections: ApiSection[] = [
@@ -288,6 +324,30 @@ const defaultSections: ApiSection[] = [
     '### Tabs.Content Props',
     'TabsContentProps',
     'src/components/Tabs/Content/types.ts'
+  ),
+  section(
+    'web',
+    '### Accordion Props',
+    'AccordionProps',
+    'src/components/Accordion/types.ts'
+  ),
+  section(
+    'web',
+    '### Accordion.Item Props',
+    'AccordionItemProps',
+    'src/components/Accordion/Item/types.ts'
+  ),
+  section(
+    'web',
+    '### Accordion.Trigger Props',
+    'AccordionTriggerProps',
+    'src/components/Accordion/Trigger/types.ts'
+  ),
+  section(
+    'web',
+    '### Accordion.Content Props',
+    'AccordionContentProps',
+    'src/components/Accordion/Content/types.ts'
   ),
   section(
     'web',
@@ -403,6 +463,30 @@ const defaultSections: ApiSection[] = [
     '### Tabs.Content Props',
     'TabsContentProps',
     'src/components/Tabs/Content/types.ts'
+  ),
+  section(
+    'native',
+    '### Accordion Props',
+    'AccordionProps',
+    'src/components/Accordion/types.ts'
+  ),
+  section(
+    'native',
+    '### Accordion.Item Props',
+    'AccordionItemProps',
+    'src/components/Accordion/Item/types.ts'
+  ),
+  section(
+    'native',
+    '### Accordion.Trigger Props',
+    'AccordionTriggerProps',
+    'src/components/Accordion/Trigger/types.ts'
+  ),
+  section(
+    'native',
+    '### Accordion.Content Props',
+    'AccordionContentProps',
+    'src/components/Accordion/Content/types.ts'
   ),
   section(
     'native',
@@ -619,35 +703,120 @@ function readInterfaceRows(
 
   const type = context.checker.getTypeAtLocation(declaration.name);
 
-  return context.checker
+  return readPropRows(type, context.checker);
+}
+
+function readPropRows(type: ts.Type, checker: ts.TypeChecker): PropRow[] {
+  if (type.isUnion()) {
+    return readUnionPropRows(type, checker);
+  }
+
+  return checker
     .getPropertiesOfType(type)
-    .filter((property) => {
+    .flatMap((property) => readSymbolPropRow(property, checker) ?? []);
+}
+
+function readUnionPropRows(type: ts.UnionType, checker: ts.TypeChecker) {
+  const propertiesByName = new Map<
+    string,
+    {
+      declarations: ts.Declaration[];
+      optionalBranches: number;
+      presentBranches: number;
+      typeStrings: string[];
+    }
+  >();
+
+  for (const branch of type.types) {
+    const branchProperties = checker.getPropertiesOfType(branch);
+
+    for (const property of branchProperties) {
       const declaration =
         property.valueDeclaration ?? property.declarations?.[0];
 
-      return declaration ? isDocumentedPropDeclaration(declaration) : false;
-    })
-    .map((property) => {
-      const declaration =
-        property.valueDeclaration ?? property.declarations?.[0];
-
-      if (!declaration) {
-        throw new Error(`Cannot resolve declaration for ${property.name}`);
+      if (!declaration || !isDocumentedPropDeclaration(declaration)) {
+        continue;
       }
 
-      const propertyType = context.checker.getTypeOfSymbolAtLocation(
+      const propertyType = checker.getTypeOfSymbolAtLocation(
         property,
         declaration
       );
-      const optional = (property.flags & ts.SymbolFlags.Optional) !== 0;
 
-      return {
-        name: property.name,
-        type: formatType(propertyType, declaration, optional, context.checker),
-        required: !optional,
-        description: '',
+      if (propertyType.flags & ts.TypeFlags.Never) {
+        continue;
+      }
+
+      const entry = propertiesByName.get(property.name) ?? {
+        declarations: [],
+        optionalBranches: 0,
+        presentBranches: 0,
+        typeStrings: [],
       };
-    });
+      const optional = (property.flags & ts.SymbolFlags.Optional) !== 0;
+      const formattedType = formatType(
+        propertyType,
+        declaration,
+        optional,
+        checker
+      );
+
+      entry.declarations.push(declaration);
+      entry.presentBranches += 1;
+
+      if (optional) {
+        entry.optionalBranches += 1;
+      }
+
+      if (!entry.typeStrings.includes(formattedType)) {
+        entry.typeStrings.push(formattedType);
+      }
+
+      propertiesByName.set(property.name, entry);
+    }
+  }
+
+  return Array.from(propertiesByName, ([name, entry]) => ({
+    name,
+    type: normalizeUnionTypeStrings(entry.typeStrings),
+    required:
+      entry.presentBranches === type.types.length &&
+      entry.optionalBranches === 0,
+    description: '',
+  }));
+}
+
+function readSymbolPropRow(
+  property: ts.Symbol,
+  checker: ts.TypeChecker
+): PropRow | null {
+  const declaration = property.valueDeclaration ?? property.declarations?.[0];
+
+  if (!declaration || !isDocumentedPropDeclaration(declaration)) {
+    return null;
+  }
+
+  const propertyType = checker.getTypeOfSymbolAtLocation(property, declaration);
+  const optional = (property.flags & ts.SymbolFlags.Optional) !== 0;
+
+  return {
+    name: property.name,
+    type: formatType(propertyType, declaration, optional, checker),
+    required: !optional,
+    description: '',
+  };
+}
+
+function normalizeUnionTypeStrings(types: string[]) {
+  if (types.length === 1) {
+    return types[0];
+  }
+
+  return types
+    .flatMap((type) => type.split(' | '))
+    .filter((type) => type !== 'undefined')
+    .filter((type, index, allTypes) => allTypes.indexOf(type) === index)
+    .join(' | ');
 }
 
 function findTypeDeclaration(sourceFile: ts.SourceFile, interfaceName: string) {

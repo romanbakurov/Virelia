@@ -1,0 +1,295 @@
+import { defineComponentPageMetadata } from '../../metadata';
+
+const nativeTextImport =
+  `import { Text as NativeText } from 'react-native';` as const;
+
+const nativeTextStyle = `style={{
+      fontFamily: 'VelliraSans-Regular',
+      fontSize: 16,
+      lineHeight: 22,
+    }}`;
+
+export default defineComponentPageMetadata({
+  profile: 'compound',
+  demo: {
+    label: 'Account settings',
+    description: 'Expand a section to reveal its settings.',
+    initialValues: { defaultValue: 'profile' },
+    satisfiedRequiredProps: ['children'],
+    previewWidth: 'field',
+  },
+  defaults: {
+    shared: { type: 'single', collapsible: false, disabled: false },
+  },
+  react: {
+    children: `<Accordion.Item value='profile'>
+  <Accordion.Trigger>Profile settings</Accordion.Trigger>
+  <Accordion.Content>Update your public profile and account details.</Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='notifications'>
+  <Accordion.Trigger>Notifications</Accordion.Trigger>
+  <Accordion.Content>Choose when you want to receive updates.</Accordion.Content>
+</Accordion.Item>`,
+  },
+  native: {
+    children: `<Accordion.Item value='profile'>
+  <Accordion.Trigger>Profile settings</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Update your public profile and account details.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='notifications'>
+  <Accordion.Trigger>Notifications</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Choose when you want to receive updates.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>`,
+    imports: [nativeTextImport],
+  },
+  examples: [
+    {
+      title: 'Basic',
+      description:
+        'A single accordion keeps one settings section visible at a time.',
+      props: [],
+    },
+    {
+      title: 'Multiple open items',
+      description:
+        'Use multiple mode when people need to compare information across sections.',
+      props: ["type='multiple'", "defaultValue={['billing', 'limits']}"],
+      reactChildren: `<Accordion.Item value='billing'>
+  <Accordion.Trigger>Billing cadence</Accordion.Trigger>
+  <Accordion.Content>Invoices are issued monthly with a separate annual tax summary.</Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='limits'>
+  <Accordion.Trigger>Usage limits</Accordion.Trigger>
+  <Accordion.Content>Workspace exports include the last 90 days by default.</Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='retention'>
+  <Accordion.Trigger>Data retention</Accordion.Trigger>
+  <Accordion.Content>Audit logs remain searchable for one year on business plans.</Accordion.Content>
+</Accordion.Item>`,
+      nativeChildren: `<Accordion.Item value='billing'>
+  <Accordion.Trigger>Billing cadence</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Invoices are issued monthly with a separate annual tax summary.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='limits'>
+  <Accordion.Trigger>Usage limits</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Workspace exports include the last 90 days by default.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='retention'>
+  <Accordion.Trigger>Data retention</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Audit logs remain searchable for one year on business plans.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>`,
+    },
+    {
+      title: 'Collapsible single item',
+      description:
+        'Allow the current section to close when the interface can return to an empty state.',
+      props: ['collapsible', "defaultValue='profile'"],
+    },
+    {
+      title: 'Controlled state',
+      description:
+        'Store the open section in application state when another part of the interface needs to control it.',
+      props: ['value={value}', 'onValueChange={setValue}'],
+      setup: ["const [value, setValue] = useState('security');"],
+      imports: ["import { useState } from 'react';"],
+      reactChildren: `<Accordion.Item value='profile'>
+  <Accordion.Trigger>Profile</Accordion.Trigger>
+  <Accordion.Content>Profile visibility and contact details can be updated here.</Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='security'>
+  <Accordion.Trigger>Security</Accordion.Trigger>
+  <Accordion.Content>Password, passkey, and recovery settings are managed in this section.</Accordion.Content>
+</Accordion.Item>`,
+      nativeChildren: `<Accordion.Item value='profile'>
+  <Accordion.Trigger>Profile</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Profile visibility and contact details can be updated here.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='security'>
+  <Accordion.Trigger>Security</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Password, passkey, and recovery settings are managed in this section.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>`,
+    },
+    {
+      title: 'Default expanded state',
+      description:
+        'Set an initial expanded item while keeping later changes uncontrolled.',
+      props: ["defaultValue='notifications'"],
+    },
+    {
+      title: 'Disabled state',
+      description:
+        'Disable the whole accordion or a single item while preserving visible context.',
+      props: [],
+      reactChildren: `<Accordion.Item value='billing'>
+  <Accordion.Trigger>Billing</Accordion.Trigger>
+  <Accordion.Content>View invoices and payment methods.</Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='audit' disabled>
+  <Accordion.Trigger>Audit exports</Accordion.Trigger>
+  <Accordion.Content>Audit exports are available after the first report is generated.</Accordion.Content>
+</Accordion.Item>`,
+      nativeChildren: `<Accordion.Item value='billing'>
+  <Accordion.Trigger>Billing</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      View invoices and payment methods.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='audit' disabled>
+  <Accordion.Trigger>Audit exports</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Audit exports are available after the first report is generated.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>`,
+    },
+    {
+      title: 'Rich content',
+      description:
+        'Panels can contain structured content for support notes or account summaries.',
+      props: ["defaultValue='handoff'"],
+      reactChildren: `<Accordion.Item value='handoff'>
+  <Accordion.Trigger>Support handoff</Accordion.Trigger>
+  <Accordion.Content>
+    <p>Include ownership, status, and next action so the next teammate can continue without opening another view.</p>
+    <ul>
+      <li>Owner: Customer operations</li>
+      <li>Status: Waiting for workspace admin</li>
+      <li>Next action: Confirm billing contact</li>
+    </ul>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='history'>
+  <Accordion.Trigger>Recent history</Accordion.Trigger>
+  <Accordion.Content>Four workspace settings changed in the last seven days.</Accordion.Content>
+</Accordion.Item>`,
+      nativeChildren: `<Accordion.Item value='handoff'>
+  <Accordion.Trigger>Support handoff</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Include ownership, status, and next action so the next teammate can continue without opening another view.
+    </NativeText>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Owner: Customer operations
+    </NativeText>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Status: Waiting for workspace admin
+    </NativeText>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Next action: Confirm billing contact
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>
+<Accordion.Item value='history'>
+  <Accordion.Trigger>Recent history</Accordion.Trigger>
+  <Accordion.Content>
+    <NativeText
+      ${nativeTextStyle}
+    >
+      Four workspace settings changed in the last seven days.
+    </NativeText>
+  </Accordion.Content>
+</Accordion.Item>`,
+    },
+  ],
+  api: {
+    sections: [
+      { name: 'Accordion.Item', exportName: 'AccordionItemProps' },
+      { name: 'Accordion.Trigger', exportName: 'AccordionTriggerProps' },
+      { name: 'Accordion.Content', exportName: 'AccordionContentProps' },
+    ],
+    descriptions: {
+      children:
+        'Compound Accordion.Item, Accordion.Trigger, and Accordion.Content nodes.',
+      type: 'Determines whether one item or multiple items can be expanded.',
+      value: 'Controlled expanded value or values.',
+      defaultValue: 'Initial expanded value or values for uncontrolled usage.',
+      onValueChange:
+        'Called with the next expanded value or values after interaction.',
+      collapsible:
+        'Allows an expanded single item to collapse back to no selection.',
+      disabled: 'Disables interaction for the root, item, or trigger.',
+      forceMount: 'Keeps content mounted even when the item is collapsed.',
+    },
+  },
+  accessibility: {
+    react: [
+      {
+        title: 'Keyboard operation',
+        description:
+          'Triggers are native buttons. Tab to a trigger and use Enter or Space to expand or collapse its section.',
+        props: ['disabled'],
+      },
+      {
+        title: 'Expanded state',
+        description:
+          'Each trigger exposes its expanded state and references the content panel it controls.',
+      },
+    ],
+    native: [
+      {
+        title: 'Screen reader support',
+        description:
+          'Triggers expose button semantics, disabled and expanded state, plus a hint describing the resulting action.',
+        props: ['disabled'],
+      },
+    ],
+  },
+  related: ['tabs', 'dropdown', 'popover'],
+});

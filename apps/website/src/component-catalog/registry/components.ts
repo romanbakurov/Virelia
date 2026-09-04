@@ -184,4 +184,17 @@ export const webComponents = [
       'react-native': 'https://docs.vellira.dev/react-native/switch',
     },
   },
+  {
+    slug: 'accordion',
+    name: 'Accordion',
+    description: 'Accordion component for Vellira applications.',
+    category: 'navigation',
+    status: 'beta',
+    order: 999,
+    platforms: ['react', 'react-native'],
+    docs: {
+      react: 'https://docs.vellira.dev/react/accordion',
+      'react-native': 'https://docs.vellira.dev/react-native/accordion',
+    },
+  },
 ] as const satisfies readonly ComponentCatalogEntry[];
