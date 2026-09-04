@@ -234,7 +234,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
-      <AccountAccordion {...args} defaultValue='profile' />
+      <AccountAccordion {...args} />
     </Section>
   ),
 };
@@ -242,7 +242,7 @@ export const Default: Story = {
 export const Basic: Story = {
   render: (args) => (
     <Section title='Basic'>
-      <AccountAccordion {...args} defaultValue='profile' />
+      <AccountAccordion {...args} />
     </Section>
   ),
 };
