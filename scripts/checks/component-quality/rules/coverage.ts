@@ -4,7 +4,6 @@ import path from 'node:path';
 import type {
   ComponentCapability,
   ComponentMetadata,
-  ComponentPlatform,
 } from '@vellira-ui/metadata';
 
 import { qualityRoot } from '../root';
@@ -15,50 +14,12 @@ import type {
 } from '../types';
 
 import { createRuleFinding as finding } from './finding';
+import { collectFiles, componentDirectory } from './source-files';
 
 type SourceCorpus = {
   files: readonly string[];
   source: string;
 };
-
-function platformPackage(platform: ComponentPlatform) {
-  return platform === 'react' ? 'react' : 'react-native';
-}
-
-function componentDirectory(
-  root: string,
-  metadata: ComponentMetadata,
-  platform: ComponentPlatform
-) {
-  return path.join(
-    root,
-    'packages',
-    platformPackage(platform),
-    'src',
-    metadata.layer,
-    metadata.name
-  );
-}
-
-function collectFiles(
-  directory: string,
-  predicate: (fileName: string) => boolean
-): string[] {
-  if (!fs.existsSync(directory)) return [];
-
-  return fs
-    .readdirSync(directory, { withFileTypes: true })
-    .flatMap((entry) => {
-      const fullPath = path.join(directory, entry.name);
-
-      if (entry.isDirectory()) {
-        return collectFiles(fullPath, predicate);
-      }
-
-      return predicate(entry.name) ? [fullPath] : [];
-    })
-    .sort((left, right) => left.localeCompare(right));
-}
 
 function readCorpus(files: readonly string[]): SourceCorpus {
   return {
