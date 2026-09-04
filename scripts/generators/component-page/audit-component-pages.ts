@@ -5,6 +5,7 @@ import { getGeneratedComponentPageComponents } from './component-page-components
 import {
   loadComponentMetadata,
   validateComponentMetadata,
+  validateRelatedComponentSlugs,
 } from './metadata/metadata';
 
 type AuditFailure = {
@@ -146,23 +147,20 @@ const componentPagesFile = path.join(
   'componentPages.ts'
 );
 const componentPagesSource = fs.readFileSync(componentPagesFile, 'utf8');
-const componentsSource = fs.readFileSync(
-  path.join(catalogRoot, 'registry', 'components.ts'),
-  'utf8'
-);
-const knownComponentSlugs = new Set(
-  [...componentsSource.matchAll(/slug: '([^']+)'/g)].map((match) => match[1])
-);
-
-for (const match of componentPagesSource.matchAll(/related: \[([^\]]*)\]/g)) {
-  const relatedSlugs = [...match[1].matchAll(/'([^']+)'/g)].map(
+for (const match of componentPagesSource.matchAll(
+  /\n\s*(?:([A-Za-z_$][\w$]*)|'([^']+)'|"([^"]+)"): \{[\s\S]*?related: \[([^\]]*)\]/g
+)) {
+  const componentSlug = match[1] ?? match[2] ?? match[3] ?? 'componentPages';
+  const relatedSource = match[4] ?? '';
+  const relatedSlugs = [...relatedSource.matchAll(/'([^']+)'/g)].map(
     (item) => item[1]
   );
 
-  for (const relatedSlug of relatedSlugs) {
-    if (!knownComponentSlugs.has(relatedSlug)) {
-      addFailure('componentPages', `unknown related slug: ${relatedSlug}`);
-    }
+  for (const message of validateRelatedComponentSlugs({
+    componentName: componentSlug,
+    related: relatedSlugs,
+  })) {
+    addFailure('componentPages', message);
   }
 }
 
@@ -180,16 +178,6 @@ for (const componentName of generatedComponentPageComponents) {
       error instanceof Error ? error.message : 'invalid metadata'
     );
   }
-
-  for (const relatedSlug of metadata.related ?? []) {
-    if (!knownComponentSlugs.has(relatedSlug)) {
-      addFailure(
-        componentName,
-        `unknown metadata related slug: ${relatedSlug}`
-      );
-    }
-  }
-
   auditComponent(componentName, componentPagesSource);
 }
 

@@ -4,8 +4,10 @@ import { pathToFileURL } from 'node:url';
 
 import ts from 'typescript';
 
+import { canonicalComponentSlugSet } from '../../../../apps/website/src/component-catalog/registry/componentIdentity';
 import type { ComponentPageMetadata } from '../../../../apps/website/src/component-catalog/metadata';
 import type { ExtractedProp, Platform } from '../model/types';
+import { slugify } from '../helpers/format';
 
 export type { ComponentPageMetadata };
 
@@ -430,6 +432,46 @@ function validateExampleSetupSyntax(source: string) {
     : null;
 }
 
+const canonicalSlugSemantics =
+  'expected an exact canonical public component slug from apps/website/src/component-catalog/registry/components.ts, using lowercase kebab-case where applicable';
+
+export function validateRelatedComponentSlugs(params: {
+  componentName: string;
+  related: readonly string[] | undefined;
+}) {
+  const errors: string[] = [];
+  const related = params.related ?? [];
+  const sourceSlug = slugify(params.componentName);
+  const seen = new Set<string>();
+
+  for (const [index, relatedSlug] of related.entries()) {
+    const field = `related[${index}]`;
+    const prefix = `${params.componentName} ${field} "${relatedSlug}"`;
+
+    if (relatedSlug === sourceSlug) {
+      errors.push(
+        `${prefix} is invalid: related components must not reference the source component "${sourceSlug}"`
+      );
+    }
+
+    if (seen.has(relatedSlug)) {
+      errors.push(
+        `${prefix} is invalid: duplicate related component slug "${relatedSlug}"`
+      );
+    }
+
+    seen.add(relatedSlug);
+
+    if (!canonicalComponentSlugSet.has(relatedSlug)) {
+      errors.push(
+        `${prefix} is invalid: unknown or non-canonical related component slug; ${canonicalSlugSemantics}`
+      );
+    }
+  }
+
+  return errors;
+}
+
 export function validateComponentMetadata(params: {
   componentName: string;
   metadata: ComponentPageMetadata;
@@ -438,6 +480,13 @@ export function validateComponentMetadata(params: {
   const errors: string[] = [];
   const exampleTitles = new Set<string>();
   const apiSections = new Set<string>();
+
+  errors.push(
+    ...validateRelatedComponentSlugs({
+      componentName,
+      related: metadata.related,
+    })
+  );
 
   if (
     Object.prototype.hasOwnProperty.call(

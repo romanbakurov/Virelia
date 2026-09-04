@@ -360,6 +360,33 @@ describe('resolveComponentPageProfile', () => {
   });
 });
 
+describe('resolvePageInput related metadata validation', () => {
+  it('validates and preserves profile-derived related values before rendering output', async () => {
+    const root = createFixtureRoot();
+
+    writeCompoundFixture({
+      root,
+      packageName: 'react',
+      itemProps: `export type ExampleItemProps = { value: string; children?: ReactNode };
+type ReactNode = string;
+`,
+    });
+
+    const input = await resolvePageInput({
+      root,
+      catalogComponentsRoot: getCatalogComponentsRoot(root),
+      componentName: 'Example',
+      requestedProfile: 'compound',
+    });
+
+    expect(input.componentConfig.related).toEqual([
+      'tabs',
+      'select',
+      'dropdown',
+    ]);
+  });
+});
+
 const discriminatedExampleProps = `export type ExampleProps =
   | {
       mode?: 'single';

@@ -82,6 +82,26 @@ function runGenerator(
   );
 }
 
+function runAudit(fixture: string): {
+  status: number | null;
+  stdout: string;
+  stderr: string;
+} {
+  return spawnSync(
+    'node',
+    [
+      path.join(repoRoot(), 'node_modules/tsx/dist/cli.mjs'),
+      'scripts/generators/component-page/audit-component-pages.ts',
+      '--component',
+      'Button',
+    ],
+    {
+      cwd: fixture,
+      encoding: 'utf8',
+    }
+  );
+}
+
 function generatedButtonApiPath(fixture: string) {
   return path.join(
     fixture,
@@ -203,5 +223,53 @@ describe('component page CLI check modes', () => {
     });
     expect(payload.staleFiles).toEqual([...payload.staleFiles].sort());
     expectFilesUnchanged(before);
+  }, 60_000);
+
+  it('fails --check when effective related metadata is non-canonical', () => {
+    const fixture = createCanonicalFixtureRepo();
+    const metadataFile = path.join(
+      fixture,
+      'apps/website/src/component-catalog/components/Button/metadata.ts'
+    );
+    const source = fs.readFileSync(metadataFile, 'utf8');
+
+    fs.writeFileSync(
+      metadataFile,
+      source.replace(
+        "related: ['input', 'checkbox', 'modal']",
+        "related: ['Input']"
+      )
+    );
+
+    const result = runGenerator(fixture, ['Button', '--force', '--check']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(
+      'Button related[0] "Input" is invalid: unknown or non-canonical related component slug'
+    );
+  }, 60_000);
+
+  it('fails audit through shared related metadata validation', () => {
+    const fixture = createCanonicalFixtureRepo();
+    const registryFile = path.join(
+      fixture,
+      'apps/website/src/component-catalog/registry/componentPages.ts'
+    );
+    const source = fs.readFileSync(registryFile, 'utf8');
+
+    fs.writeFileSync(
+      registryFile,
+      source.replace(
+        "related: ['input', 'checkbox', 'modal']",
+        "related: ['Input']"
+      )
+    );
+
+    const result = runAudit(fixture);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(
+      'button related[0] "Input" is invalid: unknown or non-canonical related component slug'
+    );
   }, 60_000);
 });

@@ -303,9 +303,7 @@ const reactDemoChildren = componentConfig.react?.children ?? '';
 const nativeDemoChildren = componentConfig.native?.children ?? '';
 const nativeResponsivePresentation =
   componentConfig.native?.responsivePresentation === true;
-const relatedComponents = (componentConfig.related ?? []).filter(
-  (relatedSlug) => relatedSlug !== slug
-);
+const relatedComponents = componentConfig.related ?? [];
 const generatedPageModel = buildGeneratedPageModel({
   componentName,
   slug,

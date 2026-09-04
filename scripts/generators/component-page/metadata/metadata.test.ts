@@ -8,6 +8,7 @@ import {
   loadGeneratedComponentProfile,
   validateComponentMetadataAgainstApi,
   validateComponentMetadata,
+  validateRelatedComponentSlugs,
 } from './metadata';
 import type { ExtractedProp } from '../model/types';
 
@@ -97,6 +98,78 @@ describe('loadGeneratedComponentProfile', () => {
 });
 
 describe('validateComponentMetadata', () => {
+  it('accepts canonical related component slugs, including kebab-case slugs', () => {
+    expect(
+      validateRelatedComponentSlugs({
+        componentName: 'Accordion',
+        related: ['tabs', 'dropdown', 'popover', 'radio-group'],
+      })
+    ).toEqual([]);
+  });
+
+  it('preserves the current valid Accordion related metadata contract', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          related: ['tabs', 'dropdown', 'popover'],
+        },
+      })
+    ).not.toThrow();
+  });
+
+  it('rejects non-canonical case and PascalCase related component values', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          related: ['Tabs', 'Dropdown', 'RadioGroup'],
+        },
+      })
+    ).toThrow(
+      /Accordion related\[0\] "Tabs".*unknown or non-canonical.*exact canonical public component slug.*lowercase kebab-case/s
+    );
+  });
+
+  it('rejects unknown related component slugs', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          related: ['unknown-component'],
+        },
+      })
+    ).toThrow(
+      /Accordion related\[0\] "unknown-component".*unknown or non-canonical/
+    );
+  });
+
+  it('rejects duplicate related component slugs deterministically', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Accordion',
+        metadata: {
+          related: ['tabs', 'tabs'],
+        },
+      })
+    ).toThrow(
+      /Accordion related\[1\] "tabs" is invalid: duplicate related component slug "tabs"/
+    );
+  });
+
+  it('rejects related component self-reference deterministically', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'RadioGroup',
+        metadata: {
+          related: ['radio-group'],
+        },
+      })
+    ).toThrow(
+      /RadioGroup related\[0\] "radio-group" is invalid: related components must not reference the source component "radio-group"/
+    );
+  });
+
   it.each([
     ["import { Accordion } from '@vellira/react';", 'react'],
     ["import Accordion from '@example/accordion';", 'react'],
