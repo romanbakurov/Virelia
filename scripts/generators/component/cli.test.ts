@@ -476,3 +476,46 @@ describe('component generator check mode', () => {
     ).toThrow('--dry-run and --check cannot be used together.');
   });
 });
+
+describe('component token CLI intent', () => {
+  it('parses explicit disclosure component-token intent', () => {
+    expect(
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--profile=compound',
+        '--component-tokens=disclosure',
+      ])
+    ).toMatchObject({
+      componentTokens: 'disclosure',
+    });
+  });
+
+  it('parses explicit tokenless component intent', () => {
+    expect(
+      parseComponentGeneratorArgs([
+        'LayoutProbe',
+        'both',
+        'components',
+        'layout',
+        '--component-tokens=none',
+      ])
+    ).toMatchObject({
+      componentTokens: false,
+    });
+  });
+
+  it('rejects an unknown component-token contract', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--component-tokens=magic',
+      ])
+    ).toThrow('Invalid component token contract "magic"');
+  });
+});

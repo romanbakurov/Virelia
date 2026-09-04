@@ -39,7 +39,10 @@ function kebabCase(value: string) {
     .toLowerCase();
 }
 
-function collectStyleFiles(directory: string, platform: 'react' | 'react-native') {
+function collectStyleFiles(
+  directory: string,
+  platform: 'react' | 'react-native'
+): string[] {
   if (!fs.existsSync(directory)) return [] as string[];
 
   return fs
@@ -82,7 +85,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
   const expectedFactoryExport = `export * from './create${componentName}Tokens.js';`;
 
   if (!fs.existsSync(factoryFile)) {
-    violations.push(`missing component token factory: ${path.relative(root, factoryFile)}`);
+    violations.push(
+      `missing component token factory: ${path.relative(root, factoryFile)}`
+    );
   }
 
   const factoryBarrelSource = fs.existsSync(factoryBarrel)
@@ -90,7 +95,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
     : '';
 
   if (!factoryBarrelSource.includes(expectedFactoryExport)) {
-    violations.push(`missing component token factory export: ${path.relative(root, factoryBarrel)}`);
+    violations.push(
+      `missing component token factory export: ${path.relative(root, factoryBarrel)}`
+    );
   }
 
   for (const theme of ['light', 'dark', 'highContrast'] as const) {
@@ -115,7 +122,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
     const expectedExport = `export { ${tokenName}Tokens as ${tokenName} } from './${tokenName}.js';`;
 
     if (!fs.existsSync(tokenFile)) {
-      violations.push(`missing ${theme} component tokens: ${path.relative(root, tokenFile)}`);
+      violations.push(
+        `missing ${theme} component tokens: ${path.relative(root, tokenFile)}`
+      );
     }
 
     const barrelSource = fs.existsSync(barrelFile)
@@ -123,7 +132,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
       : '';
 
     if (!barrelSource.includes(expectedExport)) {
-      violations.push(`missing ${theme} component token export: ${path.relative(root, barrelFile)}`);
+      violations.push(
+        `missing ${theme} component token export: ${path.relative(root, barrelFile)}`
+      );
     }
   }
 
@@ -141,7 +152,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
     .join('\n');
 
   if (styleFiles.length === 0) {
-    violations.push(`missing component style surface: ${path.relative(root, componentDir)}`);
+    violations.push(
+      `missing component style surface: ${path.relative(root, componentDir)}`
+    );
   } else if (context.platform === 'react') {
     const expectedPrefix = `var(--${kebabCase(componentName)}-`;
 

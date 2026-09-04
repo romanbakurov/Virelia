@@ -13,7 +13,9 @@ import { createComponentGenerationPlan } from './plan';
 const roots: string[] = [];
 
 function createPlan() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-token-contract-'));
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'vellira-token-contract-')
+  );
   roots.push(root);
 
   return createComponentGenerationPlan({
@@ -40,7 +42,10 @@ afterEach(() => {
 describe('component token contract', () => {
   it('materializes factory and all theme targets for compound components', () => {
     const plan = createPlan();
-    const result = { createdFiles: [] as string[], updatedFiles: [] as string[] };
+    const result = {
+      createdFiles: [] as string[],
+      updatedFiles: [] as string[],
+    };
 
     expect(checkComponentTokenContract(plan).length).toBeGreaterThan(0);
 
@@ -58,10 +63,16 @@ describe('component token contract', () => {
 
   it('preserves semantic token files on repeated reconciliation', () => {
     const plan = createPlan();
-    const result = { createdFiles: [] as string[], updatedFiles: [] as string[] };
+    const result = {
+      createdFiles: [] as string[],
+      updatedFiles: [] as string[],
+    };
 
     ensureComponentTokenContract({ plan, result });
-    fs.writeFileSync(plan.tokenFactoryFile, '// custom semantic token contract\n');
+    fs.writeFileSync(
+      plan.tokenFactoryFile,
+      '// custom semantic token contract\n'
+    );
 
     ensureComponentTokenContract({
       plan,
@@ -71,6 +82,61 @@ describe('component token contract', () => {
     expect(fs.readFileSync(plan.tokenFactoryFile, 'utf8')).toBe(
       '// custom semantic token contract\n'
     );
+    expect(checkComponentTokenContract(plan)).toEqual([
+      path.relative(plan.root, plan.tokenFactoryFile),
+    ]);
+  });
+
+  it('recognizes the production Accordion disclosure contract as canonical', () => {
+    const plan = createComponentGenerationPlan({
+      root: process.cwd(),
+      options: {
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        capabilities: [
+          'controlled',
+          'uncontrolled',
+          'disabled',
+          'keyboard',
+          'compound-api',
+        ],
+        componentTokens: 'disclosure',
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: true,
+      },
+    });
+
     expect(checkComponentTokenContract(plan)).toEqual([]);
+  });
+
+  it('treats explicit tokenless intent as auditable N/A', () => {
+    const plan = createComponentGenerationPlan({
+      root: fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-tokenless-')),
+      options: {
+        componentName: 'TokenlessProbe',
+        platform: 'both',
+        layer: 'components',
+        category: 'utility',
+        profile: 'compound',
+        componentTokens: false,
+        parts: ['Root'],
+        force: false,
+      },
+    });
+    roots.push(plan.root);
+
+    const result = {
+      createdFiles: [] as string[],
+      updatedFiles: [] as string[],
+    };
+
+    ensureComponentTokenContract({ plan, result });
+
+    expect(result).toEqual({ createdFiles: [], updatedFiles: [] });
+    expect(checkComponentTokenContract(plan)).toEqual([]);
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(false);
   });
 });

@@ -6,9 +6,124 @@
 import { Tabs as ReactTabs } from '@vellira-ui/react';
 import { Tabs as NativeTabs } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
+
+function NativeTabsExample1Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTabs>
+      <NativeTabs.List>
+        <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
+        <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+        <NativeTabs.Indicator />
+      </NativeTabs.List>
+      <NativeTabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </NativeTabs.Content>
+      <NativeTabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </NativeTabs.Content>
+    </NativeTabs>
+  );
+}
+
+function NativeTabsExample2Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTabs variant='pills'>
+      <NativeTabs.List>
+        <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
+        <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+        <NativeTabs.Indicator />
+      </NativeTabs.List>
+      <NativeTabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </NativeTabs.Content>
+      <NativeTabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </NativeTabs.Content>
+    </NativeTabs>
+  );
+}
+
+function NativeTabsExample3Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTabs disabled>
+      <NativeTabs.List>
+        <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
+        <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
+        <NativeTabs.Indicator />
+      </NativeTabs.List>
+      <NativeTabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </NativeTabs.Content>
+      <NativeTabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </NativeTabs.Content>
+    </NativeTabs>
+  );
+}
 
 type TabsExamplesProps = {
   platform: ComponentPlatform;
@@ -140,207 +255,144 @@ export function TabsExamples({ platform }: TabsExamplesProps) {
     {
       title: 'Basic',
       description: 'Two-panel tab navigation.',
-      preview: (
-        <NativeTabs>
-          <NativeTabs.List>
-            <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
-            <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
-            <NativeTabs.Indicator />
-          </NativeTabs.List>
-          <NativeTabs.Content value='account'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Account settings
-            </NativeText>
-          </NativeTabs.Content>
-          <NativeTabs.Content value='billing'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Billing details
-            </NativeText>
-          </NativeTabs.Content>
-        </NativeTabs>
-      ),
+      preview: <NativeTabsExample1Preview />,
       code: `import { Tabs } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Tabs>
-  <Tabs.List>
-    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
-    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
-    <Tabs.Indicator />
-  </Tabs.List>
-  <Tabs.Content value='account'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
-    >
-      Account settings
-    </NativeText>
-  </Tabs.Content>
-  <Tabs.Content value='billing'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
-    >
-      Billing details
-    </NativeText>
-  </Tabs.Content>
-</Tabs>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tabs>
+      <Tabs.List>
+        <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+        <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+        <Tabs.Indicator />
+      </Tabs.List>
+      <Tabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </Tabs.Content>
+      <Tabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </Tabs.Content>
+    </Tabs>
+  );
+}`,
     },
     {
       title: 'Pills',
       description: 'Alternative visual treatment.',
-      preview: (
-        <NativeTabs variant='pills'>
-          <NativeTabs.List>
-            <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
-            <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
-            <NativeTabs.Indicator />
-          </NativeTabs.List>
-          <NativeTabs.Content value='account'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Account settings
-            </NativeText>
-          </NativeTabs.Content>
-          <NativeTabs.Content value='billing'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Billing details
-            </NativeText>
-          </NativeTabs.Content>
-        </NativeTabs>
-      ),
+      preview: <NativeTabsExample2Preview />,
       code: `import { Tabs } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Tabs
-  variant='pills'
->
-  <Tabs.List>
-    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
-    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
-    <Tabs.Indicator />
-  </Tabs.List>
-  <Tabs.Content value='account'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tabs
+      variant='pills'
     >
-      Account settings
-    </NativeText>
-  </Tabs.Content>
-  <Tabs.Content value='billing'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
-    >
-      Billing details
-    </NativeText>
-  </Tabs.Content>
-</Tabs>`,
+      <Tabs.List>
+        <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+        <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+        <Tabs.Indicator />
+      </Tabs.List>
+      <Tabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </Tabs.Content>
+      <Tabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </Tabs.Content>
+    </Tabs>
+  );
+}`,
     },
     {
       title: 'Disabled',
       description: 'Disabled tab set.',
-      preview: (
-        <NativeTabs disabled>
-          <NativeTabs.List>
-            <NativeTabs.Trigger value='account'>Account</NativeTabs.Trigger>
-            <NativeTabs.Trigger value='billing'>Billing</NativeTabs.Trigger>
-            <NativeTabs.Indicator />
-          </NativeTabs.List>
-          <NativeTabs.Content value='account'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Account settings
-            </NativeText>
-          </NativeTabs.Content>
-          <NativeTabs.Content value='billing'>
-            <NativeText
-              style={{
-                fontFamily: 'VelliraSans-Regular',
-                fontSize: 16,
-                lineHeight: 20,
-              }}
-            >
-              Billing details
-            </NativeText>
-          </NativeTabs.Content>
-        </NativeTabs>
-      ),
+      preview: <NativeTabsExample3Preview />,
       code: `import { Tabs } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Tabs
-  disabled
->
-  <Tabs.List>
-    <Tabs.Trigger value='account'>Account</Tabs.Trigger>
-    <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
-    <Tabs.Indicator />
-  </Tabs.List>
-  <Tabs.Content value='account'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tabs
+      disabled
     >
-      Account settings
-    </NativeText>
-  </Tabs.Content>
-  <Tabs.Content value='billing'>
-    <NativeText
-      style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 20,
-      }}
-    >
-      Billing details
-    </NativeText>
-  </Tabs.Content>
-</Tabs>`,
+      <Tabs.List>
+        <Tabs.Trigger value='account'>Account</Tabs.Trigger>
+        <Tabs.Trigger value='billing'>Billing</Tabs.Trigger>
+        <Tabs.Indicator />
+      </Tabs.List>
+      <Tabs.Content value='account'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Account settings
+        </NativeText>
+      </Tabs.Content>
+      <Tabs.Content value='billing'>
+        <NativeText
+          style={{
+            color: nativeTheme.components.tabs.panel.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 20,
+          }}
+        >
+          Billing details
+        </NativeText>
+      </Tabs.Content>
+    </Tabs>
+  );
+}`,
     },
   ] as const;
 

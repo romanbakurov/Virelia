@@ -1,22 +1,15 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/layout/Container';
-import type { BlogMetricsBySlug } from '../metrics';
+import { fetchBlogMetricsBatch, type BlogMetricsBySlug } from '../metrics';
 import type { BlogArticleMetadata } from '@/blog';
 import { BlogMetricsDisplay } from './BlogMetricsDisplay';
+import { formatBlogDate } from './formatBlogDate';
 
 import styles from './BlogExperience.module.css';
-
-const blogDateFormatter = new Intl.DateTimeFormat('en', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
-
-export function formatBlogDate(date: string): string {
-  return blogDateFormatter.format(new Date(`${date}T00:00:00.000Z`));
-}
 
 interface BlogIndexProps {
   articles: readonly BlogArticleMetadata[];
@@ -24,6 +17,36 @@ interface BlogIndexProps {
 }
 
 export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
+  const [resolvedMetricsBySlug, setResolvedMetricsBySlug] =
+    useState<BlogMetricsBySlug>(metricsBySlug);
+
+  useEffect(() => {
+    const slugs = articles.map((article) => article.slug);
+
+    if (
+      slugs.length === 0 ||
+      slugs.every((slug) => resolvedMetricsBySlug[slug] !== undefined)
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void fetchBlogMetricsBatch(slugs)
+      .then((metrics) => {
+        if (!cancelled) {
+          setResolvedMetricsBySlug(metrics);
+        }
+      })
+      .catch(() => {
+        // Metrics are supplemental and must never block or break the blog index.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [articles]);
+
   return (
     <main className={styles.page}>
       <header className={styles.hero}>
@@ -71,7 +94,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
                   <BlogMetricsDisplay
                     slug={article.slug}
-                    metrics={metricsBySlug[article.slug]}
+                    metrics={resolvedMetricsBySlug[article.slug]}
                   />
 
                   <div className={styles.tags} aria-label='Article tags'>

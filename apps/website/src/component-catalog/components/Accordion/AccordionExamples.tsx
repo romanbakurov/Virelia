@@ -6,6 +6,7 @@
 import { Accordion as ReactAccordion } from '@vellira-ui/react';
 import { Accordion as NativeAccordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 import { useState } from 'react';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
@@ -32,7 +33,140 @@ function ReactAccordionExample4Preview() {
   );
 }
 
+function NativeAccordionExample1Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion>
+      <NativeAccordion.Item value='profile'>
+        <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='notifications'>
+        <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
+function NativeAccordionExample2Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion type='multiple' defaultValue={['billing', 'limits']}>
+      <NativeAccordion.Item value='billing'>
+        <NativeAccordion.Trigger>Billing cadence</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Invoices are issued monthly with a separate annual tax summary.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='limits'>
+        <NativeAccordion.Trigger>Usage limits</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Workspace exports include the last 90 days by default.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='retention'>
+        <NativeAccordion.Trigger>Data retention</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Audit logs remain searchable for one year on business plans.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
+function NativeAccordionExample3Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion collapsible defaultValue='profile'>
+      <NativeAccordion.Item value='profile'>
+        <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='notifications'>
+        <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
 function NativeAccordionExample4Preview() {
+  const { theme: nativeTheme } = useTheme();
   const [value, setValue] = useState('security');
 
   return (
@@ -42,6 +176,7 @@ function NativeAccordionExample4Preview() {
         <NativeAccordion.Content>
           <NativeText
             style={{
+              color: nativeTheme.components.accordion.content.fg,
               fontFamily: 'VelliraSans-Regular',
               fontSize: 16,
               lineHeight: 22,
@@ -56,6 +191,7 @@ function NativeAccordionExample4Preview() {
         <NativeAccordion.Content>
           <NativeText
             style={{
+              color: nativeTheme.components.accordion.content.fg,
               fontFamily: 'VelliraSans-Regular',
               fontSize: 16,
               lineHeight: 22,
@@ -63,6 +199,154 @@ function NativeAccordionExample4Preview() {
           >
             Password, passkey, and recovery settings are managed in this
             section.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
+function NativeAccordionExample5Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion defaultValue='notifications'>
+      <NativeAccordion.Item value='profile'>
+        <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='notifications'>
+        <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
+function NativeAccordionExample6Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion>
+      <NativeAccordion.Item value='billing'>
+        <NativeAccordion.Trigger>Billing</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            View invoices and payment methods.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='audit' disabled>
+        <NativeAccordion.Trigger>Audit exports</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Audit exports are available after the first report is generated.
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+    </NativeAccordion>
+  );
+}
+
+function NativeAccordionExample7Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeAccordion defaultValue='handoff'>
+      <NativeAccordion.Item value='handoff'>
+        <NativeAccordion.Trigger>Support handoff</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Include ownership, status, and next action so the next teammate can
+            continue without opening another view.
+          </NativeText>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Owner: Customer operations
+          </NativeText>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Status: Waiting for workspace admin
+          </NativeText>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Next action: Confirm billing contact
+          </NativeText>
+        </NativeAccordion.Content>
+      </NativeAccordion.Item>
+      <NativeAccordion.Item value='history'>
+        <NativeAccordion.Trigger>Recent history</NativeAccordion.Trigger>
+        <NativeAccordion.Content>
+          <NativeText
+            style={{
+              color: nativeTheme.components.accordion.content.fg,
+              fontFamily: 'VelliraSans-Regular',
+              fontSize: 16,
+              lineHeight: 22,
+            }}
+          >
+            Four workspace settings changed in the last seven days.
           </NativeText>
         </NativeAccordion.Content>
       </NativeAccordion.Item>
@@ -344,245 +628,166 @@ function Example() {
       title: 'Basic',
       description:
         'A single accordion keeps one settings section visible at a time.',
-      preview: (
-        <NativeAccordion>
-          <NativeAccordion.Item value='profile'>
-            <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Update your public profile and account details.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='notifications'>
-            <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Choose when you want to receive updates.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample1Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion>
-  <Accordion.Item value='profile'>
-    <Accordion.Trigger>Profile settings</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Update your public profile and account details.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='notifications'>
-    <Accordion.Trigger>Notifications</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Choose when you want to receive updates.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion>
+      <Accordion.Item value='profile'>
+        <Accordion.Trigger>Profile settings</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='notifications'>
+        <Accordion.Trigger>Notifications</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
     {
       title: 'Multiple open items',
       description:
         'Use multiple mode when people need to compare information across sections.',
-      preview: (
-        <NativeAccordion type='multiple' defaultValue={['billing', 'limits']}>
-          <NativeAccordion.Item value='billing'>
-            <NativeAccordion.Trigger>Billing cadence</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Invoices are issued monthly with a separate annual tax summary.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='limits'>
-            <NativeAccordion.Trigger>Usage limits</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Workspace exports include the last 90 days by default.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='retention'>
-            <NativeAccordion.Trigger>Data retention</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Audit logs remain searchable for one year on business plans.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample2Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion
-  type='multiple'
-  defaultValue={['billing', 'limits']}
->
-  <Accordion.Item value='billing'>
-    <Accordion.Trigger>Billing cadence</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Invoices are issued monthly with a separate annual tax summary.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='limits'>
-    <Accordion.Trigger>Usage limits</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Workspace exports include the last 90 days by default.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='retention'>
-    <Accordion.Trigger>Data retention</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Audit logs remain searchable for one year on business plans.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion
+      type='multiple'
+      defaultValue={['billing', 'limits']}
+    >
+      <Accordion.Item value='billing'>
+        <Accordion.Trigger>Billing cadence</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Invoices are issued monthly with a separate annual tax summary.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='limits'>
+        <Accordion.Trigger>Usage limits</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Workspace exports include the last 90 days by default.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='retention'>
+        <Accordion.Trigger>Data retention</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Audit logs remain searchable for one year on business plans.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
     {
       title: 'Collapsible single item',
       description:
         'Allow the current section to close when the interface can return to an empty state.',
-      preview: (
-        <NativeAccordion collapsible defaultValue='profile'>
-          <NativeAccordion.Item value='profile'>
-            <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Update your public profile and account details.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='notifications'>
-            <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Choose when you want to receive updates.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample3Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion
-  collapsible
-  defaultValue='profile'
->
-  <Accordion.Item value='profile'>
-    <Accordion.Trigger>Profile settings</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Update your public profile and account details.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='notifications'>
-    <Accordion.Trigger>Notifications</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Choose when you want to receive updates.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion
+      collapsible
+      defaultValue='profile'
+    >
+      <Accordion.Item value='profile'>
+        <Accordion.Trigger>Profile settings</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='notifications'>
+        <Accordion.Trigger>Notifications</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
     {
       title: 'Controlled state',
@@ -591,9 +796,11 @@ import { Text as NativeText } from 'react-native';
       preview: <NativeAccordionExample4Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 import { useState } from 'react';
 
 function Example() {
+  const { theme: nativeTheme } = useTheme();
   const [value, setValue] = useState('security');
 
   return (
@@ -606,6 +813,7 @@ function Example() {
         <Accordion.Content>
           <NativeText
             style={{
+            color: nativeTheme.components.accordion.content.fg,
             fontFamily: 'VelliraSans-Regular',
             fontSize: 16,
             lineHeight: 22,
@@ -620,6 +828,7 @@ function Example() {
         <Accordion.Content>
           <NativeText
             style={{
+            color: nativeTheme.components.accordion.content.fg,
             fontFamily: 'VelliraSans-Regular',
             fontSize: 16,
             lineHeight: 22,
@@ -637,270 +846,179 @@ function Example() {
       title: 'Default expanded state',
       description:
         'Set an initial expanded item while keeping later changes uncontrolled.',
-      preview: (
-        <NativeAccordion defaultValue='notifications'>
-          <NativeAccordion.Item value='profile'>
-            <NativeAccordion.Trigger>Profile settings</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Update your public profile and account details.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='notifications'>
-            <NativeAccordion.Trigger>Notifications</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Choose when you want to receive updates.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample5Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion
-  defaultValue='notifications'
->
-  <Accordion.Item value='profile'>
-    <Accordion.Trigger>Profile settings</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Update your public profile and account details.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='notifications'>
-    <Accordion.Trigger>Notifications</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Choose when you want to receive updates.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion
+      defaultValue='notifications'
+    >
+      <Accordion.Item value='profile'>
+        <Accordion.Trigger>Profile settings</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Update your public profile and account details.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='notifications'>
+        <Accordion.Trigger>Notifications</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Choose when you want to receive updates.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
     {
       title: 'Disabled state',
       description:
         'Disable the whole accordion or a single item while preserving visible context.',
-      preview: (
-        <NativeAccordion>
-          <NativeAccordion.Item value='billing'>
-            <NativeAccordion.Trigger>Billing</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                View invoices and payment methods.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='audit' disabled>
-            <NativeAccordion.Trigger>Audit exports</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Audit exports are available after the first report is generated.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample6Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion>
-  <Accordion.Item value='billing'>
-    <Accordion.Trigger>Billing</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        View invoices and payment methods.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='audit' disabled>
-    <Accordion.Trigger>Audit exports</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Audit exports are available after the first report is generated.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion>
+      <Accordion.Item value='billing'>
+        <Accordion.Trigger>Billing</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            View invoices and payment methods.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='audit' disabled>
+        <Accordion.Trigger>Audit exports</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Audit exports are available after the first report is generated.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
     {
       title: 'Rich content',
       description:
         'Panels can contain structured content for support notes or account summaries.',
-      preview: (
-        <NativeAccordion defaultValue='handoff'>
-          <NativeAccordion.Item value='handoff'>
-            <NativeAccordion.Trigger>Support handoff</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Include ownership, status, and next action so the next teammate
-                can continue without opening another view.
-              </NativeText>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Owner: Customer operations
-              </NativeText>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Status: Waiting for workspace admin
-              </NativeText>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Next action: Confirm billing contact
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-          <NativeAccordion.Item value='history'>
-            <NativeAccordion.Trigger>Recent history</NativeAccordion.Trigger>
-            <NativeAccordion.Content>
-              <NativeText
-                style={{
-                  fontFamily: 'VelliraSans-Regular',
-                  fontSize: 16,
-                  lineHeight: 22,
-                }}
-              >
-                Four workspace settings changed in the last seven days.
-              </NativeText>
-            </NativeAccordion.Content>
-          </NativeAccordion.Item>
-        </NativeAccordion>
-      ),
+      preview: <NativeAccordionExample7Preview />,
       code: `import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
-<Accordion
-  defaultValue='handoff'
->
-  <Accordion.Item value='handoff'>
-    <Accordion.Trigger>Support handoff</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Include ownership, status, and next action so the next teammate can continue without opening another view.
-      </NativeText>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Owner: Customer operations
-      </NativeText>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Status: Waiting for workspace admin
-      </NativeText>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Next action: Confirm billing contact
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-  <Accordion.Item value='history'>
-    <Accordion.Trigger>Recent history</Accordion.Trigger>
-    <Accordion.Content>
-      <NativeText
-        style={{
-        fontFamily: 'VelliraSans-Regular',
-        fontSize: 16,
-        lineHeight: 22,
-      }}
-      >
-        Four workspace settings changed in the last seven days.
-      </NativeText>
-    </Accordion.Content>
-  </Accordion.Item>
-</Accordion>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Accordion
+      defaultValue='handoff'
+    >
+      <Accordion.Item value='handoff'>
+        <Accordion.Trigger>Support handoff</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Include ownership, status, and next action so the next teammate can continue without opening another view.
+          </NativeText>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Owner: Customer operations
+          </NativeText>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Status: Waiting for workspace admin
+          </NativeText>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Next action: Confirm billing contact
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+      <Accordion.Item value='history'>
+        <Accordion.Trigger>Recent history</Accordion.Trigger>
+        <Accordion.Content>
+          <NativeText
+            style={{
+            color: nativeTheme.components.accordion.content.fg,
+            fontFamily: 'VelliraSans-Regular',
+            fontSize: 16,
+            lineHeight: 22,
+          }}
+          >
+            Four workspace settings changed in the last seven days.
+          </NativeText>
+        </Accordion.Content>
+      </Accordion.Item>
+    </Accordion>
+  );
+}`,
     },
   ] as const;
 

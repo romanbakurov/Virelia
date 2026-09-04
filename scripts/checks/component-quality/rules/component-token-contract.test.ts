@@ -11,7 +11,9 @@ import { componentTokenContractRule } from './component-token-contract';
 const roots: string[] = [];
 
 function createRoot() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vellira-quality-tokens-'));
+  const root = fs.mkdtempSync(
+    path.join(os.tmpdir(), 'vellira-quality-tokens-')
+  );
   roots.push(root);
   return root;
 }
@@ -29,7 +31,7 @@ function metadata(): ComponentMetadata {
       storybook: true,
       docs: true,
       accessibility: true,
-      componentTokens: true,
+      componentTokens: 'standard',
     },
   };
 }
@@ -37,7 +39,10 @@ function metadata(): ComponentMetadata {
 function createTokenContract(root: string) {
   const factoryDir = path.join(root, 'packages/tokens/src/factories');
   fs.mkdirSync(factoryDir, { recursive: true });
-  fs.writeFileSync(path.join(factoryDir, 'createProbeTokens.ts'), 'export {};\n');
+  fs.writeFileSync(
+    path.join(factoryDir, 'createProbeTokens.ts'),
+    'export {};\n'
+  );
   fs.writeFileSync(
     path.join(factoryDir, 'index.ts'),
     "export * from './createProbeTokens.js';\n"
@@ -46,7 +51,10 @@ function createTokenContract(root: string) {
   for (const theme of ['light', 'dark', 'highContrast']) {
     const dir = path.join(root, 'packages/tokens/src', theme, 'components');
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'probe.ts'), 'export const probeTokens = {};\n');
+    fs.writeFileSync(
+      path.join(dir, 'probe.ts'),
+      'export const probeTokens = {};\n'
+    );
     fs.writeFileSync(
       path.join(dir, 'index.ts'),
       "export { probeTokens as probe } from './probe.js';\n"

@@ -1,9 +1,6 @@
 import fs from 'node:fs';
 
-import {
-  shouldGenerateVisualScaffold,
-  type ComponentGenerationPlan,
-} from './plan';
+import type { ComponentGenerationPlan } from './plan';
 import { getComponentProfile } from './profiles';
 import {
   canonicalIconExports,
@@ -169,7 +166,7 @@ export function validateComponentGenerationPlan(
     existingTargets.push(plan.docsContractFile);
   }
 
-  if (shouldGenerateVisualScaffold(plan)) {
+  if (plan.componentTokens !== false) {
     if (fs.existsSync(plan.tokenFactoryFile)) {
       existingTargets.push(plan.tokenFactoryFile);
     }

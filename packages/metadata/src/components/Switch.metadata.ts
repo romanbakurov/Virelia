@@ -19,6 +19,6 @@ export const switchMetadata = defineComponentMetadata({
     storybook: true,
     docs: true,
     accessibility: true,
-    componentTokens: true,
+    componentTokens: 'boolean-control',
   },
 });

@@ -12,6 +12,7 @@ export function useNativeFloatingPosition(
   placement: FloatingPlacement = 'top',
   offset = 8
 ) {
+  const [isPositioned, setIsPositioned] = useState(false);
   const [result, setResult] = useState<FloatingPositionResult>({
     position: {
       top: 0,
@@ -42,6 +43,7 @@ export function useNativeFloatingPosition(
       const containerNode = containerRef?.current;
 
       if (!triggerNode || typeof triggerNode.measureInWindow !== 'function') {
+        setIsPositioned(false);
         setResult((current) => ({
           ...current,
           position: {
@@ -77,6 +79,7 @@ export function useNativeFloatingPosition(
           });
 
           setResult(nextResult);
+          setIsPositioned(measuredSize.width > 0 && measuredSize.height > 0);
         };
 
         if (
@@ -123,6 +126,7 @@ export function useNativeFloatingPosition(
   );
 
   return {
+    isPositioned,
     position: result.position,
     arrowPosition: result.arrowPosition,
     placement: result.placement,

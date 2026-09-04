@@ -546,6 +546,7 @@ function plan(root: string): ComponentGenerationPlan {
     capabilities: [],
     icons: [],
     tokens: [],
+    componentTokens: 'standard',
     force: false,
     parts: [],
     targets: [],

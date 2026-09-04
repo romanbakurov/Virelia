@@ -43,6 +43,7 @@ function createAccordionCode(
     <Accordion.Content>
       <NativeText
         style={{
+        color: nativeTheme.components.accordion.content.fg,
         fontFamily: 'VelliraSans-Regular',
         fontSize: 16,
         lineHeight: 22,
@@ -57,6 +58,7 @@ function createAccordionCode(
     <Accordion.Content>
       <NativeText
         style={{
+        color: nativeTheme.components.accordion.content.fg,
         fontFamily: 'VelliraSans-Regular',
         fontSize: 16,
         lineHeight: 22,
@@ -81,29 +83,43 @@ function createAccordionCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  if (!children) {
-    return `import { Accordion } from '${packageName}';
-${
-  platform === 'react'
-    ? ``
-    : `
-import { Text as NativeText } from 'react-native';`
-}
+  const imports = `import { Accordion } from '${packageName}';${
+    platform === 'react'
+      ? ``
+      : `
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';`
+  }`;
 
-<Accordion${propsText}/>`;
-  }
+  const setup =
+    platform === 'react' ? `` : `  const { theme: nativeTheme } = useTheme();`;
 
-  return `import { Accordion } from '${packageName}';
-${
-  platform === 'react'
-    ? ``
-    : `
-import { Text as NativeText } from 'react-native';`
-}
-
-<Accordion${propsText}>
+  const root = !children
+    ? `<Accordion${propsText}/>`
+    : `<Accordion${propsText}>
 ${children}
 </Accordion>`;
+
+  if (setup) {
+    const indentedRoot = root
+      .split('\n')
+      .map((line) => `    ${line}`)
+      .join('\n');
+
+    return `${imports}
+
+function Example() {
+${setup}
+
+  return (
+${indentedRoot}
+  );
+}`;
+  }
+
+  return `${imports}
+
+${root}`;
 }
 
 export function AccordionUsage({ platform }: AccordionUsageProps) {

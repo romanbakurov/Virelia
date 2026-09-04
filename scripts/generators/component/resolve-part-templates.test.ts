@@ -17,6 +17,7 @@ const plan: ComponentGenerationPlan = {
   capabilities: [],
   icons: [],
   tokens: [],
+  componentTokens: 'standard',
   parts: ['Root', 'Trigger'],
   force: false,
   targets: [],

@@ -54,17 +54,24 @@ function ensureExportLine(params: {
   }
 }
 
+function uniqueSorted(paths: string[]) {
+  return [...new Set(paths)].sort((left, right) => left.localeCompare(right));
+}
+
 export function ensureComponentTokenContract(params: {
   plan: ComponentGenerationPlan;
   result: ComponentTokenContractMutationResult;
 }) {
   const { plan, result } = params;
 
+  if (plan.componentTokens === false) return;
+
   if (!fs.existsSync(plan.tokenFactoryFile)) {
     writeCreatedFile({
       filePath: plan.tokenFactoryFile,
       content: renderComponentTokenFactoryTemplate({
         componentName: plan.componentName,
+        componentTokens: plan.componentTokens,
         profile: plan.profile,
         control: plan.control,
       }),
@@ -84,6 +91,7 @@ export function ensureComponentTokenContract(params: {
         filePath: target.componentFile,
         content: renderThemeComponentTokensTemplate({
           componentName: plan.componentName,
+          componentTokens: plan.componentTokens,
           profile: plan.profile,
           control: plan.control,
         }),
@@ -104,25 +112,72 @@ export function checkComponentTokenContract(plan: ComponentGenerationPlan) {
   const expectedFactoryExport = renderComponentTokenFactoryBarrelExport(
     plan.componentName
   );
-
-  if (!fs.existsSync(plan.tokenFactoryFile)) {
-    drift.push(path.relative(plan.root, plan.tokenFactoryFile));
-  }
+  const expectedThemeExport = renderComponentTokenBarrelExport(
+    plan.componentName
+  );
 
   const factoryBarrel = fs.existsSync(plan.tokenFactoryBarrelFile)
     ? fs.readFileSync(plan.tokenFactoryBarrelFile, 'utf8')
     : '';
 
+  if (plan.componentTokens === false) {
+    if (fs.existsSync(plan.tokenFactoryFile)) {
+      drift.push(path.relative(plan.root, plan.tokenFactoryFile));
+    }
+
+    if (factoryBarrel.includes(expectedFactoryExport)) {
+      drift.push(path.relative(plan.root, plan.tokenFactoryBarrelFile));
+    }
+
+    for (const target of plan.tokenThemeTargets) {
+      if (fs.existsSync(target.componentFile)) {
+        drift.push(path.relative(plan.root, target.componentFile));
+      }
+
+      const barrel = fs.existsSync(target.barrelFile)
+        ? fs.readFileSync(target.barrelFile, 'utf8')
+        : '';
+
+      if (barrel.includes(expectedThemeExport)) {
+        drift.push(path.relative(plan.root, target.barrelFile));
+      }
+    }
+
+    return uniqueSorted(drift);
+  }
+
+  const expectedFactory = renderComponentTokenFactoryTemplate({
+    componentName: plan.componentName,
+    componentTokens: plan.componentTokens,
+    profile: plan.profile,
+    control: plan.control,
+  });
+
+  if (!fs.existsSync(plan.tokenFactoryFile)) {
+    drift.push(path.relative(plan.root, plan.tokenFactoryFile));
+  } else if (
+    fs.readFileSync(plan.tokenFactoryFile, 'utf8') !== expectedFactory
+  ) {
+    drift.push(path.relative(plan.root, plan.tokenFactoryFile));
+  }
+
   if (!factoryBarrel.includes(expectedFactoryExport)) {
     drift.push(path.relative(plan.root, plan.tokenFactoryBarrelFile));
   }
 
-  const expectedThemeExport = renderComponentTokenBarrelExport(
-    plan.componentName
-  );
-
   for (const target of plan.tokenThemeTargets) {
+    const expectedTheme = renderThemeComponentTokensTemplate({
+      componentName: plan.componentName,
+      componentTokens: plan.componentTokens,
+      profile: plan.profile,
+      control: plan.control,
+    });
+
     if (!fs.existsSync(target.componentFile)) {
+      drift.push(path.relative(plan.root, target.componentFile));
+    } else if (
+      fs.readFileSync(target.componentFile, 'utf8') !== expectedTheme
+    ) {
       drift.push(path.relative(plan.root, target.componentFile));
     }
 
@@ -135,5 +190,5 @@ export function checkComponentTokenContract(plan: ComponentGenerationPlan) {
     }
   }
 
-  return [...new Set(drift)].sort((left, right) => left.localeCompare(right));
+  return uniqueSorted(drift);
 }

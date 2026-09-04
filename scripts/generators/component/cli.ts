@@ -1,6 +1,7 @@
 import type {
   ComponentCapability,
   ComponentIconRequirement,
+  ComponentTokenContract,
 } from '@vellira-ui/metadata';
 
 export type ComponentPlatformArg = 'web' | 'native' | 'both';
@@ -32,6 +33,7 @@ export type ComponentGeneratorOptions = {
   capabilities?: readonly ComponentCapability[];
   icons?: readonly ComponentIconRequirement[];
   tokens?: readonly string[];
+  componentTokens?: ComponentTokenContract | false;
   parts: readonly string[];
   force: boolean;
   dryRun?: boolean;
@@ -75,7 +77,7 @@ const componentNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 const iconNamePattern = /^[A-Z][A-Za-z0-9]*$/;
 
 export const componentGeneratorUsage =
-  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--icon=<IconName>:<semantic purpose>] [--token=<token.path>] [--force] [--dry-run] [--check]';
+  'Usage: pnpm create:component <Name> web|native|both primitives|components|patterns action|form|navigation|overlay|feedback|data-display|layout|utility [--profile=base|form-control|compound|overlay] [--control=value|boolean|text] [--capabilities=controlled,keyboard,...] [--parts=Root,Trigger,Content] [--icon=<IconName>:<semantic purpose>] [--token=<token.path>] [--component-tokens=standard|boolean-control|disclosure|none] [--force] [--dry-run] [--check]';
 
 function parseIconRequirement(value: string): ComponentIconRequirement {
   const separator = value.indexOf(':');
@@ -122,6 +124,7 @@ export function parseComponentGeneratorArgs(
   let dryRun = false;
   let check = false;
   let parts: string[] = [];
+  let componentTokens: ComponentTokenContract | false | undefined;
   const icons: ComponentIconRequirement[] = [];
   const tokens: string[] = [];
 
@@ -172,6 +175,28 @@ export function parseComponentGeneratorArgs(
       }
 
       control = value;
+      continue;
+    }
+
+    if (flag.startsWith('--component-tokens=')) {
+      const value = flag.slice('--component-tokens='.length);
+
+      if (value === 'none') {
+        componentTokens = false;
+        continue;
+      }
+
+      if (
+        value !== 'standard' &&
+        value !== 'boolean-control' &&
+        value !== 'disclosure'
+      ) {
+        throw new Error(
+          `Invalid component token contract "${value}". Expected standard, boolean-control, disclosure, or none.`
+        );
+      }
+
+      componentTokens = value;
       continue;
     }
 
@@ -320,6 +345,7 @@ export function parseComponentGeneratorArgs(
     capabilities: explicitCapabilities,
     icons,
     tokens,
+    ...(componentTokens !== undefined ? { componentTokens } : {}),
     parts,
     force,
     dryRun,

@@ -6,10 +6,7 @@ import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
-import {
-  checkComponentTokenContract,
-  ensureComponentTokenContract,
-} from './component-token-contract';
+import { checkComponentTokenContract } from './component-token-contract';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -27,10 +24,15 @@ function getPlannedCreatedFiles(
   const files: string[] = [
     plan.metadataFile,
     plan.docsContractFile,
-    plan.tokenFactoryFile,
-    ...plan.tokenThemeTargets.map((target) => target.componentFile),
     ...getComponentDocsTargets(plan).map((target) => target.docsFile),
   ];
+
+  if (plan.componentTokens !== false) {
+    files.push(
+      plan.tokenFactoryFile,
+      ...plan.tokenThemeTargets.map((target) => target.componentFile)
+    );
+  }
 
   if (plan.profile === 'form-control') {
     files.push(plan.sharedTypesFile);
@@ -79,9 +81,14 @@ function getPlannedUpdatedFiles(
     plan.metadataBarrelFile,
     plan.docsContractRegistryFile,
     ...getComponentApiDocsTargets(plan).map((target) => target.apiFile),
-    plan.tokenFactoryBarrelFile,
-    ...plan.tokenThemeTargets.map((target) => target.barrelFile),
   ];
+
+  if (plan.componentTokens !== false) {
+    files.push(
+      plan.tokenFactoryBarrelFile,
+      ...plan.tokenThemeTargets.map((target) => target.barrelFile)
+    );
+  }
 
   if (plan.profile === 'form-control') {
     files.push(plan.sharedTypesBarrelFile);
@@ -146,8 +153,6 @@ export async function runComponentGenerator(params: {
   }
 
   const result = await writeComponentGenerationPlan(plan);
-
-  ensureComponentTokenContract({ plan, result });
 
   const websiteResult = generateComponentWebsitePage({
     root: params.root,

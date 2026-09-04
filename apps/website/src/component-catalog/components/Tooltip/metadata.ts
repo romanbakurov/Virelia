@@ -1,19 +1,33 @@
 import { defineComponentPageMetadata } from '../../metadata';
 
 const nativeImports = [
-  `import { Text as NativeText, View as NativeView } from 'react-native';`,
+  `import { Text as NativeText } from 'react-native';`,
+  `import { useTheme } from '@vellira-ui/react-native';`,
+  `import { controlSizes } from '@vellira-ui/tokens';`,
 ] as const;
 
-const nativeTriggerChildren = `<Tooltip.Trigger>
-  <NativeView
+const nativeTriggerChildren = `<Tooltip.Trigger
+  style={{
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: controlSizes.md.height,
+    paddingLeft: nativeTheme.tokens.spacing[6],
+    paddingRight: nativeTheme.tokens.spacing[6],
+    borderRadius: nativeTheme.tokens.radius.full,
+    backgroundColor:
+      nativeTheme.components.button.primary.solid.default.bg,
+  }}
+>
+  <NativeText
     style={{
-      padding: 12,
-      borderRadius: 8,
-      backgroundColor: '#eee',
+      color: nativeTheme.components.button.primary.solid.default.fg,
+      fontFamily: nativeTheme.tokens.typography.family.regular,
+      fontSize: nativeTheme.tokens.typography.size.md,
+      lineHeight: nativeTheme.tokens.typography.lineHeight.md,
     }}
   >
-    <NativeText>Press and hold</NativeText>
-  </NativeView>
+    Press and hold
+  </NativeText>
 </Tooltip.Trigger>
 <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`;
 
@@ -28,6 +42,7 @@ export default defineComponentPageMetadata({
   native: {
     children: nativeTriggerChildren,
     imports: nativeImports,
+    setup: ['const { theme: nativeTheme } = useTheme();'],
   },
   defaults: {
     shared: {
@@ -75,16 +90,28 @@ export default defineComponentPageMetadata({
   <ReactButton>No arrow</ReactButton>
 </Tooltip.Trigger>
 <Tooltip.Content>Tooltip without arrow</Tooltip.Content>`,
-      nativeChildren: `<Tooltip.Trigger>
-  <NativeView
+      nativeChildren: `<Tooltip.Trigger
+  style={{
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: controlSizes.md.height,
+    paddingLeft: nativeTheme.tokens.spacing[6],
+    paddingRight: nativeTheme.tokens.spacing[6],
+    borderRadius: nativeTheme.tokens.radius.full,
+    backgroundColor:
+      nativeTheme.components.button.primary.solid.default.bg,
+  }}
+>
+  <NativeText
     style={{
-      padding: 12,
-      borderRadius: 8,
-      backgroundColor: '#eee',
+      color: nativeTheme.components.button.primary.solid.default.fg,
+      fontFamily: nativeTheme.tokens.typography.family.regular,
+      fontSize: nativeTheme.tokens.typography.size.md,
+      lineHeight: nativeTheme.tokens.typography.lineHeight.md,
     }}
   >
-    <NativeText>No arrow</NativeText>
-  </NativeView>
+    No arrow
+  </NativeText>
 </Tooltip.Trigger>
 <Tooltip.Content>Tooltip without arrow</Tooltip.Content>`,
     },

@@ -34,16 +34,28 @@ function createTooltipCode(
     <ReactButton>Hover for details</ReactButton>
   </Tooltip.Trigger>
   <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`
-      : `  <Tooltip.Trigger>
-    <NativeView
+      : `  <Tooltip.Trigger
+    style={{
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: controlSizes.md.height,
+      paddingLeft: nativeTheme.tokens.spacing[6],
+      paddingRight: nativeTheme.tokens.spacing[6],
+      borderRadius: nativeTheme.tokens.radius.full,
+      backgroundColor:
+        nativeTheme.components.button.primary.solid.default.bg,
+    }}
+  >
+    <NativeText
       style={{
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#eee',
+        color: nativeTheme.components.button.primary.solid.default.fg,
+        fontFamily: nativeTheme.tokens.typography.family.regular,
+        fontSize: nativeTheme.tokens.typography.size.md,
+        lineHeight: nativeTheme.tokens.typography.lineHeight.md,
       }}
     >
-      <NativeText>Press and hold</NativeText>
-    </NativeView>
+      Press and hold
+    </NativeText>
   </Tooltip.Trigger>
   <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>`;
 
@@ -57,31 +69,45 @@ function createTooltipCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  if (!children) {
-    return `import { Tooltip } from '${packageName}';
-${
-  platform === 'react'
-    ? `
+  const imports = `import { Tooltip } from '${packageName}';${
+    platform === 'react'
+      ? `
 import { Button as ReactButton } from '@vellira-ui/react';`
-    : `
-import { Text as NativeText, View as NativeView } from 'react-native';`
-}
+      : `
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';`
+  }`;
 
-<Tooltip${propsText}/>`;
-  }
+  const setup =
+    platform === 'react' ? `` : `  const { theme: nativeTheme } = useTheme();`;
 
-  return `import { Tooltip } from '${packageName}';
-${
-  platform === 'react'
-    ? `
-import { Button as ReactButton } from '@vellira-ui/react';`
-    : `
-import { Text as NativeText, View as NativeView } from 'react-native';`
-}
-
-<Tooltip${propsText}>
+  const root = !children
+    ? `<Tooltip${propsText}/>`
+    : `<Tooltip${propsText}>
 ${children}
 </Tooltip>`;
+
+  if (setup) {
+    const indentedRoot = root
+      .split('\n')
+      .map((line) => `    ${line}`)
+      .join('\n');
+
+    return `${imports}
+
+function Example() {
+${setup}
+
+  return (
+${indentedRoot}
+  );
+}`;
+  }
+
+  return `${imports}
+
+${root}`;
 }
 
 export function TooltipUsage({ platform }: TooltipUsageProps) {
