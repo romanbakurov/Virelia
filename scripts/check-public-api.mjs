@@ -312,6 +312,11 @@ const publicSymbolContracts = {
     'animatedIcons',
   ],
   'packages/react-native/src/index.ts': [
+    'Accordion',
+    'AccordionContentProps',
+    'AccordionItemProps',
+    'AccordionProps',
+    'AccordionTriggerProps',
     'Button',
     'ButtonProps',
     'Checkbox',
@@ -528,6 +533,11 @@ const publicSymbolContracts = {
     'TooltipDelay',
   ],
   'packages/react/src/index.ts': [
+    'Accordion',
+    'AccordionContentProps',
+    'AccordionItemProps',
+    'AccordionProps',
+    'AccordionTriggerProps',
     'Button',
     'ButtonProps',
     'Checkbox',
