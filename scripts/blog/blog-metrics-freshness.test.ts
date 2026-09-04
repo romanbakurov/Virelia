@@ -36,7 +36,9 @@ describe('Blog V1 metrics freshness', () => {
     ]);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({ cache: 'no-store' });
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      cache: 'no-store',
+    });
     expect(metrics['one-runtime']).toEqual({
       slug: 'one-runtime',
       views: 4,
@@ -51,16 +53,19 @@ describe('Blog V1 metrics freshness', () => {
 });
 
 describe('Blog V1 public publication manifest', () => {
-  it('matches the canonical published corpus in deterministic slug order', async () => {
-    const articles = await getPublishedBlogArticles();
-    const response = await getPublishedManifest();
+  it(
+    'matches the canonical published corpus in deterministic slug order',
+    async () => {
+      const articles = await getPublishedBlogArticles();
+      const response = await getPublishedManifest();
 
-    await expect(response.json()).resolves.toEqual({
-      schemaVersion: 1,
-      slugs: articles.map((article) => article.slug).sort(),
-    });
-    expect(response.headers.get('cache-control')).toBe(
-      'public, max-age=0, s-maxage=30, stale-while-revalidate=300'
-    );
-  });
+      await expect(response.json()).resolves.toEqual({
+        schemaVersion: 1,
+        slugs: articles.map((article) => article.slug).sort(),
+      });
+      expect(response.headers.get('cache-control')).toBe(
+        'public, max-age=0, s-maxage=30, stale-while-revalidate=300'
+      );
+    }
+  );
 });
