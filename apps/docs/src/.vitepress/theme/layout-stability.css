@@ -1,0 +1,13 @@
+/*
+ * VitePress 1.6.4 computes wide-screen nav/content offsets with 100vw while
+ * the affected containers track html.clientWidth. On browsers with classic
+ * scrollbars, navigating between pages that do and do not need a vertical
+ * scrollbar can therefore move the navbar/content horizontally.
+ *
+ * Reserve the vertical scrollbar gutter unconditionally. This mirrors the
+ * upstream VitePress fix and can be removed once the installed version
+ * contains that fix.
+ */
+html {
+  overflow-y: scroll;
+}
