@@ -19,6 +19,8 @@ describe('component generator CLI', () => {
       profile: 'base',
       control: 'value',
       capabilities: [],
+      icons: [],
+      tokens: [],
       parts: [],
       force: false,
       dryRun: false,
@@ -191,6 +193,153 @@ describe('component generator CLI', () => {
       'disabled',
       'keyboard',
     ]);
+  });
+
+  it('parses one icon requirement with a semantic purpose containing spaces', () => {
+    const result = parseComponentGeneratorArgs([
+      'Accordion',
+      'both',
+      'components',
+      'navigation',
+      '--icon=ChevronDown:disclosure indicator',
+    ]);
+
+    expect(result.icons).toEqual([
+      {
+        name: 'ChevronDown',
+        purpose: 'disclosure indicator',
+      },
+    ]);
+  });
+
+  it('parses multiple icon requirements', () => {
+    const result = parseComponentGeneratorArgs([
+      'Dialog',
+      'web',
+      'components',
+      'overlay',
+      '--icon=Close:dismiss action',
+      '--icon=ChevronDown:disclosure indicator',
+    ]);
+
+    expect(result.icons).toEqual([
+      {
+        name: 'Close',
+        purpose: 'dismiss action',
+      },
+      {
+        name: 'ChevronDown',
+        purpose: 'disclosure indicator',
+      },
+    ]);
+  });
+
+  it('parses token requirements', () => {
+    const result = parseComponentGeneratorArgs([
+      'Avatar',
+      'web',
+      'primitives',
+      'data-display',
+      '--token=semantic.text.primary',
+      '--token=components.button.background.primary',
+    ]);
+
+    expect(result.tokens).toEqual([
+      'semantic.text.primary',
+      'components.button.background.primary',
+    ]);
+  });
+
+  it('rejects malformed icon requirements', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--icon=ChevronDown',
+      ])
+    ).toThrow(
+      '--icon must use the form <CanonicalIconName>:<semantic purpose>.'
+    );
+  });
+
+  it('rejects empty icon names', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--icon=:disclosure indicator',
+      ])
+    ).toThrow('--icon requires a non-empty canonical icon name.');
+  });
+
+  it('rejects empty icon purposes', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--icon=ChevronDown:',
+      ])
+    ).toThrow('--icon requires a non-empty semantic purpose.');
+  });
+
+  it('rejects duplicate icon requirements', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Accordion',
+        'both',
+        'components',
+        'navigation',
+        '--icon=ChevronDown:disclosure indicator',
+        '--icon=ChevronDown:disclosure indicator',
+      ])
+    ).toThrow(
+      'Icon requirements must not contain duplicate name/purpose pairs.'
+    );
+  });
+
+  it('rejects duplicate token requirements', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Avatar',
+        'web',
+        'primitives',
+        'data-display',
+        '--token=semantic.text.primary',
+        '--token=semantic.text.primary',
+      ])
+    ).toThrow('Token requirements must not contain duplicates.');
+  });
+
+  it('rejects empty token requirements', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Avatar',
+        'web',
+        'primitives',
+        'data-display',
+        '--token=',
+      ])
+    ).toThrow('--token requires a non-empty canonical token path.');
+  });
+
+  it('rejects token requirements with surrounding whitespace', () => {
+    expect(() =>
+      parseComponentGeneratorArgs([
+        'Avatar',
+        'web',
+        'primitives',
+        'data-display',
+        '--token= semantic.text.primary',
+      ])
+    ).toThrow(
+      '--token canonical token path must not include surrounding whitespace.'
+    );
   });
 
   it('rejects invalid metadata capabilities', () => {

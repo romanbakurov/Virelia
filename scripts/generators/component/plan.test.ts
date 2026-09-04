@@ -129,4 +129,26 @@ describe('component generation plan', () => {
 
     expect(plan.parts).toEqual(['Root', 'List', 'Trigger', 'Content']);
   });
+
+  it('preserves explicit design-resource requirements', () => {
+    const plan = createComponentGenerationPlan({
+      root,
+      options: {
+        componentName: 'Accordion',
+        platform: 'both',
+        layer: 'components',
+        category: 'navigation',
+        profile: 'compound',
+        icons: [{ name: 'ChevronDown', purpose: 'disclosure indicator' }],
+        tokens: ['semantic.text.primary'],
+        parts: ['Root', 'Item', 'Trigger', 'Content'],
+        force: false,
+      },
+    });
+
+    expect(plan.icons).toEqual([
+      { name: 'ChevronDown', purpose: 'disclosure indicator' },
+    ]);
+    expect(plan.tokens).toEqual(['semantic.text.primary']);
+  });
 });
