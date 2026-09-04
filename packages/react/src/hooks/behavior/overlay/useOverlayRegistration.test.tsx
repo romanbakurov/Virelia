@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-
 import { render } from '@test-utils/render';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { useOverlayRegistration } from './useOverlayRegistration';
 
