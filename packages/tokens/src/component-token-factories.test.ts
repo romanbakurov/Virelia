@@ -1,0 +1,159 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+  createContextMenuTokens,
+  createContextMenuTokensFromSemantics,
+} from './factories/createContextMenuTokens.js';
+import {
+  createModalTokens,
+  createModalTokensFromSemantics,
+} from './factories/createModalTokens.js';
+import { focus as lightFocus } from './light/semantic/focus.js';
+import { menu as lightMenu } from './light/semantic/menu.js';
+import { shadow as lightShadow } from './light/semantic/shadow.js';
+import { text as lightText } from './light/semantic/text.js';
+import { radius } from './tokens/radius.js';
+import { spacing } from './tokens/spacing.js';
+
+const modalFocusRing = {
+  color: 'synthetic-focus-color',
+  width: 'synthetic-focus-width',
+  shadow: 'synthetic-focus-shadow',
+  offset: 'synthetic-focus-offset',
+};
+
+const modalOverlay = {
+  backdrop: 'synthetic-overlay-backdrop',
+  modal: {
+    bg: 'synthetic-modal-bg',
+    border: 'synthetic-modal-border',
+  },
+};
+
+const modalShadow = {
+  xl: 'synthetic-shadow-xl',
+};
+
+const modalSurface = {
+  hover: 'synthetic-surface-hover',
+  elevated: 'synthetic-surface-elevated',
+  active: 'synthetic-surface-active',
+  pressed: 'synthetic-surface-pressed',
+};
+
+const modalText = {
+  primary: 'synthetic-text-primary',
+  secondary: 'synthetic-text-secondary',
+  disabled: 'synthetic-text-disabled',
+};
+
+describe('component token semantic factories', () => {
+  it('centralizes ContextMenu semantic mapping without changing output', () => {
+    expect(
+      createContextMenuTokensFromSemantics({
+        focus: lightFocus,
+        menu: lightMenu,
+        shadow: lightShadow,
+        text: lightText,
+      })
+    ).toEqual(
+      createContextMenuTokens({
+        contentBg: lightMenu.background,
+        contentBorder: lightMenu.border,
+        contentShadow: lightShadow.lg,
+        itemDefault: lightMenu.item.default,
+        itemHover: lightMenu.item.hover,
+        itemActive: lightMenu.item.active,
+        itemPressed: lightMenu.item.pressed,
+        itemFocusRing: lightFocus.ring,
+        itemDisabled: lightMenu.item.disabled,
+        itemDanger: lightMenu.item.danger,
+        triggerDefaultFg: lightText.interactive,
+        triggerHoverBg: lightMenu.item.hover.bg,
+        triggerHoverFg: lightText.interactiveHover,
+        triggerFocusFg: lightText.interactive,
+        triggerFocusRing: lightFocus.ring,
+        triggerDisabledFg: lightText.disabled,
+        groupLabelFg: lightText.secondary,
+      })
+    );
+  });
+
+  it('defaults Modal hover and pressed backgrounds from distinct surface semantics', () => {
+    expect(
+      createModalTokensFromSemantics({
+        focus: { ring: modalFocusRing },
+        overlay: modalOverlay,
+        radius,
+        shadow: modalShadow,
+        spacing,
+        surface: modalSurface,
+        text: modalText,
+      })
+    ).toEqual(
+      createModalTokens({
+        overlayBg: modalOverlay.backdrop,
+        contentBg: modalOverlay.modal.bg,
+        contentFg: modalText.primary,
+        contentBorder: modalOverlay.modal.border,
+        contentShadow: modalShadow.xl,
+        titleFg: modalText.primary,
+        descriptionFg: modalText.secondary,
+        closeButtonDefaultFg: modalText.secondary,
+        closeButtonHoverBg: modalSurface.hover,
+        closeButtonHoverFg: modalText.primary,
+        closeButtonPressedBg: modalSurface.pressed,
+        closeButtonPressedFg: modalText.primary,
+        closeButtonDisabledFg: modalText.disabled,
+        closeButtonFocusRing: modalFocusRing,
+        radiusLg: radius.lg,
+        radiusFull: radius.full,
+        spacing1: spacing[1],
+        spacing3: spacing[3],
+        spacing4: spacing[4],
+        spacing8: spacing[8],
+        spacing10: spacing[10],
+      })
+    );
+  });
+
+  it('preserves the existing dark Modal hover and pressed semantic overrides', () => {
+    expect(
+      createModalTokensFromSemantics({
+        closeButtonHoverBg: modalSurface.elevated,
+        closeButtonPressedBg: modalSurface.active,
+        focus: { ring: modalFocusRing },
+        overlay: modalOverlay,
+        radius,
+        shadow: modalShadow,
+        spacing,
+        surface: modalSurface,
+        text: modalText,
+      })
+    ).toEqual(
+      createModalTokens({
+        overlayBg: modalOverlay.backdrop,
+        contentBg: modalOverlay.modal.bg,
+        contentFg: modalText.primary,
+        contentBorder: modalOverlay.modal.border,
+        contentShadow: modalShadow.xl,
+        titleFg: modalText.primary,
+        descriptionFg: modalText.secondary,
+        closeButtonDefaultFg: modalText.secondary,
+        closeButtonHoverBg: modalSurface.elevated,
+        closeButtonHoverFg: modalText.primary,
+        closeButtonPressedBg: modalSurface.active,
+        closeButtonPressedFg: modalText.primary,
+        closeButtonDisabledFg: modalText.disabled,
+        closeButtonFocusRing: modalFocusRing,
+        radiusLg: radius.lg,
+        radiusFull: radius.full,
+        spacing1: spacing[1],
+        spacing3: spacing[3],
+        spacing4: spacing[4],
+        spacing8: spacing[8],
+        spacing10: spacing[10],
+      })
+    );
+  });
+});
