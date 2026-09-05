@@ -204,6 +204,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Dropdown Component
 

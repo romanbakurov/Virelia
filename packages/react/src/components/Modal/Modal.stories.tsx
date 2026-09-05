@@ -26,6 +26,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Modal Component
 

@@ -1,32 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { ComponentQualityFinding } from '@vellira-ui/metadata';
-
 import { qualityRoot } from '../root';
 import type {
   ComponentQualityRule,
   ComponentQualityRuleContext,
 } from '../types';
-
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
-  };
-}
+import { createRuleFinding } from './finding';
 
 function lowerCamel(value: string) {
   return `${value[0].toLowerCase()}${value.slice(1)}`;
@@ -207,14 +187,18 @@ export const componentTokenContractRule: ComponentQualityRule = {
   },
   evaluate(context) {
     if (!context.metadata.requirements.componentTokens) {
-      return finding(componentTokenContractRule, context, 'not-applicable');
+      return createRuleFinding(
+        componentTokenContractRule,
+        context,
+        'not-applicable'
+      );
     }
 
     const violations = contractViolations(context);
 
     return violations.length === 0
-      ? finding(componentTokenContractRule, context, 'pass')
-      : finding(
+      ? createRuleFinding(componentTokenContractRule, context, 'pass')
+      : createRuleFinding(
           componentTokenContractRule,
           context,
           'fail',

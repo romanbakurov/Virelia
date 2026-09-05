@@ -15,6 +15,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Checkbox Component
 

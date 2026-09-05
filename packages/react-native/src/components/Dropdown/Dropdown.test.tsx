@@ -926,6 +926,7 @@ describe('Native Dropdown', () => {
     const onFloatingLayout = vi.fn();
 
     vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      isPositioned: true,
       position: {
         top: 120,
         left: 80,

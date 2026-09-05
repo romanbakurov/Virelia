@@ -6,7 +6,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
-import { FormField } from '../../patterns/FormField';
+import { FormField } from '../../patterns';
 import { useTheme } from '../../theme';
 
 import { Select } from './Select';
@@ -59,6 +59,7 @@ const meta: Meta<typeof Select> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Select Component
 
@@ -95,6 +96,7 @@ Native select control with the same public philosophy as Web Select, but with na
     variant: 'outline',
     required: false,
     disabled: false,
+    multiple: false,
     onValueChange: fn(),
   },
   argTypes: {
@@ -197,27 +199,39 @@ function renderGroupedTeamItems(
 }
 
 function InteractiveSelect(args: SelectStoryProps) {
+  const {
+    defaultValue,
+    multiple: _multiple,
+    onValueChange,
+    value: selectedValue,
+    ...rest
+  } = args;
   const [value, setValue] = useState<string | null>(
-    Array.isArray(args.value)
-      ? (args.value[0] ?? null)
-      : (args.value ?? args.defaultValue ?? null)
+    Array.isArray(selectedValue)
+      ? (selectedValue[0] ?? null)
+      : (selectedValue ??
+          (Array.isArray(defaultValue) ? null : (defaultValue ?? null)))
   );
 
   useEffect(() => {
     setValue(
-      Array.isArray(args.value)
-        ? (args.value[0] ?? null)
-        : (args.value ?? args.defaultValue ?? null)
+      Array.isArray(selectedValue)
+        ? (selectedValue[0] ?? null)
+        : (selectedValue ??
+            (Array.isArray(defaultValue) ? null : (defaultValue ?? null)))
     );
-  }, [args.value, args.defaultValue]);
+  }, [selectedValue, defaultValue]);
 
   return (
     <Select
-      {...args}
+      {...rest}
+      multiple={false}
       value={value}
       onValueChange={(nextValue) => {
         setValue(nextValue);
-        args.onValueChange?.(nextValue);
+        (onValueChange as ((value: string | null) => void) | undefined)?.(
+          nextValue
+        );
       }}
     >
       {renderCountryItems()}

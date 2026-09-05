@@ -302,6 +302,7 @@ describe('Native Tooltip', () => {
 
   it('uses the resolved placement from FloatingManager', () => {
     vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      isPositioned: true,
       position: {
         top: 120,
         left: 80,
@@ -338,6 +339,7 @@ describe('Native Tooltip', () => {
 
   it('uses the arrow position from FloatingManager', () => {
     vi.spyOn(managers, 'useNativeFloatingPosition').mockReturnValue({
+      isPositioned: true,
       position: {
         top: 120,
         left: 12,

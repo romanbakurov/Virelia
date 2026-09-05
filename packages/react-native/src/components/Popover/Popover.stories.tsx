@@ -5,9 +5,8 @@ import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
-import { Button } from '../../primitives/Button';
-import { Input } from '../../primitives/Input';
-import { useTheme } from '../../theme';
+import { Button, Input } from '../../primitives';
+import { toNativeFontWeight, useTheme } from '../../theme';
 
 import { Popover } from '.';
 
@@ -19,6 +18,7 @@ const meta: Meta<typeof Popover> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Popover Component
 
@@ -67,6 +67,7 @@ settings, filters, and additional information.
   },
   args: {
     defaultOpen: false,
+    children: null,
     side: 'bottom',
     align: 'center',
     sideOffset: 8,
@@ -220,7 +221,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     subtitle: {
       color: theme.semantic.text.secondary,
       fontSize: theme.tokens.typography.size.sm,
-      fontWeight: theme.tokens.typography.weight.semibold,
+      fontWeight: toNativeFontWeight(theme.tokens.typography.weight.semibold),
     },
   });
 
@@ -236,7 +237,8 @@ function Demo({
   trigger = 'Open popover',
   children,
   ...args
-}: PopoverStoryProps & {
+}: Omit<PopoverStoryProps, 'children'> & {
+  children?: ReactNode;
   trigger?: string;
 }) {
   return (
@@ -306,7 +308,7 @@ function ControlledPopover({
   );
 }
 
-function RichContentDemo(args: React.PopoverStoryProps<typeof Popover>) {
+function RichContentDemo(args: PopoverStoryProps) {
   const [email, setEmail] = useState('');
 
   return (
@@ -412,7 +414,9 @@ function CustomStylesDemo() {
               style={{
                 color: theme.semantic.text.primary,
                 fontSize: theme.tokens.typography.size.lg,
-                fontWeight: theme.tokens.typography.weight.bold,
+                fontWeight: toNativeFontWeight(
+                  theme.tokens.typography.weight.semibold
+                ),
               }}
             >
               Custom surface

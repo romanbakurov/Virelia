@@ -1,26 +1,11 @@
 import { toTemplateLiteral, toTsLiteral } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, Platform } from '../model/types';
-
-function normalizePropFragments(props: readonly string[]) {
-  return props.flatMap((prop) =>
-    prop
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-  );
-}
-
-function normalizeSetupStatements(statements: readonly string[]) {
-  return statements.map((statement) => statement.trim()).filter(Boolean);
-}
-
-function indentBlock(source: string, indentation: string) {
-  return source
-    .split('\n')
-    .map((line) => `${indentation}${line}`)
-    .join('\n');
-}
+import {
+  indentBlock,
+  normalizePropFragments,
+  normalizeSetupStatements,
+} from './renderer-format';
 
 export function renderUsage(params: {
   componentName: string;

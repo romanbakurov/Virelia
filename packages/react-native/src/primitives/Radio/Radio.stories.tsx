@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
-import { useTheme } from '../../theme';
+import { toNativeFontWeight, useTheme } from '../../theme';
 
 import { Radio } from './Radio';
 
@@ -17,6 +17,7 @@ const meta: Meta<typeof Radio> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Radio Component
 
@@ -194,7 +195,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     subtitle: {
       color: theme.semantic.text.secondary,
       fontSize: theme.tokens.typography.size.sm,
-      fontWeight: theme.tokens.typography.weight.semibold,
+      fontWeight: toNativeFontWeight(theme.tokens.typography.weight.semibold),
     },
   });
 

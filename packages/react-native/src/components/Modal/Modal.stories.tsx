@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import { Text, TextInput, View } from 'react-native';
 
-import { Button } from '../../primitives/Button';
+import { Button } from '../../primitives';
 import { useTheme } from '../../theme';
 
 import { Modal } from '.';
@@ -16,6 +16,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     animation: 'scale',
+    children: null,
     closeOnEscape: true,
     closeOnOutsidePress: true,
     defaultOpen: false,
@@ -30,6 +31,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Modal Component
 

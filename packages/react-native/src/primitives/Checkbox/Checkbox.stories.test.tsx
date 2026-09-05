@@ -21,7 +21,7 @@ afterEach(() => {
 const renderStory = (
   story: {
     args?: Record<string, unknown>;
-    render?: (args: Record<string, unknown>) => ReactNode;
+    render?: (args: Record<string, unknown>, context: never) => ReactNode;
   },
   extraArgs: Record<string, unknown> = {}
 ) => {
@@ -31,7 +31,7 @@ const renderStory = (
     ...extraArgs,
   };
 
-  return render(story.render?.(args) ?? null);
+  return render(story.render?.(args, undefined as never) ?? null);
 };
 
 describe('Native Checkbox stories', () => {

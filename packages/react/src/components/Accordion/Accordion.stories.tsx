@@ -128,6 +128,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Accordion Component
 
