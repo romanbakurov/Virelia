@@ -147,7 +147,9 @@ describe('blog topic filter experience', () => {
     expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(moreFilters);
 
-    expect(screen.getByRole('button', { name: /^Testing/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /^Testing/ })
+    ).toBeInTheDocument();
 
     fireEvent.pointerDown(document.body);
 
