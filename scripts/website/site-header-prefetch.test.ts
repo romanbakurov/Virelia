@@ -23,9 +23,7 @@ describe('site navigation prefetch policy', () => {
     expect(siteHeaderSource).toContain(
       "<Link href='/' prefetch className={styles.brand}>"
     );
-    expect(siteHeaderSource).toContain("router.prefetch('/');");
-    expect(siteHeaderSource).toContain("router.prefetch('/components');");
-    expect(siteHeaderSource).toContain("router.prefetch('/blog');");
+    expect(siteHeaderSource).not.toContain('router.prefetch(');
     expect(siteHeaderSource).toContain(desktopPagePrefetch);
     expect(siteHeaderSource).toContain(mobileSectionPrefetch);
     expect(siteHeaderSource).toContain('href={item.href}');

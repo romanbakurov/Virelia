@@ -11,6 +11,10 @@ import {
 } from './docs';
 import { runComponentGenerator } from './run';
 import { generateComponentWebsitePage } from './website';
+import {
+  getGeneratedTokenTypesFile,
+  synchronizeGeneratedTokenTypes,
+} from './token-types';
 import { checkGeneratedComponentDocsCompleteness } from '../../checks/component-completeness/check-generated-component-docs';
 import { checkComponentCompleteness } from '../../checks/component-completeness/check-component';
 import { validateComponentDocs } from '../../../apps/docs/src/component-docs';
@@ -19,6 +23,16 @@ import type { ComponentMetadata } from '@vellira-ui/metadata';
 vi.mock('./website', () => ({
   generateComponentWebsitePage: vi.fn(),
 }));
+
+vi.mock('./token-types', async () => {
+  const actual =
+    await vi.importActual<typeof import('./token-types')>('./token-types');
+
+  return {
+    ...actual,
+    synchronizeGeneratedTokenTypes: vi.fn(),
+  };
+});
 
 const tempRoots: string[] = [];
 
@@ -129,6 +143,12 @@ function countOccurrences(source: string, pattern: RegExp) {
 beforeEach(() => {
   vi.mocked(generateComponentWebsitePage).mockReset();
   vi.mocked(generateComponentWebsitePage).mockReturnValue({
+    createdFiles: [],
+    updatedFiles: [],
+  });
+
+  vi.mocked(synchronizeGeneratedTokenTypes).mockReset();
+  vi.mocked(synchronizeGeneratedTokenTypes).mockReturnValue({
     createdFiles: [],
     updatedFiles: [],
   });
@@ -1391,6 +1411,119 @@ describe('component generator check mode', () => {
 });
 
 describe('component-token run intent', () => {
+  it('plans generated token types as an updated artifact in dry-run mode', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    const options = {
+      componentName: 'Avatar',
+      platform: 'both',
+      layer: 'primitives',
+      category: 'data-display',
+      profile: 'base',
+      componentTokens: 'standard',
+      parts: [],
+      force: false,
+    } as const;
+
+    const tokenTypesFile = getGeneratedTokenTypesFile(root);
+
+    const dryRun = await runComponentGenerator({
+      root,
+      options: {
+        ...options,
+        dryRun: true,
+      },
+    });
+
+    expect(dryRun.updatedFiles).toContain(tokenTypesFile);
+    expect(synchronizeGeneratedTokenTypes).not.toHaveBeenCalled();
+  });
+
+  it('synchronizes generated token types once and reports changed artifacts during write', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    const options = {
+      componentName: 'Avatar',
+      platform: 'both',
+      layer: 'primitives',
+      category: 'data-display',
+      profile: 'base',
+      componentTokens: 'standard',
+      parts: [],
+      force: false,
+    } as const;
+
+    const tokenTypesFile = getGeneratedTokenTypesFile(root);
+
+    vi.mocked(synchronizeGeneratedTokenTypes).mockReturnValue({
+      createdFiles: [],
+      updatedFiles: [tokenTypesFile],
+    });
+
+    const result = await runComponentGenerator({
+      root,
+      options,
+    });
+
+    expect(synchronizeGeneratedTokenTypes).toHaveBeenCalledTimes(1);
+    expect(synchronizeGeneratedTokenTypes).toHaveBeenCalledWith({
+      root,
+    });
+    expect(result.updatedFiles).toContain(tokenTypesFile);
+  });
+
+  it('does not report generated token types when synchronization is unchanged', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    const result = await runComponentGenerator({
+      root,
+      options: {
+        componentName: 'Avatar',
+        platform: 'both',
+        layer: 'primitives',
+        category: 'data-display',
+        profile: 'base',
+        componentTokens: 'standard',
+        parts: [],
+        force: false,
+      },
+    });
+
+    expect(synchronizeGeneratedTokenTypes).toHaveBeenCalledTimes(1);
+    expect(result.createdFiles).not.toContain(getGeneratedTokenTypesFile(root));
+    expect(result.updatedFiles).not.toContain(getGeneratedTokenTypesFile(root));
+  });
+
+  it('fails closed when generated token type synchronization fails', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    vi.mocked(synchronizeGeneratedTokenTypes).mockImplementation(() => {
+      throw new Error('Generated token type synchronization failed.');
+    });
+
+    await expect(
+      runComponentGenerator({
+        root,
+        options: {
+          componentName: 'Avatar',
+          platform: 'both',
+          layer: 'primitives',
+          category: 'data-display',
+          profile: 'base',
+          componentTokens: 'standard',
+          parts: [],
+          force: false,
+        },
+      })
+    ).rejects.toThrow('Generated token type synchronization failed.');
+
+    expect(generateComponentWebsitePage).not.toHaveBeenCalled();
+  });
+
   it('keeps explicit tokenless intent aligned across dry-run and write', async () => {
     const root = createTempRoot();
     createRequiredRepositoryStructure(root);
@@ -1415,6 +1548,7 @@ describe('component-token run intent', () => {
     });
 
     expect(dryRun.createdFiles).not.toContain(dryRun.plan.tokenFactoryFile);
+    expect(dryRun.updatedFiles).not.toContain(getGeneratedTokenTypesFile(root));
 
     for (const target of dryRun.plan.tokenThemeTargets) {
       expect(dryRun.createdFiles).not.toContain(target.componentFile);
@@ -1428,6 +1562,8 @@ describe('component-token run intent', () => {
     for (const target of result.plan.tokenThemeTargets) {
       expect(fs.existsSync(target.componentFile)).toBe(false);
     }
+
+    expect(synchronizeGeneratedTokenTypes).not.toHaveBeenCalled();
 
     expect(readFile(result.plan.metadataFile)).toContain(
       'componentTokens: false'

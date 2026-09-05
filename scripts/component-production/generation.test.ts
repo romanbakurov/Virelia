@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { ComponentGenerationPlan } from '../generators/component/plan';
+import { synchronizeGeneratedTokenTypes } from '../generators/component/token-types';
 import { generateComponentWebsitePage } from '../generators/component/website';
 
 import type { ComponentProductionInputV1 } from './contracts';
@@ -12,6 +13,10 @@ import { runComponentProductionGeneration } from './generation';
 
 vi.mock('../generators/component/website', () => ({
   generateComponentWebsitePage: vi.fn(),
+}));
+
+vi.mock('../generators/component/token-types', () => ({
+  synchronizeGeneratedTokenTypes: vi.fn(),
 }));
 
 const tempRoots: string[] = [];
@@ -139,6 +144,12 @@ function createTokenRegistry(root: string) {
 beforeEach(() => {
   vi.mocked(generateComponentWebsitePage).mockReset();
   vi.mocked(generateComponentWebsitePage).mockReturnValue({
+    createdFiles: [],
+    updatedFiles: [],
+  });
+
+  vi.mocked(synchronizeGeneratedTokenTypes).mockReset();
+  vi.mocked(synchronizeGeneratedTokenTypes).mockReturnValue({
     createdFiles: [],
     updatedFiles: [],
   });

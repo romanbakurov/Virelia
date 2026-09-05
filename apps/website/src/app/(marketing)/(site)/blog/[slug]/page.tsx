@@ -6,12 +6,14 @@ import {
   getPublishedBlogArticleMetadata,
   getPublishedBlogArticles,
 } from '@/blog';
+import { getRelatedBlogArticles } from '@/blog/relatedArticles';
 import {
   buildBlogArticleJsonLd,
   buildBlogArticleMetadata,
   serializeJsonLd,
 } from '@/blog/seo';
 import { BlogArticleView } from '@/blog/ui';
+import { BackToTop } from '@/components/navigation/BackToTop';
 
 interface BlogArticlePageProps {
   params: Promise<{
@@ -46,13 +48,20 @@ export default async function BlogArticlePage({
   params,
 }: BlogArticlePageProps) {
   const { slug } = await params;
-  const article = await getPublishedBlogArticle(slug);
+  const [article, publishedArticles] = await Promise.all([
+    getPublishedBlogArticle(slug),
+    getPublishedBlogArticles(),
+  ]);
 
   if (!article) {
     notFound();
   }
 
   const jsonLd = buildBlogArticleJsonLd(article.metadata);
+  const relatedArticles = getRelatedBlogArticles(
+    article.metadata,
+    publishedArticles
+  );
 
   return (
     <>
@@ -60,7 +69,8 @@ export default async function BlogArticlePage({
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <BlogArticleView article={article} />
+      <BlogArticleView article={article} relatedArticles={relatedArticles} />
+      <BackToTop />
     </>
   );
 }

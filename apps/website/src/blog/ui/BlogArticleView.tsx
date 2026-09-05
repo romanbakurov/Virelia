@@ -1,8 +1,9 @@
 import Link from 'next/link';
 
 import { Container } from '@/components/layout/Container';
-import type { BlogArticle } from '@/blog';
+import type { BlogArticle, BlogArticleMetadata } from '@/blog';
 import { BlogArticleActions } from './BlogArticleActions';
+import { BlogContinueReading } from './BlogContinueReading';
 import { formatBlogDate } from './formatBlogDate';
 
 import responsive from './BlogArticleResponsive.module.css';
@@ -10,9 +11,13 @@ import styles from './BlogExperience.module.css';
 
 interface BlogArticleViewProps {
   article: BlogArticle;
+  relatedArticles?: readonly BlogArticleMetadata[];
 }
 
-export function BlogArticleView({ article }: BlogArticleViewProps) {
+export function BlogArticleView({
+  article,
+  relatedArticles = [],
+}: BlogArticleViewProps) {
   const { metadata, Content } = article;
 
   return (
@@ -79,6 +84,7 @@ export function BlogArticleView({ article }: BlogArticleViewProps) {
           </div>
 
           <BlogArticleActions slug={metadata.slug} title={metadata.title} />
+          <BlogContinueReading articles={relatedArticles} />
         </Container>
       </article>
     </main>
