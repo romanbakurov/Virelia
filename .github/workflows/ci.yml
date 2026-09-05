@@ -37,15 +37,19 @@ jobs:
       - name: Quality checks
         shell: bash
         run: |
+          cp apps/website/src/blog/ui/BlogIndex.tsx /tmp/BlogIndex.before.tsx
+          cp scripts/blog/blog-topic-filter-experience.test.tsx /tmp/blog-topic-filter-experience.before.tsx
+          cp scripts/blog/blog-topic-filters.test.ts /tmp/blog-topic-filters.before.ts
+
           pnpm exec prettier \
             apps/website/src/blog/ui/BlogIndex.tsx \
             scripts/blog/blog-topic-filter-experience.test.tsx \
             scripts/blog/blog-topic-filters.test.ts \
             --write
-          git diff -- \
-            apps/website/src/blog/ui/BlogIndex.tsx \
-            scripts/blog/blog-topic-filter-experience.test.tsx \
-            scripts/blog/blog-topic-filters.test.ts
+
+          diff -u /tmp/BlogIndex.before.tsx apps/website/src/blog/ui/BlogIndex.tsx || true
+          diff -u /tmp/blog-topic-filter-experience.before.tsx scripts/blog/blog-topic-filter-experience.test.tsx || true
+          diff -u /tmp/blog-topic-filters.before.ts scripts/blog/blog-topic-filters.test.ts || true
           exit 1
 
       - name: Component Quality Checker
