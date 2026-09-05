@@ -169,6 +169,8 @@ export function App() {
 
 Explore the [Documentation](https://docs.vellira.dev) for complete guides and the [Storybook](https://storybook.vellira.dev) for interactive component examples.
 
+Want a practical cross-platform walkthrough? Read [Building a Cross-Platform Form with Vellira](https://vellira.dev/blog/cross-platform-form-vellira) to see FormField, Input, Select, Checkbox, and Button composed for React and React Native.
+
 ### More complete example
 
 The compound Select API shows a richer component with labels, descriptions, groups, badges, and clearable state:
