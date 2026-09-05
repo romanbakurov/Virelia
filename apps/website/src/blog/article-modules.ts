@@ -19,6 +19,8 @@ const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
       import('../../content/blog/component-metadata-source-of-truth/article.mdx'),
     'controlled-uncontrolled-react-native': () =>
       import('../../content/blog/controlled-uncontrolled-react-native/article.mdx'),
+    'cross-platform-form-vellira': () =>
+      import('../../content/blog/cross-platform-form-vellira/article.mdx'),
     'design-system-component-generator': () =>
       import('../../content/blog/design-system-component-generator/article.mdx'),
     'production-ready-cross-platform-component': () =>
