@@ -321,6 +321,10 @@ function qualityFindingPath(
     }
 
     const withoutLocation = rawCandidate.replace(/:\d+(?::\d+)?$/, '');
+
+    if (/\s/.test(withoutLocation) || withoutLocation.includes(':')) {
+      continue;
+    }
     const normalized = path.posix.normalize(
       withoutLocation.replaceAll('\\', '/')
     );

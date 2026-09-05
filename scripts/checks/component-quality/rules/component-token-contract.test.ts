@@ -86,7 +86,40 @@ describe('component token contract quality rule', () => {
       rootDir: root,
     });
 
-    expect(result).toMatchObject({ status: 'fail' });
+    expect(result).toMatchObject({
+      status: 'fail',
+      evidence: [
+        'packages/react/src/components/Probe/Probe.module.scss — missing Web component-token usage: expected CSS variables with prefix --probe-',
+      ],
+    });
+  });
+
+  it('reports the exact React Native style path for missing component-token consumption', () => {
+    const root = createRoot();
+    createTokenContract(root);
+
+    const componentDir = path.join(
+      root,
+      'packages/react-native/src/components/Probe'
+    );
+    fs.mkdirSync(componentDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(componentDir, 'Probe.styles.ts'),
+      'export const createStyles = (theme: any) => ({ color: theme.colors.text });\n'
+    );
+
+    const result = componentTokenContractRule.evaluate({
+      metadata: metadata(),
+      platform: 'react-native',
+      rootDir: root,
+    });
+
+    expect(result).toMatchObject({
+      status: 'fail',
+      evidence: [
+        'packages/react-native/src/components/Probe/Probe.styles.ts — missing React Native component-token usage: expected theme.components.probe',
+      ],
+    });
   });
 
   it('accepts canonical component token consumption on Web and Native', () => {
