@@ -229,6 +229,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                   <button
                     type='button'
                     className={searchStyles.resetSearch}
+                    aria-label='Clear search and show all articles'
                     onClick={() => updateQuery('')}
                   >
                     Clear search
