@@ -29,6 +29,7 @@ const createPlan = (
   capabilities: [],
   icons: [],
   tokens: [],
+  componentTokens: 'standard',
   parts: profile === 'compound' ? ['Root', 'Trigger', 'Content'] : [],
   force: false,
   targets: [],

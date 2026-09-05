@@ -5,10 +5,13 @@
 
 import { Accordion } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
 import { AccordionPlayground } from './AccordionPlayground';
 
 export function NativeAccordionDemo() {
+  const { theme: nativeTheme } = useTheme();
+
   return (
     <AccordionPlayground
       platform='react-native'
@@ -24,6 +27,7 @@ export function NativeAccordionDemo() {
             <Accordion.Content>
               <NativeText
                 style={{
+                  color: nativeTheme.components.accordion.content.fg,
                   fontFamily: 'VelliraSans-Regular',
                   fontSize: 16,
                   lineHeight: 22,
@@ -38,6 +42,7 @@ export function NativeAccordionDemo() {
             <Accordion.Content>
               <NativeText
                 style={{
+                  color: nativeTheme.components.accordion.content.fg,
                   fontFamily: 'VelliraSans-Regular',
                   fontSize: 16,
                   lineHeight: 22,

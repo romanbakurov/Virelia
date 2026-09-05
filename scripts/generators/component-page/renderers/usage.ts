@@ -11,6 +11,17 @@ function normalizePropFragments(props: readonly string[]) {
   );
 }
 
+function normalizeSetupStatements(statements: readonly string[]) {
+  return statements.map((statement) => statement.trim()).filter(Boolean);
+}
+
+function indentBlock(source: string, indentation: string) {
+  return source
+    .split('\n')
+    .map((line) => `${indentation}${line}`)
+    .join('\n');
+}
+
 export function renderUsage(params: {
   componentName: string;
   componentConfig: ComponentPageMetadata;
@@ -87,12 +98,26 @@ export function renderUsage(params: {
     return imports.length > 0 ? `\n${imports.join('\n')}` : '';
   }
 
+  function createPlatformSetup(platform: Platform) {
+    const setup =
+      platform === 'react'
+        ? (componentConfig.react?.setup ?? [])
+        : (componentConfig.native?.setup ?? []);
+
+    return normalizeSetupStatements(setup)
+      .map((statement) => indentBlock(statement, '  '))
+      .join('\n');
+  }
+
   const reactUsageStaticProps = createUsageStaticProps('react');
   const nativeUsageStaticProps = createUsageStaticProps('react-native');
   const reactUsageChildren = createUsageChildren('react');
   const nativeUsageChildren = createUsageChildren('react-native');
   const reactPlatformImports = createPlatformImports('react');
   const nativePlatformImports = createPlatformImports('react-native');
+  const reactPlatformSetup = createPlatformSetup('react');
+  const nativePlatformSetup = createPlatformSetup('react-native');
+  const hasPlatformSetup = Boolean(reactPlatformSetup || nativePlatformSetup);
   const reactApiPropNames = new Set(reactApiProps.map((prop) => prop.name));
   const nativeApiPropNames = new Set(nativeApiProps.map((prop) => prop.name));
   const hasPlaygroundState = playgroundProps.length > 0;
@@ -106,6 +131,55 @@ export function renderUsage(params: {
   const demoStateUsage = hasPlaygroundState
     ? `  const [value] =\n    useComponentDemoState<${componentName}PlaygroundValue>(\n      initial${componentName}PlaygroundValue\n    );\n\n`
     : '';
+  const setupAwareCode = hasPlatformSetup
+    ? `
+  const imports = \`import { ${componentName} } from '\${packageName}';\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}\`;
+
+  const setup =
+    platform === 'react'
+      ? ${toTemplateLiteral(reactPlatformSetup)}
+      : ${toTemplateLiteral(nativePlatformSetup)};
+
+  const root = !children
+    ? \`<${componentName}\${propsText}/>\`
+    : \`<${componentName}\${propsText}>
+\${children}
+</${componentName}>\`;
+
+  if (setup) {
+    const indentedRoot = root
+      .split('\\n')
+      .map((line) => \`    \${line}\`)
+      .join('\\n');
+
+    return \`\${imports}
+
+function Example() {
+\${setup}
+
+  return (
+\${indentedRoot}
+  );
+}\`;
+  }
+
+  return \`\${imports}
+
+\${root}\`;`
+    : `
+  if (!children) {
+    return \`import { ${componentName} } from '\${packageName}';
+\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
+
+<${componentName}\${propsText}/>\`;
+  }
+
+  return \`import { ${componentName} } from '\${packageName}';
+\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
+
+<${componentName}\${propsText}>
+\${children}
+</${componentName}>\`;`;
 
   const content = `${generatedFileHeader}'use client';
 
@@ -122,9 +196,7 @@ function create${componentName}Code(
   platform: ComponentPlatform${usageValueParameter}
 ) {
   const packageName =
-    platform === 'react'
-      ? '@vellira-ui/react'
-      : '@vellira-ui/react-native';
+    platform === 'react' ? '@vellira-ui/react' : '@vellira-ui/react-native';
 
   const props: string[] =
     platform === 'react'
@@ -190,20 +262,7 @@ ${playgroundProps
 
   const propsText =
     props.length === 0 ? '' : \`\\n  \${props.join('\\n  ')}\\n\`;
-
-  if (!children) {
-    return \`import { ${componentName} } from '\${packageName}';
-\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
-
-<${componentName}\${propsText}/>\`;
-  }
-
-  return \`import { ${componentName} } from '\${packageName}';
-\${platform === 'react' ? ${toTemplateLiteral(reactPlatformImports)} : ${toTemplateLiteral(nativePlatformImports)}}
-
-<${componentName}\${propsText}>
-\${children}
-</${componentName}>\`;
+${setupAwareCode}
 }
 
 export function ${componentName}Usage({

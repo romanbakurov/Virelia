@@ -524,7 +524,7 @@ describe('component generator preflight', () => {
     }
   });
 
-  it('does not treat token files as generator-owned targets for compound profiles', () => {
+  it('does not treat token files as generator-owned targets for explicit tokenless intent', () => {
     const root = createTempRoot();
     createLayerBarrels(root, 'components');
 
@@ -536,6 +536,7 @@ describe('component generator preflight', () => {
         layer: 'components',
         category: 'navigation',
         profile: 'compound',
+        componentTokens: false,
         parts: ['Root', 'Item', 'Trigger', 'Content'],
         force: false,
       },
@@ -807,4 +808,41 @@ export const componentMetadata = [
       expect(fs.existsSync(target.componentDir)).toBe(false);
     }
   });
+});
+
+describe('component-token preflight parity', () => {
+  it.each([
+    ['compound', 'DisclosureProbe', ['Root', 'Trigger', 'Content']],
+    ['overlay', 'OverlayProbe', ['Root', 'Trigger', 'Content']],
+  ] as const)(
+    'detects token targets for %s profiles independently of visual scaffold',
+    (profile, componentName, parts) => {
+      const root = createTempRoot();
+      createLayerBarrels(root, 'components');
+
+      const plan = createComponentGenerationPlan({
+        root,
+        options: {
+          componentName,
+          platform: 'both',
+          layer: 'components',
+          category: profile === 'overlay' ? 'overlay' : 'navigation',
+          profile,
+          parts,
+          force: false,
+        },
+      });
+
+      fs.mkdirSync(path.dirname(plan.tokenFactoryFile), { recursive: true });
+      fs.writeFileSync(plan.tokenFactoryFile, 'existing token contract\n');
+
+      const result = validateComponentGenerationPlan(plan);
+
+      expect(result.ok).toBe(false);
+
+      if (!result.ok) {
+        expect(result.errors.join('\n')).toContain(plan.tokenFactoryFile);
+      }
+    }
+  );
 });

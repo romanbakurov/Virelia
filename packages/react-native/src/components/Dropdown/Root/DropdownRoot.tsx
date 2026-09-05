@@ -114,8 +114,12 @@ export function DropdownRoot({
 
   const contentPresentation = presentationFromSlot ?? resolvedPresentation;
 
-  const { position, updatePosition, onFloatingLayout } =
-    useNativeFloatingPosition(placement, offset);
+  const {
+    isPositioned: positionReady,
+    position,
+    updatePosition,
+    onFloatingLayout,
+  } = useNativeFloatingPosition(placement, offset);
 
   const { isOpen, closeDropdown, toggleDropdown } = useDropdown({
     items: navigableItems,
@@ -228,6 +232,7 @@ export function DropdownRoot({
       color,
       size,
       presentation: contentPresentation,
+      positionReady,
       position,
       zIndex: dismiss.zIndex,
 
@@ -260,6 +265,7 @@ export function DropdownRoot({
       loading,
       onFloatingLayout,
       position,
+      positionReady,
       resolvedSearchPlaceholder,
       resolvedSearchValue,
       searchAccessibilityLabel,

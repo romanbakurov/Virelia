@@ -13,23 +13,25 @@ const siteFooterSource = readFileSync(
 );
 
 describe('site navigation prefetch policy', () => {
-  it('disables prefetch only for home brand and section-anchor links', () => {
-    const headerSectionPrefetch =
+  it('prefetches top-level pages and disables prefetch for section-anchor links', () => {
+    const desktopPagePrefetch = "prefetch={item.type === 'page'}";
+    const mobileSectionPrefetch =
       "prefetch={item.type === 'section' ? false : undefined}";
     const footerSectionPrefetch =
       "prefetch={link.href.startsWith('/#') ? false : undefined}";
 
     expect(siteHeaderSource).toContain(
-      "<Link href='/' prefetch={false} className={styles.brand}>"
+      "<Link href='/' prefetch className={styles.brand}>"
     );
-    expect(siteHeaderSource.split(headerSectionPrefetch)).toHaveLength(3);
+    expect(siteHeaderSource).toContain("router.prefetch('/');");
+    expect(siteHeaderSource).toContain("router.prefetch('/components');");
+    expect(siteHeaderSource).toContain("router.prefetch('/blog');");
+    expect(siteHeaderSource).toContain(desktopPagePrefetch);
+    expect(siteHeaderSource).toContain(mobileSectionPrefetch);
     expect(siteHeaderSource).toContain('href={item.href}');
 
     expect(siteFooterSource).toContain('prefetch={false}');
     expect(siteFooterSource).toContain(footerSectionPrefetch);
-    expect(
-      `${siteHeaderSource}\n${siteFooterSource}`.split('prefetch={false}')
-    ).toHaveLength(3);
     expect(siteFooterSource).toContain('{productLinks.map((link) => (');
   });
 });

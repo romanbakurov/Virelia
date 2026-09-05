@@ -474,10 +474,10 @@ describe('component generator writer', () => {
       expect(fs.existsSync(styleFile)).toBe(false);
     }
 
-    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(false);
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(true);
 
     for (const tokenTarget of plan.tokenThemeTargets) {
-      expect(fs.existsSync(tokenTarget.componentFile)).toBe(false);
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(true);
     }
   });
 
@@ -637,10 +637,10 @@ describe('component generator writer', () => {
       )
     ).toBe(false);
 
-    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(false);
+    expect(fs.existsSync(plan.tokenFactoryFile)).toBe(true);
 
     for (const tokenTarget of plan.tokenThemeTargets) {
-      expect(fs.existsSync(tokenTarget.componentFile)).toBe(false);
+      expect(fs.existsSync(tokenTarget.componentFile)).toBe(true);
     }
   });
 

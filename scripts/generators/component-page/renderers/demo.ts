@@ -78,6 +78,26 @@ export function renderDemoFiles(params: {
       .join('\n          ');
   }
 
+  function createPlatformSetup(platform: Platform) {
+    const statements =
+      platform === 'react'
+        ? (componentConfig.react?.setup ?? [])
+        : (componentConfig.native?.setup ?? []);
+
+    if (statements.length === 0) return '';
+
+    const setup = statements
+      .map((statement) => statement.trim())
+      .filter(Boolean)
+      .map((statement) => `  ${statement}`)
+      .join('\n');
+
+    return setup ? `${setup}\n\n` : '';
+  }
+
+  const reactPlatformSetup = createPlatformSetup('react');
+  const nativePlatformSetup = createPlatformSetup('react-native');
+
   const nativeResponsiveImport = nativeResponsivePresentation
     ? `import { useWindowDimensions } from 'react-native';\n`
     : '';
@@ -168,7 +188,7 @@ ${componentConfig.react?.imports?.join('\n') ?? ''}
 import { ${componentName}Playground } from './${componentName}Playground';
 
 export function ${componentName}Demo() {
-  return (
+${reactPlatformSetup}  return (
     <${componentName}Playground
       platform='react'
       render${componentName}={${demoRenderParams} => (
@@ -187,7 +207,7 @@ ${componentConfig.native?.imports?.join('\n') ?? ''}
 import { ${componentName}Playground } from './${componentName}Playground';
 
 export function Native${componentName}Demo() {
-${nativeResponsiveSetup}  return (
+${nativePlatformSetup}${nativeResponsiveSetup}  return (
     <${componentName}Playground
       platform='react-native'
       render${componentName}={${demoRenderParams} => (

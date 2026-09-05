@@ -13,6 +13,7 @@ export type ComponentPlatformMetadata = {
   children?: string;
   childPropBindings?: readonly ComponentChildPropBinding[];
   imports?: readonly string[];
+  setup?: readonly string[];
   responsivePresentation?: boolean;
 };
 

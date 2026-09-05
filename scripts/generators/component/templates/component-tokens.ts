@@ -1,7 +1,10 @@
+import type { ComponentTokenContract } from '@vellira-ui/metadata';
+
 import type { ComponentProfileArg, FormControlKindArg } from '../cli';
 import type { ComponentTemplateParams } from './component-types';
 
 export type ComponentTokensTemplateParams = ComponentTemplateParams & {
+  componentTokens?: ComponentTokenContract;
   profile?: ComponentProfileArg;
   control?: FormControlKindArg;
 };
@@ -10,12 +13,27 @@ function lowerCamel(componentName: string) {
   return `${componentName[0].toLowerCase()}${componentName.slice(1)}`;
 }
 
-export function renderComponentTokenFactoryTemplate({
-  componentName,
+function resolveTemplateContract({
+  componentTokens,
   profile = 'base',
   control = 'value',
-}: ComponentTokensTemplateParams) {
+}: ComponentTokensTemplateParams): ComponentTokenContract {
+  if (componentTokens) return componentTokens;
+
   if (profile === 'form-control' && control === 'boolean') {
+    return 'boolean-control';
+  }
+
+  return 'standard';
+}
+
+export function renderComponentTokenFactoryTemplate(
+  params: ComponentTokensTemplateParams
+) {
+  const { componentName } = params;
+  const contract = resolveTemplateContract(params);
+
+  if (contract === 'boolean-control') {
     return `export type ${componentName}VisualState = {
   trackBg: string;
   trackBorder: string;
@@ -48,9 +66,40 @@ export type ${componentName}TokensConfig = {
   disabled: ${componentName}VisualState;
 };
 
-export const create${componentName}Tokens = (
-  config: ${componentName}TokensConfig
-) => config;
+export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
+`;
+  }
+
+  if (contract === 'disclosure') {
+    return `export type ${componentName}TriggerState = {
+  bg: string;
+  fg: string;
+};
+
+export type ${componentName}TokensConfig = {
+  root: {
+    bg: string;
+    border: string;
+  };
+  divider: string;
+  trigger: {
+    default: ${componentName}TriggerState;
+    expanded: {
+      bg: string;
+    };
+    hover: ${componentName}TriggerState;
+    pressed: ${componentName}TriggerState;
+    disabled: ${componentName}TriggerState;
+  };
+  indicator: string;
+  content: {
+    bg: string;
+    fg: string;
+  };
+  focusRing: string;
+};
+
+export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
 `;
   }
 
@@ -73,20 +122,18 @@ export type ${componentName}TokensConfig = {
   disabled: ${componentName}VisualState;
 };
 
-export const create${componentName}Tokens = (
-  config: ${componentName}TokensConfig
-) => config;
+export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
 `;
 }
 
-export function renderThemeComponentTokensTemplate({
-  componentName,
-  profile = 'base',
-  control = 'value',
-}: ComponentTokensTemplateParams) {
+export function renderThemeComponentTokensTemplate(
+  params: ComponentTokensTemplateParams
+) {
+  const { componentName } = params;
   const tokenName = `${lowerCamel(componentName)}Tokens`;
+  const contract = resolveTemplateContract(params);
 
-  if (profile === 'form-control' && control === 'boolean') {
+  if (contract === 'boolean-control') {
     return `import { create${componentName}Tokens } from '../../factories/create${componentName}Tokens.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
@@ -134,6 +181,50 @@ export const ${tokenName} = create${componentName}Tokens({
     trackBorder: control.disabled.border,
     thumbBg: control.disabled.fg,
   },
+});
+`;
+  }
+
+  if (contract === 'disclosure') {
+    return `import { create${componentName}Tokens } from '../../factories/create${componentName}Tokens.js';
+import { border } from '../semantic/border.js';
+import { focus } from '../semantic/focus.js';
+import { surface } from '../semantic/surface.js';
+import { text } from '../semantic/text.js';
+
+export const ${tokenName} = create${componentName}Tokens({
+  root: {
+    bg: surface.default,
+    border: border.muted,
+  },
+  divider: border.muted,
+  trigger: {
+    default: {
+      bg: surface.default,
+      fg: text.primary,
+    },
+    expanded: {
+      bg: surface.subtle,
+    },
+    hover: {
+      bg: surface.hover,
+      fg: text.primary,
+    },
+    pressed: {
+      bg: surface.pressed,
+      fg: text.primary,
+    },
+    disabled: {
+      bg: surface.disabled,
+      fg: text.disabled,
+    },
+  },
+  indicator: text.secondary,
+  content: {
+    bg: surface.subtle,
+    fg: text.secondary,
+  },
+  focusRing: focus.ring.color,
 });
 `;
   }

@@ -200,41 +200,46 @@ describe('Blog V1 index experience', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('fetches /blog metrics with one batch request for all article slugs', async () => {
-    vi.resetModules();
-
+  it('fetches /blog metrics with one client batch request for all article slugs', async () => {
     const articles = [
       createMetadata({ slug: 'one-runtime' }),
       createMetadata({ slug: 'two-runtimes' }),
     ];
-    const getPublishedBlogArticles = vi.fn().mockResolvedValue(articles);
-    const fetchBlogMetricsBatch = vi.fn().mockResolvedValue({
-      'one-runtime': createMetrics('one-runtime'),
-      'two-runtimes': createMetrics('two-runtimes'),
+
+    const { calls } = installArticleMetricsFetch((call) => {
+      if (call.url.includes('/v1/blog/metrics?')) {
+        return jsonResponse({
+          items: [createMetrics('one-runtime'), createMetrics('two-runtimes')],
+        });
+      }
+
+      if (call.url.endsWith('/like') && !call.init?.method) {
+        const slug = call.url.includes('one-runtime')
+          ? 'one-runtime'
+          : 'two-runtimes';
+
+        return jsonResponse({
+          slug,
+          liked: false,
+        });
+      }
+
+      return jsonResponse({}, 404);
     });
-    const BlogIndexMock = vi.fn(() => null);
 
-    vi.doMock('@/blog', () => ({ getPublishedBlogArticles }));
-    vi.doMock('@/blog/metrics', () => ({ fetchBlogMetricsBatch }));
-    vi.doMock('@/blog/ui', () => ({ BlogIndex: BlogIndexMock }));
+    render(<BlogIndex articles={articles} />);
 
-    const { default: BlogPage } =
-      await import('../../apps/website/src/app/(marketing)/(site)/blog/page');
+    await waitFor(() =>
+      expect(screen.getAllByLabelText('12 views')).toHaveLength(2)
+    );
 
-    const element = await BlogPage();
+    const batchCalls = calls.filter((call) =>
+      call.url.includes('/v1/blog/metrics?')
+    );
 
-    expect(fetchBlogMetricsBatch).toHaveBeenCalledTimes(1);
-    expect(fetchBlogMetricsBatch).toHaveBeenCalledWith([
-      'one-runtime',
-      'two-runtimes',
-    ]);
-    expect((element as React.ReactElement).props).toEqual({
-      articles,
-      metricsBySlug: {
-        'one-runtime': createMetrics('one-runtime'),
-        'two-runtimes': createMetrics('two-runtimes'),
-      },
-    });
+    expect(batchCalls).toHaveLength(1);
+    expect(batchCalls[0]?.url).toContain('slug=one-runtime');
+    expect(batchCalls[0]?.url).toContain('slug=two-runtimes');
   });
 
   it('retries a failed batch metrics read once with the same slug set', async () => {

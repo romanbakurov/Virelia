@@ -3,7 +3,7 @@
 import { useCallback, useState, useEffect, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { externalNavigation, marketingNavigation } from '@/config/navigation';
 import type { SiteHeaderProps } from './types';
@@ -93,6 +93,7 @@ export function SiteHeader({
   onMobileMenuOpenChange,
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [activeHref, setActiveHref] = useState<string | null>(null);
   const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
 
@@ -109,6 +110,12 @@ export function SiteHeader({
     },
     [onMobileMenuOpenChange]
   );
+
+  useEffect(() => {
+    router.prefetch('/');
+    router.prefetch('/components');
+    router.prefetch('/blog');
+  }, [router]);
 
   useEffect(() => {
     if (!resolvedMobileMenuOpen) {
@@ -187,7 +194,7 @@ export function SiteHeader({
         .join(' ')}
     >
       <div className={styles.container}>
-        <Link href='/' prefetch={false} className={styles.brand}>
+        <Link href='/' prefetch className={styles.brand}>
           <Image
             src='/brand/logos/logo-gradient.svg'
             alt='Vellira'
@@ -235,7 +242,7 @@ export function SiteHeader({
                   <Tabs.Trigger key={item.label} value={item.href} asChild>
                     <Link
                       href={item.href}
-                      prefetch={item.type === 'section' ? false : undefined}
+                      prefetch={item.type === 'page'}
                       className={styles.navigationLink}
                       onClick={(event) => {
                         if (item.type !== 'section' || pathname !== '/') {

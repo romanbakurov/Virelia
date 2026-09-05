@@ -2,8 +2,11 @@ import { defineComponentPageMetadata } from '../../metadata';
 
 const nativeTextImport =
   `import { Text as NativeText } from 'react-native';` as const;
+const nativeThemeImport =
+  `import { useTheme } from '@vellira-ui/react-native';` as const;
 
 const nativeTextStyle = `style={{
+      color: nativeTheme.components.accordion.content.fg,
       fontFamily: 'VelliraSans-Regular',
       fontSize: 16,
       lineHeight: 22,
@@ -52,7 +55,8 @@ export default defineComponentPageMetadata({
     </NativeText>
   </Accordion.Content>
 </Accordion.Item>`,
-    imports: [nativeTextImport],
+    imports: [nativeTextImport, nativeThemeImport],
+    setup: ['const { theme: nativeTheme } = useTheme();'],
   },
   examples: [
     {

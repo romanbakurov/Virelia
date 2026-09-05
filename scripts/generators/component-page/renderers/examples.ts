@@ -224,7 +224,13 @@ export function renderExamples(params: {
   }
 
   function getExampleSetup(platform: Platform, example: GeneratedExample) {
+    const platformSetup =
+      platform === 'react'
+        ? (componentConfig.react?.setup ?? [])
+        : (componentConfig.native?.setup ?? []);
+
     return normalizeSetupStatements([
+      ...platformSetup,
       ...(example.setup ?? []),
       ...(platform === 'react'
         ? (example.reactSetup ?? [])
