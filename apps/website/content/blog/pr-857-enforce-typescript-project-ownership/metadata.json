@@ -1,0 +1,9 @@
+{
+  "title": "Enforcing TypeScript project ownership in Vellira",
+  "description": "Focused tests cover these review boundaries—not runtime guarantees: “calculates z-index from level base and stack order unless explicitly set” and “moves an existing overlay to the top when it registers again”.",
+  "slug": "pr-857-enforce-typescript-project-ownership",
+  "publishedAt": "2026-09-05",
+  "author": "Roman Bakurov",
+  "tags": ["Engineering", "Vellira"],
+  "draft": true
+}

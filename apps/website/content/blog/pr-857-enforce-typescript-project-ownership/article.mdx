@@ -1,0 +1,46 @@
+This change is easiest to review through the focused test cases around “calculates z-index from level base and stack order unless explicitly set” and “moves an existing overlay to the top when it registers again”. Those cases give the article concrete behavior to discuss while keeping broader runtime guarantees outside what the tests alone can establish.
+
+## What changed
+
+The test suite now covers “calculates z-index from level base and stack order unless explicitly set”, “moves an existing overlay to the top when it registers again”, and “registers overlays in stable stack order and exposes the topmost entry”. Those cases make the intended review boundary visible even when the change is centered on tooling rather than an application route.
+
+<details>
+<summary>Verified source details</summary>
+
+{/* vellira-claim:sha256:3805af99594fb75a8c3ad862f0ca124dfd3eb4a6b7d41750a04af3b65c2c3c4e */}
+Merged pull request #857 changed 32 bounded public repository paths at revision 3a62226d1f16e5b8730f4319fdf72a19ab5306c0.
+
+</details>
+
+## How it works
+
+The focused tests cover “calculates z-index from level base and stack order unless explicitly set”, “moves an existing overlay to the top when it registers again”, “registers overlays in stable stack order and exposes the topmost entry”, and “removes overlays without disturbing the remaining order”. These are test-suite boundaries, not standalone guarantees about code paths outside the inspected change.
+
+<details>
+<summary>Verified source details</summary>
+
+{/* vellira-claim:sha256:4a624cdb5e756d2296ca32a87fd5d4f1856d7f3cf036a1859714e5d5123d22e0 */}
+Pinned test evidence defines a static coverage case named “calculates z-index from level base and stack order unless explicitly set”.
+
+{/* vellira-claim:sha256:9eafbab7881b43af5d644a55af0e088544050be0a7eaf6704e5440644c57214e */}
+Pinned test evidence defines a static coverage case named “moves an existing overlay to the top when it registers again”.
+
+{/* vellira-claim:sha256:7f6130eda3db5ee2ac294f71b24f9e66cccfddb836027e57c0ed8dc95c539fa9 */}
+Pinned test evidence defines a static coverage case named “registers overlays in stable stack order and exposes the topmost entry”.
+
+{/* vellira-claim:sha256:b1b991b8db61453cbdf3a9cc36989b1070964f48ea108070c923745d1c644b4b */}
+Pinned test evidence defines a static coverage case named “removes overlays without disturbing the remaining order”.
+
+</details>
+
+## Current limitations
+
+This limitation is about scope rather than a product guarantee: the note covers the merged repository material and file snapshots used for this change, not unrelated code that was not inspected.
+
+<details>
+<summary>Source scope</summary>
+
+{/* vellira-claim:sha256:38fc2857f88dc6d9383e8bbe277baa5412098bce08d78c81c034abaab28fa7d7 */}
+Technical authority is bounded to merged public PR metadata and selected public file snapshots pinned to the referenced merge revisions; unselected repository content is not used to authorize article claims.
+
+</details>
