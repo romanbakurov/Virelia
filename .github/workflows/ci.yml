@@ -35,22 +35,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Quality checks
-        shell: bash
-        run: |
-          cp scripts/blog/blog-related-articles-experience.test.tsx /tmp/blog-related-articles-experience.test.tsx
-          cp scripts/blog/blog-related-articles.test.ts /tmp/blog-related-articles.test.ts
-
-          pnpm exec prettier \
-            scripts/blog/blog-related-articles-experience.test.tsx \
-            scripts/blog/blog-related-articles.test.ts \
-            --write
-
-          echo '=== blog-related-articles-experience.test.tsx ==='
-          diff -u /tmp/blog-related-articles-experience.test.tsx scripts/blog/blog-related-articles-experience.test.tsx || true
-          echo '=== blog-related-articles.test.ts ==='
-          diff -u /tmp/blog-related-articles.test.ts scripts/blog/blog-related-articles.test.ts || true
-
-          exit 1
+        run: pnpm ci:quality
 
       - name: Component Quality Checker
         id: component-quality

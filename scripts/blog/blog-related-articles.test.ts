@@ -52,8 +52,11 @@ describe('related blog articles', () => {
     });
 
     expect(
-      getRelatedBlogArticles(current, [current, newerWeakMatch, olderStrongMatch])
-        .map((article) => article.slug)
+      getRelatedBlogArticles(current, [
+        current,
+        newerWeakMatch,
+        olderStrongMatch,
+      ]).map((article) => article.slug)
     ).toEqual(['older-strong-match', 'newer-weak-match']);
   });
 
@@ -76,80 +79,81 @@ describe('related blog articles', () => {
     });
 
     expect(
-      getRelatedBlogArticles(current, [older, sameDateB, current, sameDateA]).map(
-        (article) => article.slug
-      )
+      getRelatedBlogArticles(current, [
+        older,
+        sameDateB,
+        current,
+        sameDateA,
+      ]).map((article) => article.slug)
     ).toEqual(['same-date-a', 'same-date-b', 'older']);
   });
 
-  it(
-    'fills remaining slots from articles adjacent to the current publication position',
-    () => {
-      const current = createArticle({
-        slug: 'current',
-        publishedAt: '2026-09-03',
-        tags: ['Unique topic'],
-      });
-      const newest = createArticle({
-        slug: 'newest',
-        publishedAt: '2026-09-05',
-        tags: ['A'],
-      });
-      const newer = createArticle({
-        slug: 'newer',
-        publishedAt: '2026-09-04',
-        tags: ['B'],
-      });
-      const older = createArticle({
-        slug: 'older',
-        publishedAt: '2026-09-02',
-        tags: ['C'],
-      });
-      const oldest = createArticle({
-        slug: 'oldest',
-        publishedAt: '2026-09-01',
-        tags: ['D'],
-      });
+  it('fills remaining slots from articles adjacent to the current publication position', () => {
+    const current = createArticle({
+      slug: 'current',
+      publishedAt: '2026-09-03',
+      tags: ['Unique topic'],
+    });
+    const newest = createArticle({
+      slug: 'newest',
+      publishedAt: '2026-09-05',
+      tags: ['A'],
+    });
+    const newer = createArticle({
+      slug: 'newer',
+      publishedAt: '2026-09-04',
+      tags: ['B'],
+    });
+    const older = createArticle({
+      slug: 'older',
+      publishedAt: '2026-09-02',
+      tags: ['C'],
+    });
+    const oldest = createArticle({
+      slug: 'oldest',
+      publishedAt: '2026-09-01',
+      tags: ['D'],
+    });
 
-      expect(
-        getRelatedBlogArticles(current, [oldest, newest, older, current, newer]).map(
-          (article) => article.slug
-        )
-      ).toEqual(['newer', 'older', 'newest']);
-    }
-  );
+    expect(
+      getRelatedBlogArticles(current, [
+        oldest,
+        newest,
+        older,
+        current,
+        newer,
+      ]).map((article) => article.slug)
+    ).toEqual(['newer', 'older', 'newest']);
+  });
 
-  it(
-    'keeps related results first and uses adjacency only for remaining slots',
-    () => {
-      const current = createArticle({
-        slug: 'current',
-        publishedAt: '2026-09-03',
-        tags: ['React'],
-      });
-      const related = createArticle({
-        slug: 'related',
-        publishedAt: '2026-08-01',
-        tags: ['React'],
-      });
-      const newer = createArticle({
-        slug: 'newer',
-        publishedAt: '2026-09-04',
-        tags: ['Tooling'],
-      });
-      const older = createArticle({
-        slug: 'older',
-        publishedAt: '2026-09-02',
-        tags: ['Accessibility'],
-      });
+  it('keeps related results first and uses adjacency only for remaining slots', () => {
+    const current = createArticle({
+      slug: 'current',
+      publishedAt: '2026-09-03',
+      tags: ['React'],
+    });
+    const related = createArticle({
+      slug: 'related',
+      publishedAt: '2026-08-01',
+      tags: ['React'],
+    });
+    const newer = createArticle({
+      slug: 'newer',
+      publishedAt: '2026-09-04',
+      tags: ['Tooling'],
+    });
+    const older = createArticle({
+      slug: 'older',
+      publishedAt: '2026-09-02',
+      tags: ['Accessibility'],
+    });
 
-      expect(
-        getRelatedBlogArticles(current, [current, newer, older, related]).map(
-          (article) => article.slug
-        )
-      ).toEqual(['related', 'newer', 'older']);
-    }
-  );
+    expect(
+      getRelatedBlogArticles(current, [current, newer, older, related]).map(
+        (article) => article.slug
+      )
+    ).toEqual(['related', 'newer', 'older']);
+  });
 
   it('never returns duplicate slugs and respects a custom limit', () => {
     const current = createArticle({ slug: 'current' });
@@ -161,9 +165,11 @@ describe('related blog articles', () => {
     const second = createArticle({ slug: 'second', publishedAt: '2026-09-01' });
 
     expect(
-      getRelatedBlogArticles(current, [current, duplicate, second, first], 2).map(
-        (article) => article.slug
-      )
+      getRelatedBlogArticles(
+        current,
+        [current, duplicate, second, first],
+        2
+      ).map((article) => article.slug)
     ).toEqual(['first', 'second']);
   });
 
