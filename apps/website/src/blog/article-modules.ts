@@ -25,6 +25,8 @@ const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
       import('../../content/blog/design-system-component-generator/article.mdx'),
     'production-ready-cross-platform-component': () =>
       import('../../content/blog/production-ready-cross-platform-component/article.mdx'),
+    'quality-gates-before-component-growth': () =>
+      import('../../content/blog/quality-gates-before-component-growth/article.mdx'),
     'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),
   };
 

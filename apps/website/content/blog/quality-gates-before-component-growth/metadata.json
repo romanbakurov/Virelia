@@ -1,0 +1,9 @@
+{
+  "title": "Why We Built Quality Gates Before Growing to 20 Components",
+  "description": "Why Vellira added deterministic completeness and quality checks before scaling its React and React Native component catalog toward 20 components.",
+  "slug": "quality-gates-before-component-growth",
+  "publishedAt": "2026-09-05",
+  "author": "Roman Bakurov",
+  "tags": ["Design Systems", "Testing", "CI", "React", "React Native"],
+  "draft": false
+}
