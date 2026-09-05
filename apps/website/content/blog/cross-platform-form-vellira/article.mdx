@@ -1,0 +1,821 @@
+A design system is easiest to understand when you build something real with it.
+
+For Vellira, a small form is a useful first use case because it crosses several boundaries at once: text input, validation state, choice selection, boolean state, submission, accessibility, and React/React Native differences.
+
+This article builds a small profile form from five public Vellira components:
+
+- **FormField** for field-level composition and messages;
+- **Input** for text entry;
+- **Select** for a structured choice;
+- **Checkbox** for a boolean decision;
+- **Button** for the final action.
+
+The goal is not to hide Web and native behind identical code. The goal is to keep the product model consistent while letting each runtime use the interaction and accessibility semantics it actually supports.
+
+## The form state belongs to the application
+
+Vellira provides component behavior and presentation. It does not try to become a form-state or business-validation framework.
+
+That boundary is useful.
+
+A small form can keep its application state in plain React:
+
+```tsx
+import { useState } from 'react';
+
+type ProfileForm = {
+  email: string;
+  framework: string | null;
+  updates: boolean;
+};
+
+const [form, setForm] = useState<ProfileForm>({
+  email: '',
+  framework: null,
+  updates: false,
+});
+```
+
+The shape is portable across React and React Native because it contains product data, not platform events.
+
+That works particularly well with the current Vellira APIs:
+
+```text
+Input    -> onValueChange(value: string)
+Select   -> onValueChange(value: string | null)
+Checkbox -> onCheckedChange(checked: boolean)
+```
+
+The application can therefore own one state model while each component owns the platform-specific interaction required to produce the next value.
+
+## Start with FormField and Input
+
+`Input` can render its own shorthand label, description, and error state. But `FormField` is useful when you want an explicit field-level composition boundary around a compatible control.
+
+A basic Web field can look like this:
+
+```tsx
+import { FormField, Input } from '@vellira-ui/react';
+
+<FormField
+  label='Email'
+  description='Used for account notifications.'
+  required
+>
+  <Input
+    type='email'
+    placeholder='name@company.com'
+    value={form.email}
+    onValueChange={(email) => setForm((current) => ({ ...current, email }))}
+  />
+</FormField>
+```
+
+The same product-level composition is valid in React Native:
+
+```tsx
+import { FormField, Input } from '@vellira-ui/react-native';
+
+<FormField
+  label='Email'
+  description='Used for account notifications.'
+  required
+>
+  <Input
+    type='email'
+    placeholder='name@company.com'
+    value={form.email}
+    onValueChange={(email) => setForm((current) => ({ ...current, email }))}
+  />
+</FormField>
+```
+
+The JSX is similar here because the public intent is similar: there is a label, supporting text, a required state, and a text control.
+
+The implementation underneath is not the same.
+
+## FormField is a semantic boundary, not just spacing
+
+On Web, the current FormField implementation creates a control id, label id, description id, error id, and message id. When it can bind a direct child control, it propagates relationships such as:
+
+```text
+id
+required
+disabled
+aria-invalid
+aria-labelledby
+aria-describedby
+```
+
+The rendered label uses `htmlFor`, and error content can use `role='alert'`.
+
+That is important because a visual stack like this:
+
+```text
+Email
+[name@company.com]
+Enter a valid email
+```
+
+is not enough by itself. The browser accessibility tree also needs to understand which label and message belong to which control.
+
+React Native cannot reproduce the same DOM relationships because there is no browser DOM.
+
+The native FormField instead uses native primitives and accessibility properties. Disabled state is exposed through `accessibilityState`, while error or polite message updates can use `accessibilityLiveRegion`.
+
+So the shared contract is:
+
+```text
+field label
+supporting description
+required/disabled/invalid state
+message or error
+```
+
+The platform evidence is different.
+
+That is the kind of cross-platform parity a design system should aim for.
+
+## Let validation state flow into the component contract
+
+The application can calculate validation however it wants.
+
+For a small example:
+
+```ts
+function validateProfile(form: ProfileForm) {
+  return {
+    email:
+      /^\S+@\S+\.\S+$/.test(form.email)
+        ? undefined
+        : 'Enter a valid email address.',
+    framework: form.framework ? undefined : 'Choose a framework.',
+  };
+}
+```
+
+Then the field can express that result through Vellira's public invalid/error surface:
+
+```tsx
+const errors = validateProfile(form);
+
+<FormField
+  label='Email'
+  description='Used for account notifications.'
+  required
+  invalid={Boolean(errors.email)}
+  error={errors.email}
+>
+  <Input
+    type='email'
+    value={form.email}
+    onValueChange={(email) => setForm((current) => ({ ...current, email }))}
+  />
+</FormField>
+```
+
+This separation is worth preserving:
+
+```text
+application
+- decides whether the value is valid
+- decides when validation should run
+- decides what business rule failed
+
+Vellira
+- renders the invalid state
+- renders the field message
+- carries the component-level accessibility/state contract
+```
+
+The component library should not need to know why an email is invalid.
+
+It only needs to represent the result consistently.
+
+## Controlled state is useful when fields depend on application logic
+
+Input supports both controlled and uncontrolled usage on Web and React Native.
+
+For a standalone search box, `defaultValue` may be enough.
+
+For a form with validation, submission, conditional UI, or server data, controlled state is often easier to reason about:
+
+```tsx
+<Input
+  value={form.email}
+  onValueChange={(email) =>
+    setForm((current) => ({
+      ...current,
+      email,
+    }))
+  }
+/>
+```
+
+The useful detail is that both Vellira runtimes expose the next text value through `onValueChange`.
+
+Web does not force application state to consume a DOM `ChangeEvent`, and native does not force the parent to know about `TextInput`'s `onChangeText` shape.
+
+That gives the application a small cross-platform seam:
+
+```text
+runtime event -> Vellira control -> next product value
+```
+
+The internal runtime event can differ without contaminating the form model.
+
+## Add Select for a more demanding field
+
+A Select is a better cross-platform stress test than a text input because opening and presenting options is platform-sensitive.
+
+The shared state can remain simple:
+
+```tsx
+<Select
+  label='Favorite framework'
+  description='Choose the framework you use most often.'
+  placeholder='Choose one'
+  value={form.framework}
+  onValueChange={(framework) =>
+    setForm((current) => ({
+      ...current,
+      framework,
+    }))
+  }
+  invalid={Boolean(errors.framework)}
+  error={errors.framework}
+>
+  <Select.Item value='react'>React</Select.Item>
+  <Select.Item value='vue'>Vue</Select.Item>
+  <Select.Item value='svelte'>Svelte</Select.Item>
+</Select>
+```
+
+That is a natural Web example. The public Web Select supports single-value controlled state through `value: string | null` and `onValueChange(value: string | null)`.
+
+The React Native Select exposes the same single-value state contract, but its presentation model is richer because native applications may want a sheet, modal, popover, or automatic presentation.
+
+For example:
+
+```tsx
+<Select
+  label='Favorite framework'
+  description='Choose the framework you use most often.'
+  placeholder='Choose one'
+  presentation='sheet'
+  value={form.framework}
+  onValueChange={(framework) =>
+    setForm((current) => ({
+      ...current,
+      framework,
+    }))
+  }
+  invalid={Boolean(errors.framework)}
+  error={errors.framework}
+>
+  <Select.Item value='react' label='React' />
+  <Select.Item value='vue' label='Vue' />
+  <Select.Item value='svelte' label='Svelte' />
+</Select>
+```
+
+Notice two deliberate differences.
+
+First, native can choose an explicit presentation such as `sheet` instead of copying browser floating-dropdown mechanics.
+
+Second, the public native item API supports an explicit `label` because native option rendering and accessibility can need that information independently of arbitrary child content.
+
+The product state is shared:
+
+```text
+framework: string | null
+```
+
+The option presentation is platform-appropriate.
+
+## Do not force overlay parity
+
+Vellira metadata describes Select as a cross-platform compound form component with capabilities including controlled/uncontrolled state, keyboard behavior, focus management, compound API, and portal-style presentation concerns.
+
+That does not mean every capability has identical mechanics on Web and React Native.
+
+On Web, an option surface may be positioned relative to a trigger and rendered through portal/floating infrastructure. Keyboard navigation and browser focus are first-class concerns.
+
+On native, the option surface can be presented as a sheet, modal, popover, or automatic platform choice. Interaction is primarily press-driven and accessibility is expressed through native semantics.
+
+A cross-platform form should therefore share this:
+
+```text
+label
+current selected value
+available options
+invalid state
+change callback
+```
+
+but it should not require this:
+
+```text
+identical overlay primitive
+identical focus implementation
+identical keyboard mechanics
+identical DOM/native tree
+```
+
+That distinction keeps parity useful instead of artificial.
+
+## Add Checkbox for an explicit boolean choice
+
+Checkbox has a compact shared state contract:
+
+```tsx
+<Checkbox
+  label='Send me product updates'
+  checked={form.updates}
+  onCheckedChange={(updates) =>
+    setForm((current) => ({
+      ...current,
+      updates,
+    }))
+  }
+/>
+```
+
+The same public `checked` / `onCheckedChange` model exists for the Web and native packages.
+
+Checkbox also supports uncontrolled usage through `defaultChecked`, plus states such as `disabled`, `required`, and `indeterminate`.
+
+For an application form, controlled boolean state keeps the final payload obvious:
+
+```ts
+{
+  email: 'name@company.com',
+  framework: 'react',
+  updates: true,
+}
+```
+
+The design system does not need to know whether that boolean means marketing consent, a preference, an onboarding step, or something else.
+
+That remains application semantics.
+
+## Button is where the runtimes should visibly diverge
+
+The final action is a good example of why shared intent should not erase platform conventions.
+
+In a browser, a real form can use native form submission:
+
+```tsx
+<form onSubmit={handleSubmit}>
+  {/* fields */}
+
+  <Button type='submit'>Save profile</Button>
+</form>
+```
+
+The Web Button public type extends normal HTML button attributes, so `type='submit'` is part of the actual supported surface.
+
+React Native has no HTML form element.
+
+The native action should therefore be explicit:
+
+```tsx
+<Button onPress={handleSubmit}>Save profile</Button>
+```
+
+This is not a parity failure.
+
+The shared product meaning is:
+
+```text
+activate the save action
+```
+
+The runtime mechanism is:
+
+```text
+Web          -> form submit semantics
+React Native -> press handler
+```
+
+A component API becomes easier to trust when it preserves platform conventions instead of hiding them.
+
+## A complete Web example
+
+Putting the pieces together gives a small browser form:
+
+```tsx
+import { useState, type FormEvent } from 'react';
+import {
+  Button,
+  Checkbox,
+  FormField,
+  Input,
+  Select,
+} from '@vellira-ui/react';
+
+type ProfileForm = {
+  email: string;
+  framework: string | null;
+  updates: boolean;
+};
+
+export function ProfileFormExample() {
+  const [form, setForm] = useState<ProfileForm>({
+    email: '',
+    framework: null,
+    updates: false,
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const errors = {
+    email:
+      submitted && !/^\S+@\S+\.\S+$/.test(form.email)
+        ? 'Enter a valid email address.'
+        : undefined,
+    framework:
+      submitted && !form.framework ? 'Choose a framework.' : undefined,
+  };
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitted(true);
+
+    if (errors.email || errors.framework || !form.email || !form.framework) {
+      return;
+    }
+
+    console.log('Save profile', form);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <FormField
+        label='Email'
+        description='Used for account notifications.'
+        required
+        invalid={Boolean(errors.email)}
+        error={errors.email}
+      >
+        <Input
+          type='email'
+          placeholder='name@company.com'
+          value={form.email}
+          onValueChange={(email) =>
+            setForm((current) => ({ ...current, email }))
+          }
+          clearable
+        />
+      </FormField>
+
+      <Select
+        label='Favorite framework'
+        description='Choose the framework you use most often.'
+        placeholder='Choose one'
+        value={form.framework}
+        onValueChange={(framework) =>
+          setForm((current) => ({ ...current, framework }))
+        }
+        invalid={Boolean(errors.framework)}
+        error={errors.framework}
+      >
+        <Select.Item value='react'>React</Select.Item>
+        <Select.Item value='vue'>Vue</Select.Item>
+        <Select.Item value='svelte'>Svelte</Select.Item>
+      </Select>
+
+      <Checkbox
+        label='Send me product updates'
+        checked={form.updates}
+        onCheckedChange={(updates) =>
+          setForm((current) => ({ ...current, updates }))
+        }
+      />
+
+      <Button type='submit'>Save profile</Button>
+    </form>
+  );
+}
+```
+
+The example deliberately does not introduce a form library.
+
+You can replace the local state and validation with the application architecture you prefer. The component contract does not require a particular state manager.
+
+## A complete React Native example
+
+The native version keeps the product state and validation model, while using native layout and action semantics:
+
+```tsx
+import { useState } from 'react';
+import { View } from 'react-native';
+import {
+  Button,
+  Checkbox,
+  FormField,
+  Input,
+  Select,
+} from '@vellira-ui/react-native';
+
+type ProfileForm = {
+  email: string;
+  framework: string | null;
+  updates: boolean;
+};
+
+export function NativeProfileFormExample() {
+  const [form, setForm] = useState<ProfileForm>({
+    email: '',
+    framework: null,
+    updates: false,
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const errors = {
+    email:
+      submitted && !/^\S+@\S+\.\S+$/.test(form.email)
+        ? 'Enter a valid email address.'
+        : undefined,
+    framework:
+      submitted && !form.framework ? 'Choose a framework.' : undefined,
+  };
+
+  function handleSubmit() {
+    setSubmitted(true);
+
+    if (!/^\S+@\S+\.\S+$/.test(form.email) || !form.framework) {
+      return;
+    }
+
+    console.log('Save profile', form);
+  }
+
+  return (
+    <View style={{ gap: 16 }}>
+      <FormField
+        label='Email'
+        description='Used for account notifications.'
+        required
+        invalid={Boolean(errors.email)}
+        error={errors.email}
+      >
+        <Input
+          type='email'
+          placeholder='name@company.com'
+          value={form.email}
+          onValueChange={(email) =>
+            setForm((current) => ({ ...current, email }))
+          }
+          clearable
+        />
+      </FormField>
+
+      <Select
+        label='Favorite framework'
+        description='Choose the framework you use most often.'
+        placeholder='Choose one'
+        presentation='sheet'
+        value={form.framework}
+        onValueChange={(framework) =>
+          setForm((current) => ({ ...current, framework }))
+        }
+        invalid={Boolean(errors.framework)}
+        error={errors.framework}
+      >
+        <Select.Item value='react' label='React' />
+        <Select.Item value='vue' label='Vue' />
+        <Select.Item value='svelte' label='Svelte' />
+      </Select>
+
+      <Checkbox
+        label='Send me product updates'
+        checked={form.updates}
+        onCheckedChange={(updates) =>
+          setForm((current) => ({ ...current, updates }))
+        }
+      />
+
+      <Button onPress={handleSubmit}>Save profile</Button>
+    </View>
+  );
+}
+```
+
+The two examples are intentionally similar where the product contract is similar and intentionally different where the runtime contract is different.
+
+That is the pattern to preserve.
+
+## Do not duplicate field semantics accidentally
+
+One practical choice when composing form controls is deciding who owns label and error presentation.
+
+Input and Select already expose shorthand props such as `label`, `description`, and `error` in their public APIs.
+
+FormField also provides label, description, message, error, and state composition.
+
+That flexibility is useful, but a single rendered field should normally have one clear owner for those semantics.
+
+For example, prefer either:
+
+```tsx
+<Input
+  label='Email'
+  description='Used for account notifications.'
+  error={errors.email}
+/>
+```
+
+or an explicit wrapper:
+
+```tsx
+<FormField
+  label='Email'
+  description='Used for account notifications.'
+  error={errors.email}
+>
+  <Input />
+</FormField>
+```
+
+rather than repeating the same label and error on both layers.
+
+The wrapper form is useful when you want a common field-level composition boundary. The shorthand form is useful when the control can own the whole field presentation by itself.
+
+A good design-system API can support both without forcing teams to use both at the same time.
+
+## Required, invalid, disabled, and loading are not interchangeable
+
+Forms become hard to reason about when state names are treated as visual variants instead of semantics.
+
+Vellira's public form-oriented components keep several states separate:
+
+```text
+required -> user must provide a value according to the field contract
+invalid  -> current value/state does not satisfy the application rule
+disabled -> user cannot interact with the control
+loading  -> control is waiting on work and may temporarily restrict interaction
+```
+
+Input, Select, Checkbox, and FormField expose different subsets of those states based on their responsibilities.
+
+That matters when composing a real screen.
+
+For example, a Select can be loading its options without the entire form being disabled. A submitted email can be invalid without being disabled. A required Checkbox can still be unchecked before submission without immediately showing an error.
+
+The application decides when those states apply. The component library makes them visible and platform-appropriate.
+
+## Accessibility should follow the field responsibility
+
+A practical cross-platform form has at least three accessibility questions:
+
+1. What is the control called?
+2. What supporting or error information belongs to it?
+3. How is a state change announced on this runtime?
+
+On Web, FormField can express those relationships using native label and ARIA connections. Input itself is based on an HTML input surface, while Button can participate in real browser form semantics.
+
+Select additionally needs its own trigger, option, keyboard, focus, and overlay behavior.
+
+On React Native, the same user intent is represented with native accessibility labels, states, live regions, press interactions, and native presentation primitives.
+
+This is why copying browser attributes into a native API is not a useful definition of accessibility parity.
+
+The better rule is:
+
+> Keep the accessible product meaning equivalent, then use the strongest semantics available on each platform.
+
+## A form is a good integration test for a design system
+
+A single component demo can hide integration problems.
+
+A form puts several contracts next to each other:
+
+```text
+field composition
+text state
+choice state
+boolean state
+errors
+loading/disabled behavior
+accessibility relationships
+layout
+submission
+```
+
+That makes it a useful test of whether a design system is really cohesive.
+
+If every control invents a different change callback, validation vocabulary, label strategy, size scale, or disabled model, those inconsistencies become obvious as soon as the components share one screen.
+
+Vellira's current public form surfaces deliberately reuse concepts such as:
+
+```text
+value / defaultValue
+checked / defaultChecked
+onValueChange / onCheckedChange
+required
+disabled
+invalid
+error
+size
+```
+
+Not every component exposes every field, and the runtime implementation differs, but the vocabulary is regular enough that application composition stays understandable.
+
+## What Vellira deliberately does not own
+
+A component library should know where to stop.
+
+This form example does not imply that Vellira owns:
+
+```text
+schema validation
+server mutations
+API requests
+form persistence
+field dirty/touched state
+business permissions
+submission retries
+backend error mapping
+analytics
+```
+
+Those are application concerns.
+
+Vellira's responsibility is narrower:
+
+```text
+render the controls
+expose predictable state APIs
+represent required/invalid/disabled/loading states
+provide platform-appropriate interaction
+provide accessibility semantics
+compose labels/descriptions/messages
+```
+
+That separation makes the components easier to use with many different application architectures.
+
+A team can use local `useState`, a form library, server actions, a state machine, or another approach without requiring the design system to become that framework.
+
+## Five transferable lessons
+
+This example is specific to Vellira, but the design lessons apply to other cross-platform component libraries.
+
+### 1. Share values before sharing events
+
+Prefer a component seam like:
+
+```text
+onValueChange(nextValue)
+```
+
+over forcing application code to understand browser and native event objects when it only needs the next product value.
+
+### 2. Treat field composition as semantics
+
+Labels, descriptions, errors, required state, and disabled state are not decorative spacing around an input.
+
+They are part of the field contract.
+
+### 3. Keep validation outside the component library
+
+The component should know how to represent invalid state.
+
+The application should decide why the state is invalid.
+
+### 4. Share product intent, not overlay mechanics
+
+A Select can have the same selected value and option model while using browser floating UI on Web and a native sheet or modal on mobile.
+
+That is healthy divergence.
+
+### 5. Preserve platform-native submission behavior
+
+Use a real form submit path in the browser when it is appropriate.
+
+Use an explicit press action on React Native.
+
+Cross-platform consistency should not erase the strengths of either runtime.
+
+## The useful definition of cross-platform forms
+
+A cross-platform form does not need identical component trees.
+
+It needs a stable product model that survives the platform boundary.
+
+For this example, that model is small:
+
+```ts
+{
+  email: string;
+  framework: string | null;
+  updates: boolean;
+}
+```
+
+Vellira's public components can represent that model on React and React Native with shared state vocabulary while still using different accessibility, overlay, input, and submission mechanics where the runtimes demand it.
+
+That is the practical value of a cross-platform design system.
+
+Not one implementation everywhere.
+
+One understandable product contract, with platform-appropriate evidence underneath it.
