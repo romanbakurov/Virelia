@@ -22,13 +22,13 @@ function createArticle(
 }
 
 describe('blog metadata search', () => {
-  it('normalizes punctuation, case, accents, and repeated whitespace', () => {
-    expect(normalizeBlogSearchText('  Réact---Native   UI ')).toBe(
-      'react native ui'
-    );
+  it('normalizes search text', () => {
+    const normalized = normalizeBlogSearchText('  Réact---Native   UI ');
+
+    expect(normalized).toBe('react native ui');
   });
 
-  it('matches title, tags, description, and slug with multi-token queries', () => {
+  it('matches searchable metadata with multiple tokens', () => {
     const articles = [
       createArticle({
         title: 'React Native accessibility patterns',
@@ -50,17 +50,19 @@ describe('blog metadata search', () => {
       }),
     ];
 
-    expect(searchBlogArticles(articles, 'react native')).toEqual(articles);
-    expect(searchBlogArticles(articles, 'accessibility')).toEqual([
-      articles[0],
-      articles[1],
-    ]);
-    expect(searchBlogArticles(articles, 'metadata source')).toEqual([
-      articles[2],
-    ]);
+    const multiTokenResults = searchBlogArticles(articles, 'react native');
+    const accessibilityResults = searchBlogArticles(
+      articles,
+      'accessibility'
+    );
+    const slugResults = searchBlogArticles(articles, 'metadata source');
+
+    expect(multiTokenResults).toEqual(articles);
+    expect(accessibilityResults).toEqual([articles[0], articles[1]]);
+    expect(slugResults).toEqual([articles[2]]);
   });
 
-  it('ranks exact and prefix title matches ahead of tags and descriptions', () => {
+  it('ranks matches deterministically', () => {
     const exactTitle = createArticle({
       title: 'React Native',
       slug: 'react-native-exact',
@@ -82,16 +84,14 @@ describe('blog metadata search', () => {
       description: 'React Native implementation details.',
       tags: ['Design Systems'],
     });
+    const candidates = [description, exactTag, prefixTitle, exactTitle];
 
-    expect(
-      searchBlogArticles(
-        [description, exactTag, prefixTitle, exactTitle],
-        'react native'
-      )
-    ).toEqual([exactTitle, prefixTitle, exactTag, description]);
+    const results = searchBlogArticles(candidates, 'react native');
+
+    expect(results).toEqual([exactTitle, prefixTitle, exactTag, description]);
   });
 
-  it('preserves canonical input order for equal relevance and excludes drafts', () => {
+  it('preserves tie order and excludes drafts', () => {
     const first = createArticle({
       title: 'First article',
       slug: 'first-article',
@@ -108,9 +108,12 @@ describe('blog metadata search', () => {
       draft: true,
     });
 
-    expect(
-      searchBlogArticles([first, second, draft], 'quality gates')
-    ).toEqual([first, second]);
+    const results = searchBlogArticles(
+      [first, second, draft],
+      'quality gates'
+    );
+
+    expect(results).toEqual([first, second]);
     expect(searchBlogArticles([draft], '')).toEqual([]);
   });
 });
