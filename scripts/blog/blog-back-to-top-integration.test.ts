@@ -12,9 +12,7 @@ const blogIndexSource = readFileSync(
   'utf8'
 );
 const backToTopSource = readFileSync(
-  resolve(
-    'apps/website/src/components/navigation/BackToTop/BackToTop.tsx'
-  ),
+  resolve('apps/website/src/components/navigation/BackToTop/BackToTop.tsx'),
   'utf8'
 );
 const backToTopStyles = readFileSync(
