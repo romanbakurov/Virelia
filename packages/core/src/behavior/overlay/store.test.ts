@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { createOverlayZIndexPolicy } from './policy.js';
 import { createOverlayManagerStore } from './store.js';
 
-const policy = createOverlayZIndexPolicy({
+type TestOverlayLevel = 'dropdown' | 'popover' | 'modal';
+
+const policy = createOverlayZIndexPolicy<TestOverlayLevel>({
   defaultLevel: 'popover',
   levels: {
     dropdown: 100,

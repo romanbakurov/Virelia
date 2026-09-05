@@ -5,6 +5,11 @@
     "composite": true,
     "strict": true
   },
-  "include": ["index.ts", ".rnstorybook/**/*.ts", ".rnstorybook/**/*.tsx"],
+  "include": [
+    "index.ts",
+    "index.tsx",
+    ".rnstorybook/**/*.ts",
+    ".rnstorybook/**/*.tsx"
+  ],
   "exclude": ["node_modules", "ios", "android", "dist"]
 }

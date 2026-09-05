@@ -6,7 +6,11 @@ import './styles.css';
 
 export default {
   extends: DefaultTheme,
-  enhanceApp({ app }) {
+  enhanceApp({
+    app,
+  }: {
+    app: { component: (name: string, component: unknown) => void };
+  }) {
     app.component('StorybookFrame', StorybookFrame);
   },
 };

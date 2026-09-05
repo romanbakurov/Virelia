@@ -1,4 +1,6 @@
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+(
+  globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
+).IS_REACT_ACT_ENVIRONMENT = true;
 
 import React from 'react';
 
@@ -15,7 +17,10 @@ vi.mock('@vellira-ui/icons', () => ({
 vi.mock('react-native-svg', () => {
   const React = require('react');
 
-  const Svg = ({ children }: { children?: React.ReactNode }) =>
+  const Svg = ({
+    children,
+    ...props
+  }: { children?: React.ReactNode } & Record<string, unknown>) =>
     React.createElement('svg', props, children);
 
   const Path = () => React.createElement('path');

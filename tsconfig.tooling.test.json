@@ -2,8 +2,18 @@
   "extends": "./tsconfig.tooling.json",
   "compilerOptions": {
     "lib": ["ES2024", "DOM"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["apps/website/src/*"],
+      "@vellira-ui/metadata": ["packages/metadata/src/index.ts"]
+    },
+    "skipLibCheck": true,
     "types": ["node", "vitest"]
   },
-  "include": ["scripts/**/*.ts", "vitest.tooling.config.ts"],
+  "include": [
+    "scripts/**/*.ts",
+    "scripts/**/*.tsx",
+    "vitest.tooling.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

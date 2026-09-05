@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowArbitraryExtensions": true,
+    "baseUrl": ".",
+    "noEmit": true,
+    "paths": {
+      "@vellira-ui/metadata": ["../../packages/metadata/src/index.ts"]
+    },
+    "rootDir": "../..",
+    "skipLibCheck": true,
+    "types": ["node", "vitest"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/.vitepress/**/*.ts",
+    "src/.vitepress/**/*.tsx",
+    "vitest.config.ts",
+    "../../packages/metadata/src/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist", "src/.vitepress/dist"]
+}
