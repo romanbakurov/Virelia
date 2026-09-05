@@ -13,6 +13,7 @@ import {
   serializeJsonLd,
 } from '@/blog/seo';
 import { BlogArticleView } from '@/blog/ui';
+import { BackToTop } from '@/components/navigation/BackToTop';
 
 interface BlogArticlePageProps {
   params: Promise<{
@@ -69,6 +70,7 @@ export default async function BlogArticlePage({
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <BlogArticleView article={article} relatedArticles={relatedArticles} />
+      <BackToTop />
     </>
   );
 }
