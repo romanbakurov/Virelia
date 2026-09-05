@@ -7,6 +7,10 @@ import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
 import { checkComponentTokenContract } from './component-token-contract';
+import {
+  getGeneratedTokenTypesFile,
+  synchronizeGeneratedTokenTypes,
+} from './token-types';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -86,7 +90,8 @@ function getPlannedUpdatedFiles(
   if (plan.componentTokens !== false) {
     files.push(
       plan.tokenFactoryBarrelFile,
-      ...plan.tokenThemeTargets.map((target) => target.barrelFile)
+      ...plan.tokenThemeTargets.map((target) => target.barrelFile),
+      getGeneratedTokenTypesFile(plan.root)
     );
   }
 
@@ -154,6 +159,16 @@ export async function runComponentGenerator(params: {
 
   const result = await writeComponentGenerationPlan(plan);
 
+  const tokenTypesResult =
+    plan.componentTokens === false
+      ? {
+          createdFiles: [],
+          updatedFiles: [],
+        }
+      : synchronizeGeneratedTokenTypes({
+          root: params.root,
+        });
+
   const websiteResult = generateComponentWebsitePage({
     root: params.root,
     componentName: plan.componentName,
@@ -162,13 +177,21 @@ export async function runComponentGenerator(params: {
   });
 
   const createdFiles = [
-    ...new Set([...result.createdFiles, ...websiteResult.createdFiles]),
+    ...new Set([
+      ...result.createdFiles,
+      ...tokenTypesResult.createdFiles,
+      ...websiteResult.createdFiles,
+    ]),
   ];
 
   const createdFileSet = new Set(createdFiles);
 
   const updatedFiles = [
-    ...new Set([...result.updatedFiles, ...websiteResult.updatedFiles]),
+    ...new Set([
+      ...result.updatedFiles,
+      ...tokenTypesResult.updatedFiles,
+      ...websiteResult.updatedFiles,
+    ]),
   ].filter((filePath) => !createdFileSet.has(filePath));
 
   return {
