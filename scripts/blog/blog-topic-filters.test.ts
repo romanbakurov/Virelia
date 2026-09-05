@@ -60,12 +60,9 @@ describe('blog topic filters', () => {
       createArticle({ tags: ['Forms'] }),
     ]);
 
-    expect(selectCommonBlogTopicOptions(topics, 4).map((topic) => topic.value)).toEqual([
-      'react',
-      'tooling',
-      'accessibility',
-      'forms',
-    ]);
+    expect(
+      selectCommonBlogTopicOptions(topics, 4).map((topic) => topic.value)
+    ).toEqual(['react', 'tooling', 'accessibility', 'forms']);
   });
 
   it('supports single-topic and multi-topic OR filtering', () => {
