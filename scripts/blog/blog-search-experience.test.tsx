@@ -24,7 +24,7 @@ function createArticle(
 }
 
 function installMetricsFetch() {
-  const fetchMock = vi.fn(async () =>
+  const fetchMock = vi.fn(async (_input: RequestInfo | URL) =>
     ({
       ok: true,
       status: 200,
@@ -116,7 +116,11 @@ describe('blog search experience', () => {
     expect(screen.getByText('No articles found.')).toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent('0 articles');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Clear search and show all articles',
+      })
+    );
 
     expect(screen.queryByText('No articles found.')).not.toBeInTheDocument();
     expect(
