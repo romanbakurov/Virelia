@@ -1,0 +1,44 @@
+The engineering decision is easier to evaluate when `pull`, `request`, `bounded`, and `repository` are read together, because the explanation can connect the grounded details without turning that connection into an additional technical assertion.
+
+## What changed
+
+{/* vellira-claim:sha256:87585dc91bf5fdb1499baedc48899273b375aa726900c379dd56738c5b299312 */}
+Merged pull request #843 changed 7 bounded public repository paths at revision b0c117d03a203924794f844019c26f2beb81813c.
+
+{/* vellira-claim:sha256:30485bd7cfcdc2157304de3a96678b0b05bfc3dbcbfa1666a953083ca066fba4 */}
+Pinned application source apps/website/src/blog/relatedArticles.ts exports DEFAULT_RELATED_BLOG_ARTICLE_LIMIT and getRelatedBlogArticles.
+
+Taken together, `pull`, `request`, and `bounded` define the bounded scope worth explaining. The useful point is how the verified details relate, not repeating each claim as a second assertion.
+
+## How it works
+
+{/* vellira-claim:sha256:2e3d5fb36df719a6a06cc43461167b8cdd858d1e565b1d3720ee6f752d373987 */}
+Pinned application route apps/website/src/app/(marketing)/(site)/blog/[slug]/page.tsx invokes changed application symbol getRelatedBlogArticles.
+
+{/* vellira-claim:sha256:f5c8952c1b1b3207a0a2e0e30e59cb2b8465df7e69ada3be69f37e50329a96bd */}
+Pinned application source apps/website/src/app/(marketing)/(site)/blog/[slug]/page.tsx exports BlogArticlePage, dynamicParams, generateMetadata, and generateStaticParams.
+
+This section connects `Pinned`, `application`, and `route` as parts of the same evidence-bounded discussion while leaving behavior that is not stated by the grounded claims out of scope.
+
+## Practical takeaway
+
+{/* vellira-claim:sha256:24bfb344a6012eae0910594035e76886754120471e8404dd3cdd67e4c436cc24 */}
+Pinned test evidence defines a static coverage case named “caps rendering at three recommendations”.
+
+{/* vellira-claim:sha256:a1abb1190ff4e35dbcf861d4cd788b668f701eb0f861264848d3025cadfa89c7 */}
+Pinned test evidence defines a static coverage case named “excludes the current article and drafts”.
+
+{/* vellira-claim:sha256:14d4744968cdabca11186fbe161ba1c7de4885682f6bbac2aadc1546ab75e474 */}
+Pinned test evidence defines a static coverage case named “prefers stronger normalized tag overlap over recency”.
+
+{/* vellira-claim:sha256:31d375fb8b12be9537fb74f14eb9674459453b44ebf0944585f1291026f5876f */}
+Pinned test evidence defines a static coverage case named “renders nothing when no recommendations are available”.
+
+For maintainers, `Pinned`, `test`, and `defines` are the useful anchors. Keeping them tied to the grounded claims makes the takeaway actionable without broadening the technical claim set.
+
+## Current limitations
+
+{/* vellira-claim:sha256:460f6b2cdda755c148352c73c331214126da98efbd5c32dbfba9d9cdb82c8c28 */}
+Technical authority is bounded to merged public PR metadata and selected public file snapshots pinned to the referenced merge revisions; unselected repository content is not used to authorize article claims.
+
+The limitation matters when interpreting `Technical`, `authority`, and `bounded`: it marks the evidence boundary, so an unknown stays explicit instead of becoming an implied guarantee.
