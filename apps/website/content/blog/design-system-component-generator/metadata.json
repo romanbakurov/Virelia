@@ -1,0 +1,9 @@
+{
+  "title": "From Scaffold to Production: How Vellira Generates Components",
+  "description": "A practical look at building a design-system component generator that creates the whole public surface, not just a component file.",
+  "slug": "design-system-component-generator",
+  "publishedAt": "2026-09-05",
+  "author": "Roman Bakurov",
+  "tags": ["Design Systems", "React", "React Native", "TypeScript", "Tooling"],
+  "draft": false
+}
