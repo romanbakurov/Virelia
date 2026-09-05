@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 import { Search } from '@vellira-ui/icons';
+import { Popover } from '@vellira-ui/react';
 
 import { Container } from '@/components/layout/Container';
 import type { BlogArticleMetadata } from '@/blog';
@@ -214,7 +215,11 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
         </Container>
       </header>
 
-      <section className={styles.indexSection} aria-label='Published articles'>
+      <section
+        className={styles.indexSection}
+        style={{ paddingTop: 8 }}
+        aria-label='Published articles'
+      >
         <Container size='wide'>
           {publishedArticles.length === 0 ? (
             <div className={styles.emptyState}>
@@ -297,32 +302,33 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                     })}
 
                     {moreTopics.length > 0 && (
-                      <details className={searchStyles.moreFilters}>
-                        <summary
-                          className={[
-                            searchStyles.moreFiltersTrigger,
-                            hiddenSelectedCount > 0
-                              ? searchStyles.filterActive
-                              : null,
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                        >
-                          <span>More filters</span>
-                          {hiddenSelectedCount > 0 && (
-                            <span className={searchStyles.filterCount}>
-                              {hiddenSelectedCount}
-                            </span>
-                          )}
-                        </summary>
+                      <Popover side='bottom' align='end' sideOffset={10}>
+                        <Popover.Trigger asChild>
+                          <button
+                            type='button'
+                            className={[
+                              searchStyles.moreFiltersTrigger,
+                              hiddenSelectedCount > 0
+                                ? searchStyles.filterActive
+                                : null,
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                          >
+                            <span>More filters</span>
+                            {hiddenSelectedCount > 0 && (
+                              <span className={searchStyles.filterCount}>
+                                {hiddenSelectedCount}
+                              </span>
+                            )}
+                          </button>
+                        </Popover.Trigger>
 
-                        <div
-                          className={searchStyles.filterPanel}
-                          role='group'
-                          aria-label='More topic filters'
-                        >
+                        <Popover.Content className={searchStyles.filterPanel}>
                           <div className={searchStyles.filterPanelHeader}>
-                            <strong>More topics</strong>
+                            <Popover.Title asChild>
+                              <strong>More topics</strong>
+                            </Popover.Title>
                             {hasActiveFilters && (
                               <button
                                 type='button'
@@ -334,7 +340,11 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                             )}
                           </div>
 
-                          <div className={searchStyles.filterPanelGrid}>
+                          <div
+                            className={searchStyles.filterPanelGrid}
+                            role='group'
+                            aria-label='More topic filters'
+                          >
                             {moreTopics.map((topic) => {
                               const active = selectedTopics.includes(
                                 topic.value
@@ -366,8 +376,8 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                               );
                             })}
                           </div>
-                        </div>
-                      </details>
+                        </Popover.Content>
+                      </Popover>
                     )}
                   </div>
                 </div>

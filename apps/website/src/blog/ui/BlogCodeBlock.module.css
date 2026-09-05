@@ -4,14 +4,10 @@
   min-width: 0;
   margin: 1.6em 0;
   overflow: hidden;
-  background: color-mix(in srgb, var(--surface-subtle) 92%, transparent);
+  background: var(--surface-subtle);
   border: 1px solid var(--border-muted);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-inset);
-}
-
-:global([data-vellira-theme='light']) .codeBlock {
-  background: var(--surface-default);
 }
 
 .codeBlockToolbar {
@@ -24,7 +20,7 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: color-mix(in srgb, var(--surface-default) 72%, transparent);
+  background: transparent;
   border-bottom: 1px solid var(--border-muted);
 }
 
