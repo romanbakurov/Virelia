@@ -138,16 +138,27 @@ describe('blog topic filter experience', () => {
     );
   });
 
-  it('keeps less-common topics reachable and surfaces hidden active filters', () => {
+  it('keeps less-common topics reachable, dismisses outside, and surfaces hidden active filters', async () => {
     installBlogFetch();
     render(<BlogIndex articles={articles} />);
 
-    const moreFiltersLabel = screen.getByText('More filters');
-    const moreFilters = moreFiltersLabel.closest('summary');
+    const moreFilters = screen.getByRole('button', { name: 'More filters' });
 
-    expect(moreFilters).not.toBeNull();
-    fireEvent.click(moreFiltersLabel);
+    expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(moreFilters);
 
+    expect(screen.getByRole('button', { name: /^Testing/ })).toBeInTheDocument();
+
+    fireEvent.pointerDown(document.body);
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('button', { name: /^Testing/ })
+      ).not.toBeInTheDocument()
+    );
+    expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(moreFilters);
     fireEvent.click(screen.getByRole('button', { name: /^Testing/ }));
 
     expect(screen.getByRole('status')).toHaveTextContent('1 article');
@@ -179,7 +190,7 @@ describe('blog topic filter experience', () => {
       screen.getByRole('link', { name: 'Read Testing quality gates' })
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('More filters'));
+    fireEvent.click(screen.getByRole('button', { name: /More filters/ }));
     expect(screen.getByRole('button', { name: /^Testing/ })).toHaveAttribute(
       'aria-pressed',
       'true'
