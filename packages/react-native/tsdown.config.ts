@@ -6,9 +6,11 @@ export default defineConfig({
   dts: false,
   clean: true,
   sourcemap: false,
-  splitting: false,
   platform: 'neutral',
   target: 'es2022',
+  outputOptions: {
+    codeSplitting: false,
+  },
   deps: {
     neverBundle: [
       'react',

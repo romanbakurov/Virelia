@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react-vite';
+import type { Decorator, Preview } from '@storybook/react-vite';
 
 import { ThemeProvider } from '@vellira-ui/react';
 
@@ -46,7 +46,7 @@ const restoreStorybookFocusAccessors = () => {
   }
 };
 
-const withTheme: Preview['decorators'][number] = (Story, context) => {
+const withTheme: Decorator = (Story, context) => {
   const theme = context.globals.theme ?? 'light';
 
   document.documentElement.dataset.theme = theme;
@@ -83,7 +83,6 @@ const preview: Preview = {
       defaultValue: 'light',
       toolbar: {
         icon: 'paintbrush',
-        showName: true,
         items: [
           { value: 'light', title: 'Light' },
           { value: 'dark', title: 'Dark' },

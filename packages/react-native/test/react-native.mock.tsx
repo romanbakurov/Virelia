@@ -6,6 +6,8 @@ import React, {
   useState,
 } from 'react';
 
+import type { AriaAttributes } from 'react';
+
 type PressableState = { pressed: boolean; hovered: boolean; focused: boolean };
 
 type NativeProps = {
@@ -48,7 +50,9 @@ type NativeProps = {
   color?: string;
   size?: string | number;
   onLayout?: (event: {
-    nativeEvent: { layout: { width: number; height: number } };
+    nativeEvent: {
+      layout: { width: number; height: number; x: number; y: number };
+    };
   }) => void;
 };
 
@@ -75,20 +79,28 @@ const roleFromAccessibility = (role?: string) => {
   return undefined;
 };
 
-const stateProps = (state?: Record<string, unknown>) => ({
+const stateProps = (state?: Record<string, unknown>): AriaAttributes => ({
   'aria-checked':
     typeof state?.checked === 'boolean' || state?.checked === 'mixed'
-      ? String(state.checked)
+      ? state.checked
       : undefined,
   'aria-disabled':
-    typeof state?.disabled === 'boolean' ? String(state.disabled) : undefined,
+    typeof state?.disabled === 'boolean' ? state.disabled : undefined,
   'aria-expanded':
-    typeof state?.expanded === 'boolean' ? String(state.expanded) : undefined,
+    typeof state?.expanded === 'boolean' ? state.expanded : undefined,
   'aria-selected':
-    typeof state?.selected === 'boolean' ? String(state.selected) : undefined,
-  'aria-busy':
-    typeof state?.busy === 'boolean' ? String(state.busy) : undefined,
+    typeof state?.selected === 'boolean' ? state.selected : undefined,
+  'aria-busy': typeof state?.busy === 'boolean' ? state.busy : undefined,
 });
+
+const renderChildren = (
+  children: NativeProps['children'],
+  state: PressableState
+): React.ReactNode =>
+  typeof children === 'function' ? children(state) : children;
+
+const ariaLive = (value?: string): AriaAttributes['aria-live'] =>
+  value === 'polite' || value === 'assertive' ? value : undefined;
 
 const accessibilityProps = ({
   accessibilityLabel,
@@ -116,9 +128,9 @@ const accessibilityProps = ({
   'aria-describedby': ariaDescribedBy,
   'aria-hidden':
     accessible === false || importantForAccessibility === 'no'
-      ? 'true'
+      ? true
       : undefined,
-  'aria-live': accessibilityLiveRegion,
+  'aria-live': ariaLive(accessibilityLiveRegion),
   'data-important-for-accessibility': importantForAccessibility,
 });
 
@@ -154,6 +166,8 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
           layout: {
             width: Number(resolvedStyle?.width ?? resolvedStyle?.maxWidth ?? 0),
             height: Number(resolvedStyle?.height ?? 0),
+            x: 0,
+            y: 0,
           },
         },
       });
@@ -176,7 +190,11 @@ export const View = forwardRef<HTMLDivElement, NativeProps>(
           importantForAccessibility,
         })}
       >
-        {children}
+        {renderChildren(children, {
+          pressed: false,
+          hovered: false,
+          focused: false,
+        })}
       </div>
     );
   }
@@ -239,7 +257,11 @@ export const Text = forwardRef<HTMLSpanElement, NativeProps>(
         importantForAccessibility,
       })}
     >
-      {children}
+      {renderChildren(children, {
+        pressed: false,
+        hovered: false,
+        focused: false,
+      })}
     </span>
   )
 );
@@ -484,7 +506,15 @@ export const Modal = ({
   children,
 }: NativeProps & { visible?: boolean }) => {
   if (!visible) return null;
-  return <div data-testid='native-modal'>{children}</div>;
+  return (
+    <div data-testid='native-modal'>
+      {renderChildren(children, {
+        pressed: false,
+        hovered: false,
+        focused: false,
+      })}
+    </div>
+  );
 };
 
 export const StyleSheet = {

@@ -1,0 +1,231 @@
+[
+  {
+    "project": "packages/core/tsconfig.json",
+    "packageJson": "packages/core/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Core package CI typecheck script invokes its source TypeScript project."
+  },
+  {
+    "project": "packages/core/tsconfig.test.json",
+    "packageJson": "packages/core/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.test.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Core package CI typecheck script invokes its test TypeScript project."
+  },
+  {
+    "project": "packages/icons/tsconfig.json",
+    "packageJson": "packages/icons/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Icons package CI typecheck script invokes its source TypeScript project."
+  },
+  {
+    "project": "packages/icons/tsconfig.tooling.json",
+    "packageJson": "packages/icons/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.tooling.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Icons package CI typecheck script invokes its Storybook and icon-generation tooling project."
+  },
+  {
+    "project": "packages/metadata/tsconfig.json",
+    "packageJson": "packages/metadata/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Metadata package CI typecheck script invokes its TypeScript project."
+  },
+  {
+    "project": "packages/react-native/tsconfig.typecheck.json",
+    "packageJson": "packages/react-native/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.typecheck.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Native package CI typecheck script invokes its public source TypeScript project."
+  },
+  {
+    "project": "packages/react-native/tsconfig.test.json",
+    "packageJson": "packages/react-native/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.test.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Native package CI typecheck script invokes its test TypeScript project."
+  },
+  {
+    "project": "packages/react-native/tsconfig.stories.json",
+    "packageJson": "packages/react-native/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.stories.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Native package CI typecheck script invokes its Storybook TypeScript project."
+  },
+  {
+    "project": "packages/react-native/tsconfig.tooling.json",
+    "packageJson": "packages/react-native/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.tooling.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Native package CI typecheck script invokes the tsdown, Vitest, setup, and local mock tooling project."
+  },
+  {
+    "project": "packages/react/tsconfig.typecheck.json",
+    "packageJson": "packages/react/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.typecheck.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React package CI typecheck script invokes its public source TypeScript project."
+  },
+  {
+    "project": "packages/react/tsconfig.test.json",
+    "packageJson": "packages/react/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.test.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React package CI typecheck script invokes its test TypeScript project."
+  },
+  {
+    "project": "packages/react/tsconfig.stories.json",
+    "packageJson": "packages/react/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.stories.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React package CI typecheck script invokes its Storybook TypeScript project."
+  },
+  {
+    "project": "packages/react/tsconfig.tooling.json",
+    "packageJson": "packages/react/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.tooling.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React package CI typecheck script invokes its Vite, Vitest, and setup tooling project."
+  },
+  {
+    "project": "packages/tokens/tsconfig.json",
+    "packageJson": "packages/tokens/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Tokens package CI typecheck script invokes its source TypeScript project."
+  },
+  {
+    "project": "packages/tokens/tsconfig.scripts.json",
+    "packageJson": "packages/tokens/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.scripts.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Tokens package CI typecheck script invokes its token-generation scripts and tests project."
+  },
+  {
+    "project": "packages/types/tsconfig.json",
+    "packageJson": "packages/types/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Types package CI typecheck script invokes its source TypeScript project."
+  },
+  {
+    "project": "apps/docs/tsconfig.json",
+    "packageJson": "apps/docs/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Docs app CI typecheck script invokes its VitePress source and docs tooling project."
+  },
+  {
+    "project": "apps/native-playground/tsconfig.json",
+    "packageJson": "apps/native-playground/package.json",
+    "script": "typecheck",
+    "invocation": "tsc --noEmit",
+    "mode": "defaultProject",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Native playground CI typecheck script invokes its default TypeScript project."
+  },
+  {
+    "project": "apps/native-storybook/tsconfig.json",
+    "packageJson": "apps/native-storybook/package.json",
+    "script": "typecheck",
+    "invocation": "tsc --noEmit",
+    "mode": "defaultProject",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Native Storybook CI typecheck script invokes its default TypeScript project."
+  },
+  {
+    "project": "apps/react-playground/tsconfig.json",
+    "packageJson": "apps/react-playground/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -b",
+    "mode": "build",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React playground CI typecheck script invokes its solution project and referenced app/node projects."
+  },
+  {
+    "project": "packages/react/tsconfig.stories.json",
+    "packageJson": "apps/react-storybook/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p ../../packages/react/tsconfig.stories.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Storybook CI typecheck script invokes the React Storybook story contract."
+  },
+  {
+    "project": "apps/react-storybook/tsconfig.json",
+    "packageJson": "apps/react-storybook/package.json",
+    "script": "typecheck",
+    "invocation": "tsc -p tsconfig.json --noEmit",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "React Storybook CI typecheck script invokes its local config, test, and E2E tooling project."
+  },
+  {
+    "project": "apps/website/tsconfig.json",
+    "packageJson": "apps/website/package.json",
+    "script": "typecheck",
+    "invocation": "tsc --noEmit",
+    "mode": "defaultProject",
+    "rootScript": "typecheck",
+    "rootInvocation": "turbo run typecheck",
+    "reason": "Website CI typecheck script invokes its default Next.js TypeScript project."
+  },
+  {
+    "project": "tsconfig.tooling.json",
+    "packageJson": "package.json",
+    "script": "typecheck:tooling",
+    "invocation": "tsc -p tsconfig.tooling.json --noEmit",
+    "rootScript": "ci:typecheck",
+    "rootInvocation": "pnpm typecheck:tooling",
+    "reason": "Root CI tooling typecheck invokes maintained non-test scripts."
+  },
+  {
+    "project": "tsconfig.tooling.test.json",
+    "packageJson": "package.json",
+    "script": "typecheck:tooling",
+    "invocation": "tsc -p tsconfig.tooling.test.json --noEmit",
+    "rootScript": "ci:typecheck",
+    "rootInvocation": "pnpm typecheck:tooling",
+    "reason": "Root CI tooling typecheck invokes maintained tooling tests and Vitest tooling config."
+  }
+]

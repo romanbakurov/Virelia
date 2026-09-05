@@ -4,9 +4,21 @@
     "target": "ES2023",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "allowArbitraryExtensions": true,
     "jsx": "react-jsx",
     "composite": true,
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "e2e/**/*.ts",
+    "e2e/**/*.tsx",
+    "*.ts",
+    "*.tsx",
+    "*.mts",
+    "*.cts"
+  ],
+  "exclude": ["node_modules", "dist", "storybook-static"]
 }

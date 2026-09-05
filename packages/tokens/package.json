@@ -54,7 +54,7 @@
     "generate:types:check": "tsx scripts/generate-token-types.ts --check",
     "build:tokens": "pnpm run generate:types && tsx scripts/generate-css.ts",
     "build": "pnpm run clean:build && pnpm run build:tokens && tsc -p tsconfig.build.json",
-    "typecheck": "pnpm run generate:types:check && tsc -p tsconfig.json --noEmit",
+    "typecheck": "pnpm run generate:types:check && tsc -p tsconfig.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "test": "pnpm run generate:types:check && vitest run"
   },
   "publishConfig": {

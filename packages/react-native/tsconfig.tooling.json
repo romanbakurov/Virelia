@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "types": ["node", "vitest"]
+  },
+  "include": [
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "tsdown.config.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

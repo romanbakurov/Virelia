@@ -11,6 +11,7 @@
     "predev": "pnpm run sync:brand",
     "dev": "vitepress dev src",
     "test": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "prebuild": "pnpm run sync:brand",
     "build": "vitepress build src",
     "prepreview": "pnpm run sync:brand",
