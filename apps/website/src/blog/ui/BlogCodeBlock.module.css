@@ -31,7 +31,7 @@
 :global([data-vellira-theme='light']) .codeBlockToolbar {
   background: color-mix(
     in srgb,
-    var(--surface-background) 72%,
+    var(--surface-background) 56%,
     var(--surface-muted)
   );
 }
