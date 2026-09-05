@@ -6,7 +6,7 @@ In a real design system, a component also has public types, exports, tests, stor
 
 Vellira's public component generator is built around a different idea: describe the component's intent once, turn that intent into a deterministic plan, and generate the surrounding repository contract consistently for React and React Native.
 
-This article walks through that approach and the engineering decisions behind it.
+This article walks through that approach using several public components—Button, Input, Tabs, Modal, and Select—to show different parts of the production pipeline instead of treating one component as the example for everything.
 
 ## Why `Component.tsx` is the easy part
 
@@ -87,58 +87,50 @@ Profiles add architectural intent. The current public generator supports:
 - `compound`;
 - `overlay`.
 
-That distinction matters because a form control should not receive the same scaffold as a compound disclosure component, and an overlay should not be treated like a static primitive.
+Those profiles map to different families already visible in the public catalog.
 
-For example, the public generator documentation shows an Accordion-shaped compound command:
+Button is a useful example of a base action primitive. Input is a form-control with controlled/uncontrolled and validation-related state. Tabs is a compound navigation component with controlled/uncontrolled state, keyboard behavior, focus management, and public parts. Modal represents the overlay family with focus management, keyboard behavior, compound API, and portal requirements.
 
-```bash
-pnpm create:component Accordion both components navigation \
-  --profile=compound \
-  --capabilities=controlled,uncontrolled,disabled,keyboard \
-  --parts=Root,Item,Trigger,Content
-```
-
-The important part is not Accordion specifically. It is that the command expresses reusable facts:
-
-```text
-cross-platform
-component layer
-navigation category
-compound architecture
-controlled state
-uncontrolled state
-disabled behavior
-keyboard behavior
-Root / Item / Trigger / Content public parts
-```
-
-Those facts can drive much more than a folder name.
+The point is not to hardcode those component names into the generator. The point is to model the reusable architecture they represent.
 
 ## Profiles are better than component-name guessing
 
 A generator becomes fragile when it contains rules like:
 
 ```text
-if componentName === "Switch" -> generate boolean state
-if componentName === "Accordion" -> generate compound parts
-if componentName === "Dialog" -> add overlay behavior
+if componentName === "SomeInput" -> generate form state
+if componentName === "SomeTabs" -> generate compound parts
+if componentName === "SomeModal" -> add overlay behavior
 ```
 
 That approach feels convenient for the first few components, but it does not scale. The generator starts memorizing product names instead of modeling reusable architecture.
 
 Vellira uses profiles and explicit flags instead.
 
-A `form-control` profile can describe shared controlled/uncontrolled behavior. The `--control` option then narrows the state shape to `value`, `boolean`, or `text`.
+A `form-control` profile can establish common state and field-oriented structure without assuming that every form control behaves identically.
 
-A `compound` profile can support public parts without assuming what every compound component means.
+A `compound` profile can support public parts without deciding what every compound component means.
 
 An `overlay` profile can establish overlay-oriented structure while still allowing Web and React Native to diverge in platform-specific behavior.
 
 And explicit capabilities let a component add facts that do not deserve an entirely new profile:
 
 ```bash
---capabilities=controlled,uncontrolled,disabled,keyboard
+--capabilities=controlled,uncontrolled,keyboard,focus-management
 ```
+
+Tabs is a good concrete example. Its public implementation has Root, List, Trigger, and Content parts, while its metadata declares controlled/uncontrolled state, keyboard interaction, focus management, and compound API.
+
+A corresponding generator intent can therefore be expressed structurally:
+
+```bash
+pnpm create:component Tabs both components navigation \
+  --profile=compound \
+  --capabilities=controlled,uncontrolled,keyboard,focus-management \
+  --parts=Root,List,Trigger,Content
+```
+
+The important part is not the command itself. It is that the command expresses reusable facts rather than relying on the word “Tabs” to unlock hidden behavior.
 
 This is a useful general rule for code generators:
 
@@ -159,27 +151,27 @@ That is deliberate.
 
 Cross-platform does not mean byte-for-byte symmetry.
 
+Button makes the basic version of this obvious. The product intent is an action with stable public meaning, including disabled and loading states, but browser and native runtimes do not need the same internal primitive or event implementation.
+
+Modal makes the harder version obvious. Browser focus, keyboard dismissal, portals, and DOM presentation have different mechanics from native modal presentation and accessibility behavior.
+
 A browser component may need:
 
 - DOM elements;
 - keyboard behavior;
 - focus handling;
-- ARIA relationships;
+- semantic relationships;
 - CSS modules.
 
 A React Native component may instead need:
 
-- `Pressable` or `TextInput`;
+- `Pressable`, `TextInput`, or other native primitives;
 - accessibility roles and states;
 - touch-first interaction;
 - native styles;
 - platform-appropriate presentation.
 
 The generator therefore tries to preserve **API intent**, not force identical runtime code.
-
-This is especially important for overlays and form controls. A design system becomes harder to use when platform differences leak into every public prop, but it also becomes harder to maintain when an abstraction pretends the browser and native runtime are the same.
-
-The generator sits between those two extremes.
 
 ## Generate the surrounding product surface
 
@@ -233,7 +225,7 @@ Instead of asking a maintainer to remember twelve unrelated follow-up steps, one
 
 Exports are easy to forget because they do not affect the local implementation while you are building it.
 
-A component can compile inside its own folder and still be unusable by package consumers.
+A Button can compile perfectly inside its source directory and still be unusable if the package root never exposes it.
 
 Vellira's writer updates both the layer barrel and the package-root public surface. It also synchronizes the public API contract used by repository validation.
 
@@ -274,11 +266,15 @@ generated baseline tests
 
 That relationship matters because test expectations stay connected to the public component intent.
 
-If a component declares controlled state, disabled behavior, or keyboard behavior, the test contract can represent those requirements explicitly instead of leaving them as comments in a template.
+Tabs is a useful example because the public React package contains general tests plus dedicated keyboard and accessibility test surfaces. The component's metadata also explicitly declares keyboard and focus-management capabilities.
+
+That is the kind of relationship a generator should preserve: intent should influence not only what gets rendered, but what evidence is expected.
+
+Input requires a different baseline. Its public metadata emphasizes controlled/uncontrolled state together with disabled, required, and invalid form states. Those are different concerns from Tabs even though both are cross-platform components.
 
 The Web and React Native contracts can also differ when the platforms require different evidence.
 
-For example, a browser-only keyboard requirement should not automatically become fake native keyboard work.
+For example, a browser-specific keyboard requirement should not automatically become fake native keyboard work.
 
 This is a pattern worth copying even outside Vellira:
 
@@ -290,7 +286,7 @@ Otherwise the generator and the test system eventually describe different compon
 
 Safe regeneration is harder than first-time generation.
 
-Once a component has been edited by a human, `--force` cannot simply mean "delete everything and recreate it" unless every file is fully generator-owned.
+Once a component has been edited by a human, `--force` cannot simply mean “delete everything and recreate it” unless every file is fully generator-owned.
 
 Vellira's public writer has an explicit ownership boundary for manual component tests. Before rebuilding a generated component directory, it preserves manually owned tests and restores them afterward.
 
@@ -332,14 +328,9 @@ That includes conditions such as:
 
 The resource checks are particularly useful.
 
-A generator should not invent a missing icon or silently replace a requested token with something "close enough." If the caller declares:
+Input, for example, publicly declares a canonical Close icon requirement for its clear-input action. That is exactly the kind of resource dependency a generator should validate rather than guess.
 
-```bash
---icon="ChevronDown:disclosure indicator"
---token=semantic.text.primary
-```
-
-those are approved requirements. Missing canonical resources block the plan before component files are written.
+If a caller requests an icon or token explicitly, the generator should not invent a missing resource or silently substitute something “close enough.” Missing canonical resources block the plan before component files are written.
 
 This keeps generation deterministic and makes the failure actionable.
 
@@ -404,7 +395,9 @@ The point is to prove that checked-in generated surfaces still match their canon
 
 The public website component-page generator is a useful example of downstream generation.
 
-It resolves component information from the repository and creates a page model that can drive:
+Select is a good stress test for this layer because its public contract spans form state, loading, keyboard and focus behavior, compound composition, and portal behavior.
+
+A useful component page for that kind of component needs more than a screenshot. The page model may have to drive:
 
 ```text
 usage
@@ -428,11 +421,13 @@ That is a good example of defensive orchestration between deterministic tools: o
 
 The strongest limit in Vellira's generator is also the most important one: it does not try to finish component design automatically.
 
-A generated compound scaffold can provide a Root/Trigger/Content structure, but it should not invent the final domain API for every future compound component.
+A generated compound scaffold can provide Root/List/Trigger/Content structure for a Tabs-like component, but it should not invent the final interaction model of every future compound component.
 
-A generated form control can establish state ownership patterns, but component-specific interaction details still require engineering judgment.
+An overlay scaffold can establish a Modal-like structural starting point, but component-specific focus, dismissal, presentation, and edge cases still require engineering judgment.
 
-The public generator documentation describes this explicitly: templates remove repeated repository plumbing, not design or API review.
+A form-control scaffold can establish state ownership patterns, but Input-specific behavior still belongs to component engineering.
+
+The public generator documentation describes this principle explicitly: templates remove repeated repository plumbing, not design or API review.
 
 That boundary prevents the generator from turning into a pile of hidden assumptions.
 
@@ -464,7 +459,7 @@ The generator should make the second category easier to focus on, not pretend it
 
 One benefit of a serious generator is that recurring failures become tooling problems instead of per-component chores.
 
-Suppose the fourth generated component reveals that every package root is missing a required type export.
+Suppose Button, Input, Tabs, and Modal all reveal the same missing package-root type export during production work.
 
 You can fix four components manually.
 
@@ -502,8 +497,8 @@ Prefer:
 
 ```text
 profile=compound
-parts=Root,Trigger,Content
-capabilities=keyboard,disabled
+parts=Root,List,Trigger,Content
+capabilities=keyboard,focus-management
 ```
 
 over component-name heuristics.
@@ -552,6 +547,6 @@ It is a way to encode the repeatable production contract of a component library.
 
 For Vellira, that contract now spans React and React Native targets, public types, exports, test requirements, stories, metadata, docs, tokens, website pages, and deterministic validation.
 
-The component implementation still matters. But it no longer has to carry the entire burden of "done."
+The component implementation still matters. But it no longer has to carry the entire burden of “done.”
 
 That is the real value of the generator: it moves predictable repository work from memory into a system that can be validated, repeated, and improved once for every component that comes after it.
