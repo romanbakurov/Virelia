@@ -258,6 +258,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
                   <div
                     className={searchStyles.filters}
+                    role='group'
                     aria-label='Filter articles by topic'
                   >
                     <button
@@ -317,6 +318,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
                         <div
                           className={searchStyles.filterPanel}
+                          role='group'
                           aria-label='More topic filters'
                         >
                           <div className={searchStyles.filterPanelHeader}>
@@ -356,7 +358,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                                   <span>{topic.label}</span>
                                   <span
                                     className={searchStyles.topicFrequency}
-                                    aria-label={`${topic.count} articles`}
+                                    aria-hidden='true'
                                   >
                                     {topic.count}
                                   </span>
