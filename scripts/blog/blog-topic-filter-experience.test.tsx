@@ -138,50 +138,43 @@ describe('blog topic filter experience', () => {
     );
   });
 
-  it(
-    'keeps less-common topics reachable, dismisses outside, and surfaces hidden active filters',
-    async () => {
-      installBlogFetch();
-      render(<BlogIndex articles={articles} />);
+  it('keeps less-common topics reachable, dismisses outside, and surfaces hidden active filters', async () => {
+    installBlogFetch();
+    render(<BlogIndex articles={articles} />);
 
-      const moreFilters = screen.getByRole('button', { name: 'More filters' });
+    const moreFilters = screen.getByRole('button', { name: 'More filters' });
 
-      expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
-      fireEvent.click(moreFilters);
+    expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(moreFilters);
 
+    expect(screen.getByRole('button', { name: /^Testing/ })).toBeInTheDocument();
+
+    fireEvent.pointerDown(document.body);
+
+    await waitFor(() =>
       expect(
-        screen.getByRole('button', { name: /^Testing/ })
-      ).toBeInTheDocument();
+        screen.queryByRole('button', { name: /^Testing/ })
+      ).not.toBeInTheDocument()
+    );
+    expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
 
-      fireEvent.pointerDown(document.body);
+    fireEvent.click(moreFilters);
+    fireEvent.click(screen.getByRole('button', { name: /^Testing/ }));
 
-      await waitFor(() =>
-        expect(
-          screen.queryByRole('button', { name: /^Testing/ })
-        ).not.toBeInTheDocument()
-      );
-      expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('status')).toHaveTextContent('1 article');
+    expect(
+      screen.getByRole('link', { name: 'Read Testing quality gates' })
+    ).toBeInTheDocument();
+    expect(moreFilters).toHaveTextContent('1');
+    expect(new URLSearchParams(window.location.search).get('tags')).toBe(
+      'testing'
+    );
 
-      fireEvent.click(moreFilters);
-      fireEvent.click(screen.getByRole('button', { name: /^Testing/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
 
-      expect(screen.getByRole('status')).toHaveTextContent('1 article');
-      expect(
-        screen.getByRole('link', { name: 'Read Testing quality gates' })
-      ).toBeInTheDocument();
-      expect(moreFilters).toHaveTextContent('1');
-      expect(new URLSearchParams(window.location.search).get('tags')).toBe(
-        'testing'
-      );
-
-      fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
-
-      expect(new URLSearchParams(window.location.search).has('tags')).toBe(
-        false
-      );
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
-    }
-  );
+    expect(new URLSearchParams(window.location.search).has('tags')).toBe(false);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
 
   it('restores valid URL filters and safely ignores unknown topics', async () => {
     installBlogFetch();
