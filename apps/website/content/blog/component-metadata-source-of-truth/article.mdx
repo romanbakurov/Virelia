@@ -1,0 +1,731 @@
+A design system starts drifting long before anyone notices a broken component.
+
+The first warning signs are usually quieter.
+
+The website says a component supports React Native, but the native package does not export it. Storybook has a story, but the component page is missing. A checker assumes tests are required, while another tool does not know that the component is supposed to support keyboard interaction. A generator creates a new component, but someone still has to remember to update three separate registries by hand.
+
+None of those failures begins in the component implementation itself.
+
+They begin because the same facts are being maintained in too many places.
+
+Vellira addresses that problem with machine-readable component metadata: one canonical registry that describes stable product and tooling facts about each public component, then lets generators and validators consume those facts deterministically.
+
+This article explains what belongs in that metadata, how Vellira uses it today, why it reduces drift, and where the boundary should remain so a useful schema does not become an over-engineered model of the entire design system.
+
+## The hidden cost of five component lists
+
+Imagine a component library with separate lists for:
+
+```text
+package exports
+website catalog
+Storybook expectations
+documentation requirements
+quality checks
+```
+
+At first, keeping those lists synchronized feels manageable.
+
+A new component arrives, so you add its name to each place.
+
+Then the catalog grows.
+
+One component is Web-only for a while. Another becomes cross-platform. A form control requires invalid and required states. A navigation component needs keyboard and focus-management checks. An overlay depends on portal behavior. Some components require tokens or icons that others do not.
+
+Now each list needs more than a name.
+
+It needs context.
+
+The same facts begin to appear repeatedly:
+
+```text
+name
+layer
+category
+platforms
+status
+capabilities
+dependencies
+required engineering surfaces
+```
+
+Once those facts are duplicated, drift becomes a probability problem.
+
+If the source of truth exists in five places, every change creates five opportunities to forget one.
+
+The obvious response is to automate synchronization.
+
+But automation still needs an authority.
+
+That is the role of component metadata.
+
+## What belongs in component metadata
+
+Vellira's public metadata model is intentionally small.
+
+A component declares:
+
+```ts
+interface ComponentMetadata {
+  name: string;
+  layer: 'primitives' | 'components' | 'patterns';
+  category:
+    | 'action'
+    | 'form'
+    | 'navigation'
+    | 'overlay'
+    | 'feedback'
+    | 'data-display'
+    | 'layout'
+    | 'utility';
+  platforms: readonly ('react' | 'react-native')[];
+  profile: 'base' | 'form-control' | 'compound' | 'overlay';
+  status: 'experimental' | 'stable' | 'deprecated';
+  capabilities?: readonly ComponentCapability[];
+  dependencies?: ComponentDependencies;
+  requirements: ComponentRequirements;
+}
+```
+
+The capability vocabulary covers reusable facts such as:
+
+```text
+controlled
+uncontrolled
+disabled
+required
+invalid
+loading
+keyboard
+focus-management
+compound-api
+portal
+responsive
+```
+
+The requirements object expresses whether tests, Storybook, documentation, and accessibility evidence are required, with optional token, icon, and component-token requirements.
+
+That distinction matters.
+
+Metadata is not a prose description of the component.
+
+It is a compact set of facts that tooling can make decisions from.
+
+## Different components should produce different metadata shapes
+
+A useful schema must be specific enough to describe real differences without forcing every component into the same template.
+
+The current Vellira catalog makes that visible.
+
+### Button: a small base contract
+
+Button is a primitive action component with a `base` profile.
+
+Its metadata is comparatively small: it supports React and React Native and declares `disabled` and `loading` capabilities.
+
+That is enough to communicate an important fact to tooling: Button does not need the same behavioral model as a compound navigation component or an overlay.
+
+A metadata schema should not reward verbosity for its own sake.
+
+If a component has a simple contract, its metadata should remain simple.
+
+### FormField: the layer is part of the product model
+
+FormField demonstrates why a component name alone is not enough.
+
+It lives in the `patterns` layer rather than `primitives` or `components`, belongs to the `form` category, and uses the `form-control` profile.
+
+Its capabilities include:
+
+```text
+disabled
+required
+invalid
+compound-api
+```
+
+That tells downstream tooling something structural.
+
+FormField is not merely another input-like control. It is a composition pattern around form semantics.
+
+The layer and profile help preserve that distinction without asking every consumer to infer architecture from the word `FormField`.
+
+### Tabs: interaction requirements are first-class facts
+
+Tabs is a compound navigation component.
+
+Its metadata declares controlled and uncontrolled state, keyboard behavior, focus management, and a compound API.
+
+Those are not implementation details.
+
+They are reusable expectations that matter to tests, quality checks, documentation, and cross-platform review.
+
+A checker should not need a hardcoded rule such as:
+
+```text
+if name === "Tabs" -> remember keyboard checks
+```
+
+The component can declare that capability once.
+
+### Modal: overlay behavior should not be guessed
+
+Modal uses the `overlay` profile and declares:
+
+```text
+controlled
+uncontrolled
+keyboard
+focus-management
+compound-api
+portal
+```
+
+It also declares package dependencies that include shared types, tokens, and icons.
+
+That gives the tooling model a clean way to describe an overlay-oriented component without pretending that every implementation detail can be generated from metadata.
+
+The important fact is that portal and focus-management behavior are part of the component's declared contract.
+
+The exact focus algorithm still belongs to implementation engineering.
+
+### Select: rich metadata without inventing a new schema
+
+Select is one of the richer examples in the current catalog.
+
+It declares controlled and uncontrolled state, disabled, required, invalid and loading states, keyboard and focus management, compound API, and portal behavior.
+
+That combination spans multiple concerns:
+
+```text
+form state
+interaction
+accessibility-related behavior
+compound composition
+overlay infrastructure
+```
+
+The useful lesson is not that Select needs a special metadata type.
+
+It is the opposite.
+
+A small vocabulary of reusable capabilities can describe a more complex component without creating a one-off schema branch for every product name.
+
+## Metadata should be a contract, not documentation copy
+
+A TypeScript interface alone is not enough to make metadata authoritative.
+
+The values themselves need validation.
+
+Vellira validates component metadata before quality evaluation.
+
+The validator checks things such as:
+
+- supported layers;
+- supported categories;
+- supported profiles;
+- supported platforms;
+- supported lifecycle statuses;
+- supported capability names;
+- non-empty platform lists;
+- duplicate values;
+- dependency array structure;
+- required boolean fields for tests, Storybook, docs, and accessibility;
+- token and icon requirement structure.
+
+That changes the failure mode.
+
+Without validation, a typo like this can quietly become a new accidental vocabulary term:
+
+```text
+focus-managment
+```
+
+With validation, the metadata is rejected because the value is not part of the supported capability vocabulary.
+
+The same applies to duplicate platform entries, empty strings, invalid categories, or malformed requirements.
+
+This is why I think of metadata as a contract rather than a convenient object.
+
+A contract has boundaries.
+
+Invalid states should fail clearly instead of becoming downstream ambiguity.
+
+## One registry gives tooling one entry point
+
+Vellira keeps component metadata files separate by component, then collects them into one `componentMetadata` registry.
+
+At the time of writing, that registry contains fourteen public components:
+
+```text
+Accordion
+Button
+Checkbox
+Dropdown
+FormField
+Input
+Modal
+Popover
+Radio
+RadioGroup
+Select
+Switch
+Tabs
+Tooltip
+```
+
+The important part is not the number.
+
+The important part is that consumers do not need to discover components independently.
+
+They can start from the same registry.
+
+That gives the repository a useful invariant:
+
+> If a component is part of the canonical public metadata registry, tooling can reason about it through one shared contract.
+
+This is much stronger than letting every script scan directories and infer product meaning from file names.
+
+Directory scanning can tell you what exists.
+
+Metadata can tell you what is supposed to exist.
+
+Those are different questions.
+
+## Generation can create the contract at the same time as the component
+
+A source of truth becomes much more valuable when new components enter it automatically.
+
+Vellira's public component generator writes component metadata from the same generation plan used to create the component scaffold.
+
+Conceptually, the flow looks like this:
+
+```text
+component intent
+      ↓
+generation plan
+      ↓
+implementation + types + tests + stories
+      ↓
+Component.metadata.ts
+      ↓
+componentMetadata registry
+```
+
+The writer resolves the target platforms from the generation plan, resolves effective capabilities, renders the metadata file, and registers it in the central metadata barrel.
+
+The registration code also avoids treating the registry as an append-only text file.
+
+It checks existing imports, maintains deterministic module ordering, verifies that the expected registry marker exists, and avoids duplicate entries.
+
+This matters because generator quality is not only about creating files.
+
+It is also about creating stable repository state.
+
+If generating the same component intent repeatedly produces reordered imports, duplicate registrations, or unrelated churn, the generator is not deterministic enough.
+
+Metadata registration is one of the places where idempotency becomes visible.
+
+## Completeness checks become product-aware
+
+One of the strongest public consumers of Vellira metadata is the component completeness checker.
+
+The CLI does not maintain a separate list of known components.
+
+It reads the canonical `componentMetadata` registry.
+
+If you request a component that is not present there, the checker reports that no component metadata was found.
+
+More importantly, the checker uses metadata to decide what to inspect.
+
+For each declared platform it derives the expected package and component path from:
+
+```text
+platform
+layer
+name
+```
+
+Then it checks the expected implementation, public types, and exports.
+
+Requirements make the check conditional rather than universal.
+
+If tests are required, tests are checked.
+
+If Storybook is required, stories are checked.
+
+If docs are required, the website and API documentation surfaces are checked.
+
+If accessibility is required, accessibility documentation is checked.
+
+If token requirements are declared, those tokens are checked too.
+
+The model is approximately:
+
+```text
+metadata says what the component promises
+              ↓
+completeness checker asks whether the repository contains the promised surfaces
+```
+
+That is a much better relationship than a generic checker that assumes every component has the same shape.
+
+## Metadata can connect code, docs, and catalog validation without owning them
+
+There is an important distinction here.
+
+Vellira metadata does not contain the website page.
+
+It does not contain the API documentation.
+
+It does not contain the Storybook story.
+
+Instead, metadata can declare that those surfaces are required, and a checker can verify that the corresponding repository-owned artifacts exist.
+
+For example, the completeness checker uses the component name to verify website catalog registration and component-page registration when docs are required.
+
+It also verifies API documentation against the component's declared platforms.
+
+This separation is healthy.
+
+The metadata says:
+
+```text
+this component supports these platforms
+this documentation surface is required
+```
+
+The documentation system still owns the actual content.
+
+That prevents metadata from becoming a giant serialized copy of every other subsystem.
+
+A source of truth should centralize facts, not swallow every artifact that depends on those facts.
+
+## Quality checks can use the same contract for applicability
+
+The component quality checker uses the same registry for a different purpose.
+
+Before evaluating quality rules, the engine validates every metadata entry.
+
+Then it uses each component's declared platforms to determine which platform checks are applicable.
+
+If you ask for a Web-only or native-only quality run, the engine filters that request through the platforms declared by the component.
+
+Each quality rule then receives:
+
+```text
+component metadata
+selected platform
+repository root
+```
+
+That gives quality rules context without requiring them to rediscover the component model independently.
+
+This is a subtle but important benefit of canonical metadata.
+
+Completeness and quality are different systems.
+
+One asks whether required surfaces exist.
+
+The other evaluates engineering rules and returns machine-readable findings.
+
+They should not be collapsed into one giant checker.
+
+But they can still share the same component facts.
+
+That is exactly the kind of reuse a metadata contract should enable.
+
+## Source of truth does not mean source of everything
+
+This phrase is easy to misuse.
+
+When I say component metadata is a source of truth, I do not mean every fact about a component belongs there.
+
+Vellira's metadata intentionally does not try to encode the entire public API.
+
+It does not describe every prop.
+
+It does not define the final interaction algorithm.
+
+It does not contain CSS or React Native styles.
+
+It does not replace tests.
+
+It does not replace documentation prose.
+
+It does not decide whether a particular visual treatment is good.
+
+It does not prove that keyboard behavior is correct simply because `keyboard` appears in `capabilities`.
+
+A capability declaration means:
+
+> this concern belongs to the component contract and relevant tooling may require evidence for it.
+
+It does not mean:
+
+> the metadata object itself proves the implementation is correct.
+
+That boundary is essential.
+
+If metadata starts trying to model every semantic detail, it becomes another implementation language.
+
+At that point the schema stops reducing complexity and starts creating it.
+
+## Descriptive metadata is stronger than speculative metadata
+
+There is a temptation when building a schema to design for every component the system might support one day.
+
+That usually produces fields nobody can validate yet.
+
+Vellira takes a narrower approach.
+
+The current schema models concepts that already have concrete repository meaning:
+
+```text
+platform
+layer
+category
+profile
+status
+capability
+dependency
+engineering requirement
+```
+
+That makes each field useful to a real consumer or to a stable product classification.
+
+When a new need appears, the right question is not:
+
+> What else could we put in metadata?
+
+It is:
+
+> What stable fact is currently duplicated or being guessed by multiple systems, and would centralizing it reduce drift?
+
+That question keeps schema growth evidence-driven.
+
+For example, adding a reusable capability can make sense when multiple components and checks need the same concept.
+
+Adding a component-specific field just because one implementation has an interesting internal detail usually does not.
+
+A good metadata schema grows from repeated contracts, not from imagination.
+
+## Avoid name-based tooling rules
+
+One of the biggest benefits of metadata appears when it removes hardcoded component-name logic.
+
+This is fragile:
+
+```text
+if component === "Tabs" -> run keyboard checks
+if component === "Modal" -> expect portal behavior
+if component === "FormField" -> treat as pattern
+```
+
+Those conditions mix product identity with reusable architecture.
+
+A stronger system asks:
+
+```text
+Does the component declare keyboard capability?
+Does it declare portal capability?
+Which layer does it belong to?
+Which profile describes its scaffold?
+Which platforms are supported?
+```
+
+Names still matter for identity and paths.
+
+But behavior should be driven by behavior-oriented facts whenever possible.
+
+That makes tooling easier to extend because a future component can participate in an existing rule without modifying the rule to recognize a new product name.
+
+## Drift becomes deterministic evidence instead of a review surprise
+
+The biggest payoff from machine-readable metadata is not that it saves a few lines of configuration.
+
+It changes how inconsistency is discovered.
+
+Without a canonical contract, a reviewer might eventually notice:
+
+> The website claims native support, but there is no native implementation.
+
+With metadata-driven checks, the repository can fail earlier:
+
+```text
+platforms includes react-native
+        ↓
+completeness checker derives native package path
+        ↓
+required implementation is missing
+        ↓
+INCOMPLETE
+```
+
+The same pattern applies to stories, tests, docs, accessibility evidence, exports, and token requirements.
+
+A human observation becomes a deterministic invariant.
+
+That is one of the most valuable transformations tooling can make in a design system.
+
+The system is not replacing review judgment.
+
+It is removing avoidable memory work from review.
+
+## Metadata also improves error messages
+
+A canonical registry gives tools better language for failure.
+
+Instead of failing later with a file-system error, the completeness CLI can say that a requested component is unknown because no metadata exists for it.
+
+Instead of a quality rule silently running against the wrong runtime, the engine can reject a platform request that the component does not support.
+
+Instead of accepting malformed configuration, metadata validation can report unsupported categories, capabilities, or duplicate entries before quality evaluation begins.
+
+Good automation is not only about preventing invalid state.
+
+It should also make invalid state understandable.
+
+A small validated schema provides enough context to produce errors that describe the product contract, not just the implementation accident.
+
+## Keep independent systems independent
+
+There is another failure mode worth avoiding: once metadata becomes useful, it is tempting to route every system through it directly.
+
+That can create excessive coupling.
+
+Vellira keeps several responsibilities separate:
+
+```text
+component metadata
+- canonical component facts and requirements
+
+component generator
+- deterministic scaffold and registration
+
+completeness checker
+- required surface presence
+
+quality checker
+- engineering rule evaluation
+
+docs / website / Storybook
+- their own authored or generated content
+```
+
+These systems share facts where useful, but they do not become one subsystem.
+
+That separation matters for maintainability.
+
+A docs generator can evolve without redefining the component schema.
+
+A quality rule can become stricter without changing component identity.
+
+A component implementation can gain nuance without requiring metadata to represent every branch of its runtime behavior.
+
+The source of truth remains small because consumers retain their own responsibilities.
+
+## Practical rules for a design-system metadata schema
+
+If I were introducing component metadata into another design system, I would use these rules.
+
+### 1. Centralize facts that are already duplicated
+
+Start with facts several tools or teams already maintain separately.
+
+Platform support, lifecycle, category, required surfaces, and reusable capabilities are good candidates.
+
+Do not begin with a speculative universal ontology.
+
+### 2. Use constrained vocabularies where semantics matter
+
+A union such as:
+
+```text
+stable | experimental | deprecated
+```
+
+is more useful to tooling than an unrestricted status string.
+
+The same is true for platforms, profiles, layers, and capabilities.
+
+### 3. Validate metadata before consuming it
+
+The earlier malformed metadata fails, the easier downstream systems are to reason about.
+
+Do not let each consumer invent its own validation behavior.
+
+### 4. Keep one canonical registry
+
+Individual component files are easier to review, but consumers should still have one deterministic registry to enumerate.
+
+### 5. Let generators register metadata automatically
+
+If adding a component requires remembering to update the source of truth manually, the process still has a memory gap.
+
+### 6. Let requirements drive checks
+
+A requirement such as `storybook: true` is valuable when a checker can prove the corresponding story surface exists.
+
+A field with no consumer or validation should be treated skeptically.
+
+### 7. Prefer reusable capabilities over component-name heuristics
+
+If several components share a concern, represent the concern rather than teaching every tool a list of names.
+
+### 8. Keep evidence outside the declaration
+
+`keyboard` can be metadata.
+
+The keyboard tests themselves should remain tests.
+
+`docs: true` can be metadata.
+
+The documentation content should remain documentation.
+
+### 9. Make schema evolution auditable
+
+Changing the allowed vocabulary changes what downstream tooling is allowed to assume.
+
+Treat schema changes like API changes, not casual configuration edits.
+
+### 10. Stop before metadata becomes another programming language
+
+If the schema needs to describe every runtime branch, event sequence, styling decision, and prop combination, it has crossed the useful boundary.
+
+Keep the contract small enough that humans can still understand what each field means.
+
+## A source of truth is valuable because other systems can disagree with it
+
+This sounds contradictory, but it is the key idea.
+
+Metadata becomes useful when it creates a stable statement that can be compared with reality.
+
+It says:
+
+```text
+This component supports React and React Native.
+Tests are required.
+Storybook is required.
+Docs are required.
+Accessibility evidence is required.
+These reusable capabilities belong to its contract.
+```
+
+Then the rest of the repository can be checked against those statements.
+
+If the implementation, docs, exports, stories, or tests disagree, the disagreement becomes detectable.
+
+Without the canonical statement, there is nothing deterministic to compare against.
+
+That is why component metadata is more than a catalog convenience.
+
+It is a compact product contract between the component library and the tooling around it.
+
+For Vellira, that contract currently helps connect generation, registration, completeness validation, documentation expectations, platform selection, and component-quality evaluation while remaining deliberately smaller than the components themselves.
+
+That boundary is what makes the model useful.
+
+The goal is not to describe everything.
+
+The goal is to describe the stable facts once, validate them, and stop asking every downstream system to guess them again.

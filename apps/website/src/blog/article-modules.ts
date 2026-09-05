@@ -15,12 +15,18 @@ const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
   {
     'accessible-accordion-react-native': () =>
       import('../../content/blog/accessible-accordion-react-native/article.mdx'),
+    'component-metadata-source-of-truth': () =>
+      import('../../content/blog/component-metadata-source-of-truth/article.mdx'),
     'controlled-uncontrolled-react-native': () =>
       import('../../content/blog/controlled-uncontrolled-react-native/article.mdx'),
+    'cross-platform-form-vellira': () =>
+      import('../../content/blog/cross-platform-form-vellira/article.mdx'),
     'design-system-component-generator': () =>
       import('../../content/blog/design-system-component-generator/article.mdx'),
     'production-ready-cross-platform-component': () =>
       import('../../content/blog/production-ready-cross-platform-component/article.mdx'),
+    'quality-gates-before-component-growth': () =>
+      import('../../content/blog/quality-gates-before-component-growth/article.mdx'),
     'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),
   };
 
