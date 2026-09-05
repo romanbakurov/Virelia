@@ -1,27 +1,79 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { Search } from '@vellira-ui/icons';
 
 import { Container } from '@/components/layout/Container';
-import { fetchBlogMetricsBatch, type BlogMetricsBySlug } from '../metrics';
 import type { BlogArticleMetadata } from '@/blog';
+import { fetchBlogMetricsBatch, type BlogMetricsBySlug } from '../metrics';
+import { normalizeBlogSearchText, searchBlogArticles } from '../search';
 import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 import { formatBlogDate } from './formatBlogDate';
 
 import styles from './BlogExperience.module.css';
+import searchStyles from './BlogIndexSearch.module.css';
 
 interface BlogIndexProps {
   articles: readonly BlogArticleMetadata[];
   metricsBySlug?: BlogMetricsBySlug;
 }
 
+function readSearchQueryFromUrl(): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  return new URLSearchParams(window.location.search).get('q') ?? '';
+}
+
+function replaceSearchQueryInUrl(query: string): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  const nextQuery = query.trim();
+
+  if (nextQuery) {
+    url.searchParams.set('q', nextQuery);
+  } else {
+    url.searchParams.delete('q');
+  }
+
+  window.history.replaceState(
+    window.history.state,
+    '',
+    `${url.pathname}${url.search}${url.hash}`
+  );
+}
+
 export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
+  const [query, setQuery] = useState('');
   const [resolvedMetricsBySlug, setResolvedMetricsBySlug] =
     useState<BlogMetricsBySlug>(metricsBySlug);
+  const publishedArticles = useMemo(
+    () => searchBlogArticles(articles, ''),
+    [articles]
+  );
+  const filteredArticles = useMemo(
+    () => searchBlogArticles(publishedArticles, query),
+    [publishedArticles, query]
+  );
+  const normalizedQuery = normalizeBlogSearchText(query);
 
   useEffect(() => {
-    const slugs = articles.map((article) => article.slug);
+    const syncQueryFromUrl = () => setQuery(readSearchQueryFromUrl());
+
+    syncQueryFromUrl();
+    window.addEventListener('popstate', syncQueryFromUrl);
+
+    return () => window.removeEventListener('popstate', syncQueryFromUrl);
+  }, []);
+
+  useEffect(() => {
+    const slugs = publishedArticles.map((article) => article.slug);
 
     if (
       slugs.length === 0 ||
@@ -45,7 +97,12 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
     return () => {
       cancelled = true;
     };
-  }, [articles]);
+  }, [publishedArticles]);
+
+  const updateQuery = (nextQuery: string) => {
+    setQuery(nextQuery);
+    replaceSearchQueryInUrl(nextQuery);
+  };
 
   return (
     <main className={styles.page}>
@@ -66,7 +123,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
       <section className={styles.indexSection} aria-label='Published articles'>
         <Container size='wide'>
-          {articles.length === 0 ? (
+          {publishedArticles.length === 0 ? (
             <div className={styles.emptyState}>
               <p className={styles.eyebrow}>Publishing soon</p>
               <h2>The foundation is ready.</h2>
@@ -76,45 +133,107 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
               </p>
             </div>
           ) : (
-            <div className={styles.articleGrid}>
-              {articles.map((article) => (
-                <article key={article.slug} className={styles.articleCard}>
-                  <div className={styles.cardMeta}>
-                    <time dateTime={article.publishedAt}>
-                      {formatBlogDate(article.publishedAt)}
-                    </time>
-                    <span className={styles.metaDivider} aria-hidden='true' />
-                    <span>{article.author}</span>
-                  </div>
-
-                  <h2>{article.title}</h2>
-                  <p className={styles.cardDescription}>
-                    {article.description}
-                  </p>
-
-                  <BlogMetricsDisplay
-                    slug={article.slug}
-                    metrics={resolvedMetricsBySlug[article.slug]}
+            <>
+              <div className={searchStyles.discoveryToolbar}>
+                <label className={searchStyles.search}>
+                  <Search
+                    aria-hidden='true'
+                    className={searchStyles.searchIcon}
                   />
 
-                  <div className={styles.tags} aria-label='Article tags'>
-                    {article.tags.map((tag) => (
-                      <span key={tag} className={styles.tag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  <input
+                    type='search'
+                    value={query}
+                    onChange={(event) => updateQuery(event.target.value)}
+                    placeholder='Search articles...'
+                    aria-label='Search articles'
+                    className={searchStyles.searchInput}
+                  />
 
-                  <Link
-                    href={`/blog/${article.slug}`}
-                    className={styles.cardLink}
-                    aria-label={`Read ${article.title}`}
+                  {query && (
+                    <button
+                      type='button'
+                      className={searchStyles.clearSearch}
+                      aria-label='Clear search'
+                      onClick={() => updateQuery('')}
+                    >
+                      ×
+                    </button>
+                  )}
+                </label>
+              </div>
+
+              {normalizedQuery && (
+                <div
+                  className={searchStyles.resultsMeta}
+                  role='status'
+                  aria-live='polite'
+                >
+                  {filteredArticles.length === 1
+                    ? '1 article'
+                    : `${filteredArticles.length} articles`}
+                </div>
+              )}
+
+              {filteredArticles.length > 0 ? (
+                <div className={styles.articleGrid}>
+                  {filteredArticles.map((article) => (
+                    <article key={article.slug} className={styles.articleCard}>
+                      <div className={styles.cardMeta}>
+                        <time dateTime={article.publishedAt}>
+                          {formatBlogDate(article.publishedAt)}
+                        </time>
+                        <span
+                          className={styles.metaDivider}
+                          aria-hidden='true'
+                        />
+                        <span>{article.author}</span>
+                      </div>
+
+                      <h2>{article.title}</h2>
+                      <p className={styles.cardDescription}>
+                        {article.description}
+                      </p>
+
+                      <BlogMetricsDisplay
+                        slug={article.slug}
+                        metrics={resolvedMetricsBySlug[article.slug]}
+                      />
+
+                      <div className={styles.tags} aria-label='Article tags'>
+                        {article.tags.map((tag) => (
+                          <span key={tag} className={styles.tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <Link
+                        href={`/blog/${article.slug}`}
+                        className={styles.cardLink}
+                        aria-label={`Read ${article.title}`}
+                      >
+                        Read article
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.emptyState}>
+                  <p className={styles.eyebrow}>No matches</p>
+                  <h2>No articles found.</h2>
+                  <p>Try another search or clear the current query.</p>
+                  <button
+                    type='button'
+                    className={searchStyles.resetSearch}
+                    aria-label='Clear search and show all articles'
+                    onClick={() => updateQuery('')}
                   >
-                    Read article
-                  </Link>
-                </article>
-              ))}
-            </div>
+                    Clear search
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </Container>
       </section>
