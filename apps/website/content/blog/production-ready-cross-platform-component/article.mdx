@@ -1,12 +1,12 @@
 A component is not production-ready because it renders.
 
-That is the easiest milestone to see, so it is also the easiest one to overvalue. A button that looks correct in one screenshot may still have an unstable API, incomplete accessibility, missing tests, stale documentation, broken package exports, or no equivalent path on another runtime.
+That is the easiest milestone to see, so it is also the easiest one to overvalue. A control that looks correct in one screenshot may still have an unstable API, incomplete accessibility, missing tests, stale documentation, broken package exports, or no credible path on another runtime.
 
 For a design system, the release unit is larger than the implementation file.
 
 A production-ready component is a contract across all the places where developers and users experience it.
 
-This article uses public Vellira components as concrete examples, but the checklist applies to any React or React Native component library.
+This article uses several public Vellira components as concrete examples—Select, Tabs, Modal, FormField, and Button—but the checklist applies to any React or React Native component library.
 
 ## Why “it renders” is not a release criterion
 
@@ -17,7 +17,7 @@ It does not prove:
 - that the public props are coherent;
 - that controlled and uncontrolled state behave consistently;
 - that keyboard and assistive-technology behavior are correct;
-- that disabled and invalid states are covered;
+- that disabled, required, invalid, or loading states are covered where relevant;
 - that React Native exposes the same product intent;
 - that package consumers can actually import the component;
 - that examples, docs, metadata, and tests describe the same API;
@@ -37,7 +37,9 @@ It is:
 
 A component library has more public surfaces than its source tree suggests.
 
-Take a cross-platform Accordion. The visible control is only one surface. The complete product also includes:
+Select is a good example because it combines form state, interaction, focus, compound composition, and overlay behavior. In Vellira's public metadata it is cross-platform and declares controlled and uncontrolled state, disabled, required, invalid and loading states, keyboard interaction, focus management, compound API, and portal behavior.
+
+The visible Select is therefore only one surface. The complete product also includes:
 
 ```text
 React implementation
@@ -54,11 +56,11 @@ component metadata
 quality and completeness checks
 ```
 
-If one of those surfaces disagrees with the others, the component is incomplete even if the main demo looks perfect.
+If one of those surfaces disagrees with the others, the component is incomplete even if its main demo looks perfect.
 
 A common failure mode is to finish the implementation first and treat everything else as cleanup.
 
-That ordering feels fast, but it creates a long tail of forgotten work. Documentation describes an older prop name. Storybook only covers the default state. React Native misses a feature that the website claims is cross-platform. An export is forgotten. A test validates rendering but not ownership after interaction.
+That ordering feels fast, but it creates a long tail of forgotten work. Documentation describes an older prop. Storybook only covers the default state. React Native misses a capability the website implies is cross-platform. An export is forgotten. A test validates initial rendering but not what happens after interaction.
 
 A stronger model is to treat these surfaces as one shipping contract from the beginning.
 
@@ -66,81 +68,58 @@ A stronger model is to treat these surfaces as one shipping contract from the be
 
 For reusable components, TypeScript design is product design.
 
-The implementation may be internally correct while the public API still allows impossible combinations.
+Input-like components make this especially visible. A form control that supports both controlled and uncontrolled usage has to make state ownership clear enough that a consumer can predict what happens after typing, clearing, disabling, or validating the field.
 
-Accordion is a useful example because single and multiple modes have different state shapes.
+Vellira's public FormField and Select metadata make a useful contrast.
 
-A loose API might look like this:
+FormField is a pattern-level component. Its public contract focuses on composing field semantics such as disabled, required, and invalid states around a control. Select is a more stateful component: it adds controlled/uncontrolled ownership, loading, keyboard and focus behavior, and compound/portal concerns.
 
-```ts
-interface LooseAccordionProps {
-  type?: 'single' | 'multiple';
-  value?: string | string[];
-  defaultValue?: string | string[];
-  onValueChange?: (value: string | string[]) => void;
-  collapsible?: boolean;
-}
+Those differences should be visible in the API instead of hidden in implementation details.
+
+A useful API review therefore asks:
+
+```text
+Who owns the current value?
+What defines the initial uncontrolled value?
+Which states are mutually compatible?
+Which state transitions can the component request?
+Which constraints can TypeScript express directly?
+Which semantics belong to a surrounding pattern such as FormField?
 ```
 
-It is flexible, but callers now have to remember which combinations are valid.
-
-A stronger contract separates the modes:
-
-```ts
-type AccordionProps =
-  | {
-      type?: 'single';
-      value?: string;
-      defaultValue?: string;
-      onValueChange?: (value: string) => void;
-      collapsible?: boolean;
-    }
-  | {
-      type: 'multiple';
-      value?: string[];
-      defaultValue?: string[];
-      onValueChange?: (value: string[]) => void;
-      collapsible?: never;
-    };
-```
-
-Now invalid combinations are harder to represent.
-
-That matters because a production-ready component should not rely on documentation alone to explain constraints that the type system can enforce directly.
-
-The same principle applies to controlled state. Vellira’s Switch exposes `checked`, `defaultChecked`, and `onCheckedChange` on both React and React Native. The public meaning stays stable even though the rendering primitives differ.
+A production-ready component should not rely on documentation alone to explain constraints the type system can enforce.
 
 ## Accessibility is not a separate polish pass
 
 Accessibility changes implementation decisions.
 
-For an interactive web component, choosing a native button instead of a generic element affects keyboard behavior, disabled behavior, focus handling, and assistive-technology semantics before any additional ARIA is added.
+Tabs is a good stress test because its public metadata explicitly includes keyboard interaction and focus management, and the React package contains dedicated keyboard and accessibility test surfaces in addition to its general tests and stories.
 
-For Accordion on the web, the trigger can use native button behavior and expose expansion state and the trigger/content relationship with attributes such as `aria-expanded` and `aria-controls`.
+That matters because a tab interface is not just a row of clickable labels. A web implementation has browser-specific expectations around keyboard movement, focus, selected state, and relationships between triggers and content. React Native has a different accessibility surface and should express the same product intent using native semantics rather than imitating DOM behavior.
 
-React Native has a different accessibility surface. A trigger can use `Pressable`, `accessibilityRole`, and `accessibilityState` instead of pretending DOM relationships exist on native UI.
+Modal exposes another side of the same problem. Its public metadata includes keyboard behavior, focus management, compound API, and portal behavior. Those requirements affect implementation architecture: opening, closing, focus transfer, dismissal, and presentation cannot be treated as visual polish added at the end.
 
-The important parity target is the product promise:
+The important parity target is therefore the product promise, not identical implementation mechanics.
 
 ```text
 shared intent
-- the trigger is interactive
-- expanded/collapsed state is exposed
-- disabled state is respected
-- activating the trigger changes the matching item
+- the interactive state is understandable
+- focus behavior is deliberate
+- disabled or unavailable actions are respected
+- the user can enter and leave the interaction predictably
 
 web expression
-- native button semantics
-- keyboard activation
-- ARIA state and DOM relationships
+- browser keyboard behavior
+- DOM focus management
+- appropriate semantic relationships
 
 React Native expression
-- Pressable interaction
-- native accessibility role
-- native accessibility state
+- native interaction primitives
+- native accessibility roles/states
+- platform-appropriate focus and presentation behavior
 ```
 
-Production readiness therefore cannot be verified by looking only at JSX structure.
+Production readiness cannot be verified by looking only at JSX structure.
 
 Interaction and accessibility are part of the component’s behavior contract.
 
@@ -152,72 +131,49 @@ That can lead to abstractions that hide important runtime differences.
 
 The better target is semantic parity.
 
-State ownership, prop names, callback meaning, disabled behavior, and product intent can often be shared.
+Button is a simple example. Its public role is stable: it represents an action, supports disabled behavior, and can represent loading. But the browser and native runtimes do not need identical internal primitives, event mechanics, focus behavior, or styling implementation to satisfy that contract.
 
-Rendering primitives, text composition, keyboard behavior, focus APIs, and accessibility mechanisms often should not be.
+The same is true at the opposite end of the complexity spectrum with Modal. The public concept can stay recognizable across platforms while presentation and interaction differ substantially.
 
-For example, a web implementation may use:
+State ownership, prop meaning, callback intent, disabled behavior, and product purpose can often be shared.
 
-```tsx
-<button onClick={handleActivate}>...</button>
-```
-
-while React Native uses:
-
-```tsx
-<Pressable onPress={handleActivate}>...</Pressable>
-```
-
-The public callback does not need to be called `onClick` or `onPress`. A semantic API such as `onValueChange` can stay stable while each runtime uses its natural event system internally.
+Rendering primitives, keyboard handling, focus APIs, portals, touch behavior, and native presentation often should not be.
 
 That is stronger cross-platform design than forcing both implementations through an abstraction that makes neither runtime feel native.
 
-## Tests should prove ownership and interaction
+## Tests should prove behavior after interaction
 
 A rendering snapshot can tell you that markup exists.
 
-It does not prove that state ownership works.
+It does not prove that state ownership, focus, validation, or transitions work.
 
-For a controlled boolean component, useful tests include:
-
-```text
-controlled
-- checked determines the rendered state
-- interaction reports the proposed next value
-- internal state does not override checked
-- checked={false} is still controlled
-
-uncontrolled
-- defaultChecked defines the initial state
-- interaction updates internal state
-- the change callback still receives the next value
-```
-
-For a compound Accordion, the matrix expands:
+Select provides a useful example of the test surface a complex component can require:
 
 ```text
 state
-- single mode
-- multiple mode
 - controlled usage
 - uncontrolled usage
-- collapsible behavior
+- disabled state
+- required/invalid state
+- loading state
 
 action
-- trigger activation
-- disabled root
-- disabled item
+- open/close behavior
+- selection changes
+- disabled-option or disabled-control behavior where applicable
 
-web accessibility
-- native keyboard activation
-- expanded state
-- trigger/content relationship
+web interaction
+- keyboard behavior
+- focus movement
+- overlay/portal behavior
 
-React Native accessibility
-- accessibility role
-- expanded/disabled state
+React Native interaction
 - native press behavior
+- native accessibility state
+- platform-appropriate presentation
 ```
+
+Tabs needs a different matrix because navigation and focus are central. FormField needs another because composition of required, invalid, disabled, label, description, and error semantics matters more than overlay behavior.
 
 The goal is not the maximum number of tests.
 
@@ -229,15 +185,9 @@ Storybook becomes much more useful when stories represent the states a reviewer 
 
 A single default story proves very little.
 
-Useful coverage includes combinations such as:
+Button is a good reminder that even a visually simple primitive can need meaningful state coverage: normal, disabled, loading, different content shapes, and edge cases around layout or icons.
 
-- default state;
-- controlled state;
-- disabled state;
-- multiple mode;
-- long content;
-- visual edge cases;
-- platform-relevant interaction states.
+FormField benefits from a different story set: normal, required, invalid, disabled, long help text, validation messages, and composition with different controls.
 
 This creates a human-review surface that complements automated tests.
 
@@ -259,14 +209,17 @@ A useful component documentation set should answer at least:
 What is the component for?
 What is the public API?
 Which states and modes exist?
-How does controlled usage work?
-How does uncontrolled usage work?
+How does state ownership work?
 What are the accessibility expectations?
 Where do Web and React Native intentionally differ?
 What should a developer not assume?
 ```
 
-Website examples and API docs serve different purposes.
+Different components expose different documentation pressure.
+
+Tabs needs clear interaction and navigation guidance. Modal needs explicit lifecycle, focus, and dismissal expectations. FormField needs to explain how labels, help text, required state, invalid state, and the actual form control compose together.
+
+Website examples and API docs also serve different purposes.
 
 The website can make the component discoverable and easy to evaluate. Reference documentation can be more precise about props, state contracts, and runtime differences.
 
@@ -278,21 +231,22 @@ As a component library grows, humans stop being able to remember every expected 
 
 Machine-readable metadata helps make those expectations explicit.
 
-Vellira’s public Accordion metadata declares that the component supports React and React Native, uses a compound profile, exposes capabilities such as controlled and uncontrolled state, disabled behavior and keyboard interaction, and requires tests, Storybook, docs, accessibility work, and a disclosure icon.
+Modal is a compact example. Its public metadata declares both supported runtimes, an overlay profile, and capabilities including controlled and uncontrolled state, keyboard behavior, focus management, compound API, and portal behavior. It also declares tests, Storybook, docs, and accessibility as requirements.
 
-Conceptually, that looks like this:
+Conceptually, that contract is close to:
 
 ```ts
 {
-  name: 'Accordion',
+  name: 'Modal',
   platforms: ['react', 'react-native'],
-  profile: 'compound',
+  profile: 'overlay',
   capabilities: [
-    'compound-api',
     'controlled',
     'uncontrolled',
-    'disabled',
     'keyboard',
+    'focus-management',
+    'compound-api',
+    'portal',
   ],
   requirements: {
     tests: true,
@@ -316,6 +270,8 @@ That is a much more scalable quality model.
 ## Package exports are part of the product
 
 A component can be beautifully implemented and still be unusable if consumers cannot import it correctly.
+
+Button is a useful example because the consumer expectation is simple: a foundational action primitive and its public types should be reachable from the intended package boundary without requiring knowledge of internal source paths.
 
 That makes package exports a production concern, not repository housekeeping.
 
@@ -395,7 +351,7 @@ For a cross-platform component, I now ask these questions before calling it read
 2. **API:** Are props, state shapes, callbacks, defaults, and invalid combinations explicit in TypeScript?
 3. **State:** Are controlled and uncontrolled modes predictable where they apply?
 4. **Accessibility:** Does each runtime use the strongest native semantics available to it?
-5. **Interaction:** Are keyboard, press, disabled, and compound behaviors covered where relevant?
+5. **Interaction:** Are keyboard, press, disabled, focus, and compound behaviors covered where relevant?
 6. **Tests:** Do tests prove behavior after interaction, not only initial rendering?
 7. **Storybook:** Can a human review the important states and edge cases?
 8. **Docs:** Do website and reference docs explain the current API and platform differences?
