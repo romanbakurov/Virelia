@@ -2,7 +2,13 @@
 
 import '@testing-library/jest-dom/vitest';
 
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { BlogArticleMetadata } from '../../apps/website/src/blog';
@@ -24,12 +30,13 @@ function createArticle(
 }
 
 function installMetricsFetch() {
-  const fetchMock = vi.fn(async (_input: RequestInfo | URL) =>
-    ({
-      ok: true,
-      status: 200,
-      json: async () => ({ items: [] }),
-    }) as Response
+  const fetchMock = vi.fn(
+    async (_input: RequestInfo | URL) =>
+      ({
+        ok: true,
+        status: 200,
+        json: async () => ({ items: [] }),
+      }) as Response
   );
 
   vi.stubGlobal('fetch', fetchMock);
@@ -101,7 +108,9 @@ describe('blog search experience', () => {
     );
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    expect(fetchMock.mock.calls[0]?.[0].toString()).toContain('/v1/blog/metrics?');
+    expect(fetchMock.mock.calls[0]?.[0].toString()).toContain(
+      '/v1/blog/metrics?'
+    );
   });
 
   it('renders a useful no-results state with one-action reset', () => {
