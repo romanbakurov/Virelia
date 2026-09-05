@@ -167,11 +167,7 @@ describe('blog topic filter experience', () => {
 
   it('restores valid URL filters and safely ignores unknown topics', async () => {
     installBlogFetch();
-    window.history.replaceState(
-      {},
-      '',
-      '/blog?q=quality&tags=unknown,testing'
-    );
+    window.history.replaceState({}, '', '/blog?q=quality&tags=unknown,testing');
 
     render(<BlogIndex articles={articles} />);
 
