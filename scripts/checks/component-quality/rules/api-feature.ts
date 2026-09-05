@@ -5,15 +5,13 @@ import type {
   ComponentCapability,
   ComponentMetadata,
   ComponentPlatform,
-  ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
 import { qualityRoot } from '../root';
 
-import type {
-  ComponentQualityRule,
-  ComponentQualityRuleContext,
-} from '../types';
+import type { ComponentQualityRule } from '../types';
+
+import { createRuleFinding as finding } from './finding';
 
 type SourceSnapshot = {
   componentDir: string;
@@ -117,25 +115,6 @@ function readSourceSnapshot(
       readIfExists(path.join(componentDir, `${metadata.name}.tsx`)) ||
       readIfExists(path.join(componentDir, `${metadata.name}.ts`)),
     combinedSource,
-  };
-}
-
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
   };
 }
 

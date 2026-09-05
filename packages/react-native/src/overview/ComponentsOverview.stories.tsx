@@ -29,12 +29,8 @@ import { RadioGroup } from '../components/RadioGroup';
 import { Select } from '../components/Select';
 import { Tabs } from '../components/Tabs';
 import { Tooltip } from '../components/Tooltip';
-import { FormField } from '../patterns/FormField';
-import { Button } from '../primitives/Button';
-import { Checkbox } from '../primitives/Checkbox';
-import { Input } from '../primitives/Input';
-import { Portal } from '../primitives/Portal';
-import { Radio } from '../primitives/Radio';
+import { FormField } from '../patterns';
+import { Button, Checkbox, Input, Portal, Radio } from '../primitives';
 import { useTheme } from '../theme';
 
 const meta = {
@@ -628,7 +624,7 @@ function NativeComponentsOverview() {
               label='Search'
               type='search'
               placeholder='Search components'
-              iconStart={<Search />}
+              startIcon={<Search />}
             />
 
             <Input label='Password' placeholder='Password' type='password' />
@@ -636,18 +632,18 @@ function NativeComponentsOverview() {
             <Input
               label='Verified email'
               defaultValue='hello@vellira.dev'
-              iconEnd={<Check />}
-              iconEndTone='success'
+              endIcon={<Check />}
+              endIconTone='success'
               placeholder='name@company.com'
               type='email'
             />
 
             <Input
               label='Search settings'
-              iconStart={<Search />}
-              iconEnd={<Check />}
-              iconEndTone='success'
-              iconStartTone='primary'
+              startIcon={<Search />}
+              endIcon={<Check />}
+              endIconTone='success'
+              startIconTone='primary'
               defaultValue='Theme'
             />
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { Switch } from './Switch';
 
@@ -9,6 +9,7 @@ const meta: Meta<typeof Switch> = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Switch Component
 

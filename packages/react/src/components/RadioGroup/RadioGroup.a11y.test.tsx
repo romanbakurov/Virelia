@@ -1,10 +1,11 @@
 import { describe, it } from 'vitest';
 
-import { Radio } from '../../primitives/Radio';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
 import { RadioGroup } from './RadioGroup';
+
+import { Radio } from '#primitives/Radio';
 
 describe('RadioGroup accessibility', () => {
   it('has no axe violations with label, description, and error', async () => {

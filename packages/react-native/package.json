@@ -48,7 +48,7 @@
     "build": "pnpm run clean && tsdown && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
-    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit && tsc -p tsconfig.test.json --noEmit && tsc -p tsconfig.stories.json --noEmit",
     "test": "vitest run --config vitest.config.ts",
     "test:coverage": "vitest run --config vitest.config.ts --coverage"
   },
@@ -65,9 +65,11 @@
   },
   "devDependencies": {
     "@types/react": "^19.2.3",
+    "@storybook/react-native": "^10.5.0",
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^28.1.0",
     "react": "19.2.3",
+    "storybook": "^10.5.0",
     "tsdown": "^0.22.13",
     "typescript": "6.0.3",
     "vitest": "^4.1.10"

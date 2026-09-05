@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.typecheck.json",
+  "compilerOptions": {
+    "types": ["node", "storybook/test"]
+  },
+  "include": [
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.test.ts",
+    "src/**/*.stories.test.tsx"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

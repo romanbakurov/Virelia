@@ -17,6 +17,7 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Button Component
 

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import { Home, Settings, User } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { useTheme, useThemeStyles } from '../../theme';
+import { useTheme } from '../../theme';
 
-import { createStyles } from './Content/TabsContent.styles';
 import { Tabs } from '.';
 
 const meta = {
@@ -15,6 +14,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Tabs Component
 
@@ -85,6 +85,7 @@ When \`mode='navigation'\` is used, Tabs switches away from tab semantics:
     },
   },
   args: {
+    children: null,
     defaultValue: 'overview',
     variant: 'line',
     orientation: 'horizontal',
@@ -107,6 +108,23 @@ When \`mode='navigation'\` is used, Tabs switches away from tab semantics:
     },
   },
 } satisfies Meta<typeof Tabs>;
+
+function PanelText({ children }: { children: ReactNode }) {
+  const { theme } = useTheme();
+
+  return (
+    <Text
+      style={{
+        color: theme.semantic.text.secondary,
+        fontFamily: theme.tokens.typography.family.regular,
+        fontSize: theme.tokens.typography.size.md,
+        lineHeight: theme.tokens.typography.lineHeight.md,
+      }}
+    >
+      {children}
+    </Text>
+  );
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   const { theme } = useTheme();
@@ -143,7 +161,6 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 }
 
 const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
-  const styles = useThemeStyles(createStyles);
   const panelStyle = {
     minHeight: 80,
   };
@@ -158,27 +175,21 @@ const DefaultTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
       </Tabs.List>
 
       <Tabs.Content value='overview' style={panelStyle}>
-        <Text style={styles.text}>
-          Overview content for the native tabs component.
-        </Text>
+        <PanelText>Overview content for the native tabs component.</PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='usage' style={panelStyle}>
-        <Text style={styles.text}>
-          Usage examples and implementation notes.
-        </Text>
+        <PanelText>Usage examples and implementation notes.</PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='api' style={panelStyle}>
-        <Text style={styles.text}>API details are shown in this panel.</Text>
+        <PanelText>API details are shown in this panel.</PanelText>
       </Tabs.Content>
     </Tabs>
   );
 };
 
 const DisabledTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
-  const styles = useThemeStyles(createStyles);
-
   return (
     <Tabs {...args}>
       <Tabs.List>
@@ -191,25 +202,23 @@ const DisabledTabsStory = (args: React.ComponentProps<typeof Tabs>) => {
       </Tabs.List>
 
       <Tabs.Content value='active'>
-        <Text style={styles.text}>Active panel.</Text>
+        <PanelText>Active panel.</PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='disabled'>
-        <Text style={styles.text}>
+        <PanelText>
           This panel is not reachable while the tab is disabled.
-        </Text>
+        </PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='settings'>
-        <Text style={styles.text}>Settings panel.</Text>
+        <PanelText>Settings panel.</PanelText>
       </Tabs.Content>
     </Tabs>
   );
 };
 
 const IconOnlyTabsStory = () => {
-  const styles = useThemeStyles(createStyles);
-
   return (
     <Tabs defaultValue='home' variant='pills'>
       <Tabs.List>
@@ -220,15 +229,15 @@ const IconOnlyTabsStory = () => {
       </Tabs.List>
 
       <Tabs.Content value='home'>
-        <Text style={styles.text}>Home content</Text>
+        <PanelText>Home content</PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='profile'>
-        <Text style={styles.text}>Profile content</Text>
+        <PanelText>Profile content</PanelText>
       </Tabs.Content>
 
       <Tabs.Content value='settings'>
-        <Text style={styles.text}>Settings content</Text>
+        <PanelText>Settings content</PanelText>
       </Tabs.Content>
     </Tabs>
   );

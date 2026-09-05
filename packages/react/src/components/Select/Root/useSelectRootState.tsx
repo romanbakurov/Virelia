@@ -8,6 +8,8 @@ import {
   useState,
 } from 'react';
 
+import { resolveSelectGroupSelection } from '@vellira-ui/core';
+
 import type { SelectContentProps } from '../Content/types';
 import { hasSelectLayoutChildren } from '../internal/SelectCollection';
 import type { SelectContextValue } from '../internal/SelectContext';
@@ -215,50 +217,23 @@ export function useSelectRootState(props: SelectProps) {
     (values: string[]) => {
       if (!multiple || values.length === 0) return;
 
-      const enabledValues = values.filter((value) =>
-        resolvedOptions.some(
-          (option) => option.value === value && !option.disabled
-        )
-      );
-      const selectedGroupValues = enabledValues.filter((value) =>
-        selectedValues.includes(value)
-      );
-      const outsideSelectedCount = selectedValues.filter(
-        (value) => !enabledValues.includes(value)
-      ).length;
-      const maxSelectableGroupCount =
-        typeof maxSelected === 'number'
-          ? Math.max(
-              0,
-              Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
-            )
-          : enabledValues.length;
-      const shouldClearGroup =
-        selectedGroupValues.length > 0 &&
-        selectedGroupValues.length >= maxSelectableGroupCount;
+      const nextSelection = resolveSelectGroupSelection({
+        selectedValues,
+        groupValues: values,
+        enabledValues: new Set(
+          resolvedOptions
+            .filter((option) => !option.disabled)
+            .map((option) => option.value)
+        ),
+        maxSelected,
+      });
 
-      if (shouldClearGroup) {
-        setSelectedValue(
-          selectedValues.filter((value) => !enabledValues.includes(value))
-        );
+      if (nextSelection.clearedGroup) {
+        setSelectedValue(nextSelection.selectedValues);
         return;
       }
 
-      const nextValues = [...selectedValues];
-
-      for (const value of enabledValues) {
-        if (nextValues.includes(value)) continue;
-        if (
-          typeof maxSelected === 'number' &&
-          nextValues.length >= maxSelected
-        ) {
-          break;
-        }
-
-        nextValues.push(value);
-      }
-
-      setSelectedValue(nextValues);
+      setSelectedValue(nextSelection.selectedValues);
 
       if (closeOnSelect) {
         closeDropdown();

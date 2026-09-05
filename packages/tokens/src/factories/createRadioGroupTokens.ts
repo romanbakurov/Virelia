@@ -6,6 +6,10 @@ type RadioGroupTokensConfig = {
   spacing5: number;
 };
 
+type SpacingScale = {
+  readonly [key: number]: number;
+};
+
 export const createRadioGroupTokens = (config: RadioGroupTokensConfig) =>
   ({
     size: {
@@ -23,3 +27,12 @@ export const createRadioGroupTokens = (config: RadioGroupTokensConfig) =>
       },
     },
   }) as const;
+
+export const createRadioGroupTokensFromSpacing = (spacing: SpacingScale) =>
+  createRadioGroupTokens({
+    spacing1: spacing[1],
+    spacing2: spacing[2],
+    spacing3: spacing[3],
+    spacing4: spacing[4],
+    spacing5: spacing[5],
+  });

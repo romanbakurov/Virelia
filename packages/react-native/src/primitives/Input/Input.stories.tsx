@@ -5,7 +5,7 @@ import { Check, Close, Search } from '@vellira-ui/icons';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { FormField } from '../../patterns/FormField';
+import { FormField } from '../../patterns';
 import { useTheme } from '../../theme';
 
 import { Input } from './Input';
@@ -18,6 +18,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Input Component
 
@@ -51,7 +52,6 @@ Text input primitive for collecting user data in forms.
   },
   argTypes: {
     id: { control: 'text' },
-    name: { control: 'text' },
     label: { control: 'text' },
     description: { control: 'text' },
     value: { control: 'text' },

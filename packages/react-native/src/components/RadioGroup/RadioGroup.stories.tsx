@@ -5,8 +5,8 @@ import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { fn } from 'storybook/test';
 
-import { Radio } from '../../primitives/Radio';
-import { useTheme } from '../../theme';
+import { Radio } from '../../primitives';
+import { toNativeFontWeight, useTheme } from '../../theme';
 
 import { RadioGroup } from './RadioGroup';
 
@@ -18,6 +18,7 @@ const meta: Meta<typeof RadioGroup> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### RadioGroup Component
 
@@ -197,7 +198,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     subtitle: {
       color: theme.semantic.text.secondary,
       fontSize: theme.tokens.typography.size.sm,
-      fontWeight: theme.tokens.typography.weight.semibold,
+      fontWeight: toNativeFontWeight(theme.tokens.typography.weight.semibold),
     },
   });
 

@@ -21,8 +21,7 @@ import {
 } from 'react-native';
 import { fn } from 'storybook/test';
 
-import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
+import { Button, Portal } from '../../primitives';
 import { useTheme } from '../../theme';
 
 import { Dropdown } from './Dropdown';
@@ -237,6 +236,7 @@ const meta: Meta<typeof Dropdown> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Dropdown Component
 

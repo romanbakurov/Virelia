@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "intentionalClonePairs": [
+    {
+      "paths": [
+        "scripts/checks/component-quality/cli.ts",
+        "scripts/checks/component-quality/completion-contract-cli.ts"
+      ],
+      "reason": "Path-scoped CLI scaffolding exception: parallel component-quality CLIs intentionally keep command-specific argument and diagnostic contracts explicit; sharing the small parser would couple distinct command UX without removing domain logic."
+    },
+    {
+      "paths": [
+        "scripts/component-production/cli.ts",
+        "scripts/component-production/validate-cli.ts"
+      ],
+      "reason": "Path-scoped CLI scaffolding exception: production and validation CLIs deliberately keep their command-specific usage and error contracts explicit. The repeated --spec parsing is narrow CLI scaffolding rather than reusable product logic."
+    },
+    {
+      "paths": ["scripts/smoke/native.mjs", "scripts/smoke/web.mjs"],
+      "reason": "Path-scoped parity exception: web and native smoke scripts intentionally assert the same shared package exports as a parity contract while retaining runtime-specific component assertions."
+    }
+  ]
+}
