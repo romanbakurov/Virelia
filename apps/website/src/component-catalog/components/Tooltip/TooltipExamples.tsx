@@ -6,10 +6,150 @@
 import { Tooltip as ReactTooltip } from '@vellira-ui/react';
 import { Tooltip as NativeTooltip } from '@vellira-ui/react-native';
 import { Button as ReactButton } from '@vellira-ui/react';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
 import { ComponentExamples } from '../../shared/ComponentExamples';
 import type { ComponentPlatform } from '../../types';
+
+function NativeTooltipExample1Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTooltip>
+      <NativeTooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </NativeTooltip.Trigger>
+      <NativeTooltip.Content withArrow>
+        Helpful contextual label.
+      </NativeTooltip.Content>
+    </NativeTooltip>
+  );
+}
+
+function NativeTooltipExample2Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTooltip placement='bottom'>
+      <NativeTooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </NativeTooltip.Trigger>
+      <NativeTooltip.Content withArrow>
+        Helpful contextual label.
+      </NativeTooltip.Content>
+    </NativeTooltip>
+  );
+}
+
+function NativeTooltipExample3Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTooltip disabled>
+      <NativeTooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </NativeTooltip.Trigger>
+      <NativeTooltip.Content withArrow>
+        Helpful contextual label.
+      </NativeTooltip.Content>
+    </NativeTooltip>
+  );
+}
+
+function NativeTooltipExample4Preview() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <NativeTooltip>
+      <NativeTooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          No arrow
+        </NativeText>
+      </NativeTooltip.Trigger>
+      <NativeTooltip.Content>Tooltip without arrow</NativeTooltip.Content>
+    </NativeTooltip>
+  );
+}
 
 type TooltipExamplesProps = {
   platform: ComponentPlatform;
@@ -117,160 +257,174 @@ import { Button as ReactButton } from '@vellira-ui/react';
     {
       title: 'Basic',
       description: 'Contextual label for a trigger.',
-      preview: (
-        <NativeTooltip>
-          <NativeTooltip.Trigger>
-            <NativeView
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: '#eee',
-              }}
-            >
-              <NativeText>Press and hold</NativeText>
-            </NativeView>
-          </NativeTooltip.Trigger>
-          <NativeTooltip.Content withArrow>
-            Helpful contextual label.
-          </NativeTooltip.Content>
-        </NativeTooltip>
-      ),
+      preview: <NativeTooltipExample1Preview />,
       code: `import { Tooltip } from '@vellira-ui/react-native';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
-<Tooltip>
-  <Tooltip.Trigger>
-    <NativeView
-      style={{
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#eee',
-      }}
-    >
-      <NativeText>Press and hold</NativeText>
-    </NativeView>
-  </Tooltip.Trigger>
-  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
-</Tooltip>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tooltip>
+      <Tooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </Tooltip.Trigger>
+      <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+    </Tooltip>
+  );
+}`,
     },
     {
       title: 'Placement',
       description: 'Alternative tooltip placement.',
-      preview: (
-        <NativeTooltip placement='bottom'>
-          <NativeTooltip.Trigger>
-            <NativeView
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: '#eee',
-              }}
-            >
-              <NativeText>Press and hold</NativeText>
-            </NativeView>
-          </NativeTooltip.Trigger>
-          <NativeTooltip.Content withArrow>
-            Helpful contextual label.
-          </NativeTooltip.Content>
-        </NativeTooltip>
-      ),
+      preview: <NativeTooltipExample2Preview />,
       code: `import { Tooltip } from '@vellira-ui/react-native';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
-<Tooltip
-  placement='bottom'
->
-  <Tooltip.Trigger>
-    <NativeView
-      style={{
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#eee',
-      }}
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tooltip
+      placement='bottom'
     >
-      <NativeText>Press and hold</NativeText>
-    </NativeView>
-  </Tooltip.Trigger>
-  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
-</Tooltip>`,
+      <Tooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </Tooltip.Trigger>
+      <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+    </Tooltip>
+  );
+}`,
     },
     {
       title: 'Disabled',
       description: 'Disabled tooltip behavior.',
-      preview: (
-        <NativeTooltip disabled>
-          <NativeTooltip.Trigger>
-            <NativeView
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: '#eee',
-              }}
-            >
-              <NativeText>Press and hold</NativeText>
-            </NativeView>
-          </NativeTooltip.Trigger>
-          <NativeTooltip.Content withArrow>
-            Helpful contextual label.
-          </NativeTooltip.Content>
-        </NativeTooltip>
-      ),
+      preview: <NativeTooltipExample3Preview />,
       code: `import { Tooltip } from '@vellira-ui/react-native';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
-<Tooltip
-  disabled
->
-  <Tooltip.Trigger>
-    <NativeView
-      style={{
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#eee',
-      }}
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tooltip
+      disabled
     >
-      <NativeText>Press and hold</NativeText>
-    </NativeView>
-  </Tooltip.Trigger>
-  <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
-</Tooltip>`,
+      <Tooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          Press and hold
+        </NativeText>
+      </Tooltip.Trigger>
+      <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
+    </Tooltip>
+  );
+}`,
     },
     {
       title: 'Without arrow',
       description: 'Omits the arrow when a simpler bubble is preferred.',
-      preview: (
-        <NativeTooltip>
-          <NativeTooltip.Trigger>
-            <NativeView
-              style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: '#eee',
-              }}
-            >
-              <NativeText>No arrow</NativeText>
-            </NativeView>
-          </NativeTooltip.Trigger>
-          <NativeTooltip.Content>Tooltip without arrow</NativeTooltip.Content>
-        </NativeTooltip>
-      ),
+      preview: <NativeTooltipExample4Preview />,
       code: `import { Tooltip } from '@vellira-ui/react-native';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
-<Tooltip>
-  <Tooltip.Trigger>
-    <NativeView
-      style={{
-        padding: 12,
-        borderRadius: 8,
-        backgroundColor: '#eee',
-      }}
-    >
-      <NativeText>No arrow</NativeText>
-    </NativeView>
-  </Tooltip.Trigger>
-  <Tooltip.Content>Tooltip without arrow</Tooltip.Content>
-</Tooltip>`,
+function Example() {
+  const { theme: nativeTheme } = useTheme();
+
+  return (
+    <Tooltip>
+      <Tooltip.Trigger
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: controlSizes.md.height,
+          paddingLeft: nativeTheme.tokens.spacing[6],
+          paddingRight: nativeTheme.tokens.spacing[6],
+          borderRadius: nativeTheme.tokens.radius.full,
+          backgroundColor:
+            nativeTheme.components.button.primary.solid.default.bg,
+        }}
+      >
+        <NativeText
+          style={{
+            color: nativeTheme.components.button.primary.solid.default.fg,
+            fontFamily: nativeTheme.tokens.typography.family.regular,
+            fontSize: nativeTheme.tokens.typography.size.md,
+            lineHeight: nativeTheme.tokens.typography.lineHeight.md,
+          }}
+        >
+          No arrow
+        </NativeText>
+      </Tooltip.Trigger>
+      <Tooltip.Content>Tooltip without arrow</Tooltip.Content>
+    </Tooltip>
+  );
+}`,
     },
   ] as const;
 

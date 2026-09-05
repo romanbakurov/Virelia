@@ -1,6 +1,7 @@
 import type {
   ComponentCapability,
   ComponentIconRequirement,
+  ComponentTokenContract,
 } from '@vellira-ui/metadata';
 import type { ComponentTemplateParams } from './component-types';
 
@@ -20,6 +21,7 @@ export type MetadataTemplateParams = ComponentTemplateParams & {
   capabilities: readonly ComponentCapability[];
   icons?: readonly ComponentIconRequirement[];
   tokens?: readonly string[];
+  componentTokens?: ComponentTokenContract | false;
 };
 
 function renderSingleQuotedString(value: string) {
@@ -41,6 +43,7 @@ export function renderMetadataTemplate({
   capabilities,
   icons = [],
   tokens = [],
+  componentTokens = 'standard',
 }: MetadataTemplateParams) {
   const metadataName = `${componentName[0].toLowerCase()}${componentName.slice(1)}Metadata`;
   const capabilitiesText =
@@ -86,7 +89,10 @@ export const ${metadataName} = defineComponentMetadata({
     tests: true,
     storybook: true,
     docs: true,
-    accessibility: true,${requirementsSuffix}
+    accessibility: true,
+    componentTokens: ${
+      componentTokens === false ? 'false' : `'${componentTokens}'`
+    },${requirementsSuffix}
   },
 });
 `;

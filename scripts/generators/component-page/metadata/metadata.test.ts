@@ -124,6 +124,26 @@ describe('mergeComponentMetadata', () => {
       '<NativeText>Content</NativeText>'
     );
   });
+
+  it('preserves and deduplicates generated platform setup when authored metadata adds setup', () => {
+    const merged = mergeComponentMetadata(
+      {
+        native: {
+          setup: ['const base = true;'],
+        },
+      },
+      {
+        native: {
+          setup: ['const base = true;', 'const next = true;'],
+        },
+      }
+    );
+
+    expect(merged.native?.setup).toEqual([
+      'const base = true;',
+      'const next = true;',
+    ]);
+  });
 });
 
 describe('validateComponentMetadata', () => {
@@ -429,6 +449,32 @@ describe('validateComponentMetadata', () => {
         },
       })
     ).not.toThrow();
+  });
+
+  it('rejects invalid platform setup syntax with a precise platform field', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Example',
+        metadata: {
+          native: {
+            setup: ["const { theme: nativeTheme } = useTheme('broken';"],
+          },
+        },
+      })
+    ).toThrow(/react-native\.setup has invalid TypeScript syntax/);
+  });
+
+  it('rejects empty platform setup entries', () => {
+    expect(() =>
+      validateComponentMetadata({
+        componentName: 'Example',
+        metadata: {
+          react: {
+            setup: ['const value = true;', '   '],
+          },
+        },
+      })
+    ).toThrow(/react\.setup\[1\] must not be empty/);
   });
 
   it('accepts compound children and escaped primitive metadata values', () => {

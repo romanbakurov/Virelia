@@ -1,5 +1,10 @@
 import { defineComponentPageMetadata } from '../../metadata';
 
+const nativeTextImport =
+  `import { Text as NativeText } from 'react-native';` as const;
+const nativeThemeImport =
+  `import { useTheme } from '@vellira-ui/react-native';` as const;
+
 export default defineComponentPageMetadata({
   react: {
     children: `<Tabs.List>
@@ -19,6 +24,7 @@ export default defineComponentPageMetadata({
 <Tabs.Content value='account'>
   <NativeText
     style={{
+      color: nativeTheme.components.tabs.panel.fg,
       fontFamily: 'VelliraSans-Regular',
       fontSize: 16,
       lineHeight: 20,
@@ -30,6 +36,7 @@ export default defineComponentPageMetadata({
 <Tabs.Content value='billing'>
   <NativeText
     style={{
+      color: nativeTheme.components.tabs.panel.fg,
       fontFamily: 'VelliraSans-Regular',
       fontSize: 16,
       lineHeight: 20,
@@ -38,7 +45,8 @@ export default defineComponentPageMetadata({
     Billing details
   </NativeText>
 </Tabs.Content>`,
-    imports: [`import { Text as NativeText } from 'react-native';`],
+    imports: [nativeTextImport, nativeThemeImport],
+    setup: ['const { theme: nativeTheme } = useTheme();'],
   },
   demo: {
     initialValues: {

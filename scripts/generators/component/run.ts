@@ -6,6 +6,7 @@ import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
+import { checkComponentTokenContract } from './component-token-contract';
 
 import type { ComponentGeneratorOptions } from './cli';
 
@@ -23,10 +24,15 @@ function getPlannedCreatedFiles(
   const files: string[] = [
     plan.metadataFile,
     plan.docsContractFile,
-    plan.tokenFactoryFile,
-    ...plan.tokenThemeTargets.map((target) => target.componentFile),
     ...getComponentDocsTargets(plan).map((target) => target.docsFile),
   ];
+
+  if (plan.componentTokens !== false) {
+    files.push(
+      plan.tokenFactoryFile,
+      ...plan.tokenThemeTargets.map((target) => target.componentFile)
+    );
+  }
 
   if (plan.profile === 'form-control') {
     files.push(plan.sharedTypesFile);
@@ -75,9 +81,14 @@ function getPlannedUpdatedFiles(
     plan.metadataBarrelFile,
     plan.docsContractRegistryFile,
     ...getComponentApiDocsTargets(plan).map((target) => target.apiFile),
-    plan.tokenFactoryBarrelFile,
-    ...plan.tokenThemeTargets.map((target) => target.barrelFile),
   ];
+
+  if (plan.componentTokens !== false) {
+    files.push(
+      plan.tokenFactoryBarrelFile,
+      ...plan.tokenThemeTargets.map((target) => target.barrelFile)
+    );
+  }
 
   if (plan.profile === 'form-control') {
     files.push(plan.sharedTypesBarrelFile);
@@ -106,16 +117,19 @@ export async function runComponentGenerator(params: {
   }
 
   if (params.options.check) {
-    const driftedFiles = checkPublicApiContractSynchronization({
-      componentName: plan.componentName,
-      targets: plan.targets,
-    });
+    const driftedFiles = [
+      ...checkPublicApiContractSynchronization({
+        componentName: plan.componentName,
+        targets: plan.targets,
+      }),
+      ...checkComponentTokenContract(plan),
+    ];
 
     if (driftedFiles.length > 0) {
       throw new Error(
-        `Component generator check detected public API contract drift:\n${driftedFiles.join(
-          '\n'
-        )}`
+        `Component generator check detected contract drift:\n${[
+          ...new Set(driftedFiles),
+        ].join('\n')}`
       );
     }
 

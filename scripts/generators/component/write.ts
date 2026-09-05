@@ -2,9 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
-  renderComponentTokenBarrelExport,
-  renderComponentTokenFactoryBarrelExport,
-  renderComponentTokenFactoryTemplate,
   renderIndexTemplate,
   renderManualTestTemplate,
   renderMetadataTemplate,
@@ -13,7 +10,6 @@ import {
   renderStoryTemplate,
   renderStylesTemplate,
   renderTestTemplate,
-  renderThemeComponentTokensTemplate,
 } from './templates';
 
 import { formatGeneratedFiles } from '../format-generated-files';
@@ -37,6 +33,7 @@ import { resolveComponentTemplates } from './resolve-templates';
 import { resolvePartTemplates } from './resolve-part-templates';
 import { renderSynchronizedPublicApiContract } from './public-api-contract';
 import { getGeneratedPublicPropTypeNames } from './public-api';
+import { ensureComponentTokenContract } from './component-token-contract';
 
 import {
   shouldGenerateVisualScaffold,
@@ -372,45 +369,7 @@ function writeComponentTokens(params: {
   plan: ComponentGenerationPlan;
   result: ComponentGenerationResult;
 }) {
-  const { plan, result } = params;
-
-  if (!shouldGenerateVisualScaffold(plan)) {
-    return;
-  }
-
-  writeFile({
-    filePath: plan.tokenFactoryFile,
-    content: renderComponentTokenFactoryTemplate({
-      componentName: plan.componentName,
-      profile: plan.profile,
-      control: plan.control,
-    }),
-    createdFiles: result.createdFiles,
-  });
-
-  updateBarrel({
-    barrelFile: plan.tokenFactoryBarrelFile,
-    exportLine: renderComponentTokenFactoryBarrelExport(plan.componentName),
-    updatedFiles: result.updatedFiles,
-  });
-
-  for (const tokenTarget of plan.tokenThemeTargets) {
-    writeFile({
-      filePath: tokenTarget.componentFile,
-      content: renderThemeComponentTokensTemplate({
-        componentName: plan.componentName,
-        profile: plan.profile,
-        control: plan.control,
-      }),
-      createdFiles: result.createdFiles,
-    });
-
-    updateBarrel({
-      barrelFile: tokenTarget.barrelFile,
-      exportLine: renderComponentTokenBarrelExport(plan.componentName),
-      updatedFiles: result.updatedFiles,
-    });
-  }
+  ensureComponentTokenContract(params);
 }
 
 function writeTarget(params: {
@@ -649,6 +608,7 @@ function writeMetadata(params: {
       capabilities,
       icons: plan.icons,
       tokens: plan.tokens,
+      componentTokens: plan.componentTokens,
     }),
     createdFiles: result.createdFiles,
   });

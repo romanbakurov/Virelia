@@ -2,6 +2,12 @@ import { Platform, StyleSheet } from 'react-native';
 
 import type { NativeTheme } from '../../../theme';
 
+export const getDropdownBackdropBackgroundColor = (
+  theme: NativeTheme,
+  presentation: 'sheet' | 'modal' | 'popover'
+) =>
+  presentation === 'popover' ? 'transparent' : theme.semantic.overlay.backdrop;
+
 export const createStyles = (theme: NativeTheme) =>
   StyleSheet.create({
     modalRoot: {
@@ -24,7 +30,6 @@ export const createStyles = (theme: NativeTheme) =>
 
     backdrop: {
       ...StyleSheet.absoluteFill,
-      backgroundColor: theme.semantic.overlay.backdrop,
     },
 
     menu: {

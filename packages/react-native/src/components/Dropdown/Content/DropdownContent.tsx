@@ -15,7 +15,10 @@ import {
 import { useTheme, useThemeStyles } from '../../../theme';
 import { useDropdownContext } from '../internal/DropdownContext';
 
-import { createStyles } from './DropdownContent.styles';
+import {
+  createStyles,
+  getDropdownBackdropBackgroundColor,
+} from './DropdownContent.styles';
 import type { DropdownContentProps } from './types';
 
 const nativePointerEventsBoxNone =
@@ -32,6 +35,7 @@ export function DropdownContent({
     open,
     color,
     presentation,
+    positionReady,
     zIndex,
     position,
     searchable,
@@ -65,12 +69,16 @@ export function DropdownContent({
   }, []);
 
   useEffect(() => {
+    if (Platform.OS === 'web') {
+      return;
+    }
+
     if (!open) {
       animation.setValue(0);
       return;
     }
 
-    if (reduceMotion || Platform.OS === 'web') {
+    if (reduceMotion) {
       animation.setValue(1);
       return;
     }
@@ -84,17 +92,24 @@ export function DropdownContent({
     }).start();
   }, [animation, open, isSheet, reduceMotion]);
 
-  const backdropAnimatedStyle = useMemo(
-    () => ({
+  const backdropAnimatedStyle = useMemo(() => {
+    if (Platform.OS === 'web') {
+      return undefined;
+    }
+
+    return {
       opacity: animation.interpolate({
         inputRange: [0, 1],
         outputRange: [0, 1],
       }),
-    }),
-    [animation]
-  );
+    };
+  }, [animation]);
 
   const menuAnimatedStyle = useMemo(() => {
+    if (Platform.OS === 'web') {
+      return undefined;
+    }
+
     const translateY = animation.interpolate({
       inputRange: [0, 1],
       outputRange: isSheet ? [24, 0] : [-6, 0],
@@ -129,6 +144,12 @@ export function DropdownContent({
           {...nativePointerEventsBoxNone}
           style={[
             styles.backdrop,
+            {
+              backgroundColor: getDropdownBackdropBackgroundColor(
+                theme,
+                presentation
+              ),
+            },
             backdropAnimatedStyle,
             webPointerEventsBoxNone,
           ]}
@@ -145,6 +166,7 @@ export function DropdownContent({
           style={[
             styles.menu,
             styles[`${presentation}Menu`],
+            isPopover && !positionReady && { opacity: 0 },
             {
               borderColor: colorPalette.content.border,
             },

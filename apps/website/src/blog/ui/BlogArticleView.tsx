@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import type { BlogArticle } from '@/blog';
 import { BlogArticleActions } from './BlogArticleActions';
-import { formatBlogDate } from './BlogIndex';
+import { formatBlogDate } from './formatBlogDate';
 
 import responsive from './BlogArticleResponsive.module.css';
 import styles from './BlogExperience.module.css';
