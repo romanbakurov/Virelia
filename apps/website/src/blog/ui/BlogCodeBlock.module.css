@@ -20,7 +20,7 @@
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: transparent;
+  background: var(--surface-muted);
   border-bottom: 1px solid var(--border-muted);
 }
 
@@ -40,11 +40,13 @@
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki),
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki span) {
   color: var(--shiki-dark) !important;
+  background-color: transparent !important;
 }
 
 :global([data-vellira-theme='high-contrast']) .codeBlock :global(.shiki),
 :global([data-vellira-theme='high-contrast']) .codeBlock :global(.shiki span) {
   color: var(--shiki-highContrast) !important;
+  background-color: transparent !important;
 }
 
 .codeBlock :global(.shiki code) {
