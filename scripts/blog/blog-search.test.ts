@@ -108,10 +108,9 @@ describe('blog metadata search', () => {
       draft: true,
     });
 
-    expect(searchBlogArticles([first, second, draft], 'quality gates')).toEqual([
-      first,
-      second,
-    ]);
+    expect(
+      searchBlogArticles([first, second, draft], 'quality gates')
+    ).toEqual([first, second]);
     expect(searchBlogArticles([draft], '')).toEqual([]);
   });
 });
