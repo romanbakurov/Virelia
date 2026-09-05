@@ -86,9 +86,14 @@ describe('blog search experience', () => {
       })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole('link', { name: 'Read Building cross-platform forms' })
+      screen.getByRole('link', { name: 'Read Building cross-platform forms' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', {
+        name: 'Read Component metadata as a source of truth',
+      })
     ).not.toBeInTheDocument();
-    expect(screen.getByRole('status')).toHaveTextContent('1 article');
+    expect(screen.getByRole('status')).toHaveTextContent('2 articles');
     expect(new URLSearchParams(window.location.search).get('q')).toBe(
       'react native'
     );
