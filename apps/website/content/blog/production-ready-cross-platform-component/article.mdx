@@ -1,0 +1,379 @@
+A component is not production-ready because it renders.
+
+That is the easiest milestone to see, so it is also the easiest one to overvalue. A control that looks correct in one screenshot may still have an unstable API, incomplete accessibility, missing tests, stale documentation, broken package exports, or no credible path on another runtime.
+
+For a design system, the release unit is larger than the implementation file.
+
+A production-ready component is a contract across all the places where developers and users experience it.
+
+This article uses several public Vellira components as concrete examples—Select, Tabs, Modal, FormField, and Button—but the checklist applies to any React or React Native component library.
+
+## Why “it renders” is not a release criterion
+
+Rendering proves one thing: the implementation can produce UI for the scenario you just exercised.
+
+It does not prove:
+
+- that the public props are coherent;
+- that controlled and uncontrolled state behave consistently;
+- that keyboard and assistive-technology behavior are correct;
+- that disabled, required, invalid, or loading states are covered where relevant;
+- that React Native exposes the same product intent;
+- that package consumers can actually import the component;
+- that examples, docs, metadata, and tests describe the same API;
+- that future changes will be caught before they silently break one of those surfaces.
+
+The gap between “works in a local example” and “safe to ship in a reusable library” is where most design-system quality work lives.
+
+The useful question is therefore not:
+
+> Does this component render?
+
+It is:
+
+> Can we prove that the component’s public contract is complete across implementation, interaction, documentation, packaging, and both supported runtimes?
+
+## One component, multiple public surfaces
+
+A component library has more public surfaces than its source tree suggests.
+
+Select is a good example because it combines form state, interaction, focus, compound composition, and overlay behavior. In Vellira's public metadata it is cross-platform and declares controlled and uncontrolled state, disabled, required, invalid and loading states, keyboard interaction, focus management, compound API, and portal behavior.
+
+The visible Select is therefore only one surface. The complete product also includes:
+
+```text
+React implementation
+React Native implementation
+public TypeScript API
+package exports
+accessibility behavior
+interaction behavior
+tests
+Storybook examples
+website examples
+API documentation
+component metadata
+quality and completeness checks
+```
+
+If one of those surfaces disagrees with the others, the component is incomplete even if its main demo looks perfect.
+
+A common failure mode is to finish the implementation first and treat everything else as cleanup.
+
+That ordering feels fast, but it creates a long tail of forgotten work. Documentation describes an older prop. Storybook only covers the default state. React Native misses a capability the website implies is cross-platform. An export is forgotten. A test validates initial rendering but not what happens after interaction.
+
+A stronger model is to treat these surfaces as one shipping contract from the beginning.
+
+## The API is part of the implementation
+
+For reusable components, TypeScript design is product design.
+
+Input-like components make this especially visible. A form control that supports both controlled and uncontrolled usage has to make state ownership clear enough that a consumer can predict what happens after typing, clearing, disabling, or validating the field.
+
+Vellira's public FormField and Select metadata make a useful contrast.
+
+FormField is a pattern-level component. Its public contract focuses on composing field semantics such as disabled, required, and invalid states around a control. Select is a more stateful component: it adds controlled/uncontrolled ownership, loading, keyboard and focus behavior, and compound/portal concerns.
+
+Those differences should be visible in the API instead of hidden in implementation details.
+
+A useful API review therefore asks:
+
+```text
+Who owns the current value?
+What defines the initial uncontrolled value?
+Which states are mutually compatible?
+Which state transitions can the component request?
+Which constraints can TypeScript express directly?
+Which semantics belong to a surrounding pattern such as FormField?
+```
+
+A production-ready component should not rely on documentation alone to explain constraints the type system can enforce.
+
+## Accessibility is not a separate polish pass
+
+Accessibility changes implementation decisions.
+
+Tabs is a good stress test because its public metadata explicitly includes keyboard interaction and focus management, and the React package contains dedicated keyboard and accessibility test surfaces in addition to its general tests and stories.
+
+That matters because a tab interface is not just a row of clickable labels. A web implementation has browser-specific expectations around keyboard movement, focus, selected state, and relationships between triggers and content. React Native has a different accessibility surface and should express the same product intent using native semantics rather than imitating DOM behavior.
+
+Modal exposes another side of the same problem. Its public metadata includes keyboard behavior, focus management, compound API, and portal behavior. Those requirements affect implementation architecture: opening, closing, focus transfer, dismissal, and presentation cannot be treated as visual polish added at the end.
+
+The important parity target is therefore the product promise, not identical implementation mechanics.
+
+```text
+shared intent
+- the interactive state is understandable
+- focus behavior is deliberate
+- disabled or unavailable actions are respected
+- the user can enter and leave the interaction predictably
+
+web expression
+- browser keyboard behavior
+- DOM focus management
+- appropriate semantic relationships
+
+React Native expression
+- native interaction primitives
+- native accessibility roles/states
+- platform-appropriate focus and presentation behavior
+```
+
+Production readiness cannot be verified by looking only at JSX structure.
+
+Interaction and accessibility are part of the component’s behavior contract.
+
+## Cross-platform parity does not mean identical code
+
+One of the easiest mistakes in a React + React Native design system is to optimize for source-code symmetry.
+
+That can lead to abstractions that hide important runtime differences.
+
+The better target is semantic parity.
+
+Button is a simple example. Its public role is stable: it represents an action, supports disabled behavior, and can represent loading. But the browser and native runtimes do not need identical internal primitives, event mechanics, focus behavior, or styling implementation to satisfy that contract.
+
+The same is true at the opposite end of the complexity spectrum with Modal. The public concept can stay recognizable across platforms while presentation and interaction differ substantially.
+
+State ownership, prop meaning, callback intent, disabled behavior, and product purpose can often be shared.
+
+Rendering primitives, keyboard handling, focus APIs, portals, touch behavior, and native presentation often should not be.
+
+That is stronger cross-platform design than forcing both implementations through an abstraction that makes neither runtime feel native.
+
+## Tests should prove behavior after interaction
+
+A rendering snapshot can tell you that markup exists.
+
+It does not prove that state ownership, focus, validation, or transitions work.
+
+Select provides a useful example of the test surface a complex component can require:
+
+```text
+state
+- controlled usage
+- uncontrolled usage
+- disabled state
+- required/invalid state
+- loading state
+
+action
+- open/close behavior
+- selection changes
+- disabled-option or disabled-control behavior where applicable
+
+web interaction
+- keyboard behavior
+- focus movement
+- overlay/portal behavior
+
+React Native interaction
+- native press behavior
+- native accessibility state
+- platform-appropriate presentation
+```
+
+Tabs needs a different matrix because navigation and focus are central. FormField needs another because composition of required, invalid, disabled, label, description, and error semantics matters more than overlay behavior.
+
+The goal is not the maximum number of tests.
+
+The goal is evidence that the important public promises survive real interaction.
+
+## Storybook is review evidence, not just a gallery
+
+Storybook becomes much more useful when stories represent the states a reviewer actually needs to inspect.
+
+A single default story proves very little.
+
+Button is a good reminder that even a visually simple primitive can need meaningful state coverage: normal, disabled, loading, different content shapes, and edge cases around layout or icons.
+
+FormField benefits from a different story set: normal, required, invalid, disabled, long help text, validation messages, and composition with different controls.
+
+This creates a human-review surface that complements automated tests.
+
+Tests are good at deterministic behavior. Storybook is good at revealing layout, density, visual hierarchy, and combinations that are technically valid but unpleasant to use.
+
+A production-ready component benefits from both.
+
+## Documentation is part of release evidence
+
+Documentation is often treated as something written after the API stabilizes.
+
+For a design system, it is also a consistency check.
+
+If the API is difficult to explain, the API may still be unclear.
+
+A useful component documentation set should answer at least:
+
+```text
+What is the component for?
+What is the public API?
+Which states and modes exist?
+How does state ownership work?
+What are the accessibility expectations?
+Where do Web and React Native intentionally differ?
+What should a developer not assume?
+```
+
+Different components expose different documentation pressure.
+
+Tabs needs clear interaction and navigation guidance. Modal needs explicit lifecycle, focus, and dismissal expectations. FormField needs to explain how labels, help text, required state, invalid state, and the actual form control compose together.
+
+Website examples and API docs also serve different purposes.
+
+The website can make the component discoverable and easy to evaluate. Reference documentation can be more precise about props, state contracts, and runtime differences.
+
+Both need to describe the same component.
+
+## Metadata turns assumptions into machine-readable requirements
+
+As a component library grows, humans stop being able to remember every expected surface for every component.
+
+Machine-readable metadata helps make those expectations explicit.
+
+Modal is a compact example. Its public metadata declares both supported runtimes, an overlay profile, and capabilities including controlled and uncontrolled state, keyboard behavior, focus management, compound API, and portal behavior. It also declares tests, Storybook, docs, and accessibility as requirements.
+
+Conceptually, that contract is close to:
+
+```ts
+{
+  name: 'Modal',
+  platforms: ['react', 'react-native'],
+  profile: 'overlay',
+  capabilities: [
+    'controlled',
+    'uncontrolled',
+    'keyboard',
+    'focus-management',
+    'compound-api',
+    'portal',
+  ],
+  requirements: {
+    tests: true,
+    storybook: true,
+    docs: true,
+    accessibility: true,
+  },
+}
+```
+
+This changes the question from:
+
+> Did we remember to add docs and tests?
+
+to:
+
+> Does the repository satisfy the declared component requirements?
+
+That is a much more scalable quality model.
+
+## Package exports are part of the product
+
+A component can be beautifully implemented and still be unusable if consumers cannot import it correctly.
+
+Button is a useful example because the consumer expectation is simple: a foundational action primitive and its public types should be reachable from the intended package boundary without requiring knowledge of internal source paths.
+
+That makes package exports a production concern, not repository housekeeping.
+
+A release check should verify that:
+
+- the implementation is exported from the expected package surface;
+- public types are reachable;
+- React and React Native package boundaries are correct;
+- generated or packed packages behave like real consumer installs;
+- internal-only modules do not accidentally become part of the public API.
+
+The source tree is not the product boundary.
+
+The installable package is.
+
+## Automate the boring proof
+
+Once a component has many required surfaces, manual memory stops scaling.
+
+Vellira’s public repository runs separate checks for component completeness and component quality, along with public API validation, component-page checks, docs validation, builds, typechecks, tests, coverage, and package smoke tests.
+
+The important idea is not the exact command names. It is the separation of concerns.
+
+Different checks answer different questions:
+
+```text
+completeness
+Are the required surfaces present?
+
+quality
+Do important implementation and platform rules hold?
+
+public API
+Are the intended exports still valid?
+
+docs/page checks
+Do generated and documented surfaces match the source of truth?
+
+tests and coverage
+Does behavior have executable evidence?
+
+smoke tests
+Can consumers use the built packages?
+```
+
+A single giant “quality” script would make failures harder to understand.
+
+Focused gates make the release contract visible.
+
+## Production readiness is a graph, not a checkbox
+
+The useful mental model is a dependency graph.
+
+The implementation depends on public types and state rules.
+
+Stories depend on the implementation.
+
+Docs depend on the public API.
+
+Metadata declares which surfaces should exist.
+
+Completeness checks verify presence.
+
+Quality checks verify important rules.
+
+Package checks verify the consumer boundary.
+
+If one node is stale, the component may still look finished locally while being incomplete as a product.
+
+That is why “done” should mean that the graph is coherent, not that one implementation file stopped changing.
+
+## A practical production-readiness checklist
+
+For a cross-platform component, I now ask these questions before calling it ready:
+
+1. **Implementation:** Do React and React Native both implement the intended product behavior?
+2. **API:** Are props, state shapes, callbacks, defaults, and invalid combinations explicit in TypeScript?
+3. **State:** Are controlled and uncontrolled modes predictable where they apply?
+4. **Accessibility:** Does each runtime use the strongest native semantics available to it?
+5. **Interaction:** Are keyboard, press, disabled, focus, and compound behaviors covered where relevant?
+6. **Tests:** Do tests prove behavior after interaction, not only initial rendering?
+7. **Storybook:** Can a human review the important states and edge cases?
+8. **Docs:** Do website and reference docs explain the current API and platform differences?
+9. **Metadata:** Are supported platforms, capabilities, and required surfaces machine-readable?
+10. **Exports:** Can real consumers import the component and its public types from the intended package boundary?
+11. **Validation:** Do completeness, quality, public-API, build, typecheck, and package checks agree that the component is healthy?
+12. **Parity:** Are Web and React Native aligned on intent without hiding legitimate runtime differences?
+
+If several of those answers are “not yet,” the component may be useful, but it is not finished as a design-system product.
+
+## The payoff
+
+This standard costs more work per component up front.
+
+That is intentional.
+
+A design system gains leverage only when teams can trust what it ships. A component that needs a second round of investigation every time someone wants to use it does not create much leverage, even if its implementation is elegant.
+
+Production readiness is therefore less about visual polish than about reducing uncertainty.
+
+The strongest component is not the one with the cleverest internal abstraction.
+
+It is the one whose public behavior, types, accessibility, documentation, package boundary, tests, and platform differences are all explicit enough that another developer can use it without guessing.
+
+That is the standard I want from Vellira’s cross-platform components, and it is the checklist I would use for any React + React Native design system.
