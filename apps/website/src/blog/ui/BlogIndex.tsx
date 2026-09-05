@@ -9,6 +9,12 @@ import { Container } from '@/components/layout/Container';
 import type { BlogArticleMetadata } from '@/blog';
 import { fetchBlogMetricsBatch, type BlogMetricsBySlug } from '../metrics';
 import { normalizeBlogSearchText, searchBlogArticles } from '../search';
+import {
+  deriveBlogTopicOptions,
+  filterBlogArticlesByTopics,
+  normalizeBlogTopicValue,
+  selectCommonBlogTopicOptions,
+} from '../topicFilters';
 import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 import { formatBlogDate } from './formatBlogDate';
 
@@ -20,26 +26,58 @@ interface BlogIndexProps {
   metricsBySlug?: BlogMetricsBySlug;
 }
 
-function readSearchQueryFromUrl(): string {
-  if (typeof window === 'undefined') {
-    return '';
-  }
-
-  return new URLSearchParams(window.location.search).get('q') ?? '';
+interface BlogDiscoveryState {
+  query: string;
+  selectedTopics: string[];
 }
 
-function replaceSearchQueryInUrl(query: string): void {
+function readDiscoveryStateFromUrl(
+  availableTopics: ReadonlySet<string>
+): BlogDiscoveryState {
+  if (typeof window === 'undefined') {
+    return { query: '', selectedTopics: [] };
+  }
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const selectedTopics = Array.from(
+    new Set(
+      (searchParams.get('tags') ?? '')
+        .split(',')
+        .map(normalizeBlogTopicValue)
+        .filter((topic) => topic && availableTopics.has(topic))
+    )
+  ).sort();
+
+  return {
+    query: searchParams.get('q') ?? '',
+    selectedTopics,
+  };
+}
+
+function replaceDiscoveryStateInUrl(
+  query: string,
+  selectedTopics: readonly string[]
+): void {
   if (typeof window === 'undefined') {
     return;
   }
 
   const url = new URL(window.location.href);
   const nextQuery = query.trim();
+  const nextTopics = Array.from(
+    new Set(selectedTopics.map(normalizeBlogTopicValue).filter(Boolean))
+  ).sort();
 
   if (nextQuery) {
     url.searchParams.set('q', nextQuery);
   } else {
     url.searchParams.delete('q');
+  }
+
+  if (nextTopics.length > 0) {
+    url.searchParams.set('tags', nextTopics.join(','));
+  } else {
+    url.searchParams.delete('tags');
   }
 
   window.history.replaceState(
@@ -51,26 +89,60 @@ function replaceSearchQueryInUrl(query: string): void {
 
 export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
   const [query, setQuery] = useState('');
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [resolvedMetricsBySlug, setResolvedMetricsBySlug] =
     useState<BlogMetricsBySlug>(metricsBySlug);
   const publishedArticles = useMemo(
     () => searchBlogArticles(articles, ''),
     [articles]
   );
-  const filteredArticles = useMemo(
+  const topicOptions = useMemo(
+    () => deriveBlogTopicOptions(publishedArticles),
+    [publishedArticles]
+  );
+  const availableTopicValues = useMemo(
+    () => new Set(topicOptions.map((topic) => topic.value)),
+    [topicOptions]
+  );
+  const inlineTopics = useMemo(
+    () => selectCommonBlogTopicOptions(topicOptions),
+    [topicOptions]
+  );
+  const inlineTopicValues = useMemo(
+    () => new Set(inlineTopics.map((topic) => topic.value)),
+    [inlineTopics]
+  );
+  const moreTopics = useMemo(
+    () => topicOptions.filter((topic) => !inlineTopicValues.has(topic.value)),
+    [inlineTopicValues, topicOptions]
+  );
+  const searchedArticles = useMemo(
     () => searchBlogArticles(publishedArticles, query),
     [publishedArticles, query]
   );
+  const filteredArticles = useMemo(
+    () => filterBlogArticlesByTopics(searchedArticles, selectedTopics),
+    [searchedArticles, selectedTopics]
+  );
   const normalizedQuery = normalizeBlogSearchText(query);
+  const hasActiveFilters = selectedTopics.length > 0;
+  const hasActiveDiscovery = Boolean(normalizedQuery) || hasActiveFilters;
+  const hiddenSelectedCount = selectedTopics.filter(
+    (topic) => !inlineTopicValues.has(topic)
+  ).length;
 
   useEffect(() => {
-    const syncQueryFromUrl = () => setQuery(readSearchQueryFromUrl());
+    const syncDiscoveryFromUrl = () => {
+      const nextState = readDiscoveryStateFromUrl(availableTopicValues);
+      setQuery(nextState.query);
+      setSelectedTopics(nextState.selectedTopics);
+    };
 
-    syncQueryFromUrl();
-    window.addEventListener('popstate', syncQueryFromUrl);
+    syncDiscoveryFromUrl();
+    window.addEventListener('popstate', syncDiscoveryFromUrl);
 
-    return () => window.removeEventListener('popstate', syncQueryFromUrl);
-  }, []);
+    return () => window.removeEventListener('popstate', syncDiscoveryFromUrl);
+  }, [availableTopicValues]);
 
   useEffect(() => {
     const slugs = publishedArticles.map((article) => article.slug);
@@ -101,7 +173,28 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
   const updateQuery = (nextQuery: string) => {
     setQuery(nextQuery);
-    replaceSearchQueryInUrl(nextQuery);
+    replaceDiscoveryStateInUrl(nextQuery, selectedTopics);
+  };
+
+  const toggleTopic = (topic: string) => {
+    const normalizedTopic = normalizeBlogTopicValue(topic);
+    const nextTopics = selectedTopics.includes(normalizedTopic)
+      ? selectedTopics.filter((selected) => selected !== normalizedTopic)
+      : [...selectedTopics, normalizedTopic].sort();
+
+    setSelectedTopics(nextTopics);
+    replaceDiscoveryStateInUrl(query, nextTopics);
+  };
+
+  const clearFilters = () => {
+    setSelectedTopics([]);
+    replaceDiscoveryStateInUrl(query, []);
+  };
+
+  const resetDiscovery = () => {
+    setQuery('');
+    setSelectedTopics([]);
+    replaceDiscoveryStateInUrl('', []);
   };
 
   return (
@@ -135,35 +228,150 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
           ) : (
             <>
               <div className={searchStyles.discoveryToolbar}>
-                <label className={searchStyles.search}>
-                  <Search
-                    aria-hidden='true'
-                    className={searchStyles.searchIcon}
-                  />
+                <div className={searchStyles.toolbarInner}>
+                  <label className={searchStyles.search}>
+                    <Search
+                      aria-hidden='true'
+                      className={searchStyles.searchIcon}
+                    />
 
-                  <input
-                    type='search'
-                    value={query}
-                    onChange={(event) => updateQuery(event.target.value)}
-                    placeholder='Search articles...'
-                    aria-label='Search articles'
-                    className={searchStyles.searchInput}
-                  />
+                    <input
+                      type='search'
+                      value={query}
+                      onChange={(event) => updateQuery(event.target.value)}
+                      placeholder='Search articles...'
+                      aria-label='Search articles'
+                      className={searchStyles.searchInput}
+                    />
 
-                  {query && (
+                    {query && (
+                      <button
+                        type='button'
+                        className={searchStyles.clearSearch}
+                        aria-label='Clear search'
+                        onClick={() => updateQuery('')}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </label>
+
+                  <div
+                    className={searchStyles.filters}
+                    aria-label='Filter articles by topic'
+                  >
                     <button
                       type='button'
-                      className={searchStyles.clearSearch}
-                      aria-label='Clear search'
-                      onClick={() => updateQuery('')}
+                      className={[
+                        searchStyles.filter,
+                        !hasActiveFilters ? searchStyles.filterActive : null,
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      aria-pressed={!hasActiveFilters}
+                      onClick={clearFilters}
                     >
-                      ×
+                      All
                     </button>
-                  )}
-                </label>
+
+                    {inlineTopics.map((topic) => {
+                      const active = selectedTopics.includes(topic.value);
+
+                      return (
+                        <button
+                          key={topic.value}
+                          type='button'
+                          className={[
+                            searchStyles.filter,
+                            active ? searchStyles.filterActive : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          aria-pressed={active}
+                          onClick={() => toggleTopic(topic.value)}
+                        >
+                          {topic.label}
+                        </button>
+                      );
+                    })}
+
+                    {moreTopics.length > 0 && (
+                      <details className={searchStyles.moreFilters}>
+                        <summary
+                          className={[
+                            searchStyles.moreFiltersTrigger,
+                            hiddenSelectedCount > 0
+                              ? searchStyles.filterActive
+                              : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                        >
+                          <span>More filters</span>
+                          {hiddenSelectedCount > 0 && (
+                            <span className={searchStyles.filterCount}>
+                              {hiddenSelectedCount}
+                            </span>
+                          )}
+                        </summary>
+
+                        <div
+                          className={searchStyles.filterPanel}
+                          aria-label='More topic filters'
+                        >
+                          <div className={searchStyles.filterPanelHeader}>
+                            <strong>More topics</strong>
+                            {hasActiveFilters && (
+                              <button
+                                type='button'
+                                className={searchStyles.clearFilters}
+                                onClick={clearFilters}
+                              >
+                                Clear filters
+                              </button>
+                            )}
+                          </div>
+
+                          <div className={searchStyles.filterPanelGrid}>
+                            {moreTopics.map((topic) => {
+                              const active = selectedTopics.includes(
+                                topic.value
+                              );
+
+                              return (
+                                <button
+                                  key={topic.value}
+                                  type='button'
+                                  className={[
+                                    searchStyles.panelFilter,
+                                    active
+                                      ? searchStyles.panelFilterActive
+                                      : null,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(' ')}
+                                  aria-pressed={active}
+                                  onClick={() => toggleTopic(topic.value)}
+                                >
+                                  <span>{topic.label}</span>
+                                  <span
+                                    className={searchStyles.topicFrequency}
+                                    aria-label={`${topic.count} articles`}
+                                  >
+                                    {topic.count}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </details>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              {normalizedQuery && (
+              {hasActiveDiscovery && (
                 <div
                   className={searchStyles.resultsMeta}
                   role='status'
@@ -222,14 +430,16 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                 <div className={styles.emptyState}>
                   <p className={styles.eyebrow}>No matches</p>
                   <h2>No articles found.</h2>
-                  <p>Try another search or clear the current query.</p>
+                  <p>
+                    No articles match the current search and topic filters.
+                  </p>
                   <button
                     type='button'
                     className={searchStyles.resetSearch}
-                    aria-label='Clear search and show all articles'
-                    onClick={() => updateQuery('')}
+                    aria-label='Clear search and filters and show all articles'
+                    onClick={resetDiscovery}
                   >
-                    Clear search
+                    Reset search and filters
                   </button>
                 </div>
               )}
