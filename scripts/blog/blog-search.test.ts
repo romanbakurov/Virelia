@@ -4,7 +4,7 @@ import {
   normalizeBlogSearchText,
   searchBlogArticles,
 } from '../../apps/website/src/blog/search';
-import type { BlogArticleMetadata } from '../../apps/website/src/blog';
+import type { BlogArticleMetadata } from '../../apps/website/src/blog/types';
 
 function createArticle(
   overrides: Partial<BlogArticleMetadata> = {}
