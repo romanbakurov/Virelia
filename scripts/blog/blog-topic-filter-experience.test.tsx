@@ -8,6 +8,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -80,6 +81,18 @@ const articles = [
   }),
 ];
 
+function getTestingTopicButton(): HTMLButtonElement {
+  const dialog = screen.getByRole('dialog', { hidden: true });
+  const label = within(dialog).getByText(/^Testing$/);
+  const button = label.closest('button');
+
+  if (!(button instanceof HTMLButtonElement)) {
+    throw new Error('Testing topic button was not found');
+  }
+
+  return button;
+}
+
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
@@ -147,21 +160,19 @@ describe('blog topic filter experience', () => {
     expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(moreFilters);
 
-    expect(
-      screen.getByRole('button', { name: /^Testing/ })
-    ).toBeInTheDocument();
+    expect(getTestingTopicButton()).toBeInTheDocument();
 
     fireEvent.pointerDown(document.body);
 
     await waitFor(() =>
-      expect(
-        screen.queryByRole('button', { name: /^Testing/ })
-      ).not.toBeInTheDocument()
+      expect(moreFilters).toHaveAttribute('aria-expanded', 'false')
     );
-    expect(moreFilters).toHaveAttribute('aria-expanded', 'false');
+    expect(
+      screen.queryByRole('dialog', { hidden: true })
+    ).not.toBeInTheDocument();
 
     fireEvent.click(moreFilters);
-    fireEvent.click(screen.getByRole('button', { name: /^Testing/ }));
+    fireEvent.click(getTestingTopicButton());
 
     expect(screen.getByRole('status')).toHaveTextContent('1 article');
     expect(
@@ -172,7 +183,11 @@ describe('blog topic filter experience', () => {
       'testing'
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+    fireEvent.click(
+      within(screen.getByRole('dialog', { hidden: true })).getByText(
+        'Clear filters'
+      )
+    );
 
     expect(new URLSearchParams(window.location.search).has('tags')).toBe(false);
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
@@ -193,10 +208,7 @@ describe('blog topic filter experience', () => {
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /More filters/ }));
-    expect(screen.getByRole('button', { name: /^Testing/ })).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    );
+    expect(getTestingTopicButton()).toHaveAttribute('aria-pressed', 'true');
 
     window.history.pushState({}, '', '/blog?tags=does-not-exist');
     window.dispatchEvent(new PopStateEvent('popstate'));
