@@ -1,0 +1,9 @@
+{
+  "title": "Building a Cross-Platform Form with Vellira",
+  "description": "A practical React and React Native form example using Vellira FormField, Input, Select, Checkbox, and Button with shared state and platform-appropriate behavior.",
+  "slug": "cross-platform-form-vellira",
+  "publishedAt": "2026-09-05",
+  "author": "Roman Bakurov",
+  "tags": ["React", "React Native", "Forms", "Accessibility", "Design Systems"],
+  "draft": true
+}
