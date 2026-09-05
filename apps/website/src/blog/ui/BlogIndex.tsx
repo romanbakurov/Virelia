@@ -432,9 +432,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                 <div className={styles.emptyState}>
                   <p className={styles.eyebrow}>No matches</p>
                   <h2>No articles found.</h2>
-                  <p>
-                    No articles match the current search and topic filters.
-                  </p>
+                  <p>No articles match the current search and topic filters.</p>
                   <button
                     type='button'
                     className={searchStyles.resetSearch}
