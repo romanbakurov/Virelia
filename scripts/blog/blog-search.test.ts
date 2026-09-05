@@ -51,10 +51,7 @@ describe('blog metadata search', () => {
     ];
 
     const multiTokenResults = searchBlogArticles(articles, 'react native');
-    const accessibilityResults = searchBlogArticles(
-      articles,
-      'accessibility'
-    );
+    const accessibilityResults = searchBlogArticles(articles, 'accessibility');
     const slugResults = searchBlogArticles(articles, 'metadata source');
 
     expect(multiTokenResults).toEqual(articles);
@@ -108,10 +105,7 @@ describe('blog metadata search', () => {
       draft: true,
     });
 
-    const results = searchBlogArticles(
-      [first, second, draft],
-      'quality gates'
-    );
+    const results = searchBlogArticles([first, second, draft], 'quality gates');
 
     expect(results).toEqual([first, second]);
     expect(searchBlogArticles([draft], '')).toEqual([]);
