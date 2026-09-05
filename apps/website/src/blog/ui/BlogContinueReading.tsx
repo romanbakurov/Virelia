@@ -9,9 +9,7 @@ interface BlogContinueReadingProps {
   articles: readonly BlogArticleMetadata[];
 }
 
-export function BlogContinueReading({
-  articles,
-}: BlogContinueReadingProps) {
+export function BlogContinueReading({ articles }: BlogContinueReadingProps) {
   const visibleArticles = articles.slice(0, 3);
 
   if (visibleArticles.length === 0) {
