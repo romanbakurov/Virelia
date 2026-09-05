@@ -1,0 +1,9 @@
+{
+  "title": "What Production-Ready Means for a Cross-Platform Component",
+  "description": "A practical checklist for shipping React and React Native components with complete APIs, accessibility, tests, docs, metadata, and package integration.",
+  "slug": "production-ready-cross-platform-component",
+  "publishedAt": "2026-09-04",
+  "author": "Roman Bakurov",
+  "tags": ["Design Systems", "React", "React Native", "Engineering"],
+  "draft": false
+}
