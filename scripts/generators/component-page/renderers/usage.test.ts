@@ -181,4 +181,63 @@ describe('renderUsage', () => {
       deduplicated.content.match(/description='Work email'/g)
     ).toHaveLength(2);
   });
+
+  it('wraps native usage with platform setup in a function scope', () => {
+    const result = renderUsage({
+      componentName: 'Example',
+      componentConfig: {
+        native: {
+          imports: [
+            "import { Text as NativeText } from 'react-native';",
+            "import { useTheme } from '@vellira-ui/react-native';",
+          ],
+          setup: ['const { theme: nativeTheme } = useTheme();'],
+          children:
+            '<Example.Content><NativeText style={{ color: nativeTheme.color.content }}>Content</NativeText></Example.Content>',
+        },
+      },
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(result.content).toContain('function Example() {');
+    expect(result.content).toContain(
+      '${setup}\n\n  return (\n${indentedRoot}\n  );'
+    );
+    expect(result.content).toContain(
+      'const { theme: nativeTheme } = useTheme();'
+    );
+    expect(result.content).toContain(
+      '<Example.Content><NativeText style={{ color: nativeTheme.color.content }}>Content</NativeText></Example.Content>'
+    );
+    expect(result.content.indexOf('${setup}')).toBeLessThan(
+      result.content.indexOf('return (')
+    );
+  });
+
+  it('keeps no-setup usage on the simple snippet path', () => {
+    const result = renderUsage({
+      componentName: 'Example',
+      componentConfig: {
+        native: {
+          children: '<Example.Content>Content</Example.Content>',
+        },
+      },
+      playgroundProps: [],
+      reactApiProps: [],
+      nativeApiProps: [],
+      generatedFileHeader: '',
+      getDemoProps: () => '',
+    });
+
+    expect(result.content).not.toContain('const setup =');
+    expect(result.content).not.toContain('if (setup) {');
+    expect(result.content).not.toContain('function Example() {');
+    expect(result.content).toContain(
+      "return `import { Example } from '${packageName}';"
+    );
+  });
 });

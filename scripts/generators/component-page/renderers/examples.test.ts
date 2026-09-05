@@ -7,6 +7,7 @@ type PropKind = ExtractedProp['kind'];
 type RenderConfig = Parameters<typeof renderExamples>[0]['componentConfig'];
 
 type RenderParams = {
+  componentName?: string;
   generatedExamples?: readonly GeneratedExample[];
   reactApiProps?: readonly ExtractedProp[];
   nativeApiProps?: readonly ExtractedProp[];
@@ -45,7 +46,7 @@ function render(params: RenderParams) {
     ];
 
   return renderExamples({
-    componentName: 'Accordion',
+    componentName: params.componentName ?? 'Accordion',
     componentConfig: params.componentConfig ?? {},
     generatedExamples,
     generatedFileHeader: '',
@@ -237,5 +238,60 @@ describe('renderExamples', () => {
 
     expect(content).not.toContain('AccordionExample1Preview');
     expect(content).toContain('preview: (');
+  });
+
+  it('includes native platform setup before shared and native example setup in previews and displayed code', () => {
+    const content = render({
+      componentName: 'Example',
+      componentConfig: {
+        native: {
+          imports: ["import { useTheme } from '@vellira-ui/react-native';"],
+          setup: ['const { theme: nativeTheme } = useTheme();'],
+          children:
+            '<Example.Content tone={nativeTheme}>Content</Example.Content>',
+        },
+      },
+      generatedExamples: [
+        {
+          title: 'Layered setup',
+          description: 'Example.',
+          props: [],
+          setup: ['const sharedValue = nativeTheme.color.content;'],
+          nativeSetup: ['const nativeValue = sharedValue;'],
+          nativeProps: ['value={nativeValue}'],
+          platforms: ['react-native'],
+        },
+      ],
+      nativeApiProps: [prop('value', 'string', 'string')],
+    });
+
+    const platformSetup = 'const { theme: nativeTheme } = useTheme();';
+    const sharedSetup = 'const sharedValue = nativeTheme.color.content;';
+    const nativeSetup = 'const nativeValue = sharedValue;';
+    const previewStart = content.indexOf(
+      'function NativeExampleExample1Preview()'
+    );
+    const displayStart = content.indexOf('code: `');
+
+    expect(content).toContain(platformSetup);
+    expect(content).toContain(sharedSetup);
+    expect(content).toContain(nativeSetup);
+    expect(content).toContain('<NativeExample.Content tone={nativeTheme}>');
+    expect(content).toContain('<Example.Content tone={nativeTheme}>');
+    expect(previewStart).toBeGreaterThanOrEqual(0);
+    expect(displayStart).toBeGreaterThanOrEqual(0);
+    expect(content.indexOf(platformSetup, previewStart)).toBeLessThan(
+      content.indexOf(sharedSetup, previewStart)
+    );
+    expect(content.indexOf(sharedSetup, previewStart)).toBeLessThan(
+      content.indexOf(nativeSetup, previewStart)
+    );
+    expect(content.indexOf(platformSetup, displayStart)).toBeLessThan(
+      content.indexOf(sharedSetup, displayStart)
+    );
+    expect(content.indexOf(sharedSetup, displayStart)).toBeLessThan(
+      content.indexOf(nativeSetup, displayStart)
+    );
+    expect(content.split(platformSetup)).toHaveLength(3);
   });
 });

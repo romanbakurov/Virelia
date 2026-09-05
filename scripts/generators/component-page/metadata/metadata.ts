@@ -130,11 +130,15 @@ function mergePlatformMetadata(
   const imports = Array.from(
     new Set([...(base?.imports ?? []), ...(override?.imports ?? [])])
   );
+  const setup = Array.from(
+    new Set([...(base?.setup ?? []), ...(override?.setup ?? [])])
+  );
 
   return {
     ...(base ?? {}),
     ...(override ?? {}),
     ...(imports.length > 0 ? { imports } : {}),
+    ...(setup.length > 0 ? { setup } : {}),
   };
 }
 
@@ -425,7 +429,7 @@ function isBarePropFragment(fragment: string) {
   return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(fragment);
 }
 
-function validateExampleSetupSyntax(source: string) {
+function validateSetupSyntax(source: string) {
   const result = ts.transpileModule(
     `function ComponentExamplePreview() {\n${source}\n}`,
     {
@@ -528,6 +532,26 @@ export function validateComponentMetadata(params: {
       if (importLocallyBindsName(source, componentName)) {
         errors.push(
           `${platform}.imports[${index}] must not bind generated component "${componentName}"`
+        );
+      }
+    }
+
+    for (const [index, source] of (platformMetadata?.setup ?? []).entries()) {
+      if (!source.trim()) {
+        errors.push(`${platform}.setup[${index}] must not be empty`);
+      }
+    }
+
+    const platformSetup = (platformMetadata?.setup ?? [])
+      .map((statement) => statement.trim())
+      .filter(Boolean);
+
+    if (platformSetup.length > 0) {
+      const setupError = validateSetupSyntax(platformSetup.join('\n'));
+
+      if (setupError) {
+        errors.push(
+          `${platform}.setup has invalid TypeScript syntax: ${setupError}`
         );
       }
     }
@@ -715,7 +739,7 @@ export function validateComponentMetadata(params: {
         continue;
       }
 
-      const setupError = validateExampleSetupSyntax(setup.join('\n'));
+      const setupError = validateSetupSyntax(setup.join('\n'));
 
       if (setupError) {
         errors.push(

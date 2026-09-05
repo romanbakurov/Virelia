@@ -32,6 +32,7 @@ export interface DropdownContextValue {
   size: DropdownSize;
 
   presentation: Exclude<DropdownPresentation, 'auto'>;
+  positionReady: boolean;
   position: {
     top: number;
     left: number;

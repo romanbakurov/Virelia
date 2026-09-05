@@ -23,10 +23,12 @@ const description: ExtractedProp = {
 function render(params: {
   reactApiProps: readonly ExtractedProp[];
   nativeApiProps: readonly ExtractedProp[];
+  componentConfig?: Parameters<typeof renderDemoFiles>[0]['componentConfig'];
+  nativeDemoChildren?: string;
 }) {
   return renderDemoFiles({
     componentName: 'Example',
-    componentConfig: {
+    componentConfig: params.componentConfig ?? {
       demo: {
         label: 'Account settings',
         description: 'Choose a section to view more details.',
@@ -41,7 +43,7 @@ function render(params: {
     reactStaticDemoProps: '',
     nativeStaticDemoProps: '',
     reactDemoChildren: '',
-    nativeDemoChildren: '',
+    nativeDemoChildren: params.nativeDemoChildren ?? '',
     nativeResponsivePresentation: false,
     generatedFileHeader: '',
     getChangeHandlerName: () => null,
@@ -79,5 +81,25 @@ describe('renderDemoFiles', () => {
     expect(result.nativeContent).not.toContain(
       "description='Choose a section to view more details.'"
     );
+  });
+
+  it('renders native platform setup inside the native demo before return', () => {
+    const result = render({
+      reactApiProps: [],
+      nativeApiProps: [],
+      componentConfig: {
+        native: {
+          imports: ["import { useTheme } from '@vellira-ui/react-native';"],
+          setup: ['const { theme: nativeTheme } = useTheme();'],
+        },
+      },
+      nativeDemoChildren:
+        '<Example.Content tone={nativeTheme}>Content</Example.Content>',
+    });
+
+    expect(result.nativeContent).toContain(
+      'function NativeExampleDemo() {\n  const { theme: nativeTheme } = useTheme();\n\n  return ('
+    );
+    expect(result.nativeContent).toContain('tone={nativeTheme}');
   });
 });

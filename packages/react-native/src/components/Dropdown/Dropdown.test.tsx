@@ -11,6 +11,7 @@ import { Portal } from '../../primitives/Portal';
 import { render } from '../../test-utils/render';
 import { nativeThemes, ThemeProvider } from '../../theme';
 
+import { getDropdownBackdropBackgroundColor } from './Content/DropdownContent.styles';
 import { Dropdown } from './Dropdown';
 
 function renderActionContent({
@@ -66,6 +67,21 @@ const pressNativeElement = (element: HTMLElement | undefined) => {
 };
 
 describe('Native Dropdown', () => {
+  it('keeps popover outside-press backdrop visually transparent across dark themes', () => {
+    expect(
+      getDropdownBackdropBackgroundColor(nativeThemes.dark, 'popover')
+    ).toBe('transparent');
+    expect(
+      getDropdownBackdropBackgroundColor(nativeThemes.highContrast, 'popover')
+    ).toBe('transparent');
+    expect(getDropdownBackdropBackgroundColor(nativeThemes.dark, 'modal')).toBe(
+      nativeThemes.dark.semantic.overlay.backdrop
+    );
+    expect(
+      getDropdownBackdropBackgroundColor(nativeThemes.highContrast, 'sheet')
+    ).toBe(nativeThemes.highContrast.semantic.overlay.backdrop);
+  });
+
   it('supports compound trigger, content, and item selection', () => {
     const onSelect = vi.fn();
     const { container, unmount } = render(

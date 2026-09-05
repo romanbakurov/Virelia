@@ -3,6 +3,7 @@ import path from 'node:path';
 import type {
   ComponentCapability,
   ComponentIconRequirement,
+  ComponentTokenContract,
 } from '@vellira-ui/metadata';
 import type {
   ComponentGeneratorOptions,
@@ -39,6 +40,7 @@ export type ComponentGenerationPlan = {
   capabilities: readonly ComponentCapability[];
   icons: readonly ComponentIconRequirement[];
   tokens: readonly string[];
+  componentTokens: ComponentTokenContract | false;
   force: boolean;
   parts: readonly string[];
   targets: readonly ComponentGenerationTarget[];
@@ -58,6 +60,23 @@ export function shouldGenerateVisualScaffold(
   plan: Pick<ComponentGenerationPlan, 'profile'>
 ) {
   return plan.profile !== 'compound' && plan.profile !== 'overlay';
+}
+
+function resolveComponentTokenContract(
+  options: ComponentGeneratorOptions
+): ComponentTokenContract | false {
+  if (options.componentTokens !== undefined) {
+    return options.componentTokens;
+  }
+
+  if (
+    options.profile === 'form-control' &&
+    (options.control ?? 'value') === 'boolean'
+  ) {
+    return 'boolean-control';
+  }
+
+  return 'standard';
 }
 
 function getTargetPackages(
@@ -153,6 +172,7 @@ export function createComponentGenerationPlan(params: {
     capabilities: options.capabilities ?? [],
     icons: options.icons ?? [],
     tokens: options.tokens ?? [],
+    componentTokens: resolveComponentTokenContract(options),
     parts: options.parts,
     force: options.force,
     targets,

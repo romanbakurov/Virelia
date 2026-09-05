@@ -343,6 +343,7 @@ export function createComponentMetadataFromPlan(
       storybook: true,
       docs: true,
       accessibility: true,
+      componentTokens: plan.componentTokens,
       ...resourceRequirements,
     },
   };

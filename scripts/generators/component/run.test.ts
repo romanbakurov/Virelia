@@ -1381,13 +1381,56 @@ describe('component generator check mode', () => {
           check: true,
         },
       })
-    ).rejects.toThrow(
-      'Component generator check detected public API contract drift'
-    );
+    ).rejects.toThrow('Component generator check detected contract drift');
 
     expect(readFile(webContract)).toBe(webDrift);
     expect(readFile(nativeContract)).toBe(nativeBefore);
 
     expect(generateComponentWebsitePage).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('component-token run intent', () => {
+  it('keeps explicit tokenless intent aligned across dry-run and write', async () => {
+    const root = createTempRoot();
+    createRequiredRepositoryStructure(root);
+
+    const options = {
+      componentName: 'TokenlessProbe',
+      platform: 'both',
+      layer: 'primitives',
+      category: 'layout',
+      profile: 'base',
+      componentTokens: false,
+      parts: [],
+      force: false,
+    } as const;
+
+    const dryRun = await runComponentGenerator({
+      root,
+      options: {
+        ...options,
+        dryRun: true,
+      },
+    });
+
+    expect(dryRun.createdFiles).not.toContain(dryRun.plan.tokenFactoryFile);
+
+    for (const target of dryRun.plan.tokenThemeTargets) {
+      expect(dryRun.createdFiles).not.toContain(target.componentFile);
+      expect(dryRun.updatedFiles).not.toContain(target.barrelFile);
+    }
+
+    const result = await runComponentGenerator({ root, options });
+
+    expect(fs.existsSync(result.plan.tokenFactoryFile)).toBe(false);
+
+    for (const target of result.plan.tokenThemeTargets) {
+      expect(fs.existsSync(target.componentFile)).toBe(false);
+    }
+
+    expect(readFile(result.plan.metadataFile)).toContain(
+      'componentTokens: false'
+    );
   });
 });

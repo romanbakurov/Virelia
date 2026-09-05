@@ -45,6 +45,7 @@ function createTabsCode(
   <Tabs.Content value='account'>
     <NativeText
       style={{
+        color: nativeTheme.components.tabs.panel.fg,
         fontFamily: 'VelliraSans-Regular',
         fontSize: 16,
         lineHeight: 20,
@@ -56,6 +57,7 @@ function createTabsCode(
   <Tabs.Content value='billing'>
     <NativeText
       style={{
+        color: nativeTheme.components.tabs.panel.fg,
         fontFamily: 'VelliraSans-Regular',
         fontSize: 16,
         lineHeight: 20,
@@ -115,29 +117,43 @@ function createTabsCode(
 
   const propsText = props.length === 0 ? '' : `\n  ${props.join('\n  ')}\n`;
 
-  if (!children) {
-    return `import { Tabs } from '${packageName}';
-${
-  platform === 'react'
-    ? ``
-    : `
-import { Text as NativeText } from 'react-native';`
-}
+  const imports = `import { Tabs } from '${packageName}';${
+    platform === 'react'
+      ? ``
+      : `
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';`
+  }`;
 
-<Tabs${propsText}/>`;
-  }
+  const setup =
+    platform === 'react' ? `` : `  const { theme: nativeTheme } = useTheme();`;
 
-  return `import { Tabs } from '${packageName}';
-${
-  platform === 'react'
-    ? ``
-    : `
-import { Text as NativeText } from 'react-native';`
-}
-
-<Tabs${propsText}>
+  const root = !children
+    ? `<Tabs${propsText}/>`
+    : `<Tabs${propsText}>
 ${children}
 </Tabs>`;
+
+  if (setup) {
+    const indentedRoot = root
+      .split('\n')
+      .map((line) => `    ${line}`)
+      .join('\n');
+
+    return `${imports}
+
+function Example() {
+${setup}
+
+  return (
+${indentedRoot}
+  );
+}`;
+  }
+
+  return `${imports}
+
+${root}`;
 }
 
 export function TabsUsage({ platform }: TabsUsageProps) {

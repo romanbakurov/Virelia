@@ -4,6 +4,7 @@ import {
   isValidElement,
   useCallback,
   useId,
+  useMemo,
   useState,
 } from 'react';
 
@@ -47,12 +48,15 @@ export function AccordionRoot({
   const [uncontrolledValue, setUncontrolledValue] = useState<string | string[]>(
     defaultValue ?? (type === 'multiple' ? [] : '')
   );
-  const selectedValues = (isControlled ? value : uncontrolledValue) ?? [];
-  const expandedValues = Array.isArray(selectedValues)
-    ? selectedValues
-    : selectedValues
-      ? [selectedValues]
-      : [];
+  const expandedValues = useMemo(() => {
+    const selectedValues = (isControlled ? value : uncontrolledValue) ?? [];
+
+    return Array.isArray(selectedValues)
+      ? selectedValues
+      : selectedValues
+        ? [selectedValues]
+        : [];
+  }, [isControlled, uncontrolledValue, value]);
 
   const selectValue = useCallback(
     (itemValue: string) => {

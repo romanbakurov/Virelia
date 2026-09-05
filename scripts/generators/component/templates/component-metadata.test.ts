@@ -34,13 +34,20 @@ describe('renderMetadataTemplate', () => {
     );
   });
 
-  it('keeps no-resource generation backward compatible', () => {
+  it('defaults generated metadata to the standard component token contract', () => {
     expect(renderMetadata()).toContain(`  requirements: {
     tests: true,
     storybook: true,
     docs: true,
     accessibility: true,
+    componentTokens: 'standard',
   },`);
+  });
+
+  it('renders an explicit tokenless component contract', () => {
+    expect(renderMetadata({ componentTokens: false })).toContain(
+      `    componentTokens: false,`
+    );
   });
 
   it('renders an icon requirement', () => {

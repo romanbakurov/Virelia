@@ -39,11 +39,15 @@ export interface ComponentIconRequirement {
   purpose: string;
 }
 
+export type ComponentTokenContract =
+  'standard' | 'boolean-control' | 'disclosure';
+
 export interface ComponentRequirements {
   tests: boolean;
   storybook: boolean;
   docs: boolean;
   accessibility: boolean;
+  componentTokens?: ComponentTokenContract | false;
   tokens?: readonly string[];
   icons?: readonly ComponentIconRequirement[];
 }

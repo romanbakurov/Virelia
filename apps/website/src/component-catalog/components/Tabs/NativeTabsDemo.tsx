@@ -5,10 +5,13 @@
 
 import { Tabs } from '@vellira-ui/react-native';
 import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
 
 import { TabsPlayground } from './TabsPlayground';
 
 export function NativeTabsDemo() {
+  const { theme: nativeTheme } = useTheme();
+
   return (
     <TabsPlayground
       platform='react-native'
@@ -33,6 +36,7 @@ export function NativeTabsDemo() {
           <Tabs.Content value='account'>
             <NativeText
               style={{
+                color: nativeTheme.components.tabs.panel.fg,
                 fontFamily: 'VelliraSans-Regular',
                 fontSize: 16,
                 lineHeight: 20,
@@ -44,6 +48,7 @@ export function NativeTabsDemo() {
           <Tabs.Content value='billing'>
             <NativeText
               style={{
+                color: nativeTheme.components.tabs.panel.fg,
                 fontFamily: 'VelliraSans-Regular',
                 fontSize: 16,
                 lineHeight: 20,

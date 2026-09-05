@@ -4,26 +4,42 @@
 'use client';
 
 import { Tooltip } from '@vellira-ui/react-native';
-import { Text as NativeText, View as NativeView } from 'react-native';
+import { Text as NativeText } from 'react-native';
+import { useTheme } from '@vellira-ui/react-native';
+import { controlSizes } from '@vellira-ui/tokens';
 
 import { TooltipPlayground } from './TooltipPlayground';
 
 export function NativeTooltipDemo() {
+  const { theme: nativeTheme } = useTheme();
+
   return (
     <TooltipPlayground
       platform='react-native'
       renderTooltip={(value) => (
         <Tooltip placement={value.placement} disabled={value.disabled}>
-          <Tooltip.Trigger>
-            <NativeView
+          <Tooltip.Trigger
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: controlSizes.md.height,
+              paddingLeft: nativeTheme.tokens.spacing[6],
+              paddingRight: nativeTheme.tokens.spacing[6],
+              borderRadius: nativeTheme.tokens.radius.full,
+              backgroundColor:
+                nativeTheme.components.button.primary.solid.default.bg,
+            }}
+          >
+            <NativeText
               style={{
-                padding: 12,
-                borderRadius: 8,
-                backgroundColor: '#eee',
+                color: nativeTheme.components.button.primary.solid.default.fg,
+                fontFamily: nativeTheme.tokens.typography.family.regular,
+                fontSize: nativeTheme.tokens.typography.size.md,
+                lineHeight: nativeTheme.tokens.typography.lineHeight.md,
               }}
             >
-              <NativeText>Press and hold</NativeText>
-            </NativeView>
+              Press and hold
+            </NativeText>
           </Tooltip.Trigger>
           <Tooltip.Content withArrow>Helpful contextual label.</Tooltip.Content>
         </Tooltip>
