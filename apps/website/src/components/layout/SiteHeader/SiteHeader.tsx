@@ -3,7 +3,7 @@
 import { useCallback, useState, useEffect, type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import { externalNavigation, marketingNavigation } from '@/config/navigation';
 import type { SiteHeaderProps } from './types';
@@ -93,7 +93,6 @@ export function SiteHeader({
   onMobileMenuOpenChange,
 }: SiteHeaderProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const [activeHref, setActiveHref] = useState<string | null>(null);
   const [internalMobileMenuOpen, setInternalMobileMenuOpen] = useState(false);
 
@@ -110,12 +109,6 @@ export function SiteHeader({
     },
     [onMobileMenuOpenChange]
   );
-
-  useEffect(() => {
-    router.prefetch('/');
-    router.prefetch('/components');
-    router.prefetch('/blog');
-  }, [router]);
 
   useEffect(() => {
     if (!resolvedMobileMenuOpen) {
