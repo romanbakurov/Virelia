@@ -17,6 +17,8 @@ const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
       import('../../content/blog/accessible-accordion-react-native/article.mdx'),
     'controlled-uncontrolled-react-native': () =>
       import('../../content/blog/controlled-uncontrolled-react-native/article.mdx'),
+    'design-system-component-generator': () =>
+      import('../../content/blog/design-system-component-generator/article.mdx'),
     'production-ready-cross-platform-component': () =>
       import('../../content/blog/production-ready-cross-platform-component/article.mdx'),
     'two-runtimes': () => import('../../content/blog/two-runtimes/article.mdx'),

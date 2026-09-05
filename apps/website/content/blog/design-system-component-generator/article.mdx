@@ -1,0 +1,552 @@
+A component generator becomes useful when it stops thinking in terms of files and starts thinking in terms of product surfaces.
+
+Creating `Component.tsx` is the easy part.
+
+In a real design system, a component also has public types, exports, tests, stories, documentation, metadata, platform-specific behavior, website examples, and validation rules. If those surfaces are created manually, they drift. If they are generated without clear ownership, regeneration becomes dangerous.
+
+Vellira's public component generator is built around a different idea: describe the component's intent once, turn that intent into a deterministic plan, and generate the surrounding repository contract consistently for React and React Native.
+
+This article walks through that approach using several public components—Button, Input, Tabs, Modal, and Select—to show different parts of the production pipeline instead of treating one component as the example for everything.
+
+## Why `Component.tsx` is the easy part
+
+A minimal generator often starts like this:
+
+```text
+input: Button
+
+output:
+Button.tsx
+```
+
+That is useful for a tutorial, but it does not solve the repetitive work that grows around a production component library.
+
+A real component may need to appear in several places:
+
+```text
+runtime implementation
+public TypeScript types
+local exports
+package exports
+public API checks
+unit tests
+manual test requirements
+Storybook stories
+styles or token contracts
+component metadata
+reference docs
+website examples
+playground configuration
+catalog registries
+```
+
+The source file is only one node in that graph.
+
+If a generator creates the implementation but leaves the rest to manual follow-up, it has automated the cheapest part of the job while preserving most of the consistency risk.
+
+The better question is:
+
+> What information do we know before generation that should deterministically drive every repeatable surface?
+
+For Vellira, that starts with explicit component intent.
+
+## Turn component intent into a plan
+
+The public Vellira CLI does not accept only a component name. It asks for enough structure to describe where the component belongs and what kind of scaffold it needs.
+
+The general command shape is:
+
+```bash
+pnpm create:component \
+  <Name> \
+  <platform> \
+  <layer> \
+  <category> \
+  [--profile=<profile>] \
+  [--control=value|boolean|text] \
+  [--capabilities=controlled,keyboard,...] \
+  [--parts=Root,Trigger,Content] \
+  [--icon=<IconName>:<semantic purpose>] \
+  [--token=<token.path>] \
+  [--component-tokens=standard|boolean-control|disclosure|none] \
+  [--force] \
+  [--dry-run] \
+  [--check]
+```
+
+The positional arguments answer basic repository questions:
+
+- **platform**: `web`, `native`, or `both`;
+- **layer**: `primitives`, `components`, or `patterns`;
+- **category**: action, form, navigation, overlay, feedback, data display, layout, or utility.
+
+Profiles add architectural intent. The current public generator supports:
+
+- `base`;
+- `form-control`;
+- `compound`;
+- `overlay`.
+
+Those profiles map to different families already visible in the public catalog.
+
+Button is a useful example of a base action primitive. Input is a form-control with controlled/uncontrolled and validation-related state. Tabs is a compound navigation component with controlled/uncontrolled state, keyboard behavior, focus management, and public parts. Modal represents the overlay family with focus management, keyboard behavior, compound API, and portal requirements.
+
+The point is not to hardcode those component names into the generator. The point is to model the reusable architecture they represent.
+
+## Profiles are better than component-name guessing
+
+A generator becomes fragile when it contains rules like:
+
+```text
+if componentName === "SomeInput" -> generate form state
+if componentName === "SomeTabs" -> generate compound parts
+if componentName === "SomeModal" -> add overlay behavior
+```
+
+That approach feels convenient for the first few components, but it does not scale. The generator starts memorizing product names instead of modeling reusable architecture.
+
+Vellira uses profiles and explicit flags instead.
+
+A `form-control` profile can establish common state and field-oriented structure without assuming that every form control behaves identically.
+
+A `compound` profile can support public parts without deciding what every compound component means.
+
+An `overlay` profile can establish overlay-oriented structure while still allowing Web and React Native to diverge in platform-specific behavior.
+
+And explicit capabilities let a component add facts that do not deserve an entirely new profile:
+
+```bash
+--capabilities=controlled,uncontrolled,keyboard,focus-management
+```
+
+Tabs is a good concrete example. Its public implementation has Root, List, Trigger, and Content parts, while its metadata declares controlled/uncontrolled state, keyboard interaction, focus management, and compound API.
+
+A corresponding generator intent can therefore be expressed structurally:
+
+```bash
+pnpm create:component Tabs both components navigation \
+  --profile=compound \
+  --capabilities=controlled,uncontrolled,keyboard,focus-management \
+  --parts=Root,List,Trigger,Content
+```
+
+The important part is not the command itself. It is that the command expresses reusable facts rather than relying on the word “Tabs” to unlock hidden behavior.
+
+This is a useful general rule for code generators:
+
+> Model reusable structure explicitly. Do not hide product decisions in name-based heuristics.
+
+## Plan Web and React Native together, generate them separately
+
+When the platform argument is `both`, Vellira resolves two generation targets before writing files:
+
+```text
+packages/react/...
+packages/react-native/...
+```
+
+The targets share component identity and high-level intent, but each has its own package path, barrel exports, public API contract, implementation templates, tests, and platform-specific files.
+
+That is deliberate.
+
+Cross-platform does not mean byte-for-byte symmetry.
+
+Button makes the basic version of this obvious. The product intent is an action with stable public meaning, including disabled and loading states, but browser and native runtimes do not need the same internal primitive or event implementation.
+
+Modal makes the harder version obvious. Browser focus, keyboard dismissal, portals, and DOM presentation have different mechanics from native modal presentation and accessibility behavior.
+
+A browser component may need:
+
+- DOM elements;
+- keyboard behavior;
+- focus handling;
+- semantic relationships;
+- CSS modules.
+
+A React Native component may instead need:
+
+- `Pressable`, `TextInput`, or other native primitives;
+- accessibility roles and states;
+- touch-first interaction;
+- native styles;
+- platform-appropriate presentation.
+
+The generator therefore tries to preserve **API intent**, not force identical runtime code.
+
+## Generate the surrounding product surface
+
+Once the plan is valid, the writer creates more than the runtime component.
+
+Depending on the profile and platform, the planned output can include:
+
+```text
+types.ts
+index.ts
+<Component>.tsx
+<Component>.stories.tsx
+<Component>.test.tsx
+<Component>.test-contract.json
+platform styles
+compound part directories
+component metadata
+docs contracts
+component token files
+shared form-control types
+```
+
+The generator also updates existing repository-owned surfaces such as:
+
+```text
+layer barrel exports
+package root exports
+public API contract tests
+metadata registry
+docs contract registry
+API documentation targets
+```
+
+And after the runtime generation completes, the top-level component generator invokes the public website component-page generator for the same component.
+
+That website pipeline can generate or update surfaces such as:
+
+- usage examples;
+- component examples;
+- accessibility content;
+- API data;
+- playground schema and playground UI;
+- React and React Native demos;
+- component catalog registration.
+
+This is the point where a component generator becomes a design-system generator.
+
+Instead of asking a maintainer to remember twelve unrelated follow-up steps, one canonical intent flows into the repeatable parts of the repository.
+
+## Public exports should be generated, not remembered
+
+Exports are easy to forget because they do not affect the local implementation while you are building it.
+
+A Button can compile perfectly inside its source directory and still be unusable if the package root never exposes it.
+
+Vellira's writer updates both the layer barrel and the package-root public surface. It also synchronizes the public API contract used by repository validation.
+
+Conceptually, generation moves through boundaries like this:
+
+```text
+component folder
+      ↓
+layer export
+      ↓
+package root export
+      ↓
+public API contract
+```
+
+That is stronger than relying on a checklist after implementation.
+
+It also makes regeneration safer because registration logic can detect existing statements and maintain canonical ordering rather than blindly appending duplicates.
+
+The same idea applies to component metadata and documentation registries: registration is part of generation, not a separate memory task.
+
+## Treat tests as generated requirements, not just generated files
+
+Generating an empty test file is not much better than generating no test at all.
+
+Vellira's generator derives a machine-readable baseline test contract from the same intent used for the component scaffold:
+
+```text
+profile
++ control kind
++ effective capabilities
++ target platform
+        ↓
+baseline test contract
+        ↓
+generated baseline tests
+```
+
+That relationship matters because test expectations stay connected to the public component intent.
+
+Tabs is a useful example because the public React package contains general tests plus dedicated keyboard and accessibility test surfaces. The component's metadata also explicitly declares keyboard and focus-management capabilities.
+
+That is the kind of relationship a generator should preserve: intent should influence not only what gets rendered, but what evidence is expected.
+
+Input requires a different baseline. Its public metadata emphasizes controlled/uncontrolled state together with disabled, required, and invalid form states. Those are different concerns from Tabs even though both are cross-platform components.
+
+The Web and React Native contracts can also differ when the platforms require different evidence.
+
+For example, a browser-specific keyboard requirement should not automatically become fake native keyboard work.
+
+This is a pattern worth copying even outside Vellira:
+
+> Generate test requirements from the same source that generates the implementation shape.
+
+Otherwise the generator and the test system eventually describe different components.
+
+## Preserve manual engineering during regeneration
+
+Safe regeneration is harder than first-time generation.
+
+Once a component has been edited by a human, `--force` cannot simply mean “delete everything and recreate it” unless every file is fully generator-owned.
+
+Vellira's public writer has an explicit ownership boundary for manual component tests. Before rebuilding a generated component directory, it preserves manually owned tests and restores them afterward.
+
+That separation gives the generator room to refresh deterministic scaffolding without pretending it owns component-specific behavioral engineering.
+
+The broader lesson is important:
+
+```text
+generated files       -> generator may replace
+manual extension seam -> generator must preserve
+```
+
+A production generator needs to know which side of that line each artifact belongs to.
+
+Without ownership rules, `--force` becomes too dangerous to use. And when developers stop trusting regeneration, generated code starts drifting permanently.
+
+## Overwrite protection should fail before writes begin
+
+The default Vellira behavior is conservative: existing component targets are rejected.
+
+To regenerate, the caller must explicitly pass:
+
+```bash
+--force
+```
+
+Before writing, preflight checks validate the generation plan.
+
+That includes conditions such as:
+
+- required package barrels exist;
+- metadata registry structure is valid;
+- docs registry structure is valid;
+- profile and parts combinations are valid;
+- `Root` is present when required by a compound profile;
+- requested icons exist in the canonical platform registries;
+- requested tokens exist in the canonical token registry;
+- conflicting existing targets are rejected unless overwrite was explicitly authorized.
+
+The resource checks are particularly useful.
+
+Input, for example, publicly declares a canonical Close icon requirement for its clear-input action. That is exactly the kind of resource dependency a generator should validate rather than guess.
+
+If a caller requests an icon or token explicitly, the generator should not invent a missing resource or silently substitute something “close enough.” Missing canonical resources block the plan before component files are written.
+
+This keeps generation deterministic and makes the failure actionable.
+
+## A dry run is part of the contract
+
+Vellira supports:
+
+```bash
+--dry-run
+```
+
+A dry run performs validation and reports the planned created and updated files without writing them.
+
+That sounds small, but it is one of the most useful features in a generator that touches many surfaces.
+
+It lets a maintainer answer:
+
+```text
+Which packages will change?
+How many files will be created?
+Which registries or exports will be updated?
+Does this intent resolve to the expected profile and platform targets?
+```
+
+before any mutation occurs.
+
+When a generator has broad repository reach, previewability is a safety feature.
+
+## Idempotency is not an implementation detail
+
+A deterministic generator should converge.
+
+If you run the same authorized generation twice against the same canonical inputs, the second result should not introduce unrelated drift, duplicate exports, reordered registries, or formatting churn.
+
+That requirement changes implementation choices.
+
+Registration helpers need canonical ordering.
+
+Generated files need canonical formatting.
+
+Existing exports need duplicate detection.
+
+Machine-readable contracts need stable serialization.
+
+Website registries need deterministic updates.
+
+The public Vellira pipeline also exposes check modes for generated surfaces so CI can detect stale output instead of silently accepting it.
+
+For example, the component-page generator supports:
+
+```bash
+pnpm create:component-page <ComponentName> --check
+```
+
+and the repository CI runs generated-page checks, documentation/API checks, public API checks, component completeness checks, and Blog checks alongside normal builds and tests.
+
+The point is not to regenerate everything in CI.
+
+The point is to prove that checked-in generated surfaces still match their canonical inputs.
+
+## The website generator should consume public component facts
+
+The public website component-page generator is a useful example of downstream generation.
+
+Select is a good stress test for this layer because its public contract spans form state, loading, keyboard and focus behavior, compound composition, and portal behavior.
+
+A useful component page for that kind of component needs more than a screenshot. The page model may have to drive:
+
+```text
+usage
+examples
+accessibility
+API sections
+playground
+platform demos
+catalog metadata
+```
+
+For cross-platform components it can separate React and React Native API information rather than pretending one runtime is the other.
+
+The top-level component generator calls this downstream generator with the component name, profile, and category, then snapshots the managed website artifacts before and after generation.
+
+If managed website artifacts disappear unexpectedly, generation fails instead of treating deletion as normal output.
+
+That is a good example of defensive orchestration between deterministic tools: one generator can call another, but it should still verify the mutation boundary.
+
+## What the generator should not decide
+
+The strongest limit in Vellira's generator is also the most important one: it does not try to finish component design automatically.
+
+A generated compound scaffold can provide Root/List/Trigger/Content structure for a Tabs-like component, but it should not invent the final interaction model of every future compound component.
+
+An overlay scaffold can establish a Modal-like structural starting point, but component-specific focus, dismissal, presentation, and edge cases still require engineering judgment.
+
+A form-control scaffold can establish state ownership patterns, but Input-specific behavior still belongs to component engineering.
+
+The public generator documentation describes this principle explicitly: templates remove repeated repository plumbing, not design or API review.
+
+That boundary prevents the generator from turning into a pile of hidden assumptions.
+
+A useful ownership split looks like this:
+
+```text
+deterministic generator owns
+- repository placement
+- repeatable file structure
+- registrations and exports
+- baseline tests/contracts
+- starter stories
+- metadata scaffolding
+- generated docs/page plumbing
+- overwrite and freshness rules
+
+component engineering owns
+- final product semantics
+- nuanced API decisions
+- component-specific accessibility details
+- complex interaction behavior
+- visual refinement
+- meaningful edge-case tests
+```
+
+The generator should make the second category easier to focus on, not pretend it does not exist.
+
+## Fix systemic gaps once
+
+One benefit of a serious generator is that recurring failures become tooling problems instead of per-component chores.
+
+Suppose Button, Input, Tabs, and Modal all reveal the same missing package-root type export during production work.
+
+You can fix four components manually.
+
+Or you can fix the generator's public export registration and make the correction part of every future component.
+
+The same logic applies to:
+
+- baseline test contracts;
+- Storybook starter states;
+- metadata registration;
+- website page freshness;
+- API docs;
+- token wiring;
+- platform-specific templates.
+
+This changes how a design system scales.
+
+Instead of accumulating repeated cleanup, each reusable failure can improve the deterministic production path.
+
+That is why generator quality matters more as the catalog grows.
+
+## Practical lessons for building a component generator
+
+The implementation details will differ between repositories, but the principles transfer well.
+
+### 1. Generate a plan before files
+
+Resolve platform, profile, parts, capabilities, resources, paths, and registrations first.
+
+A validated plan gives you one place to reason about what the generator is allowed to change.
+
+### 2. Make intent explicit
+
+Prefer:
+
+```text
+profile=compound
+parts=Root,List,Trigger,Content
+capabilities=keyboard,focus-management
+```
+
+over component-name heuristics.
+
+Explicit intent is easier to validate, test, evolve, and document.
+
+### 3. Treat Web and native as separate targets
+
+Share product intent where useful, but generate platform-appropriate implementation, accessibility, interaction, and styles.
+
+### 4. Generate the public boundary
+
+Do not stop at source files. Include exports, public types, registries, and validation contracts.
+
+### 5. Generate evidence
+
+Starter tests, machine-readable coverage requirements, and Storybook states make the scaffold reviewable instead of merely compilable.
+
+### 6. Define ownership before supporting `--force`
+
+Know which artifacts may be replaced and which manual work must survive regeneration.
+
+### 7. Fail before partial writes
+
+Validate paths, canonical resources, profile constraints, and conflicts before mutating the repository.
+
+### 8. Support dry runs and check modes
+
+Developers should be able to inspect planned changes and CI should be able to detect stale generated output without rewriting files.
+
+### 9. Require deterministic output
+
+Canonical ordering, formatting, serialization, and duplicate prevention are part of the generator contract.
+
+### 10. Keep semantic design outside generic templates
+
+A generator should remove repeated infrastructure work. It should not encode every future component's product decisions in advance.
+
+## From scaffold to production
+
+The biggest change in how I think about code generation is this:
+
+A component generator is not primarily a typing shortcut.
+
+It is a way to encode the repeatable production contract of a component library.
+
+For Vellira, that contract now spans React and React Native targets, public types, exports, test requirements, stories, metadata, docs, tokens, website pages, and deterministic validation.
+
+The component implementation still matters. But it no longer has to carry the entire burden of “done.”
+
+That is the real value of the generator: it moves predictable repository work from memory into a system that can be validated, repeated, and improved once for every component that comes after it.
