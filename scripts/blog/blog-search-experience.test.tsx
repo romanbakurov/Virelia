@@ -112,9 +112,23 @@ describe('blog search experience', () => {
       'react'
     );
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    expect(fetchMock.mock.calls[0]?.[0].toString()).toContain(
-      '/v1/blog/metrics?'
+    const getBatchMetricsRequests = () =>
+      fetchMock.mock.calls
+        .map(([input]) => input.toString())
+        .filter((url) => url.includes('/v1/blog/metrics?'));
+
+    await waitFor(() => expect(getBatchMetricsRequests()).toHaveLength(1));
+
+    const [batchMetricsRequest] = getBatchMetricsRequests();
+    expect(batchMetricsRequest).toBeDefined();
+
+    if (!batchMetricsRequest) {
+      throw new Error('Expected one blog metrics batch request');
+    }
+
+    const batchMetricsUrl = new URL(batchMetricsRequest);
+    expect(batchMetricsUrl.searchParams.getAll('slug')).toEqual(
+      articles.map((article) => article.slug)
     );
   });
 
