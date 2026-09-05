@@ -35,7 +35,18 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Quality checks
-        run: pnpm ci:quality
+        shell: bash
+        run: |
+          pnpm exec prettier \
+            apps/website/src/blog/ui/BlogIndex.tsx \
+            scripts/blog/blog-topic-filter-experience.test.tsx \
+            scripts/blog/blog-topic-filters.test.ts \
+            --write
+          git diff -- \
+            apps/website/src/blog/ui/BlogIndex.tsx \
+            scripts/blog/blog-topic-filter-experience.test.tsx \
+            scripts/blog/blog-topic-filters.test.ts
+          exit 1
 
       - name: Component Quality Checker
         id: component-quality
