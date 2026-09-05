@@ -48,7 +48,6 @@
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki),
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki span) {
   color: var(--shiki-dark) !important;
-  background-color: transparent !important;
 }
 
 :global([data-vellira-theme='high-contrast']) .codeBlock :global(.shiki),
