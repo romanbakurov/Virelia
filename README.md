@@ -156,7 +156,22 @@ pnpm add @vellira-ui/tokens
 
 ## Quick Example
 
-A complete example using the React Select component:
+Import the React styles and render your first Vellira component:
+
+```tsx
+import '@vellira-ui/react/styles';
+import { Button } from '@vellira-ui/react';
+
+export function App() {
+  return <Button color='primary'>Continue</Button>;
+}
+```
+
+Explore the [Documentation](https://docs.vellira.dev) for complete guides and the [Storybook](https://storybook.vellira.dev) for interactive component examples.
+
+### More complete example
+
+The compound Select API shows a richer component with labels, descriptions, groups, badges, and clearable state:
 
 ```tsx
 import '@vellira-ui/react/styles';
