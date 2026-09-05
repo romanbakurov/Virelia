@@ -4,10 +4,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Search } from '@vellira-ui/icons';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
-import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
-
 import { Tooltip } from './Tooltip';
+
+import { Button } from '#primitives/Button';
+import { Portal } from '#primitives/Portal';
 
 const noop = () => undefined;
 
@@ -72,6 +72,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Tooltip Component
 

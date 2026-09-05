@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { resolveSelectGroupSelection } from '@vellira-ui/core';
 import type { MutableRefObject } from 'react';
 
 import type { SelectOption } from '../types';
@@ -66,54 +67,25 @@ export function useSelectRootActions({
     (values: string[]) => {
       if (!multiple || values.length === 0) return;
 
-      const enabledValues = values.filter((value) => optionsByValue.has(value));
-      const selectedGroupValues = enabledValues.filter((value) =>
-        selectedValues.includes(value)
-      );
-      const outsideSelectedCount = selectedValues.filter(
-        (value) => !enabledValues.includes(value)
-      ).length;
-      const maxSelectableGroupCount =
-        typeof maxSelected === 'number'
-          ? Math.max(
-              0,
-              Math.min(enabledValues.length, maxSelected - outsideSelectedCount)
-            )
-          : enabledValues.length;
+      const nextSelection = resolveSelectGroupSelection({
+        selectedValues,
+        groupValues: values,
+        enabledValues: new Set(optionsByValue.keys()),
+        maxSelected,
+      });
 
-      const shouldClearGroup =
-        selectedGroupValues.length > 0 &&
-        selectedGroupValues.length >= maxSelectableGroupCount;
-
-      if (shouldClearGroup) {
+      if (nextSelection.clearedGroup) {
         selectedFocusValueRef.current = undefined;
 
-        setSelectedValue(
-          selectedValues.filter((value) => !enabledValues.includes(value))
-        );
+        setSelectedValue(nextSelection.selectedValues);
 
         announce('Group selection cleared');
 
         return;
       }
 
-      const nextValues = [...selectedValues];
-
-      for (const value of enabledValues) {
-        if (nextValues.includes(value)) continue;
-
-        if (
-          typeof maxSelected === 'number' &&
-          nextValues.length >= maxSelected
-        ) {
-          break;
-        }
-
-        nextValues.push(value);
-      }
-
-      setSelectedValue(nextValues);
-      selectedFocusValueRef.current = nextValues.at(-1);
+      setSelectedValue(nextSelection.selectedValues);
+      selectedFocusValueRef.current = nextSelection.selectedValues.at(-1);
       announce('Group selected');
 
       if (closeOnSelect) {

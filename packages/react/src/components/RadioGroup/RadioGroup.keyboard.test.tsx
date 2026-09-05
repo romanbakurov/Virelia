@@ -2,10 +2,11 @@ import { act } from 'react';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { Radio } from '../../primitives/Radio';
 import { render } from '../../test-utils/render';
 
 import { RadioGroup } from './RadioGroup';
+
+import { Radio } from '#primitives/Radio';
 
 describe('RadioGroup keyboard navigation', () => {
   it('moves through enabled radios with arrow keys', () => {

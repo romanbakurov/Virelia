@@ -99,7 +99,71 @@ export type ${componentName}TokensConfig = {
   focusRing: string;
 };
 
+export type ${componentName}ThemeSemantics = {
+  border: {
+    muted: string;
+  };
+  focus: {
+    ring: {
+      color: string;
+    };
+  };
+  surface: {
+    default: string;
+    subtle: string;
+    hover: string;
+    pressed: string;
+    disabled: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    disabled: string;
+  };
+};
+
 export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
+
+export const create${componentName}TokensFromSemantics = ({
+  border,
+  focus,
+  surface,
+  text,
+}: ${componentName}ThemeSemantics) =>
+  create${componentName}Tokens({
+    root: {
+      bg: surface.default,
+      border: border.muted,
+    },
+    divider: border.muted,
+    trigger: {
+      default: {
+        bg: surface.default,
+        fg: text.primary,
+      },
+      expanded: {
+        bg: surface.subtle,
+      },
+      hover: {
+        bg: surface.hover,
+        fg: text.primary,
+      },
+      pressed: {
+        bg: surface.pressed,
+        fg: text.primary,
+      },
+      disabled: {
+        bg: surface.disabled,
+        fg: text.disabled,
+      },
+    },
+    indicator: text.secondary,
+    content: {
+      bg: surface.subtle,
+      fg: text.secondary,
+    },
+    focusRing: focus.ring.color,
+  });
 `;
   }
 
@@ -186,45 +250,17 @@ export const ${tokenName} = create${componentName}Tokens({
   }
 
   if (contract === 'disclosure') {
-    return `import { create${componentName}Tokens } from '../../factories/create${componentName}Tokens.js';
+    return `import { create${componentName}TokensFromSemantics } from '../../factories/create${componentName}Tokens.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
-export const ${tokenName} = create${componentName}Tokens({
-  root: {
-    bg: surface.default,
-    border: border.muted,
-  },
-  divider: border.muted,
-  trigger: {
-    default: {
-      bg: surface.default,
-      fg: text.primary,
-    },
-    expanded: {
-      bg: surface.subtle,
-    },
-    hover: {
-      bg: surface.hover,
-      fg: text.primary,
-    },
-    pressed: {
-      bg: surface.pressed,
-      fg: text.primary,
-    },
-    disabled: {
-      bg: surface.disabled,
-      fg: text.disabled,
-    },
-  },
-  indicator: text.secondary,
-  content: {
-    bg: surface.subtle,
-    fg: text.secondary,
-  },
-  focusRing: focus.ring.color,
+export const ${tokenName} = create${componentName}TokensFromSemantics({
+  border,
+  focus,
+  surface,
+  text,
 });
 `;
   }

@@ -1,12 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type {
-  ComponentMetadata,
-  ComponentPlatform,
-  ComponentQualityFinding,
-} from '@vellira-ui/metadata';
-
 import { qualityRoot } from '../root';
 
 import type {
@@ -14,24 +8,8 @@ import type {
   ComponentQualityRuleContext,
 } from '../types';
 
-function platformPackage(platform: ComponentPlatform) {
-  return platform === 'react' ? 'react' : 'react-native';
-}
-
-function componentDirectory(
-  root: string,
-  metadata: ComponentMetadata,
-  platform: ComponentPlatform
-) {
-  return path.join(
-    root,
-    'packages',
-    platformPackage(platform),
-    'src',
-    metadata.layer,
-    metadata.name
-  );
-}
+import { createRuleFinding as finding } from './finding';
+import { collectFiles, componentDirectory } from './source-files';
 
 function shouldIncludeSourceFile(fileName: string) {
   return (
@@ -42,26 +20,6 @@ function shouldIncludeSourceFile(fileName: string) {
 
 function shouldIncludeManualTestFile(fileName: string) {
   return /\.manual\.test\.tsx$/.test(fileName);
-}
-
-function collectFiles(
-  directory: string,
-  predicate: (fileName: string) => boolean
-): string[] {
-  if (!fs.existsSync(directory)) return [];
-
-  return fs
-    .readdirSync(directory, { withFileTypes: true })
-    .flatMap((entry) => {
-      const fullPath = path.join(directory, entry.name);
-
-      if (entry.isDirectory()) {
-        return collectFiles(fullPath, predicate);
-      }
-
-      return predicate(entry.name) ? [fullPath] : [];
-    })
-    .sort((left, right) => left.localeCompare(right));
 }
 
 function collectSourceFiles(directory: string): string[] {
@@ -90,25 +48,6 @@ function readComponentSource(
     componentDir,
     files,
     source: files.map((file) => fs.readFileSync(file, 'utf8')).join('\n'),
-  };
-}
-
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
   };
 }
 

@@ -3,9 +3,9 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps, CSSProperties, ReactNode } from 'react';
 
-import { Radio } from '../../primitives/Radio';
-
 import { RadioGroup } from './index';
+
+import { Radio } from '#primitives/Radio';
 
 const noop = () => undefined;
 
@@ -16,6 +16,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### RadioGroup Component
 

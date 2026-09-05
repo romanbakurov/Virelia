@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import type { ComponentProps, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { useTheme } from '../../theme/useTheme';
+import { useTheme } from '../../theme';
 
 import { Tooltip } from './Tooltip';
 
@@ -126,6 +126,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Tooltip Component
 

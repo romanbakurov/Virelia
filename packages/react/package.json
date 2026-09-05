@@ -44,7 +44,9 @@
     "#hooks/*": "./src/hooks/*.ts",
     "#managers": "./src/managers/index.ts",
     "#managers/*": "./src/managers/*/index.ts",
+    "#patterns": "./src/patterns/index.ts",
     "#patterns/*": "./src/patterns/*/index.ts",
+    "#primitives": "./src/primitives/index.ts",
     "#primitives/*": "./src/primitives/*/index.ts",
     "#utils/*": "./src/utils/*.ts"
   },

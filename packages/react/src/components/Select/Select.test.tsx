@@ -1,18 +1,18 @@
 import { act, memo } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { expectNoA11yViolations } from '@test-utils/a11y';
 import { copyCompoundSlotMetadata } from '@vellira-ui/core';
 import type { ComponentProps, ReactNode } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-
-import { FormField } from '../../patterns/FormField';
-import { expectNoA11yViolations } from '../../test-utils/a11y';
 
 import { Select } from './Select';
 import type {
   SelectRenderOptionContext,
   SelectRenderValueContext,
 } from './types';
+
+import { FormField } from '#patterns/FormField';
 
 const options = [
   { label: 'France', value: 'fr', disabled: true },

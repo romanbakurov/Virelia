@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import { RadioGroup } from './components/RadioGroup';
 import { Select } from './components/Select';
-import { FormField } from './patterns/FormField';
-import { Checkbox } from './primitives/Checkbox';
-import { Input } from './primitives/Input';
-import { Radio } from './primitives/Radio';
+
+import { FormField } from '#patterns/FormField';
+import { Checkbox } from '#primitives/Checkbox';
+import { Input } from '#primitives/Input';
+import { Radio } from '#primitives/Radio';
 
 export function WebInputValueChangeExample() {
   const [email, setEmail] = useState('');

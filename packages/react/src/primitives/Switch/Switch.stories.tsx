@@ -9,6 +9,7 @@ const meta: Meta<typeof Switch> = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Switch Component
 

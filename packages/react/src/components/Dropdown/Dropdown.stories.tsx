@@ -27,10 +27,10 @@ import type {
   ReactNode,
 } from 'react';
 
-import { Button } from '../../primitives/Button';
-import { Portal } from '../../primitives/Portal';
-
 import { Dropdown } from './Dropdown';
+
+import { Button } from '#primitives/Button';
+import { Portal } from '#primitives/Portal';
 
 const noop = () => undefined;
 
@@ -204,6 +204,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Dropdown Component
 

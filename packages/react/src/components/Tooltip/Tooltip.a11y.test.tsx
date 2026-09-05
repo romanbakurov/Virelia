@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { Portal } from '../../primitives/Portal';
 import { expectNoA11yViolations } from '../../test-utils/a11y';
 import { render } from '../../test-utils/render';
 
 import { Tooltip } from './Tooltip';
+
+import { Portal } from '#primitives/Portal';
 
 describe('Tooltip accessibility', () => {
   it('has no accessibility violations when open', async () => {

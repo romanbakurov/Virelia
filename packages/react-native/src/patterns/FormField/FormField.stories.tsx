@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Input } from '../../primitives/Input';
+import { Input } from '../../primitives';
 import { useTheme } from '../../theme';
 
 import { FormField } from './FormField';
@@ -62,6 +62,7 @@ const meta: Meta<typeof FormField> = {
     layout: 'centered',
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### FormField Pattern
 

@@ -15,6 +15,31 @@ type PopoverTokensConfig = {
   spacing4: number;
 };
 
+export type PopoverThemeSources = {
+  overlay: {
+    popover: {
+      bg: string;
+      border: string;
+    };
+  };
+  shadow: {
+    lg: string;
+  };
+  shadows: {
+    lg: NativeShadowToken;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+  };
+  radius: {
+    lg: number;
+  };
+  spacing: {
+    readonly [key: number]: number;
+  };
+};
+
 export const createPopoverTokens = (config: PopoverTokensConfig) =>
   ({
     content: {
@@ -49,3 +74,24 @@ export const createPopoverTokens = (config: PopoverTokensConfig) =>
       border: config.contentBorder,
     },
   }) as const;
+
+export const createPopoverTokensFromTheme = ({
+  overlay,
+  shadow,
+  shadows,
+  text,
+  radius,
+  spacing,
+}: PopoverThemeSources) =>
+  createPopoverTokens({
+    contentBg: overlay.popover.bg,
+    contentFg: text.primary,
+    contentBorder: overlay.popover.border,
+    contentWebShadow: shadow.lg,
+    contentNativeShadow: shadows.lg,
+    titleFg: text.primary,
+    descriptionFg: text.secondary,
+    radiusLg: radius.lg,
+    spacing3: spacing[3],
+    spacing4: spacing[4],
+  });

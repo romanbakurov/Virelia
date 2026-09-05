@@ -1,7 +1,6 @@
 import { createRef } from 'react';
 
-import type { View } from 'react-native';
-import { Platform } from 'react-native';
+import { Platform, type View } from 'react-native';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { render } from '../../../test-utils/render';
@@ -47,7 +46,9 @@ const nativeMocks = vi.hoisted(() => ({
 }));
 
 vi.mock('react-native', async () => {
-  const actual = await vi.importActual('react-native');
+  const actual = await vi.importActual<
+    { AccessibilityInfo: Record<string, unknown> } & Record<string, unknown>
+  >('react-native');
 
   return {
     ...actual,

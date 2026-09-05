@@ -19,6 +19,7 @@ const meta = {
     },
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Button Component
 

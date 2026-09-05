@@ -4,8 +4,6 @@ import path from 'node:path';
 import type {
   ComponentCapability,
   ComponentMetadata,
-  ComponentPlatform,
-  ComponentQualityFinding,
 } from '@vellira-ui/metadata';
 
 import { qualityRoot } from '../root';
@@ -15,49 +13,13 @@ import type {
   ComponentQualityRuleContext,
 } from '../types';
 
+import { createRuleFinding as finding } from './finding';
+import { collectFiles, componentDirectory } from './source-files';
+
 type SourceCorpus = {
   files: readonly string[];
   source: string;
 };
-
-function platformPackage(platform: ComponentPlatform) {
-  return platform === 'react' ? 'react' : 'react-native';
-}
-
-function componentDirectory(
-  root: string,
-  metadata: ComponentMetadata,
-  platform: ComponentPlatform
-) {
-  return path.join(
-    root,
-    'packages',
-    platformPackage(platform),
-    'src',
-    metadata.layer,
-    metadata.name
-  );
-}
-
-function collectFiles(
-  directory: string,
-  predicate: (fileName: string) => boolean
-): string[] {
-  if (!fs.existsSync(directory)) return [];
-
-  return fs
-    .readdirSync(directory, { withFileTypes: true })
-    .flatMap((entry) => {
-      const fullPath = path.join(directory, entry.name);
-
-      if (entry.isDirectory()) {
-        return collectFiles(fullPath, predicate);
-      }
-
-      return predicate(entry.name) ? [fullPath] : [];
-    })
-    .sort((left, right) => left.localeCompare(right));
-}
 
 function readCorpus(files: readonly string[]): SourceCorpus {
   return {
@@ -80,25 +42,6 @@ function relativeEvidence(
   return files
     .slice(0, 6)
     .map((file) => path.relative(qualityRoot(context), file));
-}
-
-function finding(
-  rule: ComponentQualityRule,
-  context: ComponentQualityRuleContext,
-  status: ComponentQualityFinding['status'],
-  message?: string,
-  evidence?: readonly string[]
-): ComponentQualityFinding {
-  return {
-    ruleId: rule.definition.id,
-    dimension: rule.definition.dimension,
-    severity: rule.definition.severity,
-    evaluation: rule.definition.evaluation,
-    status,
-    platform: context.platform,
-    message,
-    evidence,
-  };
 }
 
 function hasAny(source: string, patterns: readonly RegExp[]) {

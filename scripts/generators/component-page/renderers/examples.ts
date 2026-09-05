@@ -2,6 +2,11 @@ import { toLabel, toTemplateLiteral, toTsString } from '../helpers/format';
 import type { ComponentPageMetadata } from '../metadata/metadata';
 import type { ExtractedProp, GeneratedExample, Platform } from '../model/types';
 import type { ComponentProfile } from '../profiles/profiles';
+import {
+  indentBlock,
+  normalizePropFragments,
+  normalizeSetupStatements,
+} from './renderer-format';
 
 export function buildExamples(params: {
   componentName: string;
@@ -122,26 +127,6 @@ export function buildExamples(params: {
 
 function uniqueImports(imports: readonly string[]) {
   return Array.from(new Set(imports));
-}
-
-function normalizePropFragments(props: readonly string[]) {
-  return props.flatMap((prop) =>
-    prop
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-  );
-}
-
-function normalizeSetupStatements(statements: readonly string[]) {
-  return statements.map((statement) => statement.trim()).filter(Boolean);
-}
-
-function indentBlock(source: string, indentation: string) {
-  return source
-    .split('\n')
-    .map((line) => `${indentation}${line}`)
-    .join('\n');
 }
 
 function hasPropBinding(source: string, propName: string) {

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import type { ComponentProps, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useTheme } from '../../theme';
+import { toNativeFontWeight, useTheme } from '../../theme';
 
 import { Accordion } from './Accordion';
 
@@ -30,7 +30,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
       margin: 0,
       color: theme.semantic.text.secondary,
       fontSize: theme.tokens.typography.size.sm,
-      fontWeight: theme.tokens.typography.weight.semibold,
+      fontWeight: toNativeFontWeight(theme.tokens.typography.weight.semibold),
     },
   });
 
@@ -153,6 +153,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
+        // language=Markdown
         component: `
 ### Accordion Component
 
@@ -240,11 +241,34 @@ be rendered with React Native Text.
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+type SingleAccordionStoryProps = Extract<
+  ComponentProps<typeof Accordion>,
+  { type?: 'single' }
+>;
+
+function SingleAccountAccordion(args: ComponentProps<typeof Accordion>) {
+  const { defaultValue, onValueChange, type: _type, value, ...rest } = args;
+  const singleValue = typeof value === 'string' ? value : undefined;
+  const singleDefaultValue =
+    typeof defaultValue === 'string' ? defaultValue : 'profile';
+
+  return (
+    <AccountAccordion
+      {...(rest as SingleAccordionStoryProps)}
+      type='single'
+      value={singleValue}
+      defaultValue={singleDefaultValue}
+      onValueChange={
+        onValueChange as SingleAccordionStoryProps['onValueChange']
+      }
+    />
+  );
+}
 
 export const Default: Story = {
   render: (args) => (
     <Section title='Default'>
-      <AccountAccordion {...args} defaultValue='profile' />
+      <SingleAccountAccordion {...args} />
     </Section>
   ),
 };
@@ -252,7 +276,7 @@ export const Default: Story = {
 export const Basic: Story = {
   render: (args) => (
     <Section title='Basic'>
-      <AccountAccordion {...args} defaultValue='profile' />
+      <SingleAccountAccordion {...args} />
     </Section>
   ),
 };

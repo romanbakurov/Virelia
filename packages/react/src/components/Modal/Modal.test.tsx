@@ -1,12 +1,12 @@
 import { act } from 'react';
 
+import { expectNoA11yViolations } from '@test-utils/a11y';
+import { render } from '@test-utils/render';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Button, Portal } from '@/primitives';
-import { expectNoA11yViolations } from '@/test-utils/a11y';
-import { render } from '@/test-utils/render';
-
 import { Modal } from './Modal';
+
+import { Button, Portal } from '#primitives';
 
 function pressDocumentKey(key: string) {
   act(() => {

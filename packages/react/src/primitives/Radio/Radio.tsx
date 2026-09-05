@@ -3,13 +3,13 @@ import { forwardRef, useId } from 'react';
 import type { ChangeEvent } from 'react';
 
 import { useRadioGroupContext } from '../../components/RadioGroup/internal/RadioGroupContext';
-import { cn } from '../../utils/cn';
 
 import type { RadioProps } from './types';
 
 import styles from './Radio.module.scss';
 
 import { useControllableState } from '#hooks';
+import { cn } from '#utils/cn';
 
 const colorClassNameByColor = {
   primary: styles.colorPrimary,

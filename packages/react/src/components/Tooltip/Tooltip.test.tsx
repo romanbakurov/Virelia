@@ -1,11 +1,11 @@
 import { act } from 'react';
 
+import { render } from '@test-utils/render';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Portal } from '@/primitives/Portal';
-import { render } from '@/test-utils/render';
-
 import { Tooltip } from './Tooltip';
+
+import { Portal } from '#primitives/Portal';
 
 afterEach(() => {
   document.body.innerHTML = '';
