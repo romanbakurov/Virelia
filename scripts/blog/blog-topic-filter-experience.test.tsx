@@ -138,7 +138,7 @@ describe('blog topic filter experience', () => {
     );
   });
 
-  it('keeps less-common topics reachable, dismisses outside, and surfaces hidden active filters', async () => {
+  it('dismisses filters outside and keeps hidden topics usable', async () => {
     installBlogFetch();
     render(<BlogIndex articles={articles} />);
 
