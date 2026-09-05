@@ -62,9 +62,7 @@ describe('blog continue reading experience', () => {
 
     render(<BlogContinueReading articles={articles} />);
 
-    expect(screen.getAllByRole('link', { name: /^Read Article / })).toHaveLength(
-      3
-    );
+    expect(screen.getAllByRole('link', { name: /^Read Article / })).toHaveLength(3);
     expect(
       screen.queryByRole('link', { name: 'Read Article four' })
     ).not.toBeInTheDocument();
