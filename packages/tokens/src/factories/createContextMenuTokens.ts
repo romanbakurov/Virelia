@@ -37,6 +37,33 @@ type ContextMenuTokensConfig = {
   groupLabelFg: string;
 };
 
+export type ContextMenuThemeSemantics = {
+  focus: {
+    ring: ContextMenuFocusRing;
+  };
+  menu: {
+    background: string;
+    border: string;
+    item: {
+      default: ContextMenuState;
+      hover: ContextMenuState;
+      active: ContextMenuState;
+      pressed: ContextMenuState;
+      disabled: ContextMenuState;
+      danger: ContextMenuDangerStates;
+    };
+  };
+  shadow: {
+    lg: string;
+  };
+  text: {
+    interactive: string;
+    interactiveHover: string;
+    disabled: string;
+    secondary: string;
+  };
+};
+
 export const createContextMenuTokens = (config: ContextMenuTokensConfig) =>
   ({
     content: {
@@ -89,3 +116,29 @@ export const createContextMenuTokens = (config: ContextMenuTokensConfig) =>
       fg: config.groupLabelFg,
     },
   }) as const;
+
+export const createContextMenuTokensFromSemantics = ({
+  focus,
+  menu,
+  shadow,
+  text,
+}: ContextMenuThemeSemantics) =>
+  createContextMenuTokens({
+    contentBg: menu.background,
+    contentBorder: menu.border,
+    contentShadow: shadow.lg,
+    itemDefault: menu.item.default,
+    itemHover: menu.item.hover,
+    itemActive: menu.item.active,
+    itemPressed: menu.item.pressed,
+    itemFocusRing: focus.ring,
+    itemDisabled: menu.item.disabled,
+    itemDanger: menu.item.danger,
+    triggerDefaultFg: text.interactive,
+    triggerHoverBg: menu.item.hover.bg,
+    triggerHoverFg: text.interactiveHover,
+    triggerFocusFg: text.interactive,
+    triggerFocusRing: focus.ring,
+    triggerDisabledFg: text.disabled,
+    groupLabelFg: text.secondary,
+  });

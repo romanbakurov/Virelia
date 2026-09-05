@@ -66,7 +66,87 @@ export type ${componentName}TokensConfig = {
   disabled: ${componentName}VisualState;
 };
 
+type ${componentName}SemanticState = {
+  bg: string;
+  border: string;
+  fg: string;
+};
+
+export type ${componentName}ThemeSemantics = {
+  control: {
+    default: ${componentName}SemanticState;
+    selected: {
+      default: ${componentName}SemanticState;
+      hover: ${componentName}SemanticState;
+      active: ${componentName}SemanticState;
+    };
+    disabled: ${componentName}SemanticState;
+  };
+  focus: {
+    ring: {
+      color: string;
+    };
+  };
+  status: {
+    error: {
+      border: string;
+      ring: string;
+    };
+  };
+};
+
+const ${lowerCamel(componentName)}Geometry: ${componentName}Geometry = {
+  trackWidth: 44,
+  trackHeight: 24,
+  borderWidth: 2,
+  padding: 1,
+  thumbSize: 18,
+  thumbTravel: 20,
+  focusRingWidth: 2,
+  focusRingOffset: 2,
+  pressScale: 0.98,
+};
+
 export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
+
+export const create${componentName}TokensFromSemantics = ({
+  control,
+  focus,
+  status,
+}: ${componentName}ThemeSemantics) =>
+  create${componentName}Tokens({
+    geometry: ${lowerCamel(componentName)}Geometry,
+    off: {
+      trackBg: control.default.bg,
+      trackBorder: control.default.border,
+      thumbBg: control.default.fg,
+    },
+    on: {
+      default: {
+        trackBg: control.selected.default.bg,
+        trackBorder: control.selected.default.border,
+        thumbBg: control.selected.default.fg,
+      },
+      hover: {
+        trackBg: control.selected.hover.bg,
+        trackBorder: control.selected.hover.border,
+        thumbBg: control.selected.hover.fg,
+      },
+      pressed: {
+        trackBg: control.selected.active.bg,
+        trackBorder: control.selected.active.border,
+        thumbBg: control.selected.active.fg,
+      },
+    },
+    focusRing: focus.ring.color,
+    errorBorder: status.error.border,
+    errorRing: status.error.ring,
+    disabled: {
+      trackBg: control.disabled.bg,
+      trackBorder: control.disabled.border,
+      thumbBg: control.disabled.fg,
+    },
+  });
 `;
   }
 
@@ -198,53 +278,15 @@ export function renderThemeComponentTokensTemplate(
   const contract = resolveTemplateContract(params);
 
   if (contract === 'boolean-control') {
-    return `import { create${componentName}Tokens } from '../../factories/create${componentName}Tokens.js';
+    return `import { create${componentName}TokensFromSemantics } from '../../factories/create${componentName}Tokens.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { status } from '../semantic/status.js';
 
-export const ${tokenName} = create${componentName}Tokens({
-  geometry: {
-    trackWidth: 44,
-    trackHeight: 24,
-    borderWidth: 2,
-    padding: 1,
-    thumbSize: 18,
-    thumbTravel: 20,
-    focusRingWidth: 2,
-    focusRingOffset: 2,
-    pressScale: 0.98,
-  },
-  off: {
-    trackBg: control.default.bg,
-    trackBorder: control.default.border,
-    thumbBg: control.default.fg,
-  },
-  on: {
-    default: {
-      trackBg: control.selected.default.bg,
-      trackBorder: control.selected.default.border,
-      thumbBg: control.selected.default.fg,
-    },
-    hover: {
-      trackBg: control.selected.hover.bg,
-      trackBorder: control.selected.hover.border,
-      thumbBg: control.selected.hover.fg,
-    },
-    pressed: {
-      trackBg: control.selected.active.bg,
-      trackBorder: control.selected.active.border,
-      thumbBg: control.selected.active.fg,
-    },
-  },
-  focusRing: focus.ring.color,
-  errorBorder: status.error.border,
-  errorRing: status.error.ring,
-  disabled: {
-    trackBg: control.disabled.bg,
-    trackBorder: control.disabled.border,
-    thumbBg: control.disabled.fg,
-  },
+export const ${tokenName} = create${componentName}TokensFromSemantics({
+  control,
+  focus,
+  status,
 });
 `;
   }

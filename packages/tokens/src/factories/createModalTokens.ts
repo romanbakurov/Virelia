@@ -29,6 +29,44 @@ type ModalTokensConfig = {
   spacing10: number;
 };
 
+export type ModalThemeSemantics = {
+  closeButtonHoverBg?: string;
+  closeButtonPressedBg?: string;
+  focus: {
+    ring: ModalFocusRing;
+  };
+  overlay: {
+    backdrop: string;
+    modal: {
+      bg: string;
+      border: string;
+    };
+  };
+  radius: {
+    lg: number;
+    full: number;
+  };
+  shadow: {
+    xl: string;
+  };
+  spacing: {
+    1: number;
+    3: number;
+    4: number;
+    8: number;
+    10: number;
+  };
+  surface: {
+    hover: string;
+    pressed: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    disabled: string;
+  };
+};
+
 const modalLayout = {
   maxHeight: '90vh',
   nativeMaxHeight: '90%',
@@ -133,3 +171,38 @@ export const createModalTokens = (config: ModalTokensConfig) =>
 
     motion: modalMotion,
   }) as const;
+
+export const createModalTokensFromSemantics = ({
+  closeButtonHoverBg,
+  closeButtonPressedBg,
+  focus,
+  overlay,
+  radius,
+  shadow,
+  spacing,
+  surface,
+  text,
+}: ModalThemeSemantics) =>
+  createModalTokens({
+    overlayBg: overlay.backdrop,
+    contentBg: overlay.modal.bg,
+    contentFg: text.primary,
+    contentBorder: overlay.modal.border,
+    contentShadow: shadow.xl,
+    titleFg: text.primary,
+    descriptionFg: text.secondary,
+    closeButtonDefaultFg: text.secondary,
+    closeButtonHoverBg: closeButtonHoverBg ?? surface.hover,
+    closeButtonHoverFg: text.primary,
+    closeButtonPressedBg: closeButtonPressedBg ?? surface.pressed,
+    closeButtonPressedFg: text.primary,
+    closeButtonDisabledFg: text.disabled,
+    closeButtonFocusRing: focus.ring,
+    radiusLg: radius.lg,
+    radiusFull: radius.full,
+    spacing1: spacing[1],
+    spacing3: spacing[3],
+    spacing4: spacing[4],
+    spacing8: spacing[8],
+    spacing10: spacing[10],
+  });
