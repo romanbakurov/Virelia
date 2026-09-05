@@ -1,0 +1,811 @@
+A component library can look healthy while quietly accumulating consistency debt.
+
+The build is green. The package compiles. Storybook opens. A new component renders in both React and React Native.
+
+Then someone notices that the website API table is stale.
+
+Or the native package forgot an export.
+
+Or a component declares keyboard support but has no deterministic keyboard evidence.
+
+Or its stories show the happy path while the disabled, invalid, loading, or uncontrolled states are missing.
+
+None of those failures necessarily break compilation.
+
+That is why, before growing Vellira's public catalog toward 20 components, I spent time building deterministic quality and completeness gates.
+
+The goal was not to create infrastructure for its own sake. The goal was to make catalog growth cheaper to trust.
+
+At the time of writing, Vellira's canonical metadata registry contains 14 public components. That is already enough for repeated omissions to become a systems problem rather than a one-off review problem.
+
+This article explains the distinction between completeness and quality, why a green build is not enough for a design system, how Vellira uses public checks today, and why a bounded catalog target is useful when the surrounding engineering surface is still maturing.
+
+## Component count is a misleading progress metric
+
+A design system can grow from 10 components to 20 and still become less useful.
+
+The number says nothing about whether the components are consistently exported, documented, tested, accessible, or aligned across platforms.
+
+A component is not production-ready just because this exists:
+
+```text
+packages/react/src/components/Component/Component.tsx
+```
+
+A public component may also need:
+
+```text
+implementation
+public types
+package exports
+tests
+Storybook stories
+website usage docs
+examples
+API documentation
+accessibility guidance
+React Native evidence
+metadata
+tokens or icons
+```
+
+The exact set depends on the component contract.
+
+That means catalog growth multiplies more than component files.
+
+If every new component adds ten surfaces, ten new components may add roughly one hundred new opportunities for drift.
+
+The important metric is not only:
+
+```text
+How many components do we have?
+```
+
+It is also:
+
+```text
+How many component contracts can the repository prove are complete and credible?
+```
+
+That second question is what quality gates are for.
+
+## A green build proves less than it feels like it proves
+
+Build success is essential, but its scope is narrow.
+
+A compiler or bundler can tell you that code is syntactically and structurally valid enough to produce output.
+
+It usually cannot tell you that:
+
+- the package root exposes the intended public symbol;
+- the public Props contract is present;
+- a declared controlled API has matching implementation evidence;
+- required states are covered by executable tests;
+- Storybook shows representative user-facing states;
+- generated component pages are fresh;
+- API descriptions are not empty placeholders;
+- React and React Native both contain platform-appropriate accessibility semantics;
+- a portal-oriented component has presentation evidence on both runtimes;
+- required tokens or icons still exist.
+
+A design-system repository needs those checks because its product surface is wider than its build graph.
+
+This is the first reason I wanted gates before more catalog growth.
+
+The earlier a repository can turn hidden consistency debt into deterministic failures, the less review depends on memory.
+
+## Completeness and quality are different questions
+
+Vellira deliberately keeps completeness and quality as separate concepts.
+
+The completeness checker asks:
+
+> Did we ship every repository surface that this component contract requires?
+
+The quality checker asks:
+
+> Do those surfaces contain credible evidence for the contract we claim?
+
+Those questions overlap, but they are not identical.
+
+A test file can exist and still test almost nothing.
+
+A Storybook file can exist and still omit important states.
+
+A documentation directory can exist and still contain placeholder descriptions.
+
+A component can export a symbol while failing to expose the expected Props contract.
+
+So a useful gate system needs both layers.
+
+## Completeness: did we ship every required surface?
+
+Vellira's component completeness checker starts from canonical component metadata.
+
+For each component, metadata describes facts such as:
+
+```text
+name
+layer
+platforms
+requirements.tests
+requirements.storybook
+requirements.docs
+requirements.accessibility
+requirements.tokens
+```
+
+The checker then derives expected repository paths from those facts.
+
+For each supported platform, it checks implementation, types, and exports.
+
+If tests are required, it checks the test surface.
+
+If Storybook is required, it checks stories.
+
+If documentation is required, it checks website and API documentation registration.
+
+If accessibility is required, it checks accessibility documentation.
+
+If explicit token requirements exist, it checks those too.
+
+This makes completeness component-aware instead of assuming that every component has an identical shape.
+
+### Button: even a simple primitive has a public surface
+
+Button is a useful example because its behavioral contract is smaller than a complex overlay or form control.
+
+Its metadata describes a stable primitive action component for React and React Native with `disabled` and `loading` capabilities.
+
+That simplicity does not remove the need for package integration.
+
+A Button implementation that exists locally but is missing its public type surface or export is incomplete from a consumer's perspective.
+
+The completeness layer exists to catch that kind of omission before it becomes a documentation bug or a consumer report.
+
+A simple component should have a simple contract, but the repository should still prove the contract is wired into the public library.
+
+## Quality: do the surfaces actually support the claim?
+
+The Component Quality Checker goes further.
+
+Its current public rule set includes groups for:
+
+```text
+API and feature contracts
+platform and accessibility evidence
+test / Storybook / documentation coverage
+conformity rules
+component token contracts
+```
+
+The broader quality model defines dimensions such as public API, behavior, accessibility, interaction, tests, Storybook, documentation, tokens/theming, exports, and platform quality.
+
+The important idea is that quality rules produce findings, not just a single vague pass/fail feeling.
+
+A rule knows:
+
+```text
+why it exists
+whether it is required or recommended
+whether it is automated or requires human review
+which platform it applies to
+what evidence supports the result
+```
+
+That makes the output useful for both CI and human review.
+
+## Public API needs an explicit gate
+
+One implemented rule checks the public component surface.
+
+It verifies that the component exposes its public symbol and that a corresponding Props contract can be found.
+
+For Button, that means a repository state where the implementation exists but `ButtonProps` or the public export is missing can fail a quality gate even if internal imports still compile.
+
+This is a good example of a design-system-specific invariant.
+
+Application code can sometimes survive with private import paths or incidental type inference.
+
+A reusable library cannot treat its public boundary casually.
+
+The API is part of the product.
+
+That means API evidence deserves a dedicated check rather than hoping ordinary compilation will catch every omission.
+
+## Form controls create state-coverage debt quickly
+
+The problem becomes more visible with form controls.
+
+Input and Checkbox both declare reusable capabilities such as:
+
+```text
+controlled
+uncontrolled
+disabled
+required
+invalid
+```
+
+Those declarations create concrete expectations.
+
+The quality checker does not stop at asking whether `Input.test.tsx` or `Checkbox.test.tsx` exists.
+
+Its test coverage rule looks for executable tests and assertions, then checks deterministic evidence for important declared contracts.
+
+For a component that declares controlled and uncontrolled behavior, tests should contain evidence for those modes.
+
+If `disabled`, `required`, or `invalid` are part of the contract, the test corpus should contain corresponding evidence as well.
+
+This matters because file-presence checks alone are easy to satisfy accidentally.
+
+A test file containing one happy-path render technically exists, but it does not prove the component's important states.
+
+### Checkbox: one missing state can become a repeated pattern
+
+Imagine adding Checkbox, Radio, Select, Input, and another form control in quick succession.
+
+If every component review relies on someone remembering:
+
+```text
+Did we test controlled mode?
+Did we test uncontrolled mode?
+Did we test disabled?
+Did we test invalid?
+Did Storybook show those states?
+```
+
+then the process scales with reviewer memory.
+
+That is fragile.
+
+When the reusable requirement becomes a deterministic rule, the repository can enforce the repeated part once.
+
+Human review can then focus on component-specific semantics instead of repeatedly checking whether basic coverage categories were forgotten.
+
+This is one of the main reasons to build a gate before multiplying components that share the same contract shape.
+
+## Storybook coverage is not the same as having a story file
+
+Vellira's quality checker treats Storybook differently from required test coverage.
+
+Tests are a required quality dimension for components whose metadata requires tests.
+
+Representative Storybook coverage is currently modeled as recommended: missing or incomplete evidence can produce a warning rather than necessarily blocking readiness.
+
+That distinction is useful.
+
+Not every quality concern should have the same severity.
+
+But the checker still asks a better question than:
+
+```text
+Does *.stories.tsx exist?
+```
+
+It looks for exported stories and evidence for representative user-facing states associated with declared capabilities.
+
+For Input or Checkbox, that can include states like:
+
+```text
+controlled
+uncontrolled
+disabled
+required
+invalid
+```
+
+This improves review quality because Storybook is not just repository decoration.
+
+It is part of the observable component surface.
+
+A story collection that shows only the default state makes the catalog look healthier than it is.
+
+## Docs can drift even when implementation is perfect
+
+Documentation has its own failure modes.
+
+A component implementation can be correct while its website page is missing an accessibility section.
+
+A generated API file can exist but contain an empty description.
+
+A component page registry can contain duplicate entries.
+
+A cross-platform component can have documentation that never mentions platform-specific behavior.
+
+Those are not build failures.
+
+They are product-surface failures.
+
+Vellira therefore checks component pages in more than one way.
+
+The component-page freshness check runs generation in `--check` mode to detect generated drift.
+
+A separate audit validates the resulting website surface.
+
+The audit checks for artifacts such as:
+
+```text
+Usage
+Examples
+Accessibility
+API
+componentPages registration
+```
+
+It can also reject duplicate page entries, empty API descriptions, generic fallback descriptions, malformed metadata, invalid related-component links, or invalid effective generator input.
+
+This is an important pattern:
+
+> Generated does not mean trustworthy unless freshness and shape are both checked.
+
+A generator can reduce manual work, but a deterministic check is what prevents generated output from silently becoming stale.
+
+## Input shows why design resources belong in the contract
+
+Input has another useful example in its public metadata.
+
+Its requirements include a canonical `Close` icon for the clear-input action.
+
+That does not mean metadata owns the icon implementation.
+
+It means the component contract declares a dependency on a canonical design resource.
+
+This becomes valuable when tooling can validate the dependency instead of letting components accumulate one-off SVGs, duplicated geometry, or inconsistent internal substitutes.
+
+Quality gates are useful here because design-system consistency is not only about runtime behavior.
+
+It is also about whether components continue using the shared resources the system intends them to use.
+
+## Web and React Native need independent evidence
+
+Cross-platform design systems make quality gating more important, not less.
+
+A common mistake is to assume that if the component API is shared, the evidence can also be shared.
+
+But Web and React Native have different runtime primitives.
+
+Accessibility is a clear example.
+
+For Web, deterministic accessibility evidence might include:
+
+```text
+semantic HTML
+role
+ARIA attributes
+```
+
+For React Native, the equivalent evidence might include:
+
+```text
+accessibilityRole
+accessibilityLabel
+accessibilityState
+accessibilityHint
+accessible
+```
+
+The quality checker treats those separately.
+
+That is exactly what we want.
+
+Cross-platform parity should mean equivalent product semantics, not identical implementation syntax.
+
+## Tabs: keyboard support is platform-sensitive
+
+Tabs declares keyboard and focus-management capabilities.
+
+On Web, a quality rule can look for keyboard interaction evidence such as key handlers, keyboard navigation helpers, or executable keyboard tests.
+
+React Native does not use the same browser keyboard model.
+
+For the native side, the same broad interaction concern is evaluated through platform-appropriate press or gesture evidence.
+
+Focus evidence is also selected by platform.
+
+This is a better model than forcing one implementation-shaped rule onto both runtimes.
+
+The contract can say:
+
+```text
+Tabs has an interaction/focus responsibility.
+```
+
+The gate can then ask for evidence appropriate to the selected platform.
+
+That is the kind of rule that becomes more valuable as catalog size increases.
+
+Without it, every new compound navigation component reopens the same review question from scratch.
+
+## Popover: overlays expose parity gaps quickly
+
+Popover makes the platform distinction even clearer.
+
+Its public metadata declares capabilities including:
+
+```text
+controlled
+uncontrolled
+keyboard
+focus-management
+compound-api
+portal
+```
+
+A portal-oriented overlay on Web may provide evidence through `createPortal`, a Portal abstraction, or an explicit compound overlay structure.
+
+React Native may instead use `Modal`, presentation primitives, or another platform-appropriate portal mechanism.
+
+The quality checker has an overlay-presentation rule that chooses evidence patterns by platform when the `portal` capability is declared.
+
+This matters because a component can look structurally parallel while hiding a major runtime gap.
+
+For example:
+
+```text
+Web: real overlay presentation
+Native: inline content that only resembles the API
+```
+
+A shared TypeScript surface would not necessarily expose that difference.
+
+A platform-aware quality gate can.
+
+## Completeness catches absence; quality catches weak evidence
+
+The distinction can be summarized like this:
+
+```text
+Completeness:
+Does the required file or surface exist?
+
+Quality:
+Does that surface contain evidence for the contract?
+```
+
+For tests:
+
+```text
+Completeness -> test surface exists
+Quality      -> executable tests and assertions cover important declared states
+```
+
+For Storybook:
+
+```text
+Completeness -> story file exists
+Quality      -> representative stories cover important user-facing states
+```
+
+For docs:
+
+```text
+Completeness -> docs/API/accessibility surfaces are registered
+Quality      -> the surfaces are substantive and include platform evidence when required
+```
+
+For implementation:
+
+```text
+Completeness -> implementation/types/exports exist
+Quality      -> public API and declared capabilities have deterministic source evidence
+```
+
+Both layers are useful because they fail for different reasons.
+
+## CI should compose narrow contracts instead of becoming one opaque script
+
+The public Vellira repository wires several checks into CI.
+
+The quality phase includes checks such as:
+
+```text
+format
+lint
+package boundaries
+component-page freshness
+component-page audit
+component completeness
+blog validation
+```
+
+Other CI phases validate builds, typechecks, API documentation, public API contracts, tests, coverage, and smoke behavior.
+
+The important architectural choice is not the exact command list.
+
+It is that these checks remain conceptually separable.
+
+If API generation is stale, the failure should say that.
+
+If a component page is malformed, the page audit should say that.
+
+If a component is missing required surfaces, completeness should say that.
+
+If quality evidence is weak, the quality checker should return findings in the relevant dimension.
+
+A single giant `validate-everything.ts` script would be harder to understand and harder to evolve.
+
+Small deterministic contracts compose better.
+
+## Machine-readable findings make gates more useful
+
+The Component Quality Checker can emit a machine-readable report.
+
+Its report structure groups results by component and platform and includes individual findings.
+
+Each finding can carry information such as:
+
+```text
+rule id
+dimension
+severity
+evaluation kind
+status
+platform
+message
+evidence
+```
+
+That structure matters even if humans are still making the final product decisions.
+
+A plain log line is difficult to reuse.
+
+A structured finding can be sorted, summarized, compared, or presented in different review surfaces without changing the rule itself.
+
+The lesson is broader than Vellira:
+
+> If a quality gate represents a stable engineering judgment, make its result structured enough to be inspected and reused.
+
+That does not mean every judgment should be automated.
+
+The quality model explicitly distinguishes automated evaluation from human review.
+
+That boundary is healthy.
+
+## Deterministic rules should replace memory, not engineering judgment
+
+There is a temptation to keep adding rules until every aspect of component quality is automated.
+
+That would be a mistake.
+
+A regex finding can detect evidence of a public Props contract.
+
+It cannot prove that every prop is well designed.
+
+A checker can verify accessibility attributes exist.
+
+It cannot fully prove the interaction is accessible in every real usage context.
+
+A Storybook rule can detect representative states.
+
+It cannot decide whether the examples communicate the component clearly to a designer or product engineer.
+
+A docs audit can reject placeholder descriptions.
+
+It cannot write the best explanation of a complex API.
+
+The right target is narrower:
+
+```text
+Automate repeated, deterministic repository invariants.
+Keep product semantics and nuanced quality judgment with engineering review.
+```
+
+That is how quality gates reduce work instead of creating a false sense of certainty.
+
+## Fix systemic gaps once
+
+The biggest payoff from a quality gate appears when several components can fail for the same reason.
+
+Suppose five form controls are missing deterministic invalid-state coverage.
+
+One approach is to patch five test files and move on.
+
+A stronger approach asks:
+
+```text
+Why could five components reach review without this being detected?
+```
+
+If the requirement is reusable, the system should express it once.
+
+That might mean improving:
+
+```text
+generator templates
+test coverage contracts
+metadata
+quality rules
+documentation generation
+CI wiring
+```
+
+Then the next component benefits automatically.
+
+This is the difference between component maintenance and system maintenance.
+
+The first fixes today's file.
+
+The second reduces the probability of tomorrow's repeated defect.
+
+## Bounded growth makes the tooling investment rational
+
+Why aim around 20 components instead of simply expanding as fast as possible?
+
+Because a bounded target forces prioritization.
+
+At 14 public components, there is already enough variety to exercise:
+
+```text
+primitives
+form controls
+compound APIs
+overlays
+navigation
+React
+React Native
+controlled state
+uncontrolled state
+keyboard interaction
+focus management
+portal behavior
+tokens
+icons
+```
+
+That is enough surface area to expose weaknesses in generators, metadata, docs, checks, and CI.
+
+Growing toward 20 gives room to prove that the system can handle more variety without turning catalog size into the only success metric.
+
+The point is not that 20 is a magical number.
+
+The point is that a bounded launch catalog creates a useful engineering constraint:
+
+> Improve the production system while the catalog is still small enough to reason about completely.
+
+Once the rules are credible, adding the next component becomes cheaper.
+
+If the catalog grows first and the gates come later, every new rule may uncover a backlog of historical inconsistency across dozens of components.
+
+## Quality gates are cheapest before you desperately need them
+
+This is the same reason teams add database constraints before millions of bad rows exist.
+
+The cost of a deterministic rule is relatively small when the catalog is manageable.
+
+The cost grows when every new invariant has to be retrofitted across a large inconsistent history.
+
+For a design system, early gates help establish norms for:
+
+```text
+public API shape
+test expectations
+Storybook coverage
+documentation structure
+platform evidence
+design resource usage
+metadata quality
+```
+
+Then new components enter an existing production contract instead of inventing their own definition of done.
+
+## What we intentionally do not gate as a universal rule
+
+A quality-first approach still needs restraint.
+
+Not every difference is drift.
+
+Not every component needs the same behavior.
+
+Not every platform needs identical implementation evidence.
+
+Not every recommendation should block CI.
+
+And not every product decision should be encoded in metadata.
+
+Vellira's current public quality system therefore has explicit concepts for:
+
+```text
+required vs recommended
+pass vs warn vs fail vs not-applicable
+automated vs human-review
+platform-specific applicability
+```
+
+Those distinctions prevent a checker from becoming a universal style police system.
+
+A gate is useful only when its failure represents something we actually want engineers to act on.
+
+## A practical quality-gate checklist
+
+If I were adding quality gates to another component library, I would start in this order.
+
+### 1. Define the component contract first
+
+Before writing checks, decide what facts are canonical.
+
+At minimum:
+
+```text
+name
+supported platforms
+lifecycle status
+important reusable capabilities
+required engineering surfaces
+```
+
+A checker without a contract will quickly become a pile of component-name exceptions.
+
+### 2. Separate completeness from quality
+
+First prove required artifacts exist.
+
+Then prove they contain credible evidence.
+
+Do not make file presence pretend to be behavior validation.
+
+### 3. Protect the public API explicitly
+
+Check exports and public type contracts.
+
+Reusable libraries need stronger package-boundary guarantees than ordinary application code.
+
+### 4. Make tests reflect declared behavior
+
+If a component declares controlled, uncontrolled, invalid, disabled, loading, keyboard, or focus responsibilities, expect evidence appropriate to those claims.
+
+### 5. Treat Storybook as a product surface
+
+A story file is not enough.
+
+Prefer representative states that help humans understand the real component contract.
+
+### 6. Validate generated output
+
+Use check mode for freshness and a separate audit for structural quality where appropriate.
+
+Generated output can drift too.
+
+### 7. Keep Web and native evidence separate
+
+Share product semantics where possible, but validate runtime-specific accessibility, interaction, focus, and overlay behavior independently.
+
+### 8. Use machine-readable findings
+
+Structured results make it easier to understand failures and evolve tooling without coupling every consumer to log text.
+
+### 9. Fix reusable gaps at the system layer
+
+When several components fail the same way, improve the generator, metadata, rule, or contract rather than repeatedly patching the symptom.
+
+### 10. Stop adding rules when judgment is more valuable
+
+Automate deterministic invariants.
+
+Do not encode every design opinion into CI.
+
+## The real goal is cheaper trust
+
+Quality gates are sometimes framed as restrictions.
+
+I think that misses their main value.
+
+A good gate makes future work cheaper because it narrows what humans need to re-check.
+
+When Vellira adds another form control, I do not want review to start by rediscovering whether tests, Storybook, docs, exports, accessibility, and platform evidence matter.
+
+Those expectations should already exist.
+
+The review should focus on what is genuinely new about that component.
+
+That is why I wanted quality gates before rapid catalog growth.
+
+Not because infrastructure is more important than components.
+
+Because components become easier to ship confidently when the surrounding system can prove the repeated parts of production readiness.
+
+The target is not maximum automation.
+
+The target is a catalog where adding component number 15, 16, or 20 does not multiply uncertainty at the same rate as it multiplies files.
+
+That is the kind of scaling I want from a design system: not merely more components, but more components whose quality is increasingly cheap to verify.
