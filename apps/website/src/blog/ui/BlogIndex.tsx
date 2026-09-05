@@ -8,10 +8,7 @@ import { Search } from '@vellira-ui/icons';
 import { Container } from '@/components/layout/Container';
 import type { BlogArticleMetadata } from '@/blog';
 import { fetchBlogMetricsBatch, type BlogMetricsBySlug } from '../metrics';
-import {
-  normalizeBlogSearchText,
-  searchBlogArticles,
-} from '../search';
+import { normalizeBlogSearchText, searchBlogArticles } from '../search';
 import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 import { formatBlogDate } from './formatBlogDate';
 
