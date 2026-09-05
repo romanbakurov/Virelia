@@ -48,7 +48,7 @@ const articles = [
   createArticle({
     title: 'React Native accessibility patterns',
     slug: 'react-native-accessibility',
-    tags: ['React Native', 'Accessibility'],
+    tags: ['React Native', 'Accessibility', 'React'],
   }),
   createArticle({
     title: 'Building cross-platform forms',
@@ -146,7 +146,7 @@ describe('blog search experience', () => {
 
     fireEvent.click(
       screen.getByRole('button', {
-        name: 'Clear search and show all articles',
+        name: 'Clear search and filters and show all articles',
       })
     );
 
