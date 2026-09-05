@@ -20,9 +20,20 @@ describe('component token templates', () => {
     expect(result).toContain('thumbBg: string');
     expect(result).toContain('export type SwitchTokensConfig');
     expect(result).toContain('export const createSwitchTokens');
+    expect(result).toContain('export const createSwitchTokensFromSemantics');
+    expect(result).toContain('const switchGeometry: SwitchGeometry');
+    expect(result).toContain('geometry: switchGeometry');
+    expect(result).toContain('trackBg: control.default.bg');
+    expect(result).toContain('trackBg: control.selected.default.bg');
+    expect(result).toContain('trackBg: control.selected.hover.bg');
+    expect(result).toContain('trackBg: control.selected.active.bg');
+    expect(result).toContain('trackBg: control.disabled.bg');
+    expect(result).toContain('focusRing: focus.ring.color');
+    expect(result).toContain('errorBorder: status.error.border');
+    expect(result).toContain('errorRing: status.error.ring');
   });
 
-  it('maps boolean component tokens through Vellira semantic control states', () => {
+  it('generates thin boolean theme token entrypoints with runtime ESM imports', () => {
     const result = renderThemeComponentTokensTemplate({
       componentName: 'Switch',
       profile: 'form-control',
@@ -30,15 +41,28 @@ describe('component token templates', () => {
     });
 
     expect(result).toContain(
+      "import { createSwitchTokensFromSemantics } from '../../factories/createSwitchTokens.js';"
+    );
+    expect(result).toContain(
       "import { control } from '../semantic/control.js';"
     );
-    expect(result).toContain('control.default.bg');
-    expect(result).toContain('control.selected.default.bg');
-    expect(result).toContain('control.selected.hover.bg');
-    expect(result).toContain('control.selected.active.bg');
-    expect(result).toContain('control.disabled.bg');
-    expect(result).toContain('focus.ring.color');
-    expect(result).toContain('status.error.border');
+    expect(result).toContain("import { focus } from '../semantic/focus.js';");
+    expect(result).toContain("import { status } from '../semantic/status.js';");
+    expect(result).toContain(
+      `export const switchTokens = createSwitchTokensFromSemantics({
+  control,
+  focus,
+  status,
+});`
+    );
+    expect(result).not.toContain('createSwitchTokens({');
+    expect(result).not.toContain('geometry:');
+    expect(result).not.toContain('control.default.bg');
+    expect(result).not.toContain('control.selected.default.bg');
+    expect(result).not.toContain('control.selected.hover.bg');
+    expect(result).not.toContain('control.selected.active.bg');
+    expect(result).not.toContain('control.disabled.bg');
+    expect(result).not.toContain('status.error.border');
     expect(result).not.toMatch(/#[0-9a-f]{3,8}\b/i);
   });
 

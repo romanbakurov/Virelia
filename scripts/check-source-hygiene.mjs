@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const root = process.cwd();
 const jsonMode = process.argv.includes('--json');
@@ -399,9 +400,79 @@ function isThemeComponentFile(relativePath) {
   return /^packages\/tokens\/src\/(?:light|dark|highContrast)\/components\/[^/]+\.ts$/.test(relativePath);
 }
 
-function usesSharedThemeFactory(filePath, sources) {
+export function usesSharedThemeFactory(filePath, sources) {
   const source = sources.get(filePath);
-  return /from ['"]\.\.\/\.\.\/factories\/create[^'"]+\.js['"]/.test(source);
+  if (!source) {
+    return false;
+  }
+
+  const importPattern =
+    /import\s+\{\s*(create[A-Z][A-Za-z0-9]*TokensFrom[A-Z][A-Za-z0-9]*)\s*\}\s+from\s+['"]\.\.\/\.\.\/factories\/create[A-Z][A-Za-z0-9]*Tokens\.js['"]/g;
+  const themeInputs = new Set(extractThemeInputImports(source));
+
+  let match;
+  while ((match = importPattern.exec(source)) !== null) {
+    if (exportsThinThemeDelegation(source, match[1], themeInputs)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function extractThemeInputImports(source) {
+  const themeInputs = [];
+  const importPattern =
+    /import\s+\{\s*([^}]+?)\s*\}\s+from\s+['"](?:\.\.\/semantic\/[^'"]+|\.\.\/\.\.\/tokens\/[^'"]+)\.js['"]/g;
+
+  let match;
+  while ((match = importPattern.exec(source)) !== null) {
+    for (const specifier of match[1].split(',')) {
+      const [, importedName, localName] =
+        /^\s*([A-Za-z][A-Za-z0-9]*)(?:\s+as\s+([A-Za-z][A-Za-z0-9]*))?\s*$/.exec(specifier) ?? [];
+
+      if (importedName) {
+        themeInputs.push(localName ?? importedName);
+      }
+    }
+  }
+
+  return themeInputs;
+}
+
+function exportsThinThemeDelegation(source, factoryName, themeInputs) {
+  const escapedFactory = factoryName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const directSemanticInputPattern = new RegExp(
+    String.raw`export\s+const\s+[A-Za-z][A-Za-z0-9]*\s*=\s*${escapedFactory}\s*\(\s*[A-Za-z][A-Za-z0-9]*\s*\)\s*;`
+  );
+
+  const directMatch = directSemanticInputPattern.exec(source);
+  if (directMatch) {
+    const inputNameMatch = new RegExp(
+      String.raw`${escapedFactory}\s*\(\s*([A-Za-z][A-Za-z0-9]*)\s*\)`
+    ).exec(directMatch[0]);
+
+    return Boolean(inputNameMatch && themeInputs.has(inputNameMatch[1]));
+  }
+
+  const delegationPattern = new RegExp(
+    String.raw`export\s+const\s+[A-Za-z][A-Za-z0-9]*\s*=\s*${escapedFactory}\s*\(\s*\{([\s\S]*?)\}\s*\)\s*;`
+  );
+  const match = delegationPattern.exec(source);
+
+  if (!match) {
+    return false;
+  }
+
+  const entries = match[1]
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return (
+    entries.length > 0 &&
+    entries.every((entry) => /^[A-Za-z][A-Za-z0-9]*$/.test(entry) && themeInputs.has(entry))
+  );
 }
 
 function checkExactThemeComponentDuplication(files, sources) {
@@ -527,64 +598,73 @@ function checkStructuralDuplication(files, sources) {
   }
 }
 
-const files = [];
-for (const maintainedRoot of maintainedRoots) {
-  walk(path.join(root, maintainedRoot), files);
-}
-files.sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)));
+function runSourceHygieneCli() {
+  const files = [];
+  for (const maintainedRoot of maintainedRoots) {
+    walk(path.join(root, maintainedRoot), files);
+  }
+  files.sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)));
 
-const sources = new Map();
-for (const filePath of files) {
-  const source = fs.readFileSync(filePath, 'utf8');
-  sources.set(filePath, source);
-  checkReactImportPolicy(filePath, source);
-  checkTokenEsmImportPolicy(filePath, source);
-}
+  const sources = new Map();
+  for (const filePath of files) {
+    const source = fs.readFileSync(filePath, 'utf8');
+    sources.set(filePath, source);
+    checkReactImportPolicy(filePath, source);
+    checkTokenEsmImportPolicy(filePath, source);
+  }
 
-checkExactThemeComponentDuplication(files, sources);
-checkStructuralDuplication(files, sources);
+  checkExactThemeComponentDuplication(files, sources);
+  checkStructuralDuplication(files, sources);
 
-findings.sort((a, b) =>
-  [a.path, a.line ?? 0, a.rule, a.relatedPath ?? ''].join(':').localeCompare(
-    [b.path, b.line ?? 0, b.rule, b.relatedPath ?? ''].join(':')
-  )
-);
-
-const blockingFindings = findings.filter((finding) => finding.blocking);
-
-if (jsonMode) {
-  process.stdout.write(
-    `${JSON.stringify(
-      {
-        schemaVersion: 1,
-        filesScanned: files.length,
-        blockingFindings: blockingFindings.length,
-        warnings: findings.length - blockingFindings.length,
-        findings,
-      },
-      null,
-      2
-    )}\n`
+  findings.sort((a, b) =>
+    [a.path, a.line ?? 0, a.rule, a.relatedPath ?? ''].join(':').localeCompare(
+      [b.path, b.line ?? 0, b.rule, b.relatedPath ?? ''].join(':')
+    )
   );
-} else if (findings.length === 0) {
-  console.log(`Source hygiene: PASS (${files.length} maintained source files scanned)`);
-} else {
-  for (const finding of findings) {
-    const level = finding.blocking ? 'ERROR' : 'WARN';
-    const related = finding.relatedPath
-      ? ` -> ${finding.relatedPath}:${finding.relatedLine ?? 1}`
-      : '';
-    const fingerprint = finding.fingerprint ? ` [${finding.fingerprint.slice(0, 12)}]` : '';
+
+  const blockingFindings = findings.filter((finding) => finding.blocking);
+
+  if (jsonMode) {
+    process.stdout.write(
+      `${JSON.stringify(
+        {
+          schemaVersion: 1,
+          filesScanned: files.length,
+          blockingFindings: blockingFindings.length,
+          warnings: findings.length - blockingFindings.length,
+          findings,
+        },
+        null,
+        2
+      )}\n`
+    );
+  } else if (findings.length === 0) {
+    console.log(`Source hygiene: PASS (${files.length} maintained source files scanned)`);
+  } else {
+    for (const finding of findings) {
+      const level = finding.blocking ? 'ERROR' : 'WARN';
+      const related = finding.relatedPath
+        ? ` -> ${finding.relatedPath}:${finding.relatedLine ?? 1}`
+        : '';
+      const fingerprint = finding.fingerprint ? ` [${finding.fingerprint.slice(0, 12)}]` : '';
+      console.log(
+        `${level} ${finding.rule}${fingerprint} ${finding.path}:${finding.line ?? 1}${related}\n  ${finding.reason}`
+      );
+    }
+
     console.log(
-      `${level} ${finding.rule}${fingerprint} ${finding.path}:${finding.line ?? 1}${related}\n  ${finding.reason}`
+      `\nSource hygiene: ${blockingFindings.length === 0 ? 'PASS_WITH_WARNINGS' : 'FAIL'} (${blockingFindings.length} blocking, ${findings.length - blockingFindings.length} warnings, ${files.length} files scanned)`
     );
   }
 
-  console.log(
-    `\nSource hygiene: ${blockingFindings.length === 0 ? 'PASS_WITH_WARNINGS' : 'FAIL'} (${blockingFindings.length} blocking, ${findings.length - blockingFindings.length} warnings, ${files.length} files scanned)`
-  );
+  if (blockingFindings.length > 0) {
+    process.exitCode = 1;
+  }
 }
 
-if (blockingFindings.length > 0) {
-  process.exitCode = 1;
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  runSourceHygieneCli();
 }
