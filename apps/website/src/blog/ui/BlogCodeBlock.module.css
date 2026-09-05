@@ -24,8 +24,16 @@
   border-bottom: 1px solid var(--border-muted);
 }
 
+:global([data-vellira-theme='light']) .codeBlock {
+  background: var(--surface-background);
+}
+
 :global([data-vellira-theme='light']) .codeBlockToolbar {
-  background: var(--surface-active);
+  background: color-mix(
+    in srgb,
+    var(--surface-background) 72%,
+    var(--surface-muted)
+  );
 }
 
 :global([data-vellira-theme='dark']) .codeBlockToolbar {
