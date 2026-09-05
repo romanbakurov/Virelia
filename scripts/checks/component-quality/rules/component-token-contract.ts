@@ -130,6 +130,15 @@ function contractViolations(context: ComponentQualityRuleContext) {
   const styleSource = styleFiles
     .map((filePath) => fs.readFileSync(filePath, 'utf8'))
     .join('\n');
+  const canonicalStyleFile = path.join(
+    componentDir,
+    context.platform === 'react'
+      ? `${componentName}.module.scss`
+      : `${componentName}.styles.ts`
+  );
+  const canonicalStyleEvidence = fs.existsSync(canonicalStyleFile)
+    ? path.relative(root, canonicalStyleFile).replaceAll('\\', '/')
+    : undefined;
 
   if (styleFiles.length === 0) {
     violations.push(
@@ -140,7 +149,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
 
     if (!styleSource.includes(expectedPrefix)) {
       violations.push(
-        `missing Web component-token usage: expected CSS variables with prefix --${kebabCase(componentName)}-`
+        canonicalStyleEvidence
+          ? `${canonicalStyleEvidence} — missing Web component-token usage: expected CSS variables with prefix --${kebabCase(componentName)}-`
+          : `missing Web component-token usage: expected CSS variables with prefix --${kebabCase(componentName)}-`
       );
     }
   } else {
@@ -148,7 +159,9 @@ function contractViolations(context: ComponentQualityRuleContext) {
 
     if (!styleSource.includes(expectedUsage)) {
       violations.push(
-        `missing React Native component-token usage: expected ${expectedUsage}`
+        canonicalStyleEvidence
+          ? `${canonicalStyleEvidence} — missing React Native component-token usage: expected ${expectedUsage}`
+          : `missing React Native component-token usage: expected ${expectedUsage}`
       );
     }
   }

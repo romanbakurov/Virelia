@@ -193,6 +193,58 @@ describe('runComponentProductionStructuredValidation', () => {
     ]);
   });
 
+  it('does not treat descriptive evidence containing a repo path as repair authority', async () => {
+    const result = await runComponentProductionStructuredValidation({
+      root: '/tmp/vellira-production',
+      input: INPUT,
+      runner: () =>
+        workerSuccess({
+          completeness: [
+            {
+              componentName: 'Avatar',
+              ready: true,
+              checks: [],
+            },
+          ],
+          quality: {
+            status: 'fail',
+            report: {
+              schemaVersion: '1',
+              components: [
+                {
+                  componentName: 'Avatar',
+                  status: 'fail',
+                  platforms: [],
+                  findings: [
+                    {
+                      ruleId: 'conformity.component-token-contract',
+                      dimension: 'design-system',
+                      severity: 'required',
+                      evaluation: 'automated',
+                      status: 'fail',
+                      platform: 'react',
+                      message: 'Component token contract is incomplete.',
+                      evidence: [
+                        'missing component token factory: packages/tokens/src/factories/createAvatarTokens.ts',
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        }),
+    });
+
+    expect(result.stages[1].status).toBe('blocked');
+    expect(result.stages[1].findings).toHaveLength(1);
+    expect(result.stages[1].findings[0]).toMatchObject({
+      ruleId: 'conformity.component-token-contract',
+      severity: 'blocking',
+    });
+    expect(result.stages[1].findings[0]?.path).toBeUndefined();
+  });
+
   it('keeps warning-only quality results non-blocking', async () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
