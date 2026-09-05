@@ -38,7 +38,8 @@ describe('blog metadata search', () => {
       createArticle({
         title: 'Form composition',
         slug: 'form-composition',
-        description: 'Build accessible React Native forms with shared state.',
+        description:
+          'Accessibility guidance for React Native forms with shared state.',
         tags: ['Forms'],
       }),
       createArticle({
