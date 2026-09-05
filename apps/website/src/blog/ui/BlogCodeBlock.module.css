@@ -24,6 +24,14 @@
   border-bottom: 1px solid var(--border-muted);
 }
 
+:global([data-vellira-theme='light']) .codeBlockToolbar {
+  background: var(--surface-active);
+}
+
+:global([data-vellira-theme='dark']) .codeBlockToolbar {
+  background: var(--surface-default);
+}
+
 .codeBlock :global(.shiki) {
   max-width: 100%;
   margin: 0;
