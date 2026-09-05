@@ -16,6 +16,7 @@ import { BlogMetricsDisplay } from './BlogMetricsDisplay';
 import { formatBlogDate } from './formatBlogDate';
 
 import styles from './BlogExperience.module.css';
+import searchStyles from './BlogIndexSearch.module.css';
 
 interface BlogIndexProps {
   articles: readonly BlogArticleMetadata[];
@@ -136,9 +137,12 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
             </div>
           ) : (
             <>
-              <div className={styles.discoveryToolbar}>
-                <label className={styles.search}>
-                  <Search aria-hidden='true' className={styles.searchIcon} />
+              <div className={searchStyles.discoveryToolbar}>
+                <label className={searchStyles.search}>
+                  <Search
+                    aria-hidden='true'
+                    className={searchStyles.searchIcon}
+                  />
 
                   <input
                     type='search'
@@ -146,13 +150,13 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                     onChange={(event) => updateQuery(event.target.value)}
                     placeholder='Search articles...'
                     aria-label='Search articles'
-                    className={styles.searchInput}
+                    className={searchStyles.searchInput}
                   />
 
                   {query && (
                     <button
                       type='button'
-                      className={styles.clearSearch}
+                      className={searchStyles.clearSearch}
                       aria-label='Clear search'
                       onClick={() => updateQuery('')}
                     >
@@ -164,7 +168,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
 
               {normalizedQuery && (
                 <div
-                  className={styles.resultsMeta}
+                  className={searchStyles.resultsMeta}
                   role='status'
                   aria-live='polite'
                 >
@@ -224,7 +228,7 @@ export function BlogIndex({ articles, metricsBySlug = {} }: BlogIndexProps) {
                   <p>Try another search or clear the current query.</p>
                   <button
                     type='button'
-                    className={styles.resetSearch}
+                    className={searchStyles.resetSearch}
                     onClick={() => updateQuery('')}
                   >
                     Clear search
