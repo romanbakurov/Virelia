@@ -9,30 +9,15 @@ export function renderPartTypesTemplate({
   componentName,
   partName,
 }: ComponentPartTemplateParams) {
-  if (partName === 'Trigger') {
-    return `import type { ReactNode } from 'react';
-
-export type ${componentName}${partName}Props = {
-  children?: ReactNode;
-  disabled?: boolean;
-  onActivate?: () => void;
-};
+  if (partName === 'Root') {
+    return `export type { ${componentName}Props } from '../types';
 `;
   }
 
-  if (partName === 'Content') {
-    return `import type { ReactNode } from 'react';
+  return `import type { Base${componentName}${partName}Props } from '@vellira-ui/types';
+import type { ReactNode } from 'react';
 
-export type ${componentName}${partName}Props = {
-  children?: ReactNode;
-  hidden?: boolean;
-};
-`;
-  }
-
-  return `import type { ReactNode } from 'react';
-
-export type ${componentName}${partName}Props = {
+export type ${componentName}${partName}Props = Base${componentName}${partName}Props & {
   children?: ReactNode;
 };
 `;
@@ -44,6 +29,29 @@ export function renderPartIndexTemplate({
 }: ComponentPartTemplateParams) {
   return `export * from './${componentName}${partName}';
 export * from './types';
+`;
+}
+
+function renderRootPartTemplate({
+  componentName,
+  isNative,
+}: ComponentPartTemplateParams) {
+  if (isNative) {
+    return `import { View } from 'react-native';
+
+import type { ${componentName}Props } from './types';
+
+export function ${componentName}Root({ children }: ${componentName}Props) {
+  return <View>{children}</View>;
+}
+`;
+  }
+
+  return `import type { ${componentName}Props } from './types';
+
+export function ${componentName}Root({ children }: ${componentName}Props) {
+  return <div>{children}</div>;
+}
 `;
 }
 
@@ -127,6 +135,10 @@ export function ${componentName}Content({
 export function renderPartComponentTemplate(
   params: ComponentPartTemplateParams
 ) {
+  if (params.partName === 'Root') {
+    return renderRootPartTemplate(params);
+  }
+
   if (params.partName === 'Trigger') {
     return renderTriggerPartTemplate(params);
   }
