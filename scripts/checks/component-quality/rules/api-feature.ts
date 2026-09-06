@@ -179,11 +179,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
       snapshot.runtimeSource.includes(propsName) ||
       hasLinkedRootPropsContract(snapshot, context.metadata.name);
 
-    if (
-      hasComponentExport &&
-      hasPropsContract &&
-      propsTypeCallableComponent
-    ) {
+    if (hasComponentExport && hasPropsContract && propsTypeCallableComponent) {
       return finding(publicApiSurfaceRule, context, 'pass', undefined, [
         path.relative(qualityRoot(context), snapshot.componentDir),
         propsName,
