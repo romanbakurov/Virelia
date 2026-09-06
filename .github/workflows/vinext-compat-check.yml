@@ -6,7 +6,7 @@ on:
       - feat/website-cloudflare-staging
     paths:
       - apps/website/**
-      - packages/react/**
+      - packages/**
       - pnpm-workspace.yaml
       - pnpm-lock.yaml
       - .github/workflows/vinext-compat-check.yml
@@ -42,12 +42,12 @@ jobs:
           --data-cache=none
           --image-optimization=cloudflare-images
 
-      - name: Prepare website dependencies
+      - name: Build workspace packages in dependency order
+        run: pnpm build
+
+      - name: Sync website brand
         working-directory: apps/website
-        run: |
-          pnpm run sync:brand
-          pnpm run sync:tokens
-          pnpm run sync:components
+        run: pnpm run sync:brand
 
       - name: Build with vinext
         working-directory: apps/website
