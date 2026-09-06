@@ -1,5 +1,6 @@
 import {
   renderCompoundComponentTemplate,
+  renderCompoundTypesTemplate,
   renderFormControlComponentTemplate,
   renderFormControlTypesTemplate,
   renderNativeComponentTemplate,
@@ -44,8 +45,9 @@ export function resolveComponentTemplates(params: {
 
     case 'compound':
       return {
-        types: renderTypesTemplate({
+        types: renderCompoundTypesTemplate({
           componentName,
+          parts: plan.parts,
         }),
         component: renderCompoundComponentTemplate({
           componentName,
