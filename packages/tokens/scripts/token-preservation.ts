@@ -62,6 +62,11 @@ type TokenTheme = {
 
 type PreservationContext = 'canonical' | TokenMigrationPlatform;
 
+type TokenAdditionMigration = Extract<
+  TokenMigrationEntry,
+  { kind: 'addition' }
+>;
+
 const themes = {
   light: lightTheme,
   dark: darkTheme,
@@ -526,7 +531,7 @@ function verifySnapshot(params: {
   }
 
   const additions = manifest.filter(
-    (migration) =>
+    (migration): migration is TokenAdditionMigration =>
       migration.kind === 'addition' &&
       migrationAppliesToTheme(migration, theme) &&
       migrationAppliesToContext(migration, context)
