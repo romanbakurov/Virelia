@@ -4,7 +4,10 @@ import type {
   ComponentTokenContract,
 } from '@vellira-ui/metadata';
 
-import type { ComponentTypeOwnership } from '../type-ownership';
+import {
+  hasSharedTypeSemantics,
+  type ComponentTypeOwnership,
+} from '../type-ownership';
 
 import type { ComponentTemplateParams } from './component-types';
 
@@ -22,7 +25,7 @@ export type MetadataTemplateParams = ComponentTemplateParams & {
   platforms: readonly ('react' | 'react-native')[];
   profile: 'base' | 'form-control' | 'compound' | 'overlay';
   capabilities: readonly ComponentCapability[];
-  typeOwnership: ComponentTypeOwnership;
+  typeOwnership?: ComponentTypeOwnership;
   icons?: readonly ComponentIconRequirement[];
   tokens?: readonly string[];
   componentTokens?: ComponentTokenContract | false;
@@ -57,12 +60,14 @@ export function renderMetadataTemplate({
       : `[
 ${capabilities.map((capability) => `    '${capability}',`).join('\n')}
   ]`;
-  const dependenciesText =
-    typeOwnership === 'shared'
-      ? `  dependencies: {
+  const ownsSharedTypes =
+    typeOwnership === 'shared' ||
+    (typeOwnership === undefined && hasSharedTypeSemantics(capabilities));
+  const dependenciesText = ownsSharedTypes
+    ? `  dependencies: {
     packages: ['@vellira-ui/types'],
   },\n`
-      : '';
+    : '';
   const resourceRequirementsText = [
     icons.length === 0
       ? null
