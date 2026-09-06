@@ -1,0 +1,85 @@
+name: Diagnose Cloudflare Blog 503
+
+on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - '.github/workflows/diagnose-cloudflare-blog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  STAGING_URL: https://vellira-website-staging.vellira.workers.dev
+
+jobs:
+  diagnose:
+    name: Capture Worker failure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Capture failing route and Worker tail
+        shell: bash
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -uo pipefail
+
+          tail_log="$(mktemp)"
+          headers="$(mktemp)"
+          body="$(mktemp)"
+
+          cleanup() {
+            rm -f "$tail_log" "$headers" "$body"
+          }
+          trap cleanup EXIT
+
+          echo 'Starting Worker tail...'
+          timeout 25s pnpm --dir apps/website exec wrangler tail \
+            vellira-website-staging \
+            --format json \
+            --method GET \
+            >"$tail_log" 2>&1 &
+          tail_pid=$!
+
+          sleep 5
+
+          echo '=== DIRECT ROUTE REQUEST ==='
+          status="$(curl --location --silent --show-error \
+            --header 'Cache-Control: no-cache' \
+            --dump-header "$headers" \
+            --output "$body" \
+            --write-out '%{http_code}' \
+            "$STAGING_URL/blog/controlled-uncontrolled-react-native" || true)"
+
+          echo "HTTP $status"
+          echo '=== RESPONSE HEADERS ==='
+          cat "$headers"
+          echo '=== RESPONSE BODY (first 80 lines) ==='
+          sed -n '1,80p' "$body"
+
+          sleep 5
+          kill "$tail_pid" 2>/dev/null || true
+          wait "$tail_pid" 2>/dev/null || true
+
+          echo '=== WORKER TAIL ==='
+          cat "$tail_log"
+
+          echo '=== RESULT ==='
+          if [[ "$status" == '200' ]]; then
+            echo 'Direct cold request succeeded.'
+          else
+            echo "Direct cold request failed with HTTP $status."
+          fi
