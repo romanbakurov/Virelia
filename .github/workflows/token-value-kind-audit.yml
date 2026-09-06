@@ -1,0 +1,37 @@
+name: Token Value Kind Audit
+
+on:
+  push:
+    branches:
+      - fix/token-value-kinds-v1
+    paths:
+      - '.github/workflows/token-value-kind-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/token-value-kinds-v1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Remove audit workflow from branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/token-value-kind-audit.yml
+          git commit -m 'ci: remove token value-kind audit workflow'
+          git push origin HEAD:fix/token-value-kinds-v1
+      - name: Audit canonical numeric surface
+        run: >-
+          pnpm --filter @vellira-ui/tokens exec vitest run
+          src/token-value-kinds.test.ts
+          scripts/token-css-output.test.ts
