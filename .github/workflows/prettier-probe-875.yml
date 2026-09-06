@@ -1,4 +1,4 @@
-name: Prettier Probe 875
+name: Prettier Apply 875
 
 on:
   push:
@@ -6,33 +6,50 @@ on:
       - chore/prettier-probe-875
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  probe:
+  apply:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/compound-shared-types
+          fetch-depth: 0
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Show authoritative Prettier diff
+      - name: Apply authoritative Prettier output
         run: |
           pnpm exec prettier \
             scripts/checks/component-quality/rules/api-feature.test.ts \
-            scripts/checks/component-quality/rules/api-feature.ts \
             scripts/checks/component-quality/shared-type-baseline.test.ts \
             scripts/generators/component/compound-shared-types.test.ts \
             scripts/generators/component/compound-shared-types.ts \
-            scripts/generators/component/preflight.ts \
             --write
-          git diff -- \
+          pnpm exec prettier \
             scripts/checks/component-quality/rules/api-feature.test.ts \
-            scripts/checks/component-quality/rules/api-feature.ts \
             scripts/checks/component-quality/shared-type-baseline.test.ts \
             scripts/generators/component/compound-shared-types.test.ts \
             scripts/generators/component/compound-shared-types.ts \
-            scripts/generators/component/preflight.ts
+            --check
+      - name: Commit formatting-only patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --check
+          if git diff --quiet; then
+            echo "No formatting changes required."
+            exit 0
+          fi
+          git add \
+            scripts/checks/component-quality/rules/api-feature.test.ts \
+            scripts/checks/component-quality/shared-type-baseline.test.ts \
+            scripts/generators/component/compound-shared-types.test.ts \
+            scripts/generators/component/compound-shared-types.ts
+          git diff --cached --check
+          git commit -m "style(ci): apply prettier to shared type checks"
+          git push origin HEAD:fix/compound-shared-types
