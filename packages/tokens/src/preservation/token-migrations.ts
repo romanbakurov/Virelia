@@ -78,8 +78,7 @@ export type TokenPlatformRepresentationMigration =
   };
 
 export type TokenRepresentationMigration =
-  | TokenCanonicalRepresentationMigration
-  | TokenPlatformRepresentationMigration;
+  TokenCanonicalRepresentationMigration | TokenPlatformRepresentationMigration;
 
 export type TokenVisualChangeMigration = TokenMigrationBase & {
   kind: 'visual-change';
