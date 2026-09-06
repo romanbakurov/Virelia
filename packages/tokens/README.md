@@ -168,8 +168,8 @@ The preservation contract covers the complete current public visual surface:
   graphs;
 - shared public visual tokens exported outside those theme graphs, including
   overlay primitives and control-size values;
-- generated Web CSS variable output using the same serializer as the published
-  `@vellira-ui/tokens/css` artifact;
+- generated Web CSS variable names together with their serialized values, using
+  the same serializer as the published `@vellira-ui/tokens/css` artifact;
 - the current React Native output contract, which consumes the canonical theme
   objects directly until a dedicated native platform adapter is introduced.
 
@@ -185,9 +185,10 @@ explicit equivalence evidence. If a future Web or React Native adapter changes
 how a canonical value is represented, that migration must prove equivalent
 resolved output rather than silently bypassing preservation.
 
-`preservation:baseline` exists only to bootstrap or deliberately reset a
-reviewed baseline. A baseline reset is not evidence that a visual change is
-safe.
+`preservation:baseline` is a bootstrap command and refuses to overwrite an
+existing committed baseline during normal work. A deliberate reviewed reset
+requires the explicit `--force-reset` CLI flag. Resetting a baseline is never by
+itself evidence that a visual change is safe.
 
 Broad token migrations must also use the repository's canonical pinned Linux
 visual regression path:
