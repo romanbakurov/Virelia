@@ -68,6 +68,18 @@ Rules:
   renderer through package exports.
 - docs, Storybook, and playground apps may compose public package APIs only.
 
+## First-party UI Consumption
+
+Maintained Vellira applications, docs, Storybook, playgrounds, examples, and
+demos follow the canonical
+[Vellira-first UI consumption policy](architecture/vellira-first-ui-consumption.md).
+
+First-party surfaces compose canonical public package APIs rather than recreating
+owned controls, icons, tokens, assets, or reusable interaction patterns locally.
+The policy also defines the boundary for ordinary layout/composition, missing
+component/resource handling, generator responsibilities, and explicit
+architectural exceptions.
+
 ## Component Ownership
 
 Shared component shape belongs in `@vellira-ui/types`.
