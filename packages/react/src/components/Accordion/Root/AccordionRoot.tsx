@@ -13,8 +13,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { AccordionContent } from '../Content';
 import { AccordionItem } from '../Item';
 import { AccordionTrigger } from '../Trigger';
-
-import type { AccordionProps } from './types';
+import type { AccordionProps } from '../types';
 
 import styles from '../Accordion.module.scss';
 
