@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  renderSharedBaseTypesTemplate,
   renderSharedCompoundTypesTemplate,
   renderSharedOverlayTypesTemplate,
 } from './templates';
@@ -63,6 +64,10 @@ function insertSharedTypesExport(content: string, exportLine: string) {
 
 function renderSharedTypes(plan: ComponentGenerationPlan) {
   switch (plan.profile) {
+    case 'base':
+      return renderSharedBaseTypesTemplate({
+        componentName: plan.componentName,
+      });
     case 'compound':
       return renderSharedCompoundTypesTemplate({
         componentName: plan.componentName,
@@ -73,7 +78,6 @@ function renderSharedTypes(plan: ComponentGenerationPlan) {
         componentName: plan.componentName,
       });
     case 'form-control':
-    case 'base':
       return null;
   }
 }
