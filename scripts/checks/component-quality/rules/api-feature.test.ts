@@ -146,20 +146,17 @@ describe('API/feature quality rules', () => {
     expect(result.status).toBe('pass');
   });
 
-  it(
-    'fails when the public Props contract is missing',
-    async () => {
-      createComponent({ typesSource: 'export type SomethingElse = string;\n' });
+  it('fails when the public Props contract is missing', async () => {
+    createComponent({ typesSource: 'export type SomethingElse = string;\n' });
 
-      const result = await publicApiSurfaceRule.evaluate({
-        metadata,
-        platform: 'react',
-      });
+    const result = await publicApiSurfaceRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('fail');
-      expect(result.message).toContain('ExampleProps');
-    }
-  );
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('ExampleProps');
+  });
 
   it(
     'rejects an orphan Props export unrelated to the callable component',
