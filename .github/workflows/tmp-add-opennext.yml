@@ -40,3 +40,5 @@ jobs:
           git add apps/website/package.json pnpm-lock.yaml
           git commit -m 'chore(website): add OpenNext Cloudflare adapter'
           git push origin HEAD:feat/website-cloudflare-staging
+
+# One-shot dependency updater; removes itself after committing the lockfile.
