@@ -53,10 +53,10 @@ jobs:
         run: pnpm --dir apps/website run sync:brand
 
       - name: Build website for Cloudflare Workers
-        run: pnpm --dir apps/website run build:vinext
+        run: pnpm --dir apps/website run build:opennext
 
       - name: Deploy website staging to Cloudflare Workers
-        run: pnpm --dir apps/website run deploy:vinext
+        run: pnpm --dir apps/website run deploy:opennext
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -95,7 +95,9 @@ jobs:
           }
 
           check_route '/' 'Vellira'
+          check_route '/components/switch' 'Switch component for Vellira applications.'
           check_route '/blog' 'Practical engineering notes on design systems'
           check_route '/blog/two-runtimes' 'One Design System, Two Runtimes'
+          check_route '/blog/two-runtimes' 'data-language="ts"'
           check_route '/blog/rss.xml' '<rss version="2.0"'
           check_route '/sitemap.xml' '<urlset'

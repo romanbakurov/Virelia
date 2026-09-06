@@ -1,17 +1,16 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vellira-website-staging",
+  "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-06",
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "main": "vinext/server/fetch-handler",
   "assets": {
-    "directory": "dist/client",
-    "not_found_handling": "none",
+    "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  "cache": {
+  "observability": {
     "enabled": true
   },
   "version_metadata": {
