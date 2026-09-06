@@ -151,6 +151,40 @@ Verify that generated token types are up to date:
 pnpm --filter @vellira-ui/tokens generate:types:check
 ```
 
+### Token preservation baseline
+
+Token Architecture Normalization V1 uses a committed resolved-value baseline to
+prevent naming and ownership cleanup from silently redesigning Vellira.
+
+Verify the baseline with:
+
+```bash
+pnpm --filter @vellira-ui/tokens preservation:check
+```
+
+The baseline records every resolved scalar token leaf for Light, Dark, and High
+Contrast. Normal token changes must not regenerate the baseline just to make a
+failure disappear. Instead, record the change in
+`src/preservation/token-migrations.ts` as an explicit rename, compatibility
+alias, removal, addition, representation-only change, or approved visual
+change. Renames and aliases are checked against the previous resolved identity,
+so cleanup does not require obsolete token names to remain canonical forever.
+
+`preservation:baseline` exists only to bootstrap or deliberately reset a
+reviewed baseline. A baseline reset is not evidence that a visual change is
+safe.
+
+Broad token migrations must also use the repository's canonical pinned Linux
+visual regression path:
+
+```bash
+pnpm test:e2e:web:visual:docker
+```
+
+Do not update visual baselines or the token preservation baseline merely to
+obtain green CI. Any intended visual change must be isolated and explicitly
+approved.
+
 ## Principles
 
 - Semantic tokens over hardcoded colors
