@@ -23,7 +23,7 @@ concurrency:
 env:
   NODE_VERSION: 22.22.0
   DOCS_DIST_DIR: apps/docs/src/.vitepress/dist
-  CLOUDFLARE_WORKER_NAME: vellira-docs-worker
+  CLOUDFLARE_WORKER_NAME: vellira-docs
 
 jobs:
   deploy:
