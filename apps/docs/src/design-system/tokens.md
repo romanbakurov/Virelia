@@ -146,4 +146,6 @@ Primitive palettes should rarely be referenced directly in application code.
 Instead, prefer semantic and component tokens so that visual changes remain
 centralized inside the design system.
 
-For the full layering model, see [Theme Architecture](/design-system/theme-architecture).
+For the canonical layering model, vocabulary, factory rules, and
+visual-preservation policy, see
+[Token Architecture](/design-system/theme-architecture).
