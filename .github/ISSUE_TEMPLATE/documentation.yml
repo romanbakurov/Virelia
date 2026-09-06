@@ -4,6 +4,11 @@ title: 'docs: '
 labels:
   - documentation
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Completed work follows the [Repository Definition of Done](https://github.com/vellira-dev/vellira/blob/main/docs/architecture/definition-of-done.md). The accepted scope, required validation, and final diff must be complete before the issue is considered Done.
+
   - type: input
     id: page
     attributes:
