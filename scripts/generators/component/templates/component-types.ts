@@ -57,14 +57,30 @@ ${partTypes ? `\n\n${partTypes}` : ''}
 `;
 }
 
+export function renderSharedOverlayTypesTemplate({
+  componentName,
+}: ComponentTemplateParams) {
+  return `/** Shared cross-platform controlled/uncontrolled overlay state. */
+export interface Base${componentName}Props {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+`;
+}
+
 export function renderCompoundTypesTemplate({
   componentName,
 }: ComponentTemplateParams) {
   return `import type { Base${componentName}Props } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
-export type ${componentName}Props = Base${componentName}Props & {
-  children?: ReactNode;
-};
+type WithChildren<T> = T extends unknown
+  ? T & {
+      children?: ReactNode;
+    }
+  : never;
+
+export type ${componentName}Props = WithChildren<Base${componentName}Props>;
 `;
 }
