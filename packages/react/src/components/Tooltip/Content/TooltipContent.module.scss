@@ -29,11 +29,33 @@
 
 .arrow {
   position: absolute;
+  box-sizing: border-box;
   width: var(--tooltip-arrow-size);
   height: var(--tooltip-arrow-size);
   background-color: var(--tooltip-arrow-bg);
+  border: 0 solid var(--tooltip-content-border);
   transform: rotate(45deg);
   pointer-events: none;
+
+  &[data-side='top'] {
+    border-right-width: var(--tooltip-content-border-width);
+    border-bottom-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-side='right'] {
+    border-bottom-width: var(--tooltip-content-border-width);
+    border-left-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-side='bottom'] {
+    border-top-width: var(--tooltip-content-border-width);
+    border-left-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-side='left'] {
+    border-top-width: var(--tooltip-content-border-width);
+    border-right-width: var(--tooltip-content-border-width);
+  }
 }
 
 @media (width <= 480px) {
