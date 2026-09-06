@@ -9,18 +9,21 @@ const codeBlockStyles = readFileSync(
 );
 
 describe('blog code block theme surfaces', () => {
-  it('keeps the toolbar and code body on distinct Vellira surfaces', () => {
+  it('keeps the toolbar and code body on distinct theme-aware surfaces', () => {
     expect(codeBlockStyles).toContain('background: var(--surface-subtle);');
     expect(codeBlockStyles).toContain('background: var(--surface-muted);');
+    expect(codeBlockStyles).toContain('background: var(--surface-background);');
+    expect(codeBlockStyles).toContain('var(--surface-background) 56%');
+    expect(codeBlockStyles).toContain('background: var(--surface-default);');
   });
 
-  it('keeps Shiki syntax colors while letting Vellira own dark theme surfaces', () => {
+  it('keeps the original dark Shiki background while preserving high-contrast surface ownership', () => {
     expect(codeBlockStyles).toContain('color: var(--shiki-dark) !important;');
     expect(codeBlockStyles).toContain(
       'color: var(--shiki-highContrast) !important;'
     );
     expect(
       codeBlockStyles.match(/background-color: transparent !important;/g)
-    ).toHaveLength(2);
+    ).toHaveLength(1);
   });
 });

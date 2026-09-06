@@ -24,6 +24,22 @@
   border-bottom: 1px solid var(--border-muted);
 }
 
+:global([data-vellira-theme='light']) .codeBlock {
+  background: var(--surface-background);
+}
+
+:global([data-vellira-theme='light']) .codeBlockToolbar {
+  background: color-mix(
+    in srgb,
+    var(--surface-background) 56%,
+    var(--surface-muted)
+  );
+}
+
+:global([data-vellira-theme='dark']) .codeBlockToolbar {
+  background: var(--surface-default);
+}
+
 .codeBlock :global(.shiki) {
   max-width: 100%;
   margin: 0;
@@ -40,7 +56,6 @@
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki),
 :global([data-vellira-theme='dark']) .codeBlock :global(.shiki span) {
   color: var(--shiki-dark) !important;
-  background-color: transparent !important;
 }
 
 :global([data-vellira-theme='high-contrast']) .codeBlock :global(.shiki),
