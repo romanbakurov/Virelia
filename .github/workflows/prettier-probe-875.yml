@@ -1,4 +1,4 @@
-name: Accordion Page Generate 875
+name: Tooling Fixture Fix 875
 
 on:
   push:
@@ -22,34 +22,51 @@ jobs:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Regenerate Accordion component page
+      - name: Add type ownership to stale test fixtures
         run: |
-          pnpm create:component-page Accordion --force
-          pnpm create:component-page Accordion --force --check
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              Path('scripts/component-production/generation.test.ts'): (
+                  "    control: 'value',\n    capabilities: [],",
+                  "    control: 'value',\n    typeOwnership: 'platform',\n    capabilities: [],",
+              ),
+              Path('scripts/generators/component/resolve-part-templates.test.ts'): (
+                  "  control: 'value',\n  capabilities: [],",
+                  "  control: 'value',\n  typeOwnership: 'shared',\n  capabilities: [],",
+              ),
+              Path('scripts/generators/component/resolve-templates.test.ts'): (
+                  "  control,\n  capabilities: [],",
+                  "  control,\n  typeOwnership: profile === 'base' ? 'platform' : 'shared',\n  capabilities: [],",
+              ),
+          }
+
+          for path, (old, new) in replacements.items():
+              source = path.read_text()
+              if source.count(old) != 1:
+                  raise SystemExit(f'{path}: expected exactly one fixture insertion point')
+              path.write_text(source.replace(old, new, 1))
+          PY
           pnpm exec prettier \
-            apps/website/src/component-catalog/components/Accordion/AccordionDemo.tsx \
-            apps/website/src/component-catalog/components/Accordion/AccordionPlayground.tsx \
-            apps/website/src/component-catalog/components/Accordion/AccordionUsage.tsx \
-            apps/website/src/component-catalog/components/Accordion/NativeAccordionDemo.tsx \
-            apps/website/src/component-catalog/components/Accordion/accordionApi.ts \
-            apps/website/src/component-catalog/components/Accordion/accordionPlaygroundSchema.ts \
-            --check
-      - name: Commit generator-owned Accordion page output
+            scripts/component-production/generation.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts \
+            --write
+          pnpm typecheck:tooling
+          pnpm exec vitest run --config vitest.tooling.config.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts
+      - name: Commit fixture typing patch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git diff --check
-          if git diff --quiet; then
-            echo "No generated Accordion page changes required."
-            exit 0
-          fi
           git add \
-            apps/website/src/component-catalog/components/Accordion/AccordionDemo.tsx \
-            apps/website/src/component-catalog/components/Accordion/AccordionPlayground.tsx \
-            apps/website/src/component-catalog/components/Accordion/AccordionUsage.tsx \
-            apps/website/src/component-catalog/components/Accordion/NativeAccordionDemo.tsx \
-            apps/website/src/component-catalog/components/Accordion/accordionApi.ts \
-            apps/website/src/component-catalog/components/Accordion/accordionPlaygroundSchema.ts
+            scripts/component-production/generation.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts
           git diff --cached --check
-          git commit -m "chore(accordion): regenerate component page"
+          git commit -m "test(generator): align type ownership fixtures"
           git push origin HEAD:fix/compound-shared-types
