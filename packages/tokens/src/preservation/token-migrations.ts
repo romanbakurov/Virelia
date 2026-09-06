@@ -101,6 +101,137 @@ export type TokenMigrationEntry =
 const valueKindWebFixApproval =
   '#881 explicitly requires correcting invalid unitless CSS serialization; targeted serializer regressions and the pinned Linux visual suite are the approval evidence.';
 
+const stateVocabularyVisualApproval =
+  '#879/#882 explicitly authorizes removal of pressed/active semantic conflation; the change stays inside the existing Vellira palette and requires pinned Linux visual regression.';
+
+const stateVocabularyRenamePairsV1 = [
+  [
+    'control-active-bg',
+    'semantic.control.active.bg',
+    'semantic.control.pressed.bg',
+  ],
+  [
+    'control-active-fg',
+    'semantic.control.active.fg',
+    'semantic.control.pressed.fg',
+  ],
+  [
+    'control-active-border',
+    'semantic.control.active.border',
+    'semantic.control.pressed.border',
+  ],
+  [
+    'control-selected-active-bg',
+    'semantic.control.selected.active.bg',
+    'semantic.control.selected.pressed.bg',
+  ],
+  [
+    'control-selected-active-fg',
+    'semantic.control.selected.active.fg',
+    'semantic.control.selected.pressed.fg',
+  ],
+  [
+    'control-selected-active-border',
+    'semantic.control.selected.active.border',
+    'semantic.control.selected.pressed.border',
+  ],
+  [
+    'action-primary-active-bg',
+    'semantic.action.primary.active.bg',
+    'semantic.action.primary.pressed.bg',
+  ],
+  [
+    'action-primary-active-fg',
+    'semantic.action.primary.active.fg',
+    'semantic.action.primary.pressed.fg',
+  ],
+  [
+    'action-primary-active-border',
+    'semantic.action.primary.active.border',
+    'semantic.action.primary.pressed.border',
+  ],
+  [
+    'action-secondary-active-bg',
+    'semantic.action.secondary.active.bg',
+    'semantic.action.secondary.pressed.bg',
+  ],
+  [
+    'action-secondary-active-fg',
+    'semantic.action.secondary.active.fg',
+    'semantic.action.secondary.pressed.fg',
+  ],
+  [
+    'action-secondary-active-border',
+    'semantic.action.secondary.active.border',
+    'semantic.action.secondary.pressed.border',
+  ],
+  [
+    'action-close-active-bg',
+    'semantic.action.close.active.bg',
+    'semantic.action.close.pressed.bg',
+  ],
+  [
+    'action-close-active-fg',
+    'semantic.action.close.active.fg',
+    'semantic.action.close.pressed.fg',
+  ],
+  [
+    'action-close-active-border',
+    'semantic.action.close.active.border',
+    'semantic.action.close.pressed.border',
+  ],
+  [
+    'action-danger-active-bg',
+    'semantic.action.danger.active.bg',
+    'semantic.action.danger.pressed.bg',
+  ],
+  [
+    'action-danger-active-fg',
+    'semantic.action.danger.active.fg',
+    'semantic.action.danger.pressed.fg',
+  ],
+  [
+    'action-danger-active-border',
+    'semantic.action.danger.active.border',
+    'semantic.action.danger.pressed.border',
+  ],
+  [
+    'text-interactive-active',
+    'semantic.text.interactiveActive',
+    'semantic.text.interactivePressed',
+  ],
+] as const;
+
+const stateVocabularyRenameMigrationsV1 = stateVocabularyRenamePairsV1.flatMap(
+  ([id, from, to]) => [
+    {
+      id: `882-${id}-rename`,
+      kind: 'rename',
+      issue: '#882',
+      reason:
+        'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
+      platforms: ['react-native'],
+      from,
+      to,
+    } as const,
+    {
+      id: `882-${id}-web-identity`,
+      kind: 'representation-change',
+      layer: 'platform-output',
+      issue: '#882',
+      reason:
+        'Align the public Web CSS variable identity with the canonical pressed state name.',
+      platforms: ['web'],
+      from,
+      to,
+      equivalence:
+        'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
+      evidence:
+        'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
+    } as const,
+  ]
+) satisfies readonly TokenMigrationEntry[];
+
 /**
  * Migration/test metadata only. This is not a runtime token registry.
  *
@@ -109,481 +240,7 @@ const valueKindWebFixApproval =
  * the preservation baseline is allowed to accept it.
  */
 export const tokenMigrationManifestV1 = [
-  {
-    id: '882-control-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.active.bg',
-    to: 'semantic.control.pressed.bg',
-  },
-  {
-    id: '882-control-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.active.bg',
-    to: 'semantic.control.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-control-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.active.fg',
-    to: 'semantic.control.pressed.fg',
-  },
-  {
-    id: '882-control-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.active.fg',
-    to: 'semantic.control.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-control-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.active.border',
-    to: 'semantic.control.pressed.border',
-  },
-  {
-    id: '882-control-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.active.border',
-    to: 'semantic.control.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-control-selected-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.selected.active.bg',
-    to: 'semantic.control.selected.pressed.bg',
-  },
-  {
-    id: '882-control-selected-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.selected.active.bg',
-    to: 'semantic.control.selected.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-control-selected-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.selected.active.fg',
-    to: 'semantic.control.selected.pressed.fg',
-  },
-  {
-    id: '882-control-selected-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.selected.active.fg',
-    to: 'semantic.control.selected.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-control-selected-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.control.selected.active.border',
-    to: 'semantic.control.selected.pressed.border',
-  },
-  {
-    id: '882-control-selected-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.control.selected.active.border',
-    to: 'semantic.control.selected.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-primary-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.primary.active.bg',
-    to: 'semantic.action.primary.pressed.bg',
-  },
-  {
-    id: '882-action-primary-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.primary.active.bg',
-    to: 'semantic.action.primary.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-primary-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.primary.active.fg',
-    to: 'semantic.action.primary.pressed.fg',
-  },
-  {
-    id: '882-action-primary-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.primary.active.fg',
-    to: 'semantic.action.primary.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-primary-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.primary.active.border',
-    to: 'semantic.action.primary.pressed.border',
-  },
-  {
-    id: '882-action-primary-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.primary.active.border',
-    to: 'semantic.action.primary.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-secondary-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.secondary.active.bg',
-    to: 'semantic.action.secondary.pressed.bg',
-  },
-  {
-    id: '882-action-secondary-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.secondary.active.bg',
-    to: 'semantic.action.secondary.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-secondary-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.secondary.active.fg',
-    to: 'semantic.action.secondary.pressed.fg',
-  },
-  {
-    id: '882-action-secondary-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.secondary.active.fg',
-    to: 'semantic.action.secondary.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-secondary-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.secondary.active.border',
-    to: 'semantic.action.secondary.pressed.border',
-  },
-  {
-    id: '882-action-secondary-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.secondary.active.border',
-    to: 'semantic.action.secondary.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-close-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.close.active.bg',
-    to: 'semantic.action.close.pressed.bg',
-  },
-  {
-    id: '882-action-close-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.close.active.bg',
-    to: 'semantic.action.close.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-close-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.close.active.fg',
-    to: 'semantic.action.close.pressed.fg',
-  },
-  {
-    id: '882-action-close-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.close.active.fg',
-    to: 'semantic.action.close.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-close-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.close.active.border',
-    to: 'semantic.action.close.pressed.border',
-  },
-  {
-    id: '882-action-close-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.close.active.border',
-    to: 'semantic.action.close.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-danger-active-bg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.danger.active.bg',
-    to: 'semantic.action.danger.pressed.bg',
-  },
-  {
-    id: '882-action-danger-active-bg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.danger.active.bg',
-    to: 'semantic.action.danger.pressed.bg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-danger-active-fg-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.danger.active.fg',
-    to: 'semantic.action.danger.pressed.fg',
-  },
-  {
-    id: '882-action-danger-active-fg-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.danger.active.fg',
-    to: 'semantic.action.danger.pressed.fg',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-action-danger-active-border-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.action.danger.active.border',
-    to: 'semantic.action.danger.pressed.border',
-  },
-  {
-    id: '882-action-danger-active-border-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.action.danger.active.border',
-    to: 'semantic.action.danger.pressed.border',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
-  {
-    id: '882-text-interactive-active-rename',
-    kind: 'rename',
-    issue: '#882',
-    reason:
-      'Rename a transient physical-interaction role to canonical pressed while preserving its resolved design value.',
-    platforms: ['react-native'],
-    from: 'semantic.text.interactiveActive',
-    to: 'semantic.text.interactivePressed',
-  },
-  {
-    id: '882-text-interactive-active-web-identity',
-    kind: 'representation-change',
-    layer: 'platform-output',
-    issue: '#882',
-    reason:
-      'Align the public Web CSS variable identity with the canonical pressed state name.',
-    platforms: ['web'],
-    from: 'semantic.text.interactiveActive',
-    to: 'semantic.text.interactivePressed',
-    equivalence:
-      'The paired canonical #882 rename preserves the resolved design value; only the Web CSS variable identity changes from active to pressed.',
-    evidence:
-      'Token preservation validates the canonical/RN value-preserving rename; generated CSS checks and pinned Linux visual regression validate Web output.',
-  },
+  ...stateVocabularyRenameMigrationsV1,
   {
     id: '882-radio-active-scale-remove',
     kind: 'remove',
@@ -600,8 +257,7 @@ export const tokenMigrationManifestV1 = [
       'Move the existing effective Radio press scale of 0.92 from misleading activeScale ownership to the canonical pressedScale token.',
     from: 'components.radio.motion.pressedScale',
     approved: true,
-    approvalEvidence:
-      '#879/#882 explicitly authorizes removal of pressed/active semantic conflation; the change stays inside the existing Vellira palette and requires pinned Linux visual regression.',
+    approvalEvidence: stateVocabularyVisualApproval,
   },
   {
     id: '882-input-clear-button-pressed-surface',
@@ -611,8 +267,7 @@ export const tokenMigrationManifestV1 = [
       'Map Input clear-button physical press to surface.pressed instead of the persistent/current surface.active role.',
     from: 'components.input.clearButton.pressedBg',
     approved: true,
-    approvalEvidence:
-      '#879/#882 explicitly authorizes removal of pressed/active semantic conflation; the change stays inside the existing Vellira palette and requires pinned Linux visual regression.',
+    approvalEvidence: stateVocabularyVisualApproval,
   },
   {
     id: '882-select-clear-button-pressed-surface',
@@ -622,8 +277,7 @@ export const tokenMigrationManifestV1 = [
       'Map Select clear-button physical press to surface.pressed instead of the persistent/current surface.active role.',
     from: 'components.select.clearButton.pressedBg',
     approved: true,
-    approvalEvidence:
-      '#879/#882 explicitly authorizes removal of pressed/active semantic conflation; the change stays inside the existing Vellira palette and requires pinned Linux visual regression.',
+    approvalEvidence: stateVocabularyVisualApproval,
   },
   {
     id: '881-modal-z-index-offset-number',
