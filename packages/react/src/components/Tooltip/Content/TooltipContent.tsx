@@ -69,6 +69,7 @@ function InternalArrow() {
     <div
       ref={tooltip.arrowRef}
       className={styles.arrow}
+      data-side={side}
       style={{
         left: tooltip.arrowX != null ? `${tooltip.arrowX}px` : undefined,
         top: tooltip.arrowY != null ? `${tooltip.arrowY}px` : undefined,
