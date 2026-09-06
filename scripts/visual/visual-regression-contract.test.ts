@@ -14,6 +14,8 @@ const storybookPackage = JSON.parse(
   scripts: Record<string, string>;
   devDependencies: Record<string, string>;
 };
+const rootScripts = rootPackage.scripts;
+const storybookScripts = storybookPackage.scripts;
 const compose = readRootFile('compose.yaml');
 const ci = readRootFile('.github/workflows/ci.yml');
 const buttonVisualSpec = readRootFile(
@@ -21,20 +23,17 @@ const buttonVisualSpec = readRootFile(
 );
 
 const playwrightVersion = storybookPackage.devDependencies['@playwright/test'];
-const canonicalImage = `mcr.microsoft.com/playwright:v${playwrightVersion}-noble`;
+const canonicalImage =
+  `mcr.microsoft.com/playwright:v${playwrightVersion}-noble`;
 const canonicalEnvironment = `playwright-v${playwrightVersion}-noble`;
 
 describe('Storybook visual regression contract', () => {
   it('keeps host-native E2E separate from canonical screenshot regression', () => {
-    expect(storybookPackage.scripts['test:e2e']).toContain(
-      '--grep-invert @visual'
-    );
-    expect(storybookPackage.scripts['test:e2e:visual']).toContain(
+    expect(storybookScripts['test:e2e']).toContain('--grep-invert @visual');
+    expect(storybookScripts['test:e2e:visual']).toContain(
       'assert-canonical-visual-environment.mjs'
     );
-    expect(storybookPackage.scripts['test:e2e:visual']).toContain(
-      '--grep @visual'
-    );
+    expect(storybookScripts['test:e2e:visual']).toContain('--grep @visual');
     expect(buttonVisualSpec).toContain("test('@visual");
     expect(buttonVisualSpec).toContain('maxDiffPixelRatio: 0.02');
   });
@@ -54,16 +53,16 @@ describe('Storybook visual regression contract', () => {
   });
 
   it('regenerates baselines only through the canonical visual Docker path', () => {
-    expect(rootPackage.scripts['test:e2e:web:visual:docker']).toBe(
+    expect(rootScripts['test:e2e:web:visual:docker']).toBe(
       'pnpm docker:e2e:visual'
     );
-    expect(rootPackage.scripts['docker:e2e:visual']).toContain(
+    expect(rootScripts['docker:e2e:visual']).toContain(
       'PLAYWRIGHT_SCRIPT=test:e2e:visual'
     );
-    expect(rootPackage.scripts['docker:e2e:update']).toContain(
+    expect(rootScripts['docker:e2e:update']).toContain(
       'PLAYWRIGHT_SCRIPT=test:e2e:visual'
     );
-    expect(rootPackage.scripts['docker:e2e:update']).toContain(
+    expect(rootScripts['docker:e2e:update']).toContain(
       'PLAYWRIGHT_ARGS=--update-snapshots'
     );
   });
