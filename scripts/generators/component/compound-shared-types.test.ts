@@ -5,8 +5,8 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
-  checkCompoundSharedTypesContract,
-  writeCompoundSharedTypes,
+  checkSharedTypesContract,
+  writeSharedTypesContract,
 } from './compound-shared-types';
 import { createComponentGenerationPlan } from './plan';
 import { resolvePartTemplates } from './resolve-part-templates';
@@ -14,9 +14,12 @@ import { resolveComponentTemplates } from './resolve-templates';
 
 const tempRoots: string[] = [];
 
-function createPlan() {
+function createPlan(
+  profile: 'compound' | 'overlay' = 'compound',
+  parts: readonly string[] = ['Root', 'Item', 'Trigger', 'Content']
+) {
   const root = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'vellira-compound-shared-types-')
+    path.join(os.tmpdir(), 'vellira-shared-types-')
   );
   tempRoots.push(root);
 
@@ -27,11 +30,19 @@ function createPlan() {
       platform: 'both',
       layer: 'components',
       category: 'utility',
-      profile: 'compound',
-      parts: ['Root', 'Item', 'Trigger', 'Content'],
+      profile,
+      parts,
       force: false,
     },
   });
+}
+
+function writeSharedMetadata(plan: ReturnType<typeof createPlan>) {
+  fs.mkdirSync(path.dirname(plan.metadataFile), { recursive: true });
+  fs.writeFileSync(
+    plan.metadataFile,
+    "dependencies: { packages: ['@vellira-ui/types'] },\n"
+  );
 }
 
 afterEach(() => {
@@ -40,8 +51,8 @@ afterEach(() => {
   }
 });
 
-describe('compound shared type ownership', () => {
-  it('writes a platform-neutral shared contract and registers its barrel', () => {
+describe('shared type ownership', () => {
+  it('writes a platform-neutral compound contract and registers its barrel', () => {
     const plan = createPlan();
 
     fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), {
@@ -52,10 +63,11 @@ describe('compound shared type ownership', () => {
       "export * from './button';\nexport * from './tabs';\n"
     );
 
-    const result = writeCompoundSharedTypes(plan);
+    const result = writeSharedTypesContract(plan);
     const sharedTypes = fs.readFileSync(plan.sharedTypesFile, 'utf8');
     const sharedBarrel = fs.readFileSync(plan.sharedTypesBarrelFile, 'utf8');
 
+    expect(plan.typeOwnership).toBe('shared');
     expect(result.createdFiles).toContain(plan.sharedTypesFile);
     expect(result.updatedFiles).toContain(plan.sharedTypesBarrelFile);
     expect(sharedTypes).toContain('BaseDisclosureProbeProps');
@@ -69,7 +81,7 @@ describe('compound shared type ownership', () => {
     );
   });
 
-  it('routes generated platform props through shared Base types', () => {
+  it('routes generated compound platform props through shared Base types', () => {
     const plan = createPlan();
 
     for (const target of plan.targets) {
@@ -115,7 +127,8 @@ describe('compound shared type ownership', () => {
       recursive: true,
     });
     fs.writeFileSync(plan.sharedTypesBarrelFile, '');
-    writeCompoundSharedTypes(plan);
+    writeSharedTypesContract(plan);
+    writeSharedMetadata(plan);
 
     for (const target of plan.targets) {
       fs.mkdirSync(target.componentDir, { recursive: true });
@@ -137,6 +150,67 @@ describe('compound shared type ownership', () => {
       }
     }
 
-    expect(checkCompoundSharedTypesContract(plan)).toEqual([]);
+    expect(checkSharedTypesContract(plan)).toEqual([]);
+  });
+
+  it('detects missing shared ownership evidence deterministically', () => {
+    const plan = createPlan();
+
+    expect(checkSharedTypesContract(plan)).toEqual(
+      expect.arrayContaining([
+        plan.sharedTypesFile,
+        plan.sharedTypesBarrelFile,
+        plan.metadataFile,
+      ])
+    );
+  });
+
+  it('shares overlay open-state semantics while preserving platform divergence', () => {
+    const plan = createPlan('overlay', ['Root', 'Trigger', 'Content']);
+
+    fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), {
+      recursive: true,
+    });
+    fs.writeFileSync(plan.sharedTypesBarrelFile, '');
+
+    writeSharedTypesContract(plan);
+
+    const sharedTypes = fs.readFileSync(plan.sharedTypesFile, 'utf8');
+    expect(sharedTypes).toContain('BaseDisclosureProbeProps');
+    expect(sharedTypes).toContain('open?: boolean');
+    expect(sharedTypes).toContain('defaultOpen?: boolean');
+    expect(sharedTypes).toContain('onOpenChange?: (open: boolean) => void');
+
+    const webTarget = plan.targets.find((target) => !target.isNative);
+    const nativeTarget = plan.targets.find((target) => target.isNative);
+
+    expect(webTarget).toBeDefined();
+    expect(nativeTarget).toBeDefined();
+
+    const webTypes = resolveComponentTemplates({
+      plan,
+      target: webTarget!,
+    }).types;
+    const nativeTypes = resolveComponentTemplates({
+      plan,
+      target: nativeTarget!,
+    }).types;
+
+    expect(webTypes).toContain('BaseDisclosureProbeProps');
+    expect(nativeTypes).toContain('BaseDisclosureProbeProps');
+    expect(webTypes).toContain('closeOnEscape?: boolean');
+    expect(nativeTypes).not.toContain('closeOnEscape?: boolean');
+
+    for (const target of plan.targets) {
+      const rootTemplates = resolvePartTemplates({
+        plan,
+        target,
+        partName: 'Root',
+      });
+
+      expect(rootTemplates.types).not.toContain('DisclosureProbeRootProps');
+      expect(rootTemplates.component).toContain('DisclosureProbeProps');
+      expect(rootTemplates.component).toContain("from '../types'");
+    }
   });
 });
