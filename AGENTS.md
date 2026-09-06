@@ -1,3 +1,14 @@
+## Repository Definition of Done
+
+Before calling any Vellira task Done, merge-ready, or safe to close, read and
+follow `docs/architecture/definition-of-done.md`.
+
+This applies to all implementation, review, remediation, generator, tooling,
+documentation, and CI work. Green CI alone does not override an unproven
+acceptance criterion or a known in-scope correctness gap. Validation evidence
+must belong to the exact final HEAD. Launch-critical work uses the same contract
+with stricter evidence requirements.
+
 ## Vellira-first UI policy
 
 When implementing or reviewing maintained first-party UI, read and follow
