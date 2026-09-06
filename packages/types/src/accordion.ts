@@ -28,9 +28,7 @@ type AccordionMultipleProps = {
   disabled?: boolean;
 };
 
-export type BaseAccordionProps =
-  | AccordionSingleProps
-  | AccordionMultipleProps;
+export type BaseAccordionProps = AccordionSingleProps | AccordionMultipleProps;
 
 export interface BaseAccordionItemProps {
   /** Stable item value used by the root selection state. */
