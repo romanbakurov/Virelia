@@ -180,10 +180,13 @@ alias, removal, addition, representation-only change, or approved visual
 change. Renames and aliases are checked against the previous resolved identity,
 so cleanup does not require obsolete token names to remain canonical forever.
 
-A representation-only migration must name the affected platform and provide
-explicit equivalence evidence. If a future Web or React Native adapter changes
-how a canonical value is represented, that migration must prove equivalent
-resolved output rather than silently bypassing preservation.
+Representation-only migrations explicitly declare their layer. A `canonical`
+representation change is used when the renderer-neutral value changes shape or
+type while retaining the same rendered meaning, for example a reviewed numeric
+normalization such as `'1'` to `1`. A `platform-output` representation change
+must additionally name the affected Web or React Native platform. Both forms
+require explicit equivalence evidence; neither is an escape hatch for visual
+drift.
 
 `preservation:baseline` is a bootstrap command and refuses to overwrite an
 existing committed baseline during normal work. A deliberate reviewed reset
