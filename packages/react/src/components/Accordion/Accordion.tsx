@@ -1,4 +1,5 @@
 import { Children, Fragment, isValidElement } from 'react';
+
 import type { ReactElement, ReactNode } from 'react';
 
 import { AccordionContent } from './Content';
