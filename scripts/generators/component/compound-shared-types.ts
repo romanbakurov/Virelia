@@ -1,11 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { renderSharedCompoundTypesTemplate } from './templates';
+import {
+  renderSharedCompoundTypesTemplate,
+  renderSharedOverlayTypesTemplate,
+} from './templates';
 
 import type { ComponentGenerationPlan } from './plan';
 
-export type CompoundSharedTypesResult = {
+export type SharedTypesResult = {
   createdFiles: string[];
   updatedFiles: string[];
 };
@@ -58,22 +61,46 @@ function insertSharedTypesExport(content: string, exportLine: string) {
   return nextContent.endsWith('\n') ? nextContent : `${nextContent}\n`;
 }
 
-export function writeCompoundSharedTypes(
+function renderSharedTypes(plan: ComponentGenerationPlan) {
+  switch (plan.profile) {
+    case 'compound':
+      return renderSharedCompoundTypesTemplate({
+        componentName: plan.componentName,
+        parts: plan.parts,
+      });
+    case 'overlay':
+      return renderSharedOverlayTypesTemplate({
+        componentName: plan.componentName,
+      });
+    case 'form-control':
+    case 'base':
+      return null;
+  }
+}
+
+/**
+ * Writes shared contracts not already owned by the specialized form-control
+ * writer. Whether a contract is shared is decided by plan.typeOwnership; the
+ * profile only selects the semantic template shape after ownership is known.
+ */
+export function writeSharedTypesContract(
   plan: ComponentGenerationPlan
-): CompoundSharedTypesResult {
-  const result: CompoundSharedTypesResult = {
+): SharedTypesResult {
+  const result: SharedTypesResult = {
     createdFiles: [],
     updatedFiles: [],
   };
 
-  if (plan.profile !== 'compound') {
+  if (plan.typeOwnership !== 'shared') {
     return result;
   }
 
-  const nextSharedTypes = renderSharedCompoundTypesTemplate({
-    componentName: plan.componentName,
-    parts: plan.parts,
-  });
+  const nextSharedTypes = renderSharedTypes(plan);
+
+  if (nextSharedTypes === null) {
+    return result;
+  }
+
   const sharedTypesExists = fs.existsSync(plan.sharedTypesFile);
   const currentSharedTypes = sharedTypesExists
     ? fs.readFileSync(plan.sharedTypesFile, 'utf8')
@@ -107,10 +134,10 @@ export function writeCompoundSharedTypes(
   return result;
 }
 
-export function checkCompoundSharedTypesContract(
+export function checkSharedTypesContract(
   plan: ComponentGenerationPlan
 ): string[] {
-  if (plan.profile !== 'compound') {
+  if (plan.typeOwnership !== 'shared') {
     return [];
   }
 
@@ -144,46 +171,55 @@ export function checkCompoundSharedTypesContract(
       driftedFiles.push(componentTypesFile);
     }
 
-    const rootTypesFile = path.join(target.componentDir, 'Root', 'types.ts');
-
-    if (!fs.existsSync(rootTypesFile)) {
-      driftedFiles.push(rootTypesFile);
-    }
-
-    const rootComponentFile = path.join(
-      target.componentDir,
-      'Root',
-      `${plan.componentName}Root.tsx`
-    );
-    const rootComponent = fs.existsSync(rootComponentFile)
-      ? fs.readFileSync(rootComponentFile, 'utf8')
-      : '';
-
-    if (
-      !rootComponent.includes(`${plan.componentName}Props`) ||
-      !rootComponent.includes("from '../types'") ||
-      rootComponent.includes(`${plan.componentName}RootProps`)
-    ) {
-      driftedFiles.push(rootComponentFile);
-    }
-
-    for (const partName of plan.parts.filter(
-      (candidate) => candidate !== 'Root'
-    )) {
-      const partTypesFile = path.join(
+    if (plan.parts.includes('Root')) {
+      const rootTypesFile = path.join(target.componentDir, 'Root', 'types.ts');
+      const rootTypes = fs.existsSync(rootTypesFile)
+        ? fs.readFileSync(rootTypesFile, 'utf8')
+        : '';
+      const rootComponentFile = path.join(
         target.componentDir,
-        partName,
-        'types.ts'
+        'Root',
+        `${plan.componentName}Root.tsx`
       );
-      const partTypes = fs.existsSync(partTypesFile)
-        ? fs.readFileSync(partTypesFile, 'utf8')
+      const rootComponent = fs.existsSync(rootComponentFile)
+        ? fs.readFileSync(rootComponentFile, 'utf8')
         : '';
 
       if (
-        !partTypes.includes('@vellira-ui/types') ||
-        !partTypes.includes(`Base${plan.componentName}${partName}Props`)
+        !rootTypesFile ||
+        !rootTypes.includes(`${plan.componentName}Root consumes`)
       ) {
-        driftedFiles.push(partTypesFile);
+        driftedFiles.push(rootTypesFile);
+      }
+
+      if (
+        !rootComponent.includes(`${plan.componentName}Props`) ||
+        !rootComponent.includes("from '../types'") ||
+        rootComponent.includes(`${plan.componentName}RootProps`)
+      ) {
+        driftedFiles.push(rootComponentFile);
+      }
+    }
+
+    if (plan.profile === 'compound') {
+      for (const partName of plan.parts.filter(
+        (candidate) => candidate !== 'Root'
+      )) {
+        const partTypesFile = path.join(
+          target.componentDir,
+          partName,
+          'types.ts'
+        );
+        const partTypes = fs.existsSync(partTypesFile)
+          ? fs.readFileSync(partTypesFile, 'utf8')
+          : '';
+
+        if (
+          !partTypes.includes('@vellira-ui/types') ||
+          !partTypes.includes(`Base${plan.componentName}${partName}Props`)
+        ) {
+          driftedFiles.push(partTypesFile);
+        }
       }
     }
   }
