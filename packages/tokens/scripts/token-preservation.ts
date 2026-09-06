@@ -214,14 +214,11 @@ function migrationAppliesToContext(
   context: PreservationContext
 ): boolean {
   if (migration.kind === 'representation-change') {
-    if (context === 'canonical') {
-      return migration.layer === 'canonical';
+    if (migration.layer === 'canonical') {
+      return context === 'canonical' || context === 'react-native';
     }
 
-    return (
-      migration.layer === 'platform-output' &&
-      migration.platforms.includes(context)
-    );
+    return context !== 'canonical' && migration.platforms.includes(context);
   }
 
   if (context === 'canonical') {
