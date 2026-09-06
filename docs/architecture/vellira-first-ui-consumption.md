@@ -96,6 +96,38 @@ The enhancement should preserve the existing component's ownership of:
 
 Do not solve a capability gap by shipping a parallel first-party implementation.
 
+## Shared Cross-Platform Type Ownership
+
+Renderer-neutral public component semantics have one canonical type owner.
+When React and React Native expose the same semantic API, that shared contract
+belongs in `@vellira-ui/types` rather than being declared independently in both
+renderer packages.
+
+React and React Native public types should derive from the canonical shared
+contract and add, omit, or adapt only genuine platform-specific concerns such as
+DOM attributes, native styles, platform events, or capabilities that do not
+exist on the other renderer.
+
+Do not:
+
+- duplicate the same controlled/uncontrolled, value, state, variant, or part
+  semantics independently in React and React Native;
+- export a top-level public `ComponentProps` contract that is unrelated to the
+  props type used by the actual callable component or compound root;
+- use type assertions to hide a mismatch between a canonical public contract and
+  its implementation;
+- force false platform parity when a semantic contract is genuinely
+  platform-specific.
+
+For compound components, shared root and part semantics should have canonical
+ownership where those semantics are common across renderers. Renderer-local
+`Root`, `Trigger`, `Content`, `Item`, or equivalent types may extend or adapt the
+shared contract, but must not become an independent second source of truth.
+
+Generator, metadata, public API, docs, and quality tooling must preserve and
+validate this ownership. The Generator V2 enforcement and existing Accordion
+migration for this rule are tracked by #876.
+
 ## Local Composition And Layout Are Allowed
 
 Vellira-first does not prohibit normal application code.
@@ -171,8 +203,8 @@ to #851. Do not embed an incompatible one-off request schema in product code.
 
 The repository component generator is invoked through `pnpm create:component`.
 Generator-owned work is deterministic repository plumbing: component structure,
-platform skeletons, registration, exports, metadata, and other consequences the
-generator contract owns.
+platform skeletons, registration, exports, metadata, canonical shared type
+ownership where applicable, and other consequences the generator contract owns.
 
 Generation does not authorize unresolved product decisions. Component-specific
 API semantics, behavior, accessibility, visual intent, and platform behavior
@@ -184,19 +216,20 @@ completion merely to unblock a consuming app.
 
 ## Canonical Authorities
 
-| Concern                           | Canonical authority                                         |
-| --------------------------------- | ----------------------------------------------------------- |
-| React components                  | `@vellira-ui/react` / `packages/react`                      |
-| React Native components           | `@vellira-ui/react-native` / `packages/react-native`        |
-| Component metadata/catalog        | `@vellira-ui/metadata` / `packages/metadata`                |
-| Design tokens and theme contracts | `@vellira-ui/tokens` / `packages/tokens`                    |
-| Token architecture metadata       | `packages/tokens/src/token-architecture.ts`                 |
-| Icons                             | `@vellira-ui/icons` / `packages/icons`                      |
-| Shared assets                     | `@vellira-ui/assets` / `packages/assets`                    |
-| Shared behavior/contracts         | `@vellira-ui/core` and `@vellira-ui/types` where applicable |
-| Deterministic component scaffold  | `pnpm create:component` / `scripts/generators/component`    |
-| Component quality/completeness    | repository component checks and production validation       |
-| Architectural exceptions          | this policy plus an explicit owning issue/PR justification  |
+| Concern                           | Canonical authority                                      |
+| --------------------------------- | -------------------------------------------------------- |
+| React components                  | `@vellira-ui/react` / `packages/react`                   |
+| React Native components           | `@vellira-ui/react-native` / `packages/react-native`     |
+| Component metadata/catalog        | `@vellira-ui/metadata` / `packages/metadata`             |
+| Design tokens and theme contracts | `@vellira-ui/tokens` / `packages/tokens`                 |
+| Token architecture metadata       | `packages/tokens/src/token-architecture.ts`              |
+| Icons                             | `@vellira-ui/icons` / `packages/icons`                   |
+| Shared assets                     | `@vellira-ui/assets` / `packages/assets`                 |
+| Cross-platform public API types   | `@vellira-ui/types` / `packages/types`                   |
+| Shared behavior/hooks             | `@vellira-ui/core` where applicable                      |
+| Deterministic component scaffold  | `pnpm create:component` / `scripts/generators/component` |
+| Component quality/completeness    | repository component checks and production validation    |
+| Architectural exceptions          | this policy plus an explicit owning issue/PR reason      |
 
 Public Vellira metadata and package exports remain the source of truth for
 consumers and automation. Private automation must consume those authorities
@@ -232,15 +265,22 @@ answer:
 2. If yes, is the public canonical resource reused?
 3. If the existing component lacks a capability, is the change routed to that
    component rather than duplicated locally?
-4. If a reusable component is missing, is the consumer fail-closed and routed to
+4. If React and React Native share public semantics, do their renderer contracts
+   derive from `@vellira-ui/types` rather than redeclare those semantics
+   independently?
+5. Is the exported public Props contract tied to the actual callable component
+   or compound root contract?
+6. If a reusable component is missing, is the consumer fail-closed and routed to
    #851 rather than shipping a permanent substitute?
-5. If a design resource is missing, is #760's canonical resource path followed?
-6. Are local HTML/CSS/React Native primitives only doing composition/layout or
+7. If a design resource is missing, is #760's canonical resource path followed?
+8. Are local HTML/CSS/React Native primitives only doing composition/layout or
    canonical component implementation work?
-7. Is any third-party/framework bypass explicitly justified as an architectural
+9. Is any third-party/framework bypass explicitly justified as an architectural
    exception?
-8. Do tokens/icons/assets come from their canonical authorities?
+10. Do tokens/icons/assets come from their canonical authorities?
 
-#850 is responsible for turning appropriate parts of this policy into
-repository-wide detection. #852 is responsible for auditing and migrating legacy
-first-party usages before that enforcement becomes blocking.
+#876 is responsible for making shared TypeScript API ownership deterministic in
+Generator V2 and migrating the existing Accordion regression. #850 is responsible
+for turning appropriate consumer-facing parts of this policy into repository-wide
+detection. #852 is responsible for auditing and migrating legacy first-party
+usages before that enforcement becomes blocking.
