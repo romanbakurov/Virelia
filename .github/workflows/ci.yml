@@ -108,6 +108,11 @@ jobs:
       - name: Tests and coverage
         run: pnpm ci:test
 
+      - name: Visual regression
+        run: pnpm test:e2e:web:visual
+        env:
+          VELLIRA_VISUAL_ENVIRONMENT: playwright-v1.61.1-noble
+
       - name: Upload Playwright artifacts
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
