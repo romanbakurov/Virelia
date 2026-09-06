@@ -31,12 +31,7 @@ type InternalItemProps = {
 };
 
 export function AccordionRoot(props: AccordionProps) {
-  const {
-    children,
-    value,
-    defaultValue,
-    disabled = false,
-  } = props;
+  const { children, value, defaultValue, disabled = false } = props;
   const type = props.type ?? 'single';
   const collapsible =
     props.type === 'multiple' ? false : (props.collapsible ?? false);
