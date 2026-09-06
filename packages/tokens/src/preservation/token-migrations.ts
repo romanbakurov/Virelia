@@ -98,6 +98,9 @@ export type TokenMigrationEntry =
   | TokenRepresentationMigration
   | TokenVisualChangeMigration;
 
+const valueKindWebFixApproval =
+  '#881 explicitly requires correcting invalid unitless CSS serialization; targeted serializer regressions and the pinned Linux visual suite are the approval evidence.';
+
 /**
  * Migration/test metadata only. This is not a runtime token registry.
  *
@@ -105,5 +108,84 @@ export type TokenMigrationEntry =
  * change, or intentionally approved visual change must be recorded here before
  * the preservation baseline is allowed to accept it.
  */
-export const tokenMigrationManifestV1 =
-  [] satisfies readonly TokenMigrationEntry[];
+export const tokenMigrationManifestV1 = [
+  {
+    id: '881-modal-z-index-offset-number',
+    kind: 'representation-change',
+    layer: 'canonical',
+    issue: '#881',
+    reason:
+      'Remove a stringified-number workaround now that z-index/order has a canonical unitless numeric kind.',
+    from: 'components.modal.content.zIndexOffset',
+    equivalence:
+      'Canonical "1" and numeric 1 represent the same stack offset; Web serialization remains the literal value 1.',
+    evidence:
+      'The value-kind serializer regression locks Web output to 1 and current first-party Modal renderers do not consume the old string representation directly.',
+  },
+  {
+    id: '881-radio-pressed-scale-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Correct Radio pressed scale from invalid px-suffixed transform input to the intended unitless scale.',
+    from: 'components.radio.motion.pressedScale',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+  {
+    id: '881-radio-active-scale-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Correct Radio active scale from invalid px-suffixed transform input to the intended unitless scale.',
+    from: 'components.radio.motion.activeScale',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+  {
+    id: '881-radio-pressed-opacity-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Correct Radio pressed opacity from invalid px-suffixed output to the intended unitless opacity.',
+    from: 'components.radio.motion.pressedOpacity',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+  {
+    id: '881-tooltip-scale-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Correct Tooltip content scale from invalid px-suffixed transform input to the intended unitless scale.',
+    from: 'components.tooltip.content.scale',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+  {
+    id: '881-popover-native-shadow-opacity-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Publish the native Popover shadow opacity with its canonical unitless representation instead of an invalid px suffix.',
+    from: 'components.popover.content.shadow.native.opacity',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+  {
+    id: '881-popover-native-shadow-elevation-web',
+    kind: 'visual-change',
+    issue: '#881',
+    platforms: ['web'],
+    reason:
+      'Publish the native Popover shadow elevation with its canonical unitless representation instead of an invalid px suffix.',
+    from: 'components.popover.content.shadow.native.elevation',
+    approved: true,
+    approvalEvidence: valueKindWebFixApproval,
+  },
+] satisfies readonly TokenMigrationEntry[];

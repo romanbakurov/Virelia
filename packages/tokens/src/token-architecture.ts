@@ -17,6 +17,262 @@ export const tokenArchitectureLayers = [
 export const tokenArchitectureFlow =
   'primitive -> semantic -> component-factory -> component -> platform-output -> consumer' as const;
 
+export const tokenValueKinds = [
+  'color',
+  'length',
+  'unitless-number',
+  'opacity',
+  'scale',
+  'z-index',
+  'duration',
+  'easing',
+  'shadow',
+  'font-family',
+  'font-weight',
+  'font-size',
+  'line-height',
+  'raw-string',
+] as const;
+
+export type TokenValueKind = (typeof tokenValueKinds)[number];
+
+export const tokenValueKindWebContract = {
+  color: { numericUnit: null },
+  length: { numericUnit: 'px' },
+  'unitless-number': { numericUnit: '' },
+  opacity: { numericUnit: '' },
+  scale: { numericUnit: '' },
+  'z-index': { numericUnit: '' },
+  duration: { numericUnit: 'ms' },
+  easing: { numericUnit: null },
+  shadow: { numericUnit: null },
+  'font-family': { numericUnit: null },
+  'font-weight': { numericUnit: '' },
+  'font-size': { numericUnit: 'px' },
+  'line-height': { numericUnit: 'px' },
+  'raw-string': { numericUnit: null },
+} as const satisfies Record<
+  TokenValueKind,
+  { readonly numericUnit: string | null }
+>;
+
+/**
+ * Canonical numeric role families. Matching is by semantic role words, not by
+ * one-off full token paths. Compound roles may put the semantic family at
+ * either edge (`paddingBottom`, `borderWidth`, `contentScale`), and nested
+ * scales may inherit meaning from their nearest parent role (`size.sm`).
+ */
+export const canonicalComponentNumericRoleFamilies = {
+  scale: ['scale'],
+  opacity: ['opacity'],
+  'z-index': ['zIndex', 'zIndexOffset', 'order'],
+  'unitless-number': ['elevation'],
+  'font-weight': ['fontWeight'],
+  'font-size': ['fontSize'],
+  'line-height': ['lineHeight'],
+  duration: ['duration'],
+  length: [
+    'width',
+    'height',
+    'size',
+    'gap',
+    'padding',
+    'paddingX',
+    'paddingY',
+    'radius',
+    'margin',
+    'marginX',
+    'marginY',
+    'offset',
+    'blur',
+    'translateX',
+    'translateY',
+    'travel',
+  ],
+} as const satisfies Partial<Record<TokenValueKind, readonly string[]>>;
+
+const componentStringRoleFamilies = {
+  duration: ['duration'],
+  easing: ['easing'],
+  color: [
+    'bg',
+    'fg',
+    'border',
+    'ring',
+    'color',
+    'placeholder',
+    'icon',
+    'indicator',
+    'divider',
+  ],
+  shadow: ['shadow'],
+} as const satisfies Partial<Record<TokenValueKind, readonly string[]>>;
+
+function lastTokenPathSegment(tokenPath: string): string {
+  return tokenPath.split('.').at(-1) ?? '';
+}
+
+function splitRoleWords(role: string): string[] {
+  return role
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function matchesRoleFamily(role: string, families: readonly string[]): boolean {
+  const roleWords = splitRoleWords(role);
+
+  return families.some((family) => {
+    const familyWords = splitRoleWords(family);
+
+    if (familyWords.length > roleWords.length) return false;
+
+    const prefixMatches = familyWords.every(
+      (word, index) => roleWords[index] === word
+    );
+    const suffixStart = roleWords.length - familyWords.length;
+    const suffixMatches = familyWords.every(
+      (word, index) => roleWords[suffixStart + index] === word
+    );
+
+    return prefixMatches || suffixMatches;
+  });
+}
+
+function resolveRoleKind(
+  role: string,
+  families: Partial<Record<TokenValueKind, readonly string[]>>
+): TokenValueKind | null {
+  for (const [kind, roleFamilies] of Object.entries(families) as Array<
+    [TokenValueKind, readonly string[]]
+  >) {
+    if (matchesRoleFamily(role, roleFamilies)) return kind;
+  }
+
+  return null;
+}
+
+function resolveShadowLeafKind(tokenPath: string): TokenValueKind | null {
+  const role = lastTokenPathSegment(tokenPath).toLowerCase();
+
+  if (role === 'x' || role === 'y' || role === 'blur') return 'length';
+  if (role === 'opacity') return 'opacity';
+  if (role === 'elevation') return 'unitless-number';
+  if (role === 'color') return 'color';
+
+  return null;
+}
+
+function componentRoleSegments(tokenPath: string): string[] {
+  const segments = tokenPath.split('.');
+
+  if (
+    tokenPath.startsWith('components.') ||
+    tokenPath.startsWith('tokens.controlSizes.')
+  ) {
+    return segments.slice(2);
+  }
+
+  return segments;
+}
+
+function resolveComponentValueKind(
+  tokenPath: string,
+  value: string | number
+): TokenValueKind | null {
+  if (tokenPath.includes('.shadow.native.')) {
+    const shadowKind = resolveShadowLeafKind(tokenPath);
+    if (shadowKind) return shadowKind;
+  }
+
+  const roleSegments = componentRoleSegments(tokenPath);
+
+  // Token meaning comes from its canonical path, not from the runtime storage
+  // type. This keeps stringified numeric workarounds visible to validation.
+  for (let index = roleSegments.length - 1; index >= 0; index -= 1) {
+    const numericRoleKind = resolveRoleKind(
+      roleSegments[index]!,
+      canonicalComponentNumericRoleFamilies
+    );
+
+    if (numericRoleKind) return numericRoleKind;
+  }
+
+  if (typeof value === 'number') return null;
+
+  const role = roleSegments.at(-1) ?? '';
+  return resolveRoleKind(role, componentStringRoleFamilies) ?? 'raw-string';
+}
+
+/**
+ * Resolve the canonical value kind for a scalar token path.
+ *
+ * Unknown strings remain explicit raw strings because CSS accepts many
+ * renderer-specific string representations. Unknown numeric paths are rejected
+ * by `requireTokenValueKind`: a number must always declare meaning through the
+ * canonical namespace or role vocabulary before it can reach a renderer.
+ */
+export function resolveTokenValueKind(
+  tokenPath: string,
+  value: string | number
+): TokenValueKind | null {
+  if (tokenPath.startsWith('colors.')) return 'color';
+  if (tokenPath.startsWith('primitives.overlay.')) return 'color';
+
+  if (tokenPath.startsWith('semantic.')) {
+    if (
+      tokenPath.startsWith('semantic.shadow.') ||
+      tokenPath.endsWith('.shadow')
+    ) {
+      return 'shadow';
+    }
+
+    if (tokenPath === 'semantic.focus.ring.width') return 'length';
+
+    return 'color';
+  }
+
+  if (tokenPath.startsWith('tokens.spacing.')) return 'length';
+  if (tokenPath.startsWith('tokens.radius.')) return 'length';
+  if (tokenPath.startsWith('tokens.zIndex.')) return 'z-index';
+  if (tokenPath.startsWith('tokens.typography.family.')) return 'font-family';
+  if (tokenPath.startsWith('tokens.typography.weight.')) return 'font-weight';
+  if (tokenPath.startsWith('tokens.typography.size.')) return 'font-size';
+  if (tokenPath.startsWith('tokens.typography.lineHeight.')) {
+    return 'line-height';
+  }
+
+  if (tokenPath.startsWith('tokens.shadows.')) {
+    return resolveShadowLeafKind(tokenPath);
+  }
+
+  if (tokenPath.startsWith('tokens.controlSizes.')) {
+    return resolveComponentValueKind(tokenPath, value);
+  }
+
+  if (tokenPath.startsWith('components.')) {
+    return resolveComponentValueKind(tokenPath, value);
+  }
+
+  return typeof value === 'number' ? null : 'raw-string';
+}
+
+export function requireTokenValueKind(
+  tokenPath: string,
+  value: string | number
+): TokenValueKind {
+  const kind = resolveTokenValueKind(tokenPath, value);
+
+  if (kind) return kind;
+
+  throw new Error(
+    `Unknown numeric token value kind for "${tokenPath}". Add a canonical namespace or role rule before serializing this token.`
+  );
+}
+
 export const canonicalTokenVocabulary = {
   surface: [
     'canvas',
