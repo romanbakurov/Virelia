@@ -15,9 +15,7 @@ function insertSharedTypesExport(content: string, exportLine: string) {
     return content;
   }
 
-  const matches = [
-    ...content.matchAll(/^export \* from '([^']+)';$/gm),
-  ];
+  const matches = [...content.matchAll(/^export \* from '([^']+)';$/gm)];
 
   if (matches.length === 0) {
     return content.length === 0
