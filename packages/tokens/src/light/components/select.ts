@@ -207,7 +207,7 @@ export const select = {
     hoverFg: status.error.fg,
     hoverBg: status.error.bg,
     focusBg: surface.subtle,
-    pressedBg: surface.active,
+    pressedBg: surface.pressed,
   },
 
   option: {

@@ -128,7 +128,7 @@ export const radio = {
 
   hover: control.hover,
 
-  pressed: control.active,
+  pressed: control.pressed,
 
   primary,
   neutral,

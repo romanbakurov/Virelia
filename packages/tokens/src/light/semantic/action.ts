@@ -14,7 +14,7 @@ export const action = {
       fg: text.inverse,
       border: colors.primary[700],
     },
-    active: {
+    pressed: {
       bg: colors.primary[800],
       fg: text.inverse,
       border: colors.primary[800],
@@ -42,7 +42,7 @@ export const action = {
       fg: text.inverse,
       border: colors.secondary[800],
     },
-    active: {
+    pressed: {
       bg: colors.secondary[900],
       fg: text.inverse,
       border: colors.secondary[900],
@@ -70,7 +70,7 @@ export const action = {
       fg: colors.vellira[950],
       border: colors.vellira[300],
     },
-    active: {
+    pressed: {
       bg: colors.vellira[400],
       fg: text.inverse,
       border: colors.vellira[400],
@@ -98,7 +98,7 @@ export const action = {
       fg: text.inverse,
       border: colors.error[800],
     },
-    active: {
+    pressed: {
       bg: colors.error[900],
       fg: text.inverse,
       border: colors.error[900],
