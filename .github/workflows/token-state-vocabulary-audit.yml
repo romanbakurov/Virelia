@@ -15,9 +15,13 @@ jobs:
         run: |
           set -euo pipefail
           echo '=== semantic/factory/template active and pressed declarations ==='
-          rg -n "(^|[[:space:]])(active|pressed|selectedActive|selectedPressed|itemActive|itemPressed|optionActive|optionPressed|triggerActive|triggerPressed|activeScale|pressedScale):|control\.active|selected\.active|\.active\.(bg|fg|border)|activeScale|pressedScale" \
+          grep -RInE \
+            --include='*.ts' --include='*.tsx' \
+            "(^|[[:space:]])(active|pressed|selectedActive|selectedPressed|itemActive|itemPressed|optionActive|optionPressed|triggerActive|triggerPressed|activeScale|pressedScale):|control\.active|selected\.active|\.active\.(bg|fg|border)|activeScale|pressedScale" \
             packages/tokens/src scripts/generators/component || true
           echo
           echo '=== runtime active / pressed token consumers ==='
-          rg -n "active-scale|pressed-scale|active-bg|pressed-bg|selected-active|selected-pressed|data-state=['\"]active|aria-selected|:active" \
+          grep -RInE \
+            --include='*.ts' --include='*.tsx' --include='*.scss' \
+            "active-scale|pressed-scale|active-bg|pressed-bg|selected-active|selected-pressed|data-state=['\"]active|aria-selected|:active" \
             packages/react/src packages/react-native/src || true
