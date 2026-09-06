@@ -128,6 +128,33 @@ function readSourceSnapshot(
   };
 }
 
+function hasLinkedRootPropsContract(
+  snapshot: SourceSnapshot,
+  componentName: string
+) {
+  const propsName = `${componentName}Props`;
+  const rootPropsName = `${componentName}RootProps`;
+
+  if (!snapshot.runtimeSource.includes(rootPropsName)) {
+    return false;
+  }
+
+  const rootTypesSource = readIfExists(
+    path.join(snapshot.componentDir, 'Root', 'types.ts')
+  );
+  const directAliases = [
+    `export type ${propsName} = ${rootPropsName};`,
+    `export type ${rootPropsName} = ${propsName};`,
+    `export interface ${propsName} extends ${rootPropsName}`,
+    `export interface ${rootPropsName} extends ${propsName}`,
+  ];
+
+  return directAliases.some(
+    (alias) =>
+      snapshot.typesSource.includes(alias) || rootTypesSource.includes(alias)
+  );
+}
+
 export const publicApiSurfaceRule: ComponentQualityRule = {
   definition: {
     id: 'api.public-surface',
@@ -135,7 +162,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
     severity: 'required',
     evaluation: 'automated',
     description:
-      'Checks that the component exposes its public symbol and that its Props contract types the callable implementation.',
+      'Checks that the component exposes its public symbol and that its Props contract is tied to the callable implementation.',
   },
   evaluate(context) {
     const snapshot = readSourceSnapshot(
@@ -148,7 +175,9 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
       context.metadata.name
     );
     const hasPropsContract = snapshot.typesSource.includes(propsName);
-    const propsTypeCallableComponent = snapshot.runtimeSource.includes(propsName);
+    const propsTypeCallableComponent =
+      snapshot.runtimeSource.includes(propsName) ||
+      hasLinkedRootPropsContract(snapshot, context.metadata.name);
 
     if (
       hasComponentExport &&
@@ -165,7 +194,7 @@ export const publicApiSurfaceRule: ComponentQualityRule = {
       !hasComponentExport ? `public export for ${context.metadata.name}` : null,
       !hasPropsContract ? `top-level type contract ${propsName}` : null,
       hasPropsContract && !propsTypeCallableComponent
-        ? `${propsName} usage by the callable implementation`
+        ? `${propsName} linkage to the callable/root implementation`
         : null,
     ].filter((value): value is string => value !== null);
 
@@ -190,27 +219,22 @@ export const sharedTypeContractRule: ComponentQualityRule = {
     severity: 'required',
     evaluation: 'automated',
     description:
-      'Checks canonical @vellira-ui/types ownership for declared cross-platform public semantics.',
+      'Checks canonical @vellira-ui/types ownership without imposing one renderer adapter shape.',
   },
   evaluate(context) {
-    const dependencies = context.metadata.dependencies?.packages ?? [];
-
-    if (!dependencies.includes('@vellira-ui/types')) {
-      return finding(sharedTypeContractRule, context, 'not-applicable');
-    }
-
     const root = qualityRoot(context);
     const snapshot = readSourceSnapshot(
       root,
       context.metadata,
       context.platform
     );
+    const sharedFileName = lowerCamel(context.metadata.name);
     const sharedTypeFile = path.join(
       root,
       'packages',
       'types',
       'src',
-      `${lowerCamel(context.metadata.name)}.ts`
+      `${sharedFileName}.ts`
     );
     const sharedTypeBarrel = path.join(
       root,
@@ -221,58 +245,34 @@ export const sharedTypeContractRule: ComponentQualityRule = {
     );
     const sharedSource = readIfExists(sharedTypeFile);
     const barrelSource = readIfExists(sharedTypeBarrel);
-    const basePropsName = `Base${context.metadata.name}Props`;
-    const publicPropsName = `${context.metadata.name}Props`;
-    const expectedSharedExport = `export * from './${lowerCamel(
-      context.metadata.name
-    )}';`;
-    const missing: string[] = [];
+    const expectedSharedExport = `export * from './${sharedFileName}';`;
+    const dependencies = context.metadata.dependencies?.packages ?? [];
+    const declaresSharedDependency = dependencies.includes('@vellira-ui/types');
+    const hasSharedFile = fs.existsSync(sharedTypeFile);
+    const hasSharedBarrelExport = barrelSource.includes(expectedSharedExport);
+    const expectsSharedOwnership =
+      declaresSharedDependency || hasSharedFile || hasSharedBarrelExport;
 
-    if (!sharedSource.includes(basePropsName)) {
-      missing.push(`canonical ${basePropsName}`);
+    if (!expectsSharedOwnership) {
+      return finding(sharedTypeContractRule, context, 'not-applicable');
     }
 
-    if (!barrelSource.includes(expectedSharedExport)) {
+    const missing: string[] = [];
+
+    if (!declaresSharedDependency) {
+      missing.push('metadata dependency on @vellira-ui/types');
+    }
+
+    if (!hasSharedFile || sharedSource.trim().length === 0) {
+      missing.push('canonical shared type module');
+    }
+
+    if (!hasSharedBarrelExport) {
       missing.push('shared types barrel export');
     }
 
-    if (
-      !snapshot.typesSource.includes('@vellira-ui/types') ||
-      !snapshot.typesSource.includes(basePropsName)
-    ) {
-      missing.push('renderer adapter derived from @vellira-ui/types');
-    }
-
-    if (!snapshot.runtimeSource.includes(publicPropsName)) {
-      missing.push(`callable ${publicPropsName} usage`);
-    }
-
-    const sharedPartMatches = [
-      ...sharedSource.matchAll(
-        new RegExp(`Base${context.metadata.name}([A-Z][A-Za-z0-9]*)Props`, 'g')
-      ),
-    ];
-
-    for (const match of sharedPartMatches) {
-      const partName = match[1];
-
-      if (!partName) continue;
-
-      const partTypesFile = path.join(
-        snapshot.componentDir,
-        partName,
-        'types.ts'
-      );
-      const partTypesSource = readIfExists(partTypesFile);
-
-      if (
-        !partTypesSource.includes('@vellira-ui/types') ||
-        !partTypesSource.includes(
-          `Base${context.metadata.name}${partName}Props`
-        )
-      ) {
-        missing.push(`shared ${partName} renderer adapter`);
-      }
+    if (!snapshot.combinedSource.includes('@vellira-ui/types')) {
+      missing.push('renderer derivation/import from @vellira-ui/types');
     }
 
     return missing.length === 0
