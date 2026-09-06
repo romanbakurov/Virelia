@@ -8,6 +8,8 @@ import type {
   TokenMigrationPlatform,
   TokenMigrationThemeName,
 } from '../src/preservation/token-migrations.js';
+import { overlay as primitiveOverlay } from '../src/primitives/overlay.js';
+import { controlSizes } from '../src/tokens/controlSizes.js';
 
 import { collectResolvedWebCssOutput } from './token-css-output.js';
 
@@ -138,6 +140,8 @@ export function collectResolvedTokenHashes(
   collectLeafHashes(theme.semantic, 'semantic', result);
   collectLeafHashes(theme.components, 'components', result);
   collectLeafHashes(theme.tokens, 'tokens', result);
+  collectLeafHashes(primitiveOverlay, 'primitives.overlay', result);
+  collectLeafHashes(controlSizes, 'tokens.controlSizes', result);
 
   return result;
 }
