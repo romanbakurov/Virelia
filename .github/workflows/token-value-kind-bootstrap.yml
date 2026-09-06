@@ -23,6 +23,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           architecture = Path('packages/tokens/src/token-architecture.ts')
           content = architecture.read_text()
@@ -34,28 +35,23 @@ jobs:
 
           preservation = Path('packages/tokens/scripts/token-preservation.ts')
           content = preservation.read_text()
-          old = """  if (migration.kind === 'representation-change') {
-            if (context === 'canonical') {
-              return migration.layer === 'canonical';
-            }
-
-            return (
-              migration.layer === 'platform-output' &&
-              migration.platforms.includes(context)
-            );
-          }
-          """
-          new = """  if (migration.kind === 'representation-change') {
+          pattern = re.compile(
+              r"  if \(migration\.kind === 'representation-change'\) \{.*?\n  \}\n\n  if \(context === 'canonical'\)",
+              re.DOTALL,
+          )
+          replacement = """  if (migration.kind === 'representation-change') {
             if (migration.layer === 'canonical') {
               return context === 'canonical' || context === 'react-native';
             }
 
             return context !== 'canonical' && migration.platforms.includes(context);
           }
-          """
-          if old not in content:
-              raise SystemExit('preservation representation routing block not found')
-          preservation.write_text(content.replace(old, new, 1))
+
+          if (context === 'canonical')"""
+          content, count = pattern.subn(replacement, content, count=1)
+          if count != 1:
+              raise SystemExit(f'expected one preservation routing block, replaced {count}')
+          preservation.write_text(content)
           PY
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
