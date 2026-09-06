@@ -125,7 +125,9 @@ describe('token preservation contract', () => {
 
     changed.themes.light.entries[path] = '0'.repeat(64);
 
-    expect(verifyTokenPreservation({ baseline: changed, manifest })).toContainEqual(
+    expect(
+      verifyTokenPreservation({ baseline: changed, manifest })
+    ).toContainEqual(
       expect.objectContaining({
         rule: 'migration.invalid',
         theme: 'light',
