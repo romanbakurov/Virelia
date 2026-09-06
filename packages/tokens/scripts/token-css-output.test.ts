@@ -9,6 +9,12 @@ describe('token CSS value-kind serialization', () => {
     ).toBe('44px');
   });
 
+  it('preserves valid string length representations', () => {
+    expect(
+      serializeCssTokenValue('components.probe.content.maxHeight', '90vh')
+    ).toBe('90vh');
+  });
+
   it('serializes scales without a unit', () => {
     expect(
       serializeCssTokenValue('components.probe.motion.pressScale', 0.98)
