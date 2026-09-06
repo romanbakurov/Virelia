@@ -75,12 +75,8 @@ describe('compound shared type ownership', () => {
     for (const target of plan.targets) {
       const componentTemplates = resolveComponentTemplates({ plan, target });
 
-      expect(componentTemplates.types).toContain(
-        "from '@vellira-ui/types'"
-      );
-      expect(componentTemplates.types).toContain(
-        'BaseDisclosureProbeProps'
-      );
+      expect(componentTemplates.types).toContain("from '@vellira-ui/types'");
+      expect(componentTemplates.types).toContain('BaseDisclosureProbeProps');
       expect(componentTemplates.types).not.toContain(
         'DisclosureProbeItemProps'
       );
@@ -93,13 +89,9 @@ describe('compound shared type ownership', () => {
       expect(rootTemplates.types).toBe(
         '// DisclosureProbeRoot consumes the component-level DisclosureProbeProps contract.\nexport {};\n'
       );
-      expect(rootTemplates.component).toContain(
-        'DisclosureProbeProps'
-      );
+      expect(rootTemplates.component).toContain('DisclosureProbeProps');
       expect(rootTemplates.component).toContain("from '../types'");
-      expect(rootTemplates.component).not.toContain(
-        'DisclosureProbeRootProps'
-      );
+      expect(rootTemplates.component).not.toContain('DisclosureProbeRootProps');
 
       for (const partName of ['Item', 'Trigger', 'Content'] as const) {
         const partTemplates = resolvePartTemplates({
@@ -111,9 +103,7 @@ describe('compound shared type ownership', () => {
         expect(partTemplates.types).toContain(
           `BaseDisclosureProbe${partName}Props`
         );
-        expect(partTemplates.types).toContain(
-          "from '@vellira-ui/types'"
-        );
+        expect(partTemplates.types).toContain("from '@vellira-ui/types'");
       }
     }
   });
