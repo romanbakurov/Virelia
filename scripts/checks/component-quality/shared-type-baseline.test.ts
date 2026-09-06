@@ -52,10 +52,7 @@ describe('shared type repository baseline', () => {
 
       for (const metadata of componentMetadata) {
         const sharedFileName = lowerCamel(metadata.name);
-        const sharedTypesFile = path.join(
-          sharedTypesDir,
-          `${sharedFileName}.ts`
-        );
+        const sharedTypesFile = path.join(sharedTypesDir, `${sharedFileName}.ts`);
         const hasSharedModule = fs.existsSync(sharedTypesFile);
         const declaresSharedDependency = (
           metadata.dependencies?.packages ?? []
