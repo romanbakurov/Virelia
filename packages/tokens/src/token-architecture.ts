@@ -57,15 +57,17 @@ export const tokenValueKindWebContract = {
 >;
 
 /**
- * Canonical numeric role families. Matching is by semantic role suffix, not by
- * a one-off full token path, so generators and handwritten factories share the
- * same vocabulary.
+ * Canonical numeric role families. Matching is by semantic role words, not by
+ * one-off full token paths. Compound roles may put the semantic family at
+ * either edge (`paddingBottom`, `borderWidth`, `contentScale`), and nested
+ * scales may inherit meaning from their nearest parent role (`size.sm`).
  */
 export const canonicalComponentNumericRoleFamilies = {
   scale: ['scale'],
   opacity: ['opacity'],
   'z-index': ['zIndex', 'zIndexOffset', 'order'],
   'unitless-number': ['elevation'],
+  'font-weight': ['fontWeight'],
   'font-size': ['fontSize'],
   'line-height': ['lineHeight'],
   duration: ['duration'],
@@ -110,22 +112,44 @@ function lastTokenPathSegment(tokenPath: string): string {
   return tokenPath.split('.').at(-1) ?? '';
 }
 
-function matchesRoleSuffix(role: string, suffixes: readonly string[]): boolean {
-  const normalizedRole = role.toLowerCase();
+function splitRoleWords(role: string): string[] {
+  return role
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
 
-  return suffixes.some((suffix) =>
-    normalizedRole.endsWith(suffix.toLowerCase())
-  );
+function matchesRoleFamily(role: string, families: readonly string[]): boolean {
+  const roleWords = splitRoleWords(role);
+
+  return families.some((family) => {
+    const familyWords = splitRoleWords(family);
+
+    if (familyWords.length > roleWords.length) return false;
+
+    const prefixMatches = familyWords.every(
+      (word, index) => roleWords[index] === word
+    );
+    const suffixStart = roleWords.length - familyWords.length;
+    const suffixMatches = familyWords.every(
+      (word, index) => roleWords[suffixStart + index] === word
+    );
+
+    return prefixMatches || suffixMatches;
+  });
 }
 
 function resolveRoleKind(
   role: string,
   families: Partial<Record<TokenValueKind, readonly string[]>>
 ): TokenValueKind | null {
-  for (const [kind, suffixes] of Object.entries(families) as Array<
+  for (const [kind, roleFamilies] of Object.entries(families) as Array<
     [TokenValueKind, readonly string[]]
   >) {
-    if (matchesRoleSuffix(role, suffixes)) return kind;
+    if (matchesRoleFamily(role, roleFamilies)) return kind;
   }
 
   return null;
@@ -142,6 +166,19 @@ function resolveShadowLeafKind(tokenPath: string): TokenValueKind | null {
   return null;
 }
 
+function componentRoleSegments(tokenPath: string): string[] {
+  const segments = tokenPath.split('.');
+
+  if (
+    tokenPath.startsWith('components.') ||
+    tokenPath.startsWith('tokens.controlSizes.')
+  ) {
+    return segments.slice(2);
+  }
+
+  return segments;
+}
+
 function resolveComponentValueKind(
   tokenPath: string,
   value: string | number
@@ -151,16 +188,22 @@ function resolveComponentValueKind(
     if (shadowKind) return shadowKind;
   }
 
-  const role = lastTokenPathSegment(tokenPath);
-  const numericRoleKind = resolveRoleKind(
-    role,
-    canonicalComponentNumericRoleFamilies
-  );
+  const roleSegments = componentRoleSegments(tokenPath);
 
-  if (numericRoleKind) return numericRoleKind;
+  if (typeof value === 'number') {
+    for (let index = roleSegments.length - 1; index >= 0; index -= 1) {
+      const numericRoleKind = resolveRoleKind(
+        roleSegments[index]!,
+        canonicalComponentNumericRoleFamilies
+      );
 
-  if (typeof value === 'number') return null;
+      if (numericRoleKind) return numericRoleKind;
+    }
 
+    return null;
+  }
+
+  const role = roleSegments.at(-1) ?? '';
   return resolveRoleKind(role, componentStringRoleFamilies) ?? 'raw-string';
 }
 
