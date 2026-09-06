@@ -12,6 +12,14 @@ const sharedSemanticCapabilities = new Set<ComponentCapability>([
   'compound-api',
 ]);
 
+export function hasSharedTypeSemantics(
+  capabilities: Iterable<ComponentCapability>
+) {
+  return [...capabilities].some((capability) =>
+    sharedSemanticCapabilities.has(capability)
+  );
+}
+
 /**
  * Resolves the owner of renderer-neutral public component semantics.
  *
@@ -28,9 +36,5 @@ export function resolveComponentTypeOwnership(
     ...(options.capabilities ?? []),
   ]);
 
-  return [...capabilities].some((capability) =>
-    sharedSemanticCapabilities.has(capability)
-  )
-    ? 'shared'
-    : 'platform';
+  return hasSharedTypeSemantics(capabilities) ? 'shared' : 'platform';
 }
