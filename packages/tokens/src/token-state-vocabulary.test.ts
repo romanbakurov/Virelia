@@ -9,6 +9,7 @@ import { highContrastTheme } from './highContrast/theme.js';
 import { lightTheme } from './light/theme.js';
 import {
   canonicalInteractionStates,
+  canonicalTokenVocabulary,
   interactionStateVocabularyV1,
   legitimatePersistentActiveStateDomainsV1,
 } from './token-architecture.js';
@@ -36,6 +37,7 @@ describe('interaction state vocabulary V1', () => {
       'disabled',
       'focus',
     ]);
+    expect(canonicalTokenVocabulary.state).toEqual(canonicalInteractionStates);
 
     expect(interactionStateVocabularyV1.pressed.temporality).toBe('transient');
     expect(interactionStateVocabularyV1.pressed.meaning).toMatch(
