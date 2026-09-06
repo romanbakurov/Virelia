@@ -1,4 +1,4 @@
-name: Prettier Apply 875
+name: ESLint Apply 875
 
 on:
   push:
@@ -22,34 +22,21 @@ jobs:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Apply authoritative Prettier output
+      - name: Apply repository ESLint autofix to Accordion imports
         run: |
-          pnpm exec prettier \
-            scripts/checks/component-quality/rules/api-feature.test.ts \
-            scripts/checks/component-quality/shared-type-baseline.test.ts \
-            scripts/generators/component/compound-shared-types.test.ts \
-            scripts/generators/component/compound-shared-types.ts \
-            --write
-          pnpm exec prettier \
-            scripts/checks/component-quality/rules/api-feature.test.ts \
-            scripts/checks/component-quality/shared-type-baseline.test.ts \
-            scripts/generators/component/compound-shared-types.test.ts \
-            scripts/generators/component/compound-shared-types.ts \
-            --check
-      - name: Commit formatting-only patch
+          pnpm exec eslint packages/react/src/components/Accordion/Accordion.tsx --fix
+          pnpm exec eslint packages/react/src/components/Accordion/Accordion.tsx
+          pnpm exec prettier packages/react/src/components/Accordion/Accordion.tsx --check
+      - name: Commit import-order-only patch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git diff --check
           if git diff --quiet; then
-            echo "No formatting changes required."
+            echo "No ESLint autofix changes required."
             exit 0
           fi
-          git add \
-            scripts/checks/component-quality/rules/api-feature.test.ts \
-            scripts/checks/component-quality/shared-type-baseline.test.ts \
-            scripts/generators/component/compound-shared-types.test.ts \
-            scripts/generators/component/compound-shared-types.ts
+          git add packages/react/src/components/Accordion/Accordion.tsx
           git diff --cached --check
-          git commit -m "style(ci): apply prettier to shared type checks"
+          git commit -m "style(accordion): apply eslint import ordering"
           git push origin HEAD:fix/compound-shared-types
