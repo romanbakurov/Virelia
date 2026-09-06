@@ -8,8 +8,8 @@ import { generateComponentWebsitePage } from './website';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
 import { checkComponentTokenContract } from './component-token-contract';
 import {
-  checkCompoundSharedTypesContract,
-  writeCompoundSharedTypes,
+  checkSharedTypesContract,
+  writeSharedTypesContract,
 } from './compound-shared-types';
 import {
   getGeneratedTokenTypesFile,
@@ -29,7 +29,7 @@ export type RunComponentGeneratorResult = {
 function generatesSharedTypes(
   plan: ReturnType<typeof createComponentGenerationPlan>
 ) {
-  return plan.profile === 'form-control' || plan.profile === 'compound';
+  return plan.typeOwnership === 'shared';
 }
 
 function getPlannedCreatedFiles(
@@ -138,7 +138,7 @@ export async function runComponentGenerator(params: {
         targets: plan.targets,
       }),
       ...checkComponentTokenContract(plan),
-      ...checkCompoundSharedTypesContract(plan),
+      ...checkSharedTypesContract(plan),
     ];
 
     if (driftedFiles.length > 0) {
@@ -168,7 +168,7 @@ export async function runComponentGenerator(params: {
     };
   }
 
-  const sharedTypesResult = writeCompoundSharedTypes(plan);
+  const sharedTypesResult = writeSharedTypesContract(plan);
   const result = await writeComponentGenerationPlan(plan);
 
   const tokenTypesResult =
