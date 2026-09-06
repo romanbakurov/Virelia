@@ -121,3 +121,71 @@ jobs:
             'data-language="ts"'
           check_route '/blog/rss.xml' '<rss version="2.0"'
           check_route '/sitemap.xml' '<urlset'
+
+      - name: Install Chromium for navigation smoke test
+        run: pnpm --filter @vellira-ui/react-storybook run playwright:install
+
+      - name: Smoke test client-side navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --filter @vellira-ui/react-storybook exec node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+
+          const baseUrl = process.env.STAGING_URL;
+          const browser = await chromium.launch();
+          const page = await browser.newPage();
+          const diagnostics = [];
+
+          page.on('console', (message) => {
+            if (message.type() === 'error') {
+              diagnostics.push(`console.error: ${message.text()}`);
+            }
+          });
+          page.on('pageerror', (error) => {
+            diagnostics.push(`pageerror: ${error.stack ?? error.message}`);
+          });
+          page.on('requestfailed', (request) => {
+            if (request.url().startsWith(baseUrl)) {
+              diagnostics.push(
+                `requestfailed: ${request.method()} ${request.url()} ${request.failure()?.errorText ?? ''}`
+              );
+            }
+          });
+
+          async function navigateByLink(startPath, href, expectedText) {
+            await page.goto(`${baseUrl}${startPath}`, { waitUntil: 'networkidle' });
+            const link = page.locator(`a[href="${href}"]`).first();
+            await link.waitFor({ state: 'visible', timeout: 15_000 });
+            await link.click();
+            await page.waitForURL(`${baseUrl}${href}`, { timeout: 15_000 });
+            await page.getByText(expectedText, { exact: false }).first().waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+            console.log(`OK client navigation ${startPath} -> ${href}`);
+          }
+
+          try {
+            await navigateByLink(
+              '/blog',
+              '/blog/two-runtimes',
+              'One Design System, Two Runtimes'
+            );
+            await navigateByLink(
+              '/components',
+              '/components/switch',
+              'Switch component for Vellira applications.'
+            );
+          } catch (error) {
+            console.error(`Navigation smoke failed at ${page.url()}`);
+            console.error(error);
+            for (const diagnostic of diagnostics) {
+              console.error(diagnostic);
+            }
+            await browser.close();
+            process.exit(1);
+          }
+
+          await browser.close();
+          NODE
