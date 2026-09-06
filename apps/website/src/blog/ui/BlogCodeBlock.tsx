@@ -1,7 +1,8 @@
 import { isValidElement } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
 
-import { codeToHtml } from 'shiki';
+import { createHighlighter } from 'shiki';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
 import styles from './BlogCodeBlock.module.css';
 
@@ -12,6 +13,25 @@ interface CodeElementProps extends HTMLAttributes<HTMLElement> {
 interface BlogCodeBlockProps extends HTMLAttributes<HTMLPreElement> {
   children?: ReactNode;
 }
+
+const highlighter = createHighlighter({
+  themes: ['github-light', 'github-dark', 'github-dark-high-contrast'],
+  langs: [
+    'typescript',
+    'tsx',
+    'javascript',
+    'jsx',
+    'json',
+    'bash',
+    'css',
+    'html',
+    'yaml',
+    'markdown',
+    'go',
+    'python',
+  ],
+  engine: createJavaScriptRegexEngine(),
+});
 
 function readCodeBlock(children: ReactNode) {
   if (!isValidElement<CodeElementProps>(children)) {
@@ -45,7 +65,8 @@ export async function BlogCodeBlock({
   }
 
   try {
-    const highlightedHtml = await codeToHtml(codeBlock.code, {
+    const instance = await highlighter;
+    const highlightedHtml = instance.codeToHtml(codeBlock.code, {
       lang: codeBlock.language,
       themes: {
         light: 'github-light',
