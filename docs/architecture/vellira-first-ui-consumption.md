@@ -184,19 +184,19 @@ completion merely to unblock a consuming app.
 
 ## Canonical Authorities
 
-| Concern | Canonical authority |
-| --- | --- |
-| React components | `@vellira-ui/react` / `packages/react` |
-| React Native components | `@vellira-ui/react-native` / `packages/react-native` |
-| Component metadata/catalog | `@vellira-ui/metadata` / `packages/metadata` |
-| Design tokens and theme contracts | `@vellira-ui/tokens` / `packages/tokens` |
-| Token architecture metadata | `packages/tokens/src/token-architecture.ts` |
-| Icons | `@vellira-ui/icons` / `packages/icons` |
-| Shared assets | `@vellira-ui/assets` / `packages/assets` |
-| Shared behavior/contracts | `@vellira-ui/core` and `@vellira-ui/types` where applicable |
-| Deterministic component scaffold | `pnpm create:component` / `scripts/generators/component` |
-| Component quality/completeness | repository component checks and production validation |
-| Architectural exceptions | this policy plus an explicit owning issue/PR justification |
+| Concern                           | Canonical authority                                         |
+| --------------------------------- | ----------------------------------------------------------- |
+| React components                  | `@vellira-ui/react` / `packages/react`                      |
+| React Native components           | `@vellira-ui/react-native` / `packages/react-native`        |
+| Component metadata/catalog        | `@vellira-ui/metadata` / `packages/metadata`                |
+| Design tokens and theme contracts | `@vellira-ui/tokens` / `packages/tokens`                    |
+| Token architecture metadata       | `packages/tokens/src/token-architecture.ts`                 |
+| Icons                             | `@vellira-ui/icons` / `packages/icons`                      |
+| Shared assets                     | `@vellira-ui/assets` / `packages/assets`                    |
+| Shared behavior/contracts         | `@vellira-ui/core` and `@vellira-ui/types` where applicable |
+| Deterministic component scaffold  | `pnpm create:component` / `scripts/generators/component`    |
+| Component quality/completeness    | repository component checks and production validation       |
+| Architectural exceptions          | this policy plus an explicit owning issue/PR justification  |
 
 Public Vellira metadata and package exports remain the source of truth for
 consumers and automation. Private automation must consume those authorities
