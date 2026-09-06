@@ -3,6 +3,9 @@ import type {
   ComponentIconRequirement,
   ComponentTokenContract,
 } from '@vellira-ui/metadata';
+
+import { hasSharedTypeSemantics } from '../type-ownership';
+
 import type { ComponentTemplateParams } from './component-types';
 
 export type MetadataTemplateParams = ComponentTemplateParams & {
@@ -52,6 +55,11 @@ export function renderMetadataTemplate({
       : `[
 ${capabilities.map((capability) => `    '${capability}',`).join('\n')}
   ]`;
+  const dependenciesText = hasSharedTypeSemantics(capabilities)
+    ? `  dependencies: {
+    packages: ['@vellira-ui/types'],
+  },\n`
+    : '';
   const resourceRequirementsText = [
     icons.length === 0
       ? null
@@ -85,7 +93,7 @@ export const ${metadataName} = defineComponentMetadata({
   profile: '${profile}',
   status: 'experimental',
   capabilities: ${capabilitiesText},
-  requirements: {
+${dependenciesText}  requirements: {
     tests: true,
     storybook: true,
     docs: true,
