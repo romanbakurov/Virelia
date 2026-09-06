@@ -23,8 +23,7 @@ const buttonVisualSpec = readRootFile(
 );
 
 const playwrightVersion = storybookPackage.devDependencies['@playwright/test'];
-const canonicalImage =
-  `mcr.microsoft.com/playwright:v${playwrightVersion}-noble`;
+const canonicalImage = `mcr.microsoft.com/playwright:v${playwrightVersion}-noble`;
 const canonicalEnvironment = `playwright-v${playwrightVersion}-noble`;
 
 describe('Storybook visual regression contract', () => {
@@ -47,9 +46,7 @@ describe('Storybook visual regression contract', () => {
     );
     expect(ci).toContain(`image: ${canonicalImage}`);
     expect(ci).toContain('name: Visual regression');
-    expect(ci).toContain(
-      `VELLIRA_VISUAL_ENVIRONMENT: ${canonicalEnvironment}`
-    );
+    expect(ci).toContain(`VELLIRA_VISUAL_ENVIRONMENT: ${canonicalEnvironment}`);
   });
 
   it('regenerates baselines only through the canonical visual Docker path', () => {
