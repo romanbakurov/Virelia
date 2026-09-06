@@ -23,6 +23,7 @@ concurrency:
 
 env:
   NODE_VERSION: 22.22.0
+  STAGING_URL: https://vellira-website-staging.vellira.workers.dev
 
 jobs:
   deploy:
@@ -59,3 +60,42 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Smoke test deployed website
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          check_route() {
+            local path="$1"
+            local expected="$2"
+            local body
+            local status
+            body="$(mktemp)"
+
+            for attempt in 1 2 3 4 5; do
+              status="$(curl --location --silent --show-error \
+                --output "$body" --write-out '%{http_code}' \
+                "$STAGING_URL$path" || true)"
+
+              if [[ "$status" == "200" ]] && grep --fixed-strings --quiet "$expected" "$body"; then
+                echo "OK $path"
+                rm -f "$body"
+                return 0
+              fi
+
+              echo "Attempt $attempt failed for $path: HTTP $status"
+              sleep 2
+            done
+
+            echo "Smoke test failed for $path"
+            sed -n '1,40p' "$body"
+            rm -f "$body"
+            return 1
+          }
+
+          check_route '/' 'Vellira'
+          check_route '/blog' 'Practical engineering notes on design systems'
+          check_route '/blog/two-runtimes' 'One Design System, Two Runtimes'
+          check_route '/blog/rss.xml' '<rss version="2.0"'
+          check_route '/sitemap.xml' '<urlset'
