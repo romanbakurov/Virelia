@@ -27,6 +27,7 @@ const baselinePath = path.join(
 
 const checkMode = process.argv.includes('--check');
 const writeMode = process.argv.includes('--write');
+const forceReset = process.argv.includes('--force-reset');
 
 function serializeBaseline(baseline: TokenPreservationBaselineV1): string {
   return `${JSON.stringify(baseline, null, 2)}\n`;
@@ -51,6 +52,16 @@ function printBootstrapCandidate(): void {
 }
 
 if (writeMode) {
+  if (fs.existsSync(baselinePath) && !forceReset) {
+    console.error(
+      'Refusing to overwrite the committed token preservation baseline. Existing baselines are immutable during normal token work.'
+    );
+    console.error(
+      'Use migration evidence for token changes. A deliberate reviewed baseline reset requires --force-reset.'
+    );
+    process.exit(1);
+  }
+
   const baseline = createTokenPreservationBaseline(
     tokenPreservationBaselineRevisionV1
   );
@@ -98,7 +109,9 @@ if (findings.length > 0) {
   );
 
   for (const finding of findings.slice(0, 100)) {
-    const location = [finding.theme, finding.path].filter(Boolean).join(':');
+    const location = [finding.theme, finding.platform, finding.path]
+      .filter(Boolean)
+      .join(':');
     console.error(
       `- ${finding.rule}${location ? ` [${location}]` : ''}: ${finding.message}`
     );
@@ -111,4 +124,4 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('✅ token preservation baseline matches resolved theme values');
+console.log('✅ token preservation baseline matches resolved token outputs');
