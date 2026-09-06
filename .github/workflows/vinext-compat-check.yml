@@ -46,6 +46,10 @@ jobs:
         working-directory: apps/website
         run: pnpm add -D 'wrangler@^4.129.0'
 
+      - name: Add vinext MDX bridge
+        working-directory: apps/website
+        run: pnpm add -D '@mdx-js/rollup@^3.1.1'
+
       - name: Build workspace packages in dependency order
         run: pnpm build
 
