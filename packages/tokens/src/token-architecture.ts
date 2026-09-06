@@ -94,7 +94,6 @@ export const canonicalComponentNumericRoleFamilies = {
 const componentStringRoleFamilies = {
   duration: ['duration'],
   easing: ['easing'],
-  shadow: ['shadow'],
   color: [
     'bg',
     'fg',
@@ -106,6 +105,7 @@ const componentStringRoleFamilies = {
     'indicator',
     'divider',
   ],
+  shadow: ['shadow'],
 } as const satisfies Partial<Record<TokenValueKind, readonly string[]>>;
 
 function lastTokenPathSegment(tokenPath: string): string {
@@ -190,18 +190,18 @@ function resolveComponentValueKind(
 
   const roleSegments = componentRoleSegments(tokenPath);
 
-  if (typeof value === 'number') {
-    for (let index = roleSegments.length - 1; index >= 0; index -= 1) {
-      const numericRoleKind = resolveRoleKind(
-        roleSegments[index]!,
-        canonicalComponentNumericRoleFamilies
-      );
+  // Token meaning comes from its canonical path, not from the runtime storage
+  // type. This keeps stringified numeric workarounds visible to validation.
+  for (let index = roleSegments.length - 1; index >= 0; index -= 1) {
+    const numericRoleKind = resolveRoleKind(
+      roleSegments[index]!,
+      canonicalComponentNumericRoleFamilies
+    );
 
-      if (numericRoleKind) return numericRoleKind;
-    }
-
-    return null;
+    if (numericRoleKind) return numericRoleKind;
   }
+
+  if (typeof value === 'number') return null;
 
   const role = roleSegments.at(-1) ?? '';
   return resolveRoleKind(role, componentStringRoleFamilies) ?? 'raw-string';
