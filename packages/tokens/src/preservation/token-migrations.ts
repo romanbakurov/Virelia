@@ -127,6 +127,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Correct Radio pressed scale from invalid px-suffixed transform input to the intended unitless scale.',
     from: 'components.radio.motion.pressedScale',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
@@ -136,6 +138,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Correct Radio active scale from invalid px-suffixed transform input to the intended unitless scale.',
     from: 'components.radio.motion.activeScale',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
@@ -145,6 +149,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Correct Radio pressed opacity from invalid px-suffixed output to the intended unitless opacity.',
     from: 'components.radio.motion.pressedOpacity',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
@@ -154,6 +160,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Correct Tooltip content scale from invalid px-suffixed transform input to the intended unitless scale.',
     from: 'components.tooltip.content.scale',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
@@ -163,6 +171,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Publish the native Popover shadow opacity with its canonical unitless representation instead of an invalid px suffix.',
     from: 'components.popover.content.shadow.native.opacity',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
@@ -172,6 +182,8 @@ export const tokenMigrationManifestV1 = [
     kind: 'visual-change',
     issue: '#881',
     platforms: ['web'],
+    reason:
+      'Publish the native Popover shadow elevation with its canonical unitless representation instead of an invalid px suffix.',
     from: 'components.popover.content.shadow.native.elevation',
     approved: true,
     approvalEvidence: valueKindWebFixApproval,
