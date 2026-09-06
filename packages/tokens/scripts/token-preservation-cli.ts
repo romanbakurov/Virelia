@@ -7,6 +7,7 @@ import {
   tokenMigrationManifestV1,
   tokenPreservationBaselineRevisionV1,
 } from '../src/preservation/token-migrations.js';
+
 import {
   createTokenPreservationBaseline,
   type TokenPreservationBaselineV1,
@@ -92,7 +93,9 @@ const findings = verifyTokenPreservation({
 });
 
 if (findings.length > 0) {
-  console.error(`Token preservation failed with ${findings.length} finding(s):`);
+  console.error(
+    `Token preservation failed with ${findings.length} finding(s):`
+  );
 
   for (const finding of findings.slice(0, 100)) {
     const location = [finding.theme, finding.path].filter(Boolean).join(':');

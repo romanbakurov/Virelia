@@ -69,7 +69,9 @@ function normalizeLeaf(value: unknown): string {
 
   if (typeof value === 'number') {
     if (!Number.isFinite(value)) {
-      throw new Error(`Token preservation cannot hash non-finite number ${value}.`);
+      throw new Error(
+        `Token preservation cannot hash non-finite number ${value}.`
+      );
     }
 
     return `number:${Object.is(value, -0) ? '-0' : String(value)}`;
@@ -178,7 +180,8 @@ function migrationsFromPath(
 
 function migrationTarget(migration: TokenMigrationEntry): string | null {
   if ('to' in migration && migration.to !== undefined) return migration.to;
-  if ('from' in migration && migration.from !== undefined) return migration.from;
+  if ('from' in migration && migration.from !== undefined)
+    return migration.from;
   return null;
 }
 

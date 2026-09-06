@@ -18,13 +18,11 @@ export const tokenMigrationThemeNames = [
   'high-contrast',
 ] as const;
 
-export type TokenMigrationThemeName =
-  (typeof tokenMigrationThemeNames)[number];
+export type TokenMigrationThemeName = (typeof tokenMigrationThemeNames)[number];
 
 export const tokenMigrationPlatforms = ['web', 'react-native'] as const;
 
-export type TokenMigrationPlatform =
-  (typeof tokenMigrationPlatforms)[number];
+export type TokenMigrationPlatform = (typeof tokenMigrationPlatforms)[number];
 
 type TokenMigrationBase = {
   id: string;
@@ -87,4 +85,5 @@ export type TokenMigrationEntry =
  * change, or intentionally approved visual change must be recorded here before
  * the preservation baseline is allowed to accept it.
  */
-export const tokenMigrationManifestV1 = [] satisfies readonly TokenMigrationEntry[];
+export const tokenMigrationManifestV1 =
+  [] satisfies readonly TokenMigrationEntry[];

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { TokenMigrationEntry } from '../src/preservation/token-migrations.js';
+
 import {
   createTokenPreservationBaseline,
   type TokenPreservationBaselineV1,
@@ -28,9 +29,7 @@ describe('token preservation contract', () => {
   it('accepts an unchanged resolved token baseline', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
 
-    expect(
-      verifyTokenPreservation({ baseline, manifest: [] })
-    ).toEqual([]);
+    expect(verifyTokenPreservation({ baseline, manifest: [] })).toEqual([]);
   });
 
   it('fails when a resolved value hash changes without migration evidence', () => {
@@ -82,9 +81,7 @@ describe('token preservation contract', () => {
       },
     ];
 
-    expect(
-      verifyTokenPreservation({ baseline, manifest })
-    ).toContainEqual(
+    expect(verifyTokenPreservation({ baseline, manifest })).toContainEqual(
       expect.objectContaining({
         rule: 'migration.target-missing',
         theme: 'light',
@@ -124,9 +121,7 @@ describe('token preservation contract', () => {
       },
     ];
 
-    expect(
-      verifyTokenPreservation({ baseline, manifest })
-    ).toContainEqual(
+    expect(verifyTokenPreservation({ baseline, manifest })).toContainEqual(
       expect.objectContaining({
         rule: 'migration.target-missing',
         theme: 'light',
