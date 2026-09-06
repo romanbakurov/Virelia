@@ -54,10 +54,17 @@ export type TokenAdditionMigration = TokenMigrationBase & {
   to: string;
 };
 
-export type TokenRepresentationMigration = TokenMigrationBase & {
+export type TokenRepresentationMigration = Omit<
+  TokenMigrationBase,
+  'platforms'
+> & {
   kind: 'representation-change';
   from: string;
   to?: string;
+  platforms: readonly [
+    TokenMigrationPlatform,
+    ...TokenMigrationPlatform[],
+  ];
   equivalence: string;
   evidence: string;
 };
