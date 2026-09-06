@@ -70,7 +70,7 @@ export type ModalThemeSemantics = {
 const modalLayout = {
   maxHeight: '90vh',
   nativeMaxHeight: '90%',
-  zIndexOffset: '1',
+  zIndexOffset: 1,
 } as const;
 
 const modalMotion = {
