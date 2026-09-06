@@ -1,0 +1,44 @@
+name: Token Preservation Bootstrap
+
+on:
+  pull_request:
+    paths:
+      - 'packages/tokens/**'
+      - '.github/workflows/token-preservation-bootstrap.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Format preservation sources
+        run: >-
+          pnpm prettier
+          packages/tokens/scripts/token-preservation-cli.ts
+          packages/tokens/scripts/token-preservation.test.ts
+          packages/tokens/scripts/token-preservation.ts
+          packages/tokens/src/preservation/token-migrations.ts
+          --write
+      - name: Generate preservation baseline
+        run: pnpm --filter @vellira-ui/tokens preservation:baseline
+      - name: Upload exact bootstrap output
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: token-preservation-bootstrap
+          path: |
+            packages/tokens/scripts/token-preservation-cli.ts
+            packages/tokens/scripts/token-preservation.test.ts
+            packages/tokens/scripts/token-preservation.ts
+            packages/tokens/src/preservation/token-migrations.ts
+            packages/tokens/src/preservation/token-preservation-baseline.v1.json
+          if-no-files-found: error
+          retention-days: 1
