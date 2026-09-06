@@ -9,7 +9,9 @@
     "build-storybook": "storybook build",
     "typecheck": "tsc -p ../../packages/react/tsconfig.stories.json --noEmit && tsc -p tsconfig.json --noEmit",
     "playwright:install": "playwright install --with-deps chromium",
-    "test:e2e": "playwright test --config=playwright.config.ts",
+    "test:e2e": "playwright test --config=playwright.config.ts --grep-invert @visual",
+    "test:e2e:visual": "node scripts/assert-canonical-visual-environment.mjs && playwright test --config=playwright.config.ts --grep @visual",
+    "test:e2e:all": "node scripts/assert-canonical-visual-environment.mjs && playwright test --config=playwright.config.ts",
     "test": "vitest run --config vitest.config.mts"
   },
   "dependencies": {

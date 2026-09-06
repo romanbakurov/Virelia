@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 const rootDir = process.cwd();
 const composePath = resolve(rootDir, 'compose.yaml');
+const ciPath = resolve(rootDir, '.github/workflows/ci.yml');
 
 function getInstalledPlaywrightVersion() {
     try {
@@ -37,17 +38,16 @@ function getInstalledPlaywrightVersion() {
     }
 }
 
-function getDockerPlaywrightVersion() {
-    const compose = readFileSync(composePath, 'utf8');
+function getPlaywrightImageVersion(filePath, sourceName) {
+    const source = readFileSync(filePath, 'utf8');
 
-    const match = compose.match(
+    const match = source.match(
         /mcr\.microsoft\.com\/playwright:v(\d+\.\d+\.\d+)-noble/
     );
 
     if (!match) {
         throw new Error(
-            'Unable to find a Playwright image such as ' +
-            '`mcr.microsoft.com/playwright:v1.61.1-noble` in compose.yaml.'
+            `Unable to find a Playwright noble image in ${sourceName}.`
         );
     }
 
@@ -55,17 +55,19 @@ function getDockerPlaywrightVersion() {
 }
 
 const installedVersion = getInstalledPlaywrightVersion();
-const dockerVersion = getDockerPlaywrightVersion();
+const dockerVersion = getPlaywrightImageVersion(composePath, 'compose.yaml');
+const ciVersion = getPlaywrightImageVersion(ciPath, '.github/workflows/ci.yml');
 
-if (installedVersion !== dockerVersion) {
+if (installedVersion !== dockerVersion || installedVersion !== ciVersion) {
     console.error('');
     console.error('Playwright version mismatch.');
     console.error('');
     console.error(`Installed @playwright/test: ${installedVersion}`);
     console.error(`Docker image version:      ${dockerVersion}`);
+    console.error(`CI image version:          ${ciVersion}`);
     console.error('');
     console.error(
-        `Update compose.yaml to use ` +
+        `Keep compose.yaml and .github/workflows/ci.yml on ` +
         `mcr.microsoft.com/playwright:v${installedVersion}-noble`
     );
     console.error('');
@@ -74,5 +76,5 @@ if (installedVersion !== dockerVersion) {
 }
 
 console.log(
-    `✓ Playwright versions are synchronized (${installedVersion})`
+    `✓ Playwright versions are synchronized (${installedVersion}) across package, Docker, and CI`
 );

@@ -20,7 +20,7 @@ async function openStory(page: Page, id: string) {
 }
 
 test.describe('web Button', () => {
-  test('matrix is visually stable across color and appearance states', async ({
+  test('@visual matrix is stable across color and appearance states', async ({
     page,
   }, testInfo) => {
     await openStory(page, 'primitives-button--matrix');

@@ -98,7 +98,7 @@ services:
       - vellira_pnpm_store:/pnpm/store
 
   playwright:
-    # Keep this image version in sync with @playwright/test.
+    # Keep this image version in sync with @playwright/test and CI.
     image: mcr.microsoft.com/playwright:v1.61.1-noble
     platform: linux/amd64
     working_dir: /workspace
@@ -115,7 +115,7 @@ services:
         --fetch-retry-maxtimeout=120000
         --fetch-timeout=300000
         --network-concurrency=8 &&
-        pnpm --filter @vellira-ui/react-storybook test:e2e
+        pnpm --filter @vellira-ui/react-storybook $$PLAYWRIGHT_SCRIPT
         $$PLAYWRIGHT_ARGS
     volumes:
       - .:/workspace
@@ -124,6 +124,8 @@ services:
     environment:
       CI: "true"
       PLAYWRIGHT_ARGS: ""
+      PLAYWRIGHT_SCRIPT: "test:e2e:all"
+      VELLIRA_VISUAL_ENVIRONMENT: "playwright-v1.61.1-noble"
       PNPM_HOME: /pnpm
       PATH: /pnpm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     ipc: host
