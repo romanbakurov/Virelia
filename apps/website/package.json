@@ -13,7 +13,11 @@
     "prestart": "pnpm run sync:brand && pnpm run sync:tokens && pnpm run sync:components",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:vinext": "vinext dev --port 3001",
+    "build:vinext": "vinext build",
+    "start:vinext": "wrangler dev --config dist/server/wrangler.json",
+    "deploy:vinext": "vinext-cloudflare deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
@@ -23,23 +27,33 @@
     "@vellira-ui/react-native": "workspace:*",
     "@vellira-ui/tokens": "workspace:*",
     "@vercel/analytics": "^2.0.1",
+    "@vinext/cloudflare": "1.0.0-beta.7",
     "lottie-web": "^5.13.0",
     "motion": "^12.42.2",
     "next": "16.2.11",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-native-web": "^0.21.2",
-    "shiki": "^4.4.2"
+    "react-server-dom-webpack": "^19.2.8",
+    "shiki": "^4.4.2",
+    "vinext": "1.0.0-beta.9"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.4",
     "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
     "@next/mdx": "16.2.11",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-rsc": "^0.5.34",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "vite": "^8.2.1",
+    "wrangler": "^4.129.0"
+  },
+  "type": "module"
 }
