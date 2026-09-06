@@ -1,4 +1,4 @@
-name: Tooling Fixture Fix 875
+name: Tooling Fixture Ownership Fix 875
 
 on:
   push:
@@ -22,57 +22,68 @@ jobs:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Apply stale fixture type ownership patch
+      - name: Apply shared-type fixture and assertion sync
         run: |
-          test "$(git rev-parse HEAD)" = "11be350e2e612bd556fa0dc4ee61de9654355378"
+          test "$(git rev-parse HEAD)" = "3787c90854ba3b7a6fa6fac4d57b244f660a27bd"
           python - <<'PY'
           from pathlib import Path
 
-          replacements = {
-              Path('scripts/component-production/generation.test.ts'): (
-                  "    control: 'value',\n    capabilities: [],",
-                  "    control: 'value',\n    typeOwnership: 'platform',\n    capabilities: [],",
-              ),
-              Path('scripts/generators/component/resolve-part-templates.test.ts'): (
-                  "  control: 'value',\n  capabilities: [],",
-                  "  control: 'value',\n  typeOwnership: 'shared',\n  capabilities: [],",
-              ),
-              Path('scripts/generators/component/resolve-templates.test.ts'): (
-                  "  control,\n  capabilities: [],",
-                  "  control,\n  typeOwnership: profile === 'base' ? 'platform' : 'shared',\n  capabilities: [],",
-              ),
-          }
-
-          for path, (old, new) in replacements.items():
+          def replace_once(path_str: str, old: str, new: str) -> None:
+              path = Path(path_str)
               source = path.read_text()
-              if source.count(old) != 1:
-                  raise SystemExit(f'{path}: expected exactly one fixture insertion point')
+              count = source.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one replacement, found {count}')
               path.write_text(source.replace(old, new, 1))
+
+          replace_once(
+              'scripts/generators/component/preflight.test.ts',
+              "    fs.writeFileSync(path.join(layerDir, 'index.ts'), '');\n  }\n\n  const metadataDir = path.join(",
+              "    fs.writeFileSync(path.join(layerDir, 'index.ts'), '');\n  }\n\n  const sharedTypesDir = path.join(root, 'packages', 'types', 'src');\n\n  fs.mkdirSync(sharedTypesDir, { recursive: true });\n  fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');\n\n  const metadataDir = path.join(",
+          )
+
+          replace_once(
+              'scripts/generators/component/run.test.ts',
+              "    fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');\n  }\n\n  const metadataDir = path.join(",
+              "    fs.writeFileSync(path.join(root, 'packages', packageName, 'API.md'), '');\n  }\n\n  const sharedTypesDir = path.join(root, 'packages', 'types', 'src');\n\n  fs.mkdirSync(sharedTypesDir, { recursive: true });\n  fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');\n\n  const metadataDir = path.join(",
+          )
+
+          replace_once(
+              'scripts/generators/component/templates/component-part.test.ts',
+              "    expect(result).toContain('export type AccordionTriggerProps');\n    expect(result).toContain('disabled?: boolean');\n    expect(result).toContain('onActivate?: () => void');",
+              "    expect(result).toContain(\n      \"import type { BaseAccordionTriggerProps } from '@vellira-ui/types';\"\n    );\n    expect(result).toContain(\n      'export type AccordionTriggerProps = BaseAccordionTriggerProps & {'\n    );\n    expect(result).toContain('children?: ReactNode');\n    expect(result).not.toContain('disabled?: boolean');\n    expect(result).not.toContain('onActivate?: () => void');",
+          )
+
+          replace_once(
+              'scripts/generators/component/templates/component-part.test.ts',
+              "    expect(result).toContain('export type AccordionContentProps');\n    expect(result).toContain('hidden?: boolean');",
+              "    expect(result).toContain(\n      \"import type { BaseAccordionContentProps } from '@vellira-ui/types';\"\n    );\n    expect(result).toContain(\n      'export type AccordionContentProps = BaseAccordionContentProps & {'\n    );\n    expect(result).toContain('children?: ReactNode');\n    expect(result).not.toContain('hidden?: boolean');",
+          )
           PY
           pnpm exec prettier \
-            scripts/component-production/generation.test.ts \
-            scripts/generators/component/resolve-part-templates.test.ts \
-            scripts/generators/component/resolve-templates.test.ts \
+            scripts/generators/component/preflight.test.ts \
+            scripts/generators/component/run.test.ts \
+            scripts/generators/component/templates/component-part.test.ts \
             --write
           git diff --check
-      - name: Build workspace before tooling typecheck
+      - name: Build workspace
         run: pnpm ci:build
-      - name: Validate tooling typecheck
-        run: pnpm typecheck:tooling
       - name: Validate targeted tooling tests
         run: |
           pnpm exec vitest run --config vitest.tooling.config.ts \
-            scripts/component-production/generation.test.ts \
-            scripts/generators/component/resolve-part-templates.test.ts \
-            scripts/generators/component/resolve-templates.test.ts
-      - name: Commit fixture typing patch
+            scripts/generators/component/preflight.test.ts \
+            scripts/generators/component/run.test.ts \
+            scripts/generators/component/templates/component-part.test.ts
+      - name: Validate full tooling suite
+        run: pnpm exec vitest run --config vitest.tooling.config.ts
+      - name: Commit test-only patch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
-            scripts/component-production/generation.test.ts \
-            scripts/generators/component/resolve-part-templates.test.ts \
-            scripts/generators/component/resolve-templates.test.ts
+            scripts/generators/component/preflight.test.ts \
+            scripts/generators/component/run.test.ts \
+            scripts/generators/component/templates/component-part.test.ts
           git diff --cached --check
-          git commit -m "test(generator): sync type ownership fixtures"
+          git commit -m "test(generator): sync shared type ownership fixtures"
           git push origin HEAD:fix/compound-shared-types
