@@ -4,6 +4,7 @@ import {
   renderFormControlComponentTemplate,
   renderFormControlTypesTemplate,
   renderNativeComponentTemplate,
+  renderSharedRendererTypesTemplate,
   renderTypesTemplate,
   renderWebComponentTemplate,
   renderNativeOverlayComponentTemplate,
@@ -93,9 +94,10 @@ export function resolveComponentTemplates(params: {
 
     case 'base':
       return {
-        types: renderTypesTemplate({
-          componentName,
-        }),
+        types:
+          plan.typeOwnership === 'shared'
+            ? renderSharedRendererTypesTemplate({ componentName })
+            : renderTypesTemplate({ componentName }),
         component: target.isNative
           ? renderNativeComponentTemplate({
               componentName,
