@@ -81,8 +81,8 @@ describe('compound shared type ownership', () => {
       expect(componentTemplates.types).toContain(
         'BaseDisclosureProbeProps'
       );
-      expect(componentTemplates.types).toContain(
-        "export type { DisclosureProbeItemProps } from './Item';"
+      expect(componentTemplates.types).not.toContain(
+        'DisclosureProbeItemProps'
       );
 
       const rootTemplates = resolvePartTemplates({
@@ -91,11 +91,12 @@ describe('compound shared type ownership', () => {
         partName: 'Root',
       });
       expect(rootTemplates.types).toBe(
-        "export type { DisclosureProbeProps } from '../types';\n"
+        '// DisclosureProbeRoot consumes the component-level DisclosureProbeProps contract.\nexport {};\n'
       );
       expect(rootTemplates.component).toContain(
         'DisclosureProbeProps'
       );
+      expect(rootTemplates.component).toContain("from '../types'");
       expect(rootTemplates.component).not.toContain(
         'DisclosureProbeRootProps'
       );
@@ -135,10 +136,13 @@ describe('compound shared type ownership', () => {
 
       for (const partName of plan.parts) {
         const partDir = path.join(target.componentDir, partName);
+        const templates = resolvePartTemplates({ plan, target, partName });
+
         fs.mkdirSync(partDir, { recursive: true });
+        fs.writeFileSync(path.join(partDir, 'types.ts'), templates.types);
         fs.writeFileSync(
-          path.join(partDir, 'types.ts'),
-          resolvePartTemplates({ plan, target, partName }).types
+          path.join(partDir, `${plan.componentName}${partName}.tsx`),
+          templates.component
         );
       }
     }
