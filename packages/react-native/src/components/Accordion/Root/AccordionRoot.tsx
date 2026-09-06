@@ -15,8 +15,7 @@ import { createStyles } from '../Accordion.styles';
 import { AccordionContent } from '../Content';
 import { AccordionItem } from '../Item';
 import { AccordionTrigger } from '../Trigger';
-
-import type { AccordionProps } from './types';
+import type { AccordionProps } from '../types';
 
 type InternalProps = {
   disabled?: boolean;
