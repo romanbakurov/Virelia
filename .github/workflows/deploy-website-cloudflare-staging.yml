@@ -230,6 +230,16 @@ jobs:
               'One Design System, Two Runtimes'
             );
             await navigateByLink(
+              '/blog',
+              '/blog/component-metadata-source-of-truth',
+              'Component Metadata as a Source of Truth for a Design System'
+            );
+            await navigateByLink(
+              '/blog',
+              '/blog/controlled-uncontrolled-react-native',
+              'Controlled and Uncontrolled State Across React and React Native'
+            );
+            await navigateByLink(
               '/components',
               '/components/switch',
               'Switch component for Vellira applications.'
