@@ -1,6 +1,7 @@
 import type { ComponentTokenContract } from '@vellira-ui/metadata';
 
 import type { ComponentProfileArg, FormControlKindArg } from '../cli';
+import { requireGeneratedComponentNumericValueKind } from '../token-value-kinds';
 import type { ComponentTemplateParams } from './component-types';
 
 export type ComponentTokensTemplateParams = ComponentTemplateParams & {
@@ -9,8 +10,40 @@ export type ComponentTokensTemplateParams = ComponentTemplateParams & {
   control?: FormControlKindArg;
 };
 
+const booleanControlGeometry = [
+  ['trackWidth', 44],
+  ['trackHeight', 24],
+  ['borderWidth', 2],
+  ['padding', 1],
+  ['thumbSize', 18],
+  ['thumbTravel', 20],
+  ['focusRingWidth', 2],
+  ['focusRingOffset', 2],
+  ['pressScale', 0.98],
+] as const;
+
 function lowerCamel(componentName: string) {
   return `${componentName[0].toLowerCase()}${componentName.slice(1)}`;
+}
+
+function renderBooleanControlGeometry(componentName: string) {
+  for (const [role, value] of booleanControlGeometry) {
+    requireGeneratedComponentNumericValueKind({
+      componentName,
+      section: 'geometry',
+      role,
+      value,
+    });
+  }
+
+  return {
+    typeFields: booleanControlGeometry
+      .map(([role]) => `  ${role}: number;`)
+      .join('\n'),
+    valueFields: booleanControlGeometry
+      .map(([role, value]) => `  ${role}: ${value},`)
+      .join('\n'),
+  };
 }
 
 function resolveTemplateContract({
@@ -34,6 +67,8 @@ export function renderComponentTokenFactoryTemplate(
   const contract = resolveTemplateContract(params);
 
   if (contract === 'boolean-control') {
+    const geometry = renderBooleanControlGeometry(componentName);
+
     return `export type ${componentName}VisualState = {
   trackBg: string;
   trackBorder: string;
@@ -41,15 +76,7 @@ export function renderComponentTokenFactoryTemplate(
 };
 
 export type ${componentName}Geometry = {
-  trackWidth: number;
-  trackHeight: number;
-  borderWidth: number;
-  padding: number;
-  thumbSize: number;
-  thumbTravel: number;
-  focusRingWidth: number;
-  focusRingOffset: number;
-  pressScale: number;
+${geometry.typeFields}
 };
 
 export type ${componentName}TokensConfig = {
@@ -96,15 +123,7 @@ export type ${componentName}ThemeSemantics = {
 };
 
 const ${lowerCamel(componentName)}Geometry: ${componentName}Geometry = {
-  trackWidth: 44,
-  trackHeight: 24,
-  borderWidth: 2,
-  padding: 1,
-  thumbSize: 18,
-  thumbTravel: 20,
-  focusRingWidth: 2,
-  focusRingOffset: 2,
-  pressScale: 0.98,
+${geometry.valueFields}
 };
 
 export const create${componentName}Tokens = (config: ${componentName}TokensConfig) => config;
