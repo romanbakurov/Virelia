@@ -66,19 +66,38 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Give the newly deployed Worker a short propagation window before
+          # validating SSG routes across Cloudflare's edge.
+          sleep 15
+
           check_route() {
             local path="$1"
-            local expected="$2"
+            shift
             local body
             local status
+            local expected
+            local matches
             body="$(mktemp)"
 
             for attempt in 1 2 3 4 5; do
               status="$(curl --location --silent --show-error \
+                --header 'Cache-Control: no-cache' \
                 --output "$body" --write-out '%{http_code}' \
                 "$STAGING_URL$path" || true)"
 
-              if [[ "$status" == "200" ]] && grep --fixed-strings --quiet "$expected" "$body"; then
+              matches=true
+              if [[ "$status" == "200" ]]; then
+                for expected in "$@"; do
+                  if ! grep --fixed-strings --quiet "$expected" "$body"; then
+                    matches=false
+                    break
+                  fi
+                done
+              else
+                matches=false
+              fi
+
+              if [[ "$matches" == "true" ]]; then
                 echo "OK $path"
                 rm -f "$body"
                 return 0
@@ -97,7 +116,8 @@ jobs:
           check_route '/' 'Vellira'
           check_route '/components/switch' 'Switch component for Vellira applications.'
           check_route '/blog' 'Practical engineering notes on design systems'
-          check_route '/blog/two-runtimes' 'One Design System, Two Runtimes'
-          check_route '/blog/two-runtimes' 'data-language="ts"'
+          check_route '/blog/two-runtimes' \
+            'One Design System, Two Runtimes' \
+            'data-language="ts"'
           check_route '/blog/rss.xml' '<rss version="2.0"'
           check_route '/sitemap.xml' '<urlset'

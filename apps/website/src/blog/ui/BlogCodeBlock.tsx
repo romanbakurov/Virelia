@@ -14,6 +14,16 @@ interface BlogCodeBlockProps extends HTMLAttributes<HTMLPreElement> {
   children?: ReactNode;
 }
 
+const LANGUAGE_ALIASES: Readonly<Record<string, string>> = {
+  ts: 'typescript',
+  js: 'javascript',
+  sh: 'bash',
+  shell: 'bash',
+  yml: 'yaml',
+  md: 'markdown',
+  text: 'plaintext',
+};
+
 const highlighter = createHighlighter({
   themes: ['github-light', 'github-dark', 'github-dark-high-contrast'],
   langs: [
@@ -29,6 +39,7 @@ const highlighter = createHighlighter({
     'markdown',
     'go',
     'python',
+    'plaintext',
   ],
   engine: createJavaScriptRegexEngine(),
 });
@@ -54,6 +65,10 @@ function readCodeBlock(children: ReactNode) {
   };
 }
 
+function normalizeLanguage(language: string): string {
+  return LANGUAGE_ALIASES[language] ?? language;
+}
+
 export async function BlogCodeBlock({
   children,
   ...props
@@ -67,7 +82,7 @@ export async function BlogCodeBlock({
   try {
     const instance = await highlighter;
     const highlightedHtml = instance.codeToHtml(codeBlock.code, {
-      lang: codeBlock.language,
+      lang: normalizeLanguage(codeBlock.language),
       themes: {
         light: 'github-light',
         dark: 'github-dark',
