@@ -71,6 +71,69 @@ describe('token preservation contract', () => {
     );
   });
 
+  it('allows a canonical representation-only change with explicit equivalence evidence', () => {
+    const baseline = createTokenPreservationBaseline('test-revision');
+    const changed = cloneBaseline(baseline);
+    const path = firstCanonicalPath(changed, 'light');
+    const manifest: readonly TokenMigrationEntry[] = [
+      {
+        id: 'test-canonical-representation',
+        kind: 'representation-change',
+        layer: 'canonical',
+        issue: '#880',
+        reason: 'Synthetic regression fixture.',
+        themes: ['light'],
+        from: path,
+        equivalence:
+          'The token representation changes while preserving the same rendered meaning.',
+        evidence: 'Synthetic canonical representation fixture.',
+      },
+    ];
+
+    changed.themes.light.entries[path] = '0'.repeat(64);
+
+    expect(
+      verifyTokenPreservation({ baseline: changed, manifest })
+    ).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: 'token.changed',
+          theme: 'light',
+          path,
+        }),
+      ])
+    );
+  });
+
+  it('rejects a canonical representation change without equivalence evidence', () => {
+    const baseline = createTokenPreservationBaseline('test-revision');
+    const changed = cloneBaseline(baseline);
+    const path = firstCanonicalPath(changed, 'light');
+    const manifest: readonly TokenMigrationEntry[] = [
+      {
+        id: 'test-canonical-representation-without-evidence',
+        kind: 'representation-change',
+        layer: 'canonical',
+        issue: '#880',
+        reason: 'Synthetic regression fixture.',
+        themes: ['light'],
+        from: path,
+        equivalence: '',
+        evidence: '',
+      },
+    ];
+
+    changed.themes.light.entries[path] = '0'.repeat(64);
+
+    expect(verifyTokenPreservation({ baseline: changed, manifest })).toContainEqual(
+      expect.objectContaining({
+        rule: 'migration.invalid',
+        theme: 'light',
+        path,
+      })
+    );
+  });
+
   it('fails when serialized Web output changes without migration evidence', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
     const changed = cloneBaseline(baseline);
@@ -98,6 +161,7 @@ describe('token preservation contract', () => {
       {
         id: 'test-web-representation',
         kind: 'representation-change',
+        layer: 'platform-output',
         issue: '#880',
         reason: 'Synthetic regression fixture.',
         themes: ['light'],
