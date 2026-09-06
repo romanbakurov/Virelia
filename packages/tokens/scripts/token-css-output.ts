@@ -150,9 +150,7 @@ export function collectThemeCssOutput(
   return output;
 }
 
-export function collectResolvedWebCssOutput(
-  theme: Theme
-): Map<string, string> {
+export function collectResolvedWebCssOutput(theme: Theme): Map<string, string> {
   return new Map(
     [...collectBaseCssOutput(), ...collectThemeCssOutput(theme)].map(
       ([path, entry]) => [path, entry.value]

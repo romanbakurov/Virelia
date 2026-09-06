@@ -93,14 +93,17 @@ describe('token preservation contract', () => {
         themes: ['light'],
         platforms: ['web'],
         from: path,
-        equivalence: 'The canonical value is unchanged; only Web serialization changes.',
+        equivalence:
+          'The canonical value is unchanged; only Web serialization changes.',
         evidence: 'Synthetic platform-output fixture.',
       },
     ];
 
     changed.platformOutputs.web.light.entries[path] = '0'.repeat(64);
 
-    expect(verifyTokenPreservation({ baseline: changed, manifest })).not.toEqual(
+    expect(
+      verifyTokenPreservation({ baseline: changed, manifest })
+    ).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           rule: 'platform.changed',

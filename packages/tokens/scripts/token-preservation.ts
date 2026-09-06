@@ -8,6 +8,7 @@ import type {
   TokenMigrationPlatform,
   TokenMigrationThemeName,
 } from '../src/preservation/token-migrations.js';
+
 import { collectResolvedWebCssOutput } from './token-css-output.js';
 
 export const tokenPreservationSchemaVersion = 1 as const;
@@ -141,7 +142,9 @@ export function collectResolvedTokenHashes(
   return result;
 }
 
-function collectResolvedWebOutputHashes(theme: TokenTheme): Map<string, string> {
+function collectResolvedWebOutputHashes(
+  theme: TokenTheme
+): Map<string, string> {
   return new Map(
     [...collectResolvedWebCssOutput(theme as typeof lightTheme)].map(
       ([path, value]) => [path, hashLeaf(value)]
@@ -318,7 +321,9 @@ function verifySnapshot(params: {
 }): void {
   const { baseline, current, manifest, theme, context, findings } = params;
 
-  if (!validateSnapshotShape({ snapshot: baseline, theme, context, findings })) {
+  if (
+    !validateSnapshotShape({ snapshot: baseline, theme, context, findings })
+  ) {
     return;
   }
 
