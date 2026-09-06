@@ -94,6 +94,12 @@ describe('canonical token value-kind authority', () => {
     expect(
       requireTokenValueKind('components.modal.content.zIndexOffset', 1)
     ).toBe('z-index');
+    expect(
+      requireTokenValueKind('components.modal.content.size.sm', 400)
+    ).toBe('length');
+    expect(
+      requireTokenValueKind('components.modal.header.paddingBottom', 16)
+    ).toBe('length');
     expect(requireTokenValueKind('components.popover.shadow.native.x', 0)).toBe(
       'length'
     );
@@ -103,6 +109,10 @@ describe('canonical token value-kind authority', () => {
     expect(
       requireTokenValueKind('components.popover.shadow.native.elevation', 8)
     ).toBe('unitless-number');
+  });
+
+  it('does not match numeric role families by partial word substrings', () => {
+    expect(resolveTokenValueKind('components.probe.numeric.border', 1)).toBeNull();
   });
 
   it('rejects unknown numeric roles', () => {
