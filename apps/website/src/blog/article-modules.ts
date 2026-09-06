@@ -55,10 +55,7 @@ const blogArticleMetadataRegistryEntries = [
     slug: 'quality-gates-before-component-growth',
     metadata: qualityGatesBeforeComponentGrowthMetadata,
   },
-  {
-    slug: 'two-runtimes',
-    metadata: twoRuntimesMetadata,
-  },
+  { slug: 'two-runtimes', metadata: twoRuntimesMetadata },
 ] as const satisfies readonly BlogArticleMetadataRegistryEntry[];
 
 const blogArticleModuleLoaders: Readonly<Record<string, BlogMDXModuleLoader>> =
