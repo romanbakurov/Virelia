@@ -338,7 +338,7 @@
 .input:active:not(:disabled) + .control {
   background-color: var(--radio-pressed-bg);
   border-color: var(--radio-pressed-border);
-  transform: scale(var(--radio-motion-active-scale));
+  transform: scale(var(--radio-motion-pressed-scale));
 }
 
 .input:checked:active:not(:disabled) + .control {

@@ -17,7 +17,7 @@ export const control = {
     border: colors.primary[700],
   },
 
-  active: {
+  pressed: {
     bg: colors.primary[100],
     fg: colors.primary[900],
     border: colors.primary[800],
@@ -42,7 +42,7 @@ export const control = {
       border: colors.primary[700],
     },
 
-    active: {
+    pressed: {
       bg: colors.primary[800],
       fg: colors.mono[50],
       border: colors.primary[800],

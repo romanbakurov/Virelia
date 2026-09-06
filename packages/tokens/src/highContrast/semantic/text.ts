@@ -11,7 +11,7 @@ export const text = {
 
   interactive: colors.warning[400],
   interactiveHover: colors.warning[300],
-  interactiveActive: colors.warning[200],
+  interactivePressed: colors.warning[200],
 
   inverse: colors.mono[950],
 } as const;

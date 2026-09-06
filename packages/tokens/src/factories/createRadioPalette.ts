@@ -59,7 +59,6 @@ export const radioMotionTokens = {
   easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
   indicatorDuration: '180ms',
   selectedDuration: '260ms',
-  pressedScale: 0.96,
-  activeScale: 0.92,
+  pressedScale: 0.92,
   pressedOpacity: 0.8,
 } as const;

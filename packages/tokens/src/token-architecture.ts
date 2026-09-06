@@ -273,6 +273,106 @@ export function requireTokenValueKind(
   );
 }
 
+export const canonicalInteractionStates = [
+  'default',
+  'hover',
+  'pressed',
+  'active',
+  'selected',
+  'disabled',
+  'focus',
+] as const;
+
+export type CanonicalInteractionState =
+  (typeof canonicalInteractionStates)[number];
+
+/**
+ * Interaction-state semantics consumed by token audits, Generator V2, and agents.
+ * State names describe meaning, never a visual intensity level.
+ */
+export const interactionStateVocabularyV1 = {
+  default: {
+    temporality: 'resting',
+    meaning:
+      'Resting enabled state before interaction or persistent selection.',
+  },
+  hover: {
+    temporality: 'transient',
+    meaning:
+      'Pointer hover only; optional when the input platform has no hover capability.',
+  },
+  pressed: {
+    temporality: 'transient',
+    meaning:
+      'Physical pointer or key activation while the interaction is held.',
+  },
+  active: {
+    temporality: 'persistent-or-current',
+    meaning:
+      'Current or persistently active domain state; never an alias for physical press.',
+  },
+  selected: {
+    temporality: 'persistent',
+    meaning: 'Chosen, checked, or selected domain state.',
+  },
+  disabled: {
+    temporality: 'persistent',
+    meaning: 'Unavailable interaction state that cannot be activated.',
+  },
+  focus: {
+    temporality: 'transient-or-current',
+    meaning:
+      'Current input focus indication, independent from hover, press, or selection.',
+  },
+} as const;
+
+/**
+ * Domains where active is intentionally distinct from physical press.
+ * Patterns are architecture metadata for #890; they are not runtime selectors.
+ */
+export const legitimatePersistentActiveStateDomainsV1 = [
+  {
+    pattern: 'semantic.surface.active',
+    meaning:
+      'Generic current/active surface role distinct from surface.pressed.',
+  },
+  {
+    pattern: 'semantic.menu.item.active',
+    meaning: 'Current/highlighted menu item independent from physical press.',
+  },
+  {
+    pattern: 'semantic.menu.item.danger.active',
+    meaning: 'Current/highlighted danger menu item.',
+  },
+  {
+    pattern: 'semantic.navigation.active',
+    meaning: 'Current navigation destination.',
+  },
+  {
+    pattern: 'semantic.navigation.optionActive',
+    meaning: 'Current/highlighted navigation option.',
+  },
+  {
+    pattern: 'components.contextMenu.item.active',
+    meaning: 'Current/highlighted context-menu item.',
+  },
+  {
+    pattern: 'components.dropdown.*.item.active',
+    meaning:
+      'Current/highlighted dropdown item independent from :active press.',
+  },
+  {
+    pattern: 'components.select.*.option.active',
+    meaning:
+      'Current/highlighted Select option independent from aria-selected and press.',
+  },
+  {
+    pattern: 'components.tabs.*.*.active',
+    meaning:
+      'Current active tab presentation; physical press is a separate interaction.',
+  },
+] as const;
+
 export const canonicalTokenVocabulary = {
   surface: [
     'canvas',
@@ -281,8 +381,8 @@ export const canonicalTokenVocabulary = {
     'muted',
     'elevated',
     'hover',
-    'active',
     'pressed',
+    'active',
     'disabled',
     'danger',
     'inverse',
@@ -305,7 +405,7 @@ export const canonicalTokenVocabulary = {
     'brand',
     'interactive',
     'interactiveHover',
-    'interactiveActive',
+    'interactivePressed',
     'inverse',
   ],
   border: ['subtle', 'muted', 'default', 'strong', 'elevated', 'disabled'],
@@ -333,7 +433,7 @@ export const canonicalSemanticRolePaths = [
   'text.brand',
   'text.interactive',
   'text.interactiveHover',
-  'text.interactiveActive',
+  'text.interactivePressed',
   'text.inverse',
   'border.subtle',
   'border.muted',

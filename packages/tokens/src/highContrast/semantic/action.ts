@@ -12,7 +12,7 @@ export const action = {
       fg: colors.mono[950],
       border: colors.primary[200],
     },
-    active: {
+    pressed: {
       bg: colors.primary[600],
       fg: colors.mono[50],
       border: colors.primary[300],
@@ -40,7 +40,7 @@ export const action = {
       fg: colors.mono[950],
       border: colors.secondary[300],
     },
-    active: {
+    pressed: {
       bg: colors.secondary[400],
       fg: colors.mono[950],
       border: colors.warning[300],
@@ -68,7 +68,7 @@ export const action = {
       fg: colors.mono[950],
       border: colors.gray[950],
     },
-    active: {
+    pressed: {
       bg: colors.gray[400],
       fg: colors.mono[950],
       border: colors.gray[950],
@@ -96,7 +96,7 @@ export const action = {
       fg: colors.mono[950],
       border: colors.warning[300],
     },
-    active: {
+    pressed: {
       bg: colors.error[700],
       fg: colors.mono[50],
       border: colors.warning[300],

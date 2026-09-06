@@ -80,7 +80,7 @@ describe('canonical token value-kind authority', () => {
 
   it('assigns the expected kinds to representative component roles', () => {
     expect(
-      requireTokenValueKind('components.radio.motion.activeScale', 0.92)
+      requireTokenValueKind('components.radio.motion.pressedScale', 0.92)
     ).toBe('scale');
     expect(
       requireTokenValueKind('components.radio.motion.pressedOpacity', 0.8)
