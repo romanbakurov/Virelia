@@ -10,7 +10,8 @@ export function renderPartTypesTemplate({
   partName,
 }: ComponentPartTemplateParams) {
   if (partName === 'Root') {
-    return `export type { ${componentName}Props } from '../types';
+    return `// ${componentName}Root consumes the component-level ${componentName}Props contract.
+export {};
 `;
   }
 
@@ -39,7 +40,7 @@ function renderRootPartTemplate({
   if (isNative) {
     return `import { View } from 'react-native';
 
-import type { ${componentName}Props } from './types';
+import type { ${componentName}Props } from '../types';
 
 export function ${componentName}Root({ children }: ${componentName}Props) {
   return <View>{children}</View>;
@@ -47,7 +48,7 @@ export function ${componentName}Root({ children }: ${componentName}Props) {
 `;
   }
 
-  return `import type { ${componentName}Props } from './types';
+  return `import type { ${componentName}Props } from '../types';
 
 export function ${componentName}Root({ children }: ${componentName}Props) {
   return <div>{children}</div>;
