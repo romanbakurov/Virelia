@@ -59,21 +59,12 @@ ${partTypes ? `\n\n${partTypes}` : ''}
 
 export function renderCompoundTypesTemplate({
   componentName,
-  parts = [],
 }: ComponentTemplateParams) {
-  const partExports = parts
-    .filter((partName) => partName !== 'Root')
-    .map(
-      (partName) =>
-        `export type { ${componentName}${partName}Props } from './${partName}';`
-    )
-    .join('\n');
-
   return `import type { Base${componentName}Props } from '@vellira-ui/types';
 import type { ReactNode } from 'react';
 
 export type ${componentName}Props = Base${componentName}Props & {
   children?: ReactNode;
 };
-${partExports ? `\n${partExports}\n` : ''}`;
+`;
 }
