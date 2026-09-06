@@ -1,4 +1,4 @@
-name: ESLint Apply 875
+name: Accordion Page Generate 875
 
 on:
   push:
@@ -22,21 +22,34 @@ jobs:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Apply repository ESLint autofix to Accordion imports
+      - name: Regenerate Accordion component page
         run: |
-          pnpm exec eslint packages/react/src/components/Accordion/Accordion.tsx --fix
-          pnpm exec eslint packages/react/src/components/Accordion/Accordion.tsx
-          pnpm exec prettier packages/react/src/components/Accordion/Accordion.tsx --check
-      - name: Commit import-order-only patch
+          pnpm create:component-page Accordion --force
+          pnpm create:component-page Accordion --force --check
+          pnpm exec prettier \
+            apps/website/src/component-catalog/components/Accordion/AccordionDemo.tsx \
+            apps/website/src/component-catalog/components/Accordion/AccordionPlayground.tsx \
+            apps/website/src/component-catalog/components/Accordion/AccordionUsage.tsx \
+            apps/website/src/component-catalog/components/Accordion/NativeAccordionDemo.tsx \
+            apps/website/src/component-catalog/components/Accordion/accordionApi.ts \
+            apps/website/src/component-catalog/components/Accordion/accordionPlaygroundSchema.ts \
+            --check
+      - name: Commit generator-owned Accordion page output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git diff --check
           if git diff --quiet; then
-            echo "No ESLint autofix changes required."
+            echo "No generated Accordion page changes required."
             exit 0
           fi
-          git add packages/react/src/components/Accordion/Accordion.tsx
+          git add \
+            apps/website/src/component-catalog/components/Accordion/AccordionDemo.tsx \
+            apps/website/src/component-catalog/components/Accordion/AccordionPlayground.tsx \
+            apps/website/src/component-catalog/components/Accordion/AccordionUsage.tsx \
+            apps/website/src/component-catalog/components/Accordion/NativeAccordionDemo.tsx \
+            apps/website/src/component-catalog/components/Accordion/accordionApi.ts \
+            apps/website/src/component-catalog/components/Accordion/accordionPlaygroundSchema.ts
           git diff --cached --check
-          git commit -m "style(accordion): apply eslint import ordering"
+          git commit -m "chore(accordion): regenerate component page"
           git push origin HEAD:fix/compound-shared-types
