@@ -1,0 +1,42 @@
+name: Temporary Add OpenNext
+
+on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - '.github/workflows/tmp-add-opennext.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: feat/website-cloudflare-staging
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.22.0
+
+      - name: Install OpenNext and refresh lockfile
+        run: pnpm --filter @vellira-ui/website add -D @opennextjs/cloudflare@1.20.6
+
+      - name: Commit dependency update and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tmp-add-opennext.yml
+          git add apps/website/package.json pnpm-lock.yaml
+          git commit -m 'chore(website): add OpenNext Cloudflare adapter'
+          git push origin HEAD:feat/website-cloudflare-staging
