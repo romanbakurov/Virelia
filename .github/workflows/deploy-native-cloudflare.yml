@@ -1,0 +1,66 @@
+name: Deploy Native Playground
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/native-playground/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'turbo.json'
+      - '.github/workflows/deploy-native-cloudflare.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-playground-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22.22.0
+  NATIVE_DIST_DIR: apps/native-playground/dist-web
+  CLOUDFLARE_WORKER_NAME: vellira-native-playground
+
+jobs:
+  deploy:
+    name: Build and deploy Native Playground
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Native Playground dependencies
+        run: pnpm exec turbo run build --filter='@vellira-ui/native-playground^...'
+
+      - name: Build Native Playground web
+        run: pnpm --filter @vellira-ui/native-playground build:web
+
+      - name: Verify Native Playground artifact
+        run: test -f "$NATIVE_DIST_DIR/index.html"
+
+      - name: Deploy Native Playground to Cloudflare Workers
+        run: >
+          pnpm exec wrangler deploy
+          --name "$CLOUDFLARE_WORKER_NAME"
+          --assets "$NATIVE_DIST_DIR"
+          --compatibility-date 2026-09-06
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
