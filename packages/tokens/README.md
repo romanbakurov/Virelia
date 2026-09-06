@@ -162,13 +162,28 @@ Verify the baseline with:
 pnpm --filter @vellira-ui/tokens preservation:check
 ```
 
-The baseline records every resolved scalar token leaf for Light, Dark, and High
-Contrast. Normal token changes must not regenerate the baseline just to make a
-failure disappear. Instead, record the change in
+The preservation contract covers the complete current public visual surface:
+
+- every resolved scalar leaf under the Light, Dark, and High Contrast theme
+  graphs;
+- shared public visual tokens exported outside those theme graphs, including
+  overlay primitives and control-size values;
+- generated Web CSS variable output using the same serializer as the published
+  `@vellira-ui/tokens/css` artifact;
+- the current React Native output contract, which consumes the canonical theme
+  objects directly until a dedicated native platform adapter is introduced.
+
+Normal token changes must not regenerate the baseline just to make a failure
+disappear. Instead, record the change in
 `src/preservation/token-migrations.ts` as an explicit rename, compatibility
 alias, removal, addition, representation-only change, or approved visual
 change. Renames and aliases are checked against the previous resolved identity,
 so cleanup does not require obsolete token names to remain canonical forever.
+
+A representation-only migration must name the affected platform and provide
+explicit equivalence evidence. If a future Web or React Native adapter changes
+how a canonical value is represented, that migration must prove equivalent
+resolved output rather than silently bypassing preservation.
 
 `preservation:baseline` exists only to bootstrap or deliberately reset a
 reviewed baseline. A baseline reset is not evidence that a visual change is
