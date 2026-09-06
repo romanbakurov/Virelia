@@ -1,4 +1,4 @@
-name: vinext compatibility check
+name: vinext initialization
 
 on:
   push:
@@ -12,14 +12,16 @@ on:
       - .github/workflows/vinext-compat-check.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  check:
+  initialize:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: feat/website-cloudflare-staging
 
       - name: Enable Corepack
         run: corepack enable
@@ -30,6 +32,48 @@ jobs:
       - name: Install workspace
         run: pnpm install --frozen-lockfile
 
-      - name: Run vinext compatibility check
+      - name: Initialize vinext for Cloudflare
         working-directory: apps/website
-        run: pnpm dlx vinext@1.0.0-beta.9 check
+        run: >-
+          pnpm dlx vinext@1.0.0-beta.9 init
+          --skip-check
+          --platform=cloudflare
+          --cdn-cache=workers-cache
+          --data-cache=none
+          --image-optimization=cloudflare-images
+
+      - name: Prepare website dependencies
+        working-directory: apps/website
+        run: |
+          pnpm run sync:brand
+          pnpm run sync:tokens
+          pnpm run sync:components
+
+      - name: Build with vinext
+        working-directory: apps/website
+        run: pnpm run build:vinext
+
+      - name: Verify existing Next build
+        working-directory: apps/website
+        run: pnpm run build
+
+      - name: Typecheck website
+        working-directory: apps/website
+        run: pnpm run typecheck
+
+      - name: Review generated changes
+        run: |
+          git status --short
+          git diff -- apps/website pnpm-lock.yaml
+
+      - name: Commit vinext initialization
+        run: |
+          if git diff --quiet && test -z "$(git ls-files --others --exclude-standard apps/website)"; then
+            echo "No vinext initialization changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/website pnpm-lock.yaml
+          git commit -m "feat(website): initialize vinext for Cloudflare Workers"
+          git push
