@@ -112,6 +112,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Regenerate current registry with patched generator
+        run: >-
+          pnpm exec tsx -e "import { readdirSync, writeFileSync } from 'node:fs';
+          import { buildBlogArticleRegistry } from './scripts/blog/tooling.ts';
+          const slugs = readdirSync('apps/website/content/blog', { withFileTypes: true })
+          .filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+          writeFileSync('apps/website/src/blog/article-modules.ts', buildBlogArticleRegistry(slugs));"
+
       - name: Validate blog registry
         run: |
           pnpm exec prettier scripts/blog/tooling.ts apps/website/src/blog/article-modules.ts apps/website/src/blog/store.ts --write
