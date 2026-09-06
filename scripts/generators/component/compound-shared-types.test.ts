@@ -55,9 +55,7 @@ describe('shared type ownership', () => {
     () => {
       const plan = createPlan();
 
-      fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), {
-        recursive: true,
-      });
+      fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), { recursive: true });
       fs.writeFileSync(
         plan.sharedTypesBarrelFile,
         "export * from './button';\nexport * from './tabs';\n"
@@ -106,9 +104,7 @@ describe('shared type ownership', () => {
         );
         expect(rootTemplates.component).toContain('DisclosureProbeProps');
         expect(rootTemplates.component).toContain("from '../types'");
-        expect(rootTemplates.component).not.toContain(
-          'DisclosureProbeRootProps'
-        );
+        expect(rootTemplates.component).not.toContain('DisclosureProbeRootProps');
 
         for (const partName of ['Item', 'Trigger', 'Content'] as const) {
           const partTemplates = resolvePartTemplates({
@@ -174,9 +170,7 @@ describe('shared type ownership', () => {
     () => {
       const plan = createPlan('overlay', ['Root', 'Trigger', 'Content']);
 
-      fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), {
-        recursive: true,
-      });
+      fs.mkdirSync(path.dirname(plan.sharedTypesBarrelFile), { recursive: true });
       fs.writeFileSync(plan.sharedTypesBarrelFile, '');
 
       writeSharedTypesContract(plan);
