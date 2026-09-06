@@ -139,8 +139,26 @@ Release types:
 5. Push the branch.
 6. Open a Pull Request.
 7. Wait for CI to pass.
-8. Merge into `main`.
-9. Semantic Release creates the release automatically.
+8. Verify the repository Definition of Done on the exact final HEAD.
+9. Merge into `main`.
+10. Confirm expected issue/merge state when applicable.
+11. Semantic Release creates the release automatically.
+
+---
+
+## Definition of Done
+
+Every Vellira task and Pull Request must follow the canonical
+[Repository Definition of Done](docs/architecture/definition-of-done.md).
+
+Do not call work Done or merge-ready only because the main implementation is
+finished or CI is green. The accepted scope, relevant baseline, regression
+evidence, required validation, and final diff must all be complete on the exact
+final HEAD. Known in-scope correctness gaps must remain open or have their scope
+explicitly changed before merge.
+
+The linked document is authoritative. Launch-critical work follows the same
+contract with stricter evidence requirements.
 
 ---
 
@@ -184,6 +202,7 @@ Pull Requests should:
 - focus on a single change
 - use Conventional Commits
 - pass all CI checks
+- satisfy the Repository Definition of Done
 - include tests when behavior changes
 - update documentation when public APIs change
 

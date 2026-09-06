@@ -27,6 +27,19 @@ Closes #
 - [ ] Storybook examples reviewed
 - [ ] Documentation reviewed
 
+## Definition of Done
+
+<!--
+Read docs/architecture/definition-of-done.md before marking this PR merge-ready.
+The repository Definition of Done applies to every task, not only launch-critical work.
+-->
+
+- [ ] Every accepted in-scope requirement and acceptance criterion is complete or explicitly resolved.
+- [ ] Relevant existing baseline and positive/negative regression coverage were checked when applicable.
+- [ ] Required validation evidence belongs to this exact final HEAD.
+- [ ] No known in-scope correctness gap, temporary bypass, or silently deferred work remains.
+- [ ] Final diff review found no unrelated changes or weakened tests/checks/contracts.
+
 ## Checklist
 
 - [ ] The pull request focuses on a single change.
