@@ -1,0 +1,38 @@
+name: Prettier Probe 875
+
+on:
+  push:
+    branches:
+      - chore/prettier-probe-875
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Show authoritative Prettier diff
+        run: |
+          pnpm exec prettier \
+            scripts/checks/component-quality/rules/api-feature.test.ts \
+            scripts/checks/component-quality/rules/api-feature.ts \
+            scripts/checks/component-quality/shared-type-baseline.test.ts \
+            scripts/generators/component/compound-shared-types.test.ts \
+            scripts/generators/component/compound-shared-types.ts \
+            scripts/generators/component/preflight.ts \
+            --write
+          git diff -- \
+            scripts/checks/component-quality/rules/api-feature.test.ts \
+            scripts/checks/component-quality/rules/api-feature.ts \
+            scripts/checks/component-quality/shared-type-baseline.test.ts \
+            scripts/generators/component/compound-shared-types.test.ts \
+            scripts/generators/component/compound-shared-types.ts \
+            scripts/generators/component/preflight.ts
