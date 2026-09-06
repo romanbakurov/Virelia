@@ -213,20 +213,26 @@ function migrationAppliesToContext(
   migration: TokenMigrationEntry,
   context: PreservationContext
 ): boolean {
+  if (migration.kind === 'representation-change') {
+    if (context === 'canonical') {
+      return migration.layer === 'canonical';
+    }
+
+    return (
+      migration.layer === 'platform-output' &&
+      migration.platforms.includes(context)
+    );
+  }
+
   if (context === 'canonical') {
     if (
-      (migration.kind === 'representation-change' ||
-        migration.kind === 'visual-change') &&
+      migration.kind === 'visual-change' &&
       migration.platforms !== undefined
     ) {
       return false;
     }
 
     return true;
-  }
-
-  if (migration.kind === 'representation-change') {
-    return migration.platforms?.includes(context) ?? false;
   }
 
   return (
