@@ -3,6 +3,7 @@ export { border } from './border.js';
 export { control } from './control.js';
 export { divider } from './divider.js';
 export { focus } from './focus.js';
+export { icons } from './icons.js';
 export { menu } from './menu.js';
 export { navigation } from './navigation.js';
 export { overlay } from './overlay.js';
