@@ -37,6 +37,7 @@ describe('interaction state vocabulary V1', () => {
       'disabled',
       'focus',
     ]);
+    // Keep both machine-readable state authorities in exact lockstep.
     expect(canonicalTokenVocabulary.state).toEqual(canonicalInteractionStates);
 
     expect(interactionStateVocabularyV1.pressed.temporality).toBe('transient');
