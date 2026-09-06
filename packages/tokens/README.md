@@ -151,6 +151,59 @@ Verify that generated token types are up to date:
 pnpm --filter @vellira-ui/tokens generate:types:check
 ```
 
+### Token preservation baseline
+
+Token Architecture Normalization V1 uses a committed resolved-value baseline to
+prevent naming and ownership cleanup from silently redesigning Vellira.
+
+Verify the baseline with:
+
+```bash
+pnpm --filter @vellira-ui/tokens preservation:check
+```
+
+The preservation contract covers the complete current public visual surface:
+
+- every resolved scalar leaf under the Light, Dark, and High Contrast theme
+  graphs;
+- shared public visual tokens exported outside those theme graphs, including
+  overlay primitives and control-size values;
+- generated Web CSS variable names together with their serialized values, using
+  the same serializer as the published `@vellira-ui/tokens/css` artifact;
+- the current React Native output contract, which consumes the canonical theme
+  objects directly until a dedicated native platform adapter is introduced.
+
+Normal token changes must not regenerate the baseline just to make a failure
+disappear. Instead, record the change in
+`src/preservation/token-migrations.ts` as an explicit rename, compatibility
+alias, removal, addition, representation-only change, or approved visual
+change. Renames and aliases are checked against the previous resolved identity,
+so cleanup does not require obsolete token names to remain canonical forever.
+
+Representation-only migrations explicitly declare their layer. A `canonical`
+representation change is used when the renderer-neutral value changes shape or
+type while retaining the same rendered meaning, for example a reviewed numeric
+normalization such as `'1'` to `1`. A `platform-output` representation change
+must additionally name the affected Web or React Native platform. Both forms
+require explicit equivalence evidence; neither is an escape hatch for visual
+drift.
+
+`preservation:baseline` is a bootstrap command and refuses to overwrite an
+existing committed baseline during normal work. A deliberate reviewed reset
+requires the explicit `--force-reset` CLI flag. Resetting a baseline is never by
+itself evidence that a visual change is safe.
+
+Broad token migrations must also use the repository's canonical pinned Linux
+visual regression path:
+
+```bash
+pnpm test:e2e:web:visual:docker
+```
+
+Do not update visual baselines or the token preservation baseline merely to
+obtain green CI. Any intended visual change must be isolated and explicitly
+approved.
+
 ## Principles
 
 - Semantic tokens over hardcoded colors
