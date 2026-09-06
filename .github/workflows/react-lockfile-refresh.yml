@@ -1,0 +1,82 @@
+name: React lockfile refresh
+
+on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - package.json
+      - pnpm-workspace.yaml
+      - pnpm-lock.yaml
+      - apps/**/package.json
+      - packages/**/package.json
+      - .github/workflows/react-lockfile-refresh.yml
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Prepare pnpm
+        run: corepack prepare pnpm@11.20.0 --activate
+
+      - name: Refresh lockfile
+        run: pnpm install --lockfile-only
+
+      - name: Verify React split
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+          const website = read('apps/website/package.json');
+          const playground = read('apps/react-playground/package.json');
+          const storybook = read('apps/react-storybook/package.json');
+          const webPackage = read('packages/react/package.json');
+          const nativePlayground = read('apps/native-playground/package.json');
+          const nativeStorybook = read('apps/native-storybook/package.json');
+          const nativePackage = read('packages/react-native/package.json');
+
+          const expectedWeb = '19.2.8';
+          const expectedNative = '19.2.3';
+
+          for (const [name, pkg, section = 'dependencies'] of [
+            ['website', website],
+            ['react-playground', playground],
+            ['react-storybook', storybook],
+            ['@vellira-ui/react', webPackage, 'devDependencies'],
+          ]) {
+            if (pkg[section]?.react !== expectedWeb) {
+              throw new Error(`${name} expected react ${expectedWeb}, got ${pkg[section]?.react}`);
+            }
+          }
+
+          for (const [name, pkg, section = 'dependencies'] of [
+            ['native-playground', nativePlayground],
+            ['native-storybook', nativeStorybook],
+            ['@vellira-ui/react-native', nativePackage, 'devDependencies'],
+          ]) {
+            if (pkg[section]?.react !== expectedNative) {
+              throw new Error(`${name} expected react ${expectedNative}, got ${pkg[section]?.react}`);
+            }
+          }
+          NODE
+
+          grep -q "react@19.2.8" pnpm-lock.yaml
+          grep -q "react@19.2.3" pnpm-lock.yaml
+
+      - name: Upload refreshed lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-lockfile
+          path: pnpm-lock.yaml
+          if-no-files-found: error
+          retention-days: 1
