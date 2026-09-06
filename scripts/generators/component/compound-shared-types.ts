@@ -158,6 +158,17 @@ export function checkSharedTypesContract(
     driftedFiles.push(plan.sharedTypesBarrelFile);
   }
 
+  const metadataSource = fs.existsSync(plan.metadataFile)
+    ? fs.readFileSync(plan.metadataFile, 'utf8')
+    : '';
+
+  if (
+    !metadataSource.includes('dependencies:') ||
+    !metadataSource.includes("'@vellira-ui/types'")
+  ) {
+    driftedFiles.push(plan.metadataFile);
+  }
+
   for (const target of plan.targets) {
     const componentTypesFile = path.join(target.componentDir, 'types.ts');
     const componentTypes = fs.existsSync(componentTypesFile)
@@ -186,7 +197,7 @@ export function checkSharedTypesContract(
         : '';
 
       if (
-        !rootTypesFile ||
+        !fs.existsSync(rootTypesFile) ||
         !rootTypes.includes(`${plan.componentName}Root consumes`)
       ) {
         driftedFiles.push(rootTypesFile);
