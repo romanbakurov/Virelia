@@ -38,7 +38,9 @@ function insertSharedTypesExport(content: string, exportLine: string) {
 
     if (matchedSource > source) {
       if (match.index === undefined) {
-        throw new Error('Unable to resolve shared type export insertion point.');
+        throw new Error(
+          'Unable to resolve shared type export insertion point.'
+        );
       }
 
       return (

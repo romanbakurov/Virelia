@@ -158,77 +158,68 @@ describe('API/feature quality rules', () => {
     expect(result.message).toContain('ExampleProps');
   });
 
-  it(
-    'rejects an orphan Props export unrelated to the callable component',
-    async () => {
-      createComponent({
-        implementationSource:
-          'type LocalProps = { value?: string };\nexport function Example(_props: LocalProps) { return null; }\n',
-      });
+  it('rejects an orphan Props export unrelated to the callable component', async () => {
+    createComponent({
+      implementationSource:
+        'type LocalProps = { value?: string };\nexport function Example(_props: LocalProps) { return null; }\n',
+    });
 
-      const result = await publicApiSurfaceRule.evaluate({
-        metadata,
-        platform: 'react',
-      });
+    const result = await publicApiSurfaceRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('fail');
-      expect(result.message).toContain('callable/root');
-    }
-  );
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('callable/root');
+  });
 
-  it(
-    'passes canonical shared ownership without imposing a Base<Name>Props symbol',
-    async () => {
-      const sharedMetadata: ComponentMetadata = {
-        ...metadata,
-        dependencies: {
-          packages: ['@vellira-ui/types'],
-        },
-      };
+  it('passes canonical shared ownership without imposing a Base<Name>Props symbol', async () => {
+    const sharedMetadata: ComponentMetadata = {
+      ...metadata,
+      dependencies: {
+        packages: ['@vellira-ui/types'],
+      },
+    };
 
-      createComponent({
-        metadataOverride: sharedMetadata,
-        typesSource:
-          "import type { ExampleBaseProps } from '@vellira-ui/types';\nexport type ExampleProps = ExampleBaseProps;\n",
-        sharedTypeSource:
-          'export interface ExampleBaseProps { value?: string; defaultValue?: string; onValueChange?: (value: string) => void; }\n',
-      });
+    createComponent({
+      metadataOverride: sharedMetadata,
+      typesSource:
+        "import type { ExampleBaseProps } from '@vellira-ui/types';\nexport type ExampleProps = ExampleBaseProps;\n",
+      sharedTypeSource:
+        'export interface ExampleBaseProps { value?: string; defaultValue?: string; onValueChange?: (value: string) => void; }\n',
+    });
 
-      const result = await sharedTypeContractRule.evaluate({
-        metadata: sharedMetadata,
-        platform: 'react',
-      });
+    const result = await sharedTypeContractRule.evaluate({
+      metadata: sharedMetadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('pass');
-    }
-  );
+    expect(result.status).toBe('pass');
+  });
 
-  it(
-    'does not mistake shared helper types for required component parts',
-    async () => {
-      const sharedMetadata: ComponentMetadata = {
-        ...metadata,
-        dependencies: {
-          packages: ['@vellira-ui/types'],
-        },
-      };
+  it('does not mistake shared helper types for required component parts', async () => {
+    const sharedMetadata: ComponentMetadata = {
+      ...metadata,
+      dependencies: {
+        packages: ['@vellira-ui/types'],
+      },
+    };
 
-      createComponent({
-        metadataOverride: sharedMetadata,
-        typesSource:
-          "import type { BaseExampleSharedProps } from '@vellira-ui/types';\nexport type ExampleProps = BaseExampleSharedProps;\n",
-        sharedTypeSource:
-          'export interface BaseExampleSharedProps { value?: string; }\nexport interface BaseExampleSingleProps { value?: string; }\n',
-      });
+    createComponent({
+      metadataOverride: sharedMetadata,
+      typesSource:
+        "import type { BaseExampleSharedProps } from '@vellira-ui/types';\nexport type ExampleProps = BaseExampleSharedProps;\n",
+      sharedTypeSource:
+        'export interface BaseExampleSharedProps { value?: string; }\nexport interface BaseExampleSingleProps { value?: string; }\n',
+    });
 
-      const result = await sharedTypeContractRule.evaluate({
-        metadata: sharedMetadata,
-        platform: 'react',
-      });
+    const result = await sharedTypeContractRule.evaluate({
+      metadata: sharedMetadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('pass');
-    }
-  );
+    expect(result.status).toBe('pass');
+  });
 
   it('fails shared ownership when the canonical file is missing', async () => {
     const sharedMetadata: ComponentMetadata = {
@@ -253,100 +244,85 @@ describe('API/feature quality rules', () => {
     expect(result.message).toContain('canonical shared type module');
   });
 
-  it(
-    'fails when a canonical shared module exists but metadata omits the dependency',
-    async () => {
-      createComponent({
-        typesSource:
-          "import type { BaseExampleProps } from '@vellira-ui/types';\nexport type ExampleProps = BaseExampleProps;\n",
-        sharedTypeSource:
-          'export interface BaseExampleProps { value?: string; }\n',
-      });
+  it('fails when a canonical shared module exists but metadata omits the dependency', async () => {
+    createComponent({
+      typesSource:
+        "import type { BaseExampleProps } from '@vellira-ui/types';\nexport type ExampleProps = BaseExampleProps;\n",
+      sharedTypeSource:
+        'export interface BaseExampleProps { value?: string; }\n',
+    });
 
-      const result = await sharedTypeContractRule.evaluate({
-        metadata,
-        platform: 'react',
-      });
+    const result = await sharedTypeContractRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('fail');
-      expect(result.message).toContain('metadata dependency');
-    }
-  );
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('metadata dependency');
+  });
 
-  it(
-    'fails shared ownership when a renderer independently redeclares props',
-    async () => {
-      const sharedMetadata: ComponentMetadata = {
-        ...metadata,
-        dependencies: {
-          packages: ['@vellira-ui/types'],
-        },
-      };
+  it('fails shared ownership when a renderer independently redeclares props', async () => {
+    const sharedMetadata: ComponentMetadata = {
+      ...metadata,
+      dependencies: {
+        packages: ['@vellira-ui/types'],
+      },
+    };
 
-      createComponent({
-        metadataOverride: sharedMetadata,
-        sharedTypeSource:
-          'export interface BaseExampleProps { value?: string; }\n',
-      });
+    createComponent({
+      metadataOverride: sharedMetadata,
+      sharedTypeSource:
+        'export interface BaseExampleProps { value?: string; }\n',
+    });
 
-      const result = await sharedTypeContractRule.evaluate({
-        metadata: sharedMetadata,
-        platform: 'react',
-      });
+    const result = await sharedTypeContractRule.evaluate({
+      metadata: sharedMetadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('fail');
-      expect(result.message).toContain('renderer derivation/import');
-    }
-  );
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('renderer derivation/import');
+  });
 
-  it(
-    'checks controlled and uncontrolled contracts only when declared',
-    async () => {
-      createComponent({});
+  it('checks controlled and uncontrolled contracts only when declared', async () => {
+    createComponent({});
 
-      const result = await controlledContractRule.evaluate({
-        metadata,
-        platform: 'react',
-      });
+    const result = await controlledContractRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('pass');
-    }
-  );
+    expect(result.status).toBe('pass');
+  });
 
-  it(
-    'fails when a declared controlled contract has no source evidence',
-    async () => {
-      createComponent({
-        typesSource: 'export interface ExampleProps { disabled?: boolean; }\n',
-      });
+  it('fails when a declared controlled contract has no source evidence', async () => {
+    createComponent({
+      typesSource: 'export interface ExampleProps { disabled?: boolean; }\n',
+    });
 
-      const result = await controlledContractRule.evaluate({
-        metadata,
-        platform: 'react',
-      });
+    const result = await controlledContractRule.evaluate({
+      metadata,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('fail');
-      expect(result.message).toContain('controlled');
-    }
-  );
+    expect(result.status).toBe('fail');
+    expect(result.message).toContain('controlled');
+  });
 
-  it(
-    'does not penalize controlled behavior when it is not applicable',
-    async () => {
-      createComponent({});
-      const withoutControlled: ComponentMetadata = {
-        ...metadata,
-        capabilities: ['disabled'],
-      };
+  it('does not penalize controlled behavior when it is not applicable', async () => {
+    createComponent({});
+    const withoutControlled: ComponentMetadata = {
+      ...metadata,
+      capabilities: ['disabled'],
+    };
 
-      const result = await controlledContractRule.evaluate({
-        metadata: withoutControlled,
-        platform: 'react',
-      });
+    const result = await controlledContractRule.evaluate({
+      metadata: withoutControlled,
+      platform: 'react',
+    });
 
-      expect(result.status).toBe('not-applicable');
-    }
-  );
+    expect(result.status).toBe('not-applicable');
+  });
 
   it('passes declared deterministic state capabilities', async () => {
     createComponent({});
