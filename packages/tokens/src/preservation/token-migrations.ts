@@ -65,6 +65,8 @@ type TokenRepresentationMigrationBase = Omit<
   evidence: string;
 };
 
+// Canonical migrations change renderer-neutral representation; platform-output
+// migrations change only a named renderer's serialized representation.
 export type TokenCanonicalRepresentationMigration =
   TokenRepresentationMigrationBase & {
     layer: 'canonical';
