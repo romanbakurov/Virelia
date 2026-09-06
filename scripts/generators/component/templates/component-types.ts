@@ -14,6 +14,17 @@ export type ${componentName}Props = {
 `;
 }
 
+export function renderSharedBaseTypesTemplate({
+  componentName,
+}: ComponentTemplateParams) {
+  return `/**
+ * Shared cross-platform API contract for ${componentName}.
+ * Semantic completion may replace this empty contract with explicit props.
+ */
+export type Base${componentName}Props = unknown;
+`;
+}
+
 function renderSharedCompoundPartType(params: {
   componentName: string;
   partName: string;
@@ -69,7 +80,7 @@ export interface Base${componentName}Props {
 `;
 }
 
-export function renderCompoundTypesTemplate({
+export function renderSharedRendererTypesTemplate({
   componentName,
 }: ComponentTemplateParams) {
   return `import type { Base${componentName}Props } from '@vellira-ui/types';
@@ -84,3 +95,5 @@ type WithChildren<T> = T extends unknown
 export type ${componentName}Props = WithChildren<Base${componentName}Props>;
 `;
 }
+
+export const renderCompoundTypesTemplate = renderSharedRendererTypesTemplate;
