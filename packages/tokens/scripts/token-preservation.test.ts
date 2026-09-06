@@ -14,7 +14,7 @@ function cloneBaseline(
   return structuredClone(baseline);
 }
 
-function firstPath(
+function firstCanonicalPath(
   baseline: TokenPreservationBaselineV1,
   theme: keyof TokenPreservationBaselineV1['themes']
 ): string {
@@ -25,17 +25,28 @@ function firstPath(
   return path;
 }
 
+function firstWebPath(
+  baseline: TokenPreservationBaselineV1,
+  theme: keyof TokenPreservationBaselineV1['platformOutputs']['web']
+): string {
+  const path = Object.keys(baseline.platformOutputs.web[theme].entries)[0];
+
+  if (!path) throw new Error(`Missing Web baseline path for ${theme}.`);
+
+  return path;
+}
+
 describe('token preservation contract', () => {
-  it('accepts an unchanged resolved token baseline', () => {
+  it('accepts unchanged canonical, Web, and React Native output', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
 
     expect(verifyTokenPreservation({ baseline, manifest: [] })).toEqual([]);
   });
 
-  it('fails when a resolved value hash changes without migration evidence', () => {
+  it('fails when a canonical resolved value hash changes without migration evidence', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
     const changed = cloneBaseline(baseline);
-    const path = firstPath(changed, 'light');
+    const path = firstCanonicalPath(changed, 'light');
 
     changed.themes.light.entries[path] = '0'.repeat(64);
 
@@ -46,6 +57,73 @@ describe('token preservation contract', () => {
         rule: 'token.changed',
         theme: 'light',
         path,
+      })
+    );
+  });
+
+  it('fails when serialized Web output changes without migration evidence', () => {
+    const baseline = createTokenPreservationBaseline('test-revision');
+    const changed = cloneBaseline(baseline);
+    const path = firstWebPath(changed, 'light');
+
+    changed.platformOutputs.web.light.entries[path] = '0'.repeat(64);
+
+    expect(
+      verifyTokenPreservation({ baseline: changed, manifest: [] })
+    ).toContainEqual(
+      expect.objectContaining({
+        rule: 'platform.changed',
+        theme: 'light',
+        platform: 'web',
+        path,
+      })
+    );
+  });
+
+  it('allows a Web-only representation change only with explicit evidence', () => {
+    const baseline = createTokenPreservationBaseline('test-revision');
+    const changed = cloneBaseline(baseline);
+    const path = firstWebPath(changed, 'light');
+    const manifest: readonly TokenMigrationEntry[] = [
+      {
+        id: 'test-web-representation',
+        kind: 'representation-change',
+        issue: '#880',
+        reason: 'Synthetic regression fixture.',
+        themes: ['light'],
+        platforms: ['web'],
+        from: path,
+        equivalence: 'The canonical value is unchanged; only Web serialization changes.',
+        evidence: 'Synthetic platform-output fixture.',
+      },
+    ];
+
+    changed.platformOutputs.web.light.entries[path] = '0'.repeat(64);
+
+    expect(verifyTokenPreservation({ baseline: changed, manifest })).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          rule: 'platform.changed',
+          theme: 'light',
+          platform: 'web',
+          path,
+        }),
+      ])
+    );
+  });
+
+  it('requires React Native output to resolve through the canonical theme contract', () => {
+    const baseline = createTokenPreservationBaseline('test-revision');
+    const changed = cloneBaseline(baseline);
+
+    changed.platformOutputs.reactNative.mode = 'invalid' as 'canonical-theme';
+
+    expect(
+      verifyTokenPreservation({ baseline: changed, manifest: [] })
+    ).toContainEqual(
+      expect.objectContaining({
+        rule: 'baseline.schema',
+        platform: 'react-native',
       })
     );
   });
@@ -68,7 +146,7 @@ describe('token preservation contract', () => {
 
   it('rejects a rename target whose value drifts from the old identity', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
-    const path = firstPath(baseline, 'light');
+    const path = firstCanonicalPath(baseline, 'light');
     const manifest: readonly TokenMigrationEntry[] = [
       {
         id: 'test-rename',
@@ -90,12 +168,13 @@ describe('token preservation contract', () => {
     );
   });
 
-  it('requires explicit migration evidence for removals', () => {
+  it('detects baseline laundering that silently drops a canonical path', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
     const changed = cloneBaseline(baseline);
-    const path = firstPath(changed, 'light');
+    const path = firstCanonicalPath(changed, 'light');
 
     delete changed.themes.light.entries[path];
+    changed.themes.light.entryCount -= 1;
 
     expect(
       verifyTokenPreservation({ baseline: changed, manifest: [] })
