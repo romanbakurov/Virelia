@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
+import { darkTheme } from '../src/dark/theme.js';
+import { highContrastTheme } from '../src/highContrast/theme.js';
+import { lightTheme } from '../src/light/theme.js';
 import type { TokenMigrationEntry } from '../src/preservation/token-migrations.js';
+import { fontWeights } from '../src/tokens/typography.js';
 
 import {
   createTokenPreservationBaseline,
@@ -41,6 +45,12 @@ describe('token preservation contract', () => {
     const baseline = createTokenPreservationBaseline('test-revision');
 
     expect(verifyTokenPreservation({ baseline, manifest: [] })).toEqual([]);
+  });
+
+  it('keeps the public fontWeights export backed by the preserved typography weights', () => {
+    expect(lightTheme.tokens.typography.weight).toBe(fontWeights);
+    expect(darkTheme.tokens.typography.weight).toBe(fontWeights);
+    expect(highContrastTheme.tokens.typography.weight).toBe(fontWeights);
   });
 
   it('fails when a canonical resolved value hash changes without migration evidence', () => {
