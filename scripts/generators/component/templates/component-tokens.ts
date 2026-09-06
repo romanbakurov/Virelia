@@ -105,7 +105,7 @@ export type ${componentName}ThemeSemantics = {
     selected: {
       default: ${componentName}SemanticState;
       hover: ${componentName}SemanticState;
-      active: ${componentName}SemanticState;
+      pressed: ${componentName}SemanticState;
     };
     disabled: ${componentName}SemanticState;
   };
@@ -152,9 +152,9 @@ export const create${componentName}TokensFromSemantics = ({
         thumbBg: control.selected.hover.fg,
       },
       pressed: {
-        trackBg: control.selected.active.bg,
-        trackBorder: control.selected.active.border,
-        thumbBg: control.selected.active.fg,
+        trackBg: control.selected.pressed.bg,
+        trackBorder: control.selected.pressed.border,
+        thumbBg: control.selected.pressed.fg,
       },
     },
     focusRing: focus.ring.color,
@@ -334,7 +334,7 @@ import { status } from '../semantic/status.js';
 export const ${tokenName} = create${componentName}Tokens({
   default: control.default,
   hover: control.hover,
-  pressed: control.active,
+  pressed: control.pressed,
   focusRing: focus.ring.color,
   error: {
     fg: status.error.fg,

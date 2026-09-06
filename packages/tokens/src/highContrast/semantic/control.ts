@@ -17,7 +17,7 @@ export const control = {
     border: colors.warning[300],
   },
 
-  active: {
+  pressed: {
     bg: surface.active,
     fg: text.primary,
     border: colors.warning[200],
@@ -42,7 +42,7 @@ export const control = {
       border: colors.warning[200],
     },
 
-    active: {
+    pressed: {
       bg: colors.warning[400],
       fg: colors.mono[950],
       border: colors.warning[400],

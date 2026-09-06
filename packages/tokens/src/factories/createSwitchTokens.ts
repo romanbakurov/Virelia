@@ -42,7 +42,7 @@ export type SwitchThemeSemantics = {
     selected: {
       default: SwitchSemanticState;
       hover: SwitchSemanticState;
-      active: SwitchSemanticState;
+      pressed: SwitchSemanticState;
     };
     disabled: SwitchSemanticState;
   };
@@ -97,9 +97,9 @@ export const createSwitchTokensFromSemantics = ({
         thumbBg: control.selected.hover.fg,
       },
       pressed: {
-        trackBg: control.selected.active.bg,
-        trackBorder: control.selected.active.border,
-        thumbBg: control.selected.active.fg,
+        trackBg: control.selected.pressed.bg,
+        trackBorder: control.selected.pressed.border,
+        thumbBg: control.selected.pressed.fg,
       },
     },
     focusRing: focus.ring.color,

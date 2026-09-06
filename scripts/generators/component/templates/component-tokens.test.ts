@@ -26,7 +26,7 @@ describe('component token templates', () => {
     expect(result).toContain('trackBg: control.default.bg');
     expect(result).toContain('trackBg: control.selected.default.bg');
     expect(result).toContain('trackBg: control.selected.hover.bg');
-    expect(result).toContain('trackBg: control.selected.active.bg');
+    expect(result).toContain('trackBg: control.selected.pressed.bg');
     expect(result).toContain('trackBg: control.disabled.bg');
     expect(result).toContain('focusRing: focus.ring.color');
     expect(result).toContain('errorBorder: status.error.border');
@@ -60,7 +60,7 @@ describe('component token templates', () => {
     expect(result).not.toContain('control.default.bg');
     expect(result).not.toContain('control.selected.default.bg');
     expect(result).not.toContain('control.selected.hover.bg');
-    expect(result).not.toContain('control.selected.active.bg');
+    expect(result).not.toContain('control.selected.pressed.bg');
     expect(result).not.toContain('control.disabled.bg');
     expect(result).not.toContain('status.error.border');
     expect(result).not.toMatch(/#[0-9a-f]{3,8}\b/i);
@@ -82,7 +82,8 @@ describe('component token templates', () => {
     expect(factory).toContain('export const createAvatarTokens');
     expect(theme).toContain('default: control.default');
     expect(theme).toContain('hover: control.hover');
-    expect(theme).toContain('pressed: control.active');
+    expect(theme).toContain('pressed: control.pressed');
+    expect(theme).not.toContain('pressed: control.active');
     expect(theme).toContain('disabled: control.disabled');
   });
 
