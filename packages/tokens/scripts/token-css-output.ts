@@ -153,10 +153,7 @@ export function collectThemeCssOutput(
 export function collectResolvedWebCssOutput(theme: Theme): Map<string, string> {
   return new Map(
     [...collectBaseCssOutput(), ...collectThemeCssOutput(theme)].map(
-      ([path, entry]) => [
-        path,
-        JSON.stringify([entry.variable, entry.value]),
-      ]
+      ([path, entry]) => [path, JSON.stringify([entry.variable, entry.value])]
     )
   );
 }

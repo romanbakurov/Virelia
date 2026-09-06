@@ -61,10 +61,7 @@ export type TokenRepresentationMigration = Omit<
   kind: 'representation-change';
   from: string;
   to?: string;
-  platforms: readonly [
-    TokenMigrationPlatform,
-    ...TokenMigrationPlatform[],
-  ];
+  platforms: readonly [TokenMigrationPlatform, ...TokenMigrationPlatform[]];
   equivalence: string;
   evidence: string;
 };
