@@ -144,14 +144,26 @@ function collectShadowVariables(
   output: Map<string, CssOutputEntry>
 ): void {
   for (const [key, shadow] of Object.entries(source)) {
+    const tokenPath = `tokens.shadows.${key}`;
+    const x = serializeCssTokenValue(`${tokenPath}.x`, shadow.x);
+    const y = serializeCssTokenValue(`${tokenPath}.y`, shadow.y);
+    const blur = serializeCssTokenValue(`${tokenPath}.blur`, shadow.blur);
+    const opacity = serializeCssTokenValue(
+      `${tokenPath}.opacity`,
+      shadow.opacity
+    );
+    const shadowColor = serializeCssTokenValue(
+      `${tokenPath}.color`,
+      shadow.color
+    );
     const color =
-      shadow.color === '#000' || shadow.color === '#000000'
-        ? `rgba(0,0,0,${shadow.opacity})`
-        : shadow.color;
+      shadowColor === '#000' || shadowColor === '#000000'
+        ? `rgba(0,0,0,${opacity})`
+        : shadowColor;
 
-    output.set(`tokens.shadows.${key}`, {
+    output.set(tokenPath, {
       variable: `--shadow-${key}`,
-      value: `${shadow.x}px ${shadow.y}px ${shadow.blur}px ${color}`,
+      value: `${x} ${y} ${blur} ${color}`,
     });
   }
 }
