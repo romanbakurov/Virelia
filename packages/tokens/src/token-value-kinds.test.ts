@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { darkTheme } from './dark/theme.js';
 import { highContrastTheme } from './highContrast/theme.js';
 import { lightTheme } from './light/theme.js';
+import { controlSizes } from './tokens/controlSizes.js';
 import {
   requireTokenValueKind,
   resolveTokenValueKind,
 } from './token-architecture.js';
-import { controlSizes } from './tokens/controlSizes.js';
 
 type TokenObject = Record<string, unknown>;
 
@@ -94,9 +94,9 @@ describe('canonical token value-kind authority', () => {
     expect(
       requireTokenValueKind('components.modal.content.zIndexOffset', 1)
     ).toBe('z-index');
-    expect(
-      requireTokenValueKind('components.popover.shadow.native.x', 0)
-    ).toBe('length');
+    expect(requireTokenValueKind('components.popover.shadow.native.x', 0)).toBe(
+      'length'
+    );
     expect(
       requireTokenValueKind('components.popover.shadow.native.opacity', 0.1)
     ).toBe('opacity');

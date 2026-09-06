@@ -68,6 +68,7 @@ export const canonicalComponentNumericRoleFamilies = {
   'unitless-number': ['elevation'],
   'font-size': ['fontSize'],
   'line-height': ['lineHeight'],
+  duration: ['duration'],
   length: [
     'width',
     'height',
@@ -86,9 +87,7 @@ export const canonicalComponentNumericRoleFamilies = {
     'translateY',
     'travel',
   ],
-} as const satisfies Partial<
-  Record<TokenValueKind, readonly string[]>
->;
+} as const satisfies Partial<Record<TokenValueKind, readonly string[]>>;
 
 const componentStringRoleFamilies = {
   duration: ['duration'],
@@ -111,10 +110,7 @@ function lastTokenPathSegment(tokenPath: string): string {
   return tokenPath.split('.').at(-1) ?? '';
 }
 
-function matchesRoleSuffix(
-  role: string,
-  suffixes: readonly string[]
-): boolean {
+function matchesRoleSuffix(role: string, suffixes: readonly string[]): boolean {
   const normalizedRole = role.toLowerCase();
 
   return suffixes.some((suffix) =>
