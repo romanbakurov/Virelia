@@ -147,15 +147,26 @@ export function checkCompoundSharedTypesContract(
     }
 
     const rootTypesFile = path.join(target.componentDir, 'Root', 'types.ts');
-    const rootTypes = fs.existsSync(rootTypesFile)
-      ? fs.readFileSync(rootTypesFile, 'utf8')
+
+    if (!fs.existsSync(rootTypesFile)) {
+      driftedFiles.push(rootTypesFile);
+    }
+
+    const rootComponentFile = path.join(
+      target.componentDir,
+      'Root',
+      `${plan.componentName}Root.tsx`
+    );
+    const rootComponent = fs.existsSync(rootComponentFile)
+      ? fs.readFileSync(rootComponentFile, 'utf8')
       : '';
 
     if (
-      !rootTypes.includes(`${plan.componentName}Props`) ||
-      !rootTypes.includes('../types')
+      !rootComponent.includes(`${plan.componentName}Props`) ||
+      !rootComponent.includes("from '../types'") ||
+      rootComponent.includes(`${plan.componentName}RootProps`)
     ) {
-      driftedFiles.push(rootTypesFile);
+      driftedFiles.push(rootComponentFile);
     }
 
     for (const partName of plan.parts.filter(
