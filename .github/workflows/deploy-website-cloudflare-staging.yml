@@ -66,8 +66,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Give the newly deployed Worker a short propagation window before
-          # validating SSG routes across Cloudflare's edge.
           sleep 15
 
           check_route() {
@@ -145,6 +143,13 @@ jobs:
           page.on('pageerror', (error) => {
             diagnostics.push(`pageerror: ${error.stack ?? error.message}`);
           });
+          page.on('response', (response) => {
+            if (response.url().startsWith(baseUrl) && response.status() >= 400) {
+              diagnostics.push(
+                `response: ${response.status()} ${response.request().method()} ${response.url()}`
+              );
+            }
+          });
           page.on('requestfailed', (request) => {
             if (request.url().startsWith(baseUrl)) {
               diagnostics.push(
@@ -154,7 +159,10 @@ jobs:
           });
 
           async function navigateByLink(startPath, href, expectedText) {
-            await page.goto(`${baseUrl}${startPath}`, { waitUntil: 'networkidle' });
+            await page.goto(`${baseUrl}${startPath}`, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30_000,
+            });
             const link = page.locator(`a[href="${href}"]`).first();
             await link.waitFor({ state: 'visible', timeout: 15_000 });
             await link.click();
@@ -187,5 +195,8 @@ jobs:
             process.exit(1);
           }
 
+          for (const diagnostic of diagnostics) {
+            console.log(diagnostic);
+          }
           await browser.close();
           NODE
