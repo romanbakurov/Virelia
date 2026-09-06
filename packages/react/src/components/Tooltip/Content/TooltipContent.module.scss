@@ -25,13 +25,35 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
+  &[data-placement^='top'] .arrow {
+    border-right-width: var(--tooltip-content-border-width);
+    border-bottom-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-placement^='right'] .arrow {
+    border-bottom-width: var(--tooltip-content-border-width);
+    border-left-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-placement^='bottom'] .arrow {
+    border-top-width: var(--tooltip-content-border-width);
+    border-left-width: var(--tooltip-content-border-width);
+  }
+
+  &[data-placement^='left'] .arrow {
+    border-top-width: var(--tooltip-content-border-width);
+    border-right-width: var(--tooltip-content-border-width);
+  }
 }
 
 .arrow {
   position: absolute;
+  box-sizing: border-box;
   width: var(--tooltip-arrow-size);
   height: var(--tooltip-arrow-size);
   background-color: var(--tooltip-arrow-bg);
+  border: 0 solid var(--tooltip-content-border);
   transform: rotate(45deg);
   pointer-events: none;
 }
