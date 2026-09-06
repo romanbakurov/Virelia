@@ -1,0 +1,65 @@
+name: Deploy Storybook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/react-storybook/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'turbo.json'
+      - '.github/workflows/deploy-storybook-cloudflare.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storybook-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22.22.0
+  STORYBOOK_DIST_DIR: apps/react-storybook/storybook-static
+  CLOUDFLARE_WORKER_NAME: vellira-storybook
+
+jobs:
+  deploy:
+    name: Build and deploy Storybook
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook dependencies
+        run: pnpm exec turbo run build --filter='@vellira-ui/react-storybook^...'
+
+      - name: Build Storybook
+        run: pnpm --dir apps/react-storybook exec storybook build
+
+      - name: Verify Storybook artifact
+        run: test -f "$STORYBOOK_DIST_DIR/index.html"
+
+      - name: Deploy Storybook to Cloudflare Workers
+        run: >
+          pnpm exec wrangler deploy
+          --name "$CLOUDFLARE_WORKER_NAME"
+          --assets "$STORYBOOK_DIST_DIR"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
