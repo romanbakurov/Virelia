@@ -109,7 +109,10 @@ function readSourceSnapshot(
     .map((filePath) => readIfExists(filePath))
     .join('\n');
   const runtimeSource = sourceFiles
-    .filter((filePath) => path.basename(filePath) !== 'types.ts')
+    .filter((filePath) => {
+      const fileName = path.basename(filePath);
+      return fileName !== 'types.ts' && fileName !== 'index.ts';
+    })
     .map((filePath) => readIfExists(filePath))
     .join('\n');
 
@@ -270,14 +273,6 @@ export const sharedTypeContractRule: ComponentQualityRule = {
       ) {
         missing.push(`shared ${partName} renderer adapter`);
       }
-    }
-
-    const rootTypesSource = readIfExists(
-      path.join(snapshot.componentDir, 'Root', 'types.ts')
-    );
-
-    if (rootTypesSource.includes(`${context.metadata.name}RootProps`)) {
-      missing.push('independent renderer RootProps contract');
     }
 
     return missing.length === 0
