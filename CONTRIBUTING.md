@@ -238,6 +238,26 @@ This includes:
 
 ---
 
+## Vellira-first UI Consumption
+
+Maintained first-party Vellira UI must follow the canonical
+[Vellira-first UI consumption policy](docs/architecture/vellira-first-ui-consumption.md).
+
+Before implementing a reusable control or design resource:
+
+- reuse the canonical Vellira component/resource when it already exists;
+- enhance an existing canonical component when the abstraction is correct but a
+  capability is missing;
+- route genuinely missing reusable components/resources through the policy's
+  fail-closed production path instead of shipping a permanent local substitute;
+- keep ordinary page composition/layout local when it is not a design-system
+  control.
+
+The linked policy is authoritative; do not create a separate local variant of
+these rules in contributor guidance.
+
+---
+
 ## Public API
 
 Public package exports are considered part of the stable API.
