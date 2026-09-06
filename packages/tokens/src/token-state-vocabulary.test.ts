@@ -54,56 +54,74 @@ describe('interaction state vocabulary V1', () => {
     );
   });
 
-  it.each(themes)('%s uses pressed semantics for generic controls', (_name, theme) => {
-    expect(theme.semantic.control).toHaveProperty('pressed');
-    expect(theme.semantic.control).not.toHaveProperty('active');
-    expect(theme.semantic.control.selected).toHaveProperty('pressed');
-    expect(theme.semantic.control.selected).not.toHaveProperty('active');
+  it.each(themes)(
+    '%s uses pressed semantics for generic controls',
+    (_name, theme) => {
+      expect(theme.semantic.control).toHaveProperty('pressed');
+      expect(theme.semantic.control).not.toHaveProperty('active');
+      expect(theme.semantic.control.selected).toHaveProperty('pressed');
+      expect(theme.semantic.control.selected).not.toHaveProperty('active');
 
-    expect(theme.components.radio.pressed).toEqual(theme.semantic.control.pressed);
-    expect(theme.components.switch.on.pressed).toEqual({
-      trackBg: theme.semantic.control.selected.pressed.bg,
-      trackBorder: theme.semantic.control.selected.pressed.border,
-      thumbBg: theme.semantic.control.selected.pressed.fg,
-    });
-  });
-
-  it.each(themes)('%s names transient action states pressed', (_name, theme) => {
-    for (const action of Object.values(theme.semantic.action)) {
-      expect(action).toHaveProperty('pressed');
-      expect(action).not.toHaveProperty('active');
+      expect(theme.components.radio.pressed).toEqual(
+        theme.semantic.control.pressed
+      );
+      expect(theme.components.switch.on.pressed).toEqual({
+        trackBg: theme.semantic.control.selected.pressed.bg,
+        trackBorder: theme.semantic.control.selected.pressed.border,
+        thumbBg: theme.semantic.control.selected.pressed.fg,
+      });
     }
+  );
 
-    expect(theme.semantic.text).toHaveProperty('interactivePressed');
-    expect(theme.semantic.text).not.toHaveProperty('interactiveActive');
-  });
+  it.each(themes)(
+    '%s names transient action states pressed',
+    (_name, theme) => {
+      for (const action of Object.values(theme.semantic.action)) {
+        expect(action).toHaveProperty('pressed');
+        expect(action).not.toHaveProperty('active');
+      }
 
-  it.each(themes)('%s maps clear-button press to pressed surface semantics', (_name, theme) => {
-    expect(theme.components.input.clearButton.pressedBg).toBe(
-      theme.semantic.surface.pressed
-    );
-    expect(theme.components.select.clearButton.pressedBg).toBe(
-      theme.semantic.surface.pressed
-    );
-  });
+      expect(theme.semantic.text).toHaveProperty('interactivePressed');
+      expect(theme.semantic.text).not.toHaveProperty('interactiveActive');
+    }
+  );
 
-  it.each(themes)('%s keeps active where current/highlighted is a real domain state', (_name, theme) => {
-    expect(theme.semantic.menu.item).toHaveProperty('active');
-    expect(theme.semantic.menu.item).toHaveProperty('pressed');
-    expect(theme.components.select.option).toHaveProperty('active');
-    expect(theme.components.select.option).toHaveProperty('pressed');
-    expect(theme.components.dropdown.item).toHaveProperty('active');
-    expect(theme.components.dropdown.item).toHaveProperty('pressed');
-    expect(theme.components.tabs.primary.trigger).toHaveProperty('active');
-  });
+  it.each(themes)(
+    '%s maps clear-button press to pressed surface semantics',
+    (_name, theme) => {
+      expect(theme.components.input.clearButton.pressedBg).toBe(
+        theme.semantic.surface.pressed
+      );
+      expect(theme.components.select.clearButton.pressedBg).toBe(
+        theme.semantic.surface.pressed
+      );
+    }
+  );
+
+  it.each(themes)(
+    '%s keeps active where current/highlighted is a real domain state',
+    (_name, theme) => {
+      expect(theme.semantic.menu.item).toHaveProperty('active');
+      expect(theme.semantic.menu.item).toHaveProperty('pressed');
+      expect(theme.components.select.option).toHaveProperty('active');
+      expect(theme.components.select.option).toHaveProperty('pressed');
+      expect(theme.components.dropdown.item).toHaveProperty('active');
+      expect(theme.components.dropdown.item).toHaveProperty('pressed');
+      expect(theme.components.tabs.primary.trigger).toHaveProperty('active');
+    }
+  );
 
   it('documents every intentional persistent/current active domain', () => {
     expect(legitimatePersistentActiveStateDomainsV1).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ pattern: 'semantic.surface.active' }),
         expect.objectContaining({ pattern: 'semantic.menu.item.active' }),
-        expect.objectContaining({ pattern: 'components.select.*.option.active' }),
-        expect.objectContaining({ pattern: 'components.dropdown.*.item.active' }),
+        expect.objectContaining({
+          pattern: 'components.select.*.option.active',
+        }),
+        expect.objectContaining({
+          pattern: 'components.dropdown.*.item.active',
+        }),
         expect.objectContaining({ pattern: 'components.tabs.*.*.active' }),
       ])
     );
@@ -140,11 +158,18 @@ describe('interaction state vocabulary V1', () => {
     ];
 
     for (const relativePath of sourceFiles) {
-      const source = fs.readFileSync(path.join(repositoryRoot, relativePath), 'utf8');
+      const source = fs.readFileSync(
+        path.join(repositoryRoot, relativePath),
+        'utf8'
+      );
 
       expect(source, relativePath).not.toContain('control.selected.active');
-      expect(source, relativePath).not.toMatch(/pressed\s*:\s*control\.active\b/);
-      expect(source, relativePath).not.toMatch(/pressedBg\s*:\s*surface\.active\b/);
+      expect(source, relativePath).not.toMatch(
+        /pressed\s*:\s*control\.active\b/
+      );
+      expect(source, relativePath).not.toMatch(
+        /pressedBg\s*:\s*surface\.active\b/
+      );
     }
   });
 });
