@@ -124,7 +124,7 @@ jobs:
         run: |
           pnpm exec prettier scripts/blog/tooling.ts apps/website/src/blog/article-modules.ts apps/website/src/blog/store.ts --write
           pnpm blog:check
-          pnpm test:blog
+          pnpm exec vitest run --config vitest.tooling.config.ts scripts/blog/blog-tooling.test.ts scripts/blog/blog-content.test.ts
           pnpm website:typecheck
 
       - name: Commit patch and remove temporary workflow
