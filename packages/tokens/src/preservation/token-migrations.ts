@@ -54,17 +54,32 @@ export type TokenAdditionMigration = TokenMigrationBase & {
   to: string;
 };
 
-export type TokenRepresentationMigration = Omit<
+type TokenRepresentationMigrationBase = Omit<
   TokenMigrationBase,
   'platforms'
 > & {
   kind: 'representation-change';
   from: string;
   to?: string;
-  platforms: readonly [TokenMigrationPlatform, ...TokenMigrationPlatform[]];
   equivalence: string;
   evidence: string;
 };
+
+export type TokenCanonicalRepresentationMigration =
+  TokenRepresentationMigrationBase & {
+    layer: 'canonical';
+    platforms?: never;
+  };
+
+export type TokenPlatformRepresentationMigration =
+  TokenRepresentationMigrationBase & {
+    layer: 'platform-output';
+    platforms: readonly [TokenMigrationPlatform, ...TokenMigrationPlatform[]];
+  };
+
+export type TokenRepresentationMigration =
+  | TokenCanonicalRepresentationMigration
+  | TokenPlatformRepresentationMigration;
 
 export type TokenVisualChangeMigration = TokenMigrationBase & {
   kind: 'visual-change';
