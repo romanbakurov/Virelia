@@ -119,6 +119,7 @@ jobs:
             'data-language="ts"'
           check_route '/blog/rss.xml' '<rss version="2.0"'
           check_route '/sitemap.xml' '<urlset'
+          check_route '/robots.txt' 'User-Agent: *'
 
       - name: Install Chromium for navigation smoke test
         run: pnpm --filter @vellira-ui/react-storybook run playwright:install
@@ -134,6 +135,7 @@ jobs:
           const browser = await chromium.launch();
           const page = await browser.newPage();
           const diagnostics = [];
+          const criticalDiagnostics = [];
 
           page.on('console', (message) => {
             if (message.type() === 'error') {
@@ -141,13 +143,18 @@ jobs:
             }
           });
           page.on('pageerror', (error) => {
-            diagnostics.push(`pageerror: ${error.stack ?? error.message}`);
+            const diagnostic = `pageerror: ${error.stack ?? error.message}`;
+            diagnostics.push(diagnostic);
+            criticalDiagnostics.push(diagnostic);
           });
           page.on('response', (response) => {
             if (response.url().startsWith(baseUrl) && response.status() >= 400) {
-              diagnostics.push(
-                `response: ${response.status()} ${response.request().method()} ${response.url()}`
-              );
+              const diagnostic =
+                `response: ${response.status()} ${response.request().method()} ${response.url()}`;
+              diagnostics.push(diagnostic);
+              if (response.status() >= 500) {
+                criticalDiagnostics.push(diagnostic);
+              }
             }
           });
           page.on('requestfailed', (request) => {
@@ -157,6 +164,18 @@ jobs:
               );
             }
           });
+
+          async function loadHomePage() {
+            await page.goto(baseUrl, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30_000,
+            });
+            await page.locator('main').first().waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+            console.log('OK browser load /');
+          }
 
           async function navigateByLink(startPath, href, expectedText) {
             await page.goto(`${baseUrl}${startPath}`, {
@@ -172,6 +191,18 @@ jobs:
               timeout: 15_000,
             });
             console.log(`OK client navigation ${startPath} -> ${href}`);
+          }
+
+          async function verifyHighlightedArticleCode() {
+            await page.goto(`${baseUrl}/blog/two-runtimes`, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30_000,
+            });
+            await page.locator('[data-language="ts"]').first().waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+            console.log('OK highlighted MDX code /blog/two-runtimes');
           }
 
           async function navigateViaContinueReading() {
@@ -251,17 +282,20 @@ jobs:
               state: 'visible',
               timeout: 15_000,
             });
+            await mobileSidebar.waitFor({ state: 'hidden', timeout: 15_000 });
 
-            console.log('OK mobile component sidebar navigation /components/switch -> /components/checkbox');
+            console.log('OK mobile component sidebar navigation /components/switch -> /components/checkbox and overlay closed');
           }
 
           try {
             await page.setViewportSize({ width: 1280, height: 900 });
+            await loadHomePage();
             await navigateByLink(
               '/blog',
               '/blog/two-runtimes',
               'One Design System, Two Runtimes'
             );
+            await verifyHighlightedArticleCode();
             await navigateByLink(
               '/blog',
               '/blog/component-metadata-source-of-truth',
@@ -280,6 +314,12 @@ jobs:
             );
             await navigateWithinComponentSidebar();
             await navigateWithinMobileComponentSidebar();
+
+            if (criticalDiagnostics.length > 0) {
+              throw new Error(
+                `Critical browser diagnostics detected:\n${criticalDiagnostics.join('\n')}`
+              );
+            }
           } catch (error) {
             console.error(`Navigation smoke failed at ${page.url()}`);
             console.error(error);
