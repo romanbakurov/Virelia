@@ -21,9 +21,21 @@ export default defineConfig({
     environment: 'node',
     include: ['scripts/**/*.test.ts', 'scripts/**/*.test.tsx'],
     exclude: ['scripts/**/*.e2e.test.ts', 'node_modules/**'],
-    server: {
-      deps: {
-        inline: [/@testing-library\/react/, /\/react-dom\//, /\/react\//],
+    deps: {
+      optimizer: {
+        client: {
+          enabled: true,
+          include: [
+            '@testing-library/react',
+            'react',
+            'react/jsx-runtime',
+            'react/jsx-dev-runtime',
+            'react-dom',
+            'react-dom/client',
+            'react-dom/server',
+            'react-dom/test-utils',
+          ],
+        },
       },
     },
   },
