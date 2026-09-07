@@ -32,6 +32,7 @@ jobs:
           python3 scripts/token-platform-neutral-v1-apply.py
           python3 scripts/token-platform-neutral-v1-test-fixup.py
           python3 scripts/token-platform-neutral-v1-boundary-fixup.py
+          python3 scripts/token-platform-neutral-v1-rn-fixup.py
 
       - name: Format migration output
         run: |
@@ -50,6 +51,8 @@ jobs:
             packages/tokens/scripts/token-css-output.ts \
             packages/tokens/scripts/token-preservation.ts \
             packages/react-native/src/theme \
+            packages/react-native/src/components/Dropdown/Content/DropdownContent.styles.ts \
+            packages/react-native/src/components/Select/Presentation/SelectPresentation.styles.ts \
             packages/react-native/src/components/Popover/Content/PopoverContent.styles.ts \
             packages/react-native/src/components/Tooltip/Tooltip.styles.ts \
             packages/react-native/src/components/Modal/Content/ModalContent.styles.ts \
