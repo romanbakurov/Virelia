@@ -31,16 +31,21 @@ jobs:
           git show FETCH_HEAD:.github/probes/878/apply-slice2.py > /tmp/apply-readiness-878-slice2.py
           git show FETCH_HEAD:.github/probes/878/repair-slice2-preflight.py > /tmp/repair-readiness-878-preflight.py
           git show FETCH_HEAD:.github/probes/878/repair-slice2-fixtures.py > /tmp/repair-readiness-878-fixtures.py
+          git show FETCH_HEAD:.github/probes/878/repair-slice2-full-suite.py > /tmp/repair-readiness-878-full-suite.py
           python3 /tmp/apply-readiness-878-slice2.py
           python3 /tmp/repair-readiness-878-preflight.py
           python3 /tmp/repair-readiness-878-fixtures.py
+          python3 /tmp/repair-readiness-878-full-suite.py
       - name: Format changed files
         run: |
           pnpm exec prettier --write \
             scripts/generators/component/preflight.ts \
             scripts/checks/component-completeness/types.ts \
             scripts/checks/component-completeness/check-component.ts \
-            scripts/checks/component-completeness/check-component.test.ts
+            scripts/checks/component-completeness/check-component.test.ts \
+            scripts/checks/component-completeness/check-test-coverage-integration.test.ts \
+            scripts/checks/component-completeness/cli.test.ts \
+            scripts/component-production/cli.integration.test.ts
       - name: Guard exact change scope
         shell: bash
         run: |
@@ -48,7 +53,10 @@ jobs:
           expected="$(printf '%s\n' \
             scripts/checks/component-completeness/check-component.test.ts \
             scripts/checks/component-completeness/check-component.ts \
+            scripts/checks/component-completeness/check-test-coverage-integration.test.ts \
+            scripts/checks/component-completeness/cli.test.ts \
             scripts/checks/component-completeness/types.ts \
+            scripts/component-production/cli.integration.test.ts \
             scripts/generators/component/preflight.ts)"
           printf '%s\n' "$actual"
           test "$actual" = "$expected"
@@ -56,6 +64,9 @@ jobs:
         run: |
           pnpm exec vitest run --config vitest.tooling.config.ts \
             scripts/checks/component-completeness/check-component.test.ts \
+            scripts/checks/component-completeness/check-test-coverage-integration.test.ts \
+            scripts/checks/component-completeness/cli.test.ts \
+            scripts/component-production/cli.integration.test.ts \
             scripts/generators/component/production-preflight-contract.test.ts
       - name: Workspace build
         run: pnpm ci:build
@@ -81,7 +92,10 @@ jobs:
             scripts/generators/component/preflight.ts \
             scripts/checks/component-completeness/types.ts \
             scripts/checks/component-completeness/check-component.ts \
-            scripts/checks/component-completeness/check-component.test.ts
+            scripts/checks/component-completeness/check-component.test.ts \
+            scripts/checks/component-completeness/check-test-coverage-integration.test.ts \
+            scripts/checks/component-completeness/cli.test.ts \
+            scripts/component-production/cli.integration.test.ts
           git diff --cached --check
           git commit -m "feat(tooling): enforce structural production authorities"
           git push origin HEAD:feat/component-production-readiness-878
