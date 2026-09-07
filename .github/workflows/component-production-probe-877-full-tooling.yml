@@ -13,14 +13,19 @@ jobs:
         with:
           ref: feat/component-production-contract-877
           fetch-depth: 0
+      - name: Guard exact production-contract head
+        run: test "$(git rev-parse HEAD)" = "cc6c9621b42c7e9b082f419ef7672f202b753dc5"
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: |
-          test "$(git rev-parse HEAD)" = "32e431059c52d018fb8df465bcd6d43359317197"
-          pnpm ci:build
-      - run: pnpm typecheck:tooling
-      - run: pnpm test:tooling
+      - name: Quality
+        run: pnpm ci:quality
+      - name: Workspace build
+        run: pnpm ci:build
+      - name: Tooling typecheck
+        run: pnpm typecheck:tooling
+      - name: Full tooling tests
+        run: pnpm test:tooling
