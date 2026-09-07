@@ -1,0 +1,155 @@
+name: Component Production Contract Probe 877 V3
+
+on:
+  push:
+    branches:
+      - chore/component-production-probe-877
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/component-production-contract-877
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Reapply foundation slice exactly
+        run: |
+          test "$(git rev-parse HEAD)" = "38e2ea5d5a4ab52bbf0a6eb2821d203b3425020d"
+          git fetch origin chore/component-production-probe-877
+          git show origin/chore/component-production-probe-877:.github/workflows/component-production-probe-877.yml > /tmp/foundation-workflow.yml
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('/tmp/foundation-workflow.yml').read_text()
+          start_marker = "          python - <<'PY'\n"
+          end_marker = "\n          PY\n          pnpm exec prettier"
+          start = source.index(start_marker) + len(start_marker)
+          end = source.index(end_marker, start)
+          lines = source[start:end].splitlines()
+          code = '\n'.join(line[10:] if line.startswith('          ') else line for line in lines)
+          Path('/tmp/foundation.py').write_text(code + '\n')
+          PY
+          python /tmp/foundation.py
+      - name: Sync normalized contract fixtures
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          for file_name in [
+              'scripts/component-production/cli.test.ts',
+              'scripts/component-production/command-validation.test.ts',
+              'scripts/component-production/generation.test.ts',
+              'scripts/component-production/run.test.ts',
+              'scripts/component-production/structured-validation.test.ts',
+              'scripts/component-production/validate-cli.test.ts',
+          ]:
+              path = Path(file_name)
+              source = path.read_text()
+              old = "  capabilities: [],\n  parts: [],"
+              new = "  capabilities: [],\n  componentTokens: 'standard',\n  parts: [],"
+              if source.count(old) < 1:
+                  raise SystemExit(f'{path}: missing normalized input fixture insertion point')
+              path.write_text(source.replace(old, new, 1))
+
+          plan_fixtures = [
+              (
+                  Path('scripts/component-production/generation.test.ts'),
+                  "    capabilities: [],\n    icons: [],",
+                  "    capabilities: [],\n    dependencies: {},\n    icons: [],\n    assets: [],",
+              ),
+              (
+                  Path('scripts/generators/component/resolve-part-templates.test.ts'),
+                  "  capabilities: [],\n  icons: [],",
+                  "  capabilities: [],\n  dependencies: {},\n  icons: [],\n  assets: [],",
+              ),
+              (
+                  Path('scripts/generators/component/resolve-templates.test.ts'),
+                  "  capabilities: [],\n  icons: [],",
+                  "  capabilities: [],\n  dependencies: {},\n  icons: [],\n  assets: [],",
+              ),
+          ]
+
+          for path, old, new in plan_fixtures:
+              source = path.read_text()
+              if source.count(old) != 1:
+                  raise SystemExit(f'{path}: expected exactly one generation plan fixture insertion point')
+              path.write_text(source.replace(old, new, 1))
+          PY
+          pnpm exec prettier \
+            packages/metadata/src/component.ts \
+            packages/metadata/src/validateComponentMetadata.ts \
+            scripts/design-resources/authority.ts \
+            scripts/generators/component/cli.ts \
+            scripts/generators/component/plan.ts \
+            scripts/generators/component/preflight.ts \
+            scripts/generators/component/templates/component-metadata.ts \
+            scripts/generators/component/write.ts \
+            scripts/generators/component/docs.ts \
+            scripts/component-production/contracts.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/cli.test.ts \
+            scripts/component-production/command-validation.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/component-production/run.test.ts \
+            scripts/component-production/structured-validation.test.ts \
+            scripts/component-production/validate-cli.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts \
+            --write
+          git diff --check
+      - name: Build workspace
+        run: pnpm ci:build
+      - name: Validate tooling typecheck
+        run: pnpm typecheck:tooling
+      - name: Validate metadata and production contract tests
+        run: |
+          pnpm exec vitest run --config vitest.tooling.config.ts \
+            packages/metadata/src/validateComponentMetadata.test.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/cli.test.ts \
+            scripts/component-production/command-validation.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/component-production/run.test.ts \
+            scripts/component-production/structured-validation.test.ts \
+            scripts/component-production/validate-cli.test.ts \
+            scripts/generators/component/preflight.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts \
+            scripts/generators/component/templates/component-metadata.test.ts
+      - name: Commit foundation slice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git status --short
+          git add \
+            packages/metadata/src/component.ts \
+            packages/metadata/src/validateComponentMetadata.ts \
+            scripts/design-resources/authority.ts \
+            scripts/generators/component/cli.ts \
+            scripts/generators/component/plan.ts \
+            scripts/generators/component/preflight.ts \
+            scripts/generators/component/templates/component-metadata.ts \
+            scripts/generators/component/write.ts \
+            scripts/generators/component/docs.ts \
+            scripts/component-production/contracts.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/cli.test.ts \
+            scripts/component-production/command-validation.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/component-production/run.test.ts \
+            scripts/component-production/structured-validation.test.ts \
+            scripts/component-production/validate-cli.test.ts \
+            scripts/generators/component/resolve-part-templates.test.ts \
+            scripts/generators/component/resolve-templates.test.ts
+          git diff --cached --check
+          git commit -m "feat(tooling): unify component production dependencies"
+          git push origin HEAD:feat/component-production-contract-877
