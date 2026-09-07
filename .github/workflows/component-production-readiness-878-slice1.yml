@@ -67,12 +67,12 @@ jobs:
             scripts/component-production/final-validation.test.ts \
             scripts/component-production/run.test.ts \
             scripts/component-production/contracts.test.ts
-      - name: Root unit test path
-        run: pnpm test:unit
       - name: Tooling typecheck
         run: pnpm typecheck:tooling
       - name: Workspace build
         run: pnpm ci:build
+      - name: Root unit test path
+        run: pnpm test:unit
       - name: Quality
         run: pnpm ci:quality
       - name: Diff safety
