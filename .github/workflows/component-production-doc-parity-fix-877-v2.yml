@@ -1,0 +1,300 @@
+name: Component Production Docs API Parity Fix 877 V2
+
+on:
+  push:
+    branches:
+      - chore/component-production-probe-877
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout production contract branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/component-production-contract-877
+          fetch-depth: 0
+      - name: Guard expected head
+        run: test "$(git rev-parse HEAD)" = "13b55db40687b50166d964b3b873ffdc473b628c"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Patch canonical documentation parity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          docs = Path('scripts/generators/component/docs.ts')
+          source = docs.read_text()
+          old = 'function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {'
+          if source.count(old) != 1:
+              raise SystemExit(f'expected API section helper exactly once, found {source.count(old)}')
+          docs.write_text(source.replace(old, 'export ' + old, 1))
+
+          contract = Path('scripts/generators/component/plan-contract.ts')
+          source = contract.read_text()
+          source = source.replace('  getComponentDocsTargets,\n', '', 1)
+          import_anchor = "} from './docs';\n"
+          if source.count(import_anchor) != 1:
+              raise SystemExit(f'expected docs import terminator exactly once, found {source.count(import_anchor)}')
+          source = source.replace(
+              import_anchor,
+              import_anchor + "import { checkComponentDocumentationContract } from './documentation-contract';\n",
+              1,
+          )
+          start_marker = '  for (const target of getComponentDocsTargets(plan)) {'
+          return_marker = '  return [...new Set(driftedFiles)];'
+          start = source.find(start_marker)
+          end = source.find(return_marker, start)
+          if start == -1 or end == -1:
+              raise SystemExit(f'expected docs-marker range, start={start}, end={end}')
+          end += len(return_marker)
+          replacement = (
+              '  driftedFiles.push(...(await checkComponentDocumentationContract(plan)));\n\n'
+              + return_marker
+          )
+          contract.write_text(source[:start] + replacement + source[end:])
+
+          parity = Path('scripts/generators/component/production-contract-parity.test.ts')
+          source = parity.read_text()
+          import_anchor = "import { checkGeneratedPlanContract } from './plan-contract';\n"
+          if source.count(import_anchor) != 1:
+              raise SystemExit('expected parity import anchor once')
+          source = source.replace(
+              import_anchor,
+              import_anchor + "import { checkComponentDocumentationContract } from './documentation-contract';\n",
+              1,
+          )
+          mock_anchor = "vi.mock('node:child_process', () => ({\n  spawnSync: vi.fn(),\n}));\n"
+          if source.count(mock_anchor) != 1:
+              raise SystemExit(f'expected child_process mock once, found {source.count(mock_anchor)}')
+          source = source.replace(
+              mock_anchor,
+              mock_anchor + "\nvi.mock('./documentation-contract', () => ({\n  checkComponentDocumentationContract: vi.fn(async () => []),\n}));\n",
+              1,
+          )
+          test_anchor = "  it('detects docs-contract drift independently of authored docs regions', async () => {\n"
+          if source.count(test_anchor) != 1:
+              raise SystemExit(f'expected docs test anchor once, found {source.count(test_anchor)}')
+          test_add = """  it('propagates canonical generated docs and API drift into generator check evidence', async () => {
+            const root = tempRoot();
+            const result = plan(root);
+
+            await writeCanonicalPlanArtifacts(result);
+            const apiFile = path.join(root, 'packages/react/API.md');
+            vi.mocked(checkComponentDocumentationContract).mockResolvedValueOnce([
+              apiFile,
+            ]);
+
+            expect(await checkGeneratedPlanContract(result)).toContain(apiFile);
+          });
+
+          """
+          parity.write_text(source.replace(test_anchor, test_add + test_anchor, 1))
+          PY
+
+          cat > scripts/generators/component/documentation-contract.ts <<'EOF'
+          import path from 'node:path';
+
+          import { validateComponentDocs } from '../../../apps/docs/src/component-docs';
+          import { generateApiDocs } from '../../generate-api-docs';
+          import { generateComponentDocs } from '../component-docs/generate-component-docs';
+
+          import {
+            createComponentDocsContractFromPlan,
+            createComponentMetadataFromPlan,
+            getComponentApiDocsTargets,
+            getComponentDocsTargets,
+            getGeneratedApiDocSections,
+          } from './docs';
+
+          import type { ComponentGenerationPlan } from './plan';
+
+          export async function checkComponentDocumentationContract(
+            plan: ComponentGenerationPlan
+          ): Promise<string[]> {
+            const metadata = createComponentMetadataFromPlan(plan);
+            const contract = createComponentDocsContractFromPlan(plan);
+            const validation = validateComponentDocs(contract, metadata);
+
+            if (!validation.valid) {
+              throw new Error(validation.errors.join('\n'));
+            }
+
+            const apiResult = await generateApiDocs({
+              rootDir: plan.root,
+              check: true,
+              silent: true,
+              sections: getGeneratedApiDocSections(plan),
+            });
+            const docsResult = await generateComponentDocs({
+              root: plan.root,
+              check: true,
+              force: plan.force,
+              componentName: plan.componentName,
+              metadata: [metadata],
+              contracts: [validation.value],
+            });
+            const driftedFiles = new Set<string>();
+
+            for (const relativePath of apiResult.changedFiles) {
+              driftedFiles.add(path.join(plan.root, relativePath));
+            }
+
+            for (const relativePath of docsResult.changedFiles) {
+              driftedFiles.add(path.join(plan.root, relativePath));
+            }
+
+            const apiTargets = getComponentApiDocsTargets(plan);
+            const docsTargets = getComponentDocsTargets(plan);
+
+            for (const apiTarget of apiTargets) {
+              const relativeApiFile = path.relative(plan.root, apiTarget.apiFile);
+
+              if (!apiResult.changedFiles.includes(relativeApiFile)) {
+                continue;
+              }
+
+              const docsTarget = docsTargets.find(
+                (target) => target.platform === apiTarget.platform
+              );
+
+              if (docsTarget) {
+                driftedFiles.add(docsTarget.docsFile);
+              }
+            }
+
+            return [...driftedFiles].sort();
+          }
+          EOF
+
+          cat > scripts/generators/component/documentation-contract.test.ts <<'EOF'
+          import { afterEach, describe, expect, it, vi } from 'vitest';
+
+          import { generateApiDocs } from '../../generate-api-docs';
+          import { generateComponentDocs } from '../component-docs/generate-component-docs';
+          import { checkComponentDocumentationContract } from './documentation-contract';
+          import { createComponentGenerationPlan } from './plan';
+
+          vi.mock('../../generate-api-docs', async () => {
+            const actual =
+              await vi.importActual<typeof import('../../generate-api-docs')>(
+                '../../generate-api-docs'
+              );
+            return { ...actual, generateApiDocs: vi.fn() };
+          });
+
+          vi.mock('../component-docs/generate-component-docs', async () => {
+            const actual = await vi.importActual<
+              typeof import('../component-docs/generate-component-docs')
+            >('../component-docs/generate-component-docs');
+            return { ...actual, generateComponentDocs: vi.fn() };
+          });
+
+          afterEach(() => vi.clearAllMocks());
+
+          function plan() {
+            return createComponentGenerationPlan({
+              root: '/repo',
+              options: {
+                componentName: 'ContractProbe',
+                platform: 'both',
+                layer: 'components',
+                category: 'utility',
+                profile: 'base',
+                capabilities: [],
+                parts: [],
+                force: false,
+              },
+            });
+          }
+
+          describe('component documentation contract check', () => {
+            it('checks dynamic API sections and generated docs without writing them', async () => {
+              vi.mocked(generateApiDocs).mockResolvedValue({
+                status: 'up-to-date',
+                changedFiles: [],
+              });
+              vi.mocked(generateComponentDocs).mockResolvedValue({
+                status: 'up-to-date',
+                changedFiles: [],
+                checkedFiles: [
+                  'apps/docs/src/react/contract-probe.md',
+                  'apps/docs/src/react-native/contract-probe.md',
+                ],
+              });
+
+              expect(await checkComponentDocumentationContract(plan())).toEqual([]);
+              expect(generateApiDocs).toHaveBeenCalledWith(
+                expect.objectContaining({ rootDir: '/repo', check: true, silent: true })
+              );
+              expect(generateComponentDocs).toHaveBeenCalledWith(
+                expect.objectContaining({
+                  root: '/repo',
+                  check: true,
+                  componentName: 'ContractProbe',
+                })
+              );
+            });
+
+            it('reports API drift and the dependent generated docs page for that platform', async () => {
+              vi.mocked(generateApiDocs).mockResolvedValue({
+                status: 'stale',
+                changedFiles: ['packages/react/API.md'],
+              });
+              vi.mocked(generateComponentDocs).mockResolvedValue({
+                status: 'up-to-date',
+                changedFiles: [],
+                checkedFiles: [],
+              });
+
+              expect(await checkComponentDocumentationContract(plan())).toEqual([
+                '/repo/apps/docs/src/react/contract-probe.md',
+                '/repo/packages/react/API.md',
+              ]);
+            });
+
+            it('reports generated docs drift directly', async () => {
+              vi.mocked(generateApiDocs).mockResolvedValue({
+                status: 'up-to-date',
+                changedFiles: [],
+              });
+              vi.mocked(generateComponentDocs).mockResolvedValue({
+                status: 'stale',
+                changedFiles: ['apps/docs/src/react-native/contract-probe.md'],
+                checkedFiles: [],
+              });
+
+              expect(await checkComponentDocumentationContract(plan())).toEqual([
+                '/repo/apps/docs/src/react-native/contract-probe.md',
+              ]);
+            });
+          });
+          EOF
+      - name: Format parity fix
+        run: pnpm exec prettier scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts --write
+      - name: Check formatting
+        run: pnpm exec prettier scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts --check
+      - name: Tooling typecheck
+        run: pnpm typecheck:tooling
+      - name: Run documentation parity tests
+        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts scripts/generators/component/run.test.ts
+      - name: Diff safety
+        run: git diff --check
+      - name: Commit docs API parity fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts
+          git diff --cached --exit-code && exit 0
+          git commit -m "fix(generator): enforce docs API check parity"
+          git push origin HEAD:feat/component-production-contract-877
