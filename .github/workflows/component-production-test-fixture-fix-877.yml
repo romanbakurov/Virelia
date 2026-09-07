@@ -46,6 +46,8 @@ jobs:
               raise SystemExit(f'expected fixture anchor exactly once, found {source.count(marker)}')
           path.write_text(source.replace(marker, marker + addition, 1))
           PY
+      - name: Format test fixture
+        run: pnpm exec prettier scripts/generators/component/run.test.ts --write
       - name: Check formatting
         run: pnpm exec prettier scripts/generators/component/run.test.ts scripts/component-production/cli.integration.test.ts --check
       - name: Run failed tooling tests
