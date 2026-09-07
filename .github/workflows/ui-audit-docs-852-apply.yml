@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 2
 
       - name: Guard exact apply parent
-        run: test "$(git rev-parse HEAD^)" = "a947593ea2e1e98cbb6762e1ba2f921bfe4b51f3"
+        run: test "$(git rev-parse HEAD^)" = "b21d937ba65bda743bcdc0136a8df937a49d43f0"
 
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -34,7 +34,9 @@ jobs:
           pnpm exec prettier --write \
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
-            apps/docs/src/.vitepress/theme/styles.css
+            apps/docs/src/.vitepress/theme/styles.css \
+            packages/tokens/package.json \
+            packages/tokens/css.d.ts
           pnpm install --frozen-lockfile
 
       - name: Guard exact production scope
@@ -45,6 +47,8 @@ jobs:
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
             apps/docs/src/.vitepress/theme/styles.css \
+            packages/tokens/package.json \
+            packages/tokens/css.d.ts \
             pnpm-lock.yaml | sort)"
           test "$actual" = "$expected"
 
@@ -69,13 +73,16 @@ jobs:
           if (raw.length !== 0) process.exit(1);
           NODE
 
-      - name: Validate docs integration
+      - name: Validate token resource and docs integration
         run: |
           pnpm exec prettier --check \
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
-            apps/docs/src/.vitepress/theme/styles.css
+            apps/docs/src/.vitepress/theme/styles.css \
+            packages/tokens/package.json \
+            packages/tokens/css.d.ts
           pnpm --filter @vellira-ui/tokens build
+          pnpm --filter @vellira-ui/tokens typecheck
           pnpm --filter @vellira-ui/docs typecheck
           pnpm --filter @vellira-ui/docs build
           git diff --check
@@ -95,6 +102,8 @@ jobs:
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
             apps/docs/src/.vitepress/theme/styles.css \
+            packages/tokens/package.json \
+            packages/tokens/css.d.ts \
             pnpm-lock.yaml
           git diff --cached --check
           git commit -m "fix(docs): migrate theme visuals to canonical tokens"
