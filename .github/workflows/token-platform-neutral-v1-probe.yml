@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   structural-probe:
@@ -83,3 +83,37 @@ jobs:
 
       - name: Preservation check
         run: pnpm --filter @vellira-ui/tokens preservation:check
+
+      - name: Materialize validated production diff
+        run: |
+          rm -f \
+            .github/workflows/token-platform-neutral-v1-probe.yml \
+            scripts/token-platform-neutral-v1-apply.py \
+            scripts/token-platform-neutral-v1-test-fixup.py \
+            scripts/token-platform-neutral-v1-boundary-fixup.py \
+            scripts/token-platform-neutral-v1-rn-fixup.py \
+            scripts/token-platform-neutral-v1-preservation-fixup.py
+
+          test ! -e .github/workflows/token-platform-neutral-v1-probe.yml
+          test ! -e scripts/token-platform-neutral-v1-apply.py
+          test ! -e scripts/token-platform-neutral-v1-test-fixup.py
+          test ! -e scripts/token-platform-neutral-v1-boundary-fixup.py
+          test ! -e scripts/token-platform-neutral-v1-rn-fixup.py
+          test ! -e scripts/token-platform-neutral-v1-preservation-fixup.py
+
+          git diff --check
+          echo '=== FINAL PRODUCTION DIFF ==='
+          git status --short
+          git diff --stat
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+
+          if git diff --cached --name-only | grep -E '(^|/)(token-platform-neutral-v1-(apply|test-fixup|boundary-fixup|rn-fixup|preservation-fixup)\.py|token-platform-neutral-v1-probe\.yml)$' >/dev/null; then
+            echo 'Temporary probe scaffolding is still staged in final tree.' >&2
+            exit 1
+          fi
+
+          git commit -m 'refactor(tokens): restore renderer-neutral component token boundary'
+          git push origin HEAD:refactor/platform-neutral-component-tokens-v1
