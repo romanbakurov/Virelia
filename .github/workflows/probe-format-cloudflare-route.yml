@@ -1,0 +1,29 @@
+name: Probe Cloudflare Route Formatting
+
+on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - '.github/workflows/probe-format-cloudflare-route.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Format and print route
+        run: |
+          pnpm exec prettier --write 'apps/website/src/app/api/blog-metrics/[...segments]/route.ts'
+          echo '---FORMATTED-ROUTE---'
+          cat 'apps/website/src/app/api/blog-metrics/[...segments]/route.ts'
+          echo '---END-FORMATTED-ROUTE---'
