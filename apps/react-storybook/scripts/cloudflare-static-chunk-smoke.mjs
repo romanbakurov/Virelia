@@ -91,6 +91,25 @@ async function describePage(response, path) {
   );
 }
 
+async function waitForRenderedBody(path, response = null) {
+  try {
+    await page.locator('body').waitFor({
+      state: 'visible',
+      timeout: 15_000,
+    });
+    await page.waitForFunction(
+      () => Boolean(document.body?.innerText.trim()),
+      null,
+      { timeout: 15_000 }
+    );
+  } catch (error) {
+    throw new Error(
+      `Rendered body did not become available: ${await describePage(response, path)}`,
+      { cause: error }
+    );
+  }
+}
+
 async function goto(path) {
   const response = await page.goto(`${baseUrl}${path}`, {
     waitUntil: 'domcontentloaded',
@@ -101,17 +120,7 @@ async function goto(path) {
     throw new Error(`Document load failed: ${await describePage(response, path)}`);
   }
 
-  try {
-    await page.locator('main').first().waitFor({
-      state: 'visible',
-      timeout: 15_000,
-    });
-  } catch (error) {
-    throw new Error(
-      `Main content did not become visible: ${await describePage(response, path)}`,
-      { cause: error }
-    );
-  }
+  await waitForRenderedBody(path, response);
 }
 
 async function collectRoutes(indexPath, prefix) {
@@ -137,10 +146,7 @@ async function verifyClientRoutes(indexPath, routes) {
     await link.waitFor({ state: 'visible', timeout: 15_000 });
     await link.click();
     await page.waitForURL(`${baseUrl}${href}`, { timeout: 15_000 });
-    await page.locator('main').first().waitFor({
-      state: 'visible',
-      timeout: 15_000,
-    });
+    await waitForRenderedBody(href);
     await page.waitForTimeout(300);
 
     console.log(`OK chunk navigation ${indexPath} -> ${href}`);
