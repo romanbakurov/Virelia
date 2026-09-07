@@ -78,3 +78,6 @@ jobs:
 
       - name: React Native typecheck
         run: pnpm --filter @vellira-ui/react-native typecheck
+
+      - name: Preservation drift discovery
+        run: pnpm --filter @vellira-ui/tokens preservation:check
