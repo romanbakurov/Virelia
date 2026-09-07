@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import ts from 'typescript';
+
 import type { ComponentGenerationPlan } from './plan';
 import { getComponentProfile } from './profiles';
 import {
@@ -21,6 +23,8 @@ export type ComponentPreflightResult =
       ok: false;
       errors: string[];
     };
+
+type ComponentDependencyPlatform = 'react' | 'react-native';
 
 function validateCanonicalPackageDependency(
   root: string,
@@ -65,11 +69,114 @@ function validateCanonicalPackageDependency(
   }
 }
 
+function readCanonicalComponentDependencyPlatforms(params: {
+  metadataFile: string;
+  componentName: string;
+  errors: string[];
+}): Set<ComponentDependencyPlatform> | null {
+  let source: string;
+
+  try {
+    source = fs.readFileSync(params.metadataFile, 'utf8');
+  } catch {
+    params.errors.push(
+      `invalid-component-dependency-metadata: component="${params.componentName}" metadata="${params.metadataFile}"`
+    );
+    return null;
+  }
+
+  const sourceFile = ts.createSourceFile(
+    params.metadataFile,
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
+  );
+  let metadataObject: ts.ObjectLiteralExpression | null = null;
+
+  const visit = (node: ts.Node) => {
+    if (metadataObject) {
+      return;
+    }
+
+    if (
+      ts.isCallExpression(node) &&
+      ts.isIdentifier(node.expression) &&
+      node.expression.text === 'defineComponentMetadata'
+    ) {
+      const [argument] = node.arguments;
+
+      if (argument && ts.isObjectLiteralExpression(argument)) {
+        metadataObject = argument;
+        return;
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+
+  const resolvedMetadataObject = metadataObject as ts.ObjectLiteralExpression | null;
+
+  if (!resolvedMetadataObject) {
+    params.errors.push(
+      `invalid-component-dependency-metadata: component="${params.componentName}" metadata="${params.metadataFile}" — expected defineComponentMetadata({...})`
+    );
+    return null;
+  }
+
+  const platformsProperty = resolvedMetadataObject.properties.find(
+    (property) =>
+      ts.isPropertyAssignment(property) &&
+      ((ts.isIdentifier(property.name) && property.name.text === 'platforms') ||
+        (ts.isStringLiteral(property.name) &&
+          property.name.text === 'platforms'))
+  );
+
+  if (
+    !platformsProperty ||
+    !ts.isPropertyAssignment(platformsProperty) ||
+    !ts.isArrayLiteralExpression(platformsProperty.initializer)
+  ) {
+    params.errors.push(
+      `invalid-component-dependency-metadata: component="${params.componentName}" metadata="${params.metadataFile}" — expected a literal platforms array`
+    );
+    return null;
+  }
+
+  const platforms = new Set<ComponentDependencyPlatform>();
+
+  for (const element of platformsProperty.initializer.elements) {
+    if (
+      !ts.isStringLiteral(element) ||
+      (element.text !== 'react' && element.text !== 'react-native')
+    ) {
+      params.errors.push(
+        `invalid-component-dependency-metadata: component="${params.componentName}" metadata="${params.metadataFile}" — platforms must contain only react or react-native string literals`
+      );
+      return null;
+    }
+
+    platforms.add(element.text);
+  }
+
+  if (platforms.size === 0) {
+    params.errors.push(
+      `invalid-component-dependency-metadata: component="${params.componentName}" metadata="${params.metadataFile}" — platforms must not be empty`
+    );
+    return null;
+  }
+
+  return platforms;
+}
+
 function validateDependencySet(params: {
   root: string;
   packages?: readonly string[];
   components?: readonly string[];
   componentName: string;
+  requiredPlatforms?: readonly ComponentDependencyPlatform[];
   errors: string[];
 }) {
   for (const packageName of params.packages ?? []) {
@@ -97,6 +204,25 @@ function validateDependencySet(params: {
       params.errors.push(
         `missing-component-dependency: component="${componentName}" expected="${metadataFile}"`
       );
+      continue;
+    }
+
+    const availablePlatforms = readCanonicalComponentDependencyPlatforms({
+      metadataFile,
+      componentName,
+      errors: params.errors,
+    });
+
+    if (!availablePlatforms) {
+      continue;
+    }
+
+    for (const platform of params.requiredPlatforms ?? []) {
+      if (!availablePlatforms.has(platform)) {
+        params.errors.push(
+          `unsupported-component-dependency-platform: component="${componentName}" requiredPlatform="${platform}" metadata="${metadataFile}"`
+        );
+      }
     }
   }
 }
@@ -110,23 +236,24 @@ export function validateComponentGenerationPlan(
   const errors: string[] = [];
   const existingTargets: string[] = [];
   const profile = getComponentProfile(plan.profile);
+  const selectedPlatforms = plan.targets.map(
+    (target) => target.packageName as ComponentDependencyPlatform
+  );
+  const selectedPlatformSet = new Set(selectedPlatforms);
 
   validateDependencySet({
     root: plan.root,
     packages: plan.dependencies.packages,
     components: plan.dependencies.components,
     componentName: plan.componentName,
+    requiredPlatforms: selectedPlatforms,
     errors,
   });
-
-  const selectedPlatforms = new Set(
-    plan.targets.map((target) => target.packageName)
-  );
 
   for (const [platform, dependencies] of Object.entries(
     plan.dependencies.platforms ?? {}
   )) {
-    if (!selectedPlatforms.has(platform as 'react' | 'react-native')) {
+    if (!selectedPlatformSet.has(platform as ComponentDependencyPlatform)) {
       errors.push(
         `invalid-platform-dependency: platform="${platform}" is not selected for component="${plan.componentName}"`
       );
@@ -138,6 +265,7 @@ export function validateComponentGenerationPlan(
       packages: dependencies?.packages,
       components: dependencies?.components,
       componentName: plan.componentName,
+      requiredPlatforms: [platform as ComponentDependencyPlatform],
       errors,
     });
   }
