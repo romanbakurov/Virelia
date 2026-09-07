@@ -40,7 +40,10 @@ function createComponentFixture(params: {
 
   fs.mkdirSync(componentDir, { recursive: true });
   fs.writeFileSync(path.join(componentDir, `${componentName}.tsx`), '');
-  fs.writeFileSync(path.join(componentDir, 'types.ts'), '');
+  fs.writeFileSync(
+    path.join(componentDir, 'types.ts'),
+    "import type { BaseSwitchProps } from '@vellira-ui/types';\nexport type SwitchProps = BaseSwitchProps;\n"
+  );
   fs.writeFileSync(path.join(componentDir, `${componentName}.stories.tsx`), '');
   fs.writeFileSync(
     path.join(componentDir, 'index.ts'),
@@ -49,6 +52,38 @@ function createComponentFixture(params: {
   fs.writeFileSync(
     path.join(root, 'packages', 'react', 'src', 'components', 'index.ts'),
     `export * from './${componentName}';\n`
+  );
+
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(metadataDir, `${componentName}.metadata.ts`),
+    `export const switchMetadata = {};\n`
+  );
+  fs.writeFileSync(
+    path.join(metadataDir, 'index.ts'),
+    `import { switchMetadata } from './${componentName}.metadata';\n\nexport const componentMetadata = [\n  switchMetadata,\n] as const;\n`
+  );
+
+  const typesRoot = path.join(root, 'packages', 'types');
+  fs.mkdirSync(path.join(typesRoot, 'src'), { recursive: true });
+  fs.writeFileSync(
+    path.join(typesRoot, 'package.json'),
+    `${JSON.stringify({ name: '@vellira-ui/types' })}\n`
+  );
+  fs.writeFileSync(
+    path.join(typesRoot, 'src', 'switch.ts'),
+    'export interface BaseSwitchProps {}\n'
+  );
+  fs.writeFileSync(
+    path.join(typesRoot, 'src', 'index.ts'),
+    "export * from './switch';\n"
   );
 
   const contract = createComponentTestCoverageContract({
@@ -83,6 +118,9 @@ function createMetadata(
     profile: 'form-control',
     status: 'experimental',
     capabilities,
+    dependencies: {
+      packages: ['@vellira-ui/types'],
+    },
     requirements: {
       tests: true,
       storybook: false,

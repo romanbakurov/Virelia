@@ -12,10 +12,14 @@ import {
   parseComponentProductionInput,
   type ComponentProductionInputV1,
   type ComponentProductionResultV1,
-  type ComponentProductionValidationResultV1,
   type ComponentProductionStageId,
   type ComponentProductionStageResult,
+  type ComponentProductionValidationResultV1,
 } from './contracts';
+import {
+  runComponentProductionFinalValidation,
+  type ComponentProductionFinalValidationResult,
+} from './final-validation';
 import {
   runComponentProductionGeneration,
   type ComponentProductionGenerationResult,
@@ -24,6 +28,13 @@ import {
   runComponentProductionStructuredValidation,
   type ComponentProductionStructuredValidationResult,
 } from './structured-validation';
+
+const FINAL_VALIDATION_STAGE_IDS = [
+  'public-api',
+  'tooling',
+  'visual',
+  'smoke',
+] as const satisfies readonly ComponentProductionStageId[];
 
 const VALIDATION_STAGE_IDS = [
   'format',
@@ -36,6 +47,7 @@ const VALIDATION_STAGE_IDS = [
   'website',
   'completeness',
   'quality',
+  ...FINAL_VALIDATION_STAGE_IDS,
 ] as const satisfies readonly ComponentProductionStageId[];
 
 export type ComponentProductionValidationResult = {
@@ -57,6 +69,10 @@ export type ComponentProductionRunDependencies = {
     root: string;
     input: ComponentProductionInputV1;
   }) => Promise<ComponentProductionStructuredValidationResult>;
+  runFinalValidation?: (params: {
+    root: string;
+    input: ComponentProductionInputV1;
+  }) => ComponentProductionFinalValidationResult;
 };
 
 export async function runComponentProduction(params: {
@@ -131,7 +147,7 @@ export async function runComponentProductionValidation(params: {
   input: unknown;
   dependencies?: Pick<
     ComponentProductionRunDependencies,
-    'runCommandValidation' | 'runStructuredValidation'
+    'runCommandValidation' | 'runStructuredValidation' | 'runFinalValidation'
   >;
 }): Promise<ComponentProductionValidationResultV1> {
   const input = parseComponentProductionInput(params.input);
@@ -177,7 +193,7 @@ export async function validateComponentProductionCandidate(params: {
   input: ComponentProductionInputV1;
   dependencies?: Pick<
     ComponentProductionRunDependencies,
-    'runCommandValidation' | 'runStructuredValidation'
+    'runCommandValidation' | 'runStructuredValidation' | 'runFinalValidation'
   >;
 }): Promise<ComponentProductionValidationResult> {
   const runCommandValidation =
@@ -187,6 +203,10 @@ export async function validateComponentProductionCandidate(params: {
   const runStructuredValidation =
     params.dependencies?.runStructuredValidation ??
     runComponentProductionStructuredValidation;
+
+  const runFinalValidation =
+    params.dependencies?.runFinalValidation ??
+    runComponentProductionFinalValidation;
 
   const commandValidation = runCommandValidation({
     root: params.root,
@@ -198,13 +218,14 @@ export async function validateComponentProductionCandidate(params: {
   );
 
   if (blockingCommandStage) {
-    const reason = `Structured validation was skipped because ${blockingCommandStage.id} validation did not pass.`;
+    const reason = `Structured and final validation were skipped because ${blockingCommandStage.id} validation did not pass.`;
 
     return {
       stages: [
         ...commandValidation.stages,
         skippedStage('completeness', reason),
         skippedStage('quality', reason),
+        ...skippedFinalValidationStages(reason),
       ],
       completeness: null,
       quality: null,
@@ -216,8 +237,35 @@ export async function validateComponentProductionCandidate(params: {
     input: params.input,
   });
 
+  const blockingStructuredStage = structuredValidation.stages.find(
+    (stage) => stage.status !== 'passed'
+  );
+
+  if (blockingStructuredStage) {
+    const reason = `Final validation was skipped because ${blockingStructuredStage.id} validation did not pass.`;
+
+    return {
+      stages: [
+        ...commandValidation.stages,
+        ...structuredValidation.stages,
+        ...skippedFinalValidationStages(reason),
+      ],
+      completeness: structuredValidation.completeness,
+      quality: structuredValidation.quality,
+    };
+  }
+
+  const finalValidation = runFinalValidation({
+    root: params.root,
+    input: params.input,
+  });
+
   return {
-    stages: [...commandValidation.stages, ...structuredValidation.stages],
+    stages: [
+      ...commandValidation.stages,
+      ...structuredValidation.stages,
+      ...finalValidation.stages,
+    ],
     completeness: structuredValidation.completeness,
     quality: structuredValidation.quality,
   };
@@ -255,6 +303,12 @@ function skippedStage(
     findings: [],
     artifacts: [],
   };
+}
+
+function skippedFinalValidationStages(
+  reason: string
+): ComponentProductionStageResult[] {
+  return FINAL_VALIDATION_STAGE_IDS.map((id) => skippedStage(id, reason));
 }
 
 function skippedValidationStages(

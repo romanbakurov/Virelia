@@ -20,6 +20,118 @@ function createTempRoot() {
   return root;
 }
 
+function createMetadataRegistrationFixture(params: {
+  root: string;
+  componentName: string;
+}) {
+  const { root, componentName } = params;
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+  const metadataFile = path.join(metadataDir, `${componentName}.metadata.ts`);
+  const registryFile = path.join(metadataDir, 'index.ts');
+  const metadataName = `${componentName[0].toLowerCase()}${componentName.slice(1)}Metadata`;
+  const importLine = `import { ${metadataName} } from './${componentName}.metadata';`;
+
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(metadataFile, `export const ${metadataName} = {};\n`);
+
+  if (!fs.existsSync(registryFile)) {
+    fs.writeFileSync(
+      registryFile,
+      `${importLine}\n\nexport const componentMetadata = [\n  ${metadataName},\n] as const;\n`
+    );
+    return;
+  }
+
+  let registry = fs.readFileSync(registryFile, 'utf8');
+
+  if (!registry.includes(importLine)) {
+    registry = `${importLine}\n${registry}`;
+    registry = registry.replace(
+      'export const componentMetadata = [\n',
+      `export const componentMetadata = [\n  ${metadataName},\n`
+    );
+    fs.writeFileSync(registryFile, registry);
+  }
+}
+
+function createCanonicalPackageFixture(params: {
+  root: string;
+  packageName: string;
+}) {
+  const packageDir = params.packageName.replace('@vellira-ui/', '');
+  const packageRoot = path.join(params.root, 'packages', packageDir);
+  fs.mkdirSync(packageRoot, { recursive: true });
+  fs.writeFileSync(
+    path.join(packageRoot, 'package.json'),
+    `${JSON.stringify({ name: params.packageName })}\n`
+  );
+}
+
+function createComponentDependencyMetadataFixture(params: {
+  root: string;
+  componentName: string;
+  platforms: readonly ('react' | 'react-native')[];
+}) {
+  const metadataDir = path.join(
+    params.root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(metadataDir, `${params.componentName}.metadata.ts`),
+    `import { defineComponentMetadata } from '../defineComponentMetadata';\n\nexport const dependencyMetadata = defineComponentMetadata({\n  name: '${params.componentName}',\n  platforms: [${params.platforms.map((platform) => `'${platform}'`).join(', ')}],\n});\n`
+  );
+}
+
+function createComponentTokenStructureFixture(params: {
+  root: string;
+  componentName: string;
+}) {
+  const lowerName = `${params.componentName[0].toLowerCase()}${params.componentName.slice(1)}`;
+  const factoriesDir = path.join(
+    params.root,
+    'packages',
+    'tokens',
+    'src',
+    'factories'
+  );
+  fs.mkdirSync(factoriesDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(factoriesDir, `create${params.componentName}Tokens.ts`),
+    ''
+  );
+  fs.writeFileSync(
+    path.join(factoriesDir, 'index.ts'),
+    `export * from './create${params.componentName}Tokens.js';\n`
+  );
+
+  for (const theme of ['light', 'dark', 'highContrast']) {
+    const themeDir = path.join(
+      params.root,
+      'packages',
+      'tokens',
+      'src',
+      theme,
+      'components'
+    );
+    fs.mkdirSync(themeDir, { recursive: true });
+    fs.writeFileSync(path.join(themeDir, `${lowerName}.ts`), '');
+    fs.writeFileSync(
+      path.join(themeDir, 'index.ts'),
+      `export { ${lowerName}Tokens as ${lowerName} } from './${lowerName}.js';\n`
+    );
+  }
+}
+
 function createComponentFixture(params: {
   root: string;
   packageName: 'react' | 'react-native';
@@ -65,6 +177,8 @@ export * from './types';
     `export * from './${componentName}';
 `
   );
+
+  createMetadataRegistrationFixture({ root, componentName });
 
   return componentDir;
 }
@@ -920,5 +1034,286 @@ describe('component completeness checker', () => {
         }),
       ])
     );
+  });
+
+  it('reports missing canonical metadata registration', () => {
+    const root = createTempRoot();
+
+    createComponentFixture({
+      root,
+      packageName: 'react',
+      layer: 'primitives',
+      componentName: 'Avatar',
+    });
+
+    fs.writeFileSync(
+      path.join(root, 'packages', 'metadata', 'src', 'components', 'index.ts'),
+      'export const componentMetadata = [] as const;\n'
+    );
+
+    const metadata: ComponentMetadata = {
+      name: 'Avatar',
+      layer: 'primitives',
+      category: 'data-display',
+      platforms: ['react'],
+      profile: 'base',
+      status: 'experimental',
+      requirements: {
+        tests: false,
+        storybook: false,
+        docs: false,
+        accessibility: false,
+      },
+    };
+
+    const result = checkComponentCompleteness({ root, metadata });
+
+    expect(result.ready).toBe(false);
+    expect(result.checks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'metadata',
+          ok: false,
+        }),
+      ])
+    );
+  });
+
+  it('enforces shared type ownership through the canonical generator plan', () => {
+    const root = createTempRoot();
+
+    for (const packageName of ['react', 'react-native'] as const) {
+      const componentDir = createComponentFixture({
+        root,
+        packageName,
+        layer: 'components',
+        componentName: 'Disclosure',
+      });
+
+      const rootDir = path.join(componentDir, 'Root');
+      fs.mkdirSync(rootDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(componentDir, 'types.ts'),
+        "export type { DisclosureProps } from './Root';\n"
+      );
+      fs.writeFileSync(
+        path.join(rootDir, 'index.ts'),
+        "export type { DisclosureProps } from './types';\n"
+      );
+      fs.writeFileSync(
+        path.join(rootDir, 'types.ts'),
+        "import type { BaseDisclosureProps } from '@vellira-ui/types';\nexport type DisclosureProps = BaseDisclosureProps;\n"
+      );
+    }
+
+    createCanonicalPackageFixture({
+      root,
+      packageName: '@vellira-ui/types',
+    });
+
+    const sharedTypesDir = path.join(root, 'packages', 'types', 'src');
+    fs.mkdirSync(sharedTypesDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(sharedTypesDir, 'disclosure.ts'),
+      'export interface BaseDisclosureProps {}\n'
+    );
+    fs.writeFileSync(
+      path.join(sharedTypesDir, 'index.ts'),
+      "export * from './disclosure';\n"
+    );
+
+    const metadata: ComponentMetadata = {
+      name: 'Disclosure',
+      layer: 'components',
+      category: 'navigation',
+      platforms: ['react', 'react-native'],
+      profile: 'compound',
+      status: 'experimental',
+      capabilities: ['compound-api', 'controlled', 'uncontrolled'],
+      dependencies: {
+        packages: ['@vellira-ui/types'],
+      },
+      requirements: {
+        tests: false,
+        storybook: false,
+        docs: false,
+        accessibility: false,
+      },
+    };
+
+    expect(
+      checkComponentCompleteness({ root, metadata }).checks.find(
+        (check) => check.name === 'type-ownership'
+      )
+    ).toMatchObject({ ok: true });
+
+    fs.rmSync(path.join(sharedTypesDir, 'disclosure.ts'));
+
+    expect(
+      checkComponentCompleteness({ root, metadata }).checks.find(
+        (check) => check.name === 'type-ownership'
+      )
+    ).toMatchObject({ ok: false });
+  });
+
+  it('reuses generator authority validation for dependency renderer availability', () => {
+    const root = createTempRoot();
+
+    createComponentFixture({
+      root,
+      packageName: 'react',
+      layer: 'components',
+      componentName: 'Dialog',
+    });
+    createComponentFixture({
+      root,
+      packageName: 'react-native',
+      layer: 'components',
+      componentName: 'Dialog',
+    });
+    createComponentDependencyMetadataFixture({
+      root,
+      componentName: 'Tooltip',
+      platforms: ['react'],
+    });
+
+    const metadata: ComponentMetadata = {
+      name: 'Dialog',
+      layer: 'components',
+      category: 'overlay',
+      platforms: ['react', 'react-native'],
+      profile: 'base',
+      status: 'experimental',
+      dependencies: {
+        components: ['Tooltip'],
+      },
+      requirements: {
+        tests: false,
+        storybook: false,
+        docs: false,
+        accessibility: false,
+      },
+    };
+
+    const authority = checkComponentCompleteness({
+      root,
+      metadata,
+    }).checks.find((check) => check.name === 'production-authorities');
+
+    expect(authority).toMatchObject({ ok: false });
+    expect(authority?.details).toContain(
+      'unsupported-component-dependency-platform'
+    );
+    expect(authority?.details).toContain('requiredPlatform="react-native"');
+  });
+
+  it('validates declared canonical icons, assets and tokens through shared authorities', () => {
+    const root = createTempRoot();
+
+    createComponentFixture({
+      root,
+      packageName: 'react',
+      layer: 'primitives',
+      componentName: 'Avatar',
+    });
+    createTokenRegistryFixture({
+      root,
+      tokens: ['semantic.text.primary'],
+    });
+
+    const iconDir = path.join(root, 'packages', 'icons', 'src');
+    fs.mkdirSync(iconDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(iconDir, 'web.source.ts'),
+      "export { default as Search } from './Search';\n"
+    );
+
+    const assetDir = path.join(root, 'packages', 'assets', 'brand');
+    fs.mkdirSync(assetDir, { recursive: true });
+    fs.writeFileSync(path.join(assetDir, 'avatar.svg'), '<svg />');
+
+    const metadata: ComponentMetadata = {
+      name: 'Avatar',
+      layer: 'primitives',
+      category: 'data-display',
+      platforms: ['react'],
+      profile: 'base',
+      status: 'experimental',
+      requirements: {
+        tests: false,
+        storybook: false,
+        docs: false,
+        accessibility: false,
+        tokens: ['semantic.text.primary'],
+        icons: [{ name: 'Search', purpose: 'search affordance' }],
+        assets: [{ path: 'brand/avatar.svg', purpose: 'avatar fallback' }],
+      },
+    };
+
+    const result = checkComponentCompleteness({ root, metadata });
+
+    expect(
+      result.checks.find((check) => check.name === 'production-authorities')
+    ).toMatchObject({ ok: true });
+    expect(
+      result.checks.find((check) => check.name === 'tokens')
+    ).toMatchObject({
+      ok: true,
+    });
+  });
+
+  it('checks explicit component-token structure without duplicating token semantics', () => {
+    const root = createTempRoot();
+
+    createComponentFixture({
+      root,
+      packageName: 'react',
+      layer: 'primitives',
+      componentName: 'Avatar',
+    });
+    createComponentTokenStructureFixture({
+      root,
+      componentName: 'Avatar',
+    });
+
+    const metadata: ComponentMetadata = {
+      name: 'Avatar',
+      layer: 'primitives',
+      category: 'data-display',
+      platforms: ['react'],
+      profile: 'base',
+      status: 'experimental',
+      requirements: {
+        tests: false,
+        storybook: false,
+        docs: false,
+        accessibility: false,
+        componentTokens: 'standard',
+      },
+    };
+
+    expect(
+      checkComponentCompleteness({ root, metadata }).checks.find(
+        (check) => check.name === 'component-tokens'
+      )
+    ).toMatchObject({ ok: true });
+
+    fs.rmSync(
+      path.join(
+        root,
+        'packages',
+        'tokens',
+        'src',
+        'dark',
+        'components',
+        'avatar.ts'
+      )
+    );
+
+    expect(
+      checkComponentCompleteness({ root, metadata }).checks.find(
+        (check) => check.name === 'component-tokens'
+      )
+    ).toMatchObject({ ok: false });
   });
 });

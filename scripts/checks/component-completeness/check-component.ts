@@ -6,6 +6,17 @@ import type {
   ComponentPlatform,
 } from '@vellira-ui/metadata';
 
+import {
+  canonicalTokenPaths,
+  canonicalTokenRegistryPath,
+} from '../../design-resources/authority';
+import { createComponentGenerationPlan } from '../../generators/component/plan';
+import type { ComponentGenerationPlan } from '../../generators/component/plan';
+import { validateComponentGenerationAuthorities } from '../../generators/component/preflight';
+import {
+  renderComponentTokenBarrelExport,
+  renderComponentTokenFactoryBarrelExport,
+} from '../../generators/component/templates';
 import { checkTestCoverageContract } from './check-test-coverage';
 import type {
   ComponentCheckResult,
@@ -103,12 +114,353 @@ function checkExports(params: {
   };
 }
 
+function metadataPlatformToGeneratorPlatform(
+  platforms: readonly ComponentPlatform[]
+): 'web' | 'native' | 'both' {
+  const web = platforms.includes('react');
+  const native = platforms.includes('react-native');
+
+  if (web && native) return 'both';
+  if (web) return 'web';
+  if (native) return 'native';
+
+  throw new Error('Component metadata must declare at least one platform.');
+}
+
+function createCompletenessGenerationPlan(params: {
+  root: string;
+  metadata: ComponentMetadata;
+}): ComponentGenerationPlan {
+  const { root, metadata } = params;
+  const componentTokens = metadata.requirements.componentTokens;
+
+  return createComponentGenerationPlan({
+    root,
+    options: {
+      componentName: metadata.name,
+      platform: metadataPlatformToGeneratorPlatform(metadata.platforms),
+      layer: metadata.layer,
+      category: metadata.category,
+      profile: metadata.profile,
+      capabilities: metadata.capabilities ?? [],
+      dependencies: metadata.dependencies,
+      icons: metadata.requirements.icons ?? [],
+      tokens: metadata.requirements.tokens ?? [],
+      assets: metadata.requirements.assets ?? [],
+      ...(componentTokens !== undefined ? { componentTokens } : {}),
+      parts: [],
+      force: false,
+      dryRun: false,
+      check: false,
+    },
+  });
+}
+
+function checkMetadataRegistration(
+  plan: ComponentGenerationPlan
+): ComponentCheckResult {
+  if (!fs.existsSync(plan.metadataFile)) {
+    return {
+      name: 'metadata',
+      ok: false,
+      details: `Missing canonical metadata file: ${plan.metadataFile}`,
+    };
+  }
+
+  if (!fs.existsSync(plan.metadataBarrelFile)) {
+    return {
+      name: 'metadata',
+      ok: false,
+      details: `Missing canonical metadata registry: ${plan.metadataBarrelFile}`,
+    };
+  }
+
+  const metadataName = `${plan.componentName[0].toLowerCase()}${plan.componentName.slice(1)}Metadata`;
+  const metadataImport = `import { ${metadataName} } from './${plan.componentName}.metadata';`;
+  const metadataEntry = `  ${metadataName},`;
+  const registry = fs.readFileSync(plan.metadataBarrelFile, 'utf8');
+
+  if (!registry.includes(metadataImport) || !registry.includes(metadataEntry)) {
+    return {
+      name: 'metadata',
+      ok: false,
+      details: `Missing canonical metadata registration for ${plan.componentName} in ${plan.metadataBarrelFile}`,
+    };
+  }
+
+  return {
+    name: 'metadata',
+    ok: true,
+  };
+}
+
+const MAX_LOCAL_TYPE_MODULES = 64;
+
+function isInsideComponentRoot(
+  componentDir: string,
+  candidate: string
+): boolean {
+  const relative = path.relative(componentDir, candidate);
+
+  return (
+    relative === '' ||
+    (!relative.startsWith(`..${path.sep}`) &&
+      relative !== '..' &&
+      !path.isAbsolute(relative))
+  );
+}
+
+function resolveLocalTypeModule(params: {
+  currentFile: string;
+  componentDir: string;
+  specifier: string;
+}): string[] {
+  const { currentFile, componentDir, specifier } = params;
+  const unresolved = path.resolve(path.dirname(currentFile), specifier);
+  const candidates = path.extname(unresolved)
+    ? [unresolved]
+    : [
+        `${unresolved}.ts`,
+        `${unresolved}.tsx`,
+        path.join(unresolved, 'index.ts'),
+        path.join(unresolved, 'index.tsx'),
+      ];
+
+  return candidates.filter(
+    (candidate) =>
+      isInsideComponentRoot(componentDir, candidate) && fs.existsSync(candidate)
+  );
+}
+
+function rendererTypesDeriveFromSharedAuthority(params: {
+  entryFile: string;
+  componentDir: string;
+}): boolean {
+  const { entryFile, componentDir } = params;
+  const pending = [entryFile];
+  const visited = new Set<string>();
+
+  while (pending.length > 0 && visited.size < MAX_LOCAL_TYPE_MODULES) {
+    const currentFile = pending.shift();
+
+    if (!currentFile || visited.has(currentFile)) {
+      continue;
+    }
+
+    visited.add(currentFile);
+
+    const source = fs.readFileSync(currentFile, 'utf8');
+
+    if (
+      source.includes("from '@vellira-ui/types'") ||
+      source.includes('from "@vellira-ui/types"')
+    ) {
+      return true;
+    }
+
+    const specifiers = new Set<string>();
+    const typeFromPattern =
+      /\b(?:import|export)\s+type\b[\s\S]*?\bfrom\s+['"](\.[^'"]+)['"]/g;
+    const exportAllPattern = /\bexport\s+\*\s+from\s+['"](\.[^'"]+)['"]/g;
+
+    for (const pattern of [typeFromPattern, exportAllPattern]) {
+      for (const match of source.matchAll(pattern)) {
+        const specifier = match[1];
+
+        if (specifier) {
+          specifiers.add(specifier);
+        }
+      }
+    }
+
+    const nextFiles = [...specifiers]
+      .flatMap((specifier) =>
+        resolveLocalTypeModule({
+          currentFile,
+          componentDir,
+          specifier,
+        })
+      )
+      .filter((candidate) => !visited.has(candidate))
+      .sort();
+
+    pending.push(...nextFiles);
+  }
+
+  return false;
+}
+
+function checkTypeOwnership(params: {
+  plan: ComponentGenerationPlan;
+  metadata: ComponentMetadata;
+}): ComponentCheckResult {
+  const { plan, metadata } = params;
+
+  if (plan.typeOwnership !== 'shared') {
+    return {
+      name: 'type-ownership',
+      ok: true,
+    };
+  }
+
+  const errors: string[] = [];
+
+  if (!(metadata.dependencies?.packages ?? []).includes('@vellira-ui/types')) {
+    errors.push(
+      'Shared component semantics must declare @vellira-ui/types as a canonical package dependency.'
+    );
+  }
+
+  if (!fs.existsSync(plan.sharedTypesFile)) {
+    errors.push(`Missing shared type authority: ${plan.sharedTypesFile}`);
+  }
+
+  if (!fs.existsSync(plan.sharedTypesBarrelFile)) {
+    errors.push(`Missing shared types barrel: ${plan.sharedTypesBarrelFile}`);
+  } else {
+    const barrel = fs.readFileSync(plan.sharedTypesBarrelFile, 'utf8');
+    const sharedFileName = path.basename(plan.sharedTypesFile, '.ts');
+    const expectedExport = `export * from './${sharedFileName}';`;
+
+    if (!barrel.includes(expectedExport)) {
+      errors.push(
+        `Missing shared type export for ${plan.componentName} in ${plan.sharedTypesBarrelFile}`
+      );
+    }
+  }
+
+  for (const target of plan.targets) {
+    const localTypesFile = path.join(target.componentDir, 'types.ts');
+
+    if (!fs.existsSync(localTypesFile)) {
+      continue;
+    }
+
+    if (
+      !rendererTypesDeriveFromSharedAuthority({
+        entryFile: localTypesFile,
+        componentDir: target.componentDir,
+      })
+    ) {
+      errors.push(
+        `Renderer types must derive shared semantics from @vellira-ui/types through the local type graph: ${localTypesFile}`
+      );
+    }
+  }
+
+  return {
+    name: 'type-ownership',
+    ok: errors.length === 0,
+    ...(errors.length > 0 ? { details: errors.join('\n') } : {}),
+  };
+}
+
+function checkProductionAuthorities(
+  plan: ComponentGenerationPlan
+): ComponentCheckResult {
+  const errors = validateComponentGenerationAuthorities(plan);
+
+  return {
+    name: 'production-authorities',
+    ok: errors.length === 0,
+    ...(errors.length > 0 ? { details: errors.join('\n') } : {}),
+  };
+}
+
+function checkComponentTokenStructure(
+  plan: ComponentGenerationPlan
+): ComponentCheckResult {
+  const errors: string[] = [];
+  const expectedFactoryExport = renderComponentTokenFactoryBarrelExport(
+    plan.componentName
+  );
+  const expectedThemeExport = renderComponentTokenBarrelExport(
+    plan.componentName
+  );
+  const factoryBarrel = fs.existsSync(plan.tokenFactoryBarrelFile)
+    ? fs.readFileSync(plan.tokenFactoryBarrelFile, 'utf8')
+    : '';
+
+  if (plan.componentTokens === false) {
+    if (fs.existsSync(plan.tokenFactoryFile)) {
+      errors.push(
+        `Unexpected component token factory: ${plan.tokenFactoryFile}`
+      );
+    }
+
+    if (factoryBarrel.includes(expectedFactoryExport)) {
+      errors.push(
+        `Unexpected component token factory export in ${plan.tokenFactoryBarrelFile}`
+      );
+    }
+
+    for (const target of plan.tokenThemeTargets) {
+      if (fs.existsSync(target.componentFile)) {
+        errors.push(
+          `Unexpected component token theme file: ${target.componentFile}`
+        );
+      }
+
+      const barrel = fs.existsSync(target.barrelFile)
+        ? fs.readFileSync(target.barrelFile, 'utf8')
+        : '';
+
+      if (barrel.includes(expectedThemeExport)) {
+        errors.push(
+          `Unexpected component token export in ${target.barrelFile}`
+        );
+      }
+    }
+  } else {
+    if (!fs.existsSync(plan.tokenFactoryFile)) {
+      errors.push(`Missing component token factory: ${plan.tokenFactoryFile}`);
+    }
+
+    if (!factoryBarrel.includes(expectedFactoryExport)) {
+      errors.push(
+        `Missing component token factory export in ${plan.tokenFactoryBarrelFile}`
+      );
+    }
+
+    for (const target of plan.tokenThemeTargets) {
+      if (!fs.existsSync(target.componentFile)) {
+        errors.push(
+          `Missing component token theme file: ${target.componentFile}`
+        );
+      }
+
+      const barrel = fs.existsSync(target.barrelFile)
+        ? fs.readFileSync(target.barrelFile, 'utf8')
+        : '';
+
+      if (!barrel.includes(expectedThemeExport)) {
+        errors.push(`Missing component token export in ${target.barrelFile}`);
+      }
+    }
+  }
+
+  return {
+    name: 'component-tokens',
+    ok: errors.length === 0,
+    ...(errors.length > 0 ? { details: errors.join('\n') } : {}),
+  };
+}
+
 export function checkComponentCompleteness(params: {
   root: string;
   metadata: ComponentMetadata;
 }): ComponentCompletenessResult {
   const { root, metadata } = params;
   const checks: ComponentCheckResult[] = [];
+  const plan = createCompletenessGenerationPlan({ root, metadata });
+
+  checks.push(checkMetadataRegistration(plan));
+  checks.push(checkTypeOwnership({ plan, metadata }));
+  checks.push(checkProductionAuthorities(plan));
+
+  if (metadata.requirements.componentTokens !== undefined) {
+    checks.push(checkComponentTokenStructure(plan));
+  }
 
   for (const platform of metadata.platforms) {
     const packageName = platform === 'react' ? 'react' : 'react-native';
@@ -466,27 +818,18 @@ function checkTokenRequirements(params: {
     };
   }
 
-  const tokenTypesFile = path.join(
-    root,
-    'packages',
-    'tokens',
-    'src',
-    'generated',
-    'token-types.ts'
-  );
+  const tokenPaths = canonicalTokenPaths(root);
 
-  if (!fs.existsSync(tokenTypesFile)) {
+  if (!tokenPaths) {
     return {
       name: 'tokens',
       ok: false,
-      details: `Missing generated token registry: ${tokenTypesFile}`,
+      details: `Missing generated token registry: ${canonicalTokenRegistryPath(root)}`,
     };
   }
 
-  const content = fs.readFileSync(tokenTypesFile, 'utf8');
-
   const missingTokens = requiredTokens.filter(
-    (token) => !content.includes(`'${token}'`)
+    (token) => !tokenPaths.has(token)
   );
 
   if (missingTokens.length > 0) {
