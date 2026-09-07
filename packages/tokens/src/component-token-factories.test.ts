@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { createComponentFocusRing } from './factories/componentFocusRing.js';
 import {
   createContextMenuTokens,
   createContextMenuTokensFromSemantics,
@@ -19,12 +20,12 @@ const modalFocusRing = {
   color: 'synthetic-focus-color',
   width: 'synthetic-focus-width',
   shadow: 'synthetic-focus-shadow',
-  offset: 'synthetic-focus-offset',
+  offsetColor: 'synthetic-focus-offset',
 };
 
 const modalOverlay = {
   backdrop: 'synthetic-overlay-backdrop',
-  modal: {
+  dialog: {
     bg: 'synthetic-modal-bg',
     border: 'synthetic-modal-border',
   },
@@ -65,14 +66,14 @@ describe('component token semantic factories', () => {
         itemHover: lightMenu.item.hover,
         itemActive: lightMenu.item.active,
         itemPressed: lightMenu.item.pressed,
-        itemFocusRing: lightFocus.ring,
+        itemFocusRing: createComponentFocusRing(lightFocus.ring),
         itemDisabled: lightMenu.item.disabled,
         itemDanger: lightMenu.item.danger,
         triggerDefaultFg: lightText.interactive,
         triggerHoverBg: lightMenu.item.hover.bg,
         triggerHoverFg: lightText.interactiveHover,
         triggerFocusFg: lightText.interactive,
-        triggerFocusRing: lightFocus.ring,
+        triggerFocusRing: createComponentFocusRing(lightFocus.ring),
         triggerDisabledFg: lightText.disabled,
         groupLabelFg: lightText.secondary,
       })
@@ -93,9 +94,9 @@ describe('component token semantic factories', () => {
     ).toEqual(
       createModalTokens({
         overlayBg: modalOverlay.backdrop,
-        contentBg: modalOverlay.modal.bg,
+        contentBg: modalOverlay.dialog.bg,
         contentFg: modalText.primary,
-        contentBorder: modalOverlay.modal.border,
+        contentBorder: modalOverlay.dialog.border,
         contentShadow: modalShadow.xl,
         titleFg: modalText.primary,
         descriptionFg: modalText.secondary,
@@ -105,7 +106,7 @@ describe('component token semantic factories', () => {
         closeButtonPressedBg: modalSurface.pressed,
         closeButtonPressedFg: modalText.primary,
         closeButtonDisabledFg: modalText.disabled,
-        closeButtonFocusRing: modalFocusRing,
+        closeButtonFocusRing: createComponentFocusRing(modalFocusRing),
         radiusLg: radius.lg,
         radiusFull: radius.full,
         spacing1: spacing[1],
@@ -117,7 +118,7 @@ describe('component token semantic factories', () => {
     );
   });
 
-  it('preserves the existing dark Modal hover and pressed semantic overrides', () => {
+  it('keeps Dark Modal pressed overrides on the canonical pressed surface state', () => {
     expect(
       createModalTokensFromSemantics({
         closeButtonHoverBg: modalSurface.elevated,
@@ -133,9 +134,9 @@ describe('component token semantic factories', () => {
     ).toEqual(
       createModalTokens({
         overlayBg: modalOverlay.backdrop,
-        contentBg: modalOverlay.modal.bg,
+        contentBg: modalOverlay.dialog.bg,
         contentFg: modalText.primary,
-        contentBorder: modalOverlay.modal.border,
+        contentBorder: modalOverlay.dialog.border,
         contentShadow: modalShadow.xl,
         titleFg: modalText.primary,
         descriptionFg: modalText.secondary,
@@ -145,7 +146,7 @@ describe('component token semantic factories', () => {
         closeButtonPressedBg: modalSurface.active,
         closeButtonPressedFg: modalText.primary,
         closeButtonDisabledFg: modalText.disabled,
-        closeButtonFocusRing: modalFocusRing,
+        closeButtonFocusRing: createComponentFocusRing(modalFocusRing),
         radiusLg: radius.lg,
         radiusFull: radius.full,
         spacing1: spacing[1],

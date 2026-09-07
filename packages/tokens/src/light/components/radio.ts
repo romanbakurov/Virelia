@@ -128,7 +128,7 @@ export const radio = {
 
   hover: control.hover,
 
-  pressed: control.active,
+  pressed: control.pressed,
 
   primary,
   neutral,
@@ -144,7 +144,7 @@ export const radio = {
 
   focus: {
     ring: focus.ring.color,
-    border: border.focus,
+    border: border.interactive,
   },
 
   disabled: control.disabled,

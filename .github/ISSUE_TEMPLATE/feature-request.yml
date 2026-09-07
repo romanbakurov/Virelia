@@ -9,6 +9,8 @@ body:
       value: |
         Thank you for suggesting an improvement to Vellira.
 
+        Completed work follows the [Repository Definition of Done](https://github.com/vellira-dev/vellira/blob/main/docs/architecture/definition-of-done.md). The accepted scope, baseline/regression evidence when relevant, required validation, and final diff must be complete before the issue is considered Done.
+
   - type: dropdown
     id: area
     attributes:

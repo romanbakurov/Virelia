@@ -14,7 +14,7 @@ export const action = {
       fg: colors.mono[50],
       border: colors.primary[500],
     },
-    active: {
+    pressed: {
       bg: colors.primary[700],
       fg: colors.mono[50],
       border: colors.primary[700],
@@ -31,7 +31,7 @@ export const action = {
     },
   },
 
-  secondary: {
+  accent: {
     default: {
       bg: colors.secondary[500],
       fg: text.inverse,
@@ -42,7 +42,7 @@ export const action = {
       fg: text.inverse,
       border: colors.secondary[400],
     },
-    active: {
+    pressed: {
       bg: colors.secondary[600],
       fg: text.inverse,
       border: colors.secondary[600],
@@ -59,7 +59,7 @@ export const action = {
     },
   },
 
-  close: {
+  neutral: {
     default: {
       bg: colors.vellira[300],
       fg: text.inverse,
@@ -70,7 +70,7 @@ export const action = {
       fg: text.inverse,
       border: colors.vellira[200],
     },
-    active: {
+    pressed: {
       bg: colors.vellira[500],
       fg: colors.mono[50],
       border: colors.vellira[500],
@@ -100,7 +100,7 @@ export const action = {
       border: colors.error[500],
     },
 
-    active: {
+    pressed: {
       bg: colors.error[700],
       fg: colors.mono[50],
       border: colors.error[700],

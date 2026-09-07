@@ -9,5 +9,5 @@ export const border = {
   elevated: colors.gray[300],
   disabled: colors.gray[600],
 
-  focus: colors.warning[300],
+  interactive: colors.warning[300],
 } as const;

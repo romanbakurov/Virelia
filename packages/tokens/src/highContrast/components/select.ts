@@ -221,14 +221,14 @@ export const select = {
 
     hover: {
       ...control.hover,
-      icon: icons.hover,
+      icon: icons.interactiveHover,
       placeholder: text.secondary,
     },
 
     focus: {
       bg: 'transparent',
       fg: text.primary,
-      border: border.focus,
+      border: border.interactive,
       ring: focus.ring.color,
       icon: icons.brand,
       placeholder: text.secondary,
@@ -282,7 +282,7 @@ export const select = {
     hoverFg: status.error.fg,
     hoverBg: status.error.bg,
     focusBg: surface.subtle,
-    pressedBg: surface.active,
+    pressedBg: surface.pressed,
   },
 
   option: {

@@ -14,10 +14,10 @@ export const control = {
   hover: {
     bg: surface.hover,
     fg: text.interactive,
-    border: border.focus,
+    border: border.interactive,
   },
 
-  active: {
+  pressed: {
     bg: surface.active,
     fg: text.interactive,
     border: colors.primary[300],
@@ -42,7 +42,7 @@ export const control = {
       border: colors.primary[400],
     },
 
-    active: {
+    pressed: {
       bg: colors.primary[600],
       fg: colors.mono[50],
       border: colors.primary[600],

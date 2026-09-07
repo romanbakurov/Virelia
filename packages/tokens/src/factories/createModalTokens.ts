@@ -1,3 +1,8 @@
+import {
+  createComponentFocusRing,
+  type SemanticFocusRing,
+} from './componentFocusRing.js';
+
 type ModalFocusRing = {
   color: string;
   width: string;
@@ -33,11 +38,11 @@ export type ModalThemeSemantics = {
   closeButtonHoverBg?: string;
   closeButtonPressedBg?: string;
   focus: {
-    ring: ModalFocusRing;
+    ring: SemanticFocusRing;
   };
   overlay: {
     backdrop: string;
-    modal: {
+    dialog: {
       bg: string;
       border: string;
     };
@@ -70,7 +75,7 @@ export type ModalThemeSemantics = {
 const modalLayout = {
   maxHeight: '90vh',
   nativeMaxHeight: '90%',
-  zIndexOffset: '1',
+  zIndexOffset: 1,
 } as const;
 
 const modalMotion = {
@@ -185,9 +190,9 @@ export const createModalTokensFromSemantics = ({
 }: ModalThemeSemantics) =>
   createModalTokens({
     overlayBg: overlay.backdrop,
-    contentBg: overlay.modal.bg,
+    contentBg: overlay.dialog.bg,
     contentFg: text.primary,
-    contentBorder: overlay.modal.border,
+    contentBorder: overlay.dialog.border,
     contentShadow: shadow.xl,
     titleFg: text.primary,
     descriptionFg: text.secondary,
@@ -197,7 +202,7 @@ export const createModalTokensFromSemantics = ({
     closeButtonPressedBg: closeButtonPressedBg ?? surface.pressed,
     closeButtonPressedFg: text.primary,
     closeButtonDisabledFg: text.disabled,
-    closeButtonFocusRing: focus.ring,
+    closeButtonFocusRing: createComponentFocusRing(focus.ring),
     radiusLg: radius.lg,
     radiusFull: radius.full,
     spacing1: spacing[1],
