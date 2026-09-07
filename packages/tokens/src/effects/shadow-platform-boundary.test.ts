@@ -28,7 +28,7 @@ function expectedNativeApproximationLevel(
 }
 
 describe('shadow platform boundary', () => {
-  it('keeps the React Native level selector aligned with canonical approximation metadata', () => {
+  it('keeps RN selector aligned with canonical metadata', () => {
     const source = fs.readFileSync(
       path.join(
         repositoryRoot,
