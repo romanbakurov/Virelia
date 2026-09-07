@@ -8,6 +8,7 @@ import {
   createComponentNoShadowIntent,
   createComponentShadowIntent,
   createComponentViewportHeightIntent,
+  isComponentPlatformIntent,
 } from './component-token-intents.js';
 
 const sources: ComponentPlatformOutputSources = {
@@ -89,5 +90,30 @@ describe('component platform-output intents', () => {
     expect(() => createComponentViewportHeightIntent(1.1)).toThrow(
       /viewport-height ratio/
     );
+  });
+
+  it('rejects intent-shaped objects with extra renderer keys', () => {
+    expect(
+      isComponentPlatformIntent({
+        kind: 'shadow',
+        role: 'elevation',
+        level: 'lg',
+        web: '0 0 8px black',
+      })
+    ).toBe(false);
+    expect(
+      isComponentPlatformIntent({
+        kind: 'shadow',
+        role: 'focus-ring',
+        native: { elevation: 4 },
+      })
+    ).toBe(false);
+    expect(
+      isComponentPlatformIntent({
+        kind: 'viewport-height',
+        ratio: 0.9,
+        nativeMaxHeight: '90%',
+      })
+    ).toBe(false);
   });
 });
