@@ -20,14 +20,25 @@ const RAW_INPUT: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: [],
+  componentTokens: 'standard',
   parts: [],
 };
 
 const INPUT = RAW_INPUT;
 
 describe('runComponentProduction', () => {
-  it('orchestrates generation and every canonical validation stage', async () => {
+  it('stops at the semantic-completion boundary after deterministic generation', async () => {
     const calls: string[] = [];
+    const artifacts = [
+      'apps/docs/src/react/avatar.md',
+      'apps/website/src/component-catalog/components/Avatar/index.ts',
+      'packages/metadata/src/components/Avatar.metadata.ts',
+      'packages/react/src/primitives/Avatar/Avatar.stories.tsx',
+      'packages/react/src/primitives/Avatar/Avatar.test.tsx',
+      'packages/react/src/primitives/Avatar/Avatar.tsx',
+      'packages/tokens/src/factories/avatar.ts',
+      'packages/types/src/avatar.ts',
+    ];
 
     const result = await runComponentProduction({
       root: '/tmp/vellira-production',
@@ -35,118 +46,65 @@ describe('runComponentProduction', () => {
       dependencies: {
         runGeneration: async () => {
           calls.push('generation');
-
           return {
             preflight: passedStage('preflight'),
-            generation: {
-              ...passedStage('generation'),
-              artifacts: [
-                'apps/docs/src/react/avatar.md',
-                'apps/website/src/component-catalog/components/Avatar/index.ts',
-                'packages/metadata/src/components/Avatar.metadata.ts',
-                'packages/react/src/primitives/Avatar/Avatar.test.tsx',
-                'packages/react/src/primitives/Avatar/Avatar.tsx',
-              ],
-            },
-            generatedArtifacts: [
-              'apps/docs/src/react/avatar.md',
-              'apps/website/src/component-catalog/components/Avatar/index.ts',
-              'packages/metadata/src/components/Avatar.metadata.ts',
-              'packages/react/src/primitives/Avatar/Avatar.test.tsx',
-              'packages/react/src/primitives/Avatar/Avatar.tsx',
-            ],
+            generation: { ...passedStage('generation'), artifacts },
+            generatedArtifacts: artifacts,
           };
         },
         runCommandValidation: () => {
           calls.push('command-validation');
-
-          return {
-            stages: commandStages(),
-          };
+          return { stages: commandStages() };
         },
         runStructuredValidation: async () => {
           calls.push('structured-validation');
-
           return {
             stages: [passedStage('completeness'), passedStage('quality')],
-            completeness: [
-              {
-                componentName: 'Avatar',
-                ready: true,
-                checks: [],
-              },
-            ],
+            completeness: [],
             quality: passingQuality(),
           };
         },
       },
     });
 
-    expect(calls).toEqual([
-      'generation',
-      'command-validation',
-      'structured-validation',
-    ]);
-
-    expect(result.status).toBe('ready');
-    expect(result.readyForReview).toBe(true);
-
-    expect(result.stages.map((stage) => stage.id)).toEqual([
-      'preflight',
-      'generation',
-      'format',
-      'lint',
-      'tests',
-      'typecheck',
-      'build',
-      'storybook',
-      'docs',
-      'website',
-      'completeness',
-      'quality',
-    ]);
-
-    expect(result.outputs).toMatchObject({
-      generation: {
-        status: 'passed',
-      },
-      metadata: {
-        generated: true,
-        artifacts: ['packages/metadata/src/components/Avatar.metadata.ts'],
-      },
-      testGeneration: {
-        generated: true,
-        artifacts: ['packages/react/src/primitives/Avatar/Avatar.test.tsx'],
-      },
-      docsGeneration: {
-        generated: true,
-        artifacts: ['apps/docs/src/react/avatar.md'],
-      },
-      websiteGeneration: {
-        generated: true,
-        artifacts: [
-          'apps/website/src/component-catalog/components/Avatar/index.ts',
-        ],
-      },
+    expect(calls).toEqual(['generation']);
+    expect(result.status).toBe('blocked');
+    expect(result.readyForReview).toBe(false);
+    expect(result.lifecycle).toEqual({
+      current: 'semantic-completion-required',
+      completed: ['scaffolded'],
+      semanticCompletionRequired: true,
+      readyForReview: false,
     });
-
-    expect(result.validationSummary).toMatchObject({
-      status: 'ready',
-      blockedStages: [],
-      failedStages: [],
-      skippedStages: [],
+    expect(result.blockingFindings).toEqual([
+      expect.objectContaining({
+        id: 'semantic-completion:required',
+        stage: 'semantic-completion',
+      }),
+    ]);
+    expect(
+      result.stages.find((stage) => stage.id === 'semantic-completion')
+    ).toMatchObject({
+      status: 'blocked',
     });
-
-    expect(result.artifacts).toEqual([
-      'apps/docs/src/react/avatar.md',
-      'apps/website/src/component-catalog/components/Avatar/index.ts',
-      'packages/metadata/src/components/Avatar.metadata.ts',
-      'packages/react/src/primitives/Avatar/Avatar.test.tsx',
+    expect(
+      result.stages.slice(3).every((stage) => stage.status === 'skipped')
+    ).toBe(true);
+    expect(result.outputs.runtimeRenderers.artifacts).toEqual([
       'packages/react/src/primitives/Avatar/Avatar.tsx',
+    ]);
+    expect(result.outputs.sharedContracts.artifacts).toEqual([
+      'packages/types/src/avatar.ts',
+    ]);
+    expect(result.outputs.designResources.artifacts).toEqual([
+      'packages/tokens/src/factories/avatar.ts',
+    ]);
+    expect(result.outputs.storyGeneration.artifacts).toEqual([
+      'packages/react/src/primitives/Avatar/Avatar.stories.tsx',
     ]);
   });
 
-  it('stops before validation when deterministic preflight blocks', async () => {
+  it('stops before semantic completion when deterministic preflight blocks', async () => {
     let validationCalled = false;
 
     const result = await runComponentProduction({
@@ -179,14 +137,10 @@ describe('runComponentProduction', () => {
         }),
         runCommandValidation: () => {
           validationCalled = true;
-
-          return {
-            stages: commandStages(),
-          };
+          return { stages: commandStages() };
         },
         runStructuredValidation: async () => {
           validationCalled = true;
-
           return {
             stages: [passedStage('completeness'), passedStage('quality')],
             completeness: [],
@@ -199,109 +153,13 @@ describe('runComponentProduction', () => {
     expect(validationCalled).toBe(false);
     expect(result.status).toBe('blocked');
     expect(result.readyForReview).toBe(false);
-
+    expect(result.lifecycle.current).toBe('scaffolded');
     expect(
-      result.stages.slice(2).every((stage) => stage.status === 'skipped')
-    ).toBe(true);
-
-    expect(result.blockingFindings).toEqual([
-      {
-        id: 'preflight:1',
-        stage: 'preflight',
-        severity: 'blocking',
-        message: 'Component already exists.',
-      },
-    ]);
-  });
-
-  it('stops before structured validation after deterministic command blocking', async () => {
-    const testFinding: ComponentProductionFinding = {
-      id: 'tests:react-tests',
-      stage: 'tests',
-      severity: 'blocking',
-      message: 'Avatar tests failed.',
-    };
-
-    let structuredValidationCalled = false;
-
-    const result = await runComponentProduction({
-      root: '/tmp/vellira-production',
-      input: RAW_INPUT,
-      dependencies: {
-        runGeneration: async () => ({
-          preflight: passedStage('preflight'),
-          generation: passedStage('generation'),
-          generatedArtifacts: [],
-        }),
-        runCommandValidation: () => ({
-          stages: commandStages({
-            tests: blockedStage('tests', testFinding),
-          }),
-        }),
-        runStructuredValidation: async () => {
-          structuredValidationCalled = true;
-
-          return {
-            stages: [passedStage('completeness'), passedStage('quality')],
-            completeness: [],
-            quality: passingQuality(),
-          };
-        },
-      },
-    });
-
-    expect(structuredValidationCalled).toBe(false);
-    expect(result.status).toBe('blocked');
-    expect(result.readyForReview).toBe(false);
-    expect(result.blockingFindings).toEqual([testFinding]);
-
-    expect(
-      result.stages.find((stage) => stage.id === 'completeness')?.status
+      result.stages.find((stage) => stage.id === 'semantic-completion')?.status
     ).toBe('skipped');
-
-    expect(result.stages.find((stage) => stage.id === 'quality')?.status).toBe(
-      'skipped'
-    );
-  });
-
-  it('gives runtime validation failure precedence over repairable blocking', async () => {
-    const result = await runComponentProduction({
-      root: '/tmp/vellira-production',
-      input: RAW_INPUT,
-      dependencies: {
-        runGeneration: async () => ({
-          preflight: passedStage('preflight'),
-          generation: passedStage('generation'),
-          generatedArtifacts: [],
-        }),
-        runCommandValidation: () => ({
-          stages: commandStages({
-            lint: {
-              id: 'lint',
-              status: 'failed',
-              summary: 'Lint runner failed.',
-              findings: [
-                {
-                  id: 'lint:runtime',
-                  stage: 'lint',
-                  severity: 'blocking',
-                  message: 'Lint runner unavailable.',
-                },
-              ],
-              artifacts: [],
-            },
-          }),
-        }),
-        runStructuredValidation: async () => ({
-          stages: [passedStage('completeness'), passedStage('quality')],
-          completeness: [],
-          quality: passingQuality(),
-        }),
-      },
-    });
-
-    expect(result.status).toBe('failed');
-    expect(result.readyForReview).toBe(false);
+    expect(
+      result.stages.slice(3).every((stage) => stage.status === 'skipped')
+    ).toBe(true);
   });
 });
 
@@ -332,6 +190,11 @@ describe('runComponentProductionValidation', () => {
       schemaVersion: '1',
       status: 'ready',
       readyForReview: true,
+      lifecycle: {
+        current: 'ready-for-review',
+        semanticCompletionRequired: false,
+        readyForReview: true,
+      },
       blockingFindings: [],
       validationSummary: {
         status: 'ready',
@@ -384,6 +247,7 @@ describe('runComponentProductionValidation', () => {
     expect(result.readyForReview).toBe(false);
     expect(result.blockingFindings).toEqual([finding]);
     expect(result.validationSummary.blockedStages).toEqual(['tests']);
+    expect(result.lifecycle.current).toBe('candidate');
   });
 });
 
