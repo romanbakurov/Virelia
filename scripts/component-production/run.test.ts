@@ -183,6 +183,7 @@ describe('runComponentProductionValidation', () => {
           ],
           quality: passingQuality(),
         }),
+        runFinalValidation: () => ({ stages: finalStages() }),
       },
     });
 
@@ -215,6 +216,10 @@ describe('runComponentProductionValidation', () => {
       'website',
       'completeness',
       'quality',
+      'public-api',
+      'tooling',
+      'visual',
+      'smoke',
     ]);
   });
 
@@ -275,10 +280,18 @@ describe('validateComponentProductionCandidate', () => {
             quality: passingQuality(),
           };
         },
+        runFinalValidation: () => {
+          calls.push('final-validation');
+          return { stages: finalStages() };
+        },
       },
     });
 
-    expect(calls).toEqual(['command-validation', 'structured-validation']);
+    expect(calls).toEqual([
+      'command-validation',
+      'structured-validation',
+      'final-validation',
+    ]);
 
     expect(result.stages.map((stage) => stage.id)).toEqual([
       'format',
@@ -291,6 +304,10 @@ describe('validateComponentProductionCandidate', () => {
       'website',
       'completeness',
       'quality',
+      'public-api',
+      'tooling',
+      'visual',
+      'smoke',
     ]);
   });
 });
@@ -314,6 +331,12 @@ function commandStages(
 
     return overrides[stageId] ?? passedStage(stageId);
   });
+}
+
+function finalStages(): ComponentProductionStageResult[] {
+  return ['public-api', 'tooling', 'visual', 'smoke'].map((id) =>
+    passedStage(id as ComponentProductionStageId)
+  );
 }
 
 function passedStage(

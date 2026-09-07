@@ -57,6 +57,18 @@ export function componentProductionValidationCommands(
       command: ['pnpm', 'lint'],
       timeoutMs: 120_000,
     },
+    {
+      id: 'core-tests',
+      stage: 'tests',
+      command: ['pnpm', 'test:core'],
+      timeoutMs: 180_000,
+    },
+    {
+      id: 'metadata-tests',
+      stage: 'tests',
+      command: ['pnpm', 'test:metadata'],
+      timeoutMs: 180_000,
+    },
     ...platformCommands(input),
     {
       id: 'component-docs',
