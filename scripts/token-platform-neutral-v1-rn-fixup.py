@@ -21,6 +21,17 @@ def replace_once(path: str, old: str, new: str) -> None:
     write(path, text.replace(old, new, 1))
 
 
+def replace_first_with_count(
+    path: str, text: str, old: str, new: str, expected_count: int
+) -> str:
+    count = text.count(old)
+    if count != expected_count:
+        raise SystemExit(
+            f'{path}: expected {expected_count} exact matches, found {count}: {old[:100]!r}'
+        )
+    return text.replace(old, new, 1)
+
+
 # Tooltip always owns an elevation shadow, never the broader no-shadow/focus-ring
 # union. Keep that invariant in the type so native output cannot be nullable.
 replace_once(
@@ -69,56 +80,27 @@ if text.count(old_start) != 1:
     raise SystemExit(f'{path}: createStyles marker mismatch')
 text = text.replace(old_start, new_start, 1)
 replacements = [
-    (
-        '      backgroundColor: theme.components.dropdown.content.bg,',
-        '      backgroundColor: canonical.bg,',
-    ),
-    (
-        '      borderColor: theme.components.dropdown.content.border,',
-        '      borderColor: canonical.border,',
-    ),
-    (
-        '          boxShadow: theme.components.dropdown.content.shadow,',
-        '          boxShadow: output.web.shadow,',
-    ),
-    (
-        '          shadowColor: theme.tokens.shadows.lg.color,',
-        '          shadowColor: nativeShadow.color,',
-    ),
-    (
-        '            width: theme.tokens.shadows.lg.x,',
-        '            width: nativeShadow.x,',
-    ),
-    (
-        '            height: -theme.tokens.shadows.lg.y,',
-        '            height: -nativeShadow.y,',
-    ),
-    (
-        '          shadowOpacity: theme.tokens.shadows.lg.opacity,',
-        '          shadowOpacity: nativeShadow.opacity,',
-    ),
-    (
-        '          shadowRadius: theme.tokens.shadows.lg.blur,',
-        '          shadowRadius: nativeShadow.blur,',
-    ),
-    (
-        '          elevation: theme.tokens.shadows.lg.elevation,',
-        '          elevation: nativeShadow.elevation,',
-    ),
+    ('      backgroundColor: theme.components.dropdown.content.bg,', '      backgroundColor: canonical.bg,'),
+    ('      borderColor: theme.components.dropdown.content.border,', '      borderColor: canonical.border,'),
+    ('          boxShadow: theme.components.dropdown.content.shadow,', '          boxShadow: output.web.shadow,'),
+    ('          shadowColor: theme.tokens.shadows.lg.color,', '          shadowColor: nativeShadow.color,'),
+    ('            width: theme.tokens.shadows.lg.x,', '            width: nativeShadow.x,'),
+    ('            height: -theme.tokens.shadows.lg.y,', '            height: -nativeShadow.y,'),
+    ('          shadowOpacity: theme.tokens.shadows.lg.opacity,', '          shadowOpacity: nativeShadow.opacity,'),
+    ('          shadowRadius: theme.tokens.shadows.lg.blur,', '          shadowRadius: nativeShadow.blur,'),
+    ('          elevation: theme.tokens.shadows.lg.elevation,', '          elevation: nativeShadow.elevation,'),
 ]
 for old, new in replacements:
-    if text.count(old) != 1:
-        raise SystemExit(f'{path}: expected one exact marker: {old!r}')
-    text = text.replace(old, new, 1)
+    text = replace_first_with_count(path, text, old, new, 1)
 if not text.rstrip().endswith('  });'):
     raise SystemExit(f'{path}: unexpected file ending')
 text = text.rstrip() + '\n};\n'
 write(path, text)
 
 
-# Select follows the same boundary. The sheet-specific inverted shadow remains a
-# presentation transform over the primitive native shadow and is not canonical
-# component-token representation; #885 owns shadow authority consolidation.
+# Select follows the same boundary. The file has two native lg-shadow blocks:
+# the ordinary surface and an intentionally inverted sheet presentation shadow.
+# Replace only the first block and prove the duplicate count before doing so.
 path = 'packages/react-native/src/components/Select/Presentation/SelectPresentation.styles.ts'
 text = read(path)
 old_import = "import type { NativeTheme } from '../../../theme';\n"
@@ -149,48 +131,19 @@ new_start = """export const createPresentationStyles = (theme: NativeTheme) => {
 if text.count(old_start) != 1:
     raise SystemExit(f'{path}: createPresentationStyles marker mismatch')
 text = text.replace(old_start, new_start, 1)
-replacements = [
-    (
-        '      backgroundColor: theme.components.select.dropdown.bg,',
-        '      backgroundColor: canonical.bg,',
-    ),
-    (
-        '      borderColor: theme.components.select.dropdown.border,',
-        '      borderColor: canonical.border,',
-    ),
-    (
-        '          boxShadow: theme.components.select.dropdown.shadow,',
-        '          boxShadow: output.web.shadow,',
-    ),
-    (
-        '          shadowColor: theme.tokens.shadows.lg.color,',
-        '          shadowColor: nativeShadow.color,',
-    ),
-    (
-        '            width: theme.tokens.shadows.lg.x,',
-        '            width: nativeShadow.x,',
-    ),
-    (
-        '            height: theme.tokens.shadows.lg.y,',
-        '            height: nativeShadow.y,',
-    ),
-    (
-        '          shadowOpacity: theme.tokens.shadows.lg.opacity,',
-        '          shadowOpacity: nativeShadow.opacity,',
-    ),
-    (
-        '          shadowRadius: theme.tokens.shadows.lg.blur,',
-        '          shadowRadius: nativeShadow.blur,',
-    ),
-    (
-        '          elevation: theme.tokens.shadows.lg.elevation,',
-        '          elevation: nativeShadow.elevation,',
-    ),
+select_replacements = [
+    ('      backgroundColor: theme.components.select.dropdown.bg,', '      backgroundColor: canonical.bg,', 1),
+    ('      borderColor: theme.components.select.dropdown.border,', '      borderColor: canonical.border,', 1),
+    ('          boxShadow: theme.components.select.dropdown.shadow,', '          boxShadow: output.web.shadow,', 1),
+    ('          shadowColor: theme.tokens.shadows.lg.color,', '          shadowColor: nativeShadow.color,', 2),
+    ('            width: theme.tokens.shadows.lg.x,', '            width: nativeShadow.x,', 2),
+    ('            height: theme.tokens.shadows.lg.y,', '            height: nativeShadow.y,', 1),
+    ('          shadowOpacity: theme.tokens.shadows.lg.opacity,', '          shadowOpacity: nativeShadow.opacity,', 2),
+    ('          shadowRadius: theme.tokens.shadows.lg.blur,', '          shadowRadius: nativeShadow.blur,', 2),
+    ('          elevation: theme.tokens.shadows.lg.elevation,', '          elevation: nativeShadow.elevation,', 2),
 ]
-for old, new in replacements:
-    if text.count(old) != 1:
-        raise SystemExit(f'{path}: expected one exact marker: {old!r}')
-    text = text.replace(old, new, 1)
+for old, new, expected_count in select_replacements:
+    text = replace_first_with_count(path, text, old, new, expected_count)
 if not text.rstrip().endswith('  });'):
     raise SystemExit(f'{path}: unexpected file ending')
 text = text.rstrip() + '\n};\n'
