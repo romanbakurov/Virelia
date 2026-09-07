@@ -124,7 +124,7 @@ jobs:
       - name: Install Chromium for navigation smoke test
         run: pnpm --filter @vellira-ui/react-storybook run playwright:install
 
-      - name: Smoke test client-side navigation
+      - name: Smoke test client-side navigation and blog metrics
         shell: bash
         run: |
           set -euo pipefail
@@ -132,11 +132,21 @@ jobs:
           import { chromium } from '@playwright/test';
 
           const baseUrl = process.env.STAGING_URL;
+          const metricsApiBaseUrl = 'https://api.vellira.dev';
           const browser = await chromium.launch();
           const page = await browser.newPage();
           const diagnostics = [];
           const criticalDiagnostics = [];
+          const vercelRuntimeRequests = [];
 
+          page.on('request', (request) => {
+            if (request.url().startsWith(`${baseUrl}/_vercel/`)) {
+              const diagnostic = `obsolete Vercel runtime request: ${request.url()}`;
+              diagnostics.push(diagnostic);
+              criticalDiagnostics.push(diagnostic);
+              vercelRuntimeRequests.push(request.url());
+            }
+          });
           page.on('console', (message) => {
             if (message.type() === 'error') {
               diagnostics.push(`console.error: ${message.text()}`);
@@ -148,17 +158,22 @@ jobs:
             criticalDiagnostics.push(diagnostic);
           });
           page.on('response', (response) => {
-            if (response.url().startsWith(baseUrl) && response.status() >= 400) {
+            const sameOrigin = response.url().startsWith(baseUrl);
+            const metricsApi = response.url().startsWith(metricsApiBaseUrl);
+            if ((sameOrigin || metricsApi) && response.status() >= 400) {
               const diagnostic =
                 `response: ${response.status()} ${response.request().method()} ${response.url()}`;
               diagnostics.push(diagnostic);
-              if (response.status() >= 500) {
+              if (response.status() >= 500 || metricsApi) {
                 criticalDiagnostics.push(diagnostic);
               }
             }
           });
           page.on('requestfailed', (request) => {
-            if (request.url().startsWith(baseUrl)) {
+            if (
+              request.url().startsWith(baseUrl) ||
+              request.url().startsWith(metricsApiBaseUrl)
+            ) {
               diagnostics.push(
                 `requestfailed: ${request.method()} ${request.url()} ${request.failure()?.errorText ?? ''}`
               );
@@ -203,6 +218,141 @@ jobs:
               timeout: 15_000,
             });
             console.log('OK highlighted MDX code /blog/two-runtimes');
+          }
+
+          async function verifyBlogMetricsAndLikeMutation() {
+            const slug = 'two-runtimes';
+            const articlePath = `/blog/${slug}`;
+            const likeUrl = `${metricsApiBaseUrl}/v1/blog/articles/${slug}/like`;
+            const viewUrl = `${metricsApiBaseUrl}/v1/blog/articles/${slug}/views`;
+
+            const likeStatePromise = page.waitForResponse(
+              (response) =>
+                response.url() === likeUrl && response.request().method() === 'GET',
+              { timeout: 15_000 }
+            );
+            const viewPromise = page.waitForResponse(
+              (response) =>
+                response.url() === viewUrl && response.request().method() === 'POST',
+              { timeout: 15_000 }
+            );
+
+            await page.goto(`${baseUrl}${articlePath}`, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30_000,
+            });
+
+            const [likeStateResponse, viewResponse] = await Promise.all([
+              likeStatePromise,
+              viewPromise,
+            ]);
+            if (!likeStateResponse.ok() || !viewResponse.ok()) {
+              throw new Error(
+                `Blog metrics bootstrap failed: like=${likeStateResponse.status()} view=${viewResponse.status()}`
+              );
+            }
+
+            const likeState = await likeStateResponse.json();
+            const viewWrite = await viewResponse.json();
+            if (typeof likeState?.liked !== 'boolean' || !viewWrite?.metrics) {
+              throw new Error('Blog metrics bootstrap returned an invalid payload');
+            }
+
+            const formatCount = (value) => new Intl.NumberFormat('en-US').format(value);
+            const expectedViews = `${formatCount(viewWrite.metrics.views)} views`;
+            const expectedLikes = `${formatCount(viewWrite.metrics.likes)} likes`;
+
+            await page.getByLabel(expectedViews).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+            await page.getByLabel(expectedLikes).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+
+            const initialLiked = likeState.liked;
+            const initialLabel = initialLiked
+              ? 'Unlike this article'
+              : 'Like this article';
+            const toggledLabel = initialLiked
+              ? 'Like this article'
+              : 'Unlike this article';
+            const toggleMethod = initialLiked ? 'DELETE' : 'PUT';
+            const restoreMethod = initialLiked ? 'PUT' : 'DELETE';
+
+            await page.getByRole('button', { name: initialLabel }).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+
+            const toggleResponsePromise = page.waitForResponse(
+              (response) =>
+                response.url() === likeUrl &&
+                response.request().method() === toggleMethod,
+              { timeout: 15_000 }
+            );
+            await page.getByRole('button', { name: initialLabel }).click();
+            const toggleResponse = await toggleResponsePromise;
+            if (!toggleResponse.ok()) {
+              throw new Error(`Blog like toggle failed with ${toggleResponse.status()}`);
+            }
+            await page.getByRole('button', { name: toggledLabel }).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+
+            const restoreResponsePromise = page.waitForResponse(
+              (response) =>
+                response.url() === likeUrl &&
+                response.request().method() === restoreMethod,
+              { timeout: 15_000 }
+            );
+            await page.getByRole('button', { name: toggledLabel }).click();
+            const restoreResponse = await restoreResponsePromise;
+            if (!restoreResponse.ok()) {
+              throw new Error(`Blog like restore failed with ${restoreResponse.status()}`);
+            }
+            await page.getByRole('button', { name: initialLabel }).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+            await page.getByRole('button', { name: 'Share' }).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+
+            console.log(
+              `OK blog metrics/CORS: GET like, POST view, ${toggleMethod} toggle, ${restoreMethod} restore`
+            );
+          }
+
+          async function verifyMetricsFailureDoesNotBreakArticleActions() {
+            const fallbackPage = await browser.newPage();
+            await fallbackPage.route(`${metricsApiBaseUrl}/**`, (route) => route.abort());
+
+            await fallbackPage.goto(`${baseUrl}/blog/two-runtimes`, {
+              waitUntil: 'domcontentloaded',
+              timeout: 30_000,
+            });
+            await fallbackPage.getByRole('heading', {
+              level: 1,
+              name: 'One Design System, Two Runtimes',
+            }).waitFor({ state: 'visible', timeout: 15_000 });
+            await fallbackPage.getByRole('button', { name: 'Share' }).waitFor({
+              state: 'visible',
+              timeout: 15_000,
+            });
+
+            if ((await fallbackPage.getByLabel('0 views').count()) > 0) {
+              throw new Error('Unavailable metrics were rendered as fake 0 views');
+            }
+            if ((await fallbackPage.getByLabel('0 likes').count()) > 0) {
+              throw new Error('Unavailable metrics were rendered as fake 0 likes');
+            }
+
+            await fallbackPage.close();
+            console.log('OK metrics failure keeps article/share usable without fake zero state');
           }
 
           async function navigateViaContinueReading() {
@@ -296,6 +446,8 @@ jobs:
               'One Design System, Two Runtimes'
             );
             await verifyHighlightedArticleCode();
+            await verifyBlogMetricsAndLikeMutation();
+            await verifyMetricsFailureDoesNotBreakArticleActions();
             await navigateByLink(
               '/blog',
               '/blog/component-metadata-source-of-truth',
@@ -315,6 +467,11 @@ jobs:
             await navigateWithinComponentSidebar();
             await navigateWithinMobileComponentSidebar();
 
+            if (vercelRuntimeRequests.length > 0) {
+              throw new Error(
+                `Cloudflare staging emitted obsolete Vercel requests:\n${vercelRuntimeRequests.join('\n')}`
+              );
+            }
             if (criticalDiagnostics.length > 0) {
               throw new Error(
                 `Critical browser diagnostics detected:\n${criticalDiagnostics.join('\n')}`
