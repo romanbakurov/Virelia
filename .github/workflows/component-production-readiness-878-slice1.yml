@@ -60,6 +60,7 @@ jobs:
             scripts/generators/component/preflight.ts)"
           printf '%s\n' "$actual"
           test "$actual" = "$expected"
+          git diff --name-only | sort > /tmp/readiness-878-prebuild-files
       - name: Targeted structural regressions
         run: |
           pnpm exec vitest run --config vitest.tooling.config.ts \
@@ -68,14 +69,40 @@ jobs:
             scripts/checks/component-completeness/cli.test.ts \
             scripts/component-production/cli.integration.test.ts \
             scripts/generators/component/production-preflight-contract.test.ts
+      - name: Source quality and real-repo completeness
+        run: pnpm ci:quality
       - name: Workspace build
         run: pnpm ci:build
       - name: Tooling typecheck
         run: pnpm typecheck:tooling
       - name: Full tooling tests
         run: pnpm test:tooling
-      - name: Quality and real-repo completeness
-        run: pnpm ci:quality
+      - name: Post-build structural completeness
+        run: |
+          pnpm check:component --all
+          pnpm --filter @vellira-ui/tokens generate:types:check
+      - name: Guard known build mutation boundary
+        shell: bash
+        run: |
+          actual="$(git diff --name-only | sort)"
+          expected="$(printf '%s\n' \
+            packages/tokens/src/generated/token-types.ts \
+            scripts/checks/component-completeness/check-component.test.ts \
+            scripts/checks/component-completeness/check-component.ts \
+            scripts/checks/component-completeness/check-test-coverage-integration.test.ts \
+            scripts/checks/component-completeness/cli.test.ts \
+            scripts/checks/component-completeness/types.ts \
+            scripts/generators/component/preflight.ts)"
+          printf '%s\n' "$actual"
+          test "$actual" = "$expected"
+
+          new_files="$(comm -13 /tmp/readiness-878-prebuild-files <(printf '%s\n' "$actual"))"
+          test "$new_files" = "packages/tokens/src/generated/token-types.ts"
+
+          git restore -- packages/tokens/src/generated/token-types.ts
+
+          restored="$(git diff --name-only | sort)"
+          test "$restored" = "$(cat /tmp/readiness-878-prebuild-files)"
       - name: Diff safety
         run: git diff --check
       - name: Guard target head before push
