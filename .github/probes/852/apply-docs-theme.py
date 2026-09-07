@@ -26,6 +26,23 @@ replace_exact(
     "      '@vellira-ui/metadata':\n        specifier: workspace:*\n        version: link:../../packages/metadata\n      '@vellira-ui/tokens':\n        specifier: workspace:*\n        version: link:../../packages/tokens\n      vitepress:\n",
 )
 
+tokens_package = "packages/tokens/package.json"
+replace_exact(
+    tokens_package,
+    '    "./css": "./dist/css/tokens.css"\n',
+    '    "./css": {\n      "types": "./css.d.ts",\n      "default": "./dist/css/tokens.css"\n    }\n',
+)
+replace_exact(
+    tokens_package,
+    '    "dist",\n    "README.md",',
+    '    "dist",\n    "css.d.ts",\n    "README.md",',
+)
+
+tokens_css_types = Path("packages/tokens/css.d.ts")
+if tokens_css_types.exists():
+    raise SystemExit("packages/tokens/css.d.ts already exists")
+tokens_css_types.write_text("export {};\n")
+
 theme = "apps/docs/src/.vitepress/theme/index.ts"
 replace_exact(
     theme,
