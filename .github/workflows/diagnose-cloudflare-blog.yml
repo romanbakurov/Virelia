@@ -16,7 +16,7 @@ env:
 
 jobs:
   diagnose:
-    name: Capture Worker failure
+    name: Verify cached article resource usage
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Capture failing route and Worker tail
+      - name: Capture cached routes and Worker tail
         shell: bash
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -38,16 +38,15 @@ jobs:
           set -uo pipefail
 
           tail_log="$(mktemp)"
-          headers="$(mktemp)"
-          body="$(mktemp)"
+          failures="$(mktemp)"
 
           cleanup() {
-            rm -f "$tail_log" "$headers" "$body"
+            rm -f "$tail_log" "$failures"
           }
           trap cleanup EXIT
 
           echo 'Starting Worker tail...'
-          timeout 25s pnpm --dir apps/website exec wrangler tail \
+          timeout 40s pnpm --dir apps/website exec wrangler tail \
             vellira-website-staging \
             --format json \
             --method GET \
@@ -56,19 +55,56 @@ jobs:
 
           sleep 5
 
-          echo '=== DIRECT ROUTE REQUEST ==='
-          status="$(curl --location --silent --show-error \
-            --header 'Cache-Control: no-cache' \
-            --dump-header "$headers" \
-            --output "$body" \
-            --write-out '%{http_code}' \
-            "$STAGING_URL/blog/controlled-uncontrolled-react-native" || true)"
+          request_route() {
+            local path="$1"
+            local headers
+            local body
+            local status
+            headers="$(mktemp)"
+            body="$(mktemp)"
 
-          echo "HTTP $status"
-          echo '=== RESPONSE HEADERS ==='
-          cat "$headers"
-          echo '=== RESPONSE BODY (first 80 lines) ==='
-          sed -n '1,80p' "$body"
+            status="$(curl --location --silent --show-error \
+              --dump-header "$headers" \
+              --output "$body" \
+              --write-out '%{http_code}' \
+              "$STAGING_URL$path" || true)"
+
+            echo "HTTP $status $path"
+            grep -Ei '^(x-nextjs-cache|x-nextjs-prerender|cache-control|cf-cache-status|server):' "$headers" || true
+
+            if [[ "$status" != '200' ]]; then
+              echo "$path -> HTTP $status" >>"$failures"
+              sed -n '1,20p' "$body"
+            fi
+
+            rm -f "$headers" "$body"
+          }
+
+          echo '=== SEQUENTIAL CACHED ARTICLE REQUESTS ==='
+          request_route '/blog/two-runtimes'
+          request_route '/blog/component-metadata-source-of-truth'
+          request_route '/blog/controlled-uncontrolled-react-native'
+          request_route '/blog/controlled-uncontrolled-react-native'
+          request_route '/components/switch'
+          request_route '/components/checkbox'
+
+          echo '=== MODEST CONCURRENT CACHED REQUEST BURST ==='
+          routes=(
+            '/blog/two-runtimes'
+            '/blog/component-metadata-source-of-truth'
+            '/blog/controlled-uncontrolled-react-native'
+            '/blog/cross-platform-form-vellira'
+            '/components/switch'
+            '/components/checkbox'
+          )
+          pids=()
+          for path in "${routes[@]}"; do
+            request_route "$path" &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid" || true
+          done
 
           sleep 5
           kill "$tail_pid" 2>/dev/null || true
@@ -77,9 +113,37 @@ jobs:
           echo '=== WORKER TAIL ==='
           cat "$tail_log"
 
-          echo '=== RESULT ==='
-          if [[ "$status" == '200' ]]; then
-            echo 'Direct cold request succeeded.'
-          else
-            echo "Direct cold request failed with HTTP $status."
+          echo '=== RESOURCE SUMMARY ==='
+          node --input-type=module <<'NODE' "$tail_log"
+          import fs from 'node:fs';
+
+          const path = process.argv[2];
+          const lines = fs.readFileSync(path, 'utf8').split(/\r?\n/).filter(Boolean);
+          const events = [];
+          for (const line of lines) {
+            try {
+              const value = JSON.parse(line);
+              const event = value.event ?? value;
+              const cpu = event?.cpuTime ?? event?.cpuTimeMs ?? value?.cpuTime ?? value?.cpuTimeMs;
+              const wall = event?.wallTime ?? event?.wallTimeMs ?? value?.wallTime ?? value?.wallTimeMs;
+              const outcome = event?.outcome ?? value?.outcome;
+              if (cpu !== undefined || wall !== undefined || outcome !== undefined) {
+                events.push({ cpu, wall, outcome });
+              }
+            } catch {}
+          }
+          console.log(JSON.stringify(events, null, 2));
+NODE
+
+          if [[ -s "$failures" ]]; then
+            echo 'One or more cached route requests failed:'
+            cat "$failures"
+            exit 1
           fi
+
+          if grep -q '1102' "$tail_log"; then
+            echo 'Worker tail contained Error 1102.'
+            exit 1
+          fi
+
+          echo 'All representative cached routes returned HTTP 200.'
