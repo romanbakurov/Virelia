@@ -10,7 +10,8 @@ const origin = new URL(baseUrl).origin;
 const browser = await chromium.launch();
 const context = await browser.newContext();
 const page = await context.newPage();
-const chunkDiagnostics = [];
+const criticalDiagnostics = [];
+const abortedChunkUrls = new Set();
 
 function isSameOrigin(url) {
   return new URL(url).origin === origin;
@@ -24,15 +25,15 @@ function isNextStaticChunk(url) {
   return new URL(url).pathname.startsWith('/_next/static/');
 }
 
-function recordChunkDiagnostic(diagnostic) {
-  if (!chunkDiagnostics.includes(diagnostic)) {
-    chunkDiagnostics.push(diagnostic);
+function recordCritical(diagnostic) {
+  if (!criticalDiagnostics.includes(diagnostic)) {
+    criticalDiagnostics.push(diagnostic);
   }
 }
 
 page.on('response', (response) => {
   if (isNextStaticChunk(response.url()) && response.status() >= 400) {
-    recordChunkDiagnostic(
+    recordCritical(
       `chunk response: ${response.status()} ${response.request().method()} ${response.url()}`
     );
   }
@@ -43,7 +44,12 @@ page.on('requestfailed', (request) => {
     return;
   }
 
-  recordChunkDiagnostic(
+  if (request.failure()?.errorText === 'net::ERR_ABORTED') {
+    abortedChunkUrls.add(request.url());
+    return;
+  }
+
+  recordCritical(
     `chunk requestfailed: ${request.method()} ${request.url()} ${request.failure()?.errorText ?? ''}`
   );
 });
@@ -51,7 +57,7 @@ page.on('requestfailed', (request) => {
 page.on('pageerror', (error) => {
   const text = error.stack ?? error.message;
   if (/ChunkLoadError|Failed to load chunk/i.test(text)) {
-    recordChunkDiagnostic(`chunk pageerror: ${text}`);
+    recordCritical(`chunk pageerror: ${text}`);
   }
 });
 
@@ -60,19 +66,52 @@ page.on('console', (message) => {
     message.type() === 'error' &&
     /ChunkLoadError|Failed to load chunk|ERR_ABORTED\s+404/i.test(message.text())
   ) {
-    recordChunkDiagnostic(`chunk console.error: ${message.text()}`);
+    recordCritical(`chunk console.error: ${message.text()}`);
   }
 });
 
+async function describePage(response, path) {
+  let title = '';
+  let body = '';
+
+  try {
+    title = await page.title();
+  } catch {}
+
+  try {
+    body = (await page.locator('body').innerText({ timeout: 2_000 }))
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 500);
+  } catch {}
+
+  return (
+    `path=${path} status=${response?.status() ?? 'no-response'} ` +
+    `url=${page.url()} title=${JSON.stringify(title)} body=${JSON.stringify(body)}`
+  );
+}
+
 async function goto(path) {
-  await page.goto(`${baseUrl}${path}`, {
+  const response = await page.goto(`${baseUrl}${path}`, {
     waitUntil: 'domcontentloaded',
     timeout: 30_000,
   });
-  await page.locator('main').first().waitFor({
-    state: 'visible',
-    timeout: 15_000,
-  });
+
+  if (!response || response.status() >= 400) {
+    throw new Error(`Document load failed: ${await describePage(response, path)}`);
+  }
+
+  try {
+    await page.locator('main').first().waitFor({
+      state: 'visible',
+      timeout: 15_000,
+    });
+  } catch (error) {
+    throw new Error(
+      `Main content did not become visible: ${await describePage(response, path)}`,
+      { cause: error }
+    );
+  }
 }
 
 async function collectRoutes(indexPath, prefix) {
@@ -108,6 +147,21 @@ async function verifyClientRoutes(indexPath, routes) {
   }
 }
 
+async function verifyAbortedChunkUrls() {
+  for (const url of abortedChunkUrls) {
+    const response = await context.request.get(url, {
+      failOnStatusCode: false,
+      headers: { 'Cache-Control': 'no-cache' },
+    });
+
+    if (!response.ok()) {
+      recordCritical(`aborted chunk probe: ${response.status()} GET ${url}`);
+    } else {
+      console.log(`OK aborted navigation asset still exists: ${url}`);
+    }
+  }
+}
+
 try {
   const blogRoutes = await collectRoutes('/blog', '/blog/');
   const componentRoutes = await collectRoutes('/components', '/components/');
@@ -126,16 +180,23 @@ try {
 
   await verifyClientRoutes('/blog', blogRoutes);
   await verifyClientRoutes('/components', componentRoutes);
+  await verifyAbortedChunkUrls();
 
-  if (chunkDiagnostics.length > 0) {
+  if (criticalDiagnostics.length > 0) {
     throw new Error(
-      `Cloudflare static chunk failures detected:\n${chunkDiagnostics.join('\n')}`
+      `Cloudflare static chunk failures detected:\n${criticalDiagnostics.join('\n')}`
     );
   }
 } catch (error) {
+  try {
+    await verifyAbortedChunkUrls();
+  } catch (probeError) {
+    recordCritical(`aborted chunk verification failed: ${probeError}`);
+  }
+
   console.error(`Cloudflare static chunk smoke failed at ${page.url()}`);
   console.error(error);
-  for (const diagnostic of chunkDiagnostics) {
+  for (const diagnostic of criticalDiagnostics) {
     console.error(diagnostic);
   }
   await browser.close();
