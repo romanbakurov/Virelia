@@ -19,6 +19,13 @@ replace_exact(
     '    "@vellira-ui/metadata": "workspace:*",\n    "@vellira-ui/tokens": "workspace:*",\n    "vitepress": "^1.6.4"',
 )
 
+lockfile = "pnpm-lock.yaml"
+replace_exact(
+    lockfile,
+    "      '@vellira-ui/metadata':\n        specifier: workspace:*\n        version: link:../../packages/metadata\n      vitepress:\n",
+    "      '@vellira-ui/metadata':\n        specifier: workspace:*\n        version: link:../../packages/metadata\n      '@vellira-ui/tokens':\n        specifier: workspace:*\n        version: link:../../packages/tokens\n      vitepress:\n",
+)
+
 theme = "apps/docs/src/.vitepress/theme/index.ts"
 replace_exact(
     theme,
