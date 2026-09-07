@@ -113,28 +113,6 @@ jobs:
           echo '=== WORKER TAIL ==='
           cat "$tail_log"
 
-          echo '=== RESOURCE SUMMARY ==='
-          node --input-type=module <<'NODE' "$tail_log"
-          import fs from 'node:fs';
-
-          const path = process.argv[2];
-          const lines = fs.readFileSync(path, 'utf8').split(/\r?\n/).filter(Boolean);
-          const events = [];
-          for (const line of lines) {
-            try {
-              const value = JSON.parse(line);
-              const event = value.event ?? value;
-              const cpu = event?.cpuTime ?? event?.cpuTimeMs ?? value?.cpuTime ?? value?.cpuTimeMs;
-              const wall = event?.wallTime ?? event?.wallTimeMs ?? value?.wallTime ?? value?.wallTimeMs;
-              const outcome = event?.outcome ?? value?.outcome;
-              if (cpu !== undefined || wall !== undefined || outcome !== undefined) {
-                events.push({ cpu, wall, outcome });
-              }
-            } catch {}
-          }
-          console.log(JSON.stringify(events, null, 2));
-NODE
-
           if [[ -s "$failures" ]]; then
             echo 'One or more cached route requests failed:'
             cat "$failures"
