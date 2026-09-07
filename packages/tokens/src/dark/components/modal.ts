@@ -3,7 +3,6 @@ import { radius } from '../../tokens/radius.js';
 import { spacing } from '../../tokens/spacing.js';
 import { focus } from '../semantic/focus.js';
 import { overlay } from '../semantic/overlay.js';
-import { shadow } from '../semantic/shadow.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
@@ -16,7 +15,6 @@ export const modal = createModalTokensFromSemantics({
   focus,
   overlay,
   radius,
-  shadow,
   spacing,
   surface,
   text,

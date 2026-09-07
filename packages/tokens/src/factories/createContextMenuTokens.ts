@@ -1,3 +1,5 @@
+import { createComponentShadowIntent } from '../platform-output/component-token-intents.js';
+
 import {
   createComponentFocusRing,
   type SemanticFocusRing,
@@ -15,17 +17,11 @@ type ContextMenuDangerStates = {
   readonly disabled: ContextMenuState;
 };
 
-type ContextMenuFocusRing = {
-  readonly color: string;
-  readonly width: string;
-  readonly shadow: string;
-  readonly offset: string;
-};
+type ContextMenuFocusRing = ReturnType<typeof createComponentFocusRing>;
 
 type ContextMenuTokensConfig = {
   contentBg: string;
   contentBorder: string;
-  contentShadow: string;
   itemDefault: ContextMenuState;
   itemHover: ContextMenuState;
   itemActive: ContextMenuState;
@@ -58,9 +54,6 @@ export type ContextMenuThemeSemantics = {
       danger: ContextMenuDangerStates;
     };
   };
-  shadow: {
-    lg: string;
-  };
   text: {
     interactive: string;
     interactiveHover: string;
@@ -74,7 +67,7 @@ export const createContextMenuTokens = (config: ContextMenuTokensConfig) =>
     content: {
       bg: config.contentBg,
       border: config.contentBorder,
-      shadow: config.contentShadow,
+      shadow: createComponentShadowIntent('lg'),
     },
 
     item: {
@@ -125,13 +118,11 @@ export const createContextMenuTokens = (config: ContextMenuTokensConfig) =>
 export const createContextMenuTokensFromSemantics = ({
   focus,
   menu,
-  shadow,
   text,
 }: ContextMenuThemeSemantics) =>
   createContextMenuTokens({
     contentBg: menu.background,
     contentBorder: menu.border,
-    contentShadow: shadow.lg,
     itemDefault: menu.item.default,
     itemHover: menu.item.hover,
     itemActive: menu.item.active,

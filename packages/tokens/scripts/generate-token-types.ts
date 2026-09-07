@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { darkTheme } from '../src/dark/theme.js';
 import { highContrastTheme } from '../src/highContrast/theme.js';
 import { lightTheme } from '../src/light/theme.js';
+import { isComponentPlatformIntent } from '../src/platform-output/component-token-intents.js';
+import { componentTokenWebCompatibilityAliases } from '../src/platform-output/component-token-web-compatibility.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputPath = path.resolve(__dirname, '../src/generated/token-types.ts');
@@ -48,6 +50,11 @@ function collectTokenPaths(
   for (const [key, value] of Object.entries(obj)) {
     const name = prefix ? `${prefix}.${key}` : key;
 
+    if (isComponentPlatformIntent(value)) {
+      paths.push(name);
+      continue;
+    }
+
     if (isPlainObject(value)) {
       paths.push(...collectTokenPaths(value, name));
       continue;
@@ -67,6 +74,11 @@ function collectCssVariableNames(
 
   for (const [key, value] of Object.entries(obj)) {
     const name = prefix ? `${prefix}-${toKebabCase(key)}` : toKebabCase(key);
+
+    if (isComponentPlatformIntent(value)) {
+      names.push(`--${name}`);
+      continue;
+    }
 
     if (isPlainObject(value)) {
       names.push(...collectCssVariableNames(value, name));
@@ -143,6 +155,7 @@ const themeCssVariableNames = collectUniqueValues(
     ...collectCssVariableNames(theme.colors, 'color'),
     ...collectCssVariableNames(theme.semantic, ''),
     ...collectCssVariableNames(theme.components, ''),
+    ...componentTokenWebCompatibilityAliases.map(({ variable }) => variable),
   ])
 );
 
@@ -162,6 +175,7 @@ const content = `/**
 import type { darkTheme } from '../dark/theme.js';
 import type { highContrastTheme } from '../highContrast/theme.js';
 import type { lightTheme } from '../light/theme.js';
+import type { ComponentPlatformIntent } from '../platform-output/component-token-intents.js';
 
 ${formatConstArray('themeNames', themeNames)}
 ${formatConstArray('colorTokenPaths', colorTokenPaths)}
@@ -182,7 +196,9 @@ export type BaseCssVariableName = (typeof baseCssVariableNames)[number];
 export type ThemeCssVariableName = (typeof themeCssVariableNames)[number];
 export type CssVariableName = (typeof cssVariableNames)[number];
 
-export type WidenTokenValues<T> = {
+export type WidenTokenValues<T> = T extends ComponentPlatformIntent
+  ? T
+  : {
   readonly [K in keyof T]: T[K] extends string
     ? string
     : T[K] extends number
@@ -192,7 +208,7 @@ export type WidenTokenValues<T> = {
         : T[K] extends object
           ? WidenTokenValues<T[K]>
           : T[K];
-};
+    };
 
 export type LightTheme = WidenTokenValues<typeof lightTheme>;
 export type DarkTheme = WidenTokenValues<typeof darkTheme>;

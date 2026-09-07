@@ -16,6 +16,13 @@
       "reason": "Path-scoped CLI scaffolding exception: production and validation CLIs deliberately keep their command-specific usage and error contracts explicit. The repeated --spec parsing is narrow CLI scaffolding rather than reusable product logic."
     },
     {
+      "paths": [
+        "packages/react-native/src/theme/componentTokenOutput.ts",
+        "packages/tokens/src/platform-output/component-token-intents.ts"
+      ],
+      "reason": "Path-scoped renderer-boundary exception: tokens owns canonical component-intent validation while React Native must independently recognize the same serialized intent shapes at runtime without importing a tokens-internal adapter or expanding the supported @vellira-ui/tokens public API. The duplicated structural guard is intentional boundary defense; renderer-specific output resolution remains separately owned."
+    },
+    {
       "paths": ["scripts/smoke/native.mjs", "scripts/smoke/web.mjs"],
       "reason": "Path-scoped parity exception: web and native smoke scripts intentionally assert the same shared package exports as a parity contract while retaining runtime-specific component assertions."
     }

@@ -1,6 +1,9 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import type { NativeTheme } from '../../../theme';
+import {
+  type NativeTheme,
+  resolveComponentTokenPlatformOutputs,
+} from '../../../theme';
 
 export const getDropdownBackdropBackgroundColor = (
   theme: NativeTheme,
@@ -8,8 +11,18 @@ export const getDropdownBackdropBackgroundColor = (
 ) =>
   presentation === 'popover' ? 'transparent' : theme.semantic.overlay.backdrop;
 
-export const createStyles = (theme: NativeTheme) =>
-  StyleSheet.create({
+export const createStyles = (theme: NativeTheme) => {
+  const canonical = theme.components.dropdown.content;
+  const output = resolveComponentTokenPlatformOutputs(theme, canonical);
+  const nativeShadow = output.reactNative.shadow;
+
+  if (nativeShadow === null || typeof nativeShadow === 'string') {
+    throw new Error(
+      'Dropdown content shadow must resolve to a structured React Native shadow.'
+    );
+  }
+
+  return StyleSheet.create({
     modalRoot: {
       flex: 1,
     },
@@ -36,25 +49,25 @@ export const createStyles = (theme: NativeTheme) =>
       maxHeight: '50%',
       overflow: 'hidden',
       padding: theme.tokens.spacing[1],
-      backgroundColor: theme.components.dropdown.content.bg,
-      borderColor: theme.components.dropdown.content.border,
+      backgroundColor: canonical.bg,
+      borderColor: canonical.border,
       borderTopLeftRadius: theme.tokens.radius.lg,
       borderTopRightRadius: theme.tokens.radius.lg,
       borderWidth: 1,
 
       ...Platform.select({
         web: {
-          boxShadow: theme.components.dropdown.content.shadow,
+          boxShadow: output.web.shadow,
         },
         default: {
-          shadowColor: theme.tokens.shadows.lg.color,
+          shadowColor: nativeShadow.color,
           shadowOffset: {
-            width: theme.tokens.shadows.lg.x,
-            height: -theme.tokens.shadows.lg.y,
+            width: nativeShadow.x,
+            height: -nativeShadow.y,
           },
-          shadowOpacity: theme.tokens.shadows.lg.opacity,
-          shadowRadius: theme.tokens.shadows.lg.blur,
-          elevation: theme.tokens.shadows.lg.elevation,
+          shadowOpacity: nativeShadow.opacity,
+          shadowRadius: nativeShadow.blur,
+          elevation: nativeShadow.elevation,
         },
       }),
     },
@@ -107,3 +120,4 @@ export const createStyles = (theme: NativeTheme) =>
       lineHeight: theme.tokens.typography.lineHeight.sm,
     },
   });
+};

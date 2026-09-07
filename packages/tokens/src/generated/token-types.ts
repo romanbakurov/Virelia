@@ -7,6 +7,7 @@
 import type { darkTheme } from '../dark/theme.js';
 import type { highContrastTheme } from '../highContrast/theme.js';
 import type { lightTheme } from '../light/theme.js';
+import type { ComponentPlatformIntent } from '../platform-output/component-token-intents.js';
 
 export const themeNames = ['dark', 'high-contrast', 'light'] as const;
 
@@ -1242,7 +1243,6 @@ export const componentTokenPaths = [
   'components.modal.content.gap',
   'components.modal.content.maxHeight',
   'components.modal.content.minWidth',
-  'components.modal.content.nativeMaxHeight',
   'components.modal.content.padding',
   'components.modal.content.radius',
   'components.modal.content.shadow',
@@ -1278,13 +1278,7 @@ export const componentTokenPaths = [
   'components.popover.content.minWidth',
   'components.popover.content.padding',
   'components.popover.content.radius',
-  'components.popover.content.shadow.native.blur',
-  'components.popover.content.shadow.native.color',
-  'components.popover.content.shadow.native.elevation',
-  'components.popover.content.shadow.native.opacity',
-  'components.popover.content.shadow.native.x',
-  'components.popover.content.shadow.native.y',
-  'components.popover.content.shadow.web',
+  'components.popover.content.shadow',
   'components.popover.description.fg',
   'components.popover.title.fg',
   'components.radio.danger.default.bg',
@@ -3416,7 +3410,6 @@ export const tokenPaths = [
   'components.modal.content.gap',
   'components.modal.content.maxHeight',
   'components.modal.content.minWidth',
-  'components.modal.content.nativeMaxHeight',
   'components.modal.content.padding',
   'components.modal.content.radius',
   'components.modal.content.shadow',
@@ -3452,13 +3445,7 @@ export const tokenPaths = [
   'components.popover.content.minWidth',
   'components.popover.content.padding',
   'components.popover.content.radius',
-  'components.popover.content.shadow.native.blur',
-  'components.popover.content.shadow.native.color',
-  'components.popover.content.shadow.native.elevation',
-  'components.popover.content.shadow.native.opacity',
-  'components.popover.content.shadow.native.x',
-  'components.popover.content.shadow.native.y',
-  'components.popover.content.shadow.web',
+  'components.popover.content.shadow',
   'components.popover.description.fg',
   'components.popover.title.fg',
   'components.radio.danger.default.bg',
@@ -5997,6 +5984,7 @@ export const themeCssVariableNames = [
   '--popover-content-min-width',
   '--popover-content-padding',
   '--popover-content-radius',
+  '--popover-content-shadow',
   '--popover-content-shadow-native-blur',
   '--popover-content-shadow-native-color',
   '--popover-content-shadow-native-elevation',
@@ -8312,6 +8300,7 @@ export const cssVariableNames = [
   '--popover-content-min-width',
   '--popover-content-padding',
   '--popover-content-radius',
+  '--popover-content-shadow',
   '--popover-content-shadow-native-blur',
   '--popover-content-shadow-native-color',
   '--popover-content-shadow-native-elevation',
@@ -9423,17 +9412,19 @@ export type BaseCssVariableName = (typeof baseCssVariableNames)[number];
 export type ThemeCssVariableName = (typeof themeCssVariableNames)[number];
 export type CssVariableName = (typeof cssVariableNames)[number];
 
-export type WidenTokenValues<T> = {
-  readonly [K in keyof T]: T[K] extends string
-    ? string
-    : T[K] extends number
-      ? number
-      : T[K] extends boolean
-        ? boolean
-        : T[K] extends object
-          ? WidenTokenValues<T[K]>
-          : T[K];
-};
+export type WidenTokenValues<T> = T extends ComponentPlatformIntent
+  ? T
+  : {
+      readonly [K in keyof T]: T[K] extends string
+        ? string
+        : T[K] extends number
+          ? number
+          : T[K] extends boolean
+            ? boolean
+            : T[K] extends object
+              ? WidenTokenValues<T[K]>
+              : T[K];
+    };
 
 export type LightTheme = WidenTokenValues<typeof lightTheme>;
 export type DarkTheme = WidenTokenValues<typeof darkTheme>;

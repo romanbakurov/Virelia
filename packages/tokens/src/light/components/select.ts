@@ -1,12 +1,15 @@
 import { createInputColorPalette } from '../../factories/createInputPalette.js';
 import { createSelectPalette } from '../../factories/createSelectPalette.js';
+import {
+  createComponentNoShadowIntent,
+  createComponentShadowIntent,
+} from '../../platform-output/component-token-intents.js';
 import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { control } from '../semantic/control.js';
 import { focus } from '../semantic/focus.js';
 import { icons } from '../semantic/icons.js';
 import { menu } from '../semantic/menu.js';
-import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -179,7 +182,7 @@ export const select = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: 'transparent',
-    shadow: shadow.lg,
+    shadow: createComponentShadowIntent('lg'),
 
     search: {
       bg: surface.default,
@@ -236,7 +239,7 @@ export const select = {
       bg: control.selected.muted.bg,
       fg: control.selected.muted.fg,
       border: control.selected.muted.border,
-      shadow: 'none',
+      shadow: createComponentNoShadowIntent(),
     },
 
     disabled: {
