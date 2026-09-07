@@ -290,8 +290,7 @@ packages/react/src/primitives/Avatar/
 ├── Avatar.test.tsx
 ├── Avatar.stories.tsx
 ├── types.ts
-├── index.ts
-└── README.md
+└── index.ts
 
 packages/react-native/src/primitives/Avatar/
 ├── Avatar.tsx
@@ -299,8 +298,7 @@ packages/react-native/src/primitives/Avatar/
 ├── Avatar.test.tsx
 ├── Avatar.stories.tsx
 ├── types.ts
-├── index.ts
-└── README.md
+└── index.ts
 
 packages/metadata/src/components/
 └── Avatar.metadata.ts
@@ -320,18 +318,48 @@ Dialog/
 ├── Dialog.test.tsx
 ├── Dialog.stories.tsx
 ├── types.ts
-├── index.ts
-└── README.md
+└── index.ts
 ```
 
 The exact generated implementation depends on the selected profile, explicit
 intent, and target platform.
 
 `compound` and `overlay` profiles intentionally do not emit generic top-level
-style files or component-token factories/theme files. Their generated runtime
-scaffolds do not consume those artifacts, and component-specific visual
-semantics belong to the production implementation rather than the generic
-structural scaffold.
+style scaffolds. Component-token ownership is separate from visual scaffold
+selection: the generation plan follows the explicit component-token contract
+(`standard`, a specialized contract, or `false`) and may therefore create token
+factory/theme artifacts even when the structural runtime scaffold has no generic
+style file.
+
+## Component Production Contract
+
+`pnpm create:component` is the low-level deterministic scaffold mechanism. New
+production work should begin from the versioned Component Production Contract
+when the full component intent includes canonical package/component
+dependencies, component-token intent, icons, tokens, or assets.
+
+The lifecycle is deliberately split:
+
+```text
+scaffolded
+→ semantic completion required
+→ candidate
+→ validated
+→ ready for review
+→ reviewed/promoted stable
+```
+
+A successful generator run never means that component-specific API, behavior,
+accessibility, platform UX, or design decisions are complete. After scaffolding,
+a human or authorized agent must perform semantic completion. The completed
+candidate is then checked with `pnpm component-production:validate:json --spec
+<component-spec.json>`. Only that validation path can produce
+`readyForReview: true`; review/promotion to stable remains a separate governance
+action.
+
+The production contract is the canonical place to express dependencies and
+resources. Generator metadata, docs metadata, and deterministic repository
+consequences derive from that contract rather than from independent assumptions.
 
 ## Responsibility
 
@@ -343,7 +371,6 @@ This generator owns library/runtime scaffolding:
 - unit test scaffolding
 - Storybook story scaffolding
 - platform styles when the selected profile generates a styled runtime scaffold
-- component README documentation
 - component metadata
 - package layer barrel exports
 - metadata barrel registration

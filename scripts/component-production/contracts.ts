@@ -41,6 +41,7 @@ export type ComponentProductionInputV1 = {
 export const COMPONENT_PRODUCTION_STAGE_IDS = [
   'preflight',
   'generation',
+  'semantic-completion',
   'format',
   'lint',
   'tests',
@@ -81,6 +82,24 @@ export type ComponentProductionStageResult = {
 
 export type ComponentProductionStatus = 'ready' | 'blocked' | 'failed';
 
+export const COMPONENT_PRODUCTION_LIFECYCLE_PHASES = [
+  'scaffolded',
+  'semantic-completion-required',
+  'candidate',
+  'validated',
+  'ready-for-review',
+] as const;
+
+export type ComponentProductionLifecyclePhase =
+  (typeof COMPONENT_PRODUCTION_LIFECYCLE_PHASES)[number];
+
+export type ComponentProductionLifecycleV1 = {
+  current: ComponentProductionLifecyclePhase;
+  completed: readonly ComponentProductionLifecyclePhase[];
+  semanticCompletionRequired: boolean;
+  readyForReview: boolean;
+};
+
 export type ComponentProductionArtifactGroupV1 = {
   generated: boolean;
   artifacts: readonly string[];
@@ -91,8 +110,12 @@ export type ComponentProductionOutputSummaryV1 = {
     status: ComponentProductionStageStatus;
     artifacts: readonly string[];
   };
+  runtimeRenderers: ComponentProductionArtifactGroupV1;
+  sharedContracts: ComponentProductionArtifactGroupV1;
   metadata: ComponentProductionArtifactGroupV1;
+  designResources: ComponentProductionArtifactGroupV1;
   testGeneration: ComponentProductionArtifactGroupV1;
+  storyGeneration: ComponentProductionArtifactGroupV1;
   docsGeneration: ComponentProductionArtifactGroupV1;
   websiteGeneration: ComponentProductionArtifactGroupV1;
 };
@@ -110,6 +133,7 @@ export type ComponentProductionValidationResultV1 = {
   input: ComponentProductionInputV1;
   status: ComponentProductionStatus;
   readyForReview: boolean;
+  lifecycle: ComponentProductionLifecycleV1;
   stages: readonly ComponentProductionStageResult[];
   blockingFindings: readonly ComponentProductionFinding[];
   validationSummary: ComponentProductionValidationSummaryV1;
@@ -122,6 +146,7 @@ export type ComponentProductionResultV1 = {
   input: ComponentProductionInputV1;
   status: ComponentProductionStatus;
   readyForReview: boolean;
+  lifecycle: ComponentProductionLifecycleV1;
   stages: readonly ComponentProductionStageResult[];
   blockingFindings: readonly ComponentProductionFinding[];
   artifacts: readonly string[];
@@ -329,6 +354,7 @@ export function createComponentProductionResult(params: {
     input: params.input,
     status,
     readyForReview: status === 'ready',
+    lifecycle: createComponentProductionLifecycle(params.stages),
     stages: params.stages,
     blockingFindings,
     artifacts,
@@ -336,6 +362,86 @@ export function createComponentProductionResult(params: {
     validationSummary,
     completeness: params.completeness,
     quality: params.quality,
+  };
+}
+
+export function createComponentProductionLifecycle(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  const generation = stages.find((stage) => stage.id === 'generation');
+  const semanticCompletion = stages.find(
+    (stage) => stage.id === 'semantic-completion'
+  );
+
+  if (generation?.status !== 'passed') {
+    return {
+      current: 'scaffolded',
+      completed: [],
+      semanticCompletionRequired: false,
+      readyForReview: false,
+    };
+  }
+
+  if (semanticCompletion?.status !== 'passed') {
+    return {
+      current: 'semantic-completion-required',
+      completed: ['scaffolded'],
+      semanticCompletionRequired: true,
+      readyForReview: false,
+    };
+  }
+
+  const validationStages = stages.filter(
+    (stage) =>
+      stage.id !== 'preflight' &&
+      stage.id !== 'generation' &&
+      stage.id !== 'semantic-completion'
+  );
+
+  return lifecycleFromValidationStages(validationStages);
+}
+
+export function createComponentProductionValidationLifecycle(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  return lifecycleFromValidationStages(stages);
+}
+
+function lifecycleFromValidationStages(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  const hasSkipped = stages.some((stage) => stage.status === 'skipped');
+  const hasFailed = stages.some((stage) => stage.status === 'failed');
+  const hasBlocked = stages.some((stage) => stage.status === 'blocked');
+
+  if (!hasSkipped && !hasFailed && !hasBlocked) {
+    return {
+      current: 'ready-for-review',
+      completed: [
+        'scaffolded',
+        'semantic-completion-required',
+        'candidate',
+        'validated',
+      ],
+      semanticCompletionRequired: false,
+      readyForReview: true,
+    };
+  }
+
+  if (!hasSkipped && !hasFailed) {
+    return {
+      current: 'validated',
+      completed: ['scaffolded', 'semantic-completion-required', 'candidate'],
+      semanticCompletionRequired: false,
+      readyForReview: false,
+    };
+  }
+
+  return {
+    current: 'candidate',
+    completed: ['scaffolded', 'semantic-completion-required'],
+    semanticCompletionRequired: false,
+    readyForReview: false,
   };
 }
 
@@ -392,11 +498,27 @@ export function createComponentProductionOutputSummary(
       status: generation.status,
       artifacts,
     },
+    runtimeRenderers: artifactGroup(
+      artifacts,
+      (artifact) =>
+        (artifact.startsWith('packages/react/src/') ||
+          artifact.startsWith('packages/react-native/src/')) &&
+        !artifact.includes('.test.') &&
+        !artifact.includes('.stories.') &&
+        !artifact.includes('test-contract') &&
+        !artifact.endsWith('/public-api.test.ts')
+    ),
+    sharedContracts: artifactGroup(artifacts, (artifact) =>
+      artifact.startsWith('packages/types/')
+    ),
     metadata: artifactGroup(
       artifacts,
       (artifact) =>
         artifact.startsWith('packages/metadata/') ||
         artifact.endsWith('.metadata.ts')
+    ),
+    designResources: artifactGroup(artifacts, (artifact) =>
+      artifact.startsWith('packages/tokens/')
     ),
     testGeneration: artifactGroup(
       artifacts,
@@ -404,6 +526,9 @@ export function createComponentProductionOutputSummary(
         artifact.includes('.test.') ||
         artifact.includes('test-contract') ||
         artifact.endsWith('/public-api.test.ts')
+    ),
+    storyGeneration: artifactGroup(artifacts, (artifact) =>
+      artifact.includes('.stories.')
     ),
     docsGeneration: artifactGroup(
       artifacts,

@@ -166,6 +166,36 @@ function validationResult(
     input: SPEC,
     status,
     readyForReview: status === 'ready',
+    lifecycle:
+      status === 'ready'
+        ? {
+            current: 'ready-for-review',
+            completed: [
+              'scaffolded',
+              'semantic-completion-required',
+              'candidate',
+              'validated',
+            ],
+            semanticCompletionRequired: false,
+            readyForReview: true,
+          }
+        : status === 'blocked'
+          ? {
+              current: 'validated',
+              completed: [
+                'scaffolded',
+                'semantic-completion-required',
+                'candidate',
+              ],
+              semanticCompletionRequired: false,
+              readyForReview: false,
+            }
+          : {
+              current: 'candidate',
+              completed: ['scaffolded', 'semantic-completion-required'],
+              semanticCompletionRequired: false,
+              readyForReview: false,
+            },
     stages: [],
     blockingFindings: finding,
     validationSummary: {

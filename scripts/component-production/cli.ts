@@ -56,7 +56,11 @@ export async function runComponentProductionCli(
 
     write(JSON.stringify(result, null, 2));
 
-    if (result.status === 'ready') {
+    if (
+      result.status === 'ready' ||
+      (result.status === 'blocked' &&
+        result.lifecycle.current === 'semantic-completion-required')
+    ) {
       return 0;
     }
 
