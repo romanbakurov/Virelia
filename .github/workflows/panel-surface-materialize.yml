@@ -87,6 +87,7 @@ jobs:
         run: |
           pnpm --filter @vellira-ui/tokens generate:types:check
           pnpm --filter @vellira-ui/tokens preservation:check
+          pnpm --filter @vellira-ui/tokens generate:css
           pnpm --filter @vellira-ui/tokens test
           pnpm test:blog
 
