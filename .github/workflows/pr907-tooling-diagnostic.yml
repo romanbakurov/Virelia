@@ -27,25 +27,51 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages and apps
-        run: pnpm ci:build
-
-      - name: Capture tooling test output
+      - name: Capture React resolution
         shell: bash
         run: |
-          set +e
-          pnpm test:tooling > tooling-tests.log 2>&1
-          status=$?
-          set -e
-          cat tooling-tests.log
-          printf '%s\n' "$status" > tooling-tests.status
+          node <<'NODE' > react-resolution.log
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { createRequire } = require('node:module');
+
+          for (const base of ['.', 'apps/website', 'packages/react']) {
+            const from = path.resolve(base, 'package.json');
+            const localRequire = createRequire(from);
+            console.log(`base=${base}`);
+            for (const specifier of ['react', 'react-dom', '@testing-library/react']) {
+              try {
+                console.log(`  ${specifier} -> ${localRequire.resolve(specifier)}`);
+              } catch (error) {
+                console.log(`  ${specifier} -> UNRESOLVED (${error.code ?? error.message})`);
+              }
+            }
+          }
+
+          for (const candidate of [
+            'node_modules/react/package.json',
+            'node_modules/react-dom/package.json',
+            'apps/website/node_modules/react/package.json',
+            'apps/website/node_modules/react-dom/package.json',
+            'packages/react/node_modules/react/package.json',
+            'packages/react/node_modules/react-dom/package.json',
+            'node_modules/@testing-library/react/node_modules/react-dom/package.json',
+            'node_modules/@testing-library/react/node_modules/react/package.json',
+          ]) {
+            if (!fs.existsSync(candidate)) {
+              console.log(`${candidate} -> MISSING`);
+              continue;
+            }
+            const manifest = JSON.parse(fs.readFileSync(candidate, 'utf8'));
+            console.log(`${candidate} -> ${manifest.version}`);
+          }
+          NODE
+          cat react-resolution.log
 
       - name: Upload tooling diagnostic
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: pr907-tooling-diagnostic
-          path: |
-            tooling-tests.log
-            tooling-tests.status
+          path: react-resolution.log
           if-no-files-found: error
           retention-days: 1
