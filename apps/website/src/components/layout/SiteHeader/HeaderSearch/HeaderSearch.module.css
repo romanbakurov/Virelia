@@ -246,7 +246,7 @@
     width: 100%;
     height: var(--site-header-height);
     padding: 0 var(--site-gutter);
-    background: var(--surface-background);
+    background: var(--surface-canvas);
     border-bottom: 1px solid var(--border-muted);
   }
 
