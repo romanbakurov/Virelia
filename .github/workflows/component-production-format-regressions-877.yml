@@ -1,0 +1,55 @@
+name: Component Production Format Regressions 877
+
+on:
+  push:
+    branches:
+      - chore/component-production-probe-877
+
+permissions:
+  contents: write
+
+jobs:
+  format-and-validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/component-production-contract-877
+          fetch-depth: 0
+      - name: Guard exact production-contract head
+        run: test "$(git rev-parse HEAD)" = "6128f92dadb744e6e329bf1beba948e32d33c498"
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Format only failing regression tests
+        run: pnpm exec prettier scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts --write
+      - name: Verify formatting
+        run: pnpm exec prettier scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts --check
+      - name: Verify exact changed-file scope
+        shell: bash
+        run: |
+          actual="$(git diff --name-only | sort)"
+          expected="$(printf '%s\n' \
+            scripts/component-production/contract-input-v1.test.ts \
+            scripts/generators/component/production-preflight-contract.test.ts | sort)"
+          test "$actual" = "$expected"
+      - name: Targeted regression tests
+        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts
+      - name: Diff safety
+        run: git diff --check
+      - name: Re-check production branch guard
+        shell: bash
+        run: |
+          git fetch origin feat/component-production-contract-877
+          test "$(git rev-parse origin/feat/component-production-contract-877)" = "6128f92dadb744e6e329bf1beba948e32d33c498"
+      - name: Commit and push formatting only
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts
+          git commit -m "style(tooling): format production contract tests"
+          git push origin HEAD:feat/component-production-contract-877
