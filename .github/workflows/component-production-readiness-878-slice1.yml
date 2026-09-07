@@ -48,7 +48,7 @@ jobs:
       - name: Guard exact change scope
         shell: bash
         run: |
-          actual="$(git diff --name-only | sort)"
+          actual="$(git status --porcelain=v1 | sed -E 's/^.. //' | sort)"
           expected="$(printf '%s\n' \
             package.json \
             scripts/component-production/command-validation.test.ts \
@@ -76,7 +76,7 @@ jobs:
       - name: Quality
         run: pnpm ci:quality
       - name: Diff safety
-        run: git diff --check
+        run: git diff --check && git diff --no-index /dev/null scripts/component-production/final-validation.ts >/dev/null || test $? -eq 1
       - name: Guard target head before push
         shell: bash
         run: |
@@ -96,5 +96,6 @@ jobs:
             scripts/component-production/run.test.ts \
             scripts/component-production/final-validation.ts \
             scripts/component-production/final-validation.test.ts
+          git diff --cached --check
           git commit -m "feat(ci): extend component readiness gates"
           git push origin HEAD:feat/component-production-readiness-878
