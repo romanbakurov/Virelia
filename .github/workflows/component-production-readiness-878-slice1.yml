@@ -1,4 +1,4 @@
-name: Component Production Readiness Slice 3 878
+name: Component Production Readiness Slice 4 878
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Guard exact target head
-        run: test "$(git rev-parse HEAD)" = "72699c0b611ef223ff86939ea80322e845aad9b3"
+        run: test "$(git rev-parse HEAD)" = "d28f2777f6191d9f69dc1fc4805752f0dcd84b3c"
 
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -28,36 +28,31 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Apply production contract agreement patch
+      - name: Apply representative readiness fixture patch
         shell: bash
         run: |
           git fetch origin chore/component-production-readiness-probe-878
-          git show FETCH_HEAD:.github/probes/878/apply-slice3.py > /tmp/apply-readiness-878-slice3.py
-          python3 /tmp/apply-readiness-878-slice3.py
+          git show FETCH_HEAD:.github/probes/878/apply-slice4.py > /tmp/apply-readiness-878-slice4.py
+          python3 /tmp/apply-readiness-878-slice4.py
 
-      - name: Format changed files
-        run: |
-          pnpm exec prettier --write \
-            scripts/component-production/structured-validation.ts \
-            scripts/component-production/structured-validation.test.ts
+      - name: Format changed file
+        run: pnpm exec prettier --write scripts/component-production/run.test.ts
 
       - name: Guard exact change scope
         shell: bash
         run: |
           actual="$(git status --porcelain=v1 | sed -E 's/^.. //' | sort)"
-          expected="$(printf '%s\n' \
-            scripts/component-production/structured-validation.test.ts \
-            scripts/component-production/structured-validation.ts)"
+          expected="scripts/component-production/run.test.ts"
           printf '%s\n' "$actual"
           test "$actual" = "$expected"
-          git diff --name-only | sort > /tmp/readiness-878-slice3-prebuild-files
 
-      - name: Targeted production agreement regressions
+      - name: Targeted representative readiness regressions
         run: |
           pnpm exec vitest run --config vitest.tooling.config.ts \
-            scripts/component-production/structured-validation.test.ts \
             scripts/component-production/run.test.ts \
-            scripts/component-production/contracts.test.ts
+            scripts/component-production/command-validation.test.ts \
+            scripts/component-production/structured-validation.test.ts \
+            scripts/component-production/final-validation.test.ts
 
       - name: Source quality
         run: pnpm ci:quality
@@ -71,24 +66,13 @@ jobs:
       - name: Full tooling tests
         run: pnpm test:tooling
 
-      - name: Guard build mutation boundary
+      - name: Guard build idempotency and exact scope
         shell: bash
         run: |
-          actual="$(git diff --name-only | sort)"
-          expected_base="$(cat /tmp/readiness-878-slice3-prebuild-files)"
-          expected_with_known_token_drift="$(printf '%s\n' \
-            packages/tokens/src/generated/token-types.ts \
-            scripts/component-production/structured-validation.test.ts \
-            scripts/component-production/structured-validation.ts)"
-
-          if [ "$actual" = "$expected_with_known_token_drift" ]; then
-            git restore -- packages/tokens/src/generated/token-types.ts
-          else
-            test "$actual" = "$expected_base"
-          fi
-
-          restored="$(git diff --name-only | sort)"
-          test "$restored" = "$expected_base"
+          actual="$(git status --porcelain=v1 | sed -E 's/^.. //' | sort)"
+          expected="scripts/component-production/run.test.ts"
+          printf '%s\n' "$actual"
+          test "$actual" = "$expected"
 
       - name: Diff safety
         run: git diff --check
@@ -97,16 +81,14 @@ jobs:
         shell: bash
         run: |
           git fetch origin feat/component-production-readiness-878
-          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "72699c0b611ef223ff86939ea80322e845aad9b3"
+          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "d28f2777f6191d9f69dc1fc4805752f0dcd84b3c"
 
       - name: Commit and push slice
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            scripts/component-production/structured-validation.ts \
-            scripts/component-production/structured-validation.test.ts
+          git add scripts/component-production/run.test.ts
           git diff --cached --check
-          git commit -m "feat(tooling): enforce production contract agreement"
+          git commit -m "test(tooling): prove representative production readiness"
           git push origin HEAD:feat/component-production-readiness-878
