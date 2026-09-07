@@ -30,7 +30,9 @@ export function getPlannedComponentWebsiteArtifacts(
     componentName: plan.componentName,
   });
 
-  const hasReact = plan.targets.some((target) => target.packageName === 'react');
+  const hasReact = plan.targets.some(
+    (target) => target.packageName === 'react'
+  );
   const hasNative = plan.targets.some(
     (target) => target.packageName === 'react-native'
   );
@@ -92,7 +94,10 @@ export function checkComponentWebsiteContract(
   try {
     payload = JSON.parse(result.stdout) as ComponentPageCheckPayload;
   } catch {
-    const output = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
+    const output = [result.stdout, result.stderr]
+      .filter(Boolean)
+      .join('\n')
+      .trim();
 
     throw new Error(
       [
@@ -122,7 +127,10 @@ export function checkComponentWebsiteContract(
     return payload.staleFiles.map((filePath) => path.join(plan.root, filePath));
   }
 
-  const output = [result.stdout, result.stderr].filter(Boolean).join('\n').trim();
+  const output = [result.stdout, result.stderr]
+    .filter(Boolean)
+    .join('\n')
+    .trim();
 
   throw new Error(
     [

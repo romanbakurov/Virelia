@@ -24,6 +24,18 @@ vi.mock('./website', () => ({
   generateComponentWebsitePage: vi.fn(),
 }));
 
+vi.mock('./website-contract', async () => {
+  const actual =
+    await vi.importActual<typeof import('./website-contract')>(
+      './website-contract'
+    );
+
+  return {
+    ...actual,
+    checkComponentWebsiteContract: vi.fn(() => []),
+  };
+});
+
 vi.mock('./token-types', async () => {
   const actual =
     await vi.importActual<typeof import('./token-types')>('./token-types');
