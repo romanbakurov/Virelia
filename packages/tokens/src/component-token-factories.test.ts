@@ -11,7 +11,6 @@ import {
 } from './factories/createModalTokens.js';
 import { focus as lightFocus } from './light/semantic/focus.js';
 import { menu as lightMenu } from './light/semantic/menu.js';
-import { shadow as lightShadow } from './light/semantic/shadow.js';
 import { text as lightText } from './light/semantic/text.js';
 import { radius } from './tokens/radius.js';
 import { spacing } from './tokens/spacing.js';
@@ -29,10 +28,6 @@ const modalOverlay = {
     bg: 'synthetic-modal-bg',
     border: 'synthetic-modal-border',
   },
-};
-
-const modalShadow = {
-  xl: 'synthetic-shadow-xl',
 };
 
 const modalSurface = {
@@ -54,14 +49,12 @@ describe('component token semantic factories', () => {
       createContextMenuTokensFromSemantics({
         focus: lightFocus,
         menu: lightMenu,
-        shadow: lightShadow,
         text: lightText,
       })
     ).toEqual(
       createContextMenuTokens({
         contentBg: lightMenu.background,
         contentBorder: lightMenu.border,
-        contentShadow: lightShadow.lg,
         itemDefault: lightMenu.item.default,
         itemHover: lightMenu.item.hover,
         itemActive: lightMenu.item.active,
@@ -86,7 +79,6 @@ describe('component token semantic factories', () => {
         focus: { ring: modalFocusRing },
         overlay: modalOverlay,
         radius,
-        shadow: modalShadow,
         spacing,
         surface: modalSurface,
         text: modalText,
@@ -97,7 +89,6 @@ describe('component token semantic factories', () => {
         contentBg: modalOverlay.dialog.bg,
         contentFg: modalText.primary,
         contentBorder: modalOverlay.dialog.border,
-        contentShadow: modalShadow.xl,
         titleFg: modalText.primary,
         descriptionFg: modalText.secondary,
         closeButtonDefaultFg: modalText.secondary,
@@ -126,7 +117,6 @@ describe('component token semantic factories', () => {
         focus: { ring: modalFocusRing },
         overlay: modalOverlay,
         radius,
-        shadow: modalShadow,
         spacing,
         surface: modalSurface,
         text: modalText,
@@ -137,7 +127,6 @@ describe('component token semantic factories', () => {
         contentBg: modalOverlay.dialog.bg,
         contentFg: modalText.primary,
         contentBorder: modalOverlay.dialog.border,
-        contentShadow: modalShadow.xl,
         titleFg: modalText.primary,
         descriptionFg: modalText.secondary,
         closeButtonDefaultFg: modalText.secondary,

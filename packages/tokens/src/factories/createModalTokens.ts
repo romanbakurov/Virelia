@@ -1,21 +1,20 @@
 import {
+  createComponentShadowIntent,
+  createComponentViewportHeightIntent,
+} from '../platform-output/component-token-intents.js';
+
+import {
   createComponentFocusRing,
   type SemanticFocusRing,
 } from './componentFocusRing.js';
 
-type ModalFocusRing = {
-  color: string;
-  width: string;
-  shadow: string;
-  offset: string;
-};
+type ModalFocusRing = ReturnType<typeof createComponentFocusRing>;
 
 type ModalTokensConfig = {
   overlayBg: string;
   contentBg: string;
   contentFg: string;
   contentBorder: string;
-  contentShadow: string;
   titleFg: string;
   descriptionFg: string;
   closeButtonDefaultFg: string;
@@ -51,9 +50,6 @@ export type ModalThemeSemantics = {
     lg: number;
     full: number;
   };
-  shadow: {
-    xl: string;
-  };
   spacing: {
     1: number;
     3: number;
@@ -73,8 +69,7 @@ export type ModalThemeSemantics = {
 };
 
 const modalLayout = {
-  maxHeight: '90vh',
-  nativeMaxHeight: '90%',
+  maxHeight: createComponentViewportHeightIntent(0.9),
   zIndexOffset: 1,
 } as const;
 
@@ -96,14 +91,13 @@ export const createModalTokens = (config: ModalTokensConfig) =>
       bg: config.contentBg,
       fg: config.contentFg,
       border: config.contentBorder,
-      shadow: config.contentShadow,
+      shadow: createComponentShadowIntent('xl'),
       borderWidth: 1,
       radius: config.radiusLg,
       padding: config.spacing4,
       gap: config.spacing4,
       minWidth: 320,
       maxHeight: modalLayout.maxHeight,
-      nativeMaxHeight: modalLayout.nativeMaxHeight,
       viewportMargin: config.spacing8,
       topOffset: config.spacing10,
       zIndexOffset: modalLayout.zIndexOffset,
@@ -183,7 +177,6 @@ export const createModalTokensFromSemantics = ({
   focus,
   overlay,
   radius,
-  shadow,
   spacing,
   surface,
   text,
@@ -193,7 +186,6 @@ export const createModalTokensFromSemantics = ({
     contentBg: overlay.dialog.bg,
     contentFg: text.primary,
     contentBorder: overlay.dialog.border,
-    contentShadow: shadow.xl,
     titleFg: text.primary,
     descriptionFg: text.secondary,
     closeButtonDefaultFg: text.secondary,

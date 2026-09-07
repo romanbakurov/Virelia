@@ -1,13 +1,9 @@
-import type { shadows } from '../tokens/shadows.js';
-
-type NativeShadowToken = (typeof shadows)[keyof typeof shadows];
+import { createComponentShadowIntent } from '../platform-output/component-token-intents.js';
 
 type PopoverTokensConfig = {
   contentBg: string;
   contentFg: string;
   contentBorder: string;
-  contentWebShadow: string;
-  contentNativeShadow: NativeShadowToken;
   titleFg: string;
   descriptionFg: string;
   radiusLg: number;
@@ -21,12 +17,6 @@ export type PopoverThemeSources = {
       bg: string;
       border: string;
     };
-  };
-  shadow: {
-    lg: string;
-  };
-  shadows: {
-    lg: NativeShadowToken;
   };
   text: {
     primary: string;
@@ -47,10 +37,7 @@ export const createPopoverTokens = (config: PopoverTokensConfig) =>
       fg: config.contentFg,
       border: config.contentBorder,
 
-      shadow: {
-        web: config.contentWebShadow,
-        native: config.contentNativeShadow,
-      },
+      shadow: createComponentShadowIntent('lg'),
 
       borderWidth: 1,
       radius: config.radiusLg,
@@ -77,8 +64,6 @@ export const createPopoverTokens = (config: PopoverTokensConfig) =>
 
 export const createPopoverTokensFromTheme = ({
   overlay,
-  shadow,
-  shadows,
   text,
   radius,
   spacing,
@@ -87,8 +72,6 @@ export const createPopoverTokensFromTheme = ({
     contentBg: overlay.floating.bg,
     contentFg: text.primary,
     contentBorder: overlay.floating.border,
-    contentWebShadow: shadow.lg,
-    contentNativeShadow: shadows.lg,
     titleFg: text.primary,
     descriptionFg: text.secondary,
     radiusLg: radius.lg,

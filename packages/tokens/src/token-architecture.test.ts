@@ -13,6 +13,12 @@ import {
 import { highContrastTheme } from './highContrast/theme.js';
 import { lightTheme } from './light/theme.js';
 import {
+  adaptComponentTokensForWeb,
+  createComponentPlatformOutputSources,
+  isComponentPlatformIntent,
+} from './platform-output/component-token-intents.js';
+import { componentTokenWebCompatibilityAliases } from './platform-output/component-token-web-compatibility.js';
+import {
   canonicalSemanticRolePaths,
   canonicalTokenVocabulary,
   maintainedComponentFactories,
@@ -51,6 +57,11 @@ const collectLeafPaths = (obj: TokenObject, prefix = ''): string[] => {
   for (const [key, value] of Object.entries(obj)) {
     const name = prefix ? `${prefix}.${key}` : key;
 
+    if (isComponentPlatformIntent(value)) {
+      paths.push(name);
+      continue;
+    }
+
     if (isPlainObject(value)) {
       paths.push(...collectLeafPaths(value, name));
       continue;
@@ -67,6 +78,12 @@ const collectCssVariables = (obj: TokenObject, prefix = ''): string[] => {
 
   for (const [key, value] of Object.entries(obj)) {
     const name = prefix ? `${prefix}-${toKebabCase(key)}` : toKebabCase(key);
+
+    if (isComponentPlatformIntent(value)) {
+      throw new Error(
+        `collectCssVariables received canonical platform intent at ${name}; adapt components for Web first.`
+      );
+    }
 
     if (isPlainObject(value)) {
       variables.push(...collectCssVariables(value, name));
@@ -277,10 +294,17 @@ describe('canonical token architecture contract', () => {
         block.matchAll(/^\s+(--[a-z0-9-]+):/gm),
         ([, variable]) => variable!
       ).sort();
+      const webComponents = adaptComponentTokensForWeb(
+        theme.components,
+        createComponentPlatformOutputSources(theme)
+      );
       const objectVariables = [
         ...collectCssVariables(theme.colors, 'color'),
         ...collectCssVariables(theme.semantic),
-        ...collectCssVariables(theme.components),
+        ...collectCssVariables(webComponents),
+        ...componentTokenWebCompatibilityAliases.map(
+          ({ variable }) => variable
+        ),
       ].sort();
 
       expect(objectVariables).toEqual(expectedVariables);

@@ -1,11 +1,11 @@
 import { createComponentFocusRing } from '../../factories/componentFocusRing.js';
 import { createDropdownPalette } from '../../factories/createDropdownPalette.js';
 import { createInputColorPalette } from '../../factories/createInputPalette.js';
+import { createComponentShadowIntent } from '../../platform-output/component-token-intents.js';
 import { colors } from '../../primitives/colors.js';
 import { border } from '../semantic/border.js';
 import { focus } from '../semantic/focus.js';
 import { menu } from '../semantic/menu.js';
-import { shadow } from '../semantic/shadow.js';
 import { status } from '../semantic/status.js';
 import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
@@ -125,7 +125,7 @@ export const dropdown = {
     bg: menu.background,
     fg: menu.item.default.fg,
     border: menu.border,
-    shadow: shadow.lg,
+    shadow: createComponentShadowIntent('lg'),
   },
 
   item: {

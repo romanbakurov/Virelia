@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { darkTheme } from './dark/theme.js';
 import { highContrastTheme } from './highContrast/theme.js';
 import { lightTheme } from './light/theme.js';
+import { isComponentPlatformIntent } from './platform-output/component-token-intents.js';
 import { controlSizes } from './tokens/controlSizes.js';
 import {
   requireTokenValueKind,
@@ -25,6 +26,8 @@ function collectNumericLeaves(
   prefix: string,
   result: NumericLeaf[]
 ): void {
+  if (isComponentPlatformIntent(value)) return;
+
   if (typeof value === 'number') {
     result.push({ path: prefix, value });
     return;
@@ -100,15 +103,6 @@ describe('canonical token value-kind authority', () => {
     expect(
       requireTokenValueKind('components.modal.header.paddingBottom', 16)
     ).toBe('length');
-    expect(requireTokenValueKind('components.popover.shadow.native.x', 0)).toBe(
-      'length'
-    );
-    expect(
-      requireTokenValueKind('components.popover.shadow.native.opacity', 0.1)
-    ).toBe('opacity');
-    expect(
-      requireTokenValueKind('components.popover.shadow.native.elevation', 8)
-    ).toBe('unitless-number');
   });
 
   it('does not match numeric role families by partial word substrings', () => {

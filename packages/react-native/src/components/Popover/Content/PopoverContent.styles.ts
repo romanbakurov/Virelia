@@ -1,6 +1,9 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import type { NativeTheme } from '../../../theme';
+import {
+  type NativeTheme,
+  resolveComponentTokenPlatformOutputs,
+} from '../../../theme';
 
 export const styles = StyleSheet.create({
   root: {
@@ -20,34 +23,35 @@ export const styles = StyleSheet.create({
 });
 
 export function createPopoverContentStyles(theme: NativeTheme) {
-  const tokens = theme.components.popover.content;
-  const shadow = tokens.shadow.native;
+  const canonical = theme.components.popover.content;
+  const output = resolveComponentTokenPlatformOutputs(theme, canonical);
+  const nativeShadow = output.reactNative.shadow;
 
   return StyleSheet.create({
     content: {
-      minWidth: tokens.minWidth,
-      maxWidth: tokens.maxWidth,
-      padding: tokens.padding,
-      gap: tokens.gap,
+      minWidth: canonical.minWidth,
+      maxWidth: canonical.maxWidth,
+      padding: canonical.padding,
+      gap: canonical.gap,
 
-      backgroundColor: tokens.bg,
-      borderColor: tokens.border,
-      borderWidth: tokens.borderWidth,
-      borderRadius: tokens.radius,
+      backgroundColor: canonical.bg,
+      borderColor: canonical.border,
+      borderWidth: canonical.borderWidth,
+      borderRadius: canonical.radius,
 
       ...(Platform.OS === 'web'
         ? {
-            boxShadow: tokens.shadow.web,
+            boxShadow: output.web.shadow,
           }
         : {
-            shadowColor: shadow.color,
-            shadowOpacity: shadow.opacity,
-            shadowRadius: shadow.blur,
+            shadowColor: nativeShadow.color,
+            shadowOpacity: nativeShadow.opacity,
+            shadowRadius: nativeShadow.blur,
             shadowOffset: {
-              width: shadow.x,
-              height: shadow.y,
+              width: nativeShadow.x,
+              height: nativeShadow.y,
             },
-            elevation: shadow.elevation,
+            elevation: nativeShadow.elevation,
           }),
     },
   });
