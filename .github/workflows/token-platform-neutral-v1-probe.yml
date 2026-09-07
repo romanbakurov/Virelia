@@ -110,8 +110,8 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
 
-          if git diff --cached --name-only | grep -E '(^|/)(token-platform-neutral-v1-(apply|test-fixup|boundary-fixup|rn-fixup|preservation-fixup)\.py|token-platform-neutral-v1-probe\.yml)$' >/dev/null; then
-            echo 'Temporary probe scaffolding is still staged in final tree.' >&2
+          if git diff --cached --diff-filter=ACMRTUXB --name-only | grep -E '(^|/)(token-platform-neutral-v1-(apply|test-fixup|boundary-fixup|rn-fixup|preservation-fixup)\.py|token-platform-neutral-v1-probe\.yml)$' >/dev/null; then
+            echo 'Temporary probe scaffolding would remain in final tree.' >&2
             exit 1
           fi
 
