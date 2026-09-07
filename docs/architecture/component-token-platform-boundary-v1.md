@@ -31,9 +31,11 @@ Examples:
 
 The canonical component path remains component-semantic (`content.shadow`, `content.maxHeight`). The adapter owns representation.
 
+Platform adapters are renderer-owned implementation details, not part of the supported `@vellira-ui/tokens` public API. The tokens package owns canonical intent construction, validation and Web token serialization. The React Native package owns its runtime Web/native adaptation from the same canonical theme contract. Neither renderer may introduce a second authored design value to perform that adaptation.
+
 ## Generator rule
 
-Generator V2 must emit renderer-neutral component-token contracts by default. Generated canonical contracts must not introduce `web`, `native`, `native*`, CSS-only shadow strings, or React Native style-object branches. Platform differences belong in shared output adapters.
+Generator V2 must emit renderer-neutral component-token contracts by default. Generated canonical contracts must not introduce `web`, `native`, `native*`, CSS-only shadow strings, or React Native style-object branches. Platform differences belong in platform-output adapters.
 
 ## Validation
 
