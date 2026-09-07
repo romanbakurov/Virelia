@@ -1,4 +1,4 @@
-name: Component Production Readiness Slice 1 878
+name: Component Production Readiness Slice 2 878
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
           ref: feat/component-production-readiness-878
           fetch-depth: 0
       - name: Guard exact target head
-        run: test "$(git rev-parse HEAD)" = "f7e3ce33d97aaf28c170c038998e025a77a53557"
+        run: test "$(git rev-parse HEAD)" = "cfd698662758b84c2df86626afcb8e4c6e4b02fc"
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
@@ -28,74 +28,56 @@ jobs:
         shell: bash
         run: |
           git fetch origin chore/component-production-readiness-probe-878
-          mkdir -p /tmp/readiness878
-          git show FETCH_HEAD:.github/probes/878/apply.py > /tmp/readiness878/apply.py
-          git show FETCH_HEAD:.github/probes/878/run.ts > /tmp/readiness878/run.ts
-          git show FETCH_HEAD:.github/probes/878/final-validation.ts > /tmp/readiness878/final-validation.ts
-          git show FETCH_HEAD:.github/probes/878/final-validation.test.ts > /tmp/readiness878/final-validation.test.ts
-          python3 /tmp/readiness878/apply.py /tmp/readiness878
+          git show FETCH_HEAD:.github/probes/878/apply-slice2.py > /tmp/apply-readiness-878-slice2.py
+          python3 /tmp/apply-readiness-878-slice2.py
       - name: Format changed files
         run: |
           pnpm exec prettier --write \
-            package.json \
-            scripts/component-production/contracts.ts \
-            scripts/component-production/command-validation.ts \
-            scripts/component-production/command-validation.test.ts \
-            scripts/component-production/run.ts \
-            scripts/component-production/run.test.ts \
-            scripts/component-production/final-validation.ts \
-            scripts/component-production/final-validation.test.ts
+            scripts/generators/component/preflight.ts \
+            scripts/checks/component-completeness/types.ts \
+            scripts/checks/component-completeness/check-component.ts \
+            scripts/checks/component-completeness/check-component.test.ts
       - name: Guard exact change scope
         shell: bash
         run: |
           actual="$(git status --porcelain=v1 | sed -E 's/^.. //' | sort)"
           expected="$(printf '%s\n' \
-            package.json \
-            scripts/component-production/command-validation.test.ts \
-            scripts/component-production/command-validation.ts \
-            scripts/component-production/contracts.ts \
-            scripts/component-production/final-validation.test.ts \
-            scripts/component-production/final-validation.ts \
-            scripts/component-production/run.test.ts \
-            scripts/component-production/run.ts)"
+            scripts/checks/component-completeness/check-component.test.ts \
+            scripts/checks/component-completeness/check-component.ts \
+            scripts/checks/component-completeness/types.ts \
+            scripts/generators/component/preflight.ts)"
           printf '%s\n' "$actual"
           test "$actual" = "$expected"
-      - name: Targeted readiness regressions
+      - name: Targeted structural regressions
         run: |
           pnpm exec vitest run --config vitest.tooling.config.ts \
-            scripts/component-production/command-validation.test.ts \
-            scripts/component-production/final-validation.test.ts \
-            scripts/component-production/run.test.ts \
-            scripts/component-production/contracts.test.ts
+            scripts/checks/component-completeness/check-component.test.ts \
+            scripts/generators/component/production-preflight-contract.test.ts
       - name: Workspace build
         run: pnpm ci:build
       - name: Tooling typecheck
         run: pnpm typecheck:tooling
-      - name: Root unit test path
-        run: pnpm test:unit
-      - name: Quality
+      - name: Full tooling tests
+        run: pnpm test:tooling
+      - name: Quality and real-repo completeness
         run: pnpm ci:quality
       - name: Diff safety
-        run: git diff --check && git diff --no-index /dev/null scripts/component-production/final-validation.ts >/dev/null || test $? -eq 1
+        run: git diff --check
       - name: Guard target head before push
         shell: bash
         run: |
           git fetch origin feat/component-production-readiness-878
-          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "f7e3ce33d97aaf28c170c038998e025a77a53557"
+          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "cfd698662758b84c2df86626afcb8e4c6e4b02fc"
       - name: Commit and push slice
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
-            package.json \
-            scripts/component-production/contracts.ts \
-            scripts/component-production/command-validation.ts \
-            scripts/component-production/command-validation.test.ts \
-            scripts/component-production/run.ts \
-            scripts/component-production/run.test.ts \
-            scripts/component-production/final-validation.ts \
-            scripts/component-production/final-validation.test.ts
+            scripts/generators/component/preflight.ts \
+            scripts/checks/component-completeness/types.ts \
+            scripts/checks/component-completeness/check-component.ts \
+            scripts/checks/component-completeness/check-component.test.ts
           git diff --cached --check
-          git commit -m "feat(ci): extend component readiness gates"
+          git commit -m "feat(tooling): enforce structural production authorities"
           git push origin HEAD:feat/component-production-readiness-878
