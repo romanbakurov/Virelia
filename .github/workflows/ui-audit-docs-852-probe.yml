@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 2
 
       - name: Guard exact migration parent
-        run: test "$(git rev-parse HEAD^)" = "33c2a9b63c3d769d53345d4e06fd2ec6d125200e"
+        run: test "$(git rev-parse HEAD^)" = "00fc7c661d0a0b137dffe54ec710d6eba3450f70"
 
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -101,7 +101,7 @@ jobs:
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
             apps/docs/src/.vitepress/theme/styles.css
-          pnpm install
+          pnpm install --no-frozen-lockfile
 
       - name: Guard exact production scope
         shell: bash
