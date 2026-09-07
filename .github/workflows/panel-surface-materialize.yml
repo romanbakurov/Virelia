@@ -89,7 +89,7 @@ jobs:
           pnpm --filter @vellira-ui/tokens preservation:check
           pnpm --filter @vellira-ui/tokens build:tokens
           pnpm --filter @vellira-ui/tokens test
-          pnpm test:blog
+          pnpm vitest run --config vitest.tooling.config.ts scripts/blog/blog-code-block-theme.test.ts
 
       - name: Materialize validated correction
         shell: bash
