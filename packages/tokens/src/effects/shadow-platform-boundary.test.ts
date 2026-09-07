@@ -55,8 +55,6 @@ describe('shadow platform boundary', () => {
     );
 
     expect(actual).toEqual(expected);
-    expect(source).not.toMatch(
-      /\b(?:blur|opacity|elevation):\s*(?:\d|['"]#)/
-    );
+    expect(source).not.toMatch(/\b(?:blur|opacity|elevation):\s*(?:\d|['"]#)/);
   });
 });
