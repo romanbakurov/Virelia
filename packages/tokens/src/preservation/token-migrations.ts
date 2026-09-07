@@ -329,11 +329,20 @@ const semanticVocabularyRemovalMigrationsV1 =
         issue: '#883',
         reason:
           from === 'semantic.surface.background'
-            ? 'Remove the ambiguous surface.background alias after application roots move to the canonical surface.canvas role.'
+            ? 'Remove ambiguous surface.background after consumers are split by purpose: application roots use surface.canvas and bounded neutral containers use the explicit surface.panel role introduced by #912.'
             : 'Remove the unused legacy semantic.navigation namespace instead of preserving a duplicate component-history vocabulary.',
         from,
       }) as const
   ) satisfies readonly TokenMigrationEntry[];
+
+const semanticPanelAdditionV1 = {
+  id: '912-surface-panel-addition',
+  kind: 'addition',
+  issue: '#912',
+  reason:
+    'Add an explicit bounded neutral panel/chrome role after the #883 audit missed authored CSS consumers of the removed surface.background variable; panel preserves those historical bounded-container values without changing canvas or elevated semantics.',
+  to: 'semantic.surface.panel',
+} as const satisfies TokenMigrationEntry;
 
 const semanticVocabularyVisualMigrationsV1 = [
   {
@@ -604,6 +613,7 @@ export const tokenMigrationManifestV1 = [
   platformNeutralPopoverWebAdditionV1,
   ...semanticVocabularyRenameMigrationsV1,
   ...semanticVocabularyRemovalMigrationsV1,
+  semanticPanelAdditionV1,
   ...semanticVocabularyVisualMigrationsV1,
   ...semanticVocabularyDownstreamVisualMigrationsV1,
   {

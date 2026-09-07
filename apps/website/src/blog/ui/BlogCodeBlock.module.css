@@ -25,13 +25,13 @@
 }
 
 :global([data-vellira-theme='light']) .codeBlock {
-  background: var(--surface-canvas);
+  background: var(--surface-panel);
 }
 
 :global([data-vellira-theme='light']) .codeBlockToolbar {
   background: color-mix(
     in srgb,
-    var(--surface-canvas) 56%,
+    var(--surface-panel) 56%,
     var(--surface-muted)
   );
 }
