@@ -41,8 +41,7 @@ type ReactNativeReferenceApproximation = Readonly<{
 }>;
 
 type ReactNativeElevationApproximation =
-  | ReactNativeDirectApproximation
-  | ReactNativeReferenceApproximation;
+  ReactNativeDirectApproximation | ReactNativeReferenceApproximation;
 
 type ThemedShadowEffect = Readonly<Record<ShadowThemeName, ShadowEffect>>;
 
