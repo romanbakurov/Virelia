@@ -24,6 +24,18 @@ vi.mock('./website', () => ({
   generateComponentWebsitePage: vi.fn(),
 }));
 
+vi.mock('./website-contract', async () => {
+  const actual =
+    await vi.importActual<typeof import('./website-contract')>(
+      './website-contract'
+    );
+
+  return {
+    ...actual,
+    checkComponentWebsiteContract: vi.fn(() => []),
+  };
+});
+
 vi.mock('./token-types', async () => {
   const actual =
     await vi.importActual<typeof import('./token-types')>('./token-types');
@@ -77,6 +89,10 @@ describe('public API', () => {
 
   fs.mkdirSync(sharedTypesDir, { recursive: true });
   fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');
+  fs.writeFileSync(
+    path.join(root, 'packages', 'types', 'package.json'),
+    `${JSON.stringify({ name: '@vellira-ui/types' }, null, 2)}\n`
+  );
 
   const metadataDir = path.join(
     root,

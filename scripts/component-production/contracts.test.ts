@@ -20,6 +20,7 @@ const BASE_INPUT: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: ['keyboard'],
+  componentTokens: 'standard',
   parts: [],
 };
 
@@ -58,6 +59,7 @@ describe('parseComponentProductionInput', () => {
       profile: 'form-control',
       control: 'value',
       capabilities: [],
+      componentTokens: 'standard',
       parts: [],
     });
   });
@@ -82,6 +84,7 @@ describe('parseComponentProductionInput', () => {
       category: 'data-display',
       profile: 'base',
       capabilities: [],
+      componentTokens: 'standard',
       parts: [],
     });
   });
@@ -454,6 +457,17 @@ describe('createComponentProductionResult', () => {
 
     expect(result.status).toBe('ready');
     expect(result.readyForReview).toBe(true);
+    expect(result.lifecycle).toEqual({
+      current: 'ready-for-review',
+      completed: [
+        'scaffolded',
+        'semantic-completion-required',
+        'candidate',
+        'validated',
+      ],
+      semanticCompletionRequired: false,
+      readyForReview: true,
+    });
     expect(result.blockingFindings).toEqual([]);
   });
 
@@ -552,6 +566,44 @@ describe('createComponentProductionResult', () => {
       generated: true,
       artifacts: [...websiteArtifacts].sort(),
     });
+  });
+
+  it('groups generated artifacts by production responsibility', () => {
+    const result = createComponentProductionResult({
+      input: BASE_INPUT,
+      stages: stages({
+        generation: {
+          artifacts: [
+            'packages/react/src/primitives/Avatar/Avatar.tsx',
+            'packages/react/src/primitives/Avatar/Avatar.stories.tsx',
+            'packages/react/src/primitives/Avatar/Avatar.test.tsx',
+            'packages/types/src/avatar.ts',
+            'packages/tokens/src/factories/avatar.ts',
+          ],
+        },
+      }),
+      completeness: [],
+      quality: {
+        status: 'pass',
+        report: { schemaVersion: '1', components: [] },
+      },
+    });
+
+    expect(result.outputs.runtimeRenderers.artifacts).toEqual([
+      'packages/react/src/primitives/Avatar/Avatar.tsx',
+    ]);
+    expect(result.outputs.sharedContracts.artifacts).toEqual([
+      'packages/types/src/avatar.ts',
+    ]);
+    expect(result.outputs.designResources.artifacts).toEqual([
+      'packages/tokens/src/factories/avatar.ts',
+    ]);
+    expect(result.outputs.testGeneration.artifacts).toEqual([
+      'packages/react/src/primitives/Avatar/Avatar.test.tsx',
+    ]);
+    expect(result.outputs.storyGeneration.artifacts).toEqual([
+      'packages/react/src/primitives/Avatar/Avatar.stories.tsx',
+    ]);
   });
 
   it('requires the complete canonical stage sequence', () => {

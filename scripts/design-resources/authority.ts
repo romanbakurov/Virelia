@@ -5,6 +5,46 @@ import ts from 'typescript';
 
 export type DesignResourcePlatform = 'react' | 'react-native';
 
+const CANONICAL_ASSET_ROOTS = new Set(['brand', 'fonts', 'styles']);
+
+export function canonicalAssetRoot(root: string) {
+  return path.join(root, 'packages', 'assets');
+}
+
+export function canonicalAssetPath(params: {
+  root: string;
+  assetPath: string;
+}): string | null {
+  const portable = params.assetPath.replace(/\\/g, '/');
+  const segments = portable.split('/');
+
+  if (
+    portable.length === 0 ||
+    path.posix.isAbsolute(portable) ||
+    segments.some(
+      (segment) => segment.length === 0 || segment === '.' || segment === '..'
+    ) ||
+    !CANONICAL_ASSET_ROOTS.has(segments[0] ?? '')
+  ) {
+    return null;
+  }
+
+  return path.join(canonicalAssetRoot(params.root), ...segments);
+}
+
+export function canonicalAssetExists(params: {
+  root: string;
+  assetPath: string;
+}) {
+  const filePath = canonicalAssetPath(params);
+
+  return (
+    filePath !== null &&
+    fs.existsSync(filePath) &&
+    fs.statSync(filePath).isFile()
+  );
+}
+
 export function canonicalIconSourcePath(params: {
   root: string;
   platform: DesignResourcePlatform;

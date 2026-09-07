@@ -2,9 +2,14 @@ import path from 'node:path';
 
 import { getComponentApiDocsTargets, getComponentDocsTargets } from './docs';
 import { createComponentGenerationPlan } from './plan';
+import { checkGeneratedPlanContract } from './plan-contract';
 import { validateComponentGenerationPlan } from './preflight';
 import { writeComponentGenerationPlan } from './write';
 import { generateComponentWebsitePage } from './website';
+import {
+  checkComponentWebsiteContract,
+  getPlannedComponentWebsiteArtifacts,
+} from './website-contract';
 import { checkPublicApiContractSynchronization } from './public-api-contract';
 import { checkComponentTokenContract } from './component-token-contract';
 import {
@@ -139,6 +144,8 @@ export async function runComponentGenerator(params: {
       }),
       ...checkComponentTokenContract(plan),
       ...checkSharedTypesContract(plan),
+      ...(await checkGeneratedPlanContract(plan)),
+      ...checkComponentWebsiteContract(plan),
     ];
 
     if (driftedFiles.length > 0) {
@@ -159,10 +166,22 @@ export async function runComponentGenerator(params: {
   }
 
   if (params.options.dryRun) {
+    const websitePlan = getPlannedComponentWebsiteArtifacts(plan);
+
     return {
       plan,
-      createdFiles: getPlannedCreatedFiles(plan),
-      updatedFiles: getPlannedUpdatedFiles(plan),
+      createdFiles: [
+        ...new Set([
+          ...getPlannedCreatedFiles(plan),
+          ...websitePlan.createdFiles,
+        ]),
+      ],
+      updatedFiles: [
+        ...new Set([
+          ...getPlannedUpdatedFiles(plan),
+          ...websitePlan.updatedFiles,
+        ]),
+      ],
       dryRun: true,
       check: false,
     };

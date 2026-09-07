@@ -309,7 +309,7 @@ function getGeneratedApiDocSectionSpecs(
   return [rootSection, ...partSections];
 }
 
-function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
+export function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
   return plan.targets.flatMap((target) =>
     getGeneratedApiDocSectionSpecs(plan).map((apiSection) =>
       section(
@@ -328,6 +328,7 @@ export function createComponentMetadataFromPlan(
   const resourceRequirements = {
     ...(plan.tokens.length > 0 ? { tokens: plan.tokens } : {}),
     ...(plan.icons.length > 0 ? { icons: plan.icons } : {}),
+    ...(plan.assets.length > 0 ? { assets: plan.assets } : {}),
   };
 
   return {
@@ -338,6 +339,9 @@ export function createComponentMetadataFromPlan(
     profile: plan.profile,
     status: 'experimental',
     capabilities: resolvePlanCapabilities(plan),
+    ...(Object.keys(plan.dependencies).length > 0
+      ? { dependencies: plan.dependencies }
+      : {}),
     requirements: {
       tests: true,
       storybook: true,

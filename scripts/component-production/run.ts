@@ -7,6 +7,7 @@ import {
 } from './command-validation';
 import {
   createComponentProductionResult,
+  createComponentProductionValidationLifecycle,
   createComponentProductionValidationSummary,
   parseComponentProductionInput,
   type ComponentProductionInputV1,
@@ -77,31 +78,51 @@ export async function runComponentProduction(params: {
     generation.preflight.status !== 'passed' ||
     generation.generation.status !== 'passed'
   ) {
+    const reason =
+      'Semantic completion and validation were skipped because component generation did not pass.';
+
     return createComponentProductionResult({
       input,
       stages: [
         generation.preflight,
         generation.generation,
-        ...skippedValidationStages(
-          'Validation was skipped because component generation did not pass.'
-        ),
+        skippedStage('semantic-completion', reason),
+        ...skippedValidationStages(reason),
       ],
       completeness: null,
       quality: null,
     });
   }
 
-  const validation = await validateComponentProductionCandidate({
-    root: params.root,
-    input,
-    dependencies: params.dependencies,
-  });
+  const semanticCompletion: ComponentProductionStageResult = {
+    id: 'semantic-completion',
+    status: 'blocked',
+    summary:
+      'Canonical scaffolding completed. Component-specific API, behavior, accessibility and design decisions must be completed before validation.',
+    findings: [
+      {
+        id: 'semantic-completion:required',
+        stage: 'semantic-completion',
+        severity: 'blocking',
+        message:
+          'Generation success does not imply semantic completion. Complete the component candidate, then run component-production:validate:json with the same specification.',
+      },
+    ],
+    artifacts: [],
+  };
 
   return createComponentProductionResult({
     input,
-    stages: [generation.preflight, generation.generation, ...validation.stages],
-    completeness: validation.completeness,
-    quality: validation.quality,
+    stages: [
+      generation.preflight,
+      generation.generation,
+      semanticCompletion,
+      ...skippedValidationStages(
+        'Validation is pending semantic completion of the generated scaffold.'
+      ),
+    ],
+    completeness: null,
+    quality: null,
   });
 }
 
@@ -142,6 +163,7 @@ export async function runComponentProductionValidation(params: {
     input,
     status: validationSummary.status,
     readyForReview: validationSummary.status === 'ready',
+    lifecycle: createComponentProductionValidationLifecycle(validation.stages),
     stages: validation.stages,
     blockingFindings,
     validationSummary,
