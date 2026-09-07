@@ -1,0 +1,91 @@
+name: Cleanup vinext migration remnants
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: 22.22.0
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: feat/website-cloudflare-staging
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Remove vinext-only package configuration
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const packagePath = 'apps/website/package.json';
+          const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+
+          for (const script of ['dev:vinext', 'build:vinext', 'start:vinext', 'deploy:vinext']) {
+            delete pkg.scripts[script];
+          }
+
+          for (const dependency of [
+            '@vinext/cloudflare',
+            'react-server-dom-webpack',
+            'vinext',
+          ]) {
+            delete pkg.dependencies[dependency];
+          }
+
+          for (const dependency of [
+            '@cloudflare/vite-plugin',
+            '@mdx-js/rollup',
+            '@vitejs/plugin-react',
+            '@vitejs/plugin-rsc',
+            'vite',
+          ]) {
+            delete pkg.devDependencies[dependency];
+          }
+
+          fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
+
+          const gitignorePath = 'apps/website/.gitignore';
+          const lines = fs.readFileSync(gitignorePath, 'utf8').split('\n');
+          const obsolete = new Set(['/dist/', '.vinext/']);
+          const filtered = lines.filter((line) => !obsolete.has(line));
+          const wranglerIndex = filtered.indexOf('.wrangler/');
+          if (!filtered.includes('/.open-next/')) {
+            filtered.splice(wranglerIndex >= 0 ? wranglerIndex : filtered.length, 0, '/.open-next/');
+          }
+          fs.writeFileSync(gitignorePath, `${filtered.join('\n').replace(/\n+$/, '')}\n`);
+          NODE
+
+          rm apps/website/vite.config.ts
+
+      - name: Regenerate lockfile
+        run: pnpm install --lockfile-only
+
+      - name: Verify frozen install
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify website typecheck
+        run: pnpm --dir apps/website run typecheck
+
+      - name: Commit cleanup
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/website/package.json apps/website/.gitignore apps/website/vite.config.ts pnpm-lock.yaml
+          git diff --cached --check
+          git commit -m "chore(website): remove vinext migration remnants"
+          git push origin HEAD:feat/website-cloudflare-staging
