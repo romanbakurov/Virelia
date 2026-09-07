@@ -125,3 +125,13 @@ jobs:
           check_route '/blog/rss.xml' '<rss version="2.0"'
           check_route '/sitemap.xml' '<urlset'
           check_route '/robots.txt' 'User-Agent: *'
+
+      - name: Install Chromium for static chunk smoke
+        run: pnpm --filter @vellira-ui/react-storybook run playwright:install
+
+      - name: Smoke test production static chunk integrity
+        run: >-
+          pnpm --filter @vellira-ui/react-storybook exec node
+          scripts/cloudflare-static-chunk-smoke.mjs
+        env:
+          WEBSITE_URL: ${{ env.PRODUCTION_WORKER_URL }}
