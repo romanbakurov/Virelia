@@ -12,8 +12,8 @@ describe('blog code block theme surfaces', () => {
   it('keeps the toolbar and code body on distinct theme-aware surfaces', () => {
     expect(codeBlockStyles).toContain('background: var(--surface-subtle);');
     expect(codeBlockStyles).toContain('background: var(--surface-muted);');
-    expect(codeBlockStyles).toContain('background: var(--surface-background);');
-    expect(codeBlockStyles).toContain('var(--surface-background) 56%');
+    expect(codeBlockStyles).toContain('background: var(--surface-canvas);');
+    expect(codeBlockStyles).toContain('var(--surface-canvas) 56%');
     expect(codeBlockStyles).toContain('background: var(--surface-default);');
   });
 
