@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test';
 
 const baseUrl = process.env.WEBSITE_URL;
+const metricsApiBaseUrl = 'https://api.vellira.dev';
 
 if (!baseUrl) {
   throw new Error('WEBSITE_URL is required.');
@@ -12,6 +13,7 @@ const page = await context.newPage();
 const diagnostics = [];
 const criticalDiagnostics = [];
 const vercelRuntimeRequests = [];
+const directActorMetricRequests = [];
 
 function sameOrigin(url) {
   return url.startsWith(baseUrl);
@@ -21,6 +23,19 @@ function actorMetricsUrl(slug, suffix) {
   return `${baseUrl}/api/blog-metrics/articles/${slug}/${suffix}`;
 }
 
+function isDirectActorMetricRequest(url) {
+  if (!url.startsWith(metricsApiBaseUrl)) {
+    return false;
+  }
+
+  const { pathname } = new URL(url);
+  return /^\/v1\/blog\/articles\/[^/]+\/(?:views|like)$/.test(pathname);
+}
+
+function isExpectedNavigationAbort(request) {
+  return request.failure()?.errorText === 'net::ERR_ABORTED';
+}
+
 page.on('request', (request) => {
   if (request.url().startsWith(`${baseUrl}/_vercel/`)) {
     const diagnostic = `obsolete Vercel runtime request: ${request.url()}`;
@@ -28,11 +43,22 @@ page.on('request', (request) => {
     criticalDiagnostics.push(diagnostic);
     vercelRuntimeRequests.push(request.url());
   }
+
+  if (isDirectActorMetricRequest(request.url())) {
+    const diagnostic =
+      `actor-specific metrics bypassed the first-party proxy: ` +
+      `${request.method()} ${request.url()}`;
+    diagnostics.push(diagnostic);
+    criticalDiagnostics.push(diagnostic);
+    directActorMetricRequests.push(request.url());
+  }
 });
 
 page.on('console', (message) => {
   if (message.type() === 'error') {
-    diagnostics.push(`console.error: ${message.text()}`);
+    const diagnostic = `console.error: ${message.text()}`;
+    diagnostics.push(diagnostic);
+    criticalDiagnostics.push(diagnostic);
   }
 });
 
@@ -53,12 +79,15 @@ page.on('response', (response) => {
 });
 
 page.on('requestfailed', (request) => {
-  if (sameOrigin(request.url())) {
-    diagnostics.push(
-      `requestfailed: ${request.method()} ${request.url()} ` +
-        `${request.failure()?.errorText ?? ''}`
-    );
+  if (!sameOrigin(request.url()) || isExpectedNavigationAbort(request)) {
+    return;
   }
+
+  const diagnostic =
+    `requestfailed: ${request.method()} ${request.url()} ` +
+    `${request.failure()?.errorText ?? ''}`;
+  diagnostics.push(diagnostic);
+  criticalDiagnostics.push(diagnostic);
 });
 
 async function goto(path) {
@@ -243,7 +272,9 @@ async function verifyBlogActorContinuity() {
 
   const restored = await restoreResponse.json();
   if (restored?.liked !== false) {
-    throw new Error(`Blog like restore returned invalid state: ${JSON.stringify(restored)}`);
+    throw new Error(
+      `Blog like restore returned invalid state: ${JSON.stringify(restored)}`
+    );
   }
 
   console.log(
@@ -279,7 +310,9 @@ async function verifyMetricsFailureDoesNotBreakArticleActions() {
   }
 
   await fallbackContext.close();
-  console.log('OK metrics failure keeps article/share usable without fake zero state');
+  console.log(
+    'OK metrics failure keeps article/share usable without fake zero state'
+  );
 }
 
 async function navigateViaContinueReading() {
@@ -389,6 +422,11 @@ try {
   if (vercelRuntimeRequests.length > 0) {
     throw new Error(
       `Cloudflare emitted obsolete Vercel requests:\n${vercelRuntimeRequests.join('\n')}`
+    );
+  }
+  if (directActorMetricRequests.length > 0) {
+    throw new Error(
+      `Actor metrics bypassed same-origin proxy:\n${directActorMetricRequests.join('\n')}`
     );
   }
   if (criticalDiagnostics.length > 0) {
