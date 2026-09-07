@@ -514,8 +514,94 @@ const semanticVocabularyDownstreamVisualMigrationsV1 = [
   },
 ] as const satisfies readonly TokenMigrationEntry[];
 
+const platformNeutralComponentRepresentationPathsV1 = [
+  'components.contextMenu.content.shadow',
+  'components.contextMenu.item.focus.ring.shadow',
+  'components.contextMenu.trigger.focus.ring.shadow',
+  'components.dropdown.content.shadow',
+  'components.dropdown.item.focus.ring.shadow',
+  'components.dropdown.trigger.focus.ring.shadow',
+  'components.modal.closeButton.focus.ring.shadow',
+  'components.modal.content.maxHeight',
+  'components.modal.content.shadow',
+  'components.select.dropdown.shadow',
+  'components.select.option.selected.shadow',
+  'components.tooltip.content.shadow',
+] as const;
+
+const platformNeutralComponentRepresentationMigrationsV1 =
+  platformNeutralComponentRepresentationPathsV1.map(
+    (from) =>
+      ({
+        id: `884-representation-${from.replaceAll('.', '-')}`,
+        kind: 'representation-change',
+        layer: 'canonical',
+        issue: '#884',
+        reason:
+          'Replace renderer-shaped canonical component storage with a renderer-neutral intent at the same logical token path.',
+        from,
+        equivalence:
+          'The canonical representation changes only; Web resolves the intent to the pre-#884 CSS value and React Native resolves consumed elevation/layout intents to the pre-#884 native presentation output.',
+        evidence:
+          '#880 preservation locks serialized Web output while component-token-output-equivalence regressions cover Web and React Native adapters for Light, Dark, and High Contrast themes.',
+      }) as const
+  ) satisfies readonly TokenMigrationEntry[];
+
+const platformNeutralLegacyCanonicalRemovalsV1 = [
+  'components.modal.content.nativeMaxHeight',
+  'components.popover.content.shadow.native.x',
+  'components.popover.content.shadow.native.y',
+  'components.popover.content.shadow.native.blur',
+  'components.popover.content.shadow.native.color',
+  'components.popover.content.shadow.native.opacity',
+  'components.popover.content.shadow.native.elevation',
+] as const;
+
+const platformNeutralLegacyCanonicalRemovalMigrationsV1 =
+  platformNeutralLegacyCanonicalRemovalsV1.map(
+    (from) =>
+      ({
+        id: `884-remove-${from.replaceAll('.', '-')}`,
+        kind: 'remove',
+        issue: '#884',
+        reason:
+          'Remove renderer-specific canonical storage after the same renderer output moved behind the platform-output adapter; the Web identity remains a compatibility alias until #889.',
+        platforms: ['react-native'],
+        from,
+      }) as const
+  ) satisfies readonly TokenMigrationEntry[];
+
+const platformNeutralPopoverShadowMigrationV1 = {
+  id: '884-popover-shadow-web-to-canonical-intent',
+  kind: 'representation-change',
+  layer: 'canonical',
+  issue: '#884',
+  reason:
+    'Collapse the old Popover shadow.web branch into one renderer-neutral canonical shadow intent.',
+  from: 'components.popover.content.shadow.web',
+  to: 'components.popover.content.shadow',
+  equivalence:
+    'The new canonical lg elevation intent resolves to the same semantic lg Web shadow and the same structured native lg shadow used before #884.',
+  evidence:
+    '#880 preservation retains the legacy Web output identity and component-token-output-equivalence regressions lock the Web/RN adapter results for all three themes.',
+} as const satisfies TokenMigrationEntry;
+
+const platformNeutralPopoverWebAdditionV1 = {
+  id: '884-popover-normalized-web-shadow-output',
+  kind: 'addition',
+  issue: '#884',
+  reason:
+    'Expose the normalized Popover shadow path in Web platform output while retaining the old renderer-shaped CSS identities as compatibility aliases until #889.',
+  platforms: ['web'],
+  to: 'components.popover.content.shadow',
+} as const satisfies TokenMigrationEntry;
+
 export const tokenMigrationManifestV1 = [
   ...stateVocabularyRenameMigrationsV1,
+  ...platformNeutralComponentRepresentationMigrationsV1,
+  ...platformNeutralLegacyCanonicalRemovalMigrationsV1,
+  platformNeutralPopoverShadowMigrationV1,
+  platformNeutralPopoverWebAdditionV1,
   ...semanticVocabularyRenameMigrationsV1,
   ...semanticVocabularyRemovalMigrationsV1,
   ...semanticVocabularyVisualMigrationsV1,

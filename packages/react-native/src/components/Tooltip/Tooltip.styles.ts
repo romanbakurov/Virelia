@@ -1,9 +1,16 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import type { NativeTheme } from '../../theme';
+import {
+  type NativeTheme,
+  resolveComponentTokenPlatformOutputs,
+} from '../../theme';
 
-export const createStyles = (theme: NativeTheme) =>
-  StyleSheet.create({
+export const createStyles = (theme: NativeTheme) => {
+  const canonical = theme.components.tooltip.content;
+  const output = resolveComponentTokenPlatformOutputs(theme, canonical);
+  const nativeShadow = output.reactNative.shadow;
+
+  return StyleSheet.create({
     root: {
       alignSelf: Platform.select({
         web: 'auto',
@@ -17,39 +24,40 @@ export const createStyles = (theme: NativeTheme) =>
 
     bubble: {
       position: 'absolute',
-      maxWidth: theme.components.tooltip.content.maxWidth,
+      maxWidth: canonical.maxWidth,
 
-      paddingHorizontal: theme.components.tooltip.content.paddingX,
-      paddingVertical: theme.components.tooltip.content.paddingY,
+      paddingHorizontal: canonical.paddingX,
+      paddingVertical: canonical.paddingY,
 
-      backgroundColor: theme.components.tooltip.content.bg,
-      borderColor: theme.components.tooltip.content.border,
-      borderRadius: theme.components.tooltip.content.radius,
-      borderWidth: theme.components.tooltip.content.borderWidth,
+      backgroundColor: canonical.bg,
+      borderColor: canonical.border,
+      borderRadius: canonical.radius,
+      borderWidth: canonical.borderWidth,
 
       ...Platform.select({
         web: {
-          boxShadow: theme.components.tooltip.content.shadow,
+          boxShadow: output.web.shadow,
         },
         default: {
-          shadowColor: theme.tokens.shadows.md.color,
+          shadowColor: nativeShadow.color,
           shadowOffset: {
-            width: theme.tokens.shadows.md.x,
-            height: theme.tokens.shadows.md.y,
+            width: nativeShadow.x,
+            height: nativeShadow.y,
           },
-          shadowOpacity: theme.tokens.shadows.md.opacity,
-          shadowRadius: theme.tokens.shadows.md.blur,
-          elevation: theme.tokens.shadows.md.elevation,
+          shadowOpacity: nativeShadow.opacity,
+          shadowRadius: nativeShadow.blur,
+          elevation: nativeShadow.elevation,
         },
       }),
     },
 
     text: {
       flexShrink: 1,
-      color: theme.components.tooltip.content.fg,
+      color: canonical.fg,
       fontFamily: theme.tokens.typography.family.regular,
-      fontSize: theme.components.tooltip.content.fontSize,
-      lineHeight: theme.components.tooltip.content.lineHeight,
+      fontSize: canonical.fontSize,
+      lineHeight: canonical.lineHeight,
       textAlign: 'center',
     },
   });
+};

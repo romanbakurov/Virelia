@@ -1,3 +1,4 @@
+export * from './componentTokenOutput';
 export * from './fontWeight';
 export * from './semanticColor';
 export * from './ThemeProvider';

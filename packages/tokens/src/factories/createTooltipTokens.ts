@@ -1,8 +1,13 @@
+import {
+  type ComponentElevationShadowIntent,
+  createComponentShadowIntent,
+} from '../platform-output/component-token-intents.js';
+
 type TooltipContentTokens = {
   bg: string;
   fg: string;
   border: string;
-  shadow: string;
+  shadow: ComponentElevationShadowIntent;
   borderWidth: number;
   radius: number;
   paddingX: number;
@@ -30,7 +35,6 @@ type TooltipTokensConfig = {
   contentBg: string;
   contentFg: string;
   contentBorder: string;
-  contentShadow: string;
   contentBorderWidth?: number;
   contentRadius: number;
   contentPaddingX: number;
@@ -64,9 +68,6 @@ export type TooltipThemeSources = {
       border: string;
     };
   };
-  shadow: {
-    md: string;
-  };
   radius: {
     sm: number;
   };
@@ -89,7 +90,6 @@ export const createTooltipTokens = ({
   contentBg,
   contentFg,
   contentBorder,
-  contentShadow,
   contentBorderWidth = 1,
   contentRadius,
   contentPaddingX,
@@ -114,7 +114,7 @@ export const createTooltipTokens = ({
       bg: contentBg,
       fg: contentFg,
       border: contentBorder,
-      shadow: contentShadow,
+      shadow: createComponentShadowIntent('md'),
       borderWidth: contentBorderWidth,
       radius: contentRadius,
       paddingX: contentPaddingX,
@@ -141,7 +141,6 @@ export const createTooltipTokens = ({
 
 export const createTooltipTokensFromTheme = ({
   overlay,
-  shadow,
   radius,
   spacing,
   typography,
@@ -150,7 +149,6 @@ export const createTooltipTokensFromTheme = ({
     contentBg: overlay.tooltip.bg,
     contentFg: overlay.tooltip.fg,
     contentBorder: overlay.tooltip.border,
-    contentShadow: shadow.md,
     contentRadius: radius.sm,
     contentPaddingX: spacing[3],
     contentPaddingY: spacing[2],
