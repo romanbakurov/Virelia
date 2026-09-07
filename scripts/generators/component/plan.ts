@@ -113,6 +113,7 @@ function resolvePlanDependencies(params: {
 
   const platforms = Object.fromEntries(
     Object.entries(params.dependencies?.platforms ?? {})
+      .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
       .map(([platform, dependencySet]) => [
         platform,
         normalizeDependencySet(dependencySet),
