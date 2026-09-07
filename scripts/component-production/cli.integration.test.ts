@@ -90,6 +90,10 @@ describe('component production JSON CLI integration', () => {
       'website',
       'completeness',
       'quality',
+      'public-api',
+      'tooling',
+      'visual',
+      'smoke',
     ]);
 
     expect(fs.readdirSync(root).sort()).toEqual(['avatar.json']);
