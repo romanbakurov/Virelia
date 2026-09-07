@@ -9,6 +9,8 @@ import { validateComponentGenerationPlan } from './preflight';
 
 const roots: string[] = [];
 
+type DependencyPlatform = 'react' | 'react-native';
+
 function tempRoot() {
   const root = fs.mkdtempSync(
     path.join(os.tmpdir(), 'vellira-production-preflight-')
@@ -48,6 +50,30 @@ function createRepositoryAuthorities(root: string) {
   fs.writeFileSync(
     path.join(docsDir, 'index.ts'),
     'export const componentDocsContracts = [\n] as const;\n'
+  );
+}
+
+function writeComponentMetadata(
+  root: string,
+  componentName: string,
+  platforms: readonly DependencyPlatform[]
+) {
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+  const metadataName = `${componentName[0].toLowerCase()}${componentName.slice(1)}Metadata`;
+
+  fs.writeFileSync(
+    path.join(metadataDir, `${componentName}.metadata.ts`),
+    `import { defineComponentMetadata } from '../defineComponentMetadata';\n\n` +
+      `export const ${metadataName} = defineComponentMetadata({\n` +
+      `  name: '${componentName}',\n` +
+      `  platforms: [${platforms.map((platform) => `'${platform}'`).join(', ')}],\n` +
+      `});\n`
   );
 }
 
@@ -101,17 +127,7 @@ describe('component production dependency/resource preflight', () => {
       JSON.stringify({ name: '@vellira-ui/core' })
     );
 
-    fs.writeFileSync(
-      path.join(
-        root,
-        'packages',
-        'metadata',
-        'src',
-        'components',
-        'Tooltip.metadata.ts'
-      ),
-      'export const tooltipMetadata = {};\n'
-    );
+    writeComponentMetadata(root, 'Tooltip', ['react']);
 
     const assetFile = path.join(
       root,
@@ -178,6 +194,78 @@ describe('component production dependency/resource preflight', () => {
 
     expect(expectError(result).join('\n')).toContain(
       'missing-component-dependency: component="Tooltip"'
+    );
+  });
+
+  it('fails closed when a root component dependency lacks a selected renderer', () => {
+    const root = tempRoot();
+    createRepositoryAuthorities(root);
+    writeComponentMetadata(root, 'Tooltip', ['react']);
+
+    const metadataFile = path.join(
+      root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      'Tooltip.metadata.ts'
+    );
+    const result = validateComponentGenerationPlan(
+      plan(root, {
+        platform: 'both',
+        dependencies: { components: ['Tooltip'] },
+      })
+    );
+
+    expect(expectError(result)).toContain(
+      `unsupported-component-dependency-platform: component="Tooltip" requiredPlatform="react-native" metadata="${metadataFile}"`
+    );
+  });
+
+  it('fails closed when a platform-scoped dependency is unavailable on that renderer', () => {
+    const root = tempRoot();
+    createRepositoryAuthorities(root);
+    writeComponentMetadata(root, 'Tooltip', ['react']);
+
+    const result = validateComponentGenerationPlan(
+      plan(root, {
+        platform: 'both',
+        dependencies: {
+          platforms: {
+            'react-native': { components: ['Tooltip'] },
+          },
+        },
+      })
+    );
+
+    expect(expectError(result).join('\n')).toContain(
+      'unsupported-component-dependency-platform: component="Tooltip" requiredPlatform="react-native"'
+    );
+  });
+
+  it('fails closed when dependency metadata cannot prove renderer availability', () => {
+    const root = tempRoot();
+    createRepositoryAuthorities(root);
+    fs.writeFileSync(
+      path.join(
+        root,
+        'packages',
+        'metadata',
+        'src',
+        'components',
+        'Tooltip.metadata.ts'
+      ),
+      'export const tooltipMetadata = {};\n'
+    );
+
+    const result = validateComponentGenerationPlan(
+      plan(root, {
+        dependencies: { components: ['Tooltip'] },
+      })
+    );
+
+    expect(expectError(result).join('\n')).toContain(
+      'invalid-component-dependency-metadata: component="Tooltip"'
     );
   });
 
