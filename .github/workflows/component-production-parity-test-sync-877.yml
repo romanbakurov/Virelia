@@ -18,7 +18,7 @@ jobs:
           ref: feat/component-production-contract-877
           fetch-depth: 0
       - name: Guard expected head
-        run: test "$(git rev-parse HEAD)" = "c242a55dd73e70a9b3467392fff865ddb85d82e7"
+        run: test "$(git rev-parse HEAD)" = "cc6c9621b42c7e9b082f419ef7672f202b753dc5"
       - name: Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - name: Setup Node
@@ -28,47 +28,21 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Patch unit-test website contract boundary
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('scripts/generators/component/run.test.ts')
-          source = path.read_text()
-          marker = """vi.mock('./website', () => ({
-            generateComponentWebsitePage: vi.fn(),
-          }));
-          """
-          addition = """
-          vi.mock('./website-contract', async () => {
-            const actual =
-              await vi.importActual<typeof import('./website-contract')>('./website-contract');
-
-            return {
-              ...actual,
-              checkComponentWebsiteContract: vi.fn(() => []),
-            };
-          });
-          """
-          if source.count(marker) != 1:
-              raise SystemExit(f'expected website mock anchor exactly once, found {source.count(marker)}')
-          path.write_text(source.replace(marker, marker + addition, 1))
-          PY
       - name: Format parity slice
-        run: pnpm exec prettier scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts --write
+        run: pnpm exec prettier scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts scripts/generators/component/production-contract-parity.test.ts --write
       - name: Check formatting
-        run: pnpm exec prettier scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts --check
+        run: pnpm exec prettier scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts scripts/generators/component/production-contract-parity.test.ts --check
       - name: Tooling typecheck
         run: pnpm exec tsc -p tsconfig.tooling.json --noEmit
       - name: Run generator contract tests
-        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/generators/component/run.test.ts
+        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/generators/component/run.test.ts scripts/generators/component/production-contract-parity.test.ts
       - name: Diff safety
         run: git diff --check
-      - name: Commit synchronized parity slice
+      - name: Commit validated parity matrix
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts
+          git add scripts/generators/component/run.ts scripts/generators/component/plan-contract.ts scripts/generators/component/website-contract.ts scripts/generators/component/run.test.ts scripts/generators/component/production-contract-parity.test.ts
           git diff --cached --exit-code && exit 0
-          git commit -m "test(generator): cover production contract parity boundary"
+          git commit -m "test(generator): validate production contract regression matrix"
           git push origin HEAD:feat/component-production-contract-877
