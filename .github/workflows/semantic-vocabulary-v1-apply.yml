@@ -65,11 +65,13 @@ jobs:
       - name: Generate token outputs
         run: pnpm --filter @vellira-ui/tokens build:tokens
 
-      - name: Token typecheck
-        run: pnpm --filter @vellira-ui/tokens typecheck
+      - name: Structural TypeScript validation
+        run: |
+          pnpm --filter @vellira-ui/tokens exec tsc -p tsconfig.json --noEmit
+          pnpm --filter @vellira-ui/tokens exec tsc -p tsconfig.scripts.json --noEmit
 
-      - name: Token tests
-        run: pnpm --filter @vellira-ui/tokens test
+      - name: Token Vitest without preservation precheck
+        run: pnpm --filter @vellira-ui/tokens exec vitest run
 
       - name: Preservation evidence probe
         run: pnpm --filter @vellira-ui/tokens preservation:check
