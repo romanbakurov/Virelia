@@ -17,7 +17,7 @@ import {
 const packageRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
-  '..',
+  '..'
 );
 
 const webPreservationCases = [
@@ -70,17 +70,17 @@ describe('canonical shadow/elevation system', () => {
 
   it('represents multi-layer, spread, and inset effects structurally', () => {
     expect(
-      canonicalShadowEffects.elevation.lg.themes.light.layers,
+      canonicalShadowEffects.elevation.lg.themes.light.layers
     ).toHaveLength(2);
     expect(
-      canonicalShadowEffects.elevation.xl.themes.dark.layers,
+      canonicalShadowEffects.elevation.xl.themes.dark.layers
     ).toHaveLength(2);
     expect(canonicalShadowEffects.inset.themes.light.layers[0]).toMatchObject({
       inset: true,
       spread: 0,
     });
     expect(
-      canonicalShadowEffects.focusRing.themes['high-contrast'].layers[0],
+      canonicalShadowEffects.focusRing.themes['high-contrast'].layers[0]
     ).toMatchObject({ blur: 0, spread: 1, inset: false });
   });
 
@@ -117,46 +117,49 @@ describe('canonical shadow/elevation system', () => {
       expect(createReactNativeShadowTokens()).toEqual(expected);
       expect(resolveReactNativeElevationShadow('xl')).toEqual(expected.lg);
       expect(
-        canonicalShadowEffects.elevation.xl.reactNativeApproximation,
+        canonicalShadowEffects.elevation.xl.reactNativeApproximation
       ).toMatchObject({ kind: 'reference', level: 'lg' });
-    },
+    }
   );
 
-  it('rejects malformed structured effects instead of emitting invalid CSS', () => {
-    expect(() => serializeShadowEffectForWeb({ layers: [] })).toThrow(
-      /at least one layer/,
-    );
-    expect(() =>
-      serializeShadowEffectForWeb({
-        layers: [
-          {
-            x: 0,
-            y: 1,
-            blur: 2,
-            spread: 0,
-            color: '#000000',
-            opacity: 1.1,
-            inset: false,
-          },
-        ],
-      }),
-    ).toThrow(/opacity/);
-    expect(() =>
-      serializeShadowEffectForWeb({
-        layers: [
-          {
-            x: 0,
-            y: 1,
-            blur: 2,
-            spread: 0,
-            color: 'black',
-            opacity: 0.1,
-            inset: false,
-          },
-        ],
-      }),
-    ).toThrow(/six-digit hex/);
-  });
+  it(
+    'rejects malformed structured effects instead of emitting invalid CSS',
+    () => {
+      expect(() => serializeShadowEffectForWeb({ layers: [] })).toThrow(
+        /at least one layer/
+      );
+      expect(() =>
+        serializeShadowEffectForWeb({
+          layers: [
+            {
+              x: 0,
+              y: 1,
+              blur: 2,
+              spread: 0,
+              color: '#000000',
+              opacity: 1.1,
+              inset: false,
+            },
+          ],
+        })
+      ).toThrow(/opacity/);
+      expect(() =>
+        serializeShadowEffectForWeb({
+          layers: [
+            {
+              x: 0,
+              y: 1,
+              blur: 2,
+              spread: 0,
+              color: 'black',
+              opacity: 0.1,
+              inset: false,
+            },
+          ],
+        })
+      ).toThrow(/six-digit hex/);
+    }
+  );
 
   it(
     'keeps legacy Web/native compatibility surfaces derived instead of authored',
@@ -173,28 +176,25 @@ describe('canonical shadow/elevation system', () => {
       for (const sourcePath of semanticSources) {
         const source = fs.readFileSync(
           path.join(packageRoot, sourcePath),
-          'utf8',
+          'utf8'
         );
         expect(source, sourcePath).not.toMatch(/rgba\(/);
       }
 
       const nativeCompatibilitySource = fs.readFileSync(
         path.join(packageRoot, 'src/tokens/shadows.ts'),
-        'utf8',
+        'utf8'
       );
       expect(nativeCompatibilitySource).not.toMatch(
-        /\b(?:x|y|blur|color|opacity|elevation):/,
+        /\b(?:x|y|blur|color|opacity|elevation):/
       );
 
       const componentOutputSource = fs.readFileSync(
-        path.join(
-          packageRoot,
-          'src/platform-output/component-token-intents.ts',
-        ),
-        'utf8',
+        path.join(packageRoot, 'src/platform-output/component-token-intents.ts'),
+        'utf8'
       );
       expect(componentOutputSource).not.toContain('theme.semantic.shadow');
       expect(componentOutputSource).not.toContain('theme.tokens.shadows');
-    },
+    }
   );
 });
