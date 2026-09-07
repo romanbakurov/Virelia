@@ -41,7 +41,7 @@ React Native cannot reproduce every Web layer mathematically. Canonical elevatio
 - `sm`, `md`, and `lg` resolve to their historical native shadow/elevation objects;
 - `xl` explicitly references the `lg` native approximation, preserving the historical Modal result without inventing a second `xl` design value.
 
-The React Native package remains renderer-owned and does not import a private tokens-package adapter or unsupported package subpath. Its level-selection map expresses the same documented platform approximation while consuming model-derived `theme.tokens.shadows` values; it does not author shadow geometry, opacity, color, or elevation.
+The React Native package remains renderer-owned and does not import a private tokens-package adapter or unsupported package subpath. Its level-selection map is platform-output implementation policy only: it contains no shadow geometry or paint, and a cross-package architecture regression verifies that every selected level matches the canonical approximation metadata. This keeps the #884 package boundary without allowing the adapter policy to drift into a second authority.
 
 ## Component flow
 
