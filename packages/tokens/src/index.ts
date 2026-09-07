@@ -35,6 +35,26 @@ export {
   themeNames,
   tokenPaths,
 } from './generated/token-types.js';
+export type {
+  ComponentElevationShadowIntent,
+  ComponentFocusRingShadowIntent,
+  ComponentNoShadowIntent,
+  ComponentPlatformIntent,
+  ComponentPlatformOutputSources,
+  ComponentShadowIntent,
+  ReactNativeComponentTokens,
+  ReactNativeShadowOutput,
+  WebComponentTokens,
+} from './platform-output/component-token-intents.js';
+export {
+  adaptComponentTokensForReactNative,
+  adaptComponentTokensForWeb,
+  createComponentFocusRingShadowIntent,
+  createComponentNoShadowIntent,
+  createComponentPlatformOutputSources,
+  createComponentShadowIntent,
+  createComponentViewportHeightIntent,
+} from './platform-output/component-token-intents.js';
 export { overlay } from './primitives/overlay.js';
 export type { ControlSize } from './tokens/controlSizes.js';
 export { controlSizes } from './tokens/controlSizes.js';

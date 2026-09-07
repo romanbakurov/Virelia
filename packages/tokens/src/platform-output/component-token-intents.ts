@@ -2,10 +2,26 @@ export const componentShadowLevels = ['sm', 'md', 'lg', 'xl'] as const;
 
 export type ComponentShadowLevel = (typeof componentShadowLevels)[number];
 
-export type ComponentShadowIntent = Readonly<{
+export type ComponentElevationShadowIntent = Readonly<{
   kind: 'shadow';
+  role: 'elevation';
   level: ComponentShadowLevel;
 }>;
+
+export type ComponentFocusRingShadowIntent = Readonly<{
+  kind: 'shadow';
+  role: 'focus-ring';
+}>;
+
+export type ComponentNoShadowIntent = Readonly<{
+  kind: 'shadow';
+  role: 'none';
+}>;
+
+export type ComponentShadowIntent =
+  | ComponentElevationShadowIntent
+  | ComponentFocusRingShadowIntent
+  | ComponentNoShadowIntent;
 
 export type ComponentViewportHeightIntent = Readonly<{
   kind: 'viewport-height';
@@ -13,8 +29,7 @@ export type ComponentViewportHeightIntent = Readonly<{
 }>;
 
 export type ComponentPlatformIntent =
-  | ComponentShadowIntent
-  | ComponentViewportHeightIntent;
+  ComponentShadowIntent | ComponentViewportHeightIntent;
 
 export type ReactNativeShadowOutput = Readonly<{
   x: number;
@@ -28,16 +43,65 @@ export type ReactNativeShadowOutput = Readonly<{
 export type ComponentPlatformOutputSources = Readonly<{
   web: {
     shadow: Readonly<Record<ComponentShadowLevel, string>>;
+    focusRingShadow: string;
   };
   reactNative: {
     shadow: Readonly<Record<ComponentShadowLevel, ReactNativeShadowOutput>>;
   };
 }>;
 
+type ComponentOutputThemeSources = Readonly<{
+  semantic: {
+    focus: {
+      ring: {
+        shadow: string;
+      };
+    };
+    shadow: Readonly<Record<ComponentShadowLevel, string>>;
+  };
+  tokens: {
+    shadows: Readonly<Record<'sm' | 'md' | 'lg', ReactNativeShadowOutput>>;
+  };
+}>;
+
+type WebAdaptedIntent<T> = T extends ComponentPlatformIntent ? string : never;
+
+type ReactNativeAdaptedIntent<T> = T extends ComponentElevationShadowIntent
+  ? ReactNativeShadowOutput
+  : T extends ComponentFocusRingShadowIntent | ComponentNoShadowIntent
+    ? null
+    : T extends ComponentViewportHeightIntent
+      ? string
+      : never;
+
+export type WebComponentTokens<T> = T extends ComponentPlatformIntent
+  ? WebAdaptedIntent<T>
+  : T extends readonly (infer TEntry)[]
+    ? readonly WebComponentTokens<TEntry>[]
+    : T extends object
+      ? { readonly [K in keyof T]: WebComponentTokens<T[K]> }
+      : T;
+
+export type ReactNativeComponentTokens<T> = T extends ComponentPlatformIntent
+  ? ReactNativeAdaptedIntent<T>
+  : T extends readonly (infer TEntry)[]
+    ? readonly ReactNativeComponentTokens<TEntry>[]
+    : T extends object
+      ? { readonly [K in keyof T]: ReactNativeComponentTokens<T[K]> }
+      : T;
+
 export function createComponentShadowIntent(
   level: ComponentShadowLevel
-): ComponentShadowIntent {
-  return { kind: 'shadow', level };
+): ComponentElevationShadowIntent {
+  return { kind: 'shadow', role: 'elevation', level };
+}
+
+export function createComponentFocusRingShadowIntent(): ComponentFocusRingShadowIntent {
+  return { kind: 'shadow', role: 'focus-ring' };
+}
+
+export function createComponentNoShadowIntent(): ComponentNoShadowIntent {
+  return { kind: 'shadow', role: 'none' };
 }
 
 export function createComponentViewportHeightIntent(
@@ -61,13 +125,51 @@ export function isComponentPlatformIntent(
 
   const candidate = value as Record<string, unknown>;
 
-  return (
-    (candidate.kind === 'shadow' &&
+  if (candidate.kind === 'shadow') {
+    if (candidate.role === 'focus-ring' || candidate.role === 'none') {
+      return true;
+    }
+
+    return (
+      candidate.role === 'elevation' &&
       typeof candidate.level === 'string' &&
-      componentShadowLevels.includes(candidate.level as ComponentShadowLevel)) ||
-    (candidate.kind === 'viewport-height' &&
-      typeof candidate.ratio === 'number')
+      componentShadowLevels.includes(candidate.level as ComponentShadowLevel)
+    );
+  }
+
+  return (
+    candidate.kind === 'viewport-height' &&
+    typeof candidate.ratio === 'number' &&
+    Number.isFinite(candidate.ratio) &&
+    candidate.ratio > 0 &&
+    candidate.ratio <= 1
   );
+}
+
+export function createComponentPlatformOutputSources(
+  theme: ComponentOutputThemeSources
+): ComponentPlatformOutputSources {
+  return {
+    web: {
+      shadow: {
+        sm: theme.semantic.shadow.sm,
+        md: theme.semantic.shadow.md,
+        lg: theme.semantic.shadow.lg,
+        xl: theme.semantic.shadow.xl,
+      },
+      focusRingShadow: theme.semantic.focus.ring.shadow,
+    },
+    reactNative: {
+      shadow: {
+        sm: theme.tokens.shadows.sm,
+        md: theme.tokens.shadows.md,
+        lg: theme.tokens.shadows.lg,
+        // Preserve current native Modal output. #885 owns the later authority
+        // decision for whether an independent structured xl shadow is needed.
+        xl: theme.tokens.shadows.lg,
+      },
+    },
+  };
 }
 
 function formatPercentage(ratio: number): string {
@@ -81,22 +183,25 @@ export function resolveComponentIntentForWeb(
   intent: ComponentPlatformIntent,
   sources: ComponentPlatformOutputSources
 ): string {
-  if (intent.kind === 'shadow') {
-    return sources.web.shadow[intent.level];
+  if (intent.kind === 'viewport-height') {
+    return `${formatPercentage(intent.ratio)}vh`;
   }
 
-  return `${formatPercentage(intent.ratio)}vh`;
+  if (intent.role === 'focus-ring') return sources.web.focusRingShadow;
+  if (intent.role === 'none') return 'none';
+  return sources.web.shadow[intent.level];
 }
 
 export function resolveComponentIntentForReactNative(
   intent: ComponentPlatformIntent,
   sources: ComponentPlatformOutputSources
-): string | ReactNativeShadowOutput {
-  if (intent.kind === 'shadow') {
-    return sources.reactNative.shadow[intent.level];
+): string | ReactNativeShadowOutput | null {
+  if (intent.kind === 'viewport-height') {
+    return `${formatPercentage(intent.ratio)}%`;
   }
 
-  return `${formatPercentage(intent.ratio)}%`;
+  if (intent.role === 'focus-ring' || intent.role === 'none') return null;
+  return sources.reactNative.shadow[intent.level];
 }
 
 function adaptComponentTokenTree(
@@ -126,17 +231,17 @@ function adaptComponentTokenTree(
 export function adaptComponentTokensForWeb<T>(
   components: T,
   sources: ComponentPlatformOutputSources
-): T {
+): WebComponentTokens<T> {
   return adaptComponentTokenTree(components, (intent) =>
     resolveComponentIntentForWeb(intent, sources)
-  ) as T;
+  ) as WebComponentTokens<T>;
 }
 
 export function adaptComponentTokensForReactNative<T>(
   components: T,
   sources: ComponentPlatformOutputSources
-): T {
+): ReactNativeComponentTokens<T> {
   return adaptComponentTokenTree(components, (intent) =>
     resolveComponentIntentForReactNative(intent, sources)
-  ) as T;
+  ) as ReactNativeComponentTokens<T>;
 }

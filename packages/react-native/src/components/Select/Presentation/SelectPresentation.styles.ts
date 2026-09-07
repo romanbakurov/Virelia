@@ -1,9 +1,22 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import type { NativeTheme } from '../../../theme';
+import {
+  type NativeTheme,
+  resolveComponentTokenPlatformOutputs,
+} from '../../../theme';
 
-export const createPresentationStyles = (theme: NativeTheme) =>
-  StyleSheet.create({
+export const createPresentationStyles = (theme: NativeTheme) => {
+  const canonical = theme.components.select.dropdown;
+  const output = resolveComponentTokenPlatformOutputs(theme, canonical);
+  const nativeShadow = output.reactNative.shadow;
+
+  if (nativeShadow === null || typeof nativeShadow === 'string') {
+    throw new Error(
+      'Select dropdown shadow must resolve to a structured React Native shadow.'
+    );
+  }
+
+  return StyleSheet.create({
     modalRoot: {
       flex: 1,
     },
@@ -25,25 +38,25 @@ export const createPresentationStyles = (theme: NativeTheme) =>
 
     content: {
       overflow: 'hidden',
-      backgroundColor: theme.components.select.dropdown.bg,
-      borderColor: theme.components.select.dropdown.border,
+      backgroundColor: canonical.bg,
+      borderColor: canonical.border,
       borderWidth: 1,
     },
 
     surface: {
       ...Platform.select({
         web: {
-          boxShadow: theme.components.select.dropdown.shadow,
+          boxShadow: output.web.shadow,
         },
         default: {
-          shadowColor: theme.tokens.shadows.lg.color,
+          shadowColor: nativeShadow.color,
           shadowOffset: {
-            width: theme.tokens.shadows.lg.x,
-            height: theme.tokens.shadows.lg.y,
+            width: nativeShadow.x,
+            height: nativeShadow.y,
           },
-          shadowOpacity: theme.tokens.shadows.lg.opacity,
-          shadowRadius: theme.tokens.shadows.lg.blur,
-          elevation: theme.tokens.shadows.lg.elevation,
+          shadowOpacity: nativeShadow.opacity,
+          shadowRadius: nativeShadow.blur,
+          elevation: nativeShadow.elevation,
         },
       }),
     },
@@ -115,3 +128,4 @@ export const createPresentationStyles = (theme: NativeTheme) =>
       backgroundColor: theme.semantic.border.muted,
     },
   });
+};

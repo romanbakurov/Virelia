@@ -2,6 +2,11 @@ import { darkTheme } from '../src/dark/theme.js';
 import { highContrastTheme } from '../src/highContrast/theme.js';
 import { lightTheme } from '../src/light/theme.js';
 import {
+  adaptComponentTokensForWeb,
+  createComponentPlatformOutputSources,
+} from '../src/platform-output/component-token-intents.js';
+import { componentTokenWebCompatibilityAliases } from '../src/platform-output/component-token-web-compatibility.js';
+import {
   requireTokenValueKind,
   tokenValueKindWebContract,
 } from '../src/token-architecture.js';
@@ -203,6 +208,39 @@ export function collectBaseCssOutput(): Map<string, CssOutputEntry> {
   return output;
 }
 
+function collectComponentWebCompatibilityAliases(
+  theme: Theme,
+  output: Map<string, CssOutputEntry>
+): void {
+  const nativeShadow = shadows.lg;
+  const legacyValues = new Map<string, string | number>([
+    ['components.modal.content.nativeMaxHeight', '90%'],
+    ['components.popover.content.shadow.web', theme.semantic.shadow.lg],
+    ['components.popover.content.shadow.native.x', nativeShadow.x],
+    ['components.popover.content.shadow.native.y', nativeShadow.y],
+    ['components.popover.content.shadow.native.blur', nativeShadow.blur],
+    ['components.popover.content.shadow.native.color', nativeShadow.color],
+    ['components.popover.content.shadow.native.opacity', nativeShadow.opacity],
+    [
+      'components.popover.content.shadow.native.elevation',
+      nativeShadow.elevation,
+    ],
+  ]);
+
+  for (const alias of componentTokenWebCompatibilityAliases) {
+    const value = legacyValues.get(alias.path);
+
+    if (value === undefined) {
+      throw new Error(`Missing Web compatibility value for ${alias.path}.`);
+    }
+
+    output.set(alias.path, {
+      variable: alias.variable,
+      value: serializeCssTokenValue(alias.path, value),
+    });
+  }
+}
+
 export function collectThemeCssOutput(
   theme: Theme
 ): Map<string, CssOutputEntry> {
@@ -210,7 +248,12 @@ export function collectThemeCssOutput(
 
   collectVariables(theme.colors, 'color', 'colors', output);
   collectVariables(theme.semantic, '', 'semantic', output);
-  collectVariables(theme.components, '', 'components', output);
+  const webComponents = adaptComponentTokensForWeb(
+    theme.components,
+    createComponentPlatformOutputSources(theme)
+  );
+  collectVariables(webComponents, '', 'components', output);
+  collectComponentWebCompatibilityAliases(theme, output);
 
   return output;
 }

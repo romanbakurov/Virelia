@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { darkTheme } from '../src/dark/theme.js';
 import { highContrastTheme } from '../src/highContrast/theme.js';
 import { lightTheme } from '../src/light/theme.js';
+import { isComponentPlatformIntent } from '../src/platform-output/component-token-intents.js';
 import type {
   TokenMigrationEntry,
   TokenMigrationPlatform,
@@ -78,6 +79,10 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 function normalizeLeaf(value: unknown): string {
+  if (isComponentPlatformIntent(value)) {
+    return `component-intent:${JSON.stringify(value)}`;
+  }
+
   if (value === null) return 'null:null';
 
   if (typeof value === 'string') {
@@ -112,6 +117,17 @@ function collectLeafHashes(
   prefix: string,
   result: Map<string, string>
 ): void {
+  if (isComponentPlatformIntent(value)) {
+    if (!prefix) {
+      throw new Error(
+        'Token preservation encountered an intent without a path.'
+      );
+    }
+
+    result.set(prefix, hashLeaf(value));
+    return;
+  }
+
   if (Array.isArray(value)) {
     value.forEach((entry, index) => {
       collectLeafHashes(entry, `${prefix}.${index}`, result);
