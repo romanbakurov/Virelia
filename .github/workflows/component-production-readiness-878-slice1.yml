@@ -17,7 +17,7 @@ jobs:
           ref: feat/component-production-readiness-878
           fetch-depth: 0
       - name: Guard exact target head
-        run: test "$(git rev-parse HEAD)" = "06bfab325f1005cce83543088319ca1f9cdba02a"
+        run: test "$(git rev-parse HEAD)" = "feec1bd64613b698cd07b8d4a7325fed4a03d28b"
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           git fetch origin feat/component-production-readiness-878
-          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "06bfab325f1005cce83543088319ca1f9cdba02a"
+          test "$(git rev-parse origin/feat/component-production-readiness-878)" = "feec1bd64613b698cd07b8d4a7325fed4a03d28b"
       - name: Commit and push slice
         shell: bash
         run: |
