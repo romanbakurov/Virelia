@@ -64,7 +64,7 @@ jobs:
       - name: Regenerate token types
         run: pnpm --filter @vellira-ui/tokens generate:types
 
-      - name: Format touched files
+      - name: Format authored touched files
         run: |
           pnpm prettier \
             apps/website/src/blog/ui/BlogCodeBlock.module.css \
@@ -75,7 +75,6 @@ jobs:
             apps/website/src/components/navigation/Sidebar/Sidebar.module.css \
             docs/architecture/token-semantic-vocabulary-v1.md \
             packages/tokens/src/dark/semantic/surface.ts \
-            packages/tokens/src/generated/token-types.ts \
             packages/tokens/src/highContrast/semantic/surface.ts \
             packages/tokens/src/light/semantic/surface.ts \
             packages/tokens/src/preservation/token-migrations.ts \
