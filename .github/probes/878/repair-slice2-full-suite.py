@@ -16,19 +16,6 @@ def replace_once(content: str, old: str, new: str, label: str) -> str:
     return content.replace(old, new, 1)
 
 
-# Slice 1 extended the versioned production stage contract. Keep the real CLI
-# integration assertion aligned with that canonical contract.
-path = "scripts/component-production/cli.integration.test.ts"
-source = read(path)
-source = replace_once(
-    source,
-    "      'completeness',\n      'quality',\n    ]);",
-    "      'completeness',\n      'quality',\n      'public-api',\n      'tooling',\n      'visual',\n      'smoke',\n    ]);",
-    "production CLI stage list",
-)
-write(path, source)
-
-
 # Coverage integration fixtures now model the structural authorities that a
 # complete shared-semantics component must actually own.
 path = "scripts/checks/component-completeness/check-test-coverage-integration.test.ts"
