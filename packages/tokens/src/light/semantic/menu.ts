@@ -46,7 +46,7 @@ export const menu = {
 
       active: {
         bg: colors.error[100],
-        fg: status.error.strong,
+        fg: status.error.emphasisFg,
       },
 
       disabled: {

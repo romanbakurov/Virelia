@@ -14,7 +14,7 @@ export const control = {
   hover: {
     bg: surface.hover,
     fg: text.interactive,
-    border: border.focus,
+    border: border.interactive,
   },
 
   pressed: {

@@ -6,7 +6,7 @@ export const status = {
     bg: 'rgba(52, 211, 153, 0.14)',
     border: colors.success[400],
     ring: colors.success[300],
-    strong: colors.success[600],
+    emphasisFg: colors.success[600],
   },
 
   error: {
@@ -14,22 +14,22 @@ export const status = {
     bg: 'rgba(251, 113, 133, 0.16)',
     border: colors.error[400],
     ring: colors.error[400],
-    strong: colors.error[600],
+    emphasisFg: colors.error[600],
   },
 
   warning: {
     fg: colors.warning[400],
     bg: 'rgba(251, 191, 36, 0.14)',
     border: colors.warning[400],
-    ring: colors.error[400],
-    strong: colors.warning[600],
+    ring: colors.warning[300],
+    emphasisFg: colors.warning[600],
   },
 
   info: {
     fg: colors.info[200],
     bg: 'rgba(56, 189, 248, 0.14)',
     border: colors.info[200],
-    ring: colors.error[400],
-    strong: colors.info[500],
+    ring: colors.info[200],
+    emphasisFg: colors.info[500],
   },
 } as const;

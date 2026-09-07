@@ -9,5 +9,5 @@ export const border = {
   elevated: colors.vellira[600],
   disabled: colors.vellira[700],
 
-  focus: colors.primary[300],
+  interactive: colors.primary[300],
 } as const;

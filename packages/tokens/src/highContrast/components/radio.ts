@@ -136,7 +136,7 @@ export const radio = {
 
   focus: {
     ring: focus.ring.color,
-    border: border.focus,
+    border: border.interactive,
   },
 
   invalid: {

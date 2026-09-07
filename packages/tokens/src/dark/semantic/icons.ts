@@ -7,9 +7,9 @@ export const icons = {
   subtle: colors.vellira[500],
   disabled: colors.vellira[500],
 
-  primary: colors.primary[300],
+  interactive: colors.primary[300],
   brand: colors.primary[300],
-  hover: colors.primary[200],
+  interactiveHover: colors.primary[200],
 
   success: colors.success[400],
   danger: colors.error[400],

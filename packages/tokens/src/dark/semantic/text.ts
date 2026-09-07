@@ -3,8 +3,8 @@ import { colors } from '../../primitives/colors.js';
 export const text = {
   primary: colors.vellira[100],
   secondary: colors.vellira[300],
-  muted: colors.vellira[400],
-  subtle: colors.mono[500],
+  muted: colors.mono[500],
+  subtle: colors.vellira[400],
   disabled: colors.vellira[500],
 
   brand: colors.primary[300],

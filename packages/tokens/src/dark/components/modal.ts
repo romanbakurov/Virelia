@@ -8,7 +8,7 @@ import { surface } from '../semantic/surface.js';
 import { text } from '../semantic/text.js';
 
 const closeButtonHoverBg = surface.elevated;
-const closeButtonPressedBg = surface.active;
+const closeButtonPressedBg = surface.pressed;
 
 export const modal = createModalTokensFromSemantics({
   closeButtonHoverBg,

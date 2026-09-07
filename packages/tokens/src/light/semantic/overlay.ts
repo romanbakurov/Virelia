@@ -13,12 +13,12 @@ export const overlay = {
     border: border.muted,
   },
 
-  popover: {
+  floating: {
     bg: surface.elevated,
     border: border.muted,
   },
 
-  modal: {
+  dialog: {
     bg: surface.elevated,
     border: border.muted,
   },

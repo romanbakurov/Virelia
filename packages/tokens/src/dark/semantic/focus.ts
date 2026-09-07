@@ -5,6 +5,6 @@ export const focus = {
     color: colors.primary[300],
     width: '2px',
     shadow: '0 0 8px rgba(184, 168, 255, 0.14)',
-    offset: colors.vellira[950],
+    offsetColor: colors.vellira[950],
   },
 } as const;
