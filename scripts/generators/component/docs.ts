@@ -309,7 +309,7 @@ function getGeneratedApiDocSectionSpecs(
   return [rootSection, ...partSections];
 }
 
-function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
+export function getGeneratedApiDocSections(plan: ComponentGenerationPlan) {
   return plan.targets.flatMap((target) =>
     getGeneratedApiDocSectionSpecs(plan).map((apiSection) =>
       section(

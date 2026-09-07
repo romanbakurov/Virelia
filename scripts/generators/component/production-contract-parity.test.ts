@@ -14,6 +14,7 @@ import {
 } from './docs';
 import { createComponentGenerationPlan } from './plan';
 import { checkGeneratedPlanContract } from './plan-contract';
+import { checkComponentDocumentationContract } from './documentation-contract';
 import { renderMetadataTemplate } from './templates';
 import {
   checkComponentWebsiteContract,
@@ -25,6 +26,10 @@ import type { ComponentGenerationPlan } from './plan';
 
 vi.mock('node:child_process', () => ({
   spawnSync: vi.fn(),
+}));
+
+vi.mock('./documentation-contract', () => ({
+  checkComponentDocumentationContract: vi.fn(async () => []),
 }));
 
 const roots: string[] = [];
@@ -284,6 +289,19 @@ describe('component production contract regression matrix', () => {
         result.metadataFile
       );
     }
+  });
+
+  it('propagates canonical generated docs and API drift into generator check evidence', async () => {
+    const root = tempRoot();
+    const result = plan(root);
+
+    await writeCanonicalPlanArtifacts(result);
+    const apiFile = path.join(root, 'packages/react/API.md');
+    vi.mocked(checkComponentDocumentationContract).mockResolvedValueOnce([
+      apiFile,
+    ]);
+
+    expect(await checkGeneratedPlanContract(result)).toContain(apiFile);
   });
 
   it('detects docs-contract drift independently of authored docs regions', async () => {
