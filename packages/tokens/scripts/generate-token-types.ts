@@ -199,15 +199,15 @@ export type CssVariableName = (typeof cssVariableNames)[number];
 export type WidenTokenValues<T> = T extends ComponentPlatformIntent
   ? T
   : {
-  readonly [K in keyof T]: T[K] extends string
-    ? string
-    : T[K] extends number
-      ? number
-      : T[K] extends boolean
-        ? boolean
-        : T[K] extends object
-          ? WidenTokenValues<T[K]>
-          : T[K];
+      readonly [K in keyof T]: T[K] extends string
+        ? string
+        : T[K] extends number
+          ? number
+          : T[K] extends boolean
+            ? boolean
+            : T[K] extends object
+              ? WidenTokenValues<T[K]>
+              : T[K];
     };
 
 export type LightTheme = WidenTokenValues<typeof lightTheme>;
