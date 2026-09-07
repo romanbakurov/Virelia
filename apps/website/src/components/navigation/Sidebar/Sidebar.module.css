@@ -57,7 +57,7 @@
   background: color-mix(
     in srgb,
     var(--text-brand) 12%,
-    var(--surface-background)
+    var(--surface-canvas)
   );
 }
 
