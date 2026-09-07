@@ -15,11 +15,11 @@ describe('blog code block theme surfaces', () => {
     expect(codeBlockStyles).toContain('background: var(--surface-default);');
   });
 
-  it('keeps the light code body elevated instead of collapsing into the page canvas', () => {
+  it('keeps the light code body on the bounded panel role instead of collapsing into the page canvas', () => {
     expect(codeBlockStyles).toContain(
-      ":global([data-vellira-theme='light']) .codeBlock {\n  background: var(--surface-elevated);\n}"
+      ":global([data-vellira-theme='light']) .codeBlock {\n  background: var(--surface-panel);\n}"
     );
-    expect(codeBlockStyles).toContain('var(--surface-elevated) 56%');
+    expect(codeBlockStyles).toContain('var(--surface-panel) 56%');
     expect(codeBlockStyles).not.toContain(
       ":global([data-vellira-theme='light']) .codeBlock {\n  background: var(--surface-canvas);\n}"
     );
