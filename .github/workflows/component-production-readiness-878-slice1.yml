@@ -59,17 +59,17 @@ jobs:
             scripts/component-production/run.test.ts \
             scripts/component-production/contracts.test.ts
 
-      - name: Tooling typecheck
-        run: pnpm typecheck:tooling
-
-      - name: Full tooling tests
-        run: pnpm test:tooling
-
       - name: Source quality
         run: pnpm ci:quality
 
       - name: Workspace build
         run: pnpm ci:build
+
+      - name: Tooling typecheck
+        run: pnpm typecheck:tooling
+
+      - name: Full tooling tests
+        run: pnpm test:tooling
 
       - name: Guard build mutation boundary
         shell: bash
