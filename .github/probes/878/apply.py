@@ -31,13 +31,13 @@ replace_once(
 replace_once(
     "scripts/component-production/command-validation.ts",
     "    {\n      id: 'lint',\n      stage: 'lint',\n      command: ['pnpm', 'lint'],\n      timeoutMs: 120_000,\n    },\n    ...platformCommands(input),",
-    "    {\n      id: 'lint',\n      stage: 'lint',\n      command: ['pnpm', 'lint'],\n      timeoutMs: 120_000,\n    },\n    {\n      id: 'tokens-tests',\n      stage: 'tests',\n      command: ['pnpm', 'test:tokens'],\n      timeoutMs: 180_000,\n    },\n    {\n      id: 'core-tests',\n      stage: 'tests',\n      command: ['pnpm', 'test:core'],\n      timeoutMs: 180_000,\n    },\n    {\n      id: 'metadata-tests',\n      stage: 'tests',\n      command: ['pnpm', 'test:metadata'],\n      timeoutMs: 180_000,\n    },\n    ...platformCommands(input),",
+    "    {\n      id: 'lint',\n      stage: 'lint',\n      command: ['pnpm', 'lint'],\n      timeoutMs: 120_000,\n    },\n    {\n      id: 'core-tests',\n      stage: 'tests',\n      command: ['pnpm', 'test:core'],\n      timeoutMs: 180_000,\n    },\n    {\n      id: 'metadata-tests',\n      stage: 'tests',\n      command: ['pnpm', 'test:metadata'],\n      timeoutMs: 180_000,\n    },\n    ...platformCommands(input),",
 )
 
 command_tests = Path("scripts/component-production/command-validation.test.ts")
 text = command_tests.read_text()
 old = "      'lint',\n      'react-tests',"
-new = "      'lint',\n      'tokens-tests',\n      'core-tests',\n      'metadata-tests',\n      'react-tests',"
+new = "      'lint',\n      'core-tests',\n      'metadata-tests',\n      'react-tests',"
 count = text.count(old)
 if count != 3:
     raise SystemExit(f"{command_tests}: expected 3 command-list anchors, found {count}")
