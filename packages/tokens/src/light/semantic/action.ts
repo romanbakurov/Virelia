@@ -31,7 +31,7 @@ export const action = {
     },
   },
 
-  secondary: {
+  accent: {
     default: {
       bg: colors.secondary[700],
       fg: text.inverse,
@@ -59,7 +59,7 @@ export const action = {
     },
   },
 
-  close: {
+  neutral: {
     default: {
       bg: colors.vellira[250],
       fg: colors.vellira[900],

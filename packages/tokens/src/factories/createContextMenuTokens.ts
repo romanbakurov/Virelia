@@ -1,3 +1,8 @@
+import {
+  createComponentFocusRing,
+  type SemanticFocusRing,
+} from './componentFocusRing.js';
+
 type ContextMenuState = {
   readonly bg: string;
   readonly fg: string;
@@ -39,7 +44,7 @@ type ContextMenuTokensConfig = {
 
 export type ContextMenuThemeSemantics = {
   focus: {
-    ring: ContextMenuFocusRing;
+    ring: SemanticFocusRing;
   };
   menu: {
     background: string;
@@ -131,14 +136,14 @@ export const createContextMenuTokensFromSemantics = ({
     itemHover: menu.item.hover,
     itemActive: menu.item.active,
     itemPressed: menu.item.pressed,
-    itemFocusRing: focus.ring,
+    itemFocusRing: createComponentFocusRing(focus.ring),
     itemDisabled: menu.item.disabled,
     itemDanger: menu.item.danger,
     triggerDefaultFg: text.interactive,
     triggerHoverBg: menu.item.hover.bg,
     triggerHoverFg: text.interactiveHover,
     triggerFocusFg: text.interactive,
-    triggerFocusRing: focus.ring,
+    triggerFocusRing: createComponentFocusRing(focus.ring),
     triggerDisabledFg: text.disabled,
     groupLabelFg: text.secondary,
   });

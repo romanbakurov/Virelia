@@ -6,7 +6,7 @@ export const status = {
     bg: colors.success[50],
     border: colors.success[700],
     ring: colors.success[500],
-    strong: colors.success[800],
+    emphasisFg: colors.success[800],
   },
 
   error: {
@@ -14,7 +14,7 @@ export const status = {
     bg: colors.error[100],
     border: colors.error[600],
     ring: colors.error[500],
-    strong: colors.error[800],
+    emphasisFg: colors.error[800],
   },
 
   warning: {
@@ -22,7 +22,7 @@ export const status = {
     bg: colors.warning[50],
     border: colors.warning[700],
     ring: colors.warning[500],
-    strong: colors.warning[800],
+    emphasisFg: colors.warning[800],
   },
 
   info: {
@@ -30,6 +30,6 @@ export const status = {
     bg: colors.info[50],
     border: colors.info[500],
     ring: colors.info[500],
-    strong: colors.info[800],
+    emphasisFg: colors.info[800],
   },
 } as const;

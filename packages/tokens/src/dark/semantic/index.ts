@@ -5,7 +5,6 @@ export { divider } from './divider.js';
 export { focus } from './focus.js';
 export { icons } from './icons.js';
 export { menu } from './menu.js';
-export { navigation } from './navigation.js';
 export { overlay } from './overlay.js';
 export { shadow } from './shadow.js';
 export { skeleton } from './skeleton.js';

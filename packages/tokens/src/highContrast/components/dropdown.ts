@@ -1,3 +1,4 @@
+import { createComponentFocusRing } from '../../factories/componentFocusRing.js';
 import { createDropdownPalette } from '../../factories/createDropdownPalette.js';
 import { createInputColorPalette } from '../../factories/createInputPalette.js';
 import { colors } from '../../primitives/colors.js';
@@ -109,8 +110,8 @@ export const dropdown = {
     focus: {
       bg: 'transparent',
       fg: text.interactive,
-      border: border.focus,
-      ring: focus.ring,
+      border: border.interactive,
+      ring: createComponentFocusRing(focus.ring),
     },
 
     disabled: {
@@ -139,7 +140,7 @@ export const dropdown = {
     pressed: menu.item.pressed,
 
     focus: {
-      ring: focus.ring,
+      ring: createComponentFocusRing(focus.ring),
     },
 
     disabled: menu.item.disabled,
