@@ -36,23 +36,15 @@ jobs:
 
           path = Path('scripts/generators/component/run.test.ts')
           source = path.read_text()
-          old = """  fs.mkdirSync(sharedTypesDir, { recursive: true });
-          fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');
-
-          const metadataDir = path.join(
-          """
-          new = """  fs.mkdirSync(sharedTypesDir, { recursive: true });
-          fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');
-          fs.writeFileSync(
+          marker = "fs.writeFileSync(path.join(sharedTypesDir, 'index.ts'), '');\n"
+          addition = """  fs.writeFileSync(
             path.join(root, 'packages', 'types', 'package.json'),
             `${JSON.stringify({ name: '@vellira-ui/types' }, null, 2)}\\n`
           );
-
-          const metadataDir = path.join(
           """
-          if source.count(old) != 1:
-              raise SystemExit(f'expected fixture anchor exactly once, found {source.count(old)}')
-          path.write_text(source.replace(old, new))
+          if source.count(marker) != 1:
+              raise SystemExit(f'expected fixture anchor exactly once, found {source.count(marker)}')
+          path.write_text(source.replace(marker, marker + addition, 1))
           PY
       - name: Check formatting
         run: pnpm exec prettier scripts/generators/component/run.test.ts scripts/component-production/cli.integration.test.ts --check
