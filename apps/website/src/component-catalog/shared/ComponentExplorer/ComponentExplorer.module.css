@@ -6,8 +6,8 @@
   background: var(--surface-default);
   background: linear-gradient(
     to right,
-    var(--surface-canvas) 0,
-    var(--surface-canvas)
+    var(--surface-panel) 0,
+    var(--surface-panel)
       calc(var(--site-gutter) + var(--explorer-sidebar-width)),
     var(--surface-default)
       calc(var(--site-gutter) + var(--explorer-sidebar-width)),
@@ -27,7 +27,7 @@
 .sidebarColumn {
   position: relative;
   min-width: 0;
-  background: var(--surface-canvas);
+  background: var(--surface-panel);
 }
 
 .sidebarColumn::after {
