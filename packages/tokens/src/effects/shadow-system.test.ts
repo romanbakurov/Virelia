@@ -17,7 +17,7 @@ import {
 const packageRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
-  '..'
+  '..',
 );
 
 const webPreservationCases = [
@@ -70,58 +70,61 @@ describe('canonical shadow/elevation system', () => {
 
   it('represents multi-layer, spread, and inset effects structurally', () => {
     expect(
-      canonicalShadowEffects.elevation.lg.themes.light.layers
+      canonicalShadowEffects.elevation.lg.themes.light.layers,
     ).toHaveLength(2);
     expect(
-      canonicalShadowEffects.elevation.xl.themes.dark.layers
+      canonicalShadowEffects.elevation.xl.themes.dark.layers,
     ).toHaveLength(2);
     expect(canonicalShadowEffects.inset.themes.light.layers[0]).toMatchObject({
       inset: true,
       spread: 0,
     });
     expect(
-      canonicalShadowEffects.focusRing.themes['high-contrast'].layers[0]
+      canonicalShadowEffects.focusRing.themes['high-contrast'].layers[0],
     ).toMatchObject({ blur: 0, spread: 1, inset: false });
   });
 
-  it('preserves the existing native shadow outputs from one canonical approximation table', () => {
-    const expected = {
-      sm: {
-        x: 0,
-        y: 1,
-        blur: 3,
-        color: '#000000',
-        opacity: 0.04,
-        elevation: 1,
-      },
-      md: {
-        x: 0,
-        y: 6,
-        blur: 16,
-        color: '#000000',
-        opacity: 0.08,
-        elevation: 4,
-      },
-      lg: {
-        x: 0,
-        y: 12,
-        blur: 32,
-        color: '#000000',
-        opacity: 0.1,
-        elevation: 8,
-      },
-    } as const;
+  it(
+    'preserves the existing native shadow outputs from one canonical approximation table',
+    () => {
+      const expected = {
+        sm: {
+          x: 0,
+          y: 1,
+          blur: 3,
+          color: '#000000',
+          opacity: 0.04,
+          elevation: 1,
+        },
+        md: {
+          x: 0,
+          y: 6,
+          blur: 16,
+          color: '#000000',
+          opacity: 0.08,
+          elevation: 4,
+        },
+        lg: {
+          x: 0,
+          y: 12,
+          blur: 32,
+          color: '#000000',
+          opacity: 0.1,
+          elevation: 8,
+        },
+      } as const;
 
-    expect(createReactNativeShadowTokens()).toEqual(expected);
-    expect(resolveReactNativeElevationShadow('xl')).toEqual(expected.lg);
-    expect(
-      canonicalShadowEffects.elevation.xl.reactNativeApproximation
-    ).toMatchObject({ kind: 'reference', level: 'lg' });
-  });
+      expect(createReactNativeShadowTokens()).toEqual(expected);
+      expect(resolveReactNativeElevationShadow('xl')).toEqual(expected.lg);
+      expect(
+        canonicalShadowEffects.elevation.xl.reactNativeApproximation,
+      ).toMatchObject({ kind: 'reference', level: 'lg' });
+    },
+  );
 
   it('rejects malformed structured effects instead of emitting invalid CSS', () => {
     expect(() => serializeShadowEffectForWeb({ layers: [] })).toThrow(
-      /at least one layer/
+      /at least one layer/,
     );
     expect(() =>
       serializeShadowEffectForWeb({
@@ -136,7 +139,7 @@ describe('canonical shadow/elevation system', () => {
             inset: false,
           },
         ],
-      })
+      }),
     ).toThrow(/opacity/);
     expect(() =>
       serializeShadowEffectForWeb({
@@ -151,41 +154,47 @@ describe('canonical shadow/elevation system', () => {
             inset: false,
           },
         ],
-      })
+      }),
     ).toThrow(/six-digit hex/);
   });
 
-  it('keeps legacy Web/native compatibility surfaces derived instead of authored', () => {
-    const semanticSources = [
-      'src/light/semantic/shadow.ts',
-      'src/dark/semantic/shadow.ts',
-      'src/highContrast/semantic/shadow.ts',
-      'src/light/semantic/focus.ts',
-      'src/dark/semantic/focus.ts',
-      'src/highContrast/semantic/focus.ts',
-    ];
+  it(
+    'keeps legacy Web/native compatibility surfaces derived instead of authored',
+    () => {
+      const semanticSources = [
+        'src/light/semantic/shadow.ts',
+        'src/dark/semantic/shadow.ts',
+        'src/highContrast/semantic/shadow.ts',
+        'src/light/semantic/focus.ts',
+        'src/dark/semantic/focus.ts',
+        'src/highContrast/semantic/focus.ts',
+      ];
 
-    for (const sourcePath of semanticSources) {
-      const source = fs.readFileSync(
-        path.join(packageRoot, sourcePath),
-        'utf8'
+      for (const sourcePath of semanticSources) {
+        const source = fs.readFileSync(
+          path.join(packageRoot, sourcePath),
+          'utf8',
+        );
+        expect(source, sourcePath).not.toMatch(/rgba\(/);
+      }
+
+      const nativeCompatibilitySource = fs.readFileSync(
+        path.join(packageRoot, 'src/tokens/shadows.ts'),
+        'utf8',
       );
-      expect(source, sourcePath).not.toMatch(/rgba\(/);
-    }
+      expect(nativeCompatibilitySource).not.toMatch(
+        /\b(?:x|y|blur|color|opacity|elevation):/,
+      );
 
-    const nativeCompatibilitySource = fs.readFileSync(
-      path.join(packageRoot, 'src/tokens/shadows.ts'),
-      'utf8'
-    );
-    expect(nativeCompatibilitySource).not.toMatch(
-      /\b(?:x|y|blur|color|opacity|elevation):/
-    );
-
-    const componentOutputSource = fs.readFileSync(
-      path.join(packageRoot, 'src/platform-output/component-token-intents.ts'),
-      'utf8'
-    );
-    expect(componentOutputSource).not.toContain('theme.semantic.shadow');
-    expect(componentOutputSource).not.toContain('theme.tokens.shadows');
-  });
+      const componentOutputSource = fs.readFileSync(
+        path.join(
+          packageRoot,
+          'src/platform-output/component-token-intents.ts',
+        ),
+        'utf8',
+      );
+      expect(componentOutputSource).not.toContain('theme.semantic.shadow');
+      expect(componentOutputSource).not.toContain('theme.tokens.shadows');
+    },
+  );
 });

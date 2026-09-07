@@ -66,7 +66,7 @@ const layer = (
   spread: number,
   color: string,
   opacity: number,
-  inset = false
+  inset = false,
 ): ShadowLayer => ({ x, y, blur, spread, color, opacity, inset });
 
 const nativeShadow = (
@@ -75,7 +75,7 @@ const nativeShadow = (
   blur: number,
   color: string,
   opacity: number,
-  elevation: number
+  elevation: number,
 ): ReactNativeShadowOutput => ({ x, y, blur, color, opacity, elevation });
 
 const nativeSm = nativeShadow(0, 1, 3, colors.mono[950], 0.04, 1);
@@ -104,11 +104,11 @@ export const canonicalShadowEffects = {
       themes: {
         light: effect(
           layer(0, 12, 40, 0, colors.vellira[950], 0.16),
-          layer(0, 2, 8, 0, colors.vellira[950], 0.1)
+          layer(0, 2, 8, 0, colors.vellira[950], 0.1),
         ),
         dark: effect(
           layer(0, 12, 40, 0, colors.mono[950], 0.35),
-          layer(0, 2, 8, 0, colors.mono[950], 0.25)
+          layer(0, 2, 8, 0, colors.mono[950], 0.25),
         ),
         'high-contrast': effect(layer(0, 12, 40, 0, colors.mono[950], 0.7)),
       },
@@ -118,11 +118,11 @@ export const canonicalShadowEffects = {
       themes: {
         light: effect(
           layer(0, 20, 60, 0, colors.vellira[950], 0.2),
-          layer(0, 4, 16, 0, colors.vellira[950], 0.14)
+          layer(0, 4, 16, 0, colors.vellira[950], 0.14),
         ),
         dark: effect(
           layer(0, 20, 60, 0, colors.mono[950], 0.45),
-          layer(0, 4, 16, 0, colors.mono[950], 0.3)
+          layer(0, 4, 16, 0, colors.mono[950], 0.3),
         ),
         'high-contrast': effect(layer(0, 20, 60, 0, colors.mono[950], 0.8)),
       },
@@ -155,7 +155,7 @@ function parseHexColor(color: string): readonly [number, number, number] {
 
   if (!match) {
     throw new Error(
-      `Shadow layer color must be a six-digit hex value, received ${color}.`
+      `Shadow layer color must be a six-digit hex value, received ${color}.`,
     );
   }
 
@@ -178,7 +178,7 @@ function formatLength(value: number): string {
 function serializeLayerForWeb(value: ShadowLayer): string {
   if (!Number.isFinite(value.blur) || value.blur < 0) {
     throw new Error(
-      `Shadow blur must be finite and non-negative, received ${value.blur}.`
+      `Shadow blur must be finite and non-negative, received ${value.blur}.`,
     );
   }
 
@@ -188,7 +188,7 @@ function serializeLayerForWeb(value: ShadowLayer): string {
     value.opacity > 1
   ) {
     throw new Error(
-      `Shadow opacity must be finite and within [0, 1], received ${value.opacity}.`
+      `Shadow opacity must be finite and within [0, 1], received ${value.opacity}.`,
     );
   }
 
@@ -218,31 +218,31 @@ export function serializeShadowEffectForWeb(value: ShadowEffect): string {
 export function createSemanticShadowTokens(themeName: ShadowThemeName) {
   return {
     sm: serializeShadowEffectForWeb(
-      canonicalShadowEffects.elevation.sm.themes[themeName]
+      canonicalShadowEffects.elevation.sm.themes[themeName],
     ),
     md: serializeShadowEffectForWeb(
-      canonicalShadowEffects.elevation.md.themes[themeName]
+      canonicalShadowEffects.elevation.md.themes[themeName],
     ),
     lg: serializeShadowEffectForWeb(
-      canonicalShadowEffects.elevation.lg.themes[themeName]
+      canonicalShadowEffects.elevation.lg.themes[themeName],
     ),
     xl: serializeShadowEffectForWeb(
-      canonicalShadowEffects.elevation.xl.themes[themeName]
+      canonicalShadowEffects.elevation.xl.themes[themeName],
     ),
     inset: serializeShadowEffectForWeb(
-      canonicalShadowEffects.inset.themes[themeName]
+      canonicalShadowEffects.inset.themes[themeName],
     ),
   } as const;
 }
 
 export function createFocusRingShadowToken(themeName: ShadowThemeName): string {
   return serializeShadowEffectForWeb(
-    canonicalShadowEffects.focusRing.themes[themeName]
+    canonicalShadowEffects.focusRing.themes[themeName],
   );
 }
 
 export function resolveReactNativeElevationShadow(
-  level: ElevationShadowLevel
+  level: ElevationShadowLevel,
 ): ReactNativeShadowOutput {
   const approximation =
     canonicalShadowEffects.elevation[level].reactNativeApproximation;
