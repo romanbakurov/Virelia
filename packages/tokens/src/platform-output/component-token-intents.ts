@@ -116,6 +116,18 @@ export function createComponentViewportHeightIntent(
   return { kind: 'viewport-height', ratio };
 }
 
+function hasExactKeys(
+  candidate: Record<string, unknown>,
+  expectedKeys: readonly string[]
+): boolean {
+  const actualKeys = Object.keys(candidate);
+
+  return (
+    actualKeys.length === expectedKeys.length &&
+    actualKeys.every((key) => expectedKeys.includes(key))
+  );
+}
+
 export function isComponentPlatformIntent(
   value: unknown
 ): value is ComponentPlatformIntent {
@@ -127,11 +139,12 @@ export function isComponentPlatformIntent(
 
   if (candidate.kind === 'shadow') {
     if (candidate.role === 'focus-ring' || candidate.role === 'none') {
-      return true;
+      return hasExactKeys(candidate, ['kind', 'role']);
     }
 
     return (
       candidate.role === 'elevation' &&
+      hasExactKeys(candidate, ['kind', 'role', 'level']) &&
       typeof candidate.level === 'string' &&
       componentShadowLevels.includes(candidate.level as ComponentShadowLevel)
     );
@@ -139,6 +152,7 @@ export function isComponentPlatformIntent(
 
   return (
     candidate.kind === 'viewport-height' &&
+    hasExactKeys(candidate, ['kind', 'ratio']) &&
     typeof candidate.ratio === 'number' &&
     Number.isFinite(candidate.ratio) &&
     candidate.ratio > 0 &&
