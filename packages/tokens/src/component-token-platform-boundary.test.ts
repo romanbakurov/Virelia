@@ -72,4 +72,30 @@ describe('renderer-neutral canonical component token boundary', () => {
       expect(findings).toEqual([]);
     }
   );
+
+  it('does not let renderer keys hide inside intent-shaped objects', () => {
+    const findings: Finding[] = [];
+
+    scanCanonicalComponentTokens(
+      {
+        content: {
+          shadow: {
+            kind: 'shadow',
+            role: 'elevation',
+            level: 'lg',
+            web: '0 0 8px black',
+          },
+        },
+      },
+      'components.probe',
+      findings
+    );
+
+    expect(findings).toEqual([
+      {
+        path: 'components.probe.content.shadow.web',
+        reason: 'renderer-specific canonical key "web"',
+      },
+    ]);
+  });
 });
