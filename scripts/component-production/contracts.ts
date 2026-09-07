@@ -52,6 +52,10 @@ export const COMPONENT_PRODUCTION_STAGE_IDS = [
   'website',
   'completeness',
   'quality',
+  'public-api',
+  'tooling',
+  'visual',
+  'smoke',
 ] as const;
 
 export type ComponentProductionStageId =

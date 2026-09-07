@@ -228,15 +228,10 @@ function validateDependencySet(params: {
   }
 }
 
-export function validateComponentGenerationPlan(
-  plan: ComponentGenerationPlan,
-  options: {
-    allowExistingTargets?: boolean;
-  } = {}
-): ComponentPreflightResult {
+export function validateComponentGenerationAuthorities(
+  plan: ComponentGenerationPlan
+): string[] {
   const errors: string[] = [];
-  const existingTargets: string[] = [];
-  const profile = getComponentProfile(plan.profile);
   const selectedPlatforms = plan.targets.map(
     (target) => target.packageName as ComponentDependencyPlatform
   );
@@ -345,6 +340,20 @@ export function validateComponentGenerationPlan(
       }
     }
   }
+
+  return errors;
+}
+
+export function validateComponentGenerationPlan(
+  plan: ComponentGenerationPlan,
+  options: {
+    allowExistingTargets?: boolean;
+  } = {}
+): ComponentPreflightResult {
+  const errors: string[] = [];
+  const existingTargets: string[] = [];
+  const profile = getComponentProfile(plan.profile);
+  errors.push(...validateComponentGenerationAuthorities(plan));
 
   for (const target of plan.targets) {
     if (!fs.existsSync(target.barrelFile)) {

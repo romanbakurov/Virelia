@@ -22,6 +22,8 @@ const INPUT: ComponentProductionInputV1 = {
   parts: [],
 };
 
+const PASSING_PLAN_CONTRACT = async () => [] as string[];
+
 describe('runComponentProductionStructuredValidation', () => {
   it('runs validation against a fresh canonical candidate context', async () => {
     let observedPlatform: string | undefined;
@@ -29,6 +31,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: (params) => {
         observedPlatform = params.platform;
 
@@ -53,10 +56,58 @@ describe('runComponentProductionStructuredValidation', () => {
     ]);
   });
 
+  it('blocks before validators when production input drifts from the canonical generated plan', async () => {
+    let workerCalled = false;
+    let observedProfile: string | undefined;
+
+    const result = await runComponentProductionStructuredValidation({
+      root: '/tmp/vellira-production',
+      input: INPUT,
+      checkPlanContract: async (plan) => {
+        observedProfile = plan.profile;
+        return [plan.metadataFile, plan.metadataFile];
+      },
+      runner: () => {
+        workerCalled = true;
+
+        return workerSuccess({
+          completeness: [
+            {
+              componentName: 'Avatar',
+              ready: true,
+              checks: [],
+            },
+          ],
+          quality: passingQuality(),
+        });
+      },
+    });
+
+    expect(observedProfile).toBe('base');
+    expect(workerCalled).toBe(false);
+    expect(result.completeness).toBeNull();
+    expect(result.quality).toBeNull();
+    expect(result.stages[0]).toMatchObject({
+      id: 'completeness',
+      status: 'blocked',
+      findings: [
+        {
+          severity: 'blocking',
+          path: 'packages/metadata/src/components/Avatar.metadata.ts',
+        },
+      ],
+    });
+    expect(result.stages[1]).toMatchObject({
+      id: 'quality',
+      status: 'skipped',
+    });
+  });
+
   it('blocks when the generated component is not registered in canonical metadata', async () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () =>
         workerResult({
           schemaVersion: '1',
@@ -85,6 +136,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () =>
         workerSuccess({
           completeness: [
@@ -124,6 +176,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () =>
         workerSuccess({
           completeness: [
@@ -198,6 +251,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () =>
         workerSuccess({
           completeness: [
@@ -250,6 +304,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () =>
         workerSuccess({
           completeness: [
@@ -295,6 +350,7 @@ describe('runComponentProductionStructuredValidation', () => {
     const result = await runComponentProductionStructuredValidation({
       root: '/tmp/vellira-production',
       input: INPUT,
+      checkPlanContract: PASSING_PLAN_CONTRACT,
       runner: () => ({
         exitCode: 2,
         stdout: '',

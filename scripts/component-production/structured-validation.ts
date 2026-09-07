@@ -4,10 +4,14 @@ import path from 'node:path';
 import type { ComponentCompletenessResult } from '../checks/component-completeness/types';
 import type { ComponentQualityRunResult } from '../checks/component-quality/types';
 
-import type {
-  ComponentProductionFinding,
-  ComponentProductionInputV1,
-  ComponentProductionStageResult,
+import { checkGeneratedPlanContract } from '../generators/component/plan-contract';
+import { createComponentGenerationPlan } from '../generators/component/plan';
+
+import {
+  createComponentProductionGeneratorOptions,
+  type ComponentProductionFinding,
+  type ComponentProductionInputV1,
+  type ComponentProductionStageResult,
 } from './contracts';
 import {
   COMPONENT_PRODUCTION_VALIDATION_WORKER_SCHEMA_VERSION,
@@ -39,12 +43,39 @@ export type ComponentProductionStructuredValidationWorkerRunner = (params: {
   platform: 'web' | 'native' | 'all';
 }) => ComponentProductionStructuredValidationWorkerExecution;
 
+export type ComponentProductionPlanContractChecker =
+  typeof checkGeneratedPlanContract;
+
 export async function runComponentProductionStructuredValidation(params: {
   root: string;
   input: ComponentProductionInputV1;
   runner?: ComponentProductionStructuredValidationWorkerRunner;
+  checkPlanContract?: ComponentProductionPlanContractChecker;
 }): Promise<ComponentProductionStructuredValidationResult> {
   const root = path.resolve(params.root);
+  const plan = createComponentGenerationPlan({
+    root,
+    options: createComponentProductionGeneratorOptions(params.input),
+  });
+  const checkPlanContract =
+    params.checkPlanContract ?? checkGeneratedPlanContract;
+
+  let driftedFiles: string[];
+
+  try {
+    driftedFiles = await checkPlanContract(plan);
+  } catch (error) {
+    return runtimeFailure(error);
+  }
+
+  if (driftedFiles.length > 0) {
+    return productionContractMismatch({
+      root,
+      componentName: params.input.componentName,
+      driftedFiles,
+    });
+  }
+
   const runner =
     params.runner ?? runComponentProductionStructuredValidationWorker;
 
@@ -219,6 +250,59 @@ export function runComponentProductionStructuredValidationWorker(params: {
         }
       : {}),
   };
+}
+
+function productionContractMismatch(params: {
+  root: string;
+  componentName: string;
+  driftedFiles: readonly string[];
+}): ComponentProductionStructuredValidationResult {
+  const paths = [
+    ...new Set(
+      params.driftedFiles.map((filePath) =>
+        normalizeRepositoryPath(params.root, filePath)
+      )
+    ),
+  ].sort();
+
+  return {
+    stages: [
+      {
+        id: 'completeness',
+        status: 'blocked',
+        summary:
+          'Component production input does not match the canonical generated plan contract.',
+        findings: paths.map((filePath) => ({
+          id: `completeness:${normalizeId(
+            params.componentName
+          )}:production-contract:${normalizeId(filePath)}`,
+          stage: 'completeness',
+          severity: 'blocking',
+          message: `Component production input disagrees with the canonical generated contract at ${filePath}.`,
+          path: filePath,
+        })),
+        artifacts: [],
+      },
+      {
+        id: 'quality',
+        status: 'skipped',
+        summary:
+          'Component Quality validation was skipped because the production contract did not match canonical generated ownership.',
+        findings: [],
+        artifacts: [],
+      },
+    ],
+    completeness: null,
+    quality: null,
+  };
+}
+
+function normalizeRepositoryPath(root: string, filePath: string): string {
+  const absolutePath = path.isAbsolute(filePath)
+    ? filePath
+    : path.resolve(root, filePath);
+
+  return path.relative(root, absolutePath).split(path.sep).join('/');
 }
 
 function parseWorkerResult(

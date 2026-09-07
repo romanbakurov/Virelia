@@ -1,6 +1,10 @@
 import type { ComponentPlatform } from '@vellira-ui/metadata';
 
 export type ComponentCheckName =
+  | 'metadata'
+  | 'type-ownership'
+  | 'production-authorities'
+  | 'component-tokens'
   | 'implementation'
   | 'types'
   | 'exports'
