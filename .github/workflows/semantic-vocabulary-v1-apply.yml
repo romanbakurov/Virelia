@@ -35,6 +35,7 @@ jobs:
           python3 scripts/token-semantic-vocabulary-v1-test-fixup.py
           python3 scripts/token-semantic-vocabulary-v1-architecture-fixup.py
           python3 scripts/token-semantic-vocabulary-v1-manifest.py
+          python3 scripts/token-semantic-vocabulary-v1-downstream-evidence.py
 
       - name: Assert no legacy authored references remain
         shell: bash
@@ -47,7 +48,8 @@ jobs:
             ':!scripts/token-semantic-vocabulary-v1-fixup.py' \
             ':!scripts/token-semantic-vocabulary-v1-test-fixup.py' \
             ':!scripts/token-semantic-vocabulary-v1-architecture-fixup.py' \
-            ':!scripts/token-semantic-vocabulary-v1-manifest.py'; then
+            ':!scripts/token-semantic-vocabulary-v1-manifest.py' \
+            ':!scripts/token-semantic-vocabulary-v1-downstream-evidence.py'; then
             echo 'Legacy semantic vocabulary remains in authored sources.' >&2
             exit 1
           fi
