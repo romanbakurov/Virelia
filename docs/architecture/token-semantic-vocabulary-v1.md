@@ -6,11 +6,11 @@ Canonical semantic naming contract for Vellira token consumers, Generator V2, qu
 
 ## Rule
 
-Semantic names describe **purpose**, not a primitive hue, renderer, interaction implementation, or the component that first introduced the value. Primitive values feed semantic roles; component factories consume semantic roles; platform adapters serialize component contracts.
+Semantic names describe **purpose**, not a primitive hue, renderer, interaction implementation, or the component that first introduced the value. Primitive values feed semantic roles; component factories consume semantic roles; platform adapters serialize component contracts. Consumers select semantic roles by purpose, never by whichever role currently resolves to a matching primitive value.
 
 ## Canonical namespaces
 
-- **surface** — canvas/layer backgrounds and generic interaction surfaces. `surface.background` is removed because it did not identify a distinct purpose; application roots use `surface.canvas`.
+- **surface** — canvas/layer backgrounds and generic interaction surfaces. `surface.canvas` is the application/page root backdrop; `surface.panel` is bounded neutral container/chrome that sits on the canvas without implying floating elevation; `surface.elevated` remains for raised/floating layers. `surface.background` stays removed because it mixed those purposes under one ambiguous name.
 - **text** — foreground hierarchy (`primary → secondary → muted → subtle → disabled`) plus brand and interaction-specific text roles.
 - **icons** — icon foreground hierarchy. `interactive`/`interactiveHover` describe interaction; `brand` remains a distinct identity role.
 - **border / divider** — structural borders and separators. `border.interactive` is generic interaction emphasis; actual focus indication belongs to `focus.ring`.
@@ -21,6 +21,16 @@ Semantic names describe **purpose**, not a primitive hue, renderer, interaction 
 - **menu** — menu-specific current/highlighted semantics where `active` is a real persistent/current domain state.
 - **overlay** — `backdrop`, `tooltip`, `floating`, and `dialog`; names describe presentation purpose rather than Popover/Modal component history.
 - **shadow** — semantic elevation references. Renderer-neutral shadow/elevation ownership is handled by the later #885 boundary work.
+
+## Surface ownership correction
+
+The original #883 source audit missed authored CSS consumers of generated `--surface-background`. Those consumers showed that the removed role had been serving two different purposes. Application roots stay on `surface.canvas`; bounded sidebars, navigation drawers, cards, code panels, and similar chrome use `surface.panel`. Foreground paint must use foreground roles such as `text.inverse`, never a surface token.
+
+`surface.panel` preserves the former bounded-container values without changing `canvas` or abusing `elevated` as a value-matching alias:
+
+- Light: `colors.mono[50]`
+- Dark: `colors.vellira[950]`
+- High Contrast: `colors.grayBlue[950]`
 
 ## Migration policy
 

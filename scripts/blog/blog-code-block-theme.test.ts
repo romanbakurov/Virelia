@@ -12,9 +12,18 @@ describe('blog code block theme surfaces', () => {
   it('keeps the toolbar and code body on distinct theme-aware surfaces', () => {
     expect(codeBlockStyles).toContain('background: var(--surface-subtle);');
     expect(codeBlockStyles).toContain('background: var(--surface-muted);');
-    expect(codeBlockStyles).toContain('background: var(--surface-canvas);');
-    expect(codeBlockStyles).toContain('var(--surface-canvas) 56%');
     expect(codeBlockStyles).toContain('background: var(--surface-default);');
+  });
+
+  it('keeps the light code body on the bounded panel role instead of collapsing into the page canvas', () => {
+    expect(codeBlockStyles).toContain(
+      ":global([data-vellira-theme='light']) .codeBlock {\n  background: var(--surface-panel);\n}"
+    );
+    expect(codeBlockStyles).toContain('var(--surface-panel) 56%');
+    expect(codeBlockStyles).not.toContain(
+      ":global([data-vellira-theme='light']) .codeBlock {\n  background: var(--surface-canvas);\n}"
+    );
+    expect(codeBlockStyles).not.toContain('--surface-background');
   });
 
   it('keeps the original dark Shiki background while preserving high-contrast surface ownership', () => {
