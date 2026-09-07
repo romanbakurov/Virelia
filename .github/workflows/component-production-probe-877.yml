@@ -1,0 +1,312 @@
+name: Component Production Contract Probe 877
+
+on:
+  push:
+    branches:
+      - chore/component-production-probe-877
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/component-production-contract-877
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Apply canonical dependency/resource contract slice
+        run: |
+          test "$(git rev-parse HEAD)" = "38e2ea5d5a4ab52bbf0a6eb2821d203b3425020d"
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path_str: str, old: str, new: str):
+              path = Path(path_str)
+              source = path.read_text()
+              if source.count(old) != 1:
+                  raise SystemExit(f'{path}: expected exactly one replacement for:\n{old[:120]}')
+              path.write_text(source.replace(old, new, 1))
+
+          # Metadata contract: dependencies can be platform-aware and assets are first-class requirements.
+          replace_once(
+              'packages/metadata/src/component.ts',
+              "export interface ComponentDependencies {\n  packages?: readonly string[];\n  components?: readonly string[];\n}\n\nexport interface ComponentIconRequirement {\n",
+              "export interface ComponentDependencySet {\n  packages?: readonly string[];\n  components?: readonly string[];\n}\n\nexport interface ComponentDependencies extends ComponentDependencySet {\n  platforms?: Partial<Record<ComponentPlatform, ComponentDependencySet>>;\n}\n\nexport interface ComponentIconRequirement {\n",
+          )
+          replace_once(
+              'packages/metadata/src/component.ts',
+              "export interface ComponentIconRequirement {\n  name: string;\n  purpose: string;\n}\n\nexport type ComponentTokenContract =\n",
+              "export interface ComponentIconRequirement {\n  name: string;\n  purpose: string;\n}\n\nexport interface ComponentAssetRequirement {\n  path: string;\n  purpose: string;\n}\n\nexport type ComponentTokenContract =\n",
+          )
+          replace_once(
+              'packages/metadata/src/component.ts',
+              "  tokens?: readonly string[];\n  icons?: readonly ComponentIconRequirement[];\n}\n",
+              "  tokens?: readonly string[];\n  icons?: readonly ComponentIconRequirement[];\n  assets?: readonly ComponentAssetRequirement[];\n}\n",
+          )
+
+          # Metadata validator: validate platform dependency sets, component-token intent, and assets.
+          replace_once(
+              'packages/metadata/src/validateComponentMetadata.ts',
+              "const COMPONENT_PROFILES = [\n  'base',\n  'form-control',\n  'compound',\n  'overlay',\n] as const;\n",
+              "const COMPONENT_PROFILES = [\n  'base',\n  'form-control',\n  'compound',\n  'overlay',\n] as const;\n\nconst COMPONENT_TOKEN_CONTRACTS = [\n  'standard',\n  'boolean-control',\n  'disclosure',\n] as const;\n",
+          )
+          replace_once(
+              'packages/metadata/src/validateComponentMetadata.ts',
+              "function validateIconRequirements(value: unknown, errors: string[]) {\n",
+              "function validateDependencySet(\n  value: unknown,\n  field: string,\n  errors: string[]\n) {\n  if (!isRecord(value)) {\n    errors.push(`${field} must be an object.`);\n    return;\n  }\n\n  if (value.packages !== undefined) {\n    validateStringArray({\n      value: value.packages,\n      field: `${field}.packages`,\n      errors,\n    });\n  }\n\n  if (value.components !== undefined) {\n    validateStringArray({\n      value: value.components,\n      field: `${field}.components`,\n      errors,\n    });\n  }\n}\n\nfunction validateAssetRequirements(value: unknown, errors: string[]) {\n  if (!Array.isArray(value)) {\n    errors.push('requirements.assets must be an array.');\n    return;\n  }\n\n  const seen = new Set<string>();\n\n  value.forEach((item, index) => {\n    if (!isRecord(item)) {\n      errors.push(`requirements.assets[${index}] must be an object.`);\n      return;\n    }\n\n    const validPath = isNonEmptyString(item.path);\n    const validPurpose = isNonEmptyString(item.purpose);\n\n    if (!validPath) {\n      errors.push(\n        `requirements.assets[${index}].path must be a non-empty string.`\n      );\n    }\n\n    if (!validPurpose) {\n      errors.push(\n        `requirements.assets[${index}].purpose must be a non-empty string.`\n      );\n    }\n\n    if (validPath && validPurpose) {\n      const key = `${item.path}\\u0000${item.purpose}`;\n\n      if (seen.has(key)) {\n        errors.push(\n          `requirements.assets must not contain duplicate path/purpose requirements: ${item.path} / ${item.purpose}.`\n        );\n      }\n\n      seen.add(key);\n    }\n  });\n}\n\nfunction validateIconRequirements(value: unknown, errors: string[]) {\n",
+          )
+          replace_once(
+              'packages/metadata/src/validateComponentMetadata.ts',
+              "  if (input.dependencies !== undefined) {\n    if (!isRecord(input.dependencies)) {\n      errors.push('dependencies must be an object.');\n    } else {\n      if (input.dependencies.packages !== undefined) {\n        validateStringArray({\n          value: input.dependencies.packages,\n          field: 'dependencies.packages',\n          errors,\n        });\n      }\n\n      if (input.dependencies.components !== undefined) {\n        validateStringArray({\n          value: input.dependencies.components,\n          field: 'dependencies.components',\n          errors,\n        });\n      }\n    }\n  }\n",
+              "  if (input.dependencies !== undefined) {\n    if (!isRecord(input.dependencies)) {\n      errors.push('dependencies must be an object.');\n    } else {\n      validateDependencySet(input.dependencies, 'dependencies', errors);\n\n      if (input.dependencies.platforms !== undefined) {\n        if (!isRecord(input.dependencies.platforms)) {\n          errors.push('dependencies.platforms must be an object.');\n        } else {\n          for (const [platform, dependencySet] of Object.entries(\n            input.dependencies.platforms\n          )) {\n            if (!componentPlatforms.includes(platform as ComponentPlatform)) {\n              errors.push(\n                `dependencies.platforms contains unsupported platform: ${platform}.`\n              );\n              continue;\n            }\n\n            validateDependencySet(\n              dependencySet,\n              `dependencies.platforms.${platform}`,\n              errors\n            );\n          }\n        }\n      }\n    }\n  }\n",
+          )
+          replace_once(
+              'packages/metadata/src/validateComponentMetadata.ts',
+              "    if (input.requirements.tokens !== undefined) {\n",
+              "    if (input.requirements.componentTokens !== undefined) {\n      const value = input.requirements.componentTokens;\n\n      if (\n        value !== false &&\n        (typeof value !== 'string' ||\n          !COMPONENT_TOKEN_CONTRACTS.includes(\n            value as (typeof COMPONENT_TOKEN_CONTRACTS)[number]\n          ))\n      ) {\n        errors.push(\n          `requirements.componentTokens must be false or one of: ${COMPONENT_TOKEN_CONTRACTS.join(', ')}.`\n        );\n      }\n    }\n\n    if (input.requirements.tokens !== undefined) {\n",
+          )
+          replace_once(
+              'packages/metadata/src/validateComponentMetadata.ts',
+              "    if (input.requirements.icons !== undefined) {\n      validateIconRequirements(input.requirements.icons, errors);\n    }\n",
+              "    if (input.requirements.icons !== undefined) {\n      validateIconRequirements(input.requirements.icons, errors);\n    }\n\n    if (input.requirements.assets !== undefined) {\n      validateAssetRequirements(input.requirements.assets, errors);\n    }\n",
+          )
+
+          # Deterministic @vellira-ui/assets authority.
+          replace_once(
+              'scripts/design-resources/authority.ts',
+              "export type DesignResourcePlatform = 'react' | 'react-native';\n",
+              "export type DesignResourcePlatform = 'react' | 'react-native';\n\nconst CANONICAL_ASSET_ROOTS = new Set(['brand', 'fonts', 'styles']);\n\nexport function canonicalAssetRoot(root: string) {\n  return path.join(root, 'packages', 'assets');\n}\n\nexport function canonicalAssetPath(params: {\n  root: string;\n  assetPath: string;\n}): string | null {\n  const portable = params.assetPath.replace(/\\\\/g, '/');\n  const segments = portable.split('/');\n\n  if (\n    portable.length === 0 ||\n    path.posix.isAbsolute(portable) ||\n    segments.some(\n      (segment) => segment.length === 0 || segment === '.' || segment === '..'\n    ) ||\n    !CANONICAL_ASSET_ROOTS.has(segments[0] ?? '')\n  ) {\n    return null;\n  }\n\n  return path.join(canonicalAssetRoot(params.root), ...segments);\n}\n\nexport function canonicalAssetExists(params: {\n  root: string;\n  assetPath: string;\n}) {\n  const filePath = canonicalAssetPath(params);\n\n  return (\n    filePath !== null &&\n    fs.existsSync(filePath) &&\n    fs.statSync(filePath).isFile()\n  );\n}\n",
+          )
+
+          # Generator options/plan carry the production dependency/resource contract programmatically.
+          replace_once(
+              'scripts/generators/component/cli.ts',
+              "  ComponentCapability,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+              "  ComponentAssetRequirement,\n  ComponentCapability,\n  ComponentDependencies,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+          )
+          replace_once(
+              'scripts/generators/component/cli.ts',
+              "  capabilities?: readonly ComponentCapability[];\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n  componentTokens?: ComponentTokenContract | false;\n",
+              "  capabilities?: readonly ComponentCapability[];\n  dependencies?: ComponentDependencies;\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n  assets?: readonly ComponentAssetRequirement[];\n  componentTokens?: ComponentTokenContract | false;\n",
+          )
+
+          replace_once(
+              'scripts/generators/component/plan.ts',
+              "  ComponentCapability,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+              "  ComponentAssetRequirement,\n  ComponentCapability,\n  ComponentDependencies,\n  ComponentDependencySet,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+          )
+          replace_once(
+              'scripts/generators/component/plan.ts',
+              "  typeOwnership: ComponentTypeOwnership;\n  capabilities: readonly ComponentCapability[];\n  icons: readonly ComponentIconRequirement[];\n  tokens: readonly string[];\n",
+              "  typeOwnership: ComponentTypeOwnership;\n  capabilities: readonly ComponentCapability[];\n  dependencies: ComponentDependencies;\n  icons: readonly ComponentIconRequirement[];\n  tokens: readonly string[];\n  assets: readonly ComponentAssetRequirement[];\n",
+          )
+          replace_once(
+              'scripts/generators/component/plan.ts',
+              "function getTargetPackages(\n  platform: ComponentPlatformArg\n): ComponentTargetPackage[] {\n",
+              "function normalizeDependencySet(\n  value: ComponentDependencySet | undefined\n): ComponentDependencySet {\n  return {\n    ...(value?.packages && value.packages.length > 0\n      ? { packages: [...new Set(value.packages)].sort() }\n      : {}),\n    ...(value?.components && value.components.length > 0\n      ? { components: [...new Set(value.components)].sort() }\n      : {}),\n  };\n}\n\nfunction resolvePlanDependencies(params: {\n  dependencies: ComponentDependencies | undefined;\n  typeOwnership: ComponentTypeOwnership;\n}): ComponentDependencies {\n  const packages = new Set(params.dependencies?.packages ?? []);\n\n  if (params.typeOwnership === 'shared') {\n    packages.add('@vellira-ui/types');\n  }\n\n  const platforms = Object.fromEntries(\n    Object.entries(params.dependencies?.platforms ?? {})\n      .map(([platform, dependencySet]) => [\n        platform,\n        normalizeDependencySet(dependencySet),\n      ])\n      .filter(([, dependencySet]) =>\n        Object.keys(dependencySet as ComponentDependencySet).length > 0\n      )\n  ) as ComponentDependencies['platforms'];\n\n  return {\n    ...(packages.size > 0 ? { packages: [...packages].sort() } : {}),\n    ...((params.dependencies?.components?.length ?? 0) > 0\n      ? {\n          components: [...new Set(params.dependencies?.components ?? [])].sort(),\n        }\n      : {}),\n    ...(Object.keys(platforms ?? {}).length > 0 ? { platforms } : {}),\n  };\n}\n\nfunction getTargetPackages(\n  platform: ComponentPlatformArg\n): ComponentTargetPackage[] {\n",
+          )
+          replace_once(
+              'scripts/generators/component/plan.ts',
+              "  const targets = getTargetPackages(options.platform).map((packageName) => ({\n",
+              "  const typeOwnership = resolveComponentTypeOwnership(options);\n  const dependencies = resolvePlanDependencies({\n    dependencies: options.dependencies,\n    typeOwnership,\n  });\n  const targets = getTargetPackages(options.platform).map((packageName) => ({\n",
+          )
+          replace_once(
+              'scripts/generators/component/plan.ts',
+              "    typeOwnership: resolveComponentTypeOwnership(options),\n    capabilities: options.capabilities ?? [],\n    icons: options.icons ?? [],\n    tokens: options.tokens ?? [],\n",
+              "    typeOwnership,\n    capabilities: options.capabilities ?? [],\n    dependencies,\n    icons: options.icons ?? [],\n    tokens: options.tokens ?? [],\n    assets: options.assets ?? [],\n",
+          )
+
+          # Preflight validates canonical package/component dependencies and assets before mutation.
+          replace_once(
+              'scripts/generators/component/preflight.ts',
+              "import fs from 'node:fs';\n",
+              "import fs from 'node:fs';\nimport path from 'node:path';\n",
+          )
+          replace_once(
+              'scripts/generators/component/preflight.ts',
+              "  canonicalIconExports,\n  canonicalIconSourcePath,\n  canonicalTokenPaths,\n  canonicalTokenRegistryPath,\n",
+              "  canonicalAssetExists,\n  canonicalAssetPath,\n  canonicalIconExports,\n  canonicalIconSourcePath,\n  canonicalTokenPaths,\n  canonicalTokenRegistryPath,\n",
+          )
+          replace_once(
+              'scripts/generators/component/preflight.ts',
+              "export function validateComponentGenerationPlan(\n",
+              "function validateCanonicalPackageDependency(\n  root: string,\n  packageName: string,\n  errors: string[]\n) {\n  if (!packageName.startsWith('@vellira-ui/')) {\n    return;\n  }\n\n  const packageDir = packageName.slice('@vellira-ui/'.length);\n  const packageJsonPath = path.join(root, 'packages', packageDir, 'package.json');\n\n  if (!fs.existsSync(packageJsonPath)) {\n    errors.push(\n      `missing-canonical-package-dependency: package=\"${packageName}\" expected=\"${packageJsonPath}\"`\n    );\n    return;\n  }\n\n  try {\n    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as {\n      name?: unknown;\n    };\n\n    if (packageJson.name !== packageName) {\n      errors.push(\n        `invalid-canonical-package-dependency: package=\"${packageName}\" manifest=\"${packageJsonPath}\"`\n      );\n    }\n  } catch {\n    errors.push(\n      `invalid-canonical-package-dependency: package=\"${packageName}\" manifest=\"${packageJsonPath}\"`\n    );\n  }\n}\n\nfunction validateDependencySet(params: {\n  root: string;\n  packages?: readonly string[];\n  components?: readonly string[];\n  componentName: string;\n  errors: string[];\n}) {\n  for (const packageName of params.packages ?? []) {\n    validateCanonicalPackageDependency(params.root, packageName, params.errors);\n  }\n\n  for (const componentName of params.components ?? []) {\n    if (componentName === params.componentName) {\n      params.errors.push(\n        `invalid-component-dependency: component=\"${params.componentName}\" cannot depend on itself`\n      );\n      continue;\n    }\n\n    const metadataFile = path.join(\n      params.root,\n      'packages',\n      'metadata',\n      'src',\n      'components',\n      `${componentName}.metadata.ts`\n    );\n\n    if (!fs.existsSync(metadataFile)) {\n      params.errors.push(\n        `missing-component-dependency: component=\"${componentName}\" expected=\"${metadataFile}\"`\n      );\n    }\n  }\n}\n\nexport function validateComponentGenerationPlan(\n",
+          )
+          replace_once(
+              'scripts/generators/component/preflight.ts',
+              "  if (plan.icons.length > 0) {\n",
+              "  validateDependencySet({\n    root: plan.root,\n    packages: plan.dependencies.packages,\n    components: plan.dependencies.components,\n    componentName: plan.componentName,\n    errors,\n  });\n\n  const selectedPlatforms = new Set(plan.targets.map((target) => target.packageName));\n\n  for (const [platform, dependencies] of Object.entries(\n    plan.dependencies.platforms ?? {}\n  )) {\n    if (!selectedPlatforms.has(platform as 'react' | 'react-native')) {\n      errors.push(\n        `invalid-platform-dependency: platform=\"${platform}\" is not selected for component=\"${plan.componentName}\"`\n      );\n      continue;\n    }\n\n    validateDependencySet({\n      root: plan.root,\n      packages: dependencies?.packages,\n      components: dependencies?.components,\n      componentName: plan.componentName,\n      errors,\n    });\n  }\n\n  for (const asset of plan.assets) {\n    const assetPath = canonicalAssetPath({\n      root: plan.root,\n      assetPath: asset.path,\n    });\n\n    if (!assetPath) {\n      errors.push(\n        `invalid-design-asset-path: path=\"${asset.path}\" purpose=\"${asset.purpose}\" — expected a canonical brand/, fonts/, or styles/ asset path`\n      );\n      continue;\n    }\n\n    if (\n      !canonicalAssetExists({\n        root: plan.root,\n        assetPath: asset.path,\n      })\n    ) {\n      errors.push(\n        `missing-design-asset: path=\"${asset.path}\" purpose=\"${asset.purpose}\" expected=\"${assetPath}\"`\n      );\n    }\n  }\n\n  if (plan.icons.length > 0) {\n",
+          )
+
+          # Metadata rendering and docs metadata are derived from the same plan contract.
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "  ComponentCapability,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+              "  ComponentAssetRequirement,\n  ComponentCapability,\n  ComponentDependencies,\n  ComponentIconRequirement,\n  ComponentTokenContract,\n",
+          )
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "  capabilities: readonly ComponentCapability[];\n  typeOwnership?: ComponentTypeOwnership;\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n",
+              "  capabilities: readonly ComponentCapability[];\n  typeOwnership?: ComponentTypeOwnership;\n  dependencies?: ComponentDependencies;\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n  assets?: readonly ComponentAssetRequirement[];\n",
+          )
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "export function renderMetadataTemplate({\n",
+              "function renderDependencySet(\n  dependencySet: {\n    packages?: readonly string[];\n    components?: readonly string[];\n  },\n  indent: string\n) {\n  const lines = [\n    dependencySet.packages && dependencySet.packages.length > 0\n      ? `${indent}packages: [${dependencySet.packages\n          .map(renderSingleQuotedString)\n          .join(', ')}],`\n      : null,\n    dependencySet.components && dependencySet.components.length > 0\n      ? `${indent}components: [${dependencySet.components\n          .map(renderSingleQuotedString)\n          .join(', ')}],`\n      : null,\n  ].filter(Boolean);\n\n  return lines.join('\\n');\n}\n\nfunction renderDependencies(dependencies: ComponentDependencies | undefined) {\n  if (!dependencies) {\n    return '';\n  }\n\n  const root = renderDependencySet(dependencies, '    ');\n  const platformEntries = Object.entries(dependencies.platforms ?? {})\n    .map(([platform, dependencySet]) => {\n      if (!dependencySet) return null;\n      const rendered = renderDependencySet(dependencySet, '        ');\n      if (!rendered) return null;\n      return `      ${renderSingleQuotedString(platform)}: {\\n${rendered}\\n      },`;\n    })\n    .filter(Boolean)\n    .join('\\n');\n  const body = [\n    root || null,\n    platformEntries\n      ? `    platforms: {\\n${platformEntries}\\n    },`\n      : null,\n  ]\n    .filter(Boolean)\n    .join('\\n');\n\n  return body ? `  dependencies: {\\n${body}\\n  },\\n` : '';\n}\n\nexport function renderMetadataTemplate({\n",
+          )
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "  capabilities,\n  typeOwnership,\n  icons = [],\n  tokens = [],\n  componentTokens = 'standard',\n",
+              "  capabilities,\n  typeOwnership,\n  dependencies,\n  icons = [],\n  tokens = [],\n  assets = [],\n  componentTokens = 'standard',\n",
+          )
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "  const dependenciesText = ownsSharedTypes\n    ? `  dependencies: {\n    packages: ['@vellira-ui/types'],\n  },\\n`\n    : '';\n",
+              "  const dependencyPackages = new Set(dependencies?.packages ?? []);\n\n  if (ownsSharedTypes) {\n    dependencyPackages.add('@vellira-ui/types');\n  }\n\n  const dependenciesText = renderDependencies({\n    ...(dependencyPackages.size > 0\n      ? { packages: [...dependencyPackages].sort() }\n      : {}),\n    ...(dependencies?.components ? { components: dependencies.components } : {}),\n    ...(dependencies?.platforms ? { platforms: dependencies.platforms } : {}),\n  });\n",
+          )
+          replace_once(
+              'scripts/generators/component/templates/component-metadata.ts',
+              "    tokens.length === 0\n      ? null\n      : `    tokens: [${tokens.map(renderSingleQuotedString).join(', ')}],`,\n",
+              "    tokens.length === 0\n      ? null\n      : `    tokens: [${tokens.map(renderSingleQuotedString).join(', ')}],`,\n    assets.length === 0\n      ? null\n      : `    assets: [\\n${assets\n  .map(\n    (asset) => `      {\\n        path: ${renderSingleQuotedString(asset.path)},\\n        purpose: ${renderSingleQuotedString(asset.purpose)},\\n      },`\n  )\n  .join('\\n')}\\n    ],`,\n",
+          )
+          replace_once(
+              'scripts/generators/component/write.ts',
+              "      capabilities,\n      icons: plan.icons,\n      tokens: plan.tokens,\n      componentTokens: plan.componentTokens,\n",
+              "      capabilities,\n      typeOwnership: plan.typeOwnership,\n      dependencies: plan.dependencies,\n      icons: plan.icons,\n      tokens: plan.tokens,\n      assets: plan.assets,\n      componentTokens: plan.componentTokens,\n",
+          )
+          replace_once(
+              'scripts/generators/component/docs.ts',
+              "  const resourceRequirements = {\n    ...(plan.tokens.length > 0 ? { tokens: plan.tokens } : {}),\n    ...(plan.icons.length > 0 ? { icons: plan.icons } : {}),\n  };\n",
+              "  const resourceRequirements = {\n    ...(plan.tokens.length > 0 ? { tokens: plan.tokens } : {}),\n    ...(plan.icons.length > 0 ? { icons: plan.icons } : {}),\n    ...(plan.assets.length > 0 ? { assets: plan.assets } : {}),\n  };\n",
+          )
+          replace_once(
+              'scripts/generators/component/docs.ts',
+              "    capabilities: resolvePlanCapabilities(plan),\n    requirements: {\n",
+              "    capabilities: resolvePlanCapabilities(plan),\n    ...(Object.keys(plan.dependencies).length > 0\n      ? { dependencies: plan.dependencies }\n      : {}),\n    requirements: {\n",
+          )
+
+          # Component Production Contract gets canonical dependencies/assets/component-token intent.
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "  ComponentCapability,\n  ComponentIconRequirement,\n  ComponentPlatform,\n",
+              "  ComponentAssetRequirement,\n  ComponentCapability,\n  ComponentDependencies,\n  ComponentIconRequirement,\n  ComponentPlatform,\n  ComponentTokenContract,\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "  capabilities: readonly ComponentCapability[];\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n  parts: readonly string[];\n",
+              "  capabilities: readonly ComponentCapability[];\n  dependencies?: ComponentDependencies;\n  icons?: readonly ComponentIconRequirement[];\n  tokens?: readonly string[];\n  assets?: readonly ComponentAssetRequirement[];\n  componentTokens: ComponentTokenContract | false;\n  parts: readonly string[];\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "  'capabilities',\n  'icons',\n  'tokens',\n  'parts',\n",
+              "  'capabilities',\n  'dependencies',\n  'icons',\n  'tokens',\n  'assets',\n  'componentTokens',\n  'parts',\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "const ICON_REQUIREMENT_KEYS = new Set(['name', 'purpose']);\n",
+              "const ICON_REQUIREMENT_KEYS = new Set(['name', 'purpose']);\nconst ASSET_REQUIREMENT_KEYS = new Set(['path', 'purpose']);\nconst DEPENDENCY_KEYS = new Set(['packages', 'components', 'platforms']);\nconst DEPENDENCY_SET_KEYS = new Set(['packages', 'components']);\nconst COMPONENT_TOKEN_CONTRACTS = new Set<ComponentTokenContract>([\n  'standard',\n  'boolean-control',\n  'disclosure',\n]);\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "  const capabilities = optionalStringArray(value, 'capabilities');\n  const icons = optionalIconRequirements(value, 'icons');\n  const tokens = optionalNonEmptyStringArray(value, 'tokens');\n  const parts = optionalStringArray(value, 'parts');\n",
+              "  const capabilities = optionalStringArray(value, 'capabilities');\n  const dependencies = optionalDependencies(value, 'dependencies');\n  const icons = optionalIconRequirements(value, 'icons');\n  const tokens = optionalNonEmptyStringArray(value, 'tokens');\n  const assets = optionalAssetRequirements(value, 'assets');\n  const componentTokens = optionalComponentTokenContract(\n    value,\n    'componentTokens'\n  );\n  const parts = optionalStringArray(value, 'parts');\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "  const generatorOptions = parseComponentGeneratorArgs(args);\n\n  return {\n",
+              "  const generatorOptions = parseComponentGeneratorArgs(args);\n  const resolvedComponentTokens =\n    componentTokens ??\n    (generatorOptions.profile === 'form-control' &&\n    (generatorOptions.control ?? 'value') === 'boolean'\n      ? 'boolean-control'\n      : 'standard');\n\n  return {\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "    capabilities: generatorOptions.capabilities ?? [],\n    ...((generatorOptions.icons ?? []).length > 0\n",
+              "    capabilities: generatorOptions.capabilities ?? [],\n    ...(dependencies ? { dependencies } : {}),\n    ...((generatorOptions.icons ?? []).length > 0\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "    ...((generatorOptions.tokens ?? []).length > 0\n      ? { tokens: generatorOptions.tokens }\n      : {}),\n    parts: generatorOptions.parts,\n",
+              "    ...((generatorOptions.tokens ?? []).length > 0\n      ? { tokens: generatorOptions.tokens }\n      : {}),\n    ...(assets.length > 0 ? { assets } : {}),\n    componentTokens: resolvedComponentTokens,\n    parts: generatorOptions.parts,\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "    capabilities: input.capabilities,\n    icons: input.icons ?? [],\n    tokens: input.tokens ?? [],\n    parts: input.parts,\n",
+              "    capabilities: input.capabilities,\n    dependencies: input.dependencies,\n    icons: input.icons ?? [],\n    tokens: input.tokens ?? [],\n    assets: input.assets ?? [],\n    componentTokens: input.componentTokens,\n    parts: input.parts,\n",
+          )
+          replace_once(
+              'scripts/component-production/contracts.ts',
+              "function optionalIconRequirements(\n",
+              "function optionalComponentTokenContract(\n  value: Record<string, unknown>,\n  key: string\n): ComponentTokenContract | false | undefined {\n  const field = value[key];\n\n  if (field === undefined || field === false) {\n    return field;\n  }\n\n  if (typeof field !== 'string' || !COMPONENT_TOKEN_CONTRACTS.has(field as ComponentTokenContract)) {\n    throw new Error(\n      `Component production input field \"${key}\" must be false, standard, boolean-control, or disclosure.`\n    );\n  }\n\n  return field as ComponentTokenContract;\n}\n\nfunction optionalDependencySet(\n  value: unknown,\n  label: string\n): { packages?: string[]; components?: string[] } {\n  if (!isRecord(value)) {\n    throw new Error(`Component production input field \"${label}\" must be an object.`);\n  }\n\n  for (const key of Object.keys(value)) {\n    if (!DEPENDENCY_SET_KEYS.has(key)) {\n      throw new Error(\n        `Unknown component production dependency field \"${key}\" at ${label}.`\n      );\n    }\n  }\n\n  const packages = optionalNonEmptyStringArray(value, 'packages');\n  const components = optionalStringArray(value, 'components');\n\n  if (new Set(packages).size !== packages.length) {\n    throw new Error(`Component production input field \"${label}.packages\" must not contain duplicates.`);\n  }\n\n  if (new Set(components).size !== components.length) {\n    throw new Error(`Component production input field \"${label}.components\" must not contain duplicates.`);\n  }\n\n  return {\n    ...(packages.length > 0 ? { packages } : {}),\n    ...(components.length > 0 ? { components } : {}),\n  };\n}\n\nfunction optionalDependencies(\n  value: Record<string, unknown>,\n  key: string\n): ComponentDependencies | undefined {\n  const field = value[key];\n\n  if (field === undefined) {\n    return undefined;\n  }\n\n  if (!isRecord(field)) {\n    throw new Error(`Component production input field \"${key}\" must be an object.`);\n  }\n\n  for (const itemKey of Object.keys(field)) {\n    if (!DEPENDENCY_KEYS.has(itemKey)) {\n      throw new Error(\n        `Unknown component production dependency field \"${itemKey}\" at ${key}.`\n      );\n    }\n  }\n\n  const rootSet = optionalDependencySet(\n    { packages: field.packages, components: field.components },\n    key\n  );\n  let platforms: ComponentDependencies['platforms'];\n\n  if (field.platforms !== undefined) {\n    if (!isRecord(field.platforms)) {\n      throw new Error(\n        `Component production input field \"${key}.platforms\" must be an object.`\n      );\n    }\n\n    platforms = {};\n\n    for (const [platform, dependencySet] of Object.entries(field.platforms)) {\n      if (platform !== 'react' && platform !== 'react-native') {\n        throw new Error(\n          `Component production input field \"${key}.platforms\" contains unsupported platform \"${platform}\".`\n        );\n      }\n\n      const normalized = optionalDependencySet(\n        dependencySet,\n        `${key}.platforms.${platform}`\n      );\n\n      if (Object.keys(normalized).length > 0) {\n        platforms[platform] = normalized;\n      }\n    }\n  }\n\n  const result: ComponentDependencies = {\n    ...rootSet,\n    ...(platforms && Object.keys(platforms).length > 0 ? { platforms } : {}),\n  };\n\n  return Object.keys(result).length > 0 ? result : undefined;\n}\n\nfunction optionalAssetRequirements(\n  value: Record<string, unknown>,\n  key: string\n): ComponentAssetRequirement[] {\n  const field = value[key];\n\n  if (field === undefined) {\n    return [];\n  }\n\n  if (!Array.isArray(field)) {\n    throw new Error(\n      `Component production input field \"${key}\" must be an array.`\n    );\n  }\n\n  const result = field.map((item, index) => {\n    if (!isRecord(item)) {\n      throw new Error(\n        `Component production input field \"${key}[${index}]\" must be an object.`\n      );\n    }\n\n    for (const itemKey of Object.keys(item)) {\n      if (!ASSET_REQUIREMENT_KEYS.has(itemKey)) {\n        throw new Error(\n          `Unknown component production asset requirement field \"${itemKey}\" at ${key}[${index}].`\n        );\n      }\n    }\n\n    return {\n      path: requiredObjectString(item, 'path', `${key}[${index}].path`),\n      purpose: requiredObjectString(\n        item,\n        'purpose',\n        `${key}[${index}].purpose`\n      ),\n    };\n  });\n  const keys = result.map((asset) => `${asset.path}\\u0000${asset.purpose}`);\n\n  if (new Set(keys).size !== keys.length) {\n    throw new Error(\n      'Component production asset requirements must not contain duplicate path/purpose pairs.'\n    );\n  }\n\n  return result;\n}\n\nfunction optionalIconRequirements(\n",
+          )
+
+          # Normalize existing production fixtures to explicit component-token intent.
+          for test_file in [
+              'scripts/component-production/contracts.test.ts',
+              'scripts/component-production/generation.test.ts',
+              'scripts/component-production/run.test.ts',
+              'scripts/component-production/command-validation.test.ts',
+          ]:
+              path = Path(test_file)
+              source = path.read_text()
+              source = source.replace("  capabilities: ['keyboard'],\n  parts: [],", "  capabilities: ['keyboard'],\n  componentTokens: 'standard',\n  parts: [],")
+              source = source.replace("      capabilities: [],\n      parts: [],", "      capabilities: [],\n      componentTokens: 'standard',\n      parts: [],")
+              path.write_text(source)
+
+          PY
+          pnpm exec prettier \
+            packages/metadata/src/component.ts \
+            packages/metadata/src/validateComponentMetadata.ts \
+            scripts/design-resources/authority.ts \
+            scripts/generators/component/cli.ts \
+            scripts/generators/component/plan.ts \
+            scripts/generators/component/preflight.ts \
+            scripts/generators/component/templates/component-metadata.ts \
+            scripts/generators/component/write.ts \
+            scripts/generators/component/docs.ts \
+            scripts/component-production/contracts.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/component-production/run.test.ts \
+            scripts/component-production/command-validation.test.ts \
+            --write
+          git diff --check
+      - name: Build workspace
+        run: pnpm ci:build
+      - name: Validate tooling typecheck
+        run: pnpm typecheck:tooling
+      - name: Validate metadata and production contract tests
+        run: |
+          pnpm exec vitest run --config vitest.tooling.config.ts \
+            packages/metadata/src/validateComponentMetadata.test.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/generators/component/preflight.test.ts \
+            scripts/generators/component/templates/component-metadata.test.ts
+      - name: Commit foundation slice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            packages/metadata/src/component.ts \
+            packages/metadata/src/validateComponentMetadata.ts \
+            scripts/design-resources/authority.ts \
+            scripts/generators/component/cli.ts \
+            scripts/generators/component/plan.ts \
+            scripts/generators/component/preflight.ts \
+            scripts/generators/component/templates/component-metadata.ts \
+            scripts/generators/component/write.ts \
+            scripts/generators/component/docs.ts \
+            scripts/component-production/contracts.ts \
+            scripts/component-production/contracts.test.ts \
+            scripts/component-production/generation.test.ts \
+            scripts/component-production/run.test.ts \
+            scripts/component-production/command-validation.test.ts
+          git diff --cached --check
+          git commit -m "feat(tooling): unify component production dependencies"
+          git push origin HEAD:feat/component-production-contract-877
