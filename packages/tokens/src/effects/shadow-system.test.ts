@@ -56,9 +56,7 @@ const webPreservationCases = [
   },
 ] as const satisfies readonly {
   themeName: ShadowThemeName;
-  shadows: Readonly<
-    Record<'sm' | 'md' | 'lg' | 'xl' | 'inset', string>
-  >;
+  shadows: Readonly<Record<'sm' | 'md' | 'lg' | 'xl' | 'inset', string>>;
   focusRing: string;
 }[];
 
@@ -168,7 +166,10 @@ describe('canonical shadow/elevation system', () => {
     ];
 
     for (const sourcePath of semanticSources) {
-      const source = fs.readFileSync(path.join(packageRoot, sourcePath), 'utf8');
+      const source = fs.readFileSync(
+        path.join(packageRoot, sourcePath),
+        'utf8'
+      );
       expect(source, sourcePath).not.toMatch(/rgba\(/);
     }
 

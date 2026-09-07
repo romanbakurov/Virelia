@@ -110,9 +110,7 @@ export const canonicalShadowEffects = {
           layer(0, 12, 40, 0, colors.mono[950], 0.35),
           layer(0, 2, 8, 0, colors.mono[950], 0.25)
         ),
-        'high-contrast': effect(
-          layer(0, 12, 40, 0, colors.mono[950], 0.7)
-        ),
+        'high-contrast': effect(layer(0, 12, 40, 0, colors.mono[950], 0.7)),
       },
       reactNativeApproximation: { kind: 'direct', output: nativeLg },
     },
@@ -126,9 +124,7 @@ export const canonicalShadowEffects = {
           layer(0, 20, 60, 0, colors.mono[950], 0.45),
           layer(0, 4, 16, 0, colors.mono[950], 0.3)
         ),
-        'high-contrast': effect(
-          layer(0, 20, 60, 0, colors.mono[950], 0.8)
-        ),
+        'high-contrast': effect(layer(0, 20, 60, 0, colors.mono[950], 0.8)),
       },
       reactNativeApproximation: {
         kind: 'reference',
@@ -142,18 +138,14 @@ export const canonicalShadowEffects = {
     themes: {
       light: effect(layer(0, 1, 0, 0, colors.mono[50], 0.55, true)),
       dark: effect(layer(0, 1, 0, 0, colors.mono[50], 0.06, true)),
-      'high-contrast': effect(
-        layer(0, 1, 0, 0, colors.mono[50], 0.14, true)
-      ),
+      'high-contrast': effect(layer(0, 1, 0, 0, colors.mono[50], 0.14, true)),
     },
   },
   focusRing: {
     themes: {
       light: effect(layer(0, 0, 8, 0, colors.primary[600], 0.14)),
       dark: effect(layer(0, 0, 8, 0, colors.primary[300], 0.14)),
-      'high-contrast': effect(
-        layer(0, 0, 0, 1, colors.mono[50], 0.28)
-      ),
+      'high-contrast': effect(layer(0, 0, 0, 1, colors.mono[50], 0.28)),
     },
   },
 } as const satisfies CanonicalShadowEffects;
@@ -243,9 +235,7 @@ export function createSemanticShadowTokens(themeName: ShadowThemeName) {
   } as const;
 }
 
-export function createFocusRingShadowToken(
-  themeName: ShadowThemeName
-): string {
+export function createFocusRingShadowToken(themeName: ShadowThemeName): string {
   return serializeShadowEffectForWeb(
     canonicalShadowEffects.focusRing.themes[themeName]
   );
