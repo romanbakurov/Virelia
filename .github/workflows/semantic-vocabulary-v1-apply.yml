@@ -29,22 +29,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply Semantic Vocabulary V1 in workspace
-        run: python3 scripts/token-semantic-vocabulary-v1-apply.py
+        run: |
+          python3 scripts/token-semantic-vocabulary-v1-apply.py
+          python3 scripts/token-semantic-vocabulary-v1-fixup.py
 
-      - name: Show remaining legacy references
+      - name: Assert no legacy authored references remain
         shell: bash
         run: |
           set -euo pipefail
-          echo '=== legacy semantic refs (preservation/generated excluded) ==='
-          git grep -n -E 'surface\.background|action\.(secondary|close)|icons\.(primary|hover)|status\.[A-Za-z]+\.strong|border\.focus|overlay\.(popover|modal)|semantic\.navigation' -- \
+          if git grep -n -E 'surface\.background|action\.(secondary|close)|icons\.(primary|hover)|status\.[A-Za-z]+\.strong|border\.focus|overlay\.(popover|modal)|semantic\.navigation' -- \
             ':!packages/tokens/src/generated/**' \
             ':!packages/tokens/src/preservation/**' \
-            ':!scripts/token-semantic-vocabulary-v1-apply.py' || true
-          echo '=== focus.ring references ==='
-          git grep -n 'focus\.ring' -- \
-            'packages/tokens/src/**' \
-            ':!packages/tokens/src/generated/**' \
-            ':!packages/tokens/src/preservation/**' || true
+            ':!scripts/token-semantic-vocabulary-v1-apply.py' \
+            ':!scripts/token-semantic-vocabulary-v1-fixup.py'; then
+            echo 'Legacy semantic vocabulary remains in authored sources.' >&2
+            exit 1
+          fi
 
       - name: Format changed authored sources
         run: |
@@ -59,6 +59,7 @@ jobs:
             packages/tokens/src/highContrast/components \
             packages/tokens/src/factories \
             apps/native-playground \
+            docs/TOKEN_CONVENTIONS.md \
             docs/architecture/token-semantic-vocabulary-v1.md
 
       - name: Generate token outputs
