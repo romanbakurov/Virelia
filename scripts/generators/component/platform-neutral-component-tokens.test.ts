@@ -7,16 +7,28 @@ const forbiddenCanonicalRendererVocabulary =
 
 describe('Generator V2 renderer-neutral component token boundary', () => {
   it.each([
-    ['standard', 'value'],
-    ['form-control', 'boolean'],
-    ['disclosure', 'value'],
+    [
+      'standard',
+      { profile: 'base', control: 'value', componentTokens: 'standard' },
+    ],
+    [
+      'boolean-control',
+      {
+        profile: 'form-control',
+        control: 'boolean',
+        componentTokens: 'boolean-control',
+      },
+    ],
+    [
+      'disclosure',
+      { profile: 'base', control: 'value', componentTokens: 'disclosure' },
+    ],
   ] as const)(
-    'keeps %s/%s canonical token factories renderer-neutral',
-    (profile, control) => {
+    'keeps the %s canonical token contract renderer-neutral',
+    (_contract, params) => {
       const source = renderComponentTokenFactoryTemplate({
         componentName: 'Probe',
-        profile,
-        control,
+        ...params,
       });
 
       expect(source).not.toMatch(forbiddenCanonicalRendererVocabulary);
