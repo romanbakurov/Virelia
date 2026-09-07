@@ -51,6 +51,33 @@ export * from './types';
     );
   }
 
+  const metadataDir = path.join(
+    root,
+    'packages',
+    'metadata',
+    'src',
+    'components'
+  );
+  fs.mkdirSync(metadataDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(metadataDir, 'Button.metadata.ts'),
+    'export const buttonMetadata = {};\n'
+  );
+  fs.writeFileSync(
+    path.join(metadataDir, 'index.ts'),
+    `import { buttonMetadata } from './Button.metadata';\n\nexport const componentMetadata = [\n  buttonMetadata,\n] as const;\n`
+  );
+
+  for (const packageName of ['@vellira-ui/types', '@vellira-ui/tokens']) {
+    const packageDir = packageName.replace('@vellira-ui/', '');
+    const packageRoot = path.join(root, 'packages', packageDir);
+    fs.mkdirSync(packageRoot, { recursive: true });
+    fs.writeFileSync(
+      path.join(packageRoot, 'package.json'),
+      `${JSON.stringify({ name: packageName })}\n`
+    );
+  }
+
   const registryDir = path.join(
     root,
     'apps',
