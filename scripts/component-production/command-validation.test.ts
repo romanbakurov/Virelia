@@ -28,6 +28,8 @@ describe('componentProductionValidationCommands', () => {
     ).toEqual([
       'format-check',
       'lint',
+      'core-tests',
+      'metadata-tests',
       'react-tests',
       'react-typecheck',
       'react-build',
@@ -46,6 +48,8 @@ describe('componentProductionValidationCommands', () => {
     ).toEqual([
       'format-check',
       'lint',
+      'core-tests',
+      'metadata-tests',
       'react-tests',
       'react-typecheck',
       'react-build',
@@ -91,6 +95,8 @@ describe('runComponentProductionCommandValidation', () => {
     expect(calls).toEqual([
       'format-check',
       'lint',
+      'core-tests',
+      'metadata-tests',
       'react-tests',
       'react-typecheck',
       'react-build',
