@@ -59,11 +59,7 @@ function createUpstreamUrl(
     return upstream;
   }
 
-  if (
-    method === 'GET' &&
-    segments.length === 2 &&
-    segments[0] === 'metrics'
-  ) {
+  if (method === 'GET' && segments.length === 2 && segments[0] === 'metrics') {
     upstream.pathname = `/v1/blog/metrics/${encoded[1]}`;
     return upstream;
   }
