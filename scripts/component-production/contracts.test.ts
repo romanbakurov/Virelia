@@ -20,6 +20,7 @@ const BASE_INPUT: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: ['keyboard'],
+  componentTokens: 'standard',
   parts: [],
 };
 
@@ -58,6 +59,7 @@ describe('parseComponentProductionInput', () => {
       profile: 'form-control',
       control: 'value',
       capabilities: [],
+      componentTokens: 'standard',
       parts: [],
     });
   });
@@ -82,6 +84,7 @@ describe('parseComponentProductionInput', () => {
       category: 'data-display',
       profile: 'base',
       capabilities: [],
+      componentTokens: 'standard',
       parts: [],
     });
   });

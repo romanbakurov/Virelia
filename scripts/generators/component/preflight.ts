@@ -1,8 +1,11 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import type { ComponentGenerationPlan } from './plan';
 import { getComponentProfile } from './profiles';
 import {
+  canonicalAssetExists,
+  canonicalAssetPath,
   canonicalIconExports,
   canonicalIconSourcePath,
   canonicalTokenPaths,
@@ -19,6 +22,85 @@ export type ComponentPreflightResult =
       errors: string[];
     };
 
+function validateCanonicalPackageDependency(
+  root: string,
+  packageName: string,
+  errors: string[]
+) {
+  if (!packageName.startsWith('@vellira-ui/')) {
+    return;
+  }
+
+  const packageDir = packageName.slice('@vellira-ui/'.length);
+  const packageJsonPath = path.join(
+    root,
+    'packages',
+    packageDir,
+    'package.json'
+  );
+
+  if (!fs.existsSync(packageJsonPath)) {
+    errors.push(
+      `missing-canonical-package-dependency: package="${packageName}" expected="${packageJsonPath}"`
+    );
+    return;
+  }
+
+  try {
+    const packageJson = JSON.parse(
+      fs.readFileSync(packageJsonPath, 'utf8')
+    ) as {
+      name?: unknown;
+    };
+
+    if (packageJson.name !== packageName) {
+      errors.push(
+        `invalid-canonical-package-dependency: package="${packageName}" manifest="${packageJsonPath}"`
+      );
+    }
+  } catch {
+    errors.push(
+      `invalid-canonical-package-dependency: package="${packageName}" manifest="${packageJsonPath}"`
+    );
+  }
+}
+
+function validateDependencySet(params: {
+  root: string;
+  packages?: readonly string[];
+  components?: readonly string[];
+  componentName: string;
+  errors: string[];
+}) {
+  for (const packageName of params.packages ?? []) {
+    validateCanonicalPackageDependency(params.root, packageName, params.errors);
+  }
+
+  for (const componentName of params.components ?? []) {
+    if (componentName === params.componentName) {
+      params.errors.push(
+        `invalid-component-dependency: component="${params.componentName}" cannot depend on itself`
+      );
+      continue;
+    }
+
+    const metadataFile = path.join(
+      params.root,
+      'packages',
+      'metadata',
+      'src',
+      'components',
+      `${componentName}.metadata.ts`
+    );
+
+    if (!fs.existsSync(metadataFile)) {
+      params.errors.push(
+        `missing-component-dependency: component="${componentName}" expected="${metadataFile}"`
+      );
+    }
+  }
+}
+
 export function validateComponentGenerationPlan(
   plan: ComponentGenerationPlan,
   options: {
@@ -28,6 +110,62 @@ export function validateComponentGenerationPlan(
   const errors: string[] = [];
   const existingTargets: string[] = [];
   const profile = getComponentProfile(plan.profile);
+
+  validateDependencySet({
+    root: plan.root,
+    packages: plan.dependencies.packages,
+    components: plan.dependencies.components,
+    componentName: plan.componentName,
+    errors,
+  });
+
+  const selectedPlatforms = new Set(
+    plan.targets.map((target) => target.packageName)
+  );
+
+  for (const [platform, dependencies] of Object.entries(
+    plan.dependencies.platforms ?? {}
+  )) {
+    if (!selectedPlatforms.has(platform as 'react' | 'react-native')) {
+      errors.push(
+        `invalid-platform-dependency: platform="${platform}" is not selected for component="${plan.componentName}"`
+      );
+      continue;
+    }
+
+    validateDependencySet({
+      root: plan.root,
+      packages: dependencies?.packages,
+      components: dependencies?.components,
+      componentName: plan.componentName,
+      errors,
+    });
+  }
+
+  for (const asset of plan.assets) {
+    const assetPath = canonicalAssetPath({
+      root: plan.root,
+      assetPath: asset.path,
+    });
+
+    if (!assetPath) {
+      errors.push(
+        `invalid-design-asset-path: path="${asset.path}" purpose="${asset.purpose}" — expected a canonical brand/, fonts/, or styles/ asset path`
+      );
+      continue;
+    }
+
+    if (
+      !canonicalAssetExists({
+        root: plan.root,
+        assetPath: asset.path,
+      })
+    ) {
+      errors.push(
+        `missing-design-asset: path="${asset.path}" purpose="${asset.purpose}" expected="${assetPath}"`
+      );
+    }
+  }
 
   if (plan.icons.length > 0) {
     for (const target of plan.targets) {

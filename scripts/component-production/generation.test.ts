@@ -29,6 +29,7 @@ const INPUT: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: [],
+  componentTokens: 'standard',
   parts: [],
 };
 
@@ -556,7 +557,9 @@ function plan(root: string): ComponentGenerationPlan {
     control: 'value',
     typeOwnership: 'platform',
     capabilities: [],
+    dependencies: {},
     icons: [],
+    assets: [],
     tokens: [],
     componentTokens: 'standard',
     force: false,

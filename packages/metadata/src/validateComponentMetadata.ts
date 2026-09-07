@@ -67,6 +67,12 @@ const COMPONENT_PROFILES = [
   'overlay',
 ] as const;
 
+const COMPONENT_TOKEN_CONTRACTS = [
+  'standard',
+  'boolean-control',
+  'disclosure',
+] as const;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -126,6 +132,76 @@ function validateStringArray(params: {
       );
     }
   }
+}
+
+function validateDependencySet(
+  value: unknown,
+  field: string,
+  errors: string[]
+) {
+  if (!isRecord(value)) {
+    errors.push(`${field} must be an object.`);
+    return;
+  }
+
+  if (value.packages !== undefined) {
+    validateStringArray({
+      value: value.packages,
+      field: `${field}.packages`,
+      errors,
+    });
+  }
+
+  if (value.components !== undefined) {
+    validateStringArray({
+      value: value.components,
+      field: `${field}.components`,
+      errors,
+    });
+  }
+}
+
+function validateAssetRequirements(value: unknown, errors: string[]) {
+  if (!Array.isArray(value)) {
+    errors.push('requirements.assets must be an array.');
+    return;
+  }
+
+  const seen = new Set<string>();
+
+  value.forEach((item, index) => {
+    if (!isRecord(item)) {
+      errors.push(`requirements.assets[${index}] must be an object.`);
+      return;
+    }
+
+    const validPath = isNonEmptyString(item.path);
+    const validPurpose = isNonEmptyString(item.purpose);
+
+    if (!validPath) {
+      errors.push(
+        `requirements.assets[${index}].path must be a non-empty string.`
+      );
+    }
+
+    if (!validPurpose) {
+      errors.push(
+        `requirements.assets[${index}].purpose must be a non-empty string.`
+      );
+    }
+
+    if (validPath && validPurpose) {
+      const key = `${item.path}\u0000${item.purpose}`;
+
+      if (seen.has(key)) {
+        errors.push(
+          `requirements.assets must not contain duplicate path/purpose requirements: ${item.path} / ${item.purpose}.`
+        );
+      }
+
+      seen.add(key);
+    }
+  });
 }
 
 function validateIconRequirements(value: unknown, errors: string[]) {
@@ -238,20 +314,29 @@ export function validateComponentMetadata(
     if (!isRecord(input.dependencies)) {
       errors.push('dependencies must be an object.');
     } else {
-      if (input.dependencies.packages !== undefined) {
-        validateStringArray({
-          value: input.dependencies.packages,
-          field: 'dependencies.packages',
-          errors,
-        });
-      }
+      validateDependencySet(input.dependencies, 'dependencies', errors);
 
-      if (input.dependencies.components !== undefined) {
-        validateStringArray({
-          value: input.dependencies.components,
-          field: 'dependencies.components',
-          errors,
-        });
+      if (input.dependencies.platforms !== undefined) {
+        if (!isRecord(input.dependencies.platforms)) {
+          errors.push('dependencies.platforms must be an object.');
+        } else {
+          for (const [platform, dependencySet] of Object.entries(
+            input.dependencies.platforms
+          )) {
+            if (!componentPlatforms.includes(platform as ComponentPlatform)) {
+              errors.push(
+                `dependencies.platforms contains unsupported platform: ${platform}.`
+              );
+              continue;
+            }
+
+            validateDependencySet(
+              dependencySet,
+              `dependencies.platforms.${platform}`,
+              errors
+            );
+          }
+        }
       }
     }
   }
@@ -270,6 +355,22 @@ export function validateComponentMetadata(
       }
     }
 
+    if (input.requirements.componentTokens !== undefined) {
+      const value = input.requirements.componentTokens;
+
+      if (
+        value !== false &&
+        (typeof value !== 'string' ||
+          !COMPONENT_TOKEN_CONTRACTS.includes(
+            value as (typeof COMPONENT_TOKEN_CONTRACTS)[number]
+          ))
+      ) {
+        errors.push(
+          `requirements.componentTokens must be false or one of: ${COMPONENT_TOKEN_CONTRACTS.join(', ')}.`
+        );
+      }
+    }
+
     if (input.requirements.tokens !== undefined) {
       validateStringArray({
         value: input.requirements.tokens,
@@ -280,6 +381,10 @@ export function validateComponentMetadata(
 
     if (input.requirements.icons !== undefined) {
       validateIconRequirements(input.requirements.icons, errors);
+    }
+
+    if (input.requirements.assets !== undefined) {
+      validateAssetRequirements(input.requirements.assets, errors);
     }
   }
 

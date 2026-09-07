@@ -15,6 +15,7 @@ const WEB_INPUT: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: [],
+  componentTokens: 'standard',
   parts: [],
 };
 
