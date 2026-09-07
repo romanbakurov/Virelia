@@ -86,9 +86,9 @@ describe('Component Production Contract input V1', () => {
     });
 
     expect(input.componentTokens).toBe(false);
-    expect(createComponentProductionGeneratorOptions(input).componentTokens).toBe(
-      false
-    );
+    expect(
+      createComponentProductionGeneratorOptions(input).componentTokens
+    ).toBe(false);
   });
 
   it('rejects unknown dependency fields and unsupported platform scopes', () => {

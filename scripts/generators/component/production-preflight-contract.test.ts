@@ -73,7 +73,9 @@ function plan(
   });
 }
 
-function expectError(result: ReturnType<typeof validateComponentGenerationPlan>) {
+function expectError(
+  result: ReturnType<typeof validateComponentGenerationPlan>
+) {
   expect(result.ok).toBe(false);
   if (result.ok) {
     throw new Error('Expected preflight to fail.');
