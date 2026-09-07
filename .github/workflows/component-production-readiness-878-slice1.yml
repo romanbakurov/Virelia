@@ -32,10 +32,12 @@ jobs:
           git show FETCH_HEAD:.github/probes/878/repair-slice2-preflight.py > /tmp/repair-readiness-878-preflight.py
           git show FETCH_HEAD:.github/probes/878/repair-slice2-fixtures.py > /tmp/repair-readiness-878-fixtures.py
           git show FETCH_HEAD:.github/probes/878/repair-slice2-full-suite.py > /tmp/repair-readiness-878-full-suite.py
+          git show FETCH_HEAD:.github/probes/878/repair-slice2-type-ownership.py > /tmp/repair-readiness-878-type-ownership.py
           python3 /tmp/apply-readiness-878-slice2.py
           python3 /tmp/repair-readiness-878-preflight.py
           python3 /tmp/repair-readiness-878-fixtures.py
           python3 /tmp/repair-readiness-878-full-suite.py
+          python3 /tmp/repair-readiness-878-type-ownership.py
       - name: Format changed files
         run: |
           pnpm exec prettier --write \
