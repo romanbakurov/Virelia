@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 2
 
       - name: Guard exact apply parent
-        run: test "$(git rev-parse HEAD^)" = "deda55dba239e03f82e359a1942ca1b988086ecd"
+        run: test "$(git rev-parse HEAD^)" = "a947593ea2e1e98cbb6762e1ba2f921bfe4b51f3"
 
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -35,7 +35,6 @@ jobs:
             apps/docs/package.json \
             apps/docs/src/.vitepress/theme/index.ts \
             apps/docs/src/.vitepress/theme/styles.css
-          CI=false pnpm install --lockfile-only
           pnpm install --frozen-lockfile
 
       - name: Guard exact production scope
