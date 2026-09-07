@@ -1,0 +1,88 @@
+name: Diagnose PR 907 tests
+
+on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - '.github/workflows/diagnose-pr907-tests.yml'
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: 22.22.0
+
+jobs:
+  tooling:
+    name: Diagnose tooling tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies quietly
+        shell: bash
+        run: pnpm install --frozen-lockfile > /tmp/install.log 2>&1 || { tail -n 120 /tmp/install.log; exit 1; }
+      - name: Run tooling tests and print failure tail
+        shell: bash
+        run: |
+          set +e
+          pnpm test:tooling > tooling-tests.log 2>&1
+          status=$?
+          set -e
+          echo '--- tooling-tests.log (last 220 lines) ---'
+          tail -n 220 tooling-tests.log
+          exit "$status"
+      - name: Upload tooling log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr907-tooling-test-log
+          path: tooling-tests.log
+          if-no-files-found: error
+          retention-days: 3
+
+  storybook:
+    name: Diagnose Storybook tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - name: Install dependencies quietly
+        shell: bash
+        run: pnpm install --frozen-lockfile > /tmp/install.log 2>&1 || { tail -n 120 /tmp/install.log; exit 1; }
+      - name: Build packages quietly
+        shell: bash
+        run: pnpm build > /tmp/build.log 2>&1 || { tail -n 160 /tmp/build.log; exit 1; }
+      - name: Install Chromium quietly
+        shell: bash
+        run: pnpm ci:playwright > /tmp/playwright.log 2>&1 || { tail -n 160 /tmp/playwright.log; exit 1; }
+      - name: Run Storybook tests and print failure tail
+        shell: bash
+        run: |
+          set +e
+          pnpm test:storybook > storybook-tests.log 2>&1
+          status=$?
+          set -e
+          echo '--- storybook-tests.log (last 260 lines) ---'
+          tail -n 260 storybook-tests.log
+          exit "$status"
+      - name: Upload Storybook log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pr907-storybook-test-log
+          path: storybook-tests.log
+          if-no-files-found: error
+          retention-days: 3
