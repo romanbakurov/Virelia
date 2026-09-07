@@ -65,16 +65,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           sleep 15
 
           check_route() {
             local path="$1"
             shift
-            local body
-            local status
-            local expected
-            local matches
+            local body status expected matches
             body="$(mktemp)"
 
             for attempt in 1 2 3 4 5; do
@@ -105,8 +101,8 @@ jobs:
               sleep 2
             done
 
-            echo "Smoke test failed for $path"
-            sed -n '1,40p' "$body"
+            echo "Smoke test failed for $path" >&2
+            sed -n '1,40p' "$body" >&2
             rm -f "$body"
             return 1
           }
@@ -139,6 +135,22 @@ jobs:
           const criticalDiagnostics = [];
           const vercelRuntimeRequests = [];
 
+          function isExpectedMissingMetrics(response) {
+            if (
+              !response.url().startsWith(metricsApiBaseUrl) ||
+              response.status() !== 404 ||
+              response.request().method() !== 'GET'
+            ) {
+              return false;
+            }
+
+            const { pathname } = new URL(response.url());
+            return (
+              pathname === '/v1/blog/metrics' ||
+              /^\/v1\/blog\/articles\/[^/]+\/like$/.test(pathname)
+            );
+          }
+
           page.on('request', (request) => {
             if (request.url().startsWith(`${baseUrl}/_vercel/`)) {
               const diagnostic = `obsolete Vercel runtime request: ${request.url()}`;
@@ -147,16 +159,19 @@ jobs:
               vercelRuntimeRequests.push(request.url());
             }
           });
+
           page.on('console', (message) => {
             if (message.type() === 'error') {
               diagnostics.push(`console.error: ${message.text()}`);
             }
           });
+
           page.on('pageerror', (error) => {
             const diagnostic = `pageerror: ${error.stack ?? error.message}`;
             diagnostics.push(diagnostic);
             criticalDiagnostics.push(diagnostic);
           });
+
           page.on('response', (response) => {
             const sameOrigin = response.url().startsWith(baseUrl);
             const metricsApi = response.url().startsWith(metricsApiBaseUrl);
@@ -164,11 +179,20 @@ jobs:
               const diagnostic =
                 `response: ${response.status()} ${response.request().method()} ${response.url()}`;
               diagnostics.push(diagnostic);
-              if (response.status() >= 500 || metricsApi) {
+
+              // Read-only metrics for an article that has never been initialized may
+              // legitimately return 404. The UI intentionally fails open for this state.
+              // The dedicated two-runtimes flow below still requires successful
+              // GET/POST/PUT/DELETE API and CORS behavior.
+              if (
+                response.status() >= 500 ||
+                (metricsApi && !isExpectedMissingMetrics(response))
+              ) {
                 criticalDiagnostics.push(diagnostic);
               }
             }
           });
+
           page.on('requestfailed', (request) => {
             if (
               request.url().startsWith(baseUrl) ||
@@ -180,11 +204,15 @@ jobs:
             }
           });
 
-          async function loadHomePage() {
-            await page.goto(baseUrl, {
+          async function goto(path) {
+            await page.goto(`${baseUrl}${path}`, {
               waitUntil: 'domcontentloaded',
               timeout: 30_000,
             });
+          }
+
+          async function loadHomePage() {
+            await goto('/');
             await page.locator('main').first().waitFor({
               state: 'visible',
               timeout: 15_000,
@@ -193,10 +221,7 @@ jobs:
           }
 
           async function navigateByLink(startPath, href, expectedText) {
-            await page.goto(`${baseUrl}${startPath}`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
+            await goto(startPath);
             const link = page.locator(`a[href="${href}"]`).first();
             await link.waitFor({ state: 'visible', timeout: 15_000 });
             await link.click();
@@ -209,10 +234,7 @@ jobs:
           }
 
           async function verifyHighlightedArticleCode() {
-            await page.goto(`${baseUrl}/blog/two-runtimes`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
+            await goto('/blog/two-runtimes');
             await page.locator('[data-language="ts"]').first().waitFor({
               state: 'visible',
               timeout: 15_000,
@@ -237,15 +259,12 @@ jobs:
               { timeout: 15_000 }
             );
 
-            await page.goto(`${baseUrl}${articlePath}`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
-
+            await goto(articlePath);
             const [likeStateResponse, viewResponse] = await Promise.all([
               likeStatePromise,
               viewPromise,
             ]);
+
             if (!likeStateResponse.ok() || !viewResponse.ok()) {
               throw new Error(
                 `Blog metrics bootstrap failed: like=${likeStateResponse.status()} view=${viewResponse.status()}`
@@ -259,25 +278,18 @@ jobs:
             }
 
             const formatCount = (value) => new Intl.NumberFormat('en-US').format(value);
-            const expectedViews = `${formatCount(viewWrite.metrics.views)} views`;
-            const expectedLikes = `${formatCount(viewWrite.metrics.likes)} likes`;
-
-            await page.getByLabel(expectedViews).waitFor({
+            await page.getByLabel(`${formatCount(viewWrite.metrics.views)} views`).waitFor({
               state: 'visible',
               timeout: 15_000,
             });
-            await page.getByLabel(expectedLikes).waitFor({
+            await page.getByLabel(`${formatCount(viewWrite.metrics.likes)} likes`).waitFor({
               state: 'visible',
               timeout: 15_000,
             });
 
             const initialLiked = likeState.liked;
-            const initialLabel = initialLiked
-              ? 'Unlike this article'
-              : 'Like this article';
-            const toggledLabel = initialLiked
-              ? 'Like this article'
-              : 'Unlike this article';
+            const initialLabel = initialLiked ? 'Unlike this article' : 'Like this article';
+            const toggledLabel = initialLiked ? 'Like this article' : 'Unlike this article';
             const toggleMethod = initialLiked ? 'DELETE' : 'PUT';
             const restoreMethod = initialLiked ? 'PUT' : 'DELETE';
 
@@ -330,7 +342,6 @@ jobs:
           async function verifyMetricsFailureDoesNotBreakArticleActions() {
             const fallbackPage = await browser.newPage();
             await fallbackPage.route(`${metricsApiBaseUrl}/**`, (route) => route.abort());
-
             await fallbackPage.goto(`${baseUrl}/blog/two-runtimes`, {
               waitUntil: 'domcontentloaded',
               timeout: 30_000,
@@ -357,16 +368,11 @@ jobs:
 
           async function navigateViaContinueReading() {
             const startPath = '/blog/two-runtimes';
-            await page.goto(`${baseUrl}${startPath}`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
-
+            await goto(startPath);
             const section = page.locator(
               'section[aria-labelledby="blog-continue-reading-heading"]'
             );
             await section.waitFor({ state: 'visible', timeout: 15_000 });
-
             const link = section.locator('a[href^="/blog/"]').first();
             await link.waitFor({ state: 'visible', timeout: 15_000 });
 
@@ -384,20 +390,14 @@ jobs:
               state: 'visible',
               timeout: 15_000,
             });
-
             console.log(`OK Continue reading navigation ${startPath} -> ${href}`);
           }
 
           async function navigateWithinComponentSidebar() {
             await page.setViewportSize({ width: 1280, height: 900 });
-            await page.goto(`${baseUrl}/components/switch`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
-
+            await goto('/components/switch');
             const sidebar = page.locator('aside[aria-label="Component navigation"]').first();
             await sidebar.waitFor({ state: 'visible', timeout: 15_000 });
-
             const checkboxLink = sidebar.locator('a[href="/components/checkbox"]');
             await checkboxLink.waitFor({ state: 'visible', timeout: 15_000 });
             await checkboxLink.click();
@@ -406,24 +406,17 @@ jobs:
               state: 'visible',
               timeout: 15_000,
             });
-
             console.log('OK desktop component sidebar navigation /components/switch -> /components/checkbox');
           }
 
           async function navigateWithinMobileComponentSidebar() {
             await page.setViewportSize({ width: 670, height: 900 });
-            await page.goto(`${baseUrl}/components/switch`, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000,
-            });
-
+            await goto('/components/switch');
             const trigger = page.getByRole('button', { name: 'Open component navigation' });
             await trigger.waitFor({ state: 'visible', timeout: 15_000 });
             await trigger.click();
-
             const mobileSidebar = page.locator('#component-navigation');
             await mobileSidebar.waitFor({ state: 'visible', timeout: 15_000 });
-
             const checkboxLink = mobileSidebar.locator('a[href="/components/checkbox"]');
             await checkboxLink.waitFor({ state: 'visible', timeout: 15_000 });
             await checkboxLink.click();
@@ -433,7 +426,6 @@ jobs:
               timeout: 15_000,
             });
             await mobileSidebar.waitFor({ state: 'hidden', timeout: 15_000 });
-
             console.log('OK mobile component sidebar navigation /components/switch -> /components/checkbox and overlay closed');
           }
 
