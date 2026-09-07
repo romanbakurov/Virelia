@@ -1,6 +1,11 @@
 name: Cleanup vinext migration remnants
 
 on:
+  push:
+    branches:
+      - feat/website-cloudflare-staging
+    paths:
+      - '.github/workflows/cleanup-vinext.yml'
   workflow_dispatch:
 
 permissions:
