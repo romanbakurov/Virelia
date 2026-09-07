@@ -28,7 +28,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply migration in workspace
-        run: python3 scripts/token-platform-neutral-v1-apply.py
+        run: |
+          python3 scripts/token-platform-neutral-v1-apply.py
+          python3 scripts/token-platform-neutral-v1-test-fixup.py
 
       - name: Format migration output
         run: |
@@ -38,6 +40,7 @@ jobs:
             packages/tokens/src/light/components \
             packages/tokens/src/dark/components \
             packages/tokens/src/highContrast/components \
+            packages/tokens/src/component-token-factories.test.ts \
             packages/tokens/src/component-token-platform-boundary.test.ts \
             packages/tokens/src/token-value-kinds.test.ts \
             packages/tokens/src/index.ts \
