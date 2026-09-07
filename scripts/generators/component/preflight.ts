@@ -117,7 +117,8 @@ function readCanonicalComponentDependencyPlatforms(params: {
 
   visit(sourceFile);
 
-  const resolvedMetadataObject = metadataObject as ts.ObjectLiteralExpression | null;
+  const resolvedMetadataObject =
+    metadataObject as ts.ObjectLiteralExpression | null;
 
   if (!resolvedMetadataObject) {
     params.errors.push(
