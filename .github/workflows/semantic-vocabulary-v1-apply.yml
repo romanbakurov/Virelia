@@ -85,3 +85,28 @@ jobs:
 
       - name: Preservation evidence probe
         run: pnpm --filter @vellira-ui/tokens preservation:check
+
+      - name: Materialize validated implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f \
+            .github/workflows/semantic-vocabulary-v1-apply.yml \
+            scripts/token-semantic-vocabulary-v1-apply.py \
+            scripts/token-semantic-vocabulary-v1-fixup.py \
+            scripts/token-semantic-vocabulary-v1-test-fixup.py \
+            scripts/token-semantic-vocabulary-v1-architecture-fixup.py \
+            scripts/token-semantic-vocabulary-v1-manifest.py \
+            scripts/token-semantic-vocabulary-v1-downstream-evidence.py
+          git diff --check
+          git add -A
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No validated implementation changes to materialize.' >&2
+            exit 1
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              -c core.hooksPath=/dev/null \
+              commit -m 'refactor(tokens): normalize semantic vocabulary v1'
+          git push origin HEAD:refactor/semantic-vocabulary-v1
