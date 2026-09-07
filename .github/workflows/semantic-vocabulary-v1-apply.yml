@@ -32,6 +32,7 @@ jobs:
         run: |
           python3 scripts/token-semantic-vocabulary-v1-apply.py
           python3 scripts/token-semantic-vocabulary-v1-fixup.py
+          python3 scripts/token-semantic-vocabulary-v1-test-fixup.py
           python3 scripts/token-semantic-vocabulary-v1-manifest.py
 
       - name: Assert no legacy authored references remain
@@ -43,6 +44,7 @@ jobs:
             ':!packages/tokens/src/preservation/**' \
             ':!scripts/token-semantic-vocabulary-v1-apply.py' \
             ':!scripts/token-semantic-vocabulary-v1-fixup.py' \
+            ':!scripts/token-semantic-vocabulary-v1-test-fixup.py' \
             ':!scripts/token-semantic-vocabulary-v1-manifest.py'; then
             echo 'Legacy semantic vocabulary remains in authored sources.' >&2
             exit 1
@@ -53,6 +55,7 @@ jobs:
           pnpm exec prettier --write \
             packages/tokens/src/token-architecture.ts \
             packages/tokens/src/semantic-vocabulary-v1.test.ts \
+            packages/tokens/src/component-token-factories.test.ts \
             packages/tokens/src/preservation/token-migrations.ts \
             packages/tokens/src/light/semantic \
             packages/tokens/src/dark/semantic \
