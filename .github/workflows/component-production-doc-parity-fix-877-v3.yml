@@ -1,0 +1,81 @@
+name: Component Production Docs API Parity Fix 877 V3
+
+on:
+  push:
+    branches:
+      - chore/component-production-probe-877
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout production contract branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/component-production-contract-877
+          fetch-depth: 0
+      - name: Guard expected head
+        run: test "$(git rev-parse HEAD)" = "13b55db40687b50166d964b3b873ffdc473b628c"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22.22.0
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Apply V2 canonical documentation parity patch
+        run: |
+          git fetch origin chore/component-production-probe-877
+          git show origin/chore/component-production-probe-877:.github/workflows/component-production-doc-parity-fix-877-v2.yml > /tmp/parity-v2.yml
+          python - <<'PY'
+          from pathlib import Path
+
+          lines = Path('/tmp/parity-v2.yml').read_text().splitlines()
+          marker = '      - name: Patch canonical documentation parity'
+          try:
+              start = lines.index(marker)
+          except ValueError as exc:
+              raise SystemExit('V2 patch step marker not found') from exc
+
+          if start + 1 >= len(lines) or lines[start + 1] != '        run: |':
+              raise SystemExit('V2 patch run block not found')
+
+          body = []
+          for line in lines[start + 2:]:
+              if line.startswith('      - name: '):
+                  break
+              if line and not line.startswith('          '):
+                  raise SystemExit(f'unexpected V2 patch indentation: {line!r}')
+              body.append(line[10:] if line else '')
+
+          if not body:
+              raise SystemExit('V2 patch body is empty')
+
+          Path('/tmp/apply-parity-v2.sh').write_text('\n'.join(body) + '\n')
+          PY
+          bash -e /tmp/apply-parity-v2.sh
+      - name: Format parity fix
+        run: pnpm exec prettier scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts --write
+      - name: Check formatting
+        run: pnpm exec prettier scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts --check
+      - name: Workspace build
+        run: pnpm ci:build
+      - name: Tooling typecheck
+        run: pnpm typecheck:tooling
+      - name: Run documentation parity tests
+        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts scripts/generators/component/run.test.ts
+      - name: Diff safety
+        run: git diff --check
+      - name: Commit docs API parity fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/generators/component/docs.ts scripts/generators/component/plan-contract.ts scripts/generators/component/documentation-contract.ts scripts/generators/component/documentation-contract.test.ts scripts/generators/component/production-contract-parity.test.ts
+          git diff --cached --exit-code && exit 0
+          git commit -m "fix(generator): enforce docs API check parity"
+          git push origin HEAD:feat/component-production-contract-877
