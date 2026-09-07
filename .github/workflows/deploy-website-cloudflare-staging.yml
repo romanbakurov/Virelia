@@ -7,6 +7,7 @@ on:
     paths:
       - 'apps/website/**'
       - 'apps/react-storybook/scripts/cloudflare-website-smoke.mjs'
+      - 'apps/react-storybook/scripts/cloudflare-static-chunk-smoke.mjs'
       - 'packages/**'
       - 'package.json'
       - 'pnpm-lock.yaml'
@@ -125,5 +126,12 @@ jobs:
         run: >-
           pnpm --filter @vellira-ui/react-storybook exec node
           scripts/cloudflare-website-smoke.mjs
+        env:
+          WEBSITE_URL: ${{ env.STAGING_URL }}
+
+      - name: Smoke test static chunk integrity
+        run: >-
+          pnpm --filter @vellira-ui/react-storybook exec node
+          scripts/cloudflare-static-chunk-smoke.mjs
         env:
           WEBSITE_URL: ${{ env.STAGING_URL }}
