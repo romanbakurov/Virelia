@@ -6,7 +6,7 @@ Canonical semantic naming contract for Vellira token consumers, Generator V2, qu
 
 ## Rule
 
-Semantic names describe **purpose**, not a primitive hue, renderer, interaction implementation, or the component that first introduced the value. Primitive values feed semantic roles; component factories consume semantic roles; platform adapters serialize component contracts.
+Semantic names describe **purpose**, not a primitive hue, renderer, interaction implementation, or the component that first introduced the value. Primitive values feed semantic roles; component factories consume semantic roles; platform adapters serialize component contracts. Consumers select semantic roles by purpose, never by whichever role currently resolves to a matching primitive value.
 
 ## Canonical namespaces
 
