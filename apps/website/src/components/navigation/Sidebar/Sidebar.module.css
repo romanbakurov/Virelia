@@ -54,11 +54,7 @@
 
 .activeItem > a {
   color: var(--text-primary);
-  background: color-mix(
-    in srgb,
-    var(--text-brand) 12%,
-    var(--surface-canvas)
-  );
+  background: color-mix(in srgb, var(--text-brand) 12%, var(--surface-canvas));
 }
 
 .activeItem > a:hover {
