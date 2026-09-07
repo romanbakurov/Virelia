@@ -29,7 +29,9 @@ jobs:
         run: |
           git fetch origin chore/component-production-readiness-probe-878
           git show FETCH_HEAD:.github/probes/878/apply-slice2.py > /tmp/apply-readiness-878-slice2.py
+          git show FETCH_HEAD:.github/probes/878/repair-slice2-preflight.py > /tmp/repair-readiness-878-preflight.py
           python3 /tmp/apply-readiness-878-slice2.py
+          python3 /tmp/repair-readiness-878-preflight.py
       - name: Format changed files
         run: |
           pnpm exec prettier --write \
