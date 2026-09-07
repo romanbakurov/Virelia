@@ -17,39 +17,38 @@ jobs:
           ref: feat/component-production-contract-877
           fetch-depth: 0
       - name: Guard exact production-contract head
-        run: test "$(git rev-parse HEAD)" = "6128f92dadb744e6e329bf1beba948e32d33c498"
+        run: test "$(git rev-parse HEAD)" = "fb0d1d60ab211ad93b1a2dcefac04fcaff22bf22"
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: 22.22.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Format only failing regression tests
-        run: pnpm exec prettier scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts --write
+      - name: Format dependency preflight
+        run: pnpm exec prettier scripts/generators/component/preflight.ts --write
       - name: Verify formatting
-        run: pnpm exec prettier scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts --check
+        run: pnpm exec prettier scripts/generators/component/preflight.ts --check
       - name: Verify exact changed-file scope
         shell: bash
-        run: |
-          actual="$(git diff --name-only | sort)"
-          expected="$(printf '%s\n' \
-            scripts/component-production/contract-input-v1.test.ts \
-            scripts/generators/component/production-preflight-contract.test.ts | sort)"
-          test "$actual" = "$expected"
+        run: test "$(git diff --name-only)" = "scripts/generators/component/preflight.ts"
       - name: Targeted regression tests
-        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts
+        run: pnpm exec vitest run --config vitest.tooling.config.ts scripts/generators/component/production-preflight-contract.test.ts scripts/generators/component/production-plan-normalization.test.ts
+      - name: Workspace build
+        run: pnpm ci:build
+      - name: Tooling typecheck
+        run: pnpm typecheck:tooling
       - name: Diff safety
         run: git diff --check
       - name: Re-check production branch guard
         shell: bash
         run: |
           git fetch origin feat/component-production-contract-877
-          test "$(git rev-parse origin/feat/component-production-contract-877)" = "6128f92dadb744e6e329bf1beba948e32d33c498"
+          test "$(git rev-parse origin/feat/component-production-contract-877)" = "fb0d1d60ab211ad93b1a2dcefac04fcaff22bf22"
       - name: Commit and push formatting only
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/component-production/contract-input-v1.test.ts scripts/generators/component/production-preflight-contract.test.ts
-          git commit -m "style(tooling): format production contract tests"
+          git add scripts/generators/component/preflight.ts
+          git commit -m "style(generator): format dependency preflight"
           git push origin HEAD:feat/component-production-contract-877
