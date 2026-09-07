@@ -7,6 +7,8 @@ if (!baseUrl) {
   throw new Error('WEBSITE_URL is required.');
 }
 
+const baseOrigin = new URL(baseUrl).origin;
+const metricsApiOrigin = new URL(metricsApiBaseUrl).origin;
 const browser = await chromium.launch();
 const context = await browser.newContext();
 const page = await context.newPage();
@@ -16,7 +18,7 @@ const vercelRuntimeRequests = [];
 const directActorMetricRequests = [];
 
 function sameOrigin(url) {
-  return url.startsWith(baseUrl);
+  return new URL(url).origin === baseOrigin;
 }
 
 function actorMetricsUrl(slug, suffix) {
@@ -24,12 +26,19 @@ function actorMetricsUrl(slug, suffix) {
 }
 
 function isDirectActorMetricRequest(url) {
-  if (!url.startsWith(metricsApiBaseUrl)) {
+  const parsedUrl = new URL(url);
+  if (parsedUrl.origin !== metricsApiOrigin) {
     return false;
   }
 
-  const { pathname } = new URL(url);
-  return /^\/v1\/blog\/articles\/[^/]+\/(?:views|like)$/.test(pathname);
+  return /^\/v1\/blog\/articles\/[^/]+\/(?:views|like)$/.test(
+    parsedUrl.pathname
+  );
+}
+
+function isObsoleteVercelRuntimeRequest(url) {
+  const parsedUrl = new URL(url);
+  return parsedUrl.origin === baseOrigin && parsedUrl.pathname.startsWith('/_vercel/');
 }
 
 function isExpectedNavigationAbort(request) {
@@ -37,7 +46,7 @@ function isExpectedNavigationAbort(request) {
 }
 
 page.on('request', (request) => {
-  if (request.url().startsWith(`${baseUrl}/_vercel/`)) {
+  if (isObsoleteVercelRuntimeRequest(request.url())) {
     const diagnostic = `obsolete Vercel runtime request: ${request.url()}`;
     diagnostics.push(diagnostic);
     criticalDiagnostics.push(diagnostic);
