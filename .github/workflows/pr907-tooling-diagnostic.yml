@@ -11,6 +11,9 @@ jobs:
   tooling-diagnostic:
     name: Tooling diagnostic
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -23,6 +26,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build packages and apps
+        run: pnpm ci:build
 
       - name: Capture tooling test output
         shell: bash
