@@ -7,7 +7,6 @@ export const surface = {
   muted: colors.gray[900],
   subtle: colors.gray[800],
   elevated: colors.gray[700],
-  background: colors.grayBlue[950],
 
   hover: colors.gray[700],
   active: colors.gray[700],

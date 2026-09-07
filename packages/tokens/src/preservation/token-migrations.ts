@@ -104,6 +104,9 @@ const valueKindWebFixApproval =
 const stateVocabularyVisualApproval =
   '#879/#882 explicitly authorizes removal of pressed/active semantic conflation; the change stays inside the existing Vellira palette and requires pinned Linux visual regression.';
 
+const semanticVocabularyVisualApproval =
+  '#879/#883 explicitly authorizes Semantic Vocabulary V1 normalization and the narrowly scoped hierarchy/status corrections inside existing Vellira palettes; token preservation plus pinned Linux visual regression are required evidence.';
+
 const stateVocabularyRenamePairsV1 = [
   [
     'control-active-bg',
@@ -149,36 +152,6 @@ const stateVocabularyRenamePairsV1 = [
     'action-primary-active-border',
     'semantic.action.primary.active.border',
     'semantic.action.primary.pressed.border',
-  ],
-  [
-    'action-secondary-active-bg',
-    'semantic.action.secondary.active.bg',
-    'semantic.action.secondary.pressed.bg',
-  ],
-  [
-    'action-secondary-active-fg',
-    'semantic.action.secondary.active.fg',
-    'semantic.action.secondary.pressed.fg',
-  ],
-  [
-    'action-secondary-active-border',
-    'semantic.action.secondary.active.border',
-    'semantic.action.secondary.pressed.border',
-  ],
-  [
-    'action-close-active-bg',
-    'semantic.action.close.active.bg',
-    'semantic.action.close.pressed.bg',
-  ],
-  [
-    'action-close-active-fg',
-    'semantic.action.close.active.fg',
-    'semantic.action.close.pressed.fg',
-  ],
-  [
-    'action-close-active-border',
-    'semantic.action.close.active.border',
-    'semantic.action.close.pressed.border',
   ],
   [
     'action-danger-active-bg',
@@ -232,6 +205,205 @@ const stateVocabularyRenameMigrationsV1 = stateVocabularyRenamePairsV1.flatMap(
   ]
 ) satisfies readonly TokenMigrationEntry[];
 
+const semanticActionRoleRenamePairsV1 = (
+  [
+    ['secondary', 'accent'],
+    ['close', 'neutral'],
+  ] as const
+).flatMap(([fromRole, toRole]) =>
+  (['default', 'hover', 'active', 'muted', 'subtle'] as const).flatMap(
+    (fromState) =>
+      (['bg', 'fg', 'border'] as const).map((field) => {
+        const toState = fromState === 'active' ? 'pressed' : fromState;
+        return [
+          `action-${fromRole}-${fromState}-${field}`,
+          `semantic.action.${fromRole}.${fromState}.${field}`,
+          `semantic.action.${toRole}.${toState}.${field}`,
+        ] as const;
+      })
+  )
+);
+
+const semanticStatusEmphasisRenamePairsV1 = (
+  ['success', 'error', 'warning', 'info'] as const
+).map(
+  (status) =>
+    [
+      `status-${status}-strong`,
+      `semantic.status.${status}.strong`,
+      `semantic.status.${status}.emphasisFg`,
+    ] as const
+);
+
+const semanticVocabularySimpleRenamePairsV1 = [
+  ['icons-primary', 'semantic.icons.primary', 'semantic.icons.interactive'],
+  ['icons-hover', 'semantic.icons.hover', 'semantic.icons.interactiveHover'],
+  ['border-focus', 'semantic.border.focus', 'semantic.border.interactive'],
+  [
+    'focus-ring-offset',
+    'semantic.focus.ring.offset',
+    'semantic.focus.ring.offsetColor',
+  ],
+  [
+    'overlay-popover-bg',
+    'semantic.overlay.popover.bg',
+    'semantic.overlay.floating.bg',
+  ],
+  [
+    'overlay-popover-border',
+    'semantic.overlay.popover.border',
+    'semantic.overlay.floating.border',
+  ],
+  [
+    'overlay-modal-bg',
+    'semantic.overlay.modal.bg',
+    'semantic.overlay.dialog.bg',
+  ],
+  [
+    'overlay-modal-border',
+    'semantic.overlay.modal.border',
+    'semantic.overlay.dialog.border',
+  ],
+] as const;
+
+const semanticVocabularyRenamePairsV1 = [
+  ...semanticActionRoleRenamePairsV1,
+  ...semanticStatusEmphasisRenamePairsV1,
+  ...semanticVocabularySimpleRenamePairsV1,
+] as const;
+
+const semanticVocabularyRenameMigrationsV1 =
+  semanticVocabularyRenamePairsV1.flatMap(([id, from, to]) => [
+    {
+      id: `883-${id}-rename`,
+      kind: 'rename',
+      issue: '#883',
+      reason:
+        'Rename a public semantic role to Semantic Vocabulary V1 while preserving its resolved design value.',
+      platforms: ['react-native'],
+      from,
+      to,
+    } as const,
+    {
+      id: `883-${id}-web-identity`,
+      kind: 'representation-change',
+      layer: 'platform-output',
+      issue: '#883',
+      reason:
+        'Align the public Web CSS variable identity with the normalized Semantic Vocabulary V1 role.',
+      platforms: ['web'],
+      from,
+      to,
+      equivalence:
+        'The paired canonical #883 rename preserves the resolved design value; only the public Web CSS variable identity changes.',
+      evidence:
+        'Token preservation validates the canonical/RN rename; generated CSS and pinned Linux visual regression validate Web output identity.',
+    } as const,
+  ]) satisfies readonly TokenMigrationEntry[];
+
+const semanticVocabularyRemovalPathsV1 = [
+  'semantic.surface.background',
+  'semantic.navigation.hover.bg',
+  'semantic.navigation.hover.fg',
+  'semantic.navigation.active.bg',
+  'semantic.navigation.active.fg',
+  'semantic.navigation.brandHover.bg',
+  'semantic.navigation.brandHover.fg',
+  'semantic.navigation.tabHover.fg',
+  'semantic.navigation.tabFocus.ring',
+  'semantic.navigation.optionHover.bg',
+  'semantic.navigation.optionHover.fg',
+  'semantic.navigation.optionActive.bg',
+  'semantic.navigation.optionActive.fg',
+  'semantic.navigation.triggerHover.bg',
+  'semantic.navigation.triggerHover.fg',
+  'semantic.navigation.border',
+] as const;
+
+const semanticVocabularyRemovalMigrationsV1 =
+  semanticVocabularyRemovalPathsV1.map(
+    (from) =>
+      ({
+        id: `883-remove-${from.replaceAll('.', '-')}`,
+        kind: 'remove',
+        issue: '#883',
+        reason:
+          from === 'semantic.surface.background'
+            ? 'Remove the ambiguous surface.background alias after application roots move to the canonical surface.canvas role.'
+            : 'Remove the unused legacy semantic.navigation namespace instead of preserving a duplicate component-history vocabulary.',
+        from,
+      }) as const
+  ) satisfies readonly TokenMigrationEntry[];
+
+const semanticVocabularyVisualMigrationsV1 = [
+  {
+    id: '883-dark-text-muted-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Correct the Dark text hierarchy so muted remains stronger than subtle using only existing Vellira palette values.',
+    from: 'semantic.text.muted',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-text-subtle-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Correct the Dark text hierarchy so subtle remains below muted using only existing Vellira palette values.',
+    from: 'semantic.text.subtle',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-icons-muted-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Correct the High Contrast icon hierarchy so muted remains stronger than subtle using the existing gray scale.',
+    from: 'semantic.icons.muted',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-icons-subtle-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Correct the High Contrast icon hierarchy so subtle remains below muted using the existing gray scale.',
+    from: 'semantic.icons.subtle',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-warning-ring-own-palette',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Correct warning.ring to use the existing warning palette instead of the unrelated error palette.',
+    from: 'semantic.status.warning.ring',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-info-ring-own-palette',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Correct info.ring to use the existing info palette instead of the unrelated error palette.',
+    from: 'semantic.status.info.ring',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+] as const satisfies readonly TokenMigrationEntry[];
+
 /**
  * Migration/test metadata only. This is not a runtime token registry.
  *
@@ -239,8 +411,115 @@ const stateVocabularyRenameMigrationsV1 = stateVocabularyRenamePairsV1.flatMap(
  * change, or intentionally approved visual change must be recorded here before
  * the preservation baseline is allowed to accept it.
  */
+
+const semanticVocabularyDownstreamVisualMigrationsV1 = [
+  {
+    id: '883-dark-dropdown-separator-muted-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Dropdown separator follows the corrected Dark muted text hierarchy without introducing a new palette value.',
+    from: 'components.dropdown.separator.fg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-form-field-helper-muted-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'FormField helper text follows the corrected Dark muted text hierarchy without introducing a new palette value.',
+    from: 'components.formField.helperText.default.fg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-input-readonly-placeholder-muted-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Input read-only placeholder follows the corrected Dark muted text hierarchy without introducing a new palette value.',
+    from: 'components.input.readOnly.placeholder',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-dark-modal-close-button-pressed-state',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['dark'],
+    reason:
+      'Modal close-button physical press now consumes the canonical surface.pressed state instead of the persistent surface.active state.',
+    from: 'components.modal.closeButton.pressed.bg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-input-clear-button-icon-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Input clear-button foreground follows the corrected High Contrast muted icon hierarchy.',
+    from: 'components.input.clearButton.fg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-input-muted-icon-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Input muted icon follows the corrected High Contrast muted/subtle icon hierarchy.',
+    from: 'components.input.icon.muted',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-input-readonly-icon-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Input read-only icon follows the corrected High Contrast muted icon hierarchy.',
+    from: 'components.input.readOnly.icon',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-input-spinner-icon-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Input spinner foreground follows the corrected High Contrast muted icon hierarchy.',
+    from: 'components.input.spinner.fg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+  {
+    id: '883-high-contrast-select-clear-button-icon-hierarchy',
+    kind: 'visual-change',
+    issue: '#883',
+    themes: ['high-contrast'],
+    reason:
+      'Select clear-button foreground follows the corrected High Contrast muted icon hierarchy.',
+    from: 'components.select.clearButton.fg',
+    approved: true,
+    approvalEvidence: semanticVocabularyVisualApproval,
+  },
+] as const satisfies readonly TokenMigrationEntry[];
+
 export const tokenMigrationManifestV1 = [
   ...stateVocabularyRenameMigrationsV1,
+  ...semanticVocabularyRenameMigrationsV1,
+  ...semanticVocabularyRemovalMigrationsV1,
+  ...semanticVocabularyVisualMigrationsV1,
+  ...semanticVocabularyDownstreamVisualMigrationsV1,
   {
     id: '882-radio-active-scale-remove',
     kind: 'remove',

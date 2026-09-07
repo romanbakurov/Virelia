@@ -540,7 +540,7 @@ const createStyles = (theme: ResolvedNativeTheme) =>
   StyleSheet.create({
     screen: {
       flex: 1,
-      backgroundColor: theme.semantic.surface.background,
+      backgroundColor: theme.semantic.surface.canvas,
     },
 
     scroll: {
@@ -568,7 +568,7 @@ const createStyles = (theme: ResolvedNativeTheme) =>
       paddingHorizontal: 22,
       paddingTop: 14,
       paddingBottom: 10,
-      backgroundColor: theme.semantic.surface.background,
+      backgroundColor: theme.semantic.surface.canvas,
       elevation: 10,
     },
 

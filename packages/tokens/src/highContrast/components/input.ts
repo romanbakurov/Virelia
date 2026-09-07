@@ -132,15 +132,15 @@ export const input = {
   hover: {
     bg: surface.hover,
     fg: text.primary,
-    border: border.focus,
+    border: border.interactive,
     placeholder: text.secondary,
-    icon: icons.hover,
+    icon: icons.interactiveHover,
   },
 
   focus: {
     bg: 'transparent',
     fg: text.primary,
-    border: border.focus,
+    border: border.interactive,
     ring: focus.ring.color,
     placeholder: text.secondary,
     icon: icons.brand,
@@ -169,7 +169,7 @@ export const input = {
 
   icon: {
     default: icons.default,
-    primary: icons.primary,
+    primary: icons.interactive,
     secondary: icons.secondary,
     success: icons.success,
     danger: icons.danger,

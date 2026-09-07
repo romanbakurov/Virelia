@@ -345,14 +345,6 @@ export const legitimatePersistentActiveStateDomainsV1 = [
     meaning: 'Current/highlighted danger menu item.',
   },
   {
-    pattern: 'semantic.navigation.active',
-    meaning: 'Current navigation destination.',
-  },
-  {
-    pattern: 'semantic.navigation.optionActive',
-    meaning: 'Current/highlighted navigation option.',
-  },
-  {
     pattern: 'components.contextMenu.item.active',
     meaning: 'Current/highlighted context-menu item.',
   },
@@ -372,6 +364,110 @@ export const legitimatePersistentActiveStateDomainsV1 = [
       'Current active tab presentation; physical press is a separate interaction.',
   },
 ] as const;
+
+export const semanticVocabularyV1 = {
+  surface: {
+    purpose: 'Layer and interaction backgrounds.',
+    roles: [
+      'canvas',
+      'default',
+      'subtle',
+      'muted',
+      'elevated',
+      'hover',
+      'active',
+      'pressed',
+      'disabled',
+      'danger',
+      'inverse',
+    ],
+  },
+  text: {
+    purpose: 'Text foreground hierarchy and text interaction roles.',
+    roles: [
+      'primary',
+      'secondary',
+      'muted',
+      'subtle',
+      'disabled',
+      'brand',
+      'interactive',
+      'interactiveHover',
+      'interactivePressed',
+      'inverse',
+    ],
+  },
+  icons: {
+    purpose:
+      'Icon foreground hierarchy; interactive roles are distinct from brand identity.',
+    roles: [
+      'default',
+      'secondary',
+      'muted',
+      'subtle',
+      'disabled',
+      'interactive',
+      'brand',
+      'interactiveHover',
+      'success',
+      'danger',
+      'inverse',
+    ],
+  },
+  border: {
+    purpose:
+      'Structural border strength plus generic interactive border emphasis.',
+    roles: [
+      'subtle',
+      'muted',
+      'default',
+      'strong',
+      'elevated',
+      'disabled',
+      'interactive',
+    ],
+  },
+  divider: {
+    purpose: 'Non-interactive separators.',
+    roles: ['muted', 'default', 'strong'],
+  },
+  focus: {
+    purpose:
+      'Input-focus indication only; independent from hover and pressed states.',
+    roles: ['ring.color', 'ring.width', 'ring.shadow', 'ring.offsetColor'],
+  },
+  status: {
+    purpose: 'Status intent paint using explicit consumption roles.',
+    intents: ['success', 'error', 'warning', 'info'],
+    roles: ['fg', 'bg', 'border', 'ring', 'emphasisFg'],
+  },
+  action: {
+    purpose:
+      'Action intent palettes; accent is the cyan secondary-brand hue, neutral is non-brand action chrome.',
+    roles: ['primary', 'accent', 'neutral', 'danger'],
+    states: ['default', 'hover', 'pressed', 'muted', 'subtle'],
+  },
+  control: {
+    purpose:
+      'Generic form-control state paint; pressed is physical press and selected is persistent choice.',
+    roles: ['default', 'hover', 'pressed', 'selected', 'disabled', 'focus'],
+  },
+  menu: {
+    purpose:
+      'Menu-item roles where active/current is a legitimate domain state.',
+    roles: ['item', 'item.danger'],
+  },
+  overlay: {
+    purpose:
+      'Reusable overlay surfaces named by presentation purpose, not component history.',
+    roles: ['backdrop', 'tooltip', 'floating', 'dialog'],
+  },
+  shadow: {
+    purpose:
+      'Semantic elevation references; renderer ownership is normalized separately.',
+    roles: ['sm', 'md', 'lg', 'xl'],
+  },
+} as const;
 
 export const canonicalTokenVocabulary = {
   surface: [
@@ -408,8 +504,16 @@ export const canonicalTokenVocabulary = {
     'interactivePressed',
     'inverse',
   ],
-  border: ['subtle', 'muted', 'default', 'strong', 'elevated', 'disabled'],
-  intent: ['primary', 'neutral', 'success', 'warning', 'danger'],
+  border: [
+    'subtle',
+    'muted',
+    'default',
+    'strong',
+    'elevated',
+    'disabled',
+    'interactive',
+  ],
+  intent: ['primary', 'accent', 'neutral', 'success', 'warning', 'danger'],
   status: ['success', 'error', 'warning', 'info'],
 } as const;
 
@@ -435,48 +539,59 @@ export const canonicalSemanticRolePaths = [
   'text.interactiveHover',
   'text.interactivePressed',
   'text.inverse',
+  'icons.default',
+  'icons.secondary',
+  'icons.muted',
+  'icons.subtle',
+  'icons.disabled',
+  'icons.interactive',
+  'icons.brand',
+  'icons.interactiveHover',
+  'icons.success',
+  'icons.danger',
+  'icons.inverse',
   'border.subtle',
   'border.muted',
   'border.default',
   'border.strong',
   'border.elevated',
   'border.disabled',
-  'border.focus',
+  'border.interactive',
   'divider.muted',
   'divider.default',
   'divider.strong',
   'focus.ring.color',
   'focus.ring.width',
   'focus.ring.shadow',
-  'focus.ring.offset',
+  'focus.ring.offsetColor',
   'status.success.fg',
   'status.success.bg',
   'status.success.border',
   'status.success.ring',
-  'status.success.strong',
+  'status.success.emphasisFg',
   'status.error.fg',
   'status.error.bg',
   'status.error.border',
   'status.error.ring',
-  'status.error.strong',
+  'status.error.emphasisFg',
   'status.warning.fg',
   'status.warning.bg',
   'status.warning.border',
   'status.warning.ring',
-  'status.warning.strong',
+  'status.warning.emphasisFg',
   'status.info.fg',
   'status.info.bg',
   'status.info.border',
   'status.info.ring',
-  'status.info.strong',
+  'status.info.emphasisFg',
   'overlay.backdrop',
   'overlay.tooltip.bg',
   'overlay.tooltip.fg',
   'overlay.tooltip.border',
-  'overlay.popover.bg',
-  'overlay.popover.border',
-  'overlay.modal.bg',
-  'overlay.modal.border',
+  'overlay.floating.bg',
+  'overlay.floating.border',
+  'overlay.dialog.bg',
+  'overlay.dialog.border',
 ] as const;
 
 export const componentTokenFactoryModel = {

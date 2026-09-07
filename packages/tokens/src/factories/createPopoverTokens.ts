@@ -17,7 +17,7 @@ type PopoverTokensConfig = {
 
 export type PopoverThemeSources = {
   overlay: {
-    popover: {
+    floating: {
       bg: string;
       border: string;
     };
@@ -84,9 +84,9 @@ export const createPopoverTokensFromTheme = ({
   spacing,
 }: PopoverThemeSources) =>
   createPopoverTokens({
-    contentBg: overlay.popover.bg,
+    contentBg: overlay.floating.bg,
     contentFg: text.primary,
-    contentBorder: overlay.popover.border,
+    contentBorder: overlay.floating.border,
     contentWebShadow: shadow.lg,
     contentNativeShadow: shadows.lg,
     titleFg: text.primary,

@@ -29,7 +29,7 @@ export const action = {
     },
   },
 
-  secondary: {
+  accent: {
     default: {
       bg: colors.secondary[300],
       fg: colors.mono[950],
@@ -57,7 +57,7 @@ export const action = {
     },
   },
 
-  close: {
+  neutral: {
     default: {
       bg: colors.mono[50],
       fg: colors.mono[950],

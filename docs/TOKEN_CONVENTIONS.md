@@ -57,7 +57,7 @@ Examples:
 ```ts
 theme.semantic.surface.default;
 theme.semantic.text.primary;
-theme.semantic.border.focus;
+theme.semantic.border.interactive;
 theme.semantic.status.error.fg;
 theme.semantic.focus.ring;
 ```
