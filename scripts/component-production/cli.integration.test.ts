@@ -79,6 +79,7 @@ describe('component production JSON CLI integration', () => {
     expect(result.stages.map((stage: { id: string }) => stage.id)).toEqual([
       'preflight',
       'generation',
+      'semantic-completion',
       'format',
       'lint',
       'tests',

@@ -1,5 +1,7 @@
 import type {
+  ComponentAssetRequirement,
   ComponentCapability,
+  ComponentDependencies,
   ComponentIconRequirement,
   ComponentTokenContract,
 } from '@vellira-ui/metadata';
@@ -31,8 +33,10 @@ export type ComponentGeneratorOptions = {
   profile: ComponentProfileArg;
   control?: FormControlKindArg;
   capabilities?: readonly ComponentCapability[];
+  dependencies?: ComponentDependencies;
   icons?: readonly ComponentIconRequirement[];
   tokens?: readonly string[];
+  assets?: readonly ComponentAssetRequirement[];
   componentTokens?: ComponentTokenContract | false;
   parts: readonly string[];
   force: boolean;

@@ -29,13 +29,22 @@ export type ComponentCapability =
 
 export type ComponentProfile = 'base' | 'form-control' | 'compound' | 'overlay';
 
-export interface ComponentDependencies {
+export interface ComponentDependencySet {
   packages?: readonly string[];
   components?: readonly string[];
 }
 
+export interface ComponentDependencies extends ComponentDependencySet {
+  platforms?: Partial<Record<ComponentPlatform, ComponentDependencySet>>;
+}
+
 export interface ComponentIconRequirement {
   name: string;
+  purpose: string;
+}
+
+export interface ComponentAssetRequirement {
+  path: string;
   purpose: string;
 }
 
@@ -50,6 +59,7 @@ export interface ComponentRequirements {
   componentTokens?: ComponentTokenContract | false;
   tokens?: readonly string[];
   icons?: readonly ComponentIconRequirement[];
+  assets?: readonly ComponentAssetRequirement[];
 }
 
 export interface ComponentMetadata {

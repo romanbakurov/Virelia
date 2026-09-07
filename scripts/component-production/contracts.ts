@@ -1,7 +1,10 @@
 import type {
+  ComponentAssetRequirement,
   ComponentCapability,
+  ComponentDependencies,
   ComponentIconRequirement,
   ComponentPlatform,
+  ComponentTokenContract,
 } from '@vellira-ui/metadata';
 
 import type { ComponentCompletenessResult } from '../checks/component-completeness/types';
@@ -27,14 +30,18 @@ export type ComponentProductionInputV1 = {
   profile: ComponentProfileArg;
   control?: FormControlKindArg;
   capabilities: readonly ComponentCapability[];
+  dependencies?: ComponentDependencies;
   icons?: readonly ComponentIconRequirement[];
   tokens?: readonly string[];
+  assets?: readonly ComponentAssetRequirement[];
+  componentTokens: ComponentTokenContract | false;
   parts: readonly string[];
 };
 
 export const COMPONENT_PRODUCTION_STAGE_IDS = [
   'preflight',
   'generation',
+  'semantic-completion',
   'format',
   'lint',
   'tests',
@@ -75,6 +82,24 @@ export type ComponentProductionStageResult = {
 
 export type ComponentProductionStatus = 'ready' | 'blocked' | 'failed';
 
+export const COMPONENT_PRODUCTION_LIFECYCLE_PHASES = [
+  'scaffolded',
+  'semantic-completion-required',
+  'candidate',
+  'validated',
+  'ready-for-review',
+] as const;
+
+export type ComponentProductionLifecyclePhase =
+  (typeof COMPONENT_PRODUCTION_LIFECYCLE_PHASES)[number];
+
+export type ComponentProductionLifecycleV1 = {
+  current: ComponentProductionLifecyclePhase;
+  completed: readonly ComponentProductionLifecyclePhase[];
+  semanticCompletionRequired: boolean;
+  readyForReview: boolean;
+};
+
 export type ComponentProductionArtifactGroupV1 = {
   generated: boolean;
   artifacts: readonly string[];
@@ -85,8 +110,12 @@ export type ComponentProductionOutputSummaryV1 = {
     status: ComponentProductionStageStatus;
     artifacts: readonly string[];
   };
+  runtimeRenderers: ComponentProductionArtifactGroupV1;
+  sharedContracts: ComponentProductionArtifactGroupV1;
   metadata: ComponentProductionArtifactGroupV1;
+  designResources: ComponentProductionArtifactGroupV1;
   testGeneration: ComponentProductionArtifactGroupV1;
+  storyGeneration: ComponentProductionArtifactGroupV1;
   docsGeneration: ComponentProductionArtifactGroupV1;
   websiteGeneration: ComponentProductionArtifactGroupV1;
 };
@@ -104,6 +133,7 @@ export type ComponentProductionValidationResultV1 = {
   input: ComponentProductionInputV1;
   status: ComponentProductionStatus;
   readyForReview: boolean;
+  lifecycle: ComponentProductionLifecycleV1;
   stages: readonly ComponentProductionStageResult[];
   blockingFindings: readonly ComponentProductionFinding[];
   validationSummary: ComponentProductionValidationSummaryV1;
@@ -116,6 +146,7 @@ export type ComponentProductionResultV1 = {
   input: ComponentProductionInputV1;
   status: ComponentProductionStatus;
   readyForReview: boolean;
+  lifecycle: ComponentProductionLifecycleV1;
   stages: readonly ComponentProductionStageResult[];
   blockingFindings: readonly ComponentProductionFinding[];
   artifacts: readonly string[];
@@ -134,12 +165,23 @@ const INPUT_KEYS = new Set([
   'profile',
   'control',
   'capabilities',
+  'dependencies',
   'icons',
   'tokens',
+  'assets',
+  'componentTokens',
   'parts',
 ]);
 
 const ICON_REQUIREMENT_KEYS = new Set(['name', 'purpose']);
+const ASSET_REQUIREMENT_KEYS = new Set(['path', 'purpose']);
+const DEPENDENCY_KEYS = new Set(['packages', 'components', 'platforms']);
+const DEPENDENCY_SET_KEYS = new Set(['packages', 'components']);
+const COMPONENT_TOKEN_CONTRACTS = new Set<ComponentTokenContract>([
+  'standard',
+  'boolean-control',
+  'disclosure',
+]);
 
 export function parseComponentProductionInput(
   value: unknown
@@ -169,8 +211,14 @@ export function parseComponentProductionInput(
   const profile = requiredString(value, 'profile');
   const control = optionalString(value, 'control');
   const capabilities = optionalStringArray(value, 'capabilities');
+  const dependencies = optionalDependencies(value, 'dependencies');
   const icons = optionalIconRequirements(value, 'icons');
   const tokens = optionalNonEmptyStringArray(value, 'tokens');
+  const assets = optionalAssetRequirements(value, 'assets');
+  const componentTokens = optionalComponentTokenContract(
+    value,
+    'componentTokens'
+  );
   const parts = optionalStringArray(value, 'parts');
 
   const args = [
@@ -202,6 +250,12 @@ export function parseComponentProductionInput(
   }
 
   const generatorOptions = parseComponentGeneratorArgs(args);
+  const resolvedComponentTokens =
+    componentTokens ??
+    (generatorOptions.profile === 'form-control' &&
+    (generatorOptions.control ?? 'value') === 'boolean'
+      ? 'boolean-control'
+      : 'standard');
 
   return {
     schemaVersion: COMPONENT_PRODUCTION_SCHEMA_VERSION,
@@ -216,12 +270,15 @@ export function parseComponentProductionInput(
         }
       : {}),
     capabilities: generatorOptions.capabilities ?? [],
+    ...(dependencies ? { dependencies } : {}),
     ...((generatorOptions.icons ?? []).length > 0
       ? { icons: generatorOptions.icons }
       : {}),
     ...((generatorOptions.tokens ?? []).length > 0
       ? { tokens: generatorOptions.tokens }
       : {}),
+    ...(assets.length > 0 ? { assets } : {}),
+    componentTokens: resolvedComponentTokens,
     parts: generatorOptions.parts,
   };
 }
@@ -241,8 +298,11 @@ export function createComponentProductionGeneratorOptions(
         }
       : {}),
     capabilities: input.capabilities,
+    dependencies: input.dependencies,
     icons: input.icons ?? [],
     tokens: input.tokens ?? [],
+    assets: input.assets ?? [],
+    componentTokens: input.componentTokens,
     parts: input.parts,
     force: false,
     dryRun: false,
@@ -294,6 +354,7 @@ export function createComponentProductionResult(params: {
     input: params.input,
     status,
     readyForReview: status === 'ready',
+    lifecycle: createComponentProductionLifecycle(params.stages),
     stages: params.stages,
     blockingFindings,
     artifacts,
@@ -301,6 +362,86 @@ export function createComponentProductionResult(params: {
     validationSummary,
     completeness: params.completeness,
     quality: params.quality,
+  };
+}
+
+export function createComponentProductionLifecycle(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  const generation = stages.find((stage) => stage.id === 'generation');
+  const semanticCompletion = stages.find(
+    (stage) => stage.id === 'semantic-completion'
+  );
+
+  if (generation?.status !== 'passed') {
+    return {
+      current: 'scaffolded',
+      completed: [],
+      semanticCompletionRequired: false,
+      readyForReview: false,
+    };
+  }
+
+  if (semanticCompletion?.status !== 'passed') {
+    return {
+      current: 'semantic-completion-required',
+      completed: ['scaffolded'],
+      semanticCompletionRequired: true,
+      readyForReview: false,
+    };
+  }
+
+  const validationStages = stages.filter(
+    (stage) =>
+      stage.id !== 'preflight' &&
+      stage.id !== 'generation' &&
+      stage.id !== 'semantic-completion'
+  );
+
+  return lifecycleFromValidationStages(validationStages);
+}
+
+export function createComponentProductionValidationLifecycle(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  return lifecycleFromValidationStages(stages);
+}
+
+function lifecycleFromValidationStages(
+  stages: readonly ComponentProductionStageResult[]
+): ComponentProductionLifecycleV1 {
+  const hasSkipped = stages.some((stage) => stage.status === 'skipped');
+  const hasFailed = stages.some((stage) => stage.status === 'failed');
+  const hasBlocked = stages.some((stage) => stage.status === 'blocked');
+
+  if (!hasSkipped && !hasFailed && !hasBlocked) {
+    return {
+      current: 'ready-for-review',
+      completed: [
+        'scaffolded',
+        'semantic-completion-required',
+        'candidate',
+        'validated',
+      ],
+      semanticCompletionRequired: false,
+      readyForReview: true,
+    };
+  }
+
+  if (!hasSkipped && !hasFailed) {
+    return {
+      current: 'validated',
+      completed: ['scaffolded', 'semantic-completion-required', 'candidate'],
+      semanticCompletionRequired: false,
+      readyForReview: false,
+    };
+  }
+
+  return {
+    current: 'candidate',
+    completed: ['scaffolded', 'semantic-completion-required'],
+    semanticCompletionRequired: false,
+    readyForReview: false,
   };
 }
 
@@ -357,11 +498,27 @@ export function createComponentProductionOutputSummary(
       status: generation.status,
       artifacts,
     },
+    runtimeRenderers: artifactGroup(
+      artifacts,
+      (artifact) =>
+        (artifact.startsWith('packages/react/src/') ||
+          artifact.startsWith('packages/react-native/src/')) &&
+        !artifact.includes('.test.') &&
+        !artifact.includes('.stories.') &&
+        !artifact.includes('test-contract') &&
+        !artifact.endsWith('/public-api.test.ts')
+    ),
+    sharedContracts: artifactGroup(artifacts, (artifact) =>
+      artifact.startsWith('packages/types/')
+    ),
     metadata: artifactGroup(
       artifacts,
       (artifact) =>
         artifact.startsWith('packages/metadata/') ||
         artifact.endsWith('.metadata.ts')
+    ),
+    designResources: artifactGroup(artifacts, (artifact) =>
+      artifact.startsWith('packages/tokens/')
     ),
     testGeneration: artifactGroup(
       artifacts,
@@ -369,6 +526,9 @@ export function createComponentProductionOutputSummary(
         artifact.includes('.test.') ||
         artifact.includes('test-contract') ||
         artifact.endsWith('/public-api.test.ts')
+    ),
+    storyGeneration: artifactGroup(artifacts, (artifact) =>
+      artifact.includes('.stories.')
     ),
     docsGeneration: artifactGroup(
       artifacts,
@@ -500,6 +660,183 @@ function optionalNonEmptyStringArray(
   }
 
   return [...field];
+}
+
+function optionalComponentTokenContract(
+  value: Record<string, unknown>,
+  key: string
+): ComponentTokenContract | false | undefined {
+  const field = value[key];
+
+  if (field === undefined || field === false) {
+    return field;
+  }
+
+  if (
+    typeof field !== 'string' ||
+    !COMPONENT_TOKEN_CONTRACTS.has(field as ComponentTokenContract)
+  ) {
+    throw new Error(
+      `Component production input field "${key}" must be false, standard, boolean-control, or disclosure.`
+    );
+  }
+
+  return field as ComponentTokenContract;
+}
+
+function optionalDependencySet(
+  value: unknown,
+  label: string
+): { packages?: string[]; components?: string[] } {
+  if (!isRecord(value)) {
+    throw new Error(
+      `Component production input field "${label}" must be an object.`
+    );
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!DEPENDENCY_SET_KEYS.has(key)) {
+      throw new Error(
+        `Unknown component production dependency field "${key}" at ${label}.`
+      );
+    }
+  }
+
+  const packages = optionalNonEmptyStringArray(value, 'packages');
+  const components = optionalStringArray(value, 'components');
+
+  if (new Set(packages).size !== packages.length) {
+    throw new Error(
+      `Component production input field "${label}.packages" must not contain duplicates.`
+    );
+  }
+
+  if (new Set(components).size !== components.length) {
+    throw new Error(
+      `Component production input field "${label}.components" must not contain duplicates.`
+    );
+  }
+
+  return {
+    ...(packages.length > 0 ? { packages } : {}),
+    ...(components.length > 0 ? { components } : {}),
+  };
+}
+
+function optionalDependencies(
+  value: Record<string, unknown>,
+  key: string
+): ComponentDependencies | undefined {
+  const field = value[key];
+
+  if (field === undefined) {
+    return undefined;
+  }
+
+  if (!isRecord(field)) {
+    throw new Error(
+      `Component production input field "${key}" must be an object.`
+    );
+  }
+
+  for (const itemKey of Object.keys(field)) {
+    if (!DEPENDENCY_KEYS.has(itemKey)) {
+      throw new Error(
+        `Unknown component production dependency field "${itemKey}" at ${key}.`
+      );
+    }
+  }
+
+  const rootSet = optionalDependencySet(
+    { packages: field.packages, components: field.components },
+    key
+  );
+  let platforms: ComponentDependencies['platforms'];
+
+  if (field.platforms !== undefined) {
+    if (!isRecord(field.platforms)) {
+      throw new Error(
+        `Component production input field "${key}.platforms" must be an object.`
+      );
+    }
+
+    platforms = {};
+
+    for (const [platform, dependencySet] of Object.entries(field.platforms)) {
+      if (platform !== 'react' && platform !== 'react-native') {
+        throw new Error(
+          `Component production input field "${key}.platforms" contains unsupported platform "${platform}".`
+        );
+      }
+
+      const normalized = optionalDependencySet(
+        dependencySet,
+        `${key}.platforms.${platform}`
+      );
+
+      if (Object.keys(normalized).length > 0) {
+        platforms[platform] = normalized;
+      }
+    }
+  }
+
+  const result: ComponentDependencies = {
+    ...rootSet,
+    ...(platforms && Object.keys(platforms).length > 0 ? { platforms } : {}),
+  };
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
+function optionalAssetRequirements(
+  value: Record<string, unknown>,
+  key: string
+): ComponentAssetRequirement[] {
+  const field = value[key];
+
+  if (field === undefined) {
+    return [];
+  }
+
+  if (!Array.isArray(field)) {
+    throw new Error(
+      `Component production input field "${key}" must be an array.`
+    );
+  }
+
+  const result = field.map((item, index) => {
+    if (!isRecord(item)) {
+      throw new Error(
+        `Component production input field "${key}[${index}]" must be an object.`
+      );
+    }
+
+    for (const itemKey of Object.keys(item)) {
+      if (!ASSET_REQUIREMENT_KEYS.has(itemKey)) {
+        throw new Error(
+          `Unknown component production asset requirement field "${itemKey}" at ${key}[${index}].`
+        );
+      }
+    }
+
+    return {
+      path: requiredObjectString(item, 'path', `${key}[${index}].path`),
+      purpose: requiredObjectString(
+        item,
+        'purpose',
+        `${key}[${index}].purpose`
+      ),
+    };
+  });
+  const keys = result.map((asset) => `${asset.path}\u0000${asset.purpose}`);
+
+  if (new Set(keys).size !== keys.length) {
+    throw new Error(
+      'Component production asset requirements must not contain duplicate path/purpose pairs.'
+    );
+  }
+
+  return result;
 }
 
 function optionalIconRequirements(

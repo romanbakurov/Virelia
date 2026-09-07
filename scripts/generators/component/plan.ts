@@ -1,7 +1,10 @@
 import path from 'node:path';
 
 import type {
+  ComponentAssetRequirement,
   ComponentCapability,
+  ComponentDependencies,
+  ComponentDependencySet,
   ComponentIconRequirement,
   ComponentTokenContract,
 } from '@vellira-ui/metadata';
@@ -42,8 +45,10 @@ export type ComponentGenerationPlan = {
   control: FormControlKindArg;
   typeOwnership: ComponentTypeOwnership;
   capabilities: readonly ComponentCapability[];
+  dependencies: ComponentDependencies;
   icons: readonly ComponentIconRequirement[];
   tokens: readonly string[];
+  assets: readonly ComponentAssetRequirement[];
   componentTokens: ComponentTokenContract | false;
   force: boolean;
   parts: readonly string[];
@@ -83,6 +88,55 @@ function resolveComponentTokenContract(
   return 'standard';
 }
 
+function normalizeDependencySet(
+  value: ComponentDependencySet | undefined
+): ComponentDependencySet {
+  return {
+    ...(value?.packages && value.packages.length > 0
+      ? { packages: [...new Set(value.packages)].sort() }
+      : {}),
+    ...(value?.components && value.components.length > 0
+      ? { components: [...new Set(value.components)].sort() }
+      : {}),
+  };
+}
+
+function resolvePlanDependencies(params: {
+  dependencies: ComponentDependencies | undefined;
+  typeOwnership: ComponentTypeOwnership;
+}): ComponentDependencies {
+  const packages = new Set(params.dependencies?.packages ?? []);
+
+  if (params.typeOwnership === 'shared') {
+    packages.add('@vellira-ui/types');
+  }
+
+  const platforms = Object.fromEntries(
+    Object.entries(params.dependencies?.platforms ?? {})
+      .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+      .map(([platform, dependencySet]) => [
+        platform,
+        normalizeDependencySet(dependencySet),
+      ])
+      .filter(
+        ([, dependencySet]) =>
+          Object.keys(dependencySet as ComponentDependencySet).length > 0
+      )
+  ) as ComponentDependencies['platforms'];
+
+  return {
+    ...(packages.size > 0 ? { packages: [...packages].sort() } : {}),
+    ...((params.dependencies?.components?.length ?? 0) > 0
+      ? {
+          components: [
+            ...new Set(params.dependencies?.components ?? []),
+          ].sort(),
+        }
+      : {}),
+    ...(Object.keys(platforms ?? {}).length > 0 ? { platforms } : {}),
+  };
+}
+
 function getTargetPackages(
   platform: ComponentPlatformArg
 ): ComponentTargetPackage[] {
@@ -102,6 +156,11 @@ export function createComponentGenerationPlan(params: {
 }): ComponentGenerationPlan {
   const { root, options } = params;
 
+  const typeOwnership = resolveComponentTypeOwnership(options);
+  const dependencies = resolvePlanDependencies({
+    dependencies: options.dependencies,
+    typeOwnership,
+  });
   const targets = getTargetPackages(options.platform).map((packageName) => ({
     packageName,
     isNative: packageName === 'react-native',
@@ -173,10 +232,12 @@ export function createComponentGenerationPlan(params: {
     category: options.category,
     profile: options.profile,
     control: options.control ?? 'value',
-    typeOwnership: resolveComponentTypeOwnership(options),
+    typeOwnership,
     capabilities: options.capabilities ?? [],
+    dependencies,
     icons: options.icons ?? [],
     tokens: options.tokens ?? [],
+    assets: options.assets ?? [],
     componentTokens: resolveComponentTokenContract(options),
     parts: options.parts,
     force: options.force,

@@ -14,6 +14,7 @@ const SPEC: ComponentProductionInputV1 = {
   category: 'data-display',
   profile: 'base',
   capabilities: [],
+  componentTokens: 'standard',
   parts: [],
 };
 
@@ -36,7 +37,7 @@ describe('runComponentProductionCli', () => {
 
           observedInput = input;
 
-          return readyResult();
+          return scaffoldResult();
         },
         write: (message) => {
           output.push(message);
@@ -49,8 +50,12 @@ describe('runComponentProductionCli', () => {
 
     expect(JSON.parse(output[0] ?? '')).toMatchObject({
       schemaVersion: '1',
-      status: 'ready',
-      readyForReview: true,
+      status: 'blocked',
+      readyForReview: false,
+      lifecycle: {
+        current: 'semantic-completion-required',
+        semanticCompletionRequired: true,
+      },
     });
   });
 
@@ -60,9 +65,15 @@ describe('runComponentProductionCli', () => {
       {
         readFile: () => JSON.stringify(SPEC),
         runProduction: async () => ({
-          ...readyResult(),
+          ...scaffoldResult(),
           status: 'blocked',
           readyForReview: false,
+          lifecycle: {
+            current: 'scaffolded',
+            completed: [],
+            semanticCompletionRequired: false,
+            readyForReview: false,
+          },
           stages: [
             {
               id: 'preflight',
@@ -101,9 +112,15 @@ describe('runComponentProductionCli', () => {
       {
         readFile: () => JSON.stringify(SPEC),
         runProduction: async () => ({
-          ...readyResult(),
+          ...scaffoldResult(),
           status: 'failed',
           readyForReview: false,
+          lifecycle: {
+            current: 'scaffolded',
+            completed: [],
+            semanticCompletionRequired: false,
+            readyForReview: false,
+          },
         }),
         write: () => undefined,
       }
@@ -159,12 +176,18 @@ describe('runComponentProductionCli', () => {
   });
 });
 
-function readyResult(): ComponentProductionResultV1 {
+function scaffoldResult(): ComponentProductionResultV1 {
   return {
     schemaVersion: '1',
     input: SPEC,
-    status: 'ready',
-    readyForReview: true,
+    status: 'blocked',
+    readyForReview: false,
+    lifecycle: {
+      current: 'semantic-completion-required',
+      completed: ['scaffolded'],
+      semanticCompletionRequired: true,
+      readyForReview: false,
+    },
     stages: [],
     blockingFindings: [],
     artifacts: [],
@@ -173,11 +196,27 @@ function readyResult(): ComponentProductionResultV1 {
         status: 'passed',
         artifacts: [],
       },
+      runtimeRenderers: {
+        generated: false,
+        artifacts: [],
+      },
+      sharedContracts: {
+        generated: false,
+        artifacts: [],
+      },
       metadata: {
         generated: false,
         artifacts: [],
       },
+      designResources: {
+        generated: false,
+        artifacts: [],
+      },
       testGeneration: {
+        generated: false,
+        artifacts: [],
+      },
+      storyGeneration: {
         generated: false,
         artifacts: [],
       },
