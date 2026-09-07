@@ -4,7 +4,7 @@
   z-index: var(--z-index-dropdown);
   width: 100%;
   border-bottom: 1px solid var(--border-muted);
-  background: var(--surface-background);
+  background: var(--surface-canvas);
 }
 
 .container {
@@ -200,7 +200,7 @@
     max-height: min(620px, calc(100vh - var(--site-header-height)));
     padding: var(--space-4) var(--site-gutter) var(--space-5);
     overflow-y: auto;
-    background: var(--surface-background);
+    background: var(--surface-canvas);
     border-bottom: 1px solid var(--border-muted);
     opacity: 0;
     transform: translateY(-8px);
